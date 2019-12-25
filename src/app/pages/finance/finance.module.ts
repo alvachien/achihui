@@ -8,6 +8,7 @@ import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { FinanceRoutingModule } from './finance-routing.module';
@@ -29,6 +30,7 @@ import { CurrencyComponent } from './currency';
     NzGridModule,
     NzCardModule,
     NzSpinModule,
+    NzInputNumberModule,
     TranslocoModule,
     FinanceRoutingModule,
   ]

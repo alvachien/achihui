@@ -1,11 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
+import { takeUntil } from 'rxjs/operators';
 
 import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
-  IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+  IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
+  ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection, costObjectValidator, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
 @Component({
@@ -79,13 +81,77 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     private _router: Router) {
       this.headerFormGroup = new FormGroup({
         headerControl: new FormControl('', Validators.required),
-      });
+        accountControl: new FormControl('', Validators.required),
+        tranTypeControl: new FormControl('', Validators.required),
+        amountControl: new FormControl('', Validators.required),
+        ccControl: new FormControl(''),
+        orderControl: new FormControl(''),
+      }, [costObjectValidator]);
     }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
+
+    forkJoin([
+      this.odataService.fetchAllAccountCategories(),
+      this.odataService.fetchAllDocTypes(),
+      this.odataService.fetchAllTranTypes(),
+      this.odataService.fetchAllAccounts(),
+      this.odataService.fetchAllControlCenters(),
+      this.odataService.fetchAllOrders(),
+      this.odataService.fetchAllCurrencies(),
+    ])
+    .pipe(takeUntil(this._destroyed$))
+      .subscribe((rst: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`, ConsoleLogTypeEnum.debug);
+
+      // Accounts
+      this.arAccounts = rst[3];
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
+      // Orders
+      this.arOrders = rst[5];
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+      this.uiOrderFilter = undefined;
+      // Currencies
+      this.arCurrencies = rst[6];
+      // Tran. type
+      this.arTranType = rst[2];
+      // Control Centers
+      this.arControlCenters = rst[4];
+      // Document type
+      this.arDocTypes = rst[1];
+
+      this._activateRoute.url.subscribe((x: any) => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'createadp' || x[0].path === 'createadr') {
+            if (x[0].path === 'createadp') {
+              this._isADP = true;
+            } else {
+              this._isADP = false;
+            }
+            this._updateCurrentTitle();
+            this.uiAccountStatusFilter = 'Normal';
+            this.uiAccountCtgyFilter = {
+              skipADP: true,
+              skipLoan: true,
+              skipAsset: true,
+            };
+            this.uiOrderFilter = true;
+
+            this._cdr.detectChanges();
+          }
+        }
+      });
+    }, (error: any) => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
+        ConsoleLogTypeEnum.error);
+      // TBD.
+    });
   }
 
   ngOnDestroy(): void {
@@ -95,6 +161,16 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+  }
+
+  private _updateCurrentTitle(): void {
+    if (this._isADP) {
+      this.curTitle = 'Sys.DocTy.AdvancedPayment';
+      this.curDocType = financeDocTypeAdvancePayment;
+    } else {
+      this.curTitle = 'Sys.DocTy.AdvancedRecv';
+      this.curDocType = financeDocTypeAdvanceReceived;
     }
   }
 }

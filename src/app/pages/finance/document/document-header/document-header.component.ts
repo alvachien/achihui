@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
   UIStatusEnum, financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService, FinCurrencyService, UIStatusService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
   selector: 'hih-fin-document-header',

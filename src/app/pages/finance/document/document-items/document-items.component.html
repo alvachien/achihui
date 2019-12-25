@@ -1,6 +1,6 @@
 <ng-container class="achih-control-full-width" *transloco="let t">
   <div class="toolbar_buttons" *ngIf="isAddItemAllowed">
-    <button nz-button nzType="primary" (click)="onCreateDocItem()">{{'Common.Create' | transloco}}</button>
+    <button nz-button nzType="primary" (click)="onCreateDocItem()">{{'Finance.CreateItem' | transloco}}</button>
   </div>
 
   <nz-table #basicTable nzBordered [nzData]="listItems">
@@ -30,7 +30,7 @@
           </nz-select>
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.TranAmount" />
+          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" [nzPlaceHolder]="'Amount'"></nz-input-number>
         </td>
         <td>
           <div *ngIf="!data.UseCurr2">{{tranCurr}}</div>
