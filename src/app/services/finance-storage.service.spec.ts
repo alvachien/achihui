@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { FinanceStorageService, } from './finance-storage.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import {
   UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
@@ -43,7 +43,7 @@ describe('FinanceStorageService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: Partial<HomeDefDetailService> = {
+    const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -55,7 +55,7 @@ describe('FinanceStorageService', () => {
       providers: [
         FinanceStorageService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
 

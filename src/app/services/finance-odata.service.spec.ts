@@ -2,11 +2,10 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
 
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
 
@@ -15,13 +14,14 @@ describe('FinanceOdataService', () => {
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: FinanceOdataService;
-  const accountCategoryAPIURL: any = environment.ApiUrl + '/api/FinanceAccountCategories';
-  const docTypeAPIURL: any = environment.ApiUrl + '/api/FinanceDocumentTypes';
-  const tranTypeAPIURL: any = environment.ApiUrl + '/api/FinanceTransactionTypes';
-  const assetCategoryAPIURL: any = environment.ApiUrl + '/api/FinanceAssetCategories';
-  const accountAPIURL: any = environment.ApiUrl + '/api/FinanceAccounts';
-  const ccAPIURL: any = environment.ApiUrl + '/api/FinanceControlCenters';
-  const orderAPIURL: any = environment.ApiUrl + '/api/FinanceOrders';
+  const currAPIURL: any = environment.ApiUrl + '/api/Currencies?$count=true';
+  let accountCategoryAPIURL: any;
+  let docTypeAPIURL: any;
+  let tranTypeAPIURL: any;
+  let assetCategoryAPIURL: any;
+  let accountAPIURL: any;
+  let ccAPIURL: any;
+  let orderAPIURL: any;
   const documentAPIURL: any = environment.ApiUrl + '/api/FinanceDocuments';
 
   beforeEach(() => {
@@ -33,9 +33,16 @@ describe('FinanceOdataService', () => {
     fakeData.buildFinControlCenterFromAPI();
     fakeData.buildFinOrderFromAPI();
 
+    accountCategoryAPIURL = environment.ApiUrl + `/api/FinanceAccountCategories?$select=ID,HomeID,Name,AssetFlag,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
+    docTypeAPIURL = environment.ApiUrl + `/api/FinanceDocumentTypes?$select=ID,HomeID,Name,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
+    tranTypeAPIURL = environment.ApiUrl + `/api/FinanceTransactionTypes?$select=ID,HomeID,Name,Expense,ParID,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
+    assetCategoryAPIURL = environment.ApiUrl + `/api/FinanceAssetCategories?$select=ID,HomeID,Name,Desp&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
+    accountAPIURL = environment.ApiUrl + `/api/FinanceAccounts?$select=ID,HomeID,Name&$filter=HomeID eq ${fakeData.chosedHome.ID}`;
+    ccAPIURL = environment.ApiUrl + `/api/FinanceControlCenters?$select=ID,HomeID,Name,ParentID,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID}`;
+    orderAPIURL = environment.ApiUrl + `/api/FinanceOrders?$filter=HomeID eq ${fakeData.chosedHome.ID}&$expand=SRule`;
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: Partial<HomeDefDetailService> = {
+    const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -47,7 +54,7 @@ describe('FinanceOdataService', () => {
       providers: [
         FinanceOdataService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
 
@@ -61,6 +68,104 @@ describe('FinanceOdataService', () => {
   });
 
   /// FinanceOdataService method tests begin ///
+  describe('1. fetchAllCurrencies', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected currencies (called once)', () => {
+      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+
+      service.fetchAllCurrencies().subscribe(
+        (curries: any) => {
+          expect(curries.length).toEqual(fakeData.currenciesFromAPI.length, 'should return expected currencies');
+          expect(service.Currencies.length).toEqual(fakeData.currenciesFromAPI.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET currencies from expected URL
+      const req: any = httpTestingController.expectOne(currAPIURL);
+      expect(req.request.method).toEqual('GET');
+
+      // Respond with the mock currencies
+      req.flush(fakeData.currenciesFromAPI);
+    });
+
+    it('should be OK returning no currencies', () => {
+      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllCurrencies().subscribe(
+        (curries: any) => {
+          expect(curries.length).toEqual(0, 'should have empty currencies array');
+          expect(service.Currencies.length).toEqual(0, 'should buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne(currAPIURL);
+      req.flush([]); // Respond with no data
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Deliberate 404';
+      service.fetchAllCurrencies().subscribe(
+        (curries: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne(currAPIURL);
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should return expected currencies (called multiple times)', () => {
+      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllCurrencies().subscribe(
+        (curries: any) => {
+          expect(curries.length).toEqual(fakeData.currenciesFromAPI.length, 'should return expected currencies');
+          expect(curries.length).toEqual(service.Currencies.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const requests: any = httpTestingController.match(currAPIURL);
+      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
+      requests[0].flush(fakeData.currenciesFromAPI);
+      httpTestingController.verify();
+
+      // Second call
+      service.fetchAllCurrencies().subscribe();
+      const requests2: any = httpTestingController.match(currAPIURL);
+      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+
+      // Third call
+      service.fetchAllCurrencies().subscribe(
+        (curries: any) => {
+          expect(curries.length).toEqual(fakeData.currenciesFromAPI.length, 'should return expected currencies');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const requests3: any = httpTestingController.match(currAPIURL);
+      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
   describe('fetchAllAccountCategories', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);

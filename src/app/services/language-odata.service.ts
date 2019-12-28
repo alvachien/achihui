@@ -2,11 +2,12 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
-import { LogLevel, AppLanguage } from '../model';
+import { LogLevel, AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../model';
 
 @Injectable()
-export class LanguageService {
+export class LanguageOdataService {
   // Buffer
   private _islistLoaded: boolean;
   private _listData: AppLanguage[];
@@ -15,9 +16,7 @@ export class LanguageService {
   }
 
   constructor(private _http: HttpClient) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering LanguageService constructor...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LanguageService constructor...', ConsoleLogTypeEnum.debug);
 
     this._islistLoaded = false; // Performance improvement
     this._listData = [];
@@ -35,9 +34,7 @@ export class LanguageService {
           headers: headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService`);
-          }
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService', ConsoleLogTypeEnum.debug);
 
           const rjs: any = <any>response;
           this._listData = [];
@@ -54,9 +51,7 @@ export class LanguageService {
           return this._listData;
         }),
         catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`);
-          }
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`, ConsoleLogTypeEnum.error);
 
           this._islistLoaded = false;
           this._listData = [];

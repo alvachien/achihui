@@ -17,7 +17,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   RepeatFrequencyEnum,
 } from '../model';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable()
 export class FinanceStorageService {
@@ -80,7 +80,7 @@ export class FinanceStorageService {
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
-    private _homeService: HomeDefDetailService) {
+    private _homeService: HomeDefOdataService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService constructor...');
     }

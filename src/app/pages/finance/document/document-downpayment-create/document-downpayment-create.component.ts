@@ -164,6 +164,10 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onSave(): void {
+    
+  }
+
   private _updateCurrentTitle(): void {
     if (this._isADP) {
       this.curTitle = 'Sys.DocTy.AdvancedPayment';

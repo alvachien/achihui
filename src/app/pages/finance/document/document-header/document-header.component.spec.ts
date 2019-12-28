@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DocumentHeaderComponent } from './document-header.component';
 import { getTranslocoModule } from '../../../../../testing';
@@ -42,7 +43,7 @@ describe('DocumentHeaderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentHeaderComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    //fixture.detectChanges();
   });
 
   it('should create', () => {

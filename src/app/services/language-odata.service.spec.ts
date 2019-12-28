@@ -3,11 +3,11 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { FakeDataHelper } from '../../testing';
-import { LanguageService } from './language.service';
+import { LanguageOdataService } from './language-odata.service';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
-describe('LanguageService', () => {
+describe('LanguageOdataService', () => {
   let httpTestingController: HttpTestingController;
   const curAPIURL: any = environment.ApiUrl + '/api/Language';
   let fakeData: FakeDataHelper;
@@ -21,22 +21,22 @@ describe('LanguageService', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        LanguageService,
+        LanguageOdataService,
       ],
     });
 
     httpTestingController = TestBed.get(HttpTestingController);
   });
 
-  it('1. service should be created', inject([LanguageService], (service: LanguageService) => {
+  it('1. service should be created', inject([LanguageOdataService], (service: LanguageOdataService) => {
     expect(service).toBeTruthy();
   }));
 
   describe('2. fetchAllLanguages', () => {
-    let service: LanguageService;
+    let service: LanguageOdataService;
 
     beforeEach(() => {
-      service = TestBed.get(LanguageService);
+      service = TestBed.get(LanguageOdataService);
     });
 
     afterEach(() => {

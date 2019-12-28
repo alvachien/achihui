@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, LearnObject, } from '../model';
+  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()

@@ -3,7 +3,6 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable()

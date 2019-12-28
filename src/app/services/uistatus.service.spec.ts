@@ -1,8 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { TranslocoService } from '@ngneat/transloco';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TranslocoService } from '@ngneat/transloco';
 
+import { getTranslocoModule } from '../../testing';
 import { UIStatusService } from './uistatus.service';
 
 describe('UIStatusService', () => {
@@ -10,7 +11,7 @@ describe('UIStatusService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        TranslocoService,
+        getTranslocoModule(),
       ],
       providers: [
         UIStatusService,

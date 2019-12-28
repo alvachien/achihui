@@ -5,7 +5,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, BookCategory, Book, Location, MovieGenre, Movie, momentDateFormat } from '../model';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import * as moment from 'moment';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class LibraryStorageService {
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
-    private _homeService: HomeDefDetailService) {
+    private _homeService: HomeDefOdataService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
     }

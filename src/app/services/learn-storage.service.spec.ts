@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { LearnStorageService } from './learn-storage.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 import { QuestionBankItem, QuestionBankTypeEnum, LearnObject, LearnHistory } from '../model';
@@ -27,7 +27,7 @@ describe('LearnStorageService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: Partial<HomeDefDetailService> = {
+    const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -39,7 +39,7 @@ describe('LearnStorageService', () => {
       providers: [
         LearnStorageService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
 

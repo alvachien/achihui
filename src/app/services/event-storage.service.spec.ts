@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { UserAuthInfo, EventHabit, EventHabitDetail, } from '../model';
 import { FakeDataHelper, asyncData, asyncError, } from '../../testing';
 
@@ -23,7 +23,7 @@ describe('EventStorageService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
+    const homeService: any = jasmine.createSpyObj('HomeDefOdataService', ['fetchHomeMembers']);
     homeService.ChosedHome = fakeData.chosedHome;
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
@@ -34,7 +34,7 @@ describe('EventStorageService', () => {
       providers: [
         EventStorageService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
 

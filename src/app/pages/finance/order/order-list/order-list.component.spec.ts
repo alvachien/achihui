@@ -22,11 +22,11 @@ describe('OrderListComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        HttpClientTestingModule,
         OrderListComponent,
-        getTranslocoModule(),
       ],
       imports: [
+        HttpClientTestingModule,
+        getTranslocoModule(),
         NgZorroAntdModule,
       ],
       providers: [
@@ -41,7 +41,7 @@ describe('OrderListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OrderListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    //fixture.detectChanges();
   });
 
   it('should create', () => {

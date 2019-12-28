@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterListComponent } from './control-center-list.component';
 import { getTranslocoModule } from '../../../../../testing';
@@ -12,17 +13,18 @@ import { UserAuthInfo } from '../../../../model';
 describe('ControlCenterListComponent', () => {
   let component: ControlCenterListComponent;
   let fixture: ComponentFixture<ControlCenterListComponent>;
+  const authServiceStub: Partial<AuthService> = {};
+  authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+  const uiServiceStub: Partial<UIStatusService> = {};
+  uiServiceStub.getUILabel = (le: any) => { return ''; };
+  const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
-    const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],

@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, momentDateFormat,
   EnSentence, EnWord, EnWordExplain, EnSentenceExplain } from '../model';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import * as moment from 'moment';
 
 @Injectable()
@@ -45,7 +45,7 @@ export class LearnStorageService {
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
-    private _homeService: HomeDefDetailService) {
+    private _homeService: HomeDefOdataService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService constructor...');
     }

@@ -4,14 +4,14 @@ import { Router } from '@angular/router';
 
 import { HomeChoseGuardService } from './home-chose-guard.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { UserAuthInfo } from '../model';
 
 describe('HomeChoseGuardService', () => {
   beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
+    const homeService: any = jasmine.createSpyObj('HomeDefOdataService', ['fetchHomeMembers']);
     homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
@@ -23,7 +23,7 @@ describe('HomeChoseGuardService', () => {
       providers: [
         HomeChoseGuardService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
     });

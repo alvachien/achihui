@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { TagsService } from './tags.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { UserAuthInfo } from '../model';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
@@ -25,7 +25,7 @@ describe('TagsService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: Partial<HomeDefDetailService> = {
+    const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -37,7 +37,7 @@ describe('TagsService', () => {
       providers: [
         TagsService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
     httpClient = TestBed.get(HttpClient);

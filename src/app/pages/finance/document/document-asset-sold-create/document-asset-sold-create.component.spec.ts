@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create.component';
 import { getTranslocoModule } from '../../../../../testing';
@@ -22,6 +23,8 @@ describe('DocumentAssetSoldCreateComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],

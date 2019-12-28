@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { LibraryStorageService } from './library-storage.service';
 import { AuthService } from './auth.service';
-import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 import { UserAuthInfo } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
@@ -28,7 +28,7 @@ describe('LibraryStorageService', () => {
   beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: Partial<HomeDefDetailService> = {
+    const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -40,7 +40,7 @@ describe('LibraryStorageService', () => {
       providers: [
         LibraryStorageService,
         { provide: AuthService, useValue: authServiceStub },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
 

@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
-  FinCurrencyService, HomeChoseGuardService,
+  HomeChoseGuardService,
   CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
   FinanceOdataService,
   HomeDefOdataService,
@@ -42,7 +42,6 @@ registerLocaleData(en);
     { provide: NZ_I18N, useValue: en_US },
     AuthService,
     AuthGuardService,
-    FinCurrencyService,
     HomeChoseGuardService,
     CanDeactivateGuardService,
     LanguageService,
