@@ -14,32 +14,26 @@ describe('FinanceOdataService', () => {
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: FinanceOdataService;
-  const currAPIURL: any = environment.ApiUrl + '/api/Currencies?$count=true';
-  let accountCategoryAPIURL: any;
-  let docTypeAPIURL: any;
-  let tranTypeAPIURL: any;
-  let assetCategoryAPIURL: any;
-  let accountAPIURL: any;
-  let ccAPIURL: any;
-  let orderAPIURL: any;
-  const documentAPIURL: any = environment.ApiUrl + '/api/FinanceDocuments';
+  const currAPIURL: any = environment.ApiUrl + `/api/Currencies`;
+  const accountCategoryAPIURL: any =  environment.ApiUrl + `/api/FinanceAccountCategories`;
+  const docTypeAPIURL: any = environment.ApiUrl + `/api/FinanceDocumentTypes`;
+  const tranTypeAPIURL: any = environment.ApiUrl + `/api/FinanceTransactionTypes`;
+  const assetCategoryAPIURL: any = environment.ApiUrl + `/api/FinanceAssetCategories`;
+  const accountAPIURL: any = environment.ApiUrl + `/api/FinanceAccounts`;
+  const ccAPIURL: any = environment.ApiUrl + `/api/FinanceControlCenters`;
+  const orderAPIURL: any = environment.ApiUrl + `/api/FinanceOrders`;
+  const documentAPIURL: any = environment.ApiUrl + `/api/FinanceDocuments`;
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
+    fakeData.buildCurrenciesFromAPI();
     fakeData.buildFinConfigDataFromAPI();
     fakeData.buildFinAccountsFromAPI();
     fakeData.buildFinControlCenterFromAPI();
     fakeData.buildFinOrderFromAPI();
 
-    accountCategoryAPIURL = environment.ApiUrl + `/api/FinanceAccountCategories?$select=ID,HomeID,Name,AssetFlag,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
-    docTypeAPIURL = environment.ApiUrl + `/api/FinanceDocumentTypes?$select=ID,HomeID,Name,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
-    tranTypeAPIURL = environment.ApiUrl + `/api/FinanceTransactionTypes?$select=ID,HomeID,Name,Expense,ParID,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
-    assetCategoryAPIURL = environment.ApiUrl + `/api/FinanceAssetCategories?$select=ID,HomeID,Name,Desp&$filter=HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`;
-    accountAPIURL = environment.ApiUrl + `/api/FinanceAccounts?$select=ID,HomeID,Name&$filter=HomeID eq ${fakeData.chosedHome.ID}`;
-    ccAPIURL = environment.ApiUrl + `/api/FinanceControlCenters?$select=ID,HomeID,Name,ParentID,Comment&$filter=HomeID eq ${fakeData.chosedHome.ID}`;
-    orderAPIURL = environment.ApiUrl + `/api/FinanceOrders?$filter=HomeID eq ${fakeData.chosedHome.ID}&$expand=SRule`;
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: Partial<HomeDefOdataService> = {
@@ -68,7 +62,7 @@ describe('FinanceOdataService', () => {
   });
 
   /// FinanceOdataService method tests begin ///
-  describe('1. fetchAllCurrencies', () => {
+  describe('fetchAllCurrencies', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
     });
@@ -91,11 +85,18 @@ describe('FinanceOdataService', () => {
       );
 
       // Service should have made one request to GET currencies from expected URL
-      const req: any = httpTestingController.expectOne(currAPIURL);
-      expect(req.request.method).toEqual('GET');
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === currAPIURL
+          && requrl.params.has('$count');
+      })
+      expect(req.request.params.get('$count')).toEqual('true');
 
       // Respond with the mock currencies
-      req.flush(fakeData.currenciesFromAPI);
+      req.flush({
+        '@odata.count': fakeData.currenciesFromAPI.length,
+        value: fakeData.currenciesFromAPI
+      });
     });
 
     it('should be OK returning no currencies', () => {
@@ -110,8 +111,17 @@ describe('FinanceOdataService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(currAPIURL);
-      req.flush([]); // Respond with no data
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === currAPIURL
+          && requrl.params.has('$count');
+      })
+      expect(req.request.params.get('$count')).toEqual('true');
+
+      req.flush({
+        '@odata.count': 0,
+        value: []
+      }); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -125,7 +135,12 @@ describe('FinanceOdataService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(currAPIURL);
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === currAPIURL
+          && requrl.params.has('$count');
+      })
+      expect(req.request.params.get('$count')).toEqual('true');
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -142,15 +157,25 @@ describe('FinanceOdataService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(currAPIURL);
+
+      let requests: any = httpTestingController.match(callurl => {
+        return callurl.url === currAPIURL
+          && callurl.method === 'GET';
+      });
       expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.currenciesFromAPI);
+      requests[0].flush({
+        '@odata.count': fakeData.currenciesFromAPI.length,
+        value: fakeData.currenciesFromAPI,
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllCurrencies().subscribe();
-      const requests2: any = httpTestingController.match(currAPIURL);
-      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      requests = httpTestingController.match(callurl => {
+        return callurl.url === currAPIURL
+          && callurl.method === 'GET';
+      });
+      expect(requests.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
       service.fetchAllCurrencies().subscribe(
@@ -161,8 +186,8 @@ describe('FinanceOdataService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(currAPIURL);
-      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+      requests = httpTestingController.match(currAPIURL);
+      expect(requests.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 
@@ -190,12 +215,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET account categories from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,AssetFlag,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // Respond with the mock account categories
-      req.flush(fakeData.finAccountCategoriesFromAPI);
+      req.flush({
+        value: fakeData.finAccountCategoriesFromAPI
+      });
     });
 
     it('should be OK returning no account categories', () => {
@@ -211,11 +242,15 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,AssetFlag,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -230,9 +265,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,AssetFlag,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -249,16 +288,19 @@ describe('FinanceOdataService', () => {
           // Do nothing
         },
       );
+      
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL;
       });
-      reqs[0].flush(fakeData.finAccountCategoriesFromAPI);
+      reqs[0].flush({
+        value: fakeData.finAccountCategoriesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllAccountCategories().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL;
       });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -272,12 +314,11 @@ describe('FinanceOdataService', () => {
         },
       );
       const req3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL;
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
-
 
   describe('fetchAllAssetCategories', () => {
     beforeEach(() => {
@@ -303,12 +344,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET asset categories from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Desp');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // Respond with the mock asset categories
-      req.flush(fakeData.finAssetCategoriesFromAPI);
+      req.flush({
+        value: fakeData.finAssetCategoriesFromAPI
+      });
     });
 
     it('should be OK returning no asset categories', () => {
@@ -324,10 +371,15 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-      req.flush([]); // Respond with no data
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Desp');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
+
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -342,9 +394,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Desp');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -362,16 +418,24 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-      reqs[0].flush(fakeData.finAssetCategoriesFromAPI);
+      reqs[0].flush({
+        value: fakeData.finAssetCategoriesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllAssetCategories().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -385,7 +449,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === assetCategoryAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
@@ -415,12 +482,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET doc types from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === docTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // Respond with the mock doc types
-      req.flush(fakeData.finDocTypesFromAPI);
+      req.flush({
+        value: fakeData.finDocTypesFromAPI
+      });
     });
 
     it('should be OK returning no doc types', () => {
@@ -436,9 +509,14 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+        && requrl.url === docTypeAPIURL
+        && requrl.params.has('$select')
+        && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
+
       req.flush([]); // Respond with no data
     });
 
@@ -454,9 +532,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+        && requrl.url === docTypeAPIURL
+        && requrl.params.has('$select')
+        && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -474,16 +556,24 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === docTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-      reqs[0].flush(fakeData.finDocTypesFromAPI);
+      reqs[0].flush({
+        value: fakeData.finDocTypesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllDocTypes().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === docTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -497,7 +587,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === docTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
@@ -527,12 +620,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET tran types from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Expense,ParID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // Respond with the mock tran types
-      req.flush(fakeData.finTranTypesFromAPI);
+      req.flush({
+        value: fakeData.finTranTypesFromAPI
+      });
     });
 
     it('should be OK returning no tran types', () => {
@@ -548,9 +647,14 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Expense,ParID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
+
       req.flush([]); // Respond with no data
     });
 
@@ -566,9 +670,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Expense,ParID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -586,16 +694,24 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-      reqs[0].flush(fakeData.finTranTypesFromAPI);
+      reqs[0].flush({
+        value: fakeData.finTranTypesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllTranTypes().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -609,7 +725,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === tranTypeAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
@@ -640,12 +759,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET account from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // Respond with the mock account categories
-      req.flush(fakeData.finAccountsFromAPI);
+      req.flush({
+        value: fakeData.finAccountsFromAPI
+      });
     });
 
     it('should be OK returning no accounts', () => {
@@ -661,11 +786,15 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+        && requrl.url === accountAPIURL
+        && requrl.params.has('$select')
+        && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -680,9 +809,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -700,15 +833,23 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      reqs[0].flush(fakeData.finAccountsFromAPI);
+      reqs[0].flush({
+        value: fakeData.finAccountsFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllAccounts().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -722,7 +863,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const req3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === accountAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
@@ -753,12 +897,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,ParentID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // Respond with the mock cc
-      req.flush(fakeData.finControlCentersFromAPI);
+      req.flush({
+        value: fakeData.finControlCentersFromAPI
+      });
     });
 
     it('should be OK returning no control centers', () => {
@@ -774,11 +924,15 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,ParentID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -793,9 +947,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,ParentID,Comment');
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -813,15 +971,23 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
-      reqs[0].flush(fakeData.finControlCentersFromAPI);
+      reqs[0].flush({
+        value: fakeData.finControlCentersFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllControlCenters().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -835,7 +1001,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const req3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === ccAPIURL
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
@@ -866,12 +1035,18 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
+      expect(req.request.params.get('$expand')).toEqual(`SRule`);
 
       // Respond with the mock cc
-      req.flush(fakeData.finOrdersFromAPI);
+      req.flush({
+        value: fakeData.finOrdersFromAPI
+      });
     });
 
     it('should be OK returning no order', () => {
@@ -887,11 +1062,15 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
+      expect(req.request.params.get('$expand')).toEqual(`SRule`);
 
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -906,9 +1085,13 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+      expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
+      expect(req.request.params.get('$expand')).toEqual(`SRule`);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -926,15 +1109,23 @@ describe('FinanceOdataService', () => {
         },
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
-      reqs[0].flush(fakeData.finOrdersFromAPI);
+      reqs[0].flush({
+        value: fakeData.finOrdersFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllOrders().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
@@ -948,7 +1139,10 @@ describe('FinanceOdataService', () => {
         },
       );
       const req3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === orderAPIURL
+          && requrl.params.has('$expand')
+          && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });

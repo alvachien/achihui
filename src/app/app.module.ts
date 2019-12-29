@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
   HomeChoseGuardService,
-  CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
+  CanDeactivateGuardService, UIStatusService, SideNavService, TagsService,
   FinanceOdataService,
   HomeDefOdataService,
 } from './services';
@@ -44,7 +44,6 @@ registerLocaleData(en);
     AuthGuardService,
     HomeChoseGuardService,
     CanDeactivateGuardService,
-    LanguageService,
     UIStatusService,
     SideNavService,
     HomeDefOdataService,

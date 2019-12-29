@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
+import { getTranslocoModule } from '../../../testing';
 import { CreditsComponent } from './credits.component';
 
 describe('CreditsComponent', () => {
@@ -9,8 +10,13 @@ describe('CreditsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgZorroAntdModule ],
-      declarations: [ CreditsComponent ]
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
+      declarations: [
+        CreditsComponent,
+      ],
     })
     .compileComponents();
   }));
@@ -24,4 +30,8 @@ describe('CreditsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('credits', () => {
+    expect(component.creditApp.length).toBeGreaterThan(0);
+  })
 });

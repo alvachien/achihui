@@ -1053,11 +1053,11 @@ export class FakeDataHelper {
   public buildFinAccountsFromAPI(): void {
     this._finAccountsFromAPI = [];
     for (let i: number = 0; i < 2; i++) {
-      let acntjson: any = {
-        id: i + 1,
-        name: `Account ${i + 1}`,
-        ctgyID: i + 1,
-        status: 0,
+      const acntjson: any = {
+        ID: i + 1,
+        Name: `Account ${i + 1}`,
+        CategoryID: i + 1,
+        Status: 0,
       };
       this._finAccountsFromAPI.push(acntjson as AccountJson);
     }
@@ -1095,19 +1095,19 @@ export class FakeDataHelper {
   public buildAppLanguageFromAPI(): void {
     this._appLanguagesFromAPI = [];
     let alan: AppLanguageJson = {
-      lcid: 9,
-      englishName: 'English',
-      appFlag: true,
-      nativeName: 'English',
-      isoName: 'en',
+      Lcid: 9,
+      EnglishName: 'English',
+      AppFlag: true,
+      NativeName: 'English',
+      ISOName: 'en',
     };
     this._appLanguagesFromAPI.push(alan);
     let alan2: AppLanguageJson = {
-      lcid: 4,
-      englishName: 'Chinese (Simplified)',
-      appFlag: true,
-      nativeName: '简体中文',
-      isoName: 'zh-Hans',
+      Lcid: 4,
+      EnglishName: 'Chinese (Simplified)',
+      AppFlag: true,
+      NativeName: '简体中文',
+      ISOName: 'zh-Hans',
     };
     this._appLanguagesFromAPI.push(alan2);
   }
@@ -1119,38 +1119,38 @@ export class FakeDataHelper {
     // Doc. type
     for (let i: number = 0; i < 2; i++) {
       let dt1: any = {
-        id: i + 1,
-        name: `Type ${i + 1}`,
-        comment: `comment for type ${i + 1}`,
+        ID: i + 1,
+        Name: `Type ${i + 1}`,
+        Comment: `comment for type ${i + 1}`,
       };
       this._finDocTypesFromAPI.push(dt1 as DocumentTypeJson);
     }
     // Account category
     for (let i: number = 0; i < 2; i++) {
       let ac1: any = {
-        id: i + 1,
-        name: `account category ${i + 1}`,
-        assetFlag: true,
-        comment: 'comment for category 1',
+        ID: i + 1,
+        Name: `account category ${i + 1}`,
+        AssetFlag: true,
+        Comment: 'comment for category 1',
       };
       this._finAccountCategoriesFromAPI.push(ac1 as AccountCategoryJson);
     }
     // Tran type
     for (let i: number = 0; i < 3; i++) {
       let tt1: any = {
-        id: i + 1,
-        name: `tran type ${i + 1}`,
-        expense: false,
-        comment: 'comment for tran type 1',
+        ID: i + 1,
+        Name: `tran type ${i + 1}`,
+        Expense: false,
+        Comment: 'comment for tran type 1',
       };
       this._finTranTypeFromAPI.push(tt1 as TranTypeJson);
     }
     // Asset category
     for (let i: number = 0; i < 3; i++) {
       let asc1: any = {
-        id: i + 1,
-        name: `asset ${i + 1}`,
-        desp: 'desp of asset 1',
+        ID: i + 1,
+        Name: `asset ${i + 1}`,
+        Desp: 'desp of asset 1',
       };
       this._finAssetCategoriesFromAPI.push(asc1 as AssetCategoryJson);
     }
@@ -1347,9 +1347,9 @@ export class FakeDataHelper {
     this._finControlCentersFromAPI = [];
     for (let i: number = 0; i < 2; i++) {
       let ctgy: any = {
-        id: i + 1,
-        hid: this._chosedHome ? this._chosedHome.ID : 0,
-        name: `Category ${i + 1}`,
+        ID: i + 1,
+        HomeID: this._chosedHome ? this._chosedHome.ID : 0,
+        Name: `CCenter ${i + 1}`,
       };
       this._finControlCentersFromAPI.push(ctgy as ControlCenterJson);
     }
@@ -1378,12 +1378,12 @@ export class FakeDataHelper {
     this._finOrdersFromAPI = [];
     for (let i: number = 0; i < 2; i++) {
       let ctgy: any = {
-        id: i + 1,
-        hid: this._chosedHome ? this._chosedHome.ID : 0,
-        name: `Order ${i + 1}`,
-        validFrom: '2018-01-01',
-        validTo: '2018-12-31',
-        sRuleList: [],
+        Id: i + 1,
+        HomeID: this._chosedHome ? this._chosedHome.ID : 0,
+        Name: `Order ${i + 1}`,
+        ValidFrom: '2018-01-01',
+        ValidTo: '2018-12-31',
+        SRule: [],
       };
       this._finOrdersFromAPI.push(ctgy as OrderJson);
     }

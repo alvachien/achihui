@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 
 describe('LanguageOdataService', () => {
   let httpTestingController: HttpTestingController;
-  const curAPIURL: any = environment.ApiUrl + '/api/Language';
+  const curAPIURL: any = environment.ApiUrl + '/api/Languages';
   let fakeData: FakeDataHelper;
 
   beforeEach(() => {

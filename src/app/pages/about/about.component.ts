@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.less'],
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
 
   version: string;
   relDate: string;
@@ -14,8 +14,5 @@ export class AboutComponent implements OnInit {
   constructor() {
     this.version = environment.CurrentVersion;
     this.relDate = environment.ReleasedDate;
-  }
-
-  ngOnInit() {
   }
 }

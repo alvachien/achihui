@@ -31,9 +31,7 @@ export class HomeDefOdataService {
     return this.curHomeSelected.value;
   }
   set ChosedHome(hd: HomeDef) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefOdataService: ${hd}`, ConsoleLogTypeEnum.debug);
-    }
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefOdataService: ${hd}`, ConsoleLogTypeEnum.debug);
 
     if (hd) {
       this.curHomeSelected.next(hd);
@@ -56,12 +54,12 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure;
 
+  readonly apiUrl = environment.ApiUrl + `/api/HomeDefines`;
+
   constructor(
     private _http: HttpClient,
     private _authService: AuthService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
-    }
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
 
     this._islistLoaded = false; // Performance improvement
     this._isMemberInChosedHomeLoaded = false;
@@ -73,22 +71,21 @@ export class HomeDefOdataService {
    */
   public fetchAllHomeDef(forceReload?: boolean): Observable<HomeDef[]> {
     if (!this._islistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl
-        + `/api/HomeDefines?$count=true&$expand=HomeMembers`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      return this._http.get(apiurl, {
+      let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
+      params = params.append('$expand', 'HomeMembers');
+                   
+      return this._http.get(this.apiUrl, {
           headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map...`,
-              ConsoleLogTypeEnum.debug);
-          }
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map...`,
+            ConsoleLogTypeEnum.debug);
 
           this._listHomeDefList = [];
           const rjs: any = response;
@@ -105,10 +102,8 @@ export class HomeDefOdataService {
           return this._listHomeDefList;
         }),
         catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, Failed: ${error}`,
-              ConsoleLogTypeEnum.debug);
-          }
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef, Failed: ${error}`,
+            ConsoleLogTypeEnum.error);
 
           this._islistLoaded = false;
           this._listHomeDefList = [];
@@ -167,11 +162,10 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/api/HomeDefines';
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.apiUrl, jdata, {
         headers,
       })
       .pipe(map((response: HttpResponse<any>) => {

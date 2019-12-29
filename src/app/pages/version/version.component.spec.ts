@@ -9,8 +9,12 @@ describe('VersionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgZorroAntdModule ],
-      declarations: [ VersionComponent ]
+      imports: [
+        NgZorroAntdModule,
+      ],
+      declarations: [
+        VersionComponent,
+      ],
     })
     .compileComponents();
   }));

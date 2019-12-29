@@ -1,20 +1,30 @@
 <article nz-typography>
-  <h1 nz-title>Introduction</h1>
+  <h1 nz-title>{{'Nav.About' | transloco}}</h1>
+  <h2 nz-title>
+    <strong>
+      {{'Common.ShortIntroduceHIH2' | transloco}}
+    </strong>
+  </h2>
   <p nz-paragraph>
     Including: Learning trace, Finance trace, Event trace, Library, and more.
   </p>
   <p nz-paragraph>
-    Version:
+    <strong>{{'Nav.Version' | transloco}}:</strong>
     <span nz-text>
-      <strong>{{version}}
+      <strong id="curversion">{{version}}
       </strong>
     </span>.
+  </p>
+  <p nz-paragraph>
+    <strong>
+      {{'Common.HIHAuthor' | transloco}}
+    </strong>
   </p>
   <p nz-paragraph>
     Released At:
     <span nz-text>
       <strong>{{relDate}}
       </strong>
-    </span>.
+    </span>
   </p>
 </article>

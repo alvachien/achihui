@@ -95,15 +95,18 @@ export class FinanceOdataService {
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/Currencies?$count=true';
+      const currencyAPIUrl: string = environment.ApiUrl + '/api/Currencies';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-      return this.http.get(apiurl, {
+      let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
+  
+      return this.http.get(currencyAPIUrl, {
         headers,
+        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinanceOdataService`,
@@ -141,15 +144,19 @@ export class FinanceOdataService {
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this.isAcntCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceAccountCategories?$select=ID,HomeID,Name,AssetFlag,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceAccountCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'ID,HomeID,Name,AssetFlag,Comment');
+      params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
+  
       return this.http.get(apiurl, {
         headers,
+        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceOdataService`,
@@ -158,7 +165,7 @@ export class FinanceOdataService {
           this.listAccountCategory = [];
 
           const rjs: any = response;
-          const amt = rjs['@odata.count'];
+          // const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: AccountCategory = new AccountCategory();
@@ -189,15 +196,19 @@ export class FinanceOdataService {
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this.isDocTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceDocumentTypes?$select=ID,HomeID,Name,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceDocumentTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'ID,HomeID,Name,Comment');
+      params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
+  
       return this.http.get(apiurl, {
         headers,
+        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceOdataService.`,
@@ -206,7 +217,7 @@ export class FinanceOdataService {
           this.listDocType = [];
 
           const rjs: any = response;
-          const amt = rjs['@odata.count'];
+          // const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: DocumentType = new DocumentType();
@@ -237,7 +248,7 @@ export class FinanceOdataService {
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this.isTranTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceTransactionTypes?$select=ID,HomeID,Name,Expense,ParID,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceTransactionTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -245,7 +256,9 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.homeService.ChosedHome.ID.toString());
+      params = params.append('$select', 'ID,HomeID,Name,Expense,ParID,Comment');
+      params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
+
       return this.http.get(apiurl, {
         headers,
         params,
@@ -257,7 +270,7 @@ export class FinanceOdataService {
           this.listTranType = [];
 
           const rjs: any = response;
-          const amt = rjs['@odata.count'];
+          // const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: TranType = new TranType();
@@ -310,15 +323,19 @@ export class FinanceOdataService {
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this.isAsstCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceAssetCategories?$select=ID,HomeID,Name,Desp&$filter=HomeID eq ${hid} or HomeID eq null`;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceAssetCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'ID,HomeID,Name,Desp');
+      params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
+    
       return this.http.get(apiurl, {
         headers,
+        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceOdataService`,
@@ -326,7 +343,7 @@ export class FinanceOdataService {
 
           this.listAssetCategory = [];
           const rjs: any = response;
-          const amt = rjs['@odata.count'];
+          // const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: AssetCategory = new AssetCategory();
@@ -355,14 +372,18 @@ export class FinanceOdataService {
   public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
     if (!this.isAccountListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = this.accountAPIUrl + `?$select=ID,HomeID,Name&$filter=HomeID eq ${hid}`;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-      return this.http.get(apiurl, {
+      
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'ID,HomeID,Name');
+      params = params.append('$filter', `HomeID eq ${hid}`);
+        
+      return this.http.get(this.accountAPIUrl, {
         headers,
+        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceOdataService.`,
@@ -402,14 +423,17 @@ export class FinanceOdataService {
   public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
     if (!this.isConctrolCenterListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = this.controlCenterAPIUrl + `?$select=ID,HomeID,Name,ParentID,Comment&$filter=HomeID eq ${hid}`;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-      return this.http.get<any>(apiurl, {
-          headers: headers,
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
+      params = params.append('$filter', `HomeID eq ${hid}`);
+  
+      return this.http.get<any>(this.controlCenterAPIUrl, {
+          headers,
+          params,
         })
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
@@ -448,13 +472,16 @@ export class FinanceOdataService {
   public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
     if (!this.isOrderListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = this.orderAPIUrl + `?$filter=HomeID eq ${hid}&$expand=SRule`;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-      return this.http.get(apiurl, { headers, })
+      let params: HttpParams = new HttpParams();
+      // params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
+      params = params.append('$filter', `HomeID eq ${hid}`);
+      params = params.append('$expand', `SRule`);
+  
+      return this.http.get(this.orderAPIUrl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
 
@@ -500,12 +527,17 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    let apiUrl = this.documentAPIUrl 
-      + `?$select=ID,HomeID,TranDate,DocType,TranCurr,Desp&$filter=HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`
-      + `&$orderby=TranDate desc`
-      + `&$top=${top}&$skip=${skip}&$count=true&$expand=Items`;
 
-    return this.http.get(apiUrl, { headers, })
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'ID,HomeID,TranDate,DocType,TranCurr,Desp');
+    params = params.append('$filter', `HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
+    params = params.append('$orderby', `TranDate desc`);
+    params = params.append('$top', `${top}`);
+    params = params.append('$skip', `${skip}`);
+    params = params.append('$count', `true`);
+    params = params.append('$expand', `Items`);
+
+    return this.http.get(this.documentAPIUrl, { headers, params })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, map.`,
           ConsoleLogTypeEnum.debug);
