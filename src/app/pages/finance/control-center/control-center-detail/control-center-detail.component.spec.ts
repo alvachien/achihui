@@ -30,7 +30,6 @@ describe('ControlCenterDetailComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        { provide: Router, useValue: routerSpy },
       ]
     })
     .compileComponents();

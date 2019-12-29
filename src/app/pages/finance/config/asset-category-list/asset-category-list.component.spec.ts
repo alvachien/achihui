@@ -4,14 +4,14 @@ import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 
-import { AssetTypeListComponent } from './asset-type-list.component';
+import { AssetCategoryListComponent } from './asset-category-list.component';
 import { getTranslocoModule } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 
 describe('AssetTypeListComponent', () => {
-  let component: AssetTypeListComponent;
-  let fixture: ComponentFixture<AssetTypeListComponent>;
+  let component: AssetCategoryListComponent;
+  let fixture: ComponentFixture<AssetCategoryListComponent>;
 
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
@@ -26,7 +26,9 @@ describe('AssetTypeListComponent', () => {
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
-      declarations: [ AssetTypeListComponent ],
+      declarations: [
+        AssetCategoryListComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -37,7 +39,7 @@ describe('AssetTypeListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AssetTypeListComponent);
+    fixture = TestBed.createComponent(AssetCategoryListComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
   });

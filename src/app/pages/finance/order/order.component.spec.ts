@@ -12,9 +12,10 @@ describe('OrderComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NgZorroAntdModule,
-        RouterTestingModule,
       ],
-      declarations: [ OrderComponent ]
+      declarations: [
+        OrderComponent,
+      ],
     })
     .compileComponents();
   }));

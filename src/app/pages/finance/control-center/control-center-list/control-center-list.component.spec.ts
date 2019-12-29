@@ -7,32 +7,36 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterListComponent } from './control-center-list.component';
 import { getTranslocoModule } from '../../../../../testing';
-import { AuthService, UIStatusService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 
 describe('ControlCenterListComponent', () => {
   let component: ControlCenterListComponent;
   let fixture: ComponentFixture<ControlCenterListComponent>;
-  const authServiceStub: Partial<AuthService> = {};
-  authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-  const uiServiceStub: Partial<UIStatusService> = {};
-  uiServiceStub.getUILabel = (le: any) => { return ''; };
-  const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
-
+    const authServiceStub: Partial<AuthService> = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    const uiServiceStub: Partial<UIStatusService> = {};
+    uiServiceStub.getUILabel = (le: any) => { return ''; };
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const finServiceStub: Partial<FinanceOdataService> = {};
+    // finServiceStub.fetchAllControlCenters = new BehaviorSubject();
+  
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
+        RouterTestingModule,
       ],
-      declarations: [ ControlCenterListComponent ],
+      declarations: [
+        ControlCenterListComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        { provide: Router, useValue: routerSpy },
+        { provide: FinanceOdataService, useValue: finServiceStub },
       ]
     })
     .compileComponents();

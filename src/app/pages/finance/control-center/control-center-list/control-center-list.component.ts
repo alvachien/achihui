@@ -4,7 +4,8 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
+import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum, 
+  ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 
 @Component({
   selector: 'hih-control-center-list',

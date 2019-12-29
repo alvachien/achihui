@@ -7,11 +7,11 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'hih-fin-asset-type-list',
-  templateUrl: './asset-type-list.component.html',
-  styleUrls: ['./asset-type-list.component.less'],
+  selector: 'hih-fin-asset-category-list',
+  templateUrl: './asset-category-list.component.html',
+  styleUrls: ['./asset-category-list.component.less'],
 })
-export class AssetTypeListComponent implements OnInit, OnDestroy {
+export class AssetCategoryListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   dataSet: AssetCategory[] = [];

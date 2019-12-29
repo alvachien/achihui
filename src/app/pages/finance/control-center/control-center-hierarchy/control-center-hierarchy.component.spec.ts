@@ -3,30 +3,30 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterHierarchyComponent } from './control-center-hierarchy.component';
 import { getTranslocoModule, RouterLinkDirectiveStub } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ControlCenterHierarchyComponent', () => {
   let component: ControlCenterHierarchyComponent;
   let fixture: ComponentFixture<ControlCenterHierarchyComponent>;
-  const authServiceStub: Partial<AuthService> = {};
-  authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-  const uiServiceStub: Partial<UIStatusService> = {};
-  uiServiceStub.getUILabel = (le: any) => { return ''; };
-  const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
-
+    const authServiceStub: Partial<AuthService> = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    const uiServiceStub: Partial<UIStatusService> = {};
+    uiServiceStub.getUILabel = (le: any) => { return ''; };
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+  
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
+        RouterTestingModule,
       ],
       declarations: [
         ControlCenterHierarchyComponent,
@@ -35,7 +35,6 @@ describe('ControlCenterHierarchyComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        { provide: Router, useValue: routerSpy },
       ]
     })
     .compileComponents();

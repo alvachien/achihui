@@ -4,7 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { getTranslocoModule } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
@@ -25,15 +28,20 @@ describe('DocumentNormalCreateComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        RouterTestingModule,
         ReactiveFormsModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
-      declarations: [ DocumentNormalCreateComponent ],
+      declarations: [
+        DocumentHeaderComponent,
+        DocumentItemsComponent,
+        DocumentNormalCreateComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        { provide: Router, useValue: routerSpy },
+        // { provide: Router, useValue: routerSpy },
       ]
     })
     .compileComponents();

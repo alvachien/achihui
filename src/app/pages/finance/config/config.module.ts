@@ -9,18 +9,18 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 import { ConfigRoutingModule } from './config-routing.module';
 import { ConfigComponent } from './config.component';
-import { AccountCategoryListComponent } from './account-category-list/account-category-list.component';
-import { DocTypeListComponent } from './doc-type-list/doc-type-list.component';
-import { AssetTypeListComponent } from './asset-type-list/asset-type-list.component';
-import { TranTypeHierarchyComponent } from './tran-type-hierarchy/tran-type-hierarchy.component';
-import { TranTypeListComponent } from './tran-type-list/tran-type-list.component';
+import { AccountCategoryListComponent } from './account-category-list';
+import { DocTypeListComponent } from './doc-type-list';
+import { AssetCategoryListComponent } from './asset-category-list';
+import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
+import { TranTypeListComponent } from './tran-type-list';
 
 @NgModule({
   declarations: [
     ConfigComponent,
     AccountCategoryListComponent,
     DocTypeListComponent,
-    AssetTypeListComponent,
+    AssetCategoryListComponent,
     TranTypeHierarchyComponent,
     TranTypeListComponent,
   ],

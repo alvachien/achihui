@@ -48,7 +48,7 @@ Then:
     ]
 ```
 
-### TranslateService (and Translate Pipe)
+### [Obsoleted] TranslateService (and Translate Pipe)
 
 ```typescript
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -149,7 +149,7 @@ Add it into the providers section:
 { provide: ActivatedRoute, useValue: activatedRouteStub },
 ```
 
-### HomeDefService
+### [Obsoleted] HomeDefService
 
 The method fetchHomeMembers has been retired.
 
@@ -192,7 +192,7 @@ Add it into the providers section:
 { provide: AuthService, useValue: authServiceStub },
 ```
 
-### FinCurrencyService
+### [Obsoleted] FinCurrencyService
 
 ```typescript
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
@@ -222,7 +222,7 @@ Add it into the providers section:
 { provide: UIStatusService, useValue: uiServiceStub },
 ```
 
-### ThemeStorage
+### [Obsoleted] ThemeStorage
 
 ```typescript
     const themeStorageStub: Partial<ThemeStorage> = {};
@@ -253,7 +253,7 @@ Add into providers section:
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
 ```
 
-### FinanceStorageService
+### [Obsoleted] FinanceStorageService
 
 ```typescript
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
@@ -309,7 +309,7 @@ Add it into the providers section:
     { provide: LearnStorageService, useValue: lrnStroageService },
 ```
 
-### LangaugeService
+### [Obsoleted] LangaugeService
 
 ```typescript
     const langService: any = jasmine.createSpyObj('LanguageService', ['fetchAllLanguages']);
@@ -323,7 +323,7 @@ Add the provider:
     { provide: LanguageService, useValue: langService },
 ```
 
-### Material Controls
+### [Obsoleted] Material Controls
 
 In general, to learn how to operate Material Control, refer to [Official Github Repo](https://github.com/angular/material2/blob/master/src/lib/)
 
@@ -433,6 +433,15 @@ Then:
 ### Error: Failed: Cannot read property 'root' of undefined
 
 Once using ```RouterTestingModule```, you shall not use other provider for ```Router``` or other directive for ```routeLink``.
+
+### Error: NullInjectorError: No provider for Location
+
+Solution is, add ```RouterTestingModule``` into the ```imports``` sections of testing module.
+
+### Error: Unexpected value 'HttpTestingController' imported by the module 'DynamicTestModule'
+
+Solution is, shall use ```HttpClientTestingModule``` instead of ```HttpTestingController```.
+
 
 ### Asynchronous service testing
 
