@@ -1,4 +1,6 @@
 # Home Info. Hub (Website Version)
+[![Build Status](https://travis-ci.com/alvachien/achihui.svg?branch=master)](https://travis-ci.com/alvachien/achihui)
+
 **Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
 
 Key components are:

@@ -28,21 +28,17 @@ module.exports = function (config) {
     
     // start these browsers
     browsers: ['Chrome'],
-    
+
     customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
         flags: ['--no-sandbox']
       }
     },
-    
+        
     singleRun: false,
     restartOnFileChange: true
   };
   
-  if (process.env.TRAVIS) {
-    configuration.browsers = ['Chrome_travis_ci'];
-  }
-
   config.set(configuration);
 };
