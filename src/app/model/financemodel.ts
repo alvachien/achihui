@@ -485,7 +485,7 @@ export class Account extends hih.BaseModel {
       return false;
     }
 
-    let brst: boolean = true;
+    let brst = true;
 
     // HID
     if (!this.HID) {
@@ -1168,7 +1168,7 @@ export class ControlCenter extends hih.BaseModel {
   public writeJSONObject(): ControlCenterJson {
     const rstObj: any = super.writeJSONObject();
     rstObj.HomeID = this.HID;
-    rstObj.ID= this.Id;
+    rstObj.ID = this.Id;
     rstObj.Name = this.Name;
     rstObj.Comment = this.Comment;
     if (this.ParentId) {
@@ -1322,7 +1322,7 @@ export class Order extends hih.BaseModel {
     // S. Rules
     if (this.SRules.length > 0) {
       // Check for duplicated IDs
-      let idMap: Map<number, Object> = new Map();
+      let idMap: Map<number, any> = new Map();
       this.SRules.forEach((val: SettlementRule) => {
         if (val.RuleId && !idMap.has(val.RuleId)) {
           idMap.set(val.RuleId, undefined);
@@ -1459,7 +1459,7 @@ export class SettlementRule {
   }
 
   public onVerify(context?: IOrderVerifyContext): boolean {
-    let brst: boolean = true;
+    let brst = true;
 
     // ID
     if (this.RuleId <= 0) {
@@ -1719,7 +1719,7 @@ export class Document extends hih.BaseModel {
       return false;
     }
 
-    let chkrst: boolean = true;
+    let chkrst = true;
 
     // HID
     if (!this.HID) {
@@ -1762,7 +1762,7 @@ export class Document extends hih.BaseModel {
     if (context && context.Currencies
       && context.Currencies instanceof Array && context.Currencies.length > 0) {
       if (this.TranCurr) {
-        let bExist: boolean = false;
+        let bExist = false;
         for (const cc of context.Currencies) {
           if (cc.Currency === this.TranCurr) {
             bExist = true;
@@ -1792,7 +1792,7 @@ export class Document extends hih.BaseModel {
       }
 
       if (this.TranCurr2) {
-        let bExist: boolean = false;
+        let bExist = false;
         for (const cc of context.Currencies) {
           if (cc.Currency === this.TranCurr) {
             bExist = true;
@@ -1823,11 +1823,11 @@ export class Document extends hih.BaseModel {
     }
 
     // Items
-    let amtTotal: number = 0;
+    let amtTotal = 0;
     if (this.Items instanceof Array && this.Items.length > 0) {
       // Check for duplicated IDs
       if (this.Items.length > 1) {
-        const idMap: Map<number, Object> = new Map();
+        const idMap: Map<number, any> = new Map();
         this.Items.forEach((val: DocumentItem) => {
           if (val.ItemId && !idMap.has(val.ItemId)) {
             idMap.set(val.ItemId, undefined);
@@ -1848,9 +1848,9 @@ export class Document extends hih.BaseModel {
           chkrst = false;
         } else {
           // Amount
-          let amtItem: number = 0;
+          let amtItem = 0;
           for (const tt of context.TransactionTypes) {
-            const ftt: TranType = <TranType>tt;
+            const ftt: TranType = tt as TranType;
             if (ftt.Id === fit.TranType) {
               if (ftt.Expense) {
                 amtItem = (-1) * fit.TranAmount;
@@ -1905,7 +1905,7 @@ export class Document extends hih.BaseModel {
   }
 
   public writeJSONObject(): DocumentJson {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.DocType = this.DocType;
@@ -1976,8 +1976,8 @@ export class Document extends hih.BaseModel {
 
     this.Items = [];
     if (data && data.Items && data.Items instanceof Array) {
-      for (let it of data.Items) {
-        let item: DocumentItem = new DocumentItem();
+      for (const it of data.Items) {
+        const item: DocumentItem = new DocumentItem();
         item.onSetData(it as DocumentItemJson);
         this.Items.push(item);
       }
@@ -2037,11 +2037,11 @@ export class DocumentItem {
   }
 
   public onVerify(context?: DocumentVerifyContext): boolean {
-    let chkrst: boolean = true;
+    let chkrst = true;
 
     // Item Id
     if (this.ItemId === undefined || this.ItemId <= 0) {
-      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
         'Finance.InvalidItemID', 'Finance.InvalidItemID');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2051,12 +2051,12 @@ export class DocumentItem {
     if (context && context.Accounts
       && context.Accounts instanceof Array && context.Accounts.length > 0) {
       if (this.AccountId > 0) {
-        let acnt: Account = context.Accounts.find((val: Account) => {
+        const acnt: Account = context.Accounts.find((val: Account) => {
           return val.Id === this.AccountId;
         });
 
         if (!acnt || acnt.Status !== AccountStatusEnum.Normal) {
-          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
             'Finance.InvalidAccount',
             'Finance.InvalidAccount',
           );
@@ -2064,14 +2064,14 @@ export class DocumentItem {
           chkrst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
           'Finance.AccountIsMust',
           'Finance.AccountIsMust');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
         'Finance.AccountFetchFailed',
         'Finance.AccountFetchFailed');
       this.VerifiedMsgs.push(msg);
@@ -2082,31 +2082,31 @@ export class DocumentItem {
       && context.TransactionTypes instanceof Array
       && context.TransactionTypes.length > 0) {
       if (this.TranType !== undefined) {
-        let ttidx: number = context.TransactionTypes.findIndex((tt: TranType) => {
+        const ttidx: number = context.TransactionTypes.findIndex((tt: TranType) => {
           return tt.Id === this.TranType;
         });
 
         if (ttidx === -1) {
-          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
             'Finance.InvalidTransactionType', 'Finance.InvalidTransactionType');
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
           'Finance.TransactionTypeIsMust', 'Finance.TransactionTypeIsMust');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
         'Finance.TransactionTypeFetchFailed', 'Finance.TransactionTypeFetchFailed');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Amount
     if (this.TranAmount <= 0) {
-      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
         'Finance.AmountIsNotCorrect', 'Finance.AmountIsNotCorrect');
       this.VerifiedMsgs.push(msg);
       chkrst = false;

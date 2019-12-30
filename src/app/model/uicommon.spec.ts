@@ -15,17 +15,17 @@ describe('UIDisplayStringUtil', () => {
   });
 
   it('#1. getUICommonLabelStrings()', () => {
-    let arStrs: UIDisplayString[] = UIDisplayStringUtil.getUICommonLabelStrings();
+    const arStrs: UIDisplayString[] = UIDisplayStringUtil.getUICommonLabelStrings();
     expect(arStrs.length).toBeGreaterThan(0);
   });
 
   it('#2. getQuestionBankTypeStrings()', () => {
-    let arStrs: UIDisplayString[] = UIDisplayStringUtil.getQuestionBankTypeStrings();
+    const arStrs: UIDisplayString[] = UIDisplayStringUtil.getQuestionBankTypeStrings();
     expect(arStrs.length).toBeGreaterThan(0);
   });
 
   it('#3. getTagTypeStrings()', () => {
-    let arStrs: UIDisplayString[] = UIDisplayStringUtil.getTagTypeStrings();
+    const arStrs: UIDisplayString[] = UIDisplayStringUtil.getTagTypeStrings();
     expect(arStrs.length).toBeGreaterThan(0);
   });
 });
