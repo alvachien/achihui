@@ -27,21 +27,12 @@ module.exports = function (config) {
     autoWatch: true,
     
     // start these browsers
-    browsers: ['Chrome', 'ChromeCanary'],
+    browsers: ['Chrome'],
 
-    customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
-    },
     singleRun: false,
     restartOnFileChange: true
   };
   
-  if(process.env.TRAVIS){
-    configuration.browsers = ['Chrome_travis_ci'];
-  }
   
   config.set(configuration);
 };
