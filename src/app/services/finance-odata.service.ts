@@ -103,7 +103,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-  
+
       return this.http.get(currencyAPIUrl, {
         headers,
         params,
@@ -153,7 +153,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,AssetFlag,Comment');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
-  
+
       return this.http.get(apiurl, {
         headers,
         params,
@@ -205,7 +205,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,Comment');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
-  
+
       return this.http.get(apiurl, {
         headers,
         params,
@@ -332,7 +332,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,Desp');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
-    
+
       return this.http.get(apiurl, {
         headers,
         params,
@@ -376,11 +376,11 @@ export class FinanceOdataService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-      
+
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name');
       params = params.append('$filter', `HomeID eq ${hid}`);
-        
+
       return this.http.get(this.accountAPIUrl, {
         headers,
         params,
@@ -430,14 +430,15 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
-  
+
       return this.http.get<any>(this.controlCenterAPIUrl, {
           headers,
           params,
         })
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceOdataService.`,
+            ConsoleLogTypeEnum.debug);
 
           this.listControlCenter = [];
           const rjs: any = response;
@@ -454,7 +455,8 @@ export class FinanceOdataService {
           return this.listControlCenter;
         }),
         catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceOdataService.`, ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
 
           this.isConctrolCenterListLoaded = false;
           this.listControlCenter = [];
@@ -466,7 +468,7 @@ export class FinanceOdataService {
     }
   }
 
-    /**
+  /**
    * Read all orders out
    */
   public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
@@ -480,10 +482,11 @@ export class FinanceOdataService {
       // params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
       params = params.append('$expand', `SRule`);
-  
+
       return this.http.get(this.orderAPIUrl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceOdataService.`,
+            ConsoleLogTypeEnum.debug);
 
           this.listOrder = [];
           const rjs: any = response;
@@ -542,7 +545,7 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, map.`,
           ConsoleLogTypeEnum.debug);
 
-        let listRst: Document[] = [];
+        const listRst: Document[] = [];
         const rjs: any = response as any;
         const amt = rjs['@odata.count'];
         if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -552,7 +555,7 @@ export class FinanceOdataService {
             listRst.push(rst);
           }
         }
-        let rstObj: BaseListModel<Document> = new BaseListModel<Document>();
+        const rstObj: BaseListModel<Document> = new BaseListModel<Document>();
         rstObj.totalCount = amt;
         rstObj.contentList = listRst;
 

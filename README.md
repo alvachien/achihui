@@ -1,5 +1,6 @@
-# Home Info. Hub (Website Version)
 [![Build Status](https://travis-ci.com/alvachien/achihui.svg?branch=master)](https://travis-ci.com/alvachien/achihui)
+
+# Home Info. Hub (Website Version)
 
 **Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
 
@@ -9,17 +10,17 @@ Key components are:
 - Libraries (Under design phrase).
 - Events (Under design phrase).
 
-
 ## How to use it
+
 **HIH** is expected to run on Cloud or a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices. 
 Ideally, HIH runs on a NAS or Family Server with ASP.NET Core supporting as well as HTTP server enabling.  
 
-
 ## Live Demo / Example
+
 ***Live application***  hosted in [Azure Link (will be obseleted soon)](http://achihui.azurewebsites.net).
 
-
 ### Snapshots
+
 ![Image of Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
 Welcome page
 
@@ -35,23 +36,22 @@ Create a document
 ![Image of Document display](https://github.com/alvachien/achihui/blob/master/docs/images/display_doc.JPG)
 Display a posted document
 
-
 ### Relevant API/App used
+
 The live demo used the following API/App:
 - AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](http://acidserver.azurewebsites.net);
 - AC HIH API [Github Project Link](https://github.com/alvachien/achihapi) : an Web API hosted in [Azure Link (will be obseleted soon)](http://achihapi.azurewebsites.net).
 
-
 ## What's HIH
+
 **HIH**, the abbreviation of **Home Information Hub**, is a warehouse storing the necessary information among all family memebers.
 Since version 0.1, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
-
 ## Histories
+
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
 This project used tons of new UI technologies, including: Angular 7+, TypeScript 3+, Material 7+, ECharts 4+, etc;
-
 
 ## Credits
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).

@@ -1,13 +1,10 @@
 import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, EventEmitter, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
 
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
-  UIStatusEnum, financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
+  UIStatusEnum, financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, } from '../../../../model';
+import { HomeDefOdataService, } from '../../../../services';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -25,9 +22,8 @@ import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../..
     },
   ],
 })
-export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
   // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
   private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
@@ -35,9 +31,23 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   private _uiMode: UIMode;
 
   private _instanceObject: Document = new Document();
-  public arCurrencies: Currency[] = [];
-  public arDocTypes: DocumentType[] = [];
+  private _arCurrencies: Currency[] = [];
+  private _arDocTypes: DocumentType[] = [];
 
+  @Input()
+  set arDocTypes(doctypes: DocumentType[]) {
+    this._arDocTypes = doctypes;
+  }
+  get arDocTypes(): DocumentType[] {
+    return this._arDocTypes;
+  }
+  @Input()
+  set arCurrencies(currs: Currency[]) {
+    this._arCurrencies = currs;
+  }
+  get arCurrencies(): Currency[] {
+    return this._arCurrencies;
+  }
   @Input()
   get currentUIMode(): UIMode {
     return this._uiMode;
@@ -107,14 +117,14 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   }
   get isForeignCurrency(): boolean {
     return this.headerForm && this.headerForm.get('currControl')
-      && this._homeService.ChosedHome.BaseCurrency !== this.headerForm.get('currControl').value;
+      && this.homeService.ChosedHome.BaseCurrency !== this.headerForm.get('currControl').value;
   }
   get tranCurrency2(): string {
     return this.headerForm && this.headerForm.get('curr2Control') && this.headerForm.get('curr2Control').value;
   }
   get isForeignCurrency2(): boolean {
     return this.headerForm && this.headerForm.get('curr2Control')
-      && this._homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
+      && this.homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
   }
   get isCurrencyEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
@@ -132,9 +142,7 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   }
 
   constructor(
-    private odataService: FinanceOdataService,
-    private _homeService: HomeDefOdataService,
-    private _uiStatusService: UIStatusService
+    private homeService: HomeDefOdataService,
     ) {
     this.headerForm = new FormGroup({
       docTypeControl: new FormControl({value: this.docType, disabled: true}, Validators.required),
@@ -159,41 +167,6 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent onTouched...', ConsoleLogTypeEnum.debug);
     if (this._onTouched) {
       this._onTouched();
-    }
-  }
-
-  ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent ngOnInit...', ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
-    // this.onSetLanguage(this._uiStatusService.CurrentLanguage);
-
-    // this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-    //   this.onSetLanguage(x);
-    // });
-
-    forkJoin(
-      this.odataService.fetchAllDocTypes(),
-      this.odataService.fetchAllCurrencies(),
-      )
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((val: any) => {
-        this.arDocTypes = val[0];
-        this.arCurrencies = val[1];
-
-        // Set default value
-        this.headerForm.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
-        this.onChange();
-    }, (error: any) => {
-      // TBD.
-    });
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
     }
   }
 
@@ -261,26 +234,16 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isForeignCurrency) {
       if (!this.headerForm.get('exgControl').value) {
-        return { 'exchangeRateMissing': true };
+        return { exchangeRateMissing: true };
       }
     }
     if (this.isCurrencyExchangeDocument && this.isForeignCurrency2) {
       if (!this.headerForm.get('exg2Control').value) {
-        return { 'exchangeRateMissing': true };
+        return { exchangeRateMissing: true };
       }
     }
 
     return null;
   }
-
-  // private onSetLanguage(x: string): void {
-  //   if (x === 'zh') {
-  //     moment.locale('zh-cn');
-  //     this._dateAdapter.setLocale('zh-cn');
-  //   } else if (x === 'en') {
-  //     moment.locale(x);
-  //     this._dateAdapter.setLocale('en-us');
-  //   }
-  // }
 }
 

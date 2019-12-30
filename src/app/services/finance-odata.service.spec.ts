@@ -89,7 +89,7 @@ describe('FinanceOdataService', () => {
         return requrl.method === 'GET'
           && requrl.url === currAPIURL
           && requrl.params.has('$count');
-      })
+      });
       expect(req.request.params.get('$count')).toEqual('true');
 
       // Respond with the mock currencies
@@ -115,7 +115,7 @@ describe('FinanceOdataService', () => {
         return requrl.method === 'GET'
           && requrl.url === currAPIURL
           && requrl.params.has('$count');
-      })
+      });
       expect(req.request.params.get('$count')).toEqual('true');
 
       req.flush({
@@ -125,7 +125,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllCurrencies().subscribe(
         (curries: any) => {
           fail('expected to fail');
@@ -139,7 +139,7 @@ describe('FinanceOdataService', () => {
         return requrl.method === 'GET'
           && requrl.url === currAPIURL
           && requrl.params.has('$count');
-      })
+      });
       expect(req.request.params.get('$count')).toEqual('true');
 
       // respond with a 404 and the error message in the body
@@ -254,7 +254,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllAccountCategories().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -288,7 +288,7 @@ describe('FinanceOdataService', () => {
           // Do nothing
         },
       );
-      
+
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL;
       });
@@ -383,7 +383,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllAssetCategories().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -521,7 +521,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllDocTypes().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -659,7 +659,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllTranTypes().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -798,7 +798,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllAccounts().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -936,7 +936,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllControlCenters().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1074,7 +1074,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllOrders().subscribe(
         (data: any) => {
           fail('expected to fail');

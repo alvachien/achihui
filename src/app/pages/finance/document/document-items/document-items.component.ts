@@ -1,13 +1,11 @@
 import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { Account, ControlCenter, Order, AccountCategory, UIMode, Currency,
   TranType, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum, financeDocTypeNormal,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
+  UIAccountForSelection, UIOrderForSelection,
 } from '../../../../model';
 import { FinanceOdataService } from '../../../../services';
 
@@ -27,9 +25,8 @@ import { FinanceOdataService } from '../../../../services';
     },
   ],
 })
-export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
   private _isChangable = true; // Default is changable
   private _tranCurr: string;
   private _tranCurr2: string;
@@ -41,16 +38,49 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
 
   public uiAccountStatusFilter: string | undefined;
   // public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public arUIOrders: UIOrderForSelection[] = [];
-  public uiOrderFilter: boolean | undefined;
-  public arCurrencies: Currency[] = [];
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arAccounts: Account[] = [];
-  public arUIAccounts: UIAccountForSelection[] = [];
-  public arOrders: Order[] = [];
+  private _arUIOrders: UIOrderForSelection[] = [];
+  // public uiOrderFilter: boolean | undefined;
+  private _arCurrencies: Currency[] = [];
+  private _arTranType: TranType[] = [];
+  private _arControlCenters: ControlCenter[] = [];
+  private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
 
+  @Input()
+  get arUIAccounts(): UIAccountForSelection[] {
+    return this._arUIAccounts;
+  }
+  set arUIAccounts(uiacnts: UIAccountForSelection[]) {
+    this._arUIAccounts = uiacnts;
+  }
+  @Input()
+  set arCurrencies(currs: Currency[]) {
+    this._arCurrencies = currs;
+  }
+  get arCurrencies(): Currency[] {
+    return this._arCurrencies;
+  }
+  @Input()
+  get arControlCenters(): ControlCenter[] {
+    return this._arControlCenters;
+  }
+  set arControlCenters(ccs: ControlCenter[]) {
+    this._arControlCenters = ccs;
+  }
+  @Input()
+  get arTranType(): TranType[] {
+    return this._arTranType;
+  }
+  set arTranType(tts: TranType[]) {
+    this._arTranType = tts;
+  }
+  @Input()
+  get arUIOrders(): UIOrderForSelection[] {
+    return this._arUIOrders;
+  }
+  set arUIOrders(ords: UIOrderForSelection[]) {
+    this._arUIOrders = ords;
+  }
   @Input()
   get currentUIMode(): UIMode {
     return this._uiMode;
@@ -136,45 +166,6 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     }
   }
 
-  ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent ngOnInit...', ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
-
-    const arseqs = [
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllTranTypes(),
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
-    ];
-    forkJoin(arseqs)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-      // Accounts
-      this.arAccounts = rst[2];
-      this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-      // this.uiAccountStatusFilter = undefined;
-      // this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arOrders = rst[4];
-      this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-      // Tran. type
-      this.arTranType = rst[1];
-      // Control Centers
-      this.arControlCenters = rst[3];
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.error);
-      // TBD.
-      // Error
-    });
-  }
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
   writeValue(val: DocumentItem[]): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...', ConsoleLogTypeEnum.debug);
     // if (val) {

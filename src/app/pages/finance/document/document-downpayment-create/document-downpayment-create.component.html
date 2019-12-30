@@ -1,7 +1,8 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
+    </nz-breadcrumb-item>
     <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ curTitle | transloco}}</nz-page-header-title>
@@ -20,13 +21,16 @@
 
 <div class="steps-content">
   <form nz-form [formGroup]="headerFormGroup" [hidden]="current !== 0">
-    <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
+    <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
+      [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies">
+    </hih-fin-document-header>
 
     <!-- Amount -->
     <nz-form-item>
       <nz-form-label [nzSpan]="4" nzRequired nzFor="idAmount">{{'Finance.Amount' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="8" nzErrorTip="Please input amount">
-        <nz-input-number id="idAmount" formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01" [nzPlaceHolder]="'Amount'"></nz-input-number>
+        <nz-input-number id="idAmount" formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
+          [nzPlaceHolder]="'Amount'"></nz-input-number>
       </nz-form-control>
     </nz-form-item>
 
@@ -49,7 +53,7 @@
         </nz-select>
       </nz-form-control>
     </nz-form-item>
-    
+
     <!-- CC -->
     <nz-form-item>
       <nz-form-label [nzSpan]="4" nzRequired nzFor="idCC">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
@@ -69,7 +73,7 @@
         </nz-select>
       </nz-form-control>
     </nz-form-item>
-  </form>  
+  </form>
 </div>
 
 <div class="steps-action">

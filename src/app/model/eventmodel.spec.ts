@@ -17,10 +17,10 @@ describe('GeneralEvent', () => {
     instance.Name = 'test';
     instance.IsPublic = false;
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: GeneralEvent = new GeneralEvent();
+    const instance2: GeneralEvent = new GeneralEvent();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -37,10 +37,10 @@ describe('RecurEvent', () => {
     instance.Name = 'test';
     instance.IsPublic = false;
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: RecurEvent = new RecurEvent();
+    const instance2: RecurEvent = new RecurEvent();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -56,10 +56,10 @@ describe('EventHabit', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: EventHabit = new EventHabit();
+    const instance2: EventHabit = new EventHabit();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -75,13 +75,12 @@ describe('EventHabitDetail', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
 
-    let jsondata: any = {};
+    const jsondata: any = {};
     expect(jsondata).toBeTruthy();
 
-    let instance2: EventHabitDetail = new EventHabitDetail();
+    const instance2: EventHabitDetail = new EventHabitDetail();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
-
 });
 

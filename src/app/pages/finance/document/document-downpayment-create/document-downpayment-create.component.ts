@@ -13,10 +13,12 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 @Component({
   selector: 'hih-fin-document-downpayment-create',
   templateUrl: './document-downpayment-create.component.html',
-  styleUrls: ['./document-downpayment-create.component.less']
+  styleUrls: ['./document-downpayment-create.component.less'],
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
+  // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
+  // tslint:disable-next-line:variable-name
   private _isADP: boolean;
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -108,50 +110,50 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       .subscribe((rst: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`, ConsoleLogTypeEnum.debug);
 
-      // Accounts
-      this.arAccounts = rst[3];
-      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arOrders = rst[5];
-      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-      this.uiOrderFilter = undefined;
-      // Currencies
-      this.arCurrencies = rst[6];
-      // Tran. type
-      this.arTranType = rst[2];
-      // Control Centers
-      this.arControlCenters = rst[4];
-      // Document type
-      this.arDocTypes = rst[1];
+        // Accounts
+        this.arAccounts = rst[3];
+        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+        this.uiAccountStatusFilter = undefined;
+        this.uiAccountCtgyFilter = undefined;
+        // Orders
+        this.arOrders = rst[5];
+        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+        this.uiOrderFilter = undefined;
+        // Currencies
+        this.arCurrencies = rst[6];
+        // Tran. type
+        this.arTranType = rst[2];
+        // Control Centers
+        this.arControlCenters = rst[4];
+        // Document type
+        this.arDocTypes = rst[1];
 
-      this._activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createadp' || x[0].path === 'createadr') {
-            if (x[0].path === 'createadp') {
-              this._isADP = true;
-            } else {
-              this._isADP = false;
+        this._activateRoute.url.subscribe((x: any) => {
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === 'createadp' || x[0].path === 'createadr') {
+              if (x[0].path === 'createadp') {
+                this._isADP = true;
+              } else {
+                this._isADP = false;
+              }
+              this._updateCurrentTitle();
+              this.uiAccountStatusFilter = 'Normal';
+              this.uiAccountCtgyFilter = {
+                skipADP: true,
+                skipLoan: true,
+                skipAsset: true,
+              };
+              this.uiOrderFilter = true;
+
+              this._cdr.detectChanges();
             }
-            this._updateCurrentTitle();
-            this.uiAccountStatusFilter = 'Normal';
-            this.uiAccountCtgyFilter = {
-              skipADP: true,
-              skipLoan: true,
-              skipAsset: true,
-            };
-            this.uiOrderFilter = true;
-
-            this._cdr.detectChanges();
           }
-        }
+        });
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
+          ConsoleLogTypeEnum.error);
+        // TBD.
       });
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
-        ConsoleLogTypeEnum.error);
-      // TBD.
-    });
   }
 
   ngOnDestroy(): void {
@@ -165,7 +167,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   }
 
   public onSave(): void {
-    
+    // Save current document
   }
 
   private _updateCurrentTitle(): void {

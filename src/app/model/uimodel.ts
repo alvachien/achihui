@@ -1,7 +1,8 @@
-import { environment } from '../../environments/environment';
 import * as hih from './common';
 import * as HIHFinance from './financemodel';
 import * as moment from 'moment';
+
+  // tslint:disable:variable-name
 
 // Nav Item
 export class SidenavItem {
