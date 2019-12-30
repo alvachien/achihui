@@ -569,6 +569,36 @@ export class FinanceOdataService {
       }));
   }
 
+  /**
+   * Create a document
+   * @param objDetail instance of document which to be created
+   */
+  public createDocument(objDetail: Document): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objDetail.writeJSONString();
+    return this.http.post(this.documentAPIUrl, jdata, {
+        headers: headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocument, map.`,
+          ConsoleLogTypeEnum.debug);
+
+        let hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocument failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
   // Private methods
   private buildTranTypeHierarchy(listTranType: TranType[]): void {
     listTranType.forEach((value: any, index: number) => {

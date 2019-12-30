@@ -33,17 +33,26 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private _instanceObject: Document = new Document();
   private _arCurrencies: Currency[] = [];
   private _arDocTypes: DocumentType[] = [];
+  private _baseCurr: string;
 
   @Input()
   set arDocTypes(doctypes: DocumentType[]) {
-    this._arDocTypes = doctypes;
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arDocTypes setter: ${doctypes ? 'NOT NULL and length is ' + doctypes.length : 'NULL'}`,
+      ConsoleLogTypeEnum.debug);
+    if (doctypes && doctypes.length > 0) {
+      this._arDocTypes = doctypes;
+    }
   }
   get arDocTypes(): DocumentType[] {
     return this._arDocTypes;
   }
   @Input()
   set arCurrencies(currs: Currency[]) {
-    this._arCurrencies = currs;
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arCurrencies setter: ${currs ? 'NOT NULL and length is ' + currs.length : 'NULL'}`,
+      ConsoleLogTypeEnum.debug);
+    if (currs && currs.length > 0) {
+      this._arCurrencies = currs;
+    }
   }
   get arCurrencies(): Currency[] {
     return this._arCurrencies;
@@ -53,14 +62,33 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return this._uiMode;
   }
   set currentUIMode(mode: UIMode) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent currentUIMode setter`,
+      ConsoleLogTypeEnum.debug);
     this._uiMode = mode;
   }
   @Input()
   get docType(): number { return this._doctype;  }
   set docType(dt: number) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent docType setter: ${dt}`,
+      ConsoleLogTypeEnum.debug);
+
     this._doctype = dt;
     if (this.headerForm) {
       this.headerForm.get('docTypeControl').setValue(dt);
+    }
+  }
+  @Input()
+  get baseCurrency(): string {
+    return this._baseCurr;
+  }
+  set baseCurrency(curr: string) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent baseCurrency setter: ${curr}`,
+      ConsoleLogTypeEnum.debug);
+    if (curr) {
+      this._baseCurr = curr;
+      if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl').value) {
+        this.headerForm.get('currControl').setValue(this._baseCurr);
+      }  
     }
   }
   @Output()
@@ -117,14 +145,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   get isForeignCurrency(): boolean {
     return this.headerForm && this.headerForm.get('currControl')
-      && this.homeService.ChosedHome.BaseCurrency !== this.headerForm.get('currControl').value;
+      && this.baseCurrency !== this.headerForm.get('currControl').value;
   }
   get tranCurrency2(): string {
     return this.headerForm && this.headerForm.get('curr2Control') && this.headerForm.get('curr2Control').value;
   }
   get isForeignCurrency2(): boolean {
     return this.headerForm && this.headerForm.get('curr2Control')
-      && this.homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
+      && this.baseCurrency !== this.headerForm!.get('curr2Control').value;
   }
   get isCurrencyEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
@@ -141,9 +169,9 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return this.isCurrency2Editable;
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    ) {
+  constructor() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent constructor...', ConsoleLogTypeEnum.debug);
+
     this.headerForm = new FormGroup({
       docTypeControl: new FormControl({value: this.docType, disabled: true}, Validators.required),
       dateControl: new FormControl(new Date(), [Validators.required]),

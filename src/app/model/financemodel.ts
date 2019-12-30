@@ -1887,10 +1887,10 @@ export class Document extends hih.BaseModel {
       rstObj.ExgRate_Plan2 = this.ExgRate_Plan2;
     }
 
-    rstObj.items = [];
+    rstObj.Items = [];
     for (const di of this.Items) {
       const item: any = di.writeJSONObject();
-      rstObj.items.push(item);
+      rstObj.Items.push(item);
     }
 
     return rstObj;
@@ -2158,22 +2158,23 @@ export class DocumentItem {
   }
 
   public writeJSONObject(): DocumentItemJson {
-    const rstObj: any = {};
-    if (this.DocId) {
-      rstObj.DocID = this.DocId;
+    const rstObj: DocumentItemJson = {
+      DocID: this.DocId,
+      ItemID: this.ItemId,
+      AccountID: this.AccountId,
+      TranType: this.TranType,
+      TranAmount: this.TranAmount,
+      Desp: this.Desp,
+    };
+    if (this.UseCurr2) {
+      rstObj.UseCurr2 = this.UseCurr2;
     }
-    rstObj.ItemID = this.ItemId;
-    rstObj.AccountID = this.AccountId;
-    rstObj.TranType = this.TranType;
-    rstObj.TranAmount = this.TranAmount;
-    rstObj.UseCurr2 = this.UseCurr2;
     if (this.ControlCenterId) {
       rstObj.ControlCenterID = this.ControlCenterId;
     }
     if (this.OrderId) {
       rstObj.OrderID = this.OrderId;
     }
-    rstObj.Desp = this.Desp;
     // if (this.Tags.length > 0) {
     //   rstObj.tagTerms = [];
     //   for (const tag of this.Tags) {

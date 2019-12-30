@@ -708,38 +708,7 @@ export class FinanceStorageService {
   }
 
   /**
-   * Create a document
-   * @param objDetail instance of document which to be created
-   */
-  public createDocument(objDetail: Document): Observable<Document> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    const jdata: string = objDetail.writeJSONString();
-    return this._http.post(this.documentAPIUrl, jdata, {
-        headers: headers,
-      })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, createDocument, map');
-        }
-
-        let hd: Document = new Document();
-        hd.onSetData(response as any);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createDocument failed: ${error}`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-  /**
-   * Create a document
+   * Mass Create documents
    * @param objDetail instance of document which to be created
    */
   public massCreateNormalDocument(items: FinanceNormalDocItemMassCreate[]): Observable<Document[]> {

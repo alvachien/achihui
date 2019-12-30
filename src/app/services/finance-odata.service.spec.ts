@@ -2,7 +2,9 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
 
+import { Document, DocumentItem, financeDocTypeNormal, } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1145,6 +1147,145 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
+  describe('createDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+
+      let doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeNormal;
+      doc.Desp = 'Test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = 1;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      doc.Items = [ditem];
+      fakeData.setFinNormalDocumentForCreate(doc);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === documentAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === documentAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllDocuments', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllDocuments(moment(), moment().add(1, 'M'), 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.documentAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter')
+          && requrl.params.has('$orderby')
+          && requrl.params.has('$top')
+          && requrl.params.has('$skip')
+          && requrl.params.has('$count')
+          && requrl.params.has('$expand');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          {
+            Items: [], 'ID': 94, 'HomeID': 1, 'DocType': 1, 'TranDate': '2019-04-12', 'TranCurr': 'CNY',
+            'Desp': 'Test New ADP Doc | 5 / 12', 'ExgRate': 0.0, 'ExgRate_Plan': false, 'TranCurr2': null, 'ExgRate2': 0.0, 'ExgRate_Plan2': false,
+            'TranAmount': -166.67, 'CreatedBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'CreatedAt': '2019-01-03', 'UpdatedBy': null, 'UpdatedAt': '0001-01-01'
+          }],
+        '@odata.count': 15
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchAllDocuments(moment(), moment().add(1, 'M'), 10, 0).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.documentAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter')
+          && requrl.params.has('$orderby')
+          && requrl.params.has('$top')
+          && requrl.params.has('$skip')
+          && requrl.params.has('$count')
+          && requrl.params.has('$expand');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 });

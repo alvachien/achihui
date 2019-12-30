@@ -22,7 +22,7 @@
 <div class="steps-content">
   <form nz-form [formGroup]="headerFormGroup" [hidden]="current !== 0">
     <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
-      [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies">
+      [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies" [baseCurrency]="baseCurrency">
     </hih-fin-document-header>
 
     <!-- Amount -->

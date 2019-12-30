@@ -148,9 +148,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
 
-  constructor(
-    private odataService: FinanceOdataService
-  ) { }
+  constructor() { }
 
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...', ConsoleLogTypeEnum.debug);

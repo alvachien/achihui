@@ -31,6 +31,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
+  public baseCurrency: string;
 
   get curDocDate(): moment.Moment {
     return this._docDate;
@@ -39,8 +40,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   constructor(
     public homeService: HomeDefOdataService,
     public uiStatusService: UIStatusService,
-    public odataService: FinanceOdataService
-  ) {
+    public odataService: FinanceOdataService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
+      ConsoleLogTypeEnum.debug);
     this.docForm = new FormGroup({
       headerControl: new FormControl('', Validators.required),
       itemControl: new FormControl(''),
@@ -52,6 +54,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
+
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
@@ -79,8 +82,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.arCurrencies = rst[5];
       // Doc. type
       this.arDocTypes = rst[6];
+
+      // Set the default currency
+      this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+      // TBD.      
     }, (error: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.error);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
+        ConsoleLogTypeEnum.error);
       // TBD.
     });
   }
@@ -96,6 +104,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   onSave(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...',
+      ConsoleLogTypeEnum.debug);
+
     // Save the doc
     const detailObject: Document = this._generateDocObject();
     if (!detailObject.onVerify({
@@ -107,11 +118,29 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       Currencies: this.odataService.Currencies,
       BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
     })) {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
+        ConsoleLogTypeEnum.debug);
+      for(let msg of detailObject.VerifiedMsgs) {
+        console.log(msg.MsgContent);
+      }
       // Show a dialog for error details
       // TBD.
 
       return;
     }
+    
+    // Now call to the service
+    this.odataService.createDocument(detailObject).subscribe((doc) => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
+        ConsoleLogTypeEnum.debug);
+
+    }, (error: any) => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
+        ConsoleLogTypeEnum.debug);
+
+    }, () => {
+
+    });
   }
 
   private _generateDocObject(): Document {

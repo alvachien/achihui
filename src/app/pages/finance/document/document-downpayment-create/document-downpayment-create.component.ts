@@ -20,6 +20,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   // tslint:disable-next-line:variable-name
   private _isADP: boolean;
+
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -34,6 +35,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeAdvancePayment;
+  public baseCurrency: string;
   public headerFormGroup: FormGroup;
 
   current = 0;
@@ -79,8 +81,10 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef,
-    private _homeService: HomeDefOdataService,
+    private homeService: HomeDefOdataService,
     private _router: Router) {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
+        ConsoleLogTypeEnum.debug);
       this.headerFormGroup = new FormGroup({
         headerControl: new FormControl('', Validators.required),
         accountControl: new FormControl('', Validators.required),
@@ -127,6 +131,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         this.arControlCenters = rst[4];
         // Document type
         this.arDocTypes = rst[1];
+        // Base currency
+        this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
 
         this._activateRoute.url.subscribe((x: any) => {
           if (x instanceof Array && x.length > 0) {
