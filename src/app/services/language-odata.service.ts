@@ -31,12 +31,12 @@ export class LanguageOdataService {
                        .append('Accept', 'application/json');
 
       return this._http.get(apiurl, {
-          headers: headers,
+          headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService', ConsoleLogTypeEnum.debug);
 
-          const rjs: any = <any>response;
+          const rjs: any = response as any;
           this._listData = [];
 
           if (rjs instanceof Array && rjs.length > 0) {
@@ -51,7 +51,8 @@ export class LanguageOdataService {
           return this._listData;
         }),
         catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`, ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`,
+            ConsoleLogTypeEnum.error);
 
           this._islistLoaded = false;
           this._listData = [];

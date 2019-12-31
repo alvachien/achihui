@@ -2,10 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { financeDocTypeNormal, UIMode, Account, Document, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
+import {
+  financeDocTypeNormal, UIMode, Account, Document, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, } from '../../../../model';
+  BuildupAccountForSelection, BuildupOrderForSelection,
+} from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { takeUntil } from 'rxjs/operators';
 
@@ -40,7 +43,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   constructor(
     public homeService: HomeDefOdataService,
     public uiStatusService: UIStatusService,
-    public odataService: FinanceOdataService,) {
+    public odataService: FinanceOdataService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.docForm = new FormGroup({
@@ -63,34 +67,39 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
       this.odataService.fetchAllDocTypes(),
-      ])
+    ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
-      // Accounts
-      this.arAccounts = rst[2];
-      this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-      // this.uiAccountStatusFilter = undefined;
-      // this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arOrders = rst[4];
-      this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-      // Tran. type
-      this.arTranType = rst[1];
-      // Control Centers
-      this.arControlCenters = rst[3];
-      // Currencies
-      this.arCurrencies = rst[5];
-      // Doc. type
-      this.arDocTypes = rst[6];
+        // Accounts
+        this.arAccounts = rst[2];
+        this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+        // this.uiAccountStatusFilter = undefined;
+        // this.uiAccountCtgyFilter = undefined;
+        // Orders
+        this.arOrders = rst[4];
+        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+        // Tran. type
+        this.arTranType = rst[1];
+        // Control Centers
+        this.arControlCenters = rst[3];
+        // Currencies
+        this.arCurrencies = rst[5];
+        // Doc. type
+        this.arDocTypes = rst[6];
 
-      // Set the default currency
-      this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
-      // TBD.      
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
-        ConsoleLogTypeEnum.error);
-      // TBD.
-    });
+        // Set the default currency
+        this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+        // TBD.
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
+          ConsoleLogTypeEnum.error);
+        this.modalService.create({
+          nzTitle: 'header',
+          nzContent: error,
+          nzClosable: true,
+        });
+        // TBD.
+      });
   }
 
   ngOnDestroy(): void {
@@ -120,7 +129,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
-      for(let msg of detailObject.VerifiedMsgs) {
+      for (const msg of detailObject.VerifiedMsgs) {
         console.log(msg.MsgContent);
       }
       // Show a dialog for error details
@@ -128,7 +137,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
       return;
     }
-    
+
     // Now call to the service
     this.odataService.createDocument(detailObject).subscribe((doc) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',

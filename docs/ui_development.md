@@ -1,24 +1,31 @@
 # UI Development
+
 This page summarize some common parts inside UI development.
 
 ## Modules and Components
+
 Generate Modules with lazying loading:
+
 ```
 ng g m pages\finance\ControlCenter --routing
 ```
 
 Generate Components:
+
 ```
 ng g c pages\finance\control-center\ControlCenter -m pages\finance\control-center
 ```
 
 ## Overview
+
 There are three kinds of page in the UI development of whole H.I.H. project:
+
 - List page
 - Hierarchy page
 - Detail page
 
 The list page provides the an overview, shows the list of the objects (the objects only show simple data). Normally it supports:
+
 - Paging;
 - Sort;
 - Filter;
@@ -26,17 +33,22 @@ The list page provides the an overview, shows the list of the objects (the objec
 - Splash screen;
 
 The detail page, however, show the detail information of one specified object only. It supports the CRU (D is covered in the list page):
+
 - Create
 - Read (Display)
 - Update (Change)
 
 There are also some utilities parts:
+
 - Confirmation Dialog;
 - Others?
 
 ## Utilities
+
 Besides the pages listed above, there are several utility points need be highlighted:
+
 - Events: Events are widely used to exchange information across components;
+
 ```typescript
 import { EventEmitter } from '@angular/core';
 // Define a variable
@@ -44,7 +56,9 @@ public operEvent = new EventEmitter<any>();
 // Trigger an event
 operEvent.emit(val);
 ```
+
 - Dialog: To show a dialog, do the following:
+
 ```typescript
 import { MatDialog } from '@angular/material';
 
@@ -67,6 +81,7 @@ this._dialog.open(MessageDialogComponent, {
 ```
 
 To reduce the codes here, there is one more function has been defined within message-dialog.component.ts:
+
 ```typescript
 export function popupDialog(dlg: MatDialog, header: string, content?: string, contentTable?: InfoMessage[]): MatDialogRef<any> {
     ...
@@ -77,17 +92,20 @@ export function popupConfirmDialog(dlg: MatDialog, header: string, content?: str
 ```
 
 Therefore, to use it in the component, just write the codes like:
+
 ```typescript
     popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
       error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
 ```
 
 - Snackbar: To show a snackbar, do the following:
+
 ```typescript
 import { MatSnackBar } from '@angular/material';
 ```
 
 - Subscription (subscribe and unsubscribe): Exclude the 'http' related method, when you subscribe some Subject, you need unscribe it manually.
+
 ```typescript
 private _eventStub: Subscription;
 

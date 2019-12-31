@@ -20,12 +20,14 @@ import { AuthService, AuthGuardService,
 } from './services';
 import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
+import { MessageDialogComponent } from './pages/message-dialog';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
+    MessageDialogComponent,
   ],
   imports: [
     BrowserModule,
