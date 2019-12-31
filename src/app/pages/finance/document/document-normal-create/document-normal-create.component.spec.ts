@@ -21,7 +21,7 @@ describe('DocumentNormalCreateComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
+    uiServiceStub.getUILabel = (le: any) => '';
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({

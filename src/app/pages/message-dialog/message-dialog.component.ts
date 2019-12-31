@@ -30,20 +30,22 @@ export interface MessageDialogInfo {
   styleUrls: ['./message-dialog.component.less'],
 })
 export class MessageDialogComponent implements OnInit {
-
+  isVisible = false;
   constructor() { }
 
   ngOnInit() {
+    this.isVisible = true;
+  }
+
+  handleOk() {
+    this.isVisible = false;
+  }
+  handleCancel() {
+    this.isVisible = false;
   }
 }
 
 // Popup dialog
-export function popupDialog(header: string, content: string): void {
-  this.modalService.create({
-    nzTitle: header,
-    nzContent: content,
-    nzClosable: true,
-    // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000))
-  });
+export function popupDialog(header: string, msg: InfoMessage[]): void {
 }
 

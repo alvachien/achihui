@@ -2,4 +2,25 @@
   nzTitle="The first Modal" 
   (nzOnCancel)="handleCancel()" 
   (nzOnOk)="handleOk()">
+  <nz-table #basicTable [nzData]="infoMessages">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>{{'Common.Name' | transloco}}</th>
+        <th>{{'Common.Content' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.Type}}</td>
+        <td>{{data.Title}}</td>
+        <td>{{data.Content}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <div *nzModalFooter>
+    <span>Modal Footer: </span>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleOk()">OK</button>
+  </div>
 </nz-modal>
