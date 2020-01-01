@@ -4,7 +4,7 @@ import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxj
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { LogLevel, AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../model';
+import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../model';
 
 @Injectable()
 export class LanguageOdataService {
@@ -16,7 +16,7 @@ export class LanguageOdataService {
   }
 
   constructor(private _http: HttpClient) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LanguageService constructor...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LanguageOdataService constructor...', ConsoleLogTypeEnum.debug);
 
     this._islistLoaded = false; // Performance improvement
     this._listData = [];
@@ -34,7 +34,7 @@ export class LanguageOdataService {
           headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService', ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageOdataService', ConsoleLogTypeEnum.debug);
 
           const rjs: any = response as any;
           this._listData = [];
@@ -51,7 +51,7 @@ export class LanguageOdataService {
           return this._listData;
         }),
         catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageOdataService: ${error}`,
             ConsoleLogTypeEnum.error);
 
           this._islistLoaded = false;

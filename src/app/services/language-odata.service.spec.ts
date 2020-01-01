@@ -5,7 +5,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FakeDataHelper } from '../../testing';
 import { LanguageOdataService } from './language-odata.service';
 import { environment } from '../../environments/environment';
-import { AuthService } from './auth.service';
 
 describe('LanguageOdataService', () => {
   let httpTestingController: HttpTestingController;
