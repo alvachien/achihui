@@ -61,6 +61,9 @@ registerLocaleData(en);
     },
     translocoLoader,
   ],
+  entryComponents: [
+    MessageDialogComponent,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -1,7 +1,5 @@
-<nz-modal [(nzVisible)]="isVisible" 
-  nzTitle="The first Modal" 
-  (nzOnCancel)="handleCancel()" 
-  (nzOnOk)="handleOk()">
+<div>
+  <h2>{{ title | transloco }}</h2>
   <nz-table #basicTable [nzData]="infoMessages">
     <thead>
       <tr>
@@ -12,15 +10,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.Type}}</td>
-        <td>{{data.Title}}</td>
-        <td>{{data.Content}}</td>
+        <td>{{data.MsgType}}</td>
+        <td>{{data.MsgTitle | transloco}}</td>
+        <td>{{data.MsgContent | transloco}}</td>
       </tr>
     </tbody>
   </nz-table>
-  <div *nzModalFooter>
-    <span>Modal Footer: </span>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    <button nz-button nzType="primary" (click)="handleOk()">OK</button>
-  </div>
-</nz-modal>
+</div>

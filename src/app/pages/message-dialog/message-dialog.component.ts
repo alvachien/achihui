@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, Input } from '@angular/core';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { InfoMessage } from '../../model';
 
@@ -23,29 +23,67 @@ export interface MessageDialogInfo {
   Button: MessageDialogButtonEnum;
 }
 
-
 @Component({
   selector: 'hih-message-dialog',
   templateUrl: './message-dialog.component.html',
   styleUrls: ['./message-dialog.component.less'],
 })
-export class MessageDialogComponent implements OnInit {
-  isVisible = false;
-  constructor() { }
+export class MessageDialogComponent {
+  @Input() title: string;
+  @Input() infoMessages: InfoMessage[];
 
-  ngOnInit() {
-    this.isVisible = true;
+  constructor(private modal: NzModalRef) {
   }
 
-  handleOk() {
-    this.isVisible = false;
+  handleOk(): void {
+    this.modal.destroy({ data: 'this the result data' });
   }
   handleCancel() {
-    this.isVisible = false;
+    this.modal.destroy({ data: 'this the result data' });
   }
 }
 
-// Popup dialog
-export function popupDialog(header: string, msg: InfoMessage[]): void {
-}
+export function popupDialog(modalService: NzModalService, title: string, msgs: InfoMessage[], buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok) {
+  let footer: any = [];
+  switch(buttons) {
+    case MessageDialogButtonEnum.okcancel:
+      footer = [{
+        label: 'OK',
+        onClick: componentInstance => componentInstance!.handleOk()
+      }, {
+        label: 'Cancel',
+        onClick: componentInstance => componentInstance!.handleCancel()
+      }];
+      break;
 
+    case MessageDialogButtonEnum.onlyok:
+      default:
+        footer = [{
+          label: 'OK',
+          onClick: componentInstance => componentInstance!.handleOk()
+        }];
+        break;
+  }
+  const modal = modalService.create({
+    nzTitle: title,
+    nzContent: MessageDialogComponent,
+    nzComponentParams: {
+      title: title,
+      infoMessages: msgs,
+    },
+    nzClosable: true,
+    nzMaskClosable: true,
+    nzFooter: footer,
+  });
+
+  modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+
+  // Return a result when closed
+  modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+
+  // // delay until modal instance created
+  // setTimeout(() => {
+  //   const instance = modal.getContentComponent();
+  //   instance.subtitle = 'sub title is changed';
+  // }, 2000);
+}

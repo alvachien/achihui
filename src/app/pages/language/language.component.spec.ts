@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { LanguageComponent } from './language.component';
 
 describe('LanguageComponent', () => {
@@ -8,7 +8,12 @@ describe('LanguageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LanguageComponent ]
+      imports: [
+        NgZorroAntdModule,
+      ],
+      declarations: [
+        LanguageComponent,
+      ],
     })
     .compileComponents();
   }));

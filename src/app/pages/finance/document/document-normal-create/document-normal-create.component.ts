@@ -11,6 +11,7 @@ import {
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { takeUntil } from 'rxjs/operators';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-normal-create',
@@ -129,11 +130,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
-      for (const msg of detailObject.VerifiedMsgs) {
-        console.log(msg.MsgContent);
-      }
-      // Show a dialog for error details
-      // TBD.
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
 
       return;
     }
@@ -146,9 +143,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
-
     }, () => {
-
     });
   }
 
