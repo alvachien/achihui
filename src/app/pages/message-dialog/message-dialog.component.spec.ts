@@ -19,7 +19,7 @@ describe('MessageDialogComponent', () => {
       ],
       declarations: [
         MessageDialogComponent,
-      ], 
+      ],
       providers: [
         { provide: NzModalRef, useValue: {} }
       ],

@@ -43,9 +43,20 @@ export class MessageDialogComponent {
   }
 }
 
-export function popupDialog(modalService: NzModalService, title: string, msgs: InfoMessage[], buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok) {
+/**
+ * @description Popup a dialog
+ * @param modalService Instance of NzModalService,
+ * @param title Title of the dialog,
+ * @param msgs Message table,
+ * @param buttons Buttons in footer
+ */
+export function popupDialog(
+  modalService: NzModalService,
+  title: string,
+  msgs: InfoMessage[],
+  buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok) {
   let footer: any = [];
-  switch(buttons) {
+  switch (buttons) {
     case MessageDialogButtonEnum.okcancel:
       footer = [{
         label: 'OK',
@@ -68,7 +79,7 @@ export function popupDialog(modalService: NzModalService, title: string, msgs: I
     nzTitle: title,
     nzContent: MessageDialogComponent,
     nzComponentParams: {
-      title: title,
+      title,
       infoMessages: msgs,
     },
     nzClosable: true,

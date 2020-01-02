@@ -3,8 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
-  UIStatusEnum, financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, } from '../../../../model';
-import { HomeDefOdataService, } from '../../../../services';
+  financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, } from '../../../../model';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -88,7 +87,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       this._baseCurr = curr;
       if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl').value) {
         this.headerForm.get('currControl').setValue(this._baseCurr);
-      }  
+      }
     }
   }
   @Output()
@@ -239,7 +238,6 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
-
       return null;
     }
 

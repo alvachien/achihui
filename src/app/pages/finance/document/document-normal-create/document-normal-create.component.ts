@@ -139,7 +139,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.odataService.createDocument(detailObject).subscribe((doc) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
-
     }, (error: any) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);

@@ -1,8 +1,8 @@
 {
-  "name": "achihui2",
-  "version": "1.0.1",
+  "name": "achihui",
+  "version": "1.0.2",
   "private": true,
-  "description": "UI layer for HIH, and so on.",
+  "description": "UI layer for HIH.",
   "keywords": [
     "hih",
     "ui"
@@ -12,12 +12,14 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "devtest": "ng test --code-coverage",
     "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
   "dependencies": {
     "@angular/animations": "^8.2.14",
+    "@angular/cdk": "^8.2.3",
     "@angular/common": "^8.2.14",
     "@angular/compiler": "^8.2.14",
     "@angular/core": "^8.2.14",

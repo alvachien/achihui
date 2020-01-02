@@ -21,6 +21,7 @@ import { User } from 'oidc-client';
 import * as moment from 'moment';
 
 export class FakeDataHelper {
+  // tslint:disable:variable-name
   private _currencies: Currency[];
   private _currenciesFromAPI: CurrencyJson[];
   private _chosedHome: HomeDef;
@@ -296,16 +297,22 @@ export class FakeDataHelper {
     curr.Symbol = '$';
     curr.Currency = 'USD';
     this._currencies.push(curr);
+
+    curr = new Currency();
+    curr.Name = 'Euro';
+    curr.Symbol = 'E';
+    curr.Currency = 'EUR';
+    this._currencies.push(curr);
   }
   public buildCurrenciesFromAPI(): void {
     this._currenciesFromAPI = [];
-    let curr: CurrencyJson = {
+    const curr: CurrencyJson = {
       Name: 'Chinese Yuan',
       Symbol: '#',
       Curr: 'CNY',
     };
     this._currenciesFromAPI.push(curr);
-    let curr2: CurrencyJson = {
+    const curr2: CurrencyJson = {
       Name: 'US Dollar',
       Symbol: '$',
       Curr: 'USD',
@@ -319,7 +326,7 @@ export class FakeDataHelper {
     this._chosedHome.BaseCurrency = 'CNY';
     // this._chosedHome.CreatorDisplayAs = 'Creator in Home for UT';
     this._chosedHome.Host = this.userID1;
-    let hmem: HomeMember = new HomeMember();
+    const hmem: HomeMember = new HomeMember();
     hmem.HomeID = this._chosedHome.ID;
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
@@ -331,7 +338,7 @@ export class FakeDataHelper {
     if (this._chosedHome) {
       this._homeDefs.push(this._chosedHome);
     }
-    let def: HomeDef = new HomeDef();
+    const def: HomeDef = new HomeDef();
     def.ID = 3;
     def.Name = 'Second Home for UT';
     def.BaseCurrency = 'USD';
@@ -983,7 +990,7 @@ export class FakeDataHelper {
     brwInfo.startDate = moment().subtract(1, 'M').startOf('day');
     brwInfo.endDate = brwInfo.startDate.add(1, 'y');
     brwInfo.loanTmpDocs = [];
-    for (let i: number = 0; i < 12; i++) {
+    for (let i = 0; i < 12; i++) {
       let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
@@ -1011,7 +1018,7 @@ export class FakeDataHelper {
     lendto.annualRate = 0.0435;
     lendto.startDate = moment().subtract(1, 'M').startOf('day');
     lendto.endDate = brwInfo.startDate.add(1, 'y');
-    for (let i: number = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
@@ -1034,7 +1041,7 @@ export class FakeDataHelper {
     let extadp: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     extadp.Comment = 'ADP Test 1';
     extadp.RepeatType = RepeatFrequencyEnum.Month;
-    for (let i: number = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       let item: TemplateDocADP = new TemplateDocADP();
       if (this._chosedHome) {
         item.HID = this._chosedHome.ID;
@@ -1052,7 +1059,7 @@ export class FakeDataHelper {
   }
   public buildFinAccountsFromAPI(): void {
     this._finAccountsFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       const acntjson: any = {
         ID: i + 1,
         Name: `Account ${i + 1}`,
@@ -1064,7 +1071,7 @@ export class FakeDataHelper {
   }
   public buildCurrentUser(): void {
     this._currUser = new UserAuthInfo();
-    let usr: any = {
+    const usr: any = {
       profile: {
         name: this.userID1,
         sub: this.userID1Sub,
@@ -1094,7 +1101,7 @@ export class FakeDataHelper {
   }
   public buildAppLanguageFromAPI(): void {
     this._appLanguagesFromAPI = [];
-    let alan: AppLanguageJson = {
+    const alan: AppLanguageJson = {
       Lcid: 9,
       EnglishName: 'English',
       AppFlag: true,
@@ -1102,7 +1109,7 @@ export class FakeDataHelper {
       ISOName: 'en',
     };
     this._appLanguagesFromAPI.push(alan);
-    let alan2: AppLanguageJson = {
+    const alan2: AppLanguageJson = {
       Lcid: 4,
       EnglishName: 'Chinese (Simplified)',
       AppFlag: true,
@@ -1117,8 +1124,8 @@ export class FakeDataHelper {
     this._finTranTypeFromAPI = [];
     this._finAssetCategoriesFromAPI = [];
     // Doc. type
-    for (let i: number = 0; i < 2; i++) {
-      let dt1: any = {
+    for (let i = 0; i < 2; i++) {
+      const dt1: any = {
         ID: i + 1,
         Name: `Type ${i + 1}`,
         Comment: `comment for type ${i + 1}`,
@@ -1126,8 +1133,8 @@ export class FakeDataHelper {
       this._finDocTypesFromAPI.push(dt1 as DocumentTypeJson);
     }
     // Account category
-    for (let i: number = 0; i < 2; i++) {
-      let ac1: any = {
+    for (let i = 0; i < 2; i++) {
+      const ac1: any = {
         ID: i + 1,
         Name: `account category ${i + 1}`,
         AssetFlag: true,
@@ -1136,8 +1143,8 @@ export class FakeDataHelper {
       this._finAccountCategoriesFromAPI.push(ac1 as AccountCategoryJson);
     }
     // Tran type
-    for (let i: number = 0; i < 3; i++) {
-      let tt1: any = {
+    for (let i = 0; i < 3; i++) {
+      const tt1: any = {
         ID: i + 1,
         Name: `tran type ${i + 1}`,
         Expense: false,
@@ -1146,8 +1153,8 @@ export class FakeDataHelper {
       this._finTranTypeFromAPI.push(tt1 as TranTypeJson);
     }
     // Asset category
-    for (let i: number = 0; i < 3; i++) {
-      let asc1: any = {
+    for (let i = 0; i < 3; i++) {
+      const asc1: any = {
         ID: i + 1,
         Name: `asset ${i + 1}`,
         Desp: 'desp of asset 1',
@@ -1157,19 +1164,19 @@ export class FakeDataHelper {
   }
   public buildLearnCategoriesFromAPI(): void {
     this._learnCategoriesFromAPI = [];
-    let c1: LearnCategoryJson = {
+    const c1: LearnCategoryJson = {
       id: 1,
       name: 'Category 1',
       sysFlag: true,
     };
     this._learnCategoriesFromAPI.push(c1);
-    let c2: LearnCategoryJson = {
+    const c2: LearnCategoryJson = {
       id: 2,
       name: 'Category 2',
       sysFlag: true,
     };
     this._learnCategoriesFromAPI.push(c2);
-    let c11: LearnCategoryJson = {
+    const c11: LearnCategoryJson = {
       id: 11,
       name: 'Category 1',
       sysFlag: true,
@@ -1202,8 +1209,8 @@ export class FakeDataHelper {
   }
   public buildLearnObjects(): void {
     this._learnObjects = [];
-    for (let i: number = 0; i < 10; i ++) {
-      let obj1: LearnObject = new LearnObject();
+    for (let i = 0; i < 10; i ++) {
+      const obj1: LearnObject = new LearnObject();
       obj1.HID = this._chosedHome ? this._chosedHome.ID : 0;
       obj1.Id = 11 + i;
       obj1.Name = `test-${i + 1}`;
@@ -1214,7 +1221,7 @@ export class FakeDataHelper {
   public buildLibBookCategories(): void {
     this._libBookCategories = [];
     let ctgy: BookCategory;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       ctgy = new BookCategory();
       ctgy.ID = i + 1;
       ctgy.Name = `Category ${i + 1}`;
@@ -1223,8 +1230,8 @@ export class FakeDataHelper {
   }
   public buildLibBookCategoriesFromAPI(): void {
     this._libBookCategoriesFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ct1: BookCategoryJson = {
+    for (let i = 0; i < 2; i++) {
+      const ct1: BookCategoryJson = {
         id: i + 1,
         name: `category ${i + 1}`,
       };
@@ -1234,7 +1241,7 @@ export class FakeDataHelper {
   public buildLibMovieGenres(): void {
     this._libMovieGenres = [];
     let ctgy: MovieGenre;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       ctgy = new MovieGenre();
       ctgy.ID = i + 1;
       ctgy.Name = `Genre ${i + 1}`;
@@ -1243,8 +1250,8 @@ export class FakeDataHelper {
   }
   public buildLibMovieGenresFromAPI(): void {
     this._libMovieGenresFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ct1: MovieGenreJson = {
+    for (let i = 0; i < 2; i++) {
+      const ct1: MovieGenreJson = {
         id: i + 1,
         name: `genre ${i + 1}`,
       };
@@ -1254,7 +1261,7 @@ export class FakeDataHelper {
   public buildLibLocations(): void {
     this._libLocations = [];
     let loc: Location;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       loc = new Location();
       loc.ID = i + 1;
       loc.Name = `Loc ${i + 1}`;
@@ -1265,8 +1272,8 @@ export class FakeDataHelper {
   }
   public buildLibLocationsFromAPI(): void {
     this._libLocationsFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ct1: any = {
+    for (let i = 0; i < 2; i++) {
+      const ct1: any = {
         id: i + 1,
         name: `loc ${i + 1}`,
         desp: `desp ${i + 1}`,
@@ -1277,7 +1284,7 @@ export class FakeDataHelper {
   public buildTags(): void {
     this._tags = [];
     let ntag: Tag;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       ntag = new Tag();
       ntag.TagType = TagTypeEnum.LearnQuestionBank;
       ntag.TagID = i + 1;
@@ -1288,7 +1295,7 @@ export class FakeDataHelper {
   public buildTagsCount(): void {
     this._tagsCount = [];
     let ntagcount: TagCount;
-    for (let i: number = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       ntagcount = new TagCount();
       ntagcount.Term = `tag${i + 1}`;
       ntagcount.TermCount = Math.round(100 * Math.random());
@@ -1297,8 +1304,8 @@ export class FakeDataHelper {
   }
   public buildTagsFromAPI(): void {
     this._tagsFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ntag: TagJson = {
+    for (let i = 0; i < 2; i++) {
+      const ntag: TagJson = {
         tagType: 1,
         tagID: i + 1,
         term: `tag{i+1}`,
@@ -1307,7 +1314,7 @@ export class FakeDataHelper {
     }
   }
   public getFinCashAccountForCreation(): Account {
-    let acnt: Account = new Account();
+    const acnt: Account = new Account();
     acnt.Name = 'Cash 1';
     acnt.Status = AccountStatusEnum.Normal;
     if (this._chosedHome) {
@@ -1320,7 +1327,7 @@ export class FakeDataHelper {
     return acnt;
   }
   public getFinCreditcardAccountForCreation(): Account {
-    let acnt: Account = new Account();
+    const acnt: Account = new Account();
     acnt.Name = 'Creditcard 1';
     acnt.Status = AccountStatusEnum.Normal;
     if (this._chosedHome) {
@@ -1335,7 +1342,7 @@ export class FakeDataHelper {
   public buildFinControlCenter(): void {
     this._finControlCenters = [];
     let ctgy: ControlCenter;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       ctgy = new ControlCenter();
       ctgy.Id = i + 1;
       ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
@@ -1345,8 +1352,8 @@ export class FakeDataHelper {
   }
   public buildFinControlCenterFromAPI(): void {
     this._finControlCentersFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ctgy: any = {
+    for (let i = 0; i < 2; i++) {
+      const ctgy: any = {
         ID: i + 1,
         HomeID: this._chosedHome ? this._chosedHome.ID : 0,
         Name: `CCenter ${i + 1}`,
@@ -1357,7 +1364,7 @@ export class FakeDataHelper {
   public buildFinOrders(): void {
     this._finOrders = [];
     let ctgy: Order;
-    for (let i: number = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       ctgy = new Order();
       ctgy.Id = i + 1;
       ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
@@ -1365,7 +1372,7 @@ export class FakeDataHelper {
       ctgy.Name = `Order ${i + 1}`;
       // S. rules
       if (i === 0) {
-        let srule: SettlementRule = new SettlementRule();
+        const srule: SettlementRule = new SettlementRule();
         srule.RuleId = 1;
         srule.ControlCenterId = this.finControlCenters[0].Id;
         srule.Precent = 100;
@@ -1376,8 +1383,8 @@ export class FakeDataHelper {
   }
   public buildFinOrderFromAPI(): void {
     this._finOrdersFromAPI = [];
-    for (let i: number = 0; i < 2; i++) {
-      let ctgy: any = {
+    for (let i = 0; i < 2; i++) {
+      const ctgy: any = {
         Id: i + 1,
         HomeID: this._chosedHome ? this._chosedHome.ID : 0,
         Name: `Order ${i + 1}`,
@@ -1401,7 +1408,8 @@ export class FakeDataHelper {
     this._finADPDocumentForCreate.Desp = 'Test';
     this._finADPDocumentForCreate.TranCurr = 'CNY';
     this._finADPDocumentForCreate.TranDate = moment();
-    let ditem: DocumentItem = new DocumentItem();
+
+    const ditem: DocumentItem = new DocumentItem();
     ditem.ItemId = 1;
     ditem.AccountId = 11;
     ditem.ControlCenterId = 1;
@@ -1414,8 +1422,8 @@ export class FakeDataHelper {
     this._finAccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     this._finAccountExtraAdvancePayment.Comment = 'Test';
     this._finAccountExtraAdvancePayment.RepeatType = RepeatFrequencyEnum.Month;
-    for (let i: number = 0; i < 10; i++) {
-      let item: TemplateDocADP = new TemplateDocADP();
+    for (let i = 0; i < 10; i++) {
+      const item: TemplateDocADP = new TemplateDocADP();
       if (this._chosedHome) {
         item.HID = this._chosedHome.ID;
       }
@@ -1429,7 +1437,7 @@ export class FakeDataHelper {
     }
   }
   public buildFinAssetBuyInDocumentForCreate(): FinanceAssetBuyinDocumentAPI {
-    let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
+    const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._chosedHome.ID;
     apidetail.tranDate = moment().format(momentDateFormat);
     apidetail.tranCurr = this._chosedHome.BaseCurrency;
@@ -1446,7 +1454,7 @@ export class FakeDataHelper {
     return apidetail;
   }
   public buildFinAssetSoldoutDocumentForCreate(): FinanceAssetSoldoutDocumentAPI {
-    let detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
+    const detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
     detail.HID = this._chosedHome.ID;
     detail.tranDate = moment().format(momentDateFormat);
     detail.tranCurr = this._chosedHome.BaseCurrency;
@@ -1458,7 +1466,7 @@ export class FakeDataHelper {
     return detail;
   }
   public buildFinAssetValueChangeDocumentForCreate(): FinanceAssetValChgDocumentAPI {
-    let detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
+    const detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
     detailObject.HID = this._chosedHome.ID;
     detailObject.tranDate = moment().format(momentDateFormat);
     detailObject.tranCurr = this._chosedHome.BaseCurrency;
@@ -1473,13 +1481,14 @@ export class FakeDataHelper {
     return detailObject;
   }
   public buildFinNormalDocument(): Document {
-    let doc: Document = new Document();
+    const doc: Document = new Document();
     doc.Id = 100;
     doc.DocType = financeDocTypeNormal;
     doc.Desp = 'Test';
     doc.TranCurr = this.chosedHome ? this.chosedHome.BaseCurrency : 'CNY';
     doc.TranDate = moment();
-    let ditem: DocumentItem = new DocumentItem();
+
+    const ditem: DocumentItem = new DocumentItem();
     ditem.ItemId = 1;
     ditem.AccountId = 11;
     ditem.ControlCenterId = 1;

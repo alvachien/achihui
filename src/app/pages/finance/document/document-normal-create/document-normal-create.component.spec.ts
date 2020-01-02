@@ -50,7 +50,7 @@ describe('DocumentNormalCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentNormalCreateComponent);
     component = fixture.componentInstance;
-    //fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

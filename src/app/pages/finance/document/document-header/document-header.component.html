@@ -13,7 +13,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idTranDate">{{'Common.Date' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input your tran. date">
-      <nz-date-picker id="idTranDate" formControlName="dateControl"></nz-date-picker>
+      <nz-date-picker id="idTranDate" formControlName="dateControl" (ngModelChange)="onChange()"></nz-date-picker>
     </nz-form-control>
   </nz-form-item>
 
@@ -21,7 +21,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idDesp">{{'Common.Description' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input description">
-      <input nz-input id="idDesp" formControlName="despControl" maxlength="45" />
+      <input nz-input id="idDesp" formControlName="despControl" maxlength="45" (ngModelChange)="onChange()" />
     </nz-form-control>
   </nz-form-item>
 
@@ -29,7 +29,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency">{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
-      <nz-select id="idCurrency" formControlName="currControl">
+      <nz-select id="idCurrency" formControlName="currControl" (ngModelChange)="onChange()">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
     </nz-form-control>
@@ -39,14 +39,17 @@
   <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idexg">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input exchange rate">
-      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg" formControlName="exgControl"></nz-input-number>
+      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg" 
+        formControlName="exgControl" (ngModelChange)="onChange()"></nz-input-number>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Planned Exchange rate -->
   <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
     <nz-form-control [nzSpan]="8" [nzOffset]="4">
-      <label nz-checkbox formControlName="exgpControl">{{'Finance.ProposedExchangeRate' | transloco}}</label>
+      <label nz-checkbox formControlName="exgpControl" id="exgrate_plan" (ngModelChange)="onChange()">
+        {{'Finance.ProposedExchangeRate' | transloco}}
+      </label>
     </nz-form-control>
   </nz-form-item>
 
@@ -54,7 +57,7 @@
   <nz-form-item *ngIf="isCurrencyExchangeDocument">
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency2">{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
-      <nz-select id="idCurrency2" formControlName="curr2Control">
+      <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onChange()">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
     </nz-form-control>
@@ -64,14 +67,17 @@
   <nz-form-item *ngIf="tranCurrency2 && isForeignCurrency2">
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idexg2">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input exchange rate">
-      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg2" formControlName="exg2Control"></nz-input-number>
+      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg2"
+       formControlName="exg2Control" (ngModelChange)="onChange()"></nz-input-number>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Planned Exchange rate -->
   <nz-form-item *ngIf="tranCurrency2 && isForeignCurrency2">
     <nz-form-control [nzSpan]="8" [nzOffset]="4">
-      <label nz-checkbox formControlName="exgp2Control">{{'Finance.ProposedExchangeRate' | transloco}}</label>
+      <label nz-checkbox formControlName="exgp2Control" id="exgrate_plan2" (ngModelChange)="onChange()">
+        {{'Finance.ProposedExchangeRate' | transloco}}
+      </label>
     </nz-form-control>
   </nz-form-item>
 </ng-container>
