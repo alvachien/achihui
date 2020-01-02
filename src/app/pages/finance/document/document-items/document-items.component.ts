@@ -166,9 +166,9 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
 
   writeValue(val: DocumentItem[]): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...', ConsoleLogTypeEnum.debug);
-    // if (val) {
-    //   this.dataSource.data = val;
-    // }
+    if (val) {
+      this.listItems = val;
+    }
   }
 
   registerOnChange(fn: any): void {
@@ -252,5 +252,20 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     ];
 
     this.onChange();
+  }
+
+  public onDeleteDocItem(di: any): void {
+    let idx: number = -1;
+    let exitems: DocumentItem[] = this.listItems.slice();
+    idx = exitems.findIndex((di2: DocumentItem) => {
+      return di2.ItemId === di.ItemId;
+    });
+
+    if (idx !== -1) {
+      exitems.splice(idx);
+      this.listItems = exitems;
+
+      this.onChange();
+    }
   }
 }

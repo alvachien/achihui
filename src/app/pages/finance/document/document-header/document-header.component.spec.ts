@@ -18,17 +18,20 @@ describe('DocumentHeaderComponent', () => {
   let fixture: ComponentFixture<DocumentHeaderComponent>;
   let fakeData: FakeDataHelper;
 
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildCurrencies();
+    fakeData.buildFinConfigData();
+  });
+
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => '';
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    fakeData = new FakeDataHelper();
-    fakeData.buildChosedHome();
-    fakeData.buildCurrentUser();
-    fakeData.buildCurrencies();
-    fakeData.buildFinConfigData();
 
     TestBed.configureTestingModule({
       imports: [
@@ -152,10 +155,9 @@ describe('DocumentHeaderComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.onChange).toHaveBeenCalledTimes(0);
 
       // Date
-      expect(component.onChange).toHaveBeenCalledTimes(0);
       component.headerForm.get('dateControl').setValue(new Date());
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(1);
@@ -265,15 +267,3 @@ describe('DocumentHeaderComponent', () => {
     }));
   });
 });
-
-// // Get form errors.
-// Object.keys(this.productForm.controls).forEach(key => {
-
-//   const controlErrors: ValidationErrors = this.productForm.get(key).errors;
-//   if (controlErrors != null) {
-//         Object.keys(controlErrors).forEach(keyError => {
-//           console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
-//         });
-//       }
-//     });
-//   }

@@ -1,19 +1,33 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { By } from '@angular/platform-browser';
 
 import { DocumentItemsComponent } from './document-items.component';
-import { getTranslocoModule } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, DocumentItem, Document, } from '../../../../model';
 
 describe('DocumentItemsComponent', () => {
   let component: DocumentItemsComponent;
   let fixture: ComponentFixture<DocumentItemsComponent>;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrencies();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinOrders();
+  });
 
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
@@ -49,5 +63,196 @@ describe('DocumentItemsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Enable mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall be invalid if no items', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.noitems).toBeTruthy();
+    }));
+    it('shall be invalid if items without account', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithoutaccount).toBeTruthy('Expect itemwithoutaccount is true');
+    }));
+    it('shall be invalid if items without tran type', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      // ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithouttrantype).toBeTruthy('Expect itemwithouttrantype is true');
+    }));
+    it('shall be invalid if items without amount', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      // ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithoutamount).toBeTruthy('Expect itemwithoutamount is true');
+    }));
+    it('shall be invalid if items without cost object', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      // ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
+    }));
+    it('shall be invalid if items have cost center and order both', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.OrderId = fakeData.finOrders[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
+    }));
+    it('shall be invalid if items without desp', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      // ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeTruthy();
+      expect(err.itemwithoutdesp).toBeTruthy('Expect itemwithoutdesp is true');
+    }));
+    it('shall remove item on deletion', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      // component.listItems = [ditem];
+
+      component.onDeleteDocItem(component.listItems[0]);
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.listItems.length).toEqual(0);
+    }));
+    it('shall be valid in valid case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.listItems[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.listItems = [ditem];
+      component.onChange();
+
+      let err: any = component.validate(undefined);
+      expect(err).toBeNull();
+    }));
+    it('OnChange method', fakeAsync(() => {
+      const changefn = () => {};
+      component.registerOnChange(changefn);
+      spyOn(component, 'onChange').and.callThrough();
+
+      fixture.detectChanges();
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.onChange).toHaveBeenCalledTimes(0);
+      component.onCreateDocItem();
+      expect(component.onChange).toHaveBeenCalledTimes(1);
+    }));
   });
 });

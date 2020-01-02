@@ -18,34 +18,40 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.ItemId }}</td>
         <td>
-          <nz-select [(ngModel)]="data.AccountId">
+          {{ data.ItemId }}
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</a>
+        </td>
+        <td>
+          <nz-select [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
             <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.TranType">
+          <nz-select [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
             <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" [nzPlaceHolder]="'Amount'"></nz-input-number>
+          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" 
+            [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()">
+          </nz-input-number>
         </td>
         <td>
           <div *ngIf="!data.UseCurr2">{{tranCurr}}</div>
           <div *ngIf="data.UseCurr2">{{tranCurr2}}</div>  
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.Desp" />
+          <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" />
         </td>
         <td>
-          <nz-select [(ngModel)]="data.ControlCenterId">
+          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()">
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.OrderId">
+          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()">
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>

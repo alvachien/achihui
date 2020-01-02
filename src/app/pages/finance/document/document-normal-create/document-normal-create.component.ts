@@ -95,11 +95,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
         this.modalService.create({
-          nzTitle: 'header',
+          nzTitle: 'Common.Error',
           nzContent: error,
           nzClosable: true,
         });
-        // TBD.
       });
   }
 
