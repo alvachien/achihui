@@ -9,7 +9,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from './document-header.component';
-import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange } from '../../../../model';
 
@@ -99,6 +99,9 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('dateControl');
     }));
 
     it('Desp is mandatory', fakeAsync(() => {
@@ -113,6 +116,9 @@ describe('DocumentHeaderComponent', () => {
       component.onChange();
 
       expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('despControl');
     }));
 
     it('Currency is mandatory', fakeAsync(() => {
@@ -128,6 +134,9 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('currControl');
     }));
 
     it('shall show exchange rate for foreign currency', fakeAsync(() => {

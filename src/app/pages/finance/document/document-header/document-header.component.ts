@@ -236,8 +236,21 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent validate.', ConsoleLogTypeEnum.debug);
 
+    // Not editable, then just return
+    if (!this.isFieldChangable) {
+      return null;
+    }
+
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
+      if (!this.isForeignCurrency) {
+        // Foreign currency
+        const exgrate = this.headerForm.get('exgControl').value;
+        if (!exgrate) {
+          return { key: 'exgControl', error: 'Exchange rate is required' };
+        }
+      }
+
       return null;
     }
 
