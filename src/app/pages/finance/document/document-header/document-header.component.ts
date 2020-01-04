@@ -63,7 +63,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   set currentUIMode(mode: UIMode) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent currentUIMode setter`,
       ConsoleLogTypeEnum.debug);
-    this._uiMode = mode;
+    if (this._uiMode !== mode) {
+      this._uiMode = mode;
+      if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
+        this.setDisabledState(true);
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Change) {
+        this.setDisabledState(false);
+      }
+    }
   }
   @Input()
   get docType(): number { return this._doctype;  }
@@ -144,6 +151,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   get isForeignCurrency(): boolean {
     return this.headerForm && this.headerForm.get('currControl')
+      && this.headerForm.get('currControl').value
       && this.baseCurrency !== this.headerForm.get('currControl').value;
   }
   get tranCurrency2(): string {
@@ -151,6 +159,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   get isForeignCurrency2(): boolean {
     return this.headerForm && this.headerForm.get('curr2Control')
+      && this.headerForm.get('curr2Control').value
       && this.baseCurrency !== this.headerForm!.get('curr2Control').value;
   }
   get isCurrencyEditable(): boolean {
@@ -251,15 +260,11 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
   onCurrencyChange(event: Currency): void {
     this.currencyChanged.emit(event.Currency);
-    if (this._onChange) {
-      this._onChange(this.documentHeader);
-    }
+    this.onChange();
   }
   onCurrency2Change(event: Currency): void {
     this.currency2Changed.emit(event.Currency);
-    if (this._onChange) {
-      this._onChange(this.documentHeader);
-    }
+    this.onChange();
   }
 
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {

@@ -155,7 +155,7 @@ describe('DocumentHeaderComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(1);
     }));
 
-    it('shall verify exchange rate is inputted for foreign currency', fakeAsync(() => {
+    it('Exchange rate is mandatory for foreign currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -170,6 +170,7 @@ describe('DocumentHeaderComponent', () => {
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('exgControl');
       expect(errors.GetElement(0).error).toEqual('exchangeRateMissing');
 
       // Input exchange rate
@@ -213,16 +214,35 @@ describe('DocumentHeaderComponent', () => {
     }));
   });
 
+  describe('Disable mode for normal document', () => {
+    beforeEach(fakeAsync(() => {
+      component.arCurrencies = fakeData.currencies;
+      component.arDocTypes = fakeData.finDocTypes;
+
+      fixture.detectChanges();
+      tick(); // Complete the Observables in ngOnInit
+
+      component.currentUIMode = UIMode.Display;
+      component.baseCurrency = fakeData.chosedHome.BaseCurrency;
+      fixture.detectChanges();
+      component.docType = financeDocTypeNormal;
+    }));
+
+    it('shall be readonly', fakeAsync(() => {
+      expect(component.headerForm.disabled).toBeTruthy();
+    }));
+  });
+
   describe('Enable Mode for currency exchange document', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let curDocument: Document;
 
     beforeEach(() => {
-      component.docType = financeDocTypeCurrencyExchange;
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
       component.currentUIMode = UIMode.Change;
+      component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
 
@@ -241,6 +261,9 @@ describe('DocumentHeaderComponent', () => {
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      component.docType = financeDocTypeCurrencyExchange;
+      component.baseCurrency = fakeData.chosedHome.BaseCurrency;
+      fixture.detectChanges();
 
       expect(fixture.debugElement.queryAll(By.css('#idexg2')).length).toEqual(0);
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan2')).length).toEqual(0);
@@ -253,16 +276,82 @@ describe('DocumentHeaderComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan2')).length).toEqual(1);
     }));
 
-    it('OnChange method', fakeAsync(() => {
-      const changefn = () => {};
-      component.registerOnChange(changefn);
-      spyOn(component, 'onChange').and.callThrough();
+    it('Currency is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
 
-      fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      component.docType = financeDocTypeCurrencyExchange;
+      component.baseCurrency = fakeData.chosedHome.BaseCurrency;
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
+
+      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue('');
+      component.headerForm.get('curr2Control').setValue('USD');
+      component.headerForm.get('exg2Control').setValue(600);
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('currControl');
+    }));
+
+    it('Currency2 is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      expect(component.isFieldChangable).toBeTruthy();
+
+      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control').setValue('');
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('curr2Control');
+      expect(errors.GetElement(0).error).toEqual('curr2Missing');
+    }));
+    it('Exgrate2 is mandatory if currency 2 is foreign', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      component.docType = financeDocTypeCurrencyExchange;
+      component.baseCurrency = fakeData.chosedHome.BaseCurrency;
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+
+      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control').setValue('USD');
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('exg2Control');
+      expect(errors.GetElement(0).error).toEqual('exchangeRateMissing');
+    }));
+
+    it('OnChange method', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      const changefn = () => {};
+      component.registerOnChange(changefn);
+      spyOn(component, 'onChange').and.callThrough();
 
       // Date
       expect(component.onChange).toHaveBeenCalledTimes(0);

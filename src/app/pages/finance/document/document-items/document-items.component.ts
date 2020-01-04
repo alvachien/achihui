@@ -86,7 +86,16 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._uiMode;
   }
   set currentUIMode(mode: UIMode) {
-    this._uiMode = mode;
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemsComponent currentUIMode setter`,
+      ConsoleLogTypeEnum.debug);
+    if (this._uiMode !== mode) {
+      this._uiMode = mode;
+      if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
+        this.setDisabledState(true);
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Change) {
+        this.setDisabledState(false);
+      }
+    }
   }
 
   @Input()

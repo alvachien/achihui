@@ -1,6 +1,6 @@
 <ng-container class="achih-control-full-width" *transloco="let t">
-  <div class="toolbar_buttons" *ngIf="isAddItemAllowed">
-    <button nz-button nzType="primary" (click)="onCreateDocItem()">{{'Finance.CreateItem' | transloco}}</button>
+  <div class="toolbar_buttons">
+    <button nz-button nzType="primary" [disabled]="!isAddItemAllowed" (click)="onCreateDocItem()">{{'Finance.CreateItem' | transloco}}</button>
   </div>
 
   <nz-table #basicTable nzBordered [nzData]="listItems">
@@ -21,10 +21,10 @@
         <td>
           {{ data.ItemId }}
           <nz-divider nzType="vertical"></nz-divider>
-          <a (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</a>
+          <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
+          <nz-select [nzDisabled]="!isAccountIDEditable" [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
             <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
           </nz-select>
         </td>
