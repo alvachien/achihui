@@ -14,7 +14,7 @@ import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem } from '../../../../model';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -130,13 +130,17 @@ describe('DocumentNormalCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('should set the default values: base currency, date, and so on', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.docForm.get('headerControl')).toBeTruthy('Expect control has been initialized');
+      expect(component.docForm.get('headerControl')).toBeTruthy('Expect header control has been initialized');
+      expect(component.docForm.get('itemControl')).toBeTruthy('Expect item control has been initialized');
+      let docobj: Document = component.docForm.get('headerControl').value as Document;
+      expect(docobj).toBeTruthy();
+      expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
     // it('step 1: should not allow go to second step if there are failure in first step', fakeAsync(() => {

@@ -11,7 +11,7 @@ import { By } from '@angular/platform-browser';
 import { DocumentHeaderComponent } from './document-header.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
-import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange } from '../../../../model';
+import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -212,6 +212,55 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(5);
     }));
+
+    it('it shall return correct Document object', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      fixture.detectChanges();
+
+      curDocument = component.documentHeader;
+      expect(curDocument).toBeTruthy();
+      expect(curDocument.DocType).toEqual(financeDocTypeNormal);
+      expect(curDocument.Desp).toEqual('test');
+      expect(curDocument.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(curDocument.TranDate).toBeTruthy();
+      expect(curDocument.TranDate.year()).toEqual(2020);
+      expect(curDocument.TranDate.month()).toEqual(2);
+      expect(curDocument.TranDate.date()).toEqual(2);
+    }));
+
+    it('it shall return correct Document object with foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl').setValue('Test');
+      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('exgControl').setValue(624.22);
+      fixture.detectChanges();
+
+      curDocument = component.documentHeader;
+      expect(curDocument).toBeTruthy();
+      expect(curDocument.DocType).toEqual(financeDocTypeNormal);
+      expect(curDocument.Desp).toEqual('Test');
+      expect(curDocument.TranCurr).toEqual('USD');
+      expect(curDocument.TranDate).toBeTruthy();
+      expect(curDocument.TranDate.year()).toEqual(2020);
+      expect(curDocument.TranDate.month()).toEqual(2);
+      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.ExgRate).toEqual(624.22);
+      expect(curDocument.ExgRate_Plan).toBeFalsy();
+    }));
   });
 
   describe('Disable mode for normal document', () => {
@@ -319,6 +368,25 @@ describe('DocumentHeaderComponent', () => {
       expect(errors.GetElement(0).key).toEqual('curr2Control');
       expect(errors.GetElement(0).error).toEqual('curr2Missing');
     }));
+    it('Currency must be diff', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      expect(component.isFieldChangable).toBeTruthy();
+
+      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control').setValue(fakeData.chosedHome.BaseCurrency);
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).key).toEqual('curr2Control');
+      expect(errors.GetElement(0).error).toEqual('currencyMustDiff');
+    }));
     it('Exgrate2 is mandatory if currency 2 is foreign', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
@@ -386,6 +454,65 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exgp2Control').setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(8);
+    }));
+
+    it('it shall return correct Document object', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control').setValue('USD');
+      component.headerForm.get('exg2Control').setValue(634.56);
+      fixture.detectChanges();
+
+      curDocument = component.documentHeader;
+      expect(curDocument).toBeTruthy();
+      expect(curDocument.DocType).toEqual(financeDocTypeCurrencyExchange);
+      expect(curDocument.Desp).toEqual('test');
+      expect(curDocument.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(curDocument.TranDate).toBeTruthy();
+      expect(curDocument.TranDate.year()).toEqual(2020);
+      expect(curDocument.TranDate.month()).toEqual(2);
+      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.TranCurr2).toEqual('USD');
+      expect(curDocument.ExgRate2).toEqual(634.56);
+    }));
+
+    it('it shall return correct Document object with foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl').setValue('Test');
+      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('exgControl').setValue(624.22);
+      component.headerForm.get('curr2Control').setValue('EUR');
+      component.headerForm.get('exg2Control').setValue(666.56);
+      component.headerForm.get('exgp2Control').setValue(true);
+      fixture.detectChanges();
+
+      curDocument = component.documentHeader;
+      expect(curDocument).toBeTruthy();
+      expect(curDocument.DocType).toEqual(financeDocTypeCurrencyExchange);
+      expect(curDocument.Desp).toEqual('Test');
+      expect(curDocument.TranCurr).toEqual('USD');
+      expect(curDocument.TranDate).toBeTruthy();
+      expect(curDocument.TranDate.year()).toEqual(2020);
+      expect(curDocument.TranDate.month()).toEqual(2);
+      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.ExgRate).toEqual(624.22);
+      expect(curDocument.ExgRate_Plan).toBeFalsy();
+      expect(curDocument.TranCurr2).toEqual('EUR');
+      expect(curDocument.ExgRate2).toEqual(666.56);
+      expect(curDocument.ExgRate_Plan2).toBeTruthy();
     }));
   });
 });

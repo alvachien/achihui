@@ -1,9 +1,10 @@
 import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, EventEmitter, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
+import * as moment from 'moment';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
-  financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, } from '../../../../model';
+  financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, momentDateFormat, } from '../../../../model';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -117,7 +118,9 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       this._instanceObject.DocType = this.docType;
     }
     this._instanceObject.TranCurr = this.headerForm.get('currControl').value;
-    this._instanceObject.TranDate = this.headerForm.get('dateControl').value;
+    // let dateobj: Date = this.headerForm.get('dateControl').value as Date;
+    // this._instanceObject.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
+    this._instanceObject.TranDate = moment(this.headerForm.get('dateControl').value as Date);
     this._instanceObject.Desp = this.headerForm.get('despControl').value;
     this._instanceObject.DocType = this.docType;
     if (this.isForeignCurrency) {
@@ -187,7 +190,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       currControl: new FormControl('', Validators.required),
       exgControl: new FormControl('', [this.exchangeRateMissingValidator]),
       exgpControl: new FormControl(''),
-      curr2Control: new FormControl('', [this.curr2MissingValidator]),
+      curr2Control: new FormControl('', [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
       exg2Control: new FormControl('', [this.exchangeRate2MissingValidator]),
       exgp2Control: new FormControl(''),
     });
@@ -289,6 +292,16 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     if (this.isCurrencyExchangeDocument) {
       if (!this.headerForm.get('curr2Control').value) {
         return { curr2Missing: true };
+      }
+    }
+
+    return null;
+  }
+  private currencyMustDiffForExchgValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    if (this.isCurrencyExchangeDocument) {
+      if (this.headerForm.get('curr2Control').value && this.headerForm.get('currControl').value 
+        && this.headerForm.get('curr2Control').value === this.headerForm.get('currControl').value) {
+        return { currencyMustDiff: true };
       }
     }
 

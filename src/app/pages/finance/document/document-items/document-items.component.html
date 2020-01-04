@@ -29,13 +29,13 @@
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
+          <nz-select [nzDisabled]="!isTranTypeEditable" [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
             <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
           </nz-select>
         </td>
         <td>
           <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" 
-            [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()">
+            [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()" [nzDisabled]="!isAmountEditable">
           </nz-input-number>
         </td>
         <td>
@@ -43,15 +43,15 @@
           <div *ngIf="data.UseCurr2">{{tranCurr2}}</div>  
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" />
+          <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
         </td>
         <td>
-          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()">
+          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable">
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()">
+          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable">
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
