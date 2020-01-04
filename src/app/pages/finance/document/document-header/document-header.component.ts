@@ -176,12 +176,12 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       dateControl: new FormControl(new Date(), [Validators.required]),
       despControl: new FormControl('', [Validators.required, Validators.maxLength(44)]),
       currControl: new FormControl('', Validators.required),
-      exgControl: new FormControl(''),
+      exgControl: new FormControl('', [this.exchangeRateMissingValidator]),
       exgpControl: new FormControl(''),
-      curr2Control: new FormControl(''),
-      exg2Control: new FormControl(''),
+      curr2Control: new FormControl('', [this.curr2MissingValidator]),
+      exg2Control: new FormControl('', [this.exchangeRate2MissingValidator]),
       exgp2Control: new FormControl(''),
-    }, [this.exchangeRateMissingValidator]);
+    });
   }
 
   @HostListener('change') onChange(): void {
@@ -243,32 +243,24 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
-      if (!this.isForeignCurrency) {
-        // Foreign currency
-        const exgrate = this.headerForm.get('exgControl').value;
-        if (!exgrate) {
-          return { key: 'exgControl', error: 'Exchange rate is required' };
-        }
-      }
-
       return null;
     }
 
     return { invalidForm: {valid: false, message: 'Header fields are invalid'} };
   }
 
-  // onCurrencyChange(event: MatSelectChange): void {
-  //   this.currencyChanged.emit(event.value);
-  //   if (this._onChange) {
-  //     this._onChange(this.documentHeader);
-  //   }
-  // }
-  // onCurrency2Change(event: MatSelectChange): void {
-  //   this.currency2Changed.emit(event.value);
-  //   if (this._onChange) {
-  //     this._onChange(this.documentHeader);
-  //   }
-  // }
+  onCurrencyChange(event: Currency): void {
+    this.currencyChanged.emit(event.Currency);
+    if (this._onChange) {
+      this._onChange(this.documentHeader);
+    }
+  }
+  onCurrency2Change(event: Currency): void {
+    this.currency2Changed.emit(event.Currency);
+    if (this._onChange) {
+      this._onChange(this.documentHeader);
+    }
+  }
 
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isForeignCurrency) {
@@ -276,9 +268,22 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
         return { exchangeRateMissing: true };
       }
     }
+
+    return null;
+  }
+  private exchangeRate2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument && this.isForeignCurrency2) {
       if (!this.headerForm.get('exg2Control').value) {
         return { exchangeRateMissing: true };
+      }
+    }
+
+    return null;
+  }
+  private curr2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    if (this.isCurrencyExchangeDocument) {
+      if (!this.headerForm.get('curr2Control').value) {
+        return { curr2Missing: true };
       }
     }
 

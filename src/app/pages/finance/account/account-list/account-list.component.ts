@@ -29,6 +29,8 @@ export class AccountListComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
@@ -36,7 +38,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     forkJoin(reqs)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((data: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit, forkJoin...',
           ConsoleLogTypeEnum.debug);
 
         if (data instanceof Array && data.length > 0) {
@@ -44,7 +46,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
           this.dataSet = data[1] as Account[];
         }
       }, (error: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit, forkJoin, failed...',
           ConsoleLogTypeEnum.error);
 
         // TBD.
@@ -55,6 +57,8 @@ export class AccountListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

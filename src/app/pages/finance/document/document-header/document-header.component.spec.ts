@@ -155,6 +155,30 @@ describe('DocumentHeaderComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(1);
     }));
 
+    it('shall verify exchange rate is inputted for foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('currControl').setValue('USD');
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeFalsy();
+      const errors = FormGroupHelper.getFormGroupError(component.headerForm);
+      expect(errors.Length()).toEqual(1);
+      expect(errors.GetElement(0).error).toEqual('exchangeRateMissing');
+
+      // Input exchange rate
+      component.headerForm.get('exgControl').setValue('300');
+      fixture.detectChanges();
+
+      expect(component.headerForm.valid).toBeTruthy();
+    }));
+
     it('OnChange method', fakeAsync(() => {
       const changefn = () => {};
       component.registerOnChange(changefn);

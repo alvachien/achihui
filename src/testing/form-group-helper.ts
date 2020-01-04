@@ -10,9 +10,20 @@ export interface IFormGroupError {
 export class FormGroupHelper {
   public static getFormGroupError(formGroup: FormGroup): SequenceList<IFormGroupError> {
     const listErrors = new SequenceList<IFormGroupError>();
+    if (formGroup.errors !== null) {
+      const controlErrors: ValidationErrors = formGroup.errors;
+      Object.keys(controlErrors).forEach(keyError => {
+        listErrors.AppendElement({
+          key: 'formGroup',
+          error: keyError,
+          errorValue: controlErrors[keyError]
+        } as IFormGroupError);
+      });
+    }
+
     Object.keys(formGroup.controls).forEach(key => {
       const controlErrors: ValidationErrors = formGroup.get(key).errors;
-      if (controlErrors != null) {
+      if (controlErrors !== null) {
         Object.keys(controlErrors).forEach(keyError => {
           listErrors.AppendElement({
             key,

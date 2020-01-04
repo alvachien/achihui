@@ -46,12 +46,16 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this._refreshTree(false);
   }
 
   ngOnDestroy(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

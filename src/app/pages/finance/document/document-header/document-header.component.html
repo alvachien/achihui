@@ -29,7 +29,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency">{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
-      <nz-select id="idCurrency" formControlName="currControl" (ngModelChange)="onChange()">
+      <nz-select id="idCurrency" formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
     </nz-form-control>
@@ -57,7 +57,7 @@
   <nz-form-item *ngIf="isCurrencyExchangeDocument">
     <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency2">{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
-      <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onChange()">
+      <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onCurrency2Change($event)">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
     </nz-form-control>
