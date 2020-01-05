@@ -21,7 +21,6 @@ import { popupDialog } from '../../../message-dialog';
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private _docDate: moment.Moment;
 
   public docForm: FormGroup;
   public curDocType: number = financeDocTypeNormal;
@@ -37,10 +36,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
 
-  get curDocDate(): moment.Moment {
-    return this._docDate;
-  }
-
   constructor(
     public homeService: HomeDefOdataService,
     public uiStatusService: UIStatusService,
@@ -49,9 +44,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.docForm = new FormGroup({
-      headerControl: new FormControl('', Validators.required),
-      itemControl: new FormControl(''),
+      headerControl: new FormControl(new Document(), Validators.required),
+      itemControl: new FormControl([]),
     });
+  }
+
+  get curDocDate(): moment.Moment {
+    return moment();
   }
 
   ngOnInit() {
@@ -90,7 +89,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
         // Set the default currency
         this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
-        // TBD.
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
@@ -139,8 +137,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
     }, (error: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
+        ConsoleLogTypeEnum.error);
     }, () => {
     });
   }
@@ -148,6 +146,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   private _generateDocObject(): Document {
     const detailObject: Document = this.docForm.get('headerControl').value;
     detailObject.HID = this.homeService.ChosedHome.ID;
+    detailObject.DocType = this.curDocType;
     detailObject.Items = this.docForm.get('itemControl').value;
 
     return detailObject;

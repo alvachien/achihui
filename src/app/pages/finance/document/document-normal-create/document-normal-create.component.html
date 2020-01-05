@@ -14,12 +14,12 @@
 </nz-page-header>
 
 <form nz-form [formGroup]="docForm">
-  <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
-    [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies" [baseCurrency]="baseCurrency">
+  <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
+    [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
   </hih-fin-document-header>
   <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
-    [arCurrencies] = "arCurrencies" [arUIAccounts] = "arUIAccounts" [arControlCenters]  = "arControlCenters"
-    [arTranType] = "arTranType" [arUIOrders] = "arUIOrders"
+    [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
+    [arTranType]="arTranType" [arUIOrders]="arUIOrders"
     [docType]="curDocType">
   </hih-fin-document-items>
 </form>

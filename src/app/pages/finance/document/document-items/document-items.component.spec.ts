@@ -1,13 +1,15 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
 import { HttpClientTestingModule, } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, NzSelectComponent, NzInputNumberComponent, NzInputDirective, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { createKeyboardEvent, dispatchFakeEvent, dispatchKeyboardEvent, MockNgZone, typeInElement } from 'ng-zorro-antd/core';
 
 import { DocumentItemsComponent } from './document-items.component';
 import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
@@ -274,11 +276,95 @@ describe('DocumentItemsComponent', () => {
       tick();
       fixture.detectChanges();
 
-      // Account ID
       let tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
       expect(tablebody.length).toEqual(1);
       let tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
       expect(tablerows.length).toEqual(1);
+      for (let i = 0; i < tablerows[0].childNodes.length; i++) {
+        if (i === 1) {
+          // Account ID
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+        } else if (i === 2) {
+          // Tran type
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+        } else if (i === 3) {
+          // Amount
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
+          expect(inpNumber).toBeTruthy();
+          let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
+          expect(inpNumberComponent).toBeTruthy();
+          inpNumberComponent.setValue(20, true);
+          fixture.detectChanges();
+
+          expect(component.listItems[0].TranAmount).toEqual(20);
+          flush();
+          fixture.detectChanges();
+        } else if (i === 4) {
+          // Currencies
+        } else if (i === 5) {
+          // Desp
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let inpElem = dbgelem.query(By.directive(NzInputDirective));
+          expect(inpElem).toBeTruthy();
+
+          typeInElement('Test', inpElem.nativeElement);
+          fixture.detectChanges();
+          expect(component.listItems[0].Desp).toEqual('Test');
+
+          flush();
+          fixture.detectChanges();
+        } else if (i === 6) {
+          // Control center
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+        } else if (i === 7) {
+          // Order
+          // Just skip it
+        }
+      }
+
+      // Now check the document items
+      flush();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.listItems.length).toEqual(1);
+      expect(component.listItems[0].Desp).toEqual('Test');
+      expect(component.listItems[0].TranAmount).toEqual(20);
     }));
     it('onChange method', fakeAsync(() => {
       const changefn = () => {};
@@ -292,7 +378,108 @@ describe('DocumentItemsComponent', () => {
       expect(component.onChange).toHaveBeenCalledTimes(0);
       component.onCreateDocItem();
       expect(component.onChange).toHaveBeenCalledTimes(1);
-      expect(component.listItems.length).toEqual(1);
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      let tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
+      expect(tablebody.length).toEqual(1);
+      let tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
+      expect(tablerows.length).toEqual(1);
+      for (let i = 0; i < tablerows[0].childNodes.length; i++) {
+        if (i === 1) {
+          // Account ID
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(2);
+        } else if (i === 2) {
+          // Tran type
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(3);
+        } else if (i === 3) {
+          // Amount
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
+          expect(inpNumber).toBeTruthy();
+          let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
+          expect(inpNumberComponent).toBeTruthy();
+          inpNumberComponent.setValue(20, true);
+          fixture.detectChanges();
+
+          expect(component.listItems[0].TranAmount).toEqual(20);
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(4);
+        } else if (i === 4) {
+          // Currencies
+        } else if (i === 5) {
+          // Desp
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let inpElem = dbgelem.query(By.directive(NzInputDirective));
+          expect(inpElem).toBeTruthy();
+
+          typeInElement('Test', inpElem.nativeElement);
+          fixture.detectChanges();
+          expect(component.listItems[0].Desp).toEqual('Test');
+
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(5);
+        } else if (i === 6) {
+          // Control center
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(6);
+        } else if (i === 7) {
+          // Order
+          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          let select = dbgelem.query(By.directive(NzSelectComponent));
+          expect(select).toBeTruthy();
+          let selectComponent = select.injector.get(NzSelectComponent);
+          expect(selectComponent).toBeTruthy();
+          select.nativeElement.click();
+          fixture.detectChanges();
+          overlayContainerElement.querySelector('li')!.click();
+          fixture.detectChanges();
+
+          flush();
+          fixture.detectChanges();
+          expect(component.onChange).toHaveBeenCalledTimes(7);
+        }
+      }
+
+      flush();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

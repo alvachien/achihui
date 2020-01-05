@@ -8,6 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
@@ -15,6 +16,7 @@ import { DocumentNormalCreateComponent } from './document-normal-create.componen
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -27,6 +29,7 @@ describe('DocumentNormalCreateComponent', () => {
   let fetchAllAccountsSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllOrdersSpy: any;
+  let createDocumentSpy: any;
   const modalClassName = '.ant-modal-body';
 
   beforeAll(() => {
@@ -56,6 +59,7 @@ describe('DocumentNormalCreateComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
+      'createDocument',
     ]);
     fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));
@@ -64,6 +68,7 @@ describe('DocumentNormalCreateComponent', () => {
     fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllControlCentersSpy = odataService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = odataService.fetchAllOrders.and.returnValue(of([]));
+    createDocumentSpy = odataService.createDocument.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
       imports: [
@@ -79,6 +84,7 @@ describe('DocumentNormalCreateComponent', () => {
         DocumentHeaderComponent,
         DocumentItemsComponent,
         DocumentNormalCreateComponent,
+        MessageDialogComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -87,9 +93,14 @@ describe('DocumentNormalCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
-      ]
-    })
-    .compileComponents();
+      ],      
+    });
+    
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -132,32 +143,70 @@ describe('DocumentNormalCreateComponent', () => {
 
     it('should set the default values: base currency, date, and so on', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.docForm.get('headerControl')).toBeTruthy('Expect header control has been initialized');
       expect(component.docForm.get('itemControl')).toBeTruthy('Expect item control has been initialized');
-      let docobj: Document = component.docForm.get('headerControl').value as Document;
-      expect(docobj).toBeTruthy();
-      expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      flush();
+      fixture.detectChanges();
+
+      const currval = component.docForm.get('headerControl').get('currControl').value;
+      expect(currval).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
-    // it('step 1: should not allow go to second step if there are failure in first step', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
+    it('should popup error dialog when click save button and form validation fails', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
 
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   expect(component._stepper.selectedIndex).toBe(0);
+      component.onSave();
+      flush();
+      fixture.detectChanges();
 
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
+      let dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      expect(dlgElement).toBeTruthy();
+      flush();
+    }));
 
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
+    it('should save document for base currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
 
-    //   expect(component.firstFormGroup.valid).toBe(false);
-    //   expect(component._stepper.selectedIndex).toBe(0);
-    // }));
+      // Header
+      component.docForm.get('headerControl').setValue({
+        dateControl: new Date(2020, 2, 2),
+        despControl: 'Test on 2nd May, 2020',        
+      });
+      component.docForm.get('headerControl').markAsDirty();
+      // Items
+      let aritems: DocumentItem[] = [];
+      aritems.push({
+        ItemId: 1,
+        AccountId: fakeData.finAccounts[0].Id,
+        Desp: 'Test 1',
+        TranAmount: 200,
+        ControlCenterId: fakeData.finControlCenters[0].Id,
+      } as DocumentItem);
+      component.docForm.get('itemControl').setValue(aritems);
+      component.docForm.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Save the document
+      component.onSave();
+      flush();
+      fixture.detectChanges();
+
+      // Shall no dialog
+      let dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      expect(dlgElement).toBeFalsy();
+
+      // Check the result
+      expect(createDocumentSpy).toHaveBeenCalled();
+    }));
 
     // it('step 1: should go to second step for valid base currency case', fakeAsync(() => {
     //   fixture.detectChanges(); // ngOnInit
@@ -335,7 +384,7 @@ describe('DocumentNormalCreateComponent', () => {
     // Reset should work
   });
 
-  describe('Exception case handling', () => {
+  describe('1. Exception case handling', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 

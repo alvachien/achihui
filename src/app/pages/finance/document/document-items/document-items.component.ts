@@ -7,7 +7,6 @@ import { Account, ControlCenter, Order, AccountCategory, UIMode, Currency,
   TranType, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum, financeDocTypeNormal,
   UIAccountForSelection, UIOrderForSelection,
 } from '../../../../model';
-import { FinanceOdataService } from '../../../../services';
 
 @Component({
   selector: 'hih-fin-document-items',

@@ -214,7 +214,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     if (val) {
       this.headerForm.get('docTypeControl').setValue(val.DocType ? val.DocType : this.docType);
-      this.headerForm.get('dateControl').setValue(val.TranDate);
+      this.headerForm.get('dateControl').setValue(val.TranDate ? val.TranDate.toDate() : '');
       this.headerForm.get('despControl').setValue(val.Desp);
       this.headerForm.get('currControl').setValue(val.TranCurr);
       this.headerForm.get('exgControl').setValue(val.ExgRate);
@@ -262,12 +262,16 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
 
   onCurrencyChange(event: Currency): void {
-    this.currencyChanged.emit(event.Currency);
-    this.onChange();
+    if (event && event.Currency) {
+      this.currencyChanged.emit(event.Currency);
+      this.onChange();  
+    }
   }
   onCurrency2Change(event: Currency): void {
-    this.currency2Changed.emit(event.Currency);
-    this.onChange();
+    if (event && event.Currency) {
+      this.currency2Changed.emit(event.Currency);
+      this.onChange();
+    }
   }
 
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {

@@ -818,6 +818,14 @@ export class FakeDataHelper {
     // 83	NULL	投资手续费支出	1	25	理财产品等投资手续费
     // 84	NULL	房租收入	0	5	房租收入等
     // 85	NULL	房租支出	1	11	房租支出等
+    this._finTranType.forEach((value: any, index: number) => {
+      if (!value.ParId) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, this._finTranType, 1);
+      }
+    });
 
     // Account category
     this._finAccountCategories = [];
@@ -1498,5 +1506,15 @@ export class FakeDataHelper {
     doc.Items = [ditem];
 
     return doc;
+  }
+  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number): void {
+    listTranType.forEach((value: any, index: number) => {
+      if (value.ParId === par.Id) {
+        value.HierLevel = curLvl;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
+      }
+    });
   }
 }
