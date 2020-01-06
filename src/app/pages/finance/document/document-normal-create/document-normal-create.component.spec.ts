@@ -9,13 +9,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import * as moment from 'moment';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, Document, DocumentItem } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentNormalCreateComponent', () => {
@@ -152,7 +153,8 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      expect(component.).toEqual(fakeData.chosedHome.BaseCurrency);
+      const docobj: Document = component.docForm.get('headerControl').value as Document;
+      expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
     it('should popup error dialog when click save button and form validation fails', fakeAsync(() => {
@@ -175,20 +177,21 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       // Header
-      component.docForm.get('headerControl').setValue({
-        dateControl: new Date(2020, 2, 2),
-        despControl: 'Test on 2nd May, 2020',        
-      });
+      let docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      component.docForm.get('headerControl').setValue(docheader);
       component.docForm.get('headerControl').markAsDirty();
       // Items
       let aritems: DocumentItem[] = [];
-      aritems.push({
-        ItemId: 1,
-        AccountId: fakeData.finAccounts[0].Id,
-        Desp: 'Test 1',
-        TranAmount: 200,
-        ControlCenterId: fakeData.finControlCenters[0].Id,
-      } as DocumentItem);
+      let aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
       component.docForm.get('itemControl').setValue(aritems);
       component.docForm.get('itemControl').markAsDirty();
       tick();
@@ -207,130 +210,46 @@ describe('DocumentNormalCreateComponent', () => {
       expect(createDocumentSpy).toHaveBeenCalled();
     }));
 
-    // it('step 1: should go to second step for valid base currency case', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
+    it('should save document for foreign currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
 
-    //   let curdoc: Document = new Document();
-    //   curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
-    //   curdoc.Desp = 'test';
-    //   curdoc.TranDate = moment();
-    //   component.firstFormGroup.get('headerControl').setValue(curdoc);
-    //   component.firstFormGroup.get('headerControl').updateValueAndValidity();
-    //   expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
-    //   component.firstFormGroup.updateValueAndValidity();
-    //   fixture.detectChanges();
+      // Header
+      let docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = 'USD';
+      docheader.ExgRate = 634;
+      component.docForm.get('headerControl').setValue(docheader);
+      component.docForm.get('headerControl').markAsDirty();
+      // Items
+      let aritems: DocumentItem[] = [];
+      let aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.docForm.get('itemControl').setValue(aritems);
+      component.docForm.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
 
-    //   expect(component.firstFormGroup.valid).toBe(true);
+      // Save the document
+      component.onSave();
+      flush();
+      fixture.detectChanges();
 
-    //   // Click the next button
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   expect(component._stepper.selectedIndex).toBe(0);
+      // Shall no dialog
+      let dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      expect(dlgElement).toBeFalsy();
 
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-    //   flush();
-    //   fixture.detectChanges();
-
-    //   expect(component._stepper.selectedIndex).toBe(1);
-    // }));
-
-    // it('step 1: should go to second step for valid foreign currency case', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
-
-    //   let curdoc: Document = new Document();
-    //   curdoc.TranCurr = 'USD';
-    //   curdoc.Desp = 'test';
-    //   curdoc.TranDate = moment();
-    //   curdoc.ExgRate = 654.23;
-    //   component.firstFormGroup.get('headerControl').setValue(curdoc);
-    //   component.firstFormGroup.updateValueAndValidity();
-    //   fixture.detectChanges();
-
-    //   // Click the next button
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   expect(component._stepper.selectedIndex).toBe(0);
-
-    //   nextButtonNativeEl.click();
-    //   flush();
-    //   fixture.detectChanges();
-
-    //   expect(component._stepper.selectedIndex).toBe(1);
-    // }));
-
-    // it('step 2: should not allow go to third step if there are no items in second step', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
-
-    //   // Now in step 1
-    //   expect(component._stepper.selectedIndex).toBe(0);
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
-
-    //   let curdoc: Document = new Document();
-    //   curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
-    //   curdoc.Desp = 'test';
-    //   curdoc.TranDate = moment();
-    //   component.firstFormGroup.get('headerControl').setValue(curdoc);
-    //   component.firstFormGroup.updateValueAndValidity();
-    //   fixture.detectChanges();
-
-    //   // Click the next button > second step
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // Now in step 2, click the next button > third step
-    //   expect(component._stepper.selectedIndex).toBe(1);
-    //   nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // It shall be stop at step 2.
-    //   expect(component._stepper.selectedIndex).toBe(1);
-    // }));
-
-    // it('step 2: should not allow go to third step if there are items without account', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
-
-    //   let curdoc: Document = new Document();
-    //   curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
-    //   curdoc.Desp = 'test';
-    //   curdoc.TranDate = moment();
-    //   component.firstFormGroup.get('headerControl').setValue(curdoc);
-    //   component.firstFormGroup.updateValueAndValidity();
-    //   fixture.detectChanges();
-
-    //   // Click the next button > second step
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // Setup the second step
-    //   // Add item
-    //   let ditem: DocumentItem = new DocumentItem();
-    //   ditem.ItemId = 1;
-    //   ditem.TranAmount = 200;
-    //   ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-    //   ditem.TranType = 2;
-    //   ditem.Desp = 'test';
-    //   component.itemFormGroup.get('itemControl').setValue([ditem]);
-    //   component.itemFormGroup.get('itemControl').updateValueAndValidity();
-    //   expect(component.itemFormGroup.valid).toBeFalsy();
-    //   fixture.detectChanges();
-
-    //   // Then, click the next button > third step
-    //   nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // It shall not allow
-    //   expect(component._stepper.selectedIndex).toBe(1);
-    // }));
+      // Check the result
+      expect(createDocumentSpy).toHaveBeenCalled();
+    }));
 
     // // Asset account should not allowed
 
@@ -339,46 +258,6 @@ describe('DocumentNormalCreateComponent', () => {
     // // System tran type should not allowed
 
     // // Order which not valid in this date shall not allow
-
-    // it('step 2: should allow go third step if items are valid', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngOnInit
-    //   fixture.detectChanges();
-
-    //   let curdoc: Document = new Document();
-    //   curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
-    //   curdoc.Desp = 'test';
-    //   curdoc.TranDate = moment();
-    //   component.firstFormGroup.get('headerControl').setValue(curdoc);
-    //   component.firstFormGroup.updateValueAndValidity();
-    //   fixture.detectChanges();
-
-    //   // Click the next button > second step
-    //   let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // Add items
-    //   let ditem: DocumentItem = new DocumentItem();
-    //   ditem.AccountId = 11;
-    //   ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-    //   ditem.TranType = 2;
-    //   ditem.Desp = 'test';
-    //   ditem.TranAmount = 20;
-    //   ditem.ItemId = 1;
-    //   component.itemFormGroup.get('itemControl').setValue([ditem]);
-    //   component.itemFormGroup.get('itemControl').updateValueAndValidity();
-    //   fixture.detectChanges();
-    //   expect(component.itemFormGroup.valid).toBeTruthy();
-
-    //   // Then, click the next button > third step
-    //   nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-    //   nextButtonNativeEl.click();
-    //   fixture.detectChanges();
-
-    //   // It shall not allowed
-    //   expect(component._stepper.selectedIndex).toBe(2);
-    // }));
 
     // Reset should work
   });

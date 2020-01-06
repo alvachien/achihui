@@ -45,6 +45,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
 
+  get value(): DocumentItem[] {
+    return this.listItems;
+  }
+
   @Input()
   get arUIAccounts(): UIAccountForSelection[] {
     return this._arUIAccounts;

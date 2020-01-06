@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import {
-  financeDocTypeNormal, UIMode, Account, Document, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
+  financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection,
 } from '../../../../model';
@@ -117,12 +117,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     // Save the doc
     const detailObject: Document = this._generateDocObject();
     if (!detailObject.onVerify({
-      ControlCenters: this.odataService.ControlCenters,
-      Orders: this.odataService.Orders,
-      Accounts: this.odataService.Accounts,
-      DocumentTypes: this.odataService.DocumentTypes,
-      TransactionTypes: this.odataService.TranTypes,
-      Currencies: this.odataService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranType,
+      Currencies: this.arCurrencies,
       BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
@@ -144,11 +144,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDocObject(): Document {
-    const detailObject: Document = this.docForm.get('headerControl').value;
+    const detailObject: Document = this.docForm.get('headerControl').value as Document;
     detailObject.HID = this.homeService.ChosedHome.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.docForm.get('itemControl').value;
+    detailObject.Items = this.docForm.get('itemControl').value as DocumentItem[];
 
     return detailObject;
   }
 }
+

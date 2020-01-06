@@ -112,7 +112,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   get isCurrencyExchangeDocument(): boolean {
     return this.docType === financeDocTypeCurrencyExchange;
   }
-  get documentHeader(): Document {
+  get value(): Document {
     this._instanceObject.DocType = this.headerForm.get('docTypeControl').value;
     if (!this._instanceObject.DocType && this.docType) {
       this._instanceObject.DocType = this.docType;
@@ -199,7 +199,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent onChange...', ConsoleLogTypeEnum.debug);
     if (this._onChange) {
-      this._onChange(this.documentHeader);
+      this._onChange(this.value);
     }
   }
   @HostListener('blur') onTouched(): void {

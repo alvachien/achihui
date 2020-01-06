@@ -225,7 +225,7 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
       fixture.detectChanges();
 
-      curDocument = component.documentHeader;
+      curDocument = component.value;
       expect(curDocument).toBeTruthy();
       expect(curDocument.DocType).toEqual(financeDocTypeNormal);
       expect(curDocument.Desp).toEqual('test');
@@ -249,7 +249,7 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exgControl').setValue(624.22);
       fixture.detectChanges();
 
-      curDocument = component.documentHeader;
+      curDocument = component.value;
       expect(curDocument).toBeTruthy();
       expect(curDocument.DocType).toEqual(financeDocTypeNormal);
       expect(curDocument.Desp).toEqual('Test');
@@ -470,7 +470,7 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exg2Control').setValue(634.56);
       fixture.detectChanges();
 
-      curDocument = component.documentHeader;
+      curDocument = component.value;
       expect(curDocument).toBeTruthy();
       expect(curDocument.DocType).toEqual(financeDocTypeCurrencyExchange);
       expect(curDocument.Desp).toEqual('test');
@@ -499,7 +499,7 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exgp2Control').setValue(true);
       fixture.detectChanges();
 
-      curDocument = component.documentHeader;
+      curDocument = component.value;
       expect(curDocument).toBeTruthy();
       expect(curDocument.DocType).toEqual(financeDocTypeCurrencyExchange);
       expect(curDocument.Desp).toEqual('Test');
