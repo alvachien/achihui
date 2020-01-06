@@ -261,15 +261,25 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return { invalidForm: {valid: false, message: 'Header fields are invalid'} };
   }
 
-  onCurrencyChange(event: Currency): void {
-    if (event && event.Currency) {
-      this.currencyChanged.emit(event.Currency);
-      this.onChange();  
+  onCurrencyChange(event: any): void {
+    if (event) {
+      if (event.Currency) {
+        this.currencyChanged.emit((event as Currency).Currency);
+      } else {
+        this.currencyChanged.emit(event);
+      }
+
+      this.onChange();
     }
   }
-  onCurrency2Change(event: Currency): void {
-    if (event && event.Currency) {
-      this.currency2Changed.emit(event.Currency);
+  onCurrency2Change(event: any): void {
+    if (event) {
+      if (event.Currency) {
+        this.currency2Changed.emit((event as Currency).Currency);
+      } else {
+        this.currency2Changed.emit(event);
+      }
+
       this.onChange();
     }
   }

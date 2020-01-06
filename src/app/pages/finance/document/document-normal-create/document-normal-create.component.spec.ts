@@ -152,8 +152,7 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      const currval = component.docForm.get('headerControl').get('currControl').value;
-      expect(currval).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
     it('should popup error dialog when click save button and form validation fails', fakeAsync(() => {
