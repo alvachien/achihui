@@ -10,9 +10,6 @@
         <ng-container *ngIf="control.hasError('required')">
           Please input your username!
         </ng-container>
-        <ng-container *ngIf="control.hasError('duplicated')">
-          The username is redundant!
-        </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -64,6 +61,9 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exgTpl">
       <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg" 
         formControlName="exgControl" (ngModelChange)="onChange()"></nz-input-number>
+      <ng-template #exgTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Input is required</ng-container>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
 
@@ -73,28 +73,31 @@
       <label nz-checkbox formControlName="exgpControl" id="exgrate_plan" (ngModelChange)="onChange()">
         {{'Finance.ProposedExchangeRate' | transloco}}
       </label>
-      <ng-template #exgpControl let-control>
-        <ng-container *ngIf="control.hasError('required')">Input is required</ng-container>
-      </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Currency 2 -->
   <nz-form-item *ngIf="isCurrencyExchangeDocument">
     <nz-form-label [nzSpan]="7" nzRequired nzFor="idCurrency2">{{'Finance.Currency' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your currency">
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="curr2Tpl">
       <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onCurrency2Change($event)">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
+      <ng-template #curr2Tpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Input is required</ng-container>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Exchange rate -->
   <nz-form-item *ngIf="tranCurrency2 && isForeignCurrency2">
     <nz-form-label [nzSpan]="7" nzRequired nzFor="idexg2">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please input exchange rate">
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exg2Tpl">
       <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Exchange rate'" [nzStep]="0.001" id="idexg2"
        formControlName="exg2Control" (ngModelChange)="onChange()"></nz-input-number>
+      <ng-template #exg2Tpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Input is required</ng-container>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
 
