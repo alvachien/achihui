@@ -22,7 +22,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
-  public docForm: FormGroup;
+  public headerForm: FormGroup;
+  public itemsForm: FormGroup;
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
   public arUIOrders: UIOrderForSelection[] = [];
@@ -35,6 +36,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
   public baseCurrency: string;
+  public current = 0;
 
   constructor(
     public homeService: HomeDefOdataService,
@@ -43,8 +45,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
-    this.docForm = new FormGroup({
+    this.headerForm = new FormGroup({
       headerControl: new FormControl(new Document(), Validators.required),
+    });
+    this.itemsForm = new FormGroup({
       itemControl: new FormControl([]),
     });
   }
@@ -144,11 +148,23 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDocObject(): Document {
-    const detailObject: Document = this.docForm.get('headerControl').value as Document;
+    const detailObject: Document = this.headerForm.get('headerControl').value as Document;
     detailObject.HID = this.homeService.ChosedHome.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.docForm.get('itemControl').value as DocumentItem[];
+    detailObject.Items = this.itemsForm.get('itemControl').value as DocumentItem[];
 
     return detailObject;
+  }
+
+  pre(): void {
+    this.current -= 1;
+  }
+
+  next(): void {
+    this.current += 1;
+  }
+
+  done(): void {
+    console.log('done');
   }
 }

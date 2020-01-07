@@ -13,13 +13,35 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<form nz-form [formGroup]="docForm">
-  <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
-    [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
-  </hih-fin-document-header>
-  <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
-    [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
-    [arTranType]="arTranType" [arUIOrders]="arUIOrders"
-    [docType]="curDocType">
-  </hih-fin-document-items>
-</form>
+<nz-steps [nzCurrent]="current">
+  <nz-step nzTitle="Header"></nz-step>
+  <nz-step nzTitle="Items"></nz-step>
+  <nz-step nzTitle="Sending"></nz-step>
+  <nz-step nzTitle="Result"></nz-step>
+</nz-steps>
+<div class="steps-content">
+  <form nz-form [formGroup]="headerForm" [hidden]="current !== 0">
+    <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
+      [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
+    </hih-fin-document-header>    
+  </form>
+  <form nz-form [formGroup]="itemsForm" [hidden]="current !== 1">
+    <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
+      [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
+      [arTranType]="arTranType" [arUIOrders]="arUIOrders"
+      [docType]="curDocType">
+    </hih-fin-document-items>
+  </form>
+</div>
+
+<div class="steps-action">
+  <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+    <span>Previous</span>
+  </button>
+  <button nz-button nzType="default" (click)="next()" *ngIf="current < 3">
+    <span>Next</span>
+  </button>
+  <button nz-button nzType="primary" (click)="done()" *ngIf="current === 3">
+    <span>Done</span>
+  </button>
+</div>
