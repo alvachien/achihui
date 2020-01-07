@@ -220,9 +220,15 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = 'USD';
-      docheader.ExgRate = 634;
       component.docForm.get('headerControl').setValue(docheader);
       component.docForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      docheader.ExgRate = 634;
+      component.docForm.get('headerControl').setValue(docheader);
+      tick();
+      fixture.detectChanges();
+
       // Items
       let aritems: DocumentItem[] = [];
       let aritem: DocumentItem = new  DocumentItem();

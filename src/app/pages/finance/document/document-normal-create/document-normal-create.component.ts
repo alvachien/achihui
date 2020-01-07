@@ -152,4 +152,3 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     return detailObject;
   }
 }
-
