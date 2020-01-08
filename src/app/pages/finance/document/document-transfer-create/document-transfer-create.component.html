@@ -1,1 +1,93 @@
-<p>document-transfer-create works!</p>
+<nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+  </nz-page-header>
+  
+  <nz-steps [nzCurrent]="currentStep">
+    <nz-step [nzTitle]="'Finance.TransferFrom' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Finance.TransferTo' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+    <nz-step nzTitle="Result"></nz-step>
+  </nz-steps>
+  
+  <div class="steps-content">
+    <!-- Header -->
+    <form nz-form [formGroup]="headerForm" [hidden]="currentStep !== 0">
+      <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
+        [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
+      </hih-fin-document-header>    
+    </form>
+  
+    <!-- Items -->
+    <form nz-form [formGroup]="itemsForm" [hidden]="currentStep !== 1">
+      <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
+        [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
+        [arTranType]="arTranType" [arUIOrders]="arUIOrders"
+        [docType]="curDocType">
+      </hih-fin-document-items>
+    </form>
+  
+    <!-- Review and Confirm -->
+    <div [hidden]="currentStep !== 2">
+      <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
+        <div>
+          <h3 nz-title>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
+          <h2 nz-title>{{'Common.Description' |transloco}}: {{confirmInfo?.tranDesp}}</h2>
+          <h2 nz-title>{{'Finance.Incoming' | transloco}}: {{confirmInfo?.inAmount}} {{confirmInfo?.tranCurrency}}</h2>
+          <h2 nz-title>{{'Finance.Outgoing' | transloco}}: {{confirmInfo?.outAmount}} {{confirmInfo?.tranCurrency}}</h2>
+        </div>
+      </nz-spin>
+    </div>
+  
+    <!-- Result -->
+    <div [hidden]="currentStep !== 3">
+      <div *ngIf="docCreateSucceed">
+        <nz-result  nzStatus="success"
+          [nzTitle]="'Finance.DocumentPosted' | transloco"
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+          <div nz-result-extra>
+            <button nz-button nzType="primary">Display</button>
+            <button nz-button>Create another Document</button>
+          </div>
+        </nz-result>  
+      </div>
+      <div *ngIf="!docCreateSucceed">
+        <nz-result nzTitle="Submission Failed"
+          nzStatus="error"
+          nzSubTitle="Please check and modify the following information before resubmitting.">
+          <div nz-result-content>
+            <div class="desc">
+              <h4 nz-title>The content you submitted has the following error:</h4>
+              <p nz-paragraph>
+                <i nz-icon nzType="close-circle"></i>
+                Your account has been frozen <a>Thaw immediately &gt;</a>
+              </p>
+              <p nz-paragraph>
+                <i nz-icon nzType="close-circle"></i>
+                Your account is not yet eligible to apply <a>Apply immediately &gt;</a>
+              </p>
+            </div>
+          </div>
+          <div nz-result-extra>
+            <button nz-button nzType="primary">Go Console</button>
+            <button nz-button>Buy Again</button>
+          </div>
+        </nz-result>
+      </div>
+    </div>
+  </div>
+  
+  <div class="steps-action">
+    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+      <span>{{'Common.PreviousButton' | transloco}}</span>
+    </button>
+    <button nz-button nzType="primary" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="currentStep < 3">
+      <span>{{'Common.NextButton' | transloco}}</span>
+    </button>
+  </div>
+  

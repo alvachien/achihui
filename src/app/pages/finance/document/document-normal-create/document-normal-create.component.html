@@ -8,22 +8,23 @@
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
 </nz-page-header>
 
-<nz-steps [nzCurrent]="current">
-  <nz-step nzTitle="Header"></nz-step>
-  <nz-step nzTitle="Items"></nz-step>
-  <nz-step nzTitle="Review and Confirm"></nz-step>
+<nz-steps [nzCurrent]="currentStep">
+  <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
   <nz-step nzTitle="Result"></nz-step>
 </nz-steps>
+
 <div class="steps-content">
   <!-- Header -->
-  <form nz-form [formGroup]="headerForm" [hidden]="current !== 0">
+  <form nz-form [formGroup]="headerForm" [hidden]="currentStep !== 0">
     <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
       [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
     </hih-fin-document-header>    
   </form>
 
   <!-- Items -->
-  <form nz-form [formGroup]="itemsForm" [hidden]="current !== 1">
+  <form nz-form [formGroup]="itemsForm" [hidden]="currentStep !== 1">
     <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
       [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
       [arTranType]="arTranType" [arUIOrders]="arUIOrders"
@@ -32,23 +33,26 @@
   </form>
 
   <!-- Review and Confirm -->
-  <div [hidden]="current !== 2">
-    <nz-spin nzSimple [nzSize]="'large'" [nzSpinning]="isDocPosting">
+  <div [hidden]="currentStep !== 2">
+    <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
       <div>
-        Click next buttont to submit.
+        <h3 nz-title>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
+        <h2 nz-title>{{'Common.Description' |transloco}}: {{confirmInfo?.tranDesp}}</h2>
+        <h2 nz-title>{{'Finance.Incoming' | transloco}}: {{confirmInfo?.inAmount}} {{confirmInfo?.tranCurrency}}</h2>
+        <h2 nz-title>{{'Finance.Outgoing' | transloco}}: {{confirmInfo?.outAmount}} {{confirmInfo?.tranCurrency}}</h2>
       </div>
     </nz-spin>
   </div>
 
   <!-- Result -->
-  <div [hidden]="current !== 3">
+  <div [hidden]="currentStep !== 3">
     <div *ngIf="docCreateSucceed">
       <nz-result  nzStatus="success"
-        nzTitle="Successfully Purchased Cloud Server ECS!"
-        nzSubTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.">
+        [nzTitle]="'Finance.DocumentPosted' | transloco"
+        [nzSubTitle]="'Finance.DocumentPosted' | transloco">
         <div nz-result-extra>
-          <button nz-button nzType="primary">Go Console</button>
-          <button nz-button>Buy Again</button>
+          <button nz-button nzType="primary">Display</button>
+          <button nz-button>Create another Document</button>
         </div>
       </nz-result>  
     </div>
@@ -79,10 +83,10 @@
 </div>
 
 <div class="steps-action">
-  <button nz-button (click)="pre()" *ngIf="current > 0 && current < 3">
-    <span>Previous</span>
+  <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+    <span>{{'Common.PreviousButton' | transloco}}</span>
   </button>
-  <button nz-button nzType="primary" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="current < 3">
-    <span>Next</span>
+  <button nz-button nzType="primary" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="currentStep < 3">
+    <span>{{'Common.NextButton' | transloco}}</span>
   </button>
 </div>

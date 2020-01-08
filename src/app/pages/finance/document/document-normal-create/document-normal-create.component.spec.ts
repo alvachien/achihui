@@ -157,6 +157,100 @@ describe('DocumentNormalCreateComponent', () => {
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
+    it('should not go to next page if header is not valid', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      // Shall not allow go the next page
+      expect(component.nextButtonEnabled).toBeFalse();
+
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(0);
+    }));
+
+    it('should go to next page if header is valid for document with local currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Shall not allow go the next page
+      expect(component.nextButtonEnabled).toBeFalse();
+
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(1);
+    }));
+
+    it('should not go to next page if item is invalid', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Shall not allow go the next page
+      expect(component.nextButtonEnabled).toBeFalse();
+
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(1);
+
+      expect(component.nextButtonEnabled).toBeFalse();
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(1);
+    }));
+
+    it('should go to next page if item is valid', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Shall not allow go the next page
+      expect(component.nextButtonEnabled).toBeFalse();
+
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(1);
+
+      // Items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemsForm.get('itemControl').setValue(aritems);
+      component.itemsForm.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      component.next();
+      expect(component.currentStep).toEqual(2);
+    }));
+
     xit('should popup error dialog when click save button and form validation fails', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit

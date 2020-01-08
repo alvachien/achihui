@@ -11,7 +11,6 @@ import {
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { takeUntil } from 'rxjs/operators';
-import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-normal-create',
@@ -36,9 +35,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
   public baseCurrency: string;
-  public current = 0;
+  public currentStep = 0;
   public docCreateSucceed = false;
   public isDocPosting = false;
+  // Step: Confirm
+  public confirmInfo: any = {};
 
   constructor(
     public homeService: HomeDefOdataService,
@@ -59,9 +60,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     return moment();
   }
   get nextButtonEnabled(): boolean {
-    if (this.current === 0) {
+    if (this.currentStep === 0) {
       return this.headerForm.valid;
-    } else if (this.current === 1) {
+    } else if (this.currentStep === 1) {
       return this.itemsForm.valid;
     } else {
       return true;
@@ -105,7 +106,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         // Set the default currency
         this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
       }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemsComponent ngOnInit, forkJoin, ${error}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
         this.modalService.create({
           nzTitle: 'Common.Error',
@@ -146,7 +147,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.docCreateSucceed = false;
       // TBD. Add error information
       this.isDocPosting = false;
-      this.current = 3;
+      this.currentStep = 3;
 
       return;
     }
@@ -162,10 +163,59 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.docCreateSucceed = false;
     }, () => {
       this.isDocPosting = false;
-      this.current = 3;
+      this.currentStep = 3;
     });
   }
 
+  pre(): void {
+    this.currentStep -= 1;
+  }
+
+  next(): void {
+    switch(this.currentStep) {
+      case 0: // header
+        if (this.headerForm.valid) {
+          this.currentStep ++;
+        }
+        break;
+      case 1: // item
+        if (this.itemsForm.valid) {
+          // Update confirm info
+          this._updateConfirmInfo();
+
+          this.currentStep ++;
+        }
+        break;
+      case 2: // Review and confirm
+        this.isDocPosting = true;
+        this.onSave();
+        break;
+      default:
+        break;
+    }
+  }
+
+  private _updateConfirmInfo(): void {
+    let doc = this._generateDocObject();
+    this.confirmInfo.tranDateString = doc.TranDateFormatString;
+    this.confirmInfo.tranDesp = doc.Desp;
+    this.confirmInfo.tranCurrency = doc.TranCurr;
+    this.confirmInfo.inAmount = 0;
+    this.confirmInfo.outAmount = 0;
+
+    doc.Items.forEach((val: DocumentItem) => {
+      let ttid: number = this.arTranType.findIndex((tt: TranType) => {
+        return tt.Id === val.TranType;
+      });
+      if (ttid !== -1) {
+        if (this.arTranType[ttid].Expense) {
+          this.confirmInfo.outAmount += val.TranAmount;
+        } else {
+          this.confirmInfo.inAmount += val.TranAmount;
+        }
+      }
+    });
+  }
   private _generateDocObject(): Document {
     const detailObject: Document = this.headerForm.get('headerControl').value as Document;
     detailObject.HID = this.homeService.ChosedHome.ID;
@@ -173,23 +223,5 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     detailObject.Items = this.itemsForm.get('itemControl').value as DocumentItem[];
 
     return detailObject;
-  }
-
-  pre(): void {
-    this.current -= 1;
-  }
-
-  next(): void {
-    if (this.current === 2) {
-      // Review and confirm
-      this.isDocPosting = true;
-      this.onSave();
-    } else {
-      this.current += 1;
-    }
-  }
-
-  done(): void {
-    console.log('done');
   }
 }
