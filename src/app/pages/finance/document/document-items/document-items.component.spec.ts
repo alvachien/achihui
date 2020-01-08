@@ -109,7 +109,7 @@ describe('DocumentItemsComponent', () => {
       tick();
       fixture.detectChanges();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.noitems).toBeTruthy();
     }));
@@ -119,7 +119,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
@@ -127,7 +127,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutaccount).toBeTruthy('Expect itemwithoutaccount is true');
     }));
@@ -137,7 +137,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -146,7 +146,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithouttrantype).toBeTruthy('Expect itemwithouttrantype is true');
     }));
@@ -156,7 +156,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       // ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -165,7 +165,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutamount).toBeTruthy('Expect itemwithoutamount is true');
     }));
@@ -175,7 +175,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       // ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -184,7 +184,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
     }));
@@ -194,7 +194,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -204,7 +204,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
     }));
@@ -214,7 +214,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -223,7 +223,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutdesp).toBeTruthy('Expect itemwithoutdesp is true');
     }));
@@ -233,7 +233,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -254,7 +254,7 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      let ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -263,7 +263,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      let err: any = component.validate(undefined);
+      const err: any = component.validate(undefined);
       expect(err).toBeNull();
     }));
     it('createItem method', fakeAsync(() => {

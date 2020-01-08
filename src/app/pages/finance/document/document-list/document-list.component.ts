@@ -22,7 +22,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listOfDocs: Document[] = [];
   selectedDocScope: OverviewScopeEnum;
   isReload = false;
-  pageIndex = 1;
+  pageIndex = 0;
   pageSize = 10;
   totalDocumentCount = 1;
   mapOfExpandData: { [key: string]: boolean } = {};
@@ -95,7 +95,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   fetchData(reset: boolean = false): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...', ConsoleLogTypeEnum.debug);
     if (reset) {
-      this.pageIndex = 1;
+      this.pageIndex = 0;
     }
     this.isLoadingResults = true;
     const { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
@@ -113,7 +113,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         } else {
           this.totalDocumentCount = 0;
           this.listOfDocs = [];
-        }        
+        }
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
           ConsoleLogTypeEnum.error);

@@ -1,4 +1,11 @@
 <ng-container class="achih-control-full-width" *transloco="let t">
+  <div *ngIf="controlError">
+    <nz-alert nzType="error"
+      [nzMessage]="t(controlError.value)"
+      [nzDescription]="t(controlError.value)"
+      nzShowIcon>
+    </nz-alert>
+  </div>
   <div class="toolbar_buttons">
     <button nz-button nzType="primary" [disabled]="!isAddItemAllowed" (click)="onCreateDocItem()">{{'Finance.CreateItem' | transloco}}</button>
   </div>
@@ -24,26 +31,62 @@
           <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
         </td>
         <td>
-          <nz-select [nzDisabled]="!isAccountIDEditable" [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
-          </nz-select>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="accountTpl">
+              <nz-select [nzDisabled]="!isAccountIDEditable" [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
+                <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+              </nz-select>
+              <ng-template #accountTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
         </td>
         <td>
-          <nz-select [nzDisabled]="!isTranTypeEditable" [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
-            <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
-          </nz-select>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="trantypeTpl">
+              <nz-select [nzDisabled]="!isTranTypeEditable" [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
+                <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
+              </nz-select>
+              <ng-template #trantypeTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
         </td>
         <td>
-          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" 
-            [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()" [nzDisabled]="!isAmountEditable">
-          </nz-input-number>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="amountTpl">
+              <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" 
+                [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()" [nzDisabled]="!isAmountEditable">
+              </nz-input-number>
+              <ng-template #amountTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
         </td>
         <td>
           <div *ngIf="!data.UseCurr2">{{tranCurr}}</div>
           <div *ngIf="data.UseCurr2">{{tranCurr2}}</div>  
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="despTpl">
+              <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+              <ng-template #despTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
         </td>
         <td>
           <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable">

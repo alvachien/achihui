@@ -37,6 +37,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
   public current = 0;
+  public docCreateSucceed = false;
+  public isDocPosting = false;
 
   constructor(
     public homeService: HomeDefOdataService,
@@ -55,6 +57,15 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   get curDocDate(): moment.Moment {
     return moment();
+  }
+  get nextButtonEnabled(): boolean {
+    if (this.current === 0) {
+      return this.headerForm.valid;
+    } else if (this.current === 1) {
+      return this.itemsForm.valid;
+    } else {
+      return true;
+    }
   }
 
   ngOnInit() {
@@ -131,7 +142,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
-      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
+      // popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
+      this.docCreateSucceed = false;
+      // TBD. Add error information
+      this.isDocPosting = false;
+      this.current = 3;
 
       return;
     }
@@ -140,10 +155,14 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.odataService.createDocument(detailObject).subscribe((doc) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
+      this.docCreateSucceed = true;
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
         ConsoleLogTypeEnum.error);
+      this.docCreateSucceed = false;
     }, () => {
+      this.isDocPosting = false;
+      this.current = 3;
     });
   }
 
@@ -161,7 +180,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   next(): void {
-    this.current += 1;
+    if (this.current === 2) {
+      // Review and confirm
+      this.isDocPosting = true;
+      this.onSave();
+    } else {
+      this.current += 1;
+    }
   }
 
   done(): void {

@@ -19,6 +19,8 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzResultModule } from 'ng-zorro-antd/result';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { DocumentRoutingModule } from './document-routing.module';
@@ -70,6 +72,8 @@ import { DocumentLoanCreateComponent } from './document-loan-create/document-loa
     NzStepsModule,
     NzInputModule,
     NzInputNumberModule,
+    NzAlertModule,
+    NzResultModule,
     DocumentRoutingModule,
     TranslocoModule,
   ]

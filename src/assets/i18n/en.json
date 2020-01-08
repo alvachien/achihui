@@ -183,7 +183,9 @@
     "MyUncompletedEvents": "My Uncompleted Events",
     "Relationship": "Relationship",
     "TendencyChart": "Tendency Chart",
-    "HIHAuthor": "Writen and Maintained by Alva Chien"
+    "HIHAuthor": "Writen and Maintained by Alva Chien",
+    "FieldIsMandatory": "Please input value to mandatory field",
+    "FieldMaxLength": "Please correct your input as it beyond max length"
   },
   "Sys": {
     "Currency": {
@@ -541,7 +543,8 @@
     "NoExtraInfo": "No extra info",
     "NoTmpDocGenerated": "No template docs, you shall generate them first",
     "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation",
-    "CloseAccountIsNotAllowed": "It is not allowed to close account which status is not normal or the account cannot be manually closed"
+    "CloseAccountIsNotAllowed": "It is not allowed to close account which status is not normal or the account cannot be manually closed",
+    "CurrencyMustDiff": "Currency must different for currency exchange document"
   },
   "Library": {
     "BookCategories": "Book Categories",

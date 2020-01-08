@@ -44,6 +44,25 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arControlCenters: ControlCenter[] = [];
   private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
+  get controlError(): any {
+    const err = this.validate(undefined);
+    if (err) {
+      if (err.noitems) {
+        return { value: 'Finance.NoDocumentItem' };
+      } else if (err.itemwithoutaccount) {
+        return { value: 'Finance.AccountIsMust' };
+      } else if (err.itemwithouttrantype) {
+        return { value: 'Finance.TransactionTypeIsMust' };
+      } else if (err.itemwithoutamount) {
+        return { value: 'Finance.AmountIsMust' };
+      } else if (err.itemwithwrongcostobject) {
+        return { value: 'Finance.EitherControlCenterOrOrder' };
+      } else if (err.itemwithoutdesp) {
+        return { value: 'Finance.DespIsMust' };
+      }
+    }
+    return err;
+  }
 
   get value(): DocumentItem[] {
     return this.listItems;
@@ -267,8 +286,8 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   }
 
   public onDeleteDocItem(di: any): void {
-    let idx: number = -1;
-    let exitems: DocumentItem[] = this.listItems.slice();
+    let idx = -1;
+    const exitems: DocumentItem[] = this.listItems.slice();
     idx = exitems.findIndex((di2: DocumentItem) => {
       return di2.ItemId === di.ItemId;
     });

@@ -171,7 +171,7 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0).key).toEqual('exgControl');
-      expect(errors.GetElement(0).error).toEqual('exchangeRateMissing');
+      expect(errors.GetElement(0).error).toEqual('required');
 
       // Input exchange rate
       component.headerForm.get('exgControl').setValue('300');
@@ -366,7 +366,7 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0).key).toEqual('curr2Control');
-      expect(errors.GetElement(0).error).toEqual('curr2Missing');
+      expect(errors.GetElement(0).error).toEqual('required');
     }));
     it('Currency must be diff', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
@@ -408,7 +408,7 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0).key).toEqual('exg2Control');
-      expect(errors.GetElement(0).error).toEqual('exchangeRateMissing');
+      expect(errors.GetElement(0).error).toEqual('required');
     }));
 
     it('OnChange method', fakeAsync(() => {

@@ -184,10 +184,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.headerForm = new FormGroup({
-      docTypeControl: new FormControl({value: this.docType, disabled: true}, Validators.required),
+      docTypeControl: new FormControl({value: this.docType, disabled: true}, [Validators.required]),
       dateControl: new FormControl(new Date(), [Validators.required]),
       despControl: new FormControl('', [Validators.required, Validators.maxLength(44)]),
-      currControl: new FormControl('', Validators.required),
+      currControl: new FormControl('', [Validators.required]),
       exgControl: new FormControl('', [this.exchangeRateMissingValidator]),
       exgpControl: new FormControl(''),
       curr2Control: new FormControl('', [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
@@ -287,7 +287,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isForeignCurrency) {
       if (!this.headerForm.get('exgControl').value) {
-        return { exchangeRateMissing: true };
+        return { required: true };
       }
     }
 
@@ -296,7 +296,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private exchangeRate2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument && this.isForeignCurrency2) {
       if (!this.headerForm.get('exg2Control').value) {
-        return { exchangeRateMissing: true };
+        return { required: true };
       }
     }
 
@@ -305,7 +305,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private curr2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
       if (!this.headerForm.get('curr2Control').value) {
-        return { curr2Missing: true };
+        return { required: true };
       }
     }
 

@@ -183,7 +183,9 @@
     "MyUncompletedEvents": "我未完成的事务",
     "Relationship": "关系",
     "TendencyChart": "趋势图",
-    "HIHAuthor": "作者: Alva Chien"
+    "HIHAuthor": "作者: Alva Chien",
+    "FieldIsMandatory": "必填字段，请输入值",
+    "FieldMaxLength": "输入值已超出最大长度"
   },
   "Sys": {
     "Currency": {
@@ -541,7 +543,8 @@
     "NoExtraInfo": "没有附加信息",
     "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证",
     "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前",
-    "CloseAccountIsNotAllowed": "不能关闭非正常状态下的账户，也不能关闭不允许手动关闭的账户"
+    "CloseAccountIsNotAllowed": "不能关闭非正常状态下的账户，也不能关闭不允许手动关闭的账户",
+    "CurrencyMustDiff": "货币兑换凭证必须使用两种货币"
   },
   "Library": {
     "BookCategories": "图书种类",
