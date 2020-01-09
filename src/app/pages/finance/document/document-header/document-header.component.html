@@ -60,7 +60,7 @@
 
   <!-- Exchange rate -->
   <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="idexg">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exgTpl">
       <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Finance.ExchangeRate' | transloco" [nzStep]="0.001" id="idexg" 
         formControlName="exgControl" (ngModelChange)="onChange()"></nz-input-number>
@@ -83,7 +83,7 @@
 
   <!-- Currency 2 -->
   <nz-form-item *ngIf="isCurrencyExchangeDocument">
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="idCurrency2">{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="curr2Tpl">
       <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onCurrency2Change($event)">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
@@ -101,7 +101,7 @@
 
   <!-- Exchange rate -->
   <nz-form-item *ngIf="isCurrencyExchangeDocument && tranCurrency2 && isForeignCurrency2">
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="idexg2">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exg2Tpl">
       <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Finance.ExchangeRate' | transloco" [nzStep]="0.001" id="idexg2"
        formControlName="exg2Control" (ngModelChange)="onChange()"></nz-input-number>

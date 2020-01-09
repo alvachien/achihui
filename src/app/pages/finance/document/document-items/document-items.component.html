@@ -62,7 +62,7 @@
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="amountTpl">
               <nz-input-number [nzMin]="0.01" [nzStep]="0.01" [(ngModel)]="data.TranAmount" 
-                [nzPlaceHolder]="'Amount'" (ngModelChange)="onChange()" [nzDisabled]="!isAmountEditable">
+                [nzPlaceHolder]="'Finance.Amount' | transloco" (ngModelChange)="onChange()" [nzDisabled]="!isAmountEditable">
               </nz-input-number>
               <ng-template #amountTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">

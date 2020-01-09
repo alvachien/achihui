@@ -110,7 +110,7 @@ describe('DocumentNormalCreateComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -142,7 +142,7 @@ describe('DocumentNormalCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -157,7 +157,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
-    it('should not go to next page if header is not valid', fakeAsync(() => {
+    it('step 0: should not go to next page if header is not valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -171,7 +171,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.currentStep).toEqual(0);
     }));
 
-    it('should go to next page if header is valid for document with local currency', fakeAsync(() => {
+    it('step 0: should go to next page if header is valid for document with local currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -182,15 +182,48 @@ describe('DocumentNormalCreateComponent', () => {
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl').setValue(docheader);
       component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
 
       // Event call the next
       component.next();
       expect(component.currentStep).toEqual(1);
+
+      flush();
+    }));
+    it('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Shall not allow go the next page
+      expect(component.nextButtonEnabled).toBeFalse();
+
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = 'USD';
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      docheader.ExgRate = 653;
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Event call the next
+      component.next();
+      expect(component.currentStep).toEqual(1);
+
+      flush();
     }));
 
-    it('should not go to next page if item is invalid', fakeAsync(() => {
+    it('step 1: should not go to next page if item is invalid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -201,8 +234,11 @@ describe('DocumentNormalCreateComponent', () => {
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl').setValue(docheader);
       component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
 
       // Event call the next
       component.next();
@@ -212,9 +248,11 @@ describe('DocumentNormalCreateComponent', () => {
       // Event call the next
       component.next();
       expect(component.currentStep).toEqual(1);
+
+      flush();
     }));
 
-    it('should go to next page if item is valid', fakeAsync(() => {
+    it('step 1: should go to next page if item is valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -225,8 +263,11 @@ describe('DocumentNormalCreateComponent', () => {
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl').setValue(docheader);
       component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
 
       // Event call the next
       component.next();
@@ -249,23 +290,15 @@ describe('DocumentNormalCreateComponent', () => {
 
       component.next();
       expect(component.currentStep).toEqual(2);
-    }));
 
-    xit('should popup error dialog when click save button and form validation fails', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      component.onSave();
-      flush();
-      fixture.detectChanges();
-
-      const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
-      expect(dlgElement).toBeTruthy();
       flush();
     }));
 
-    it('should save document for base currency case', fakeAsync(() => {
+    // Step 2: Review and confirm
+
+    it('step 3: should display error result when service return failure', fakeAsync(() => {
+      createDocumentSpy.and.returnValue(asyncError<string>('create document failed'));
+
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -274,8 +307,14 @@ describe('DocumentNormalCreateComponent', () => {
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl').setValue(docheader);
       component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(1);
+
       // Items
       const aritems: DocumentItem[] = [];
       const aritem: DocumentItem = new  DocumentItem();
@@ -290,21 +329,80 @@ describe('DocumentNormalCreateComponent', () => {
       component.itemsForm.get('itemControl').markAsDirty();
       tick();
       fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(2);
 
       // Save the document
-      component.onSave();
+      component.next();
       flush();
       fixture.detectChanges();
 
-      // Shall no dialog
-      const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
-      expect(dlgElement).toBeFalsy();
+      // // Shall no dialog
+      // const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // expect(dlgElement).toBeFalsy();
+
+      // Check the result
+      expect(createDocumentSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      expect(component.docCreateSucceed).toBeFalse();
+
+      // There shall be display the error
+      const elems = fixture.debugElement.query(By.css('.result_failed_content'));
+      expect(elems).toBeTruthy();
+    }));
+
+    it('step 3: should save document for base currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Header
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(1);
+
+      // Items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemsForm.get('itemControl').setValue(aritems);
+      component.itemsForm.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(2);
+
+      // Save the document
+      component.next();
+      flush();
+      fixture.detectChanges();
+
+      // // Shall no dialog
+      // const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // expect(dlgElement).toBeFalsy();
 
       // Check the result
       expect(createDocumentSpy).toHaveBeenCalled();
     }));
 
-    it('should save document for foreign currency case', fakeAsync(() => {
+    it('step 3: should save document for foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -322,6 +420,8 @@ describe('DocumentNormalCreateComponent', () => {
       component.headerForm.get('headerControl').setValue(docheader);
       tick();
       fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(1);
 
       // Items
       const aritems: DocumentItem[] = [];
@@ -337,15 +437,17 @@ describe('DocumentNormalCreateComponent', () => {
       component.itemsForm.get('itemControl').markAsDirty();
       tick();
       fixture.detectChanges();
+      component.next();
+      expect(component.currentStep).toEqual(2);
 
       // Save the document
-      component.onSave();
+      component.next();
       flush();
       fixture.detectChanges();
 
-      // Shall no dialog
-      const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
-      expect(dlgElement).toBeFalsy();
+      // // Shall no dialog
+      // const dlgElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // expect(dlgElement).toBeFalsy();
 
       // Check the result
       expect(createDocumentSpy).toHaveBeenCalled();

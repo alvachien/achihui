@@ -61,15 +61,11 @@
         nzStatus="error"
         nzSubTitle="Please check and modify the following information before resubmitting.">
         <div nz-result-content>
-          <div class="desc">
+          <div class="result_failed_content">
             <h4 nz-title>The content you submitted has the following error:</h4>
-            <p nz-paragraph>
+            <p nz-paragraph *ngFor="let svcerror of serviceErrors">
               <i nz-icon nzType="close-circle"></i>
-              Your account has been frozen <a>Thaw immediately &gt;</a>
-            </p>
-            <p nz-paragraph>
-              <i nz-icon nzType="close-circle"></i>
-              Your account is not yet eligible to apply <a>Apply immediately &gt;</a>
+              {{svcerror}}
             </p>
           </div>
         </div>

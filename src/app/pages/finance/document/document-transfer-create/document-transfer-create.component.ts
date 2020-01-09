@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -7,7 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import {
   financeDocTypeTransfer, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection,
+  BuildupAccountForSelection, BuildupOrderForSelection, costObjectValidator, financeTranTypeTransferOut, financeTranTypeTransferIn,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { takeUntil } from 'rxjs/operators';
@@ -21,8 +21,9 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
-  public headerForm: FormGroup;
-  public itemsForm: FormGroup;
+  public headerFormGroup: FormGroup;
+  public fromFormGroup: FormGroup;
+  public toFormGroup: FormGroup;
   public curDocType: number = financeDocTypeTransfer;
   public curMode: UIMode = UIMode.Create;
   public arUIOrders: UIOrderForSelection[] = [];
@@ -48,12 +49,25 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
-    this.headerForm = new FormGroup({
+    this.headerFormGroup = new FormGroup({
       headerControl: new FormControl(new Document(), Validators.required),
+      amountControl: new FormControl(0, Validators.required)
     });
-    this.itemsForm = new FormGroup({
-      itemControl: new FormControl([]),
-    });
+    this.fromFormGroup = new FormGroup({
+      accountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(),
+      orderControl: new FormControl()
+    }, [
+      costObjectValidator
+    ]);
+    this.toFormGroup = new FormGroup({
+      accountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(),
+      orderControl: new FormControl()
+    }, [
+      costObjectValidator,
+      this._duplicateAccountValidator
+    ]);
   }
 
   get curDocDate(): moment.Moment {
@@ -61,9 +75,11 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      return this.headerForm.valid;
+      return this.headerFormGroup.valid;
     } else if (this.currentStep === 1) {
-      return this.itemsForm.valid;
+      return this.fromFormGroup.valid;
+    } else if (this.currentStep === 2) {
+      return this.toFormGroup.valid;
     } else {
       return true;
     }
@@ -174,20 +190,21 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch(this.currentStep) {
       case 0: // header
-        if (this.headerForm.valid) {
+        if (this.headerFormGroup.valid) {
           this.currentStep ++;
         }
         break;
-      case 1: // item
-        if (this.itemsForm.valid) {
-          // Update confirm info
-          this._updateConfirmInfo();
-
+      case 1: // From
+        if (this.fromFormGroup.valid) {
           this.currentStep ++;
         }
         break;
-      case 2: // Review and confirm
-        this.isDocPosting = true;
+      case 2: // To
+        if (this.toFormGroup.valid) {
+          this.currentStep ++;
+        }
+        break;
+      case 3: // Confirm
         this.onSave();
         break;
       default:
@@ -217,11 +234,42 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerForm.get('headerControl').value as Document;
+    const detailObject: Document = this.headerFormGroup.get('headerControl').value as Document;
     detailObject.HID = this.homeService.ChosedHome.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.itemsForm.get('itemControl').value as DocumentItem[];
+
+    let docitem: DocumentItem = new DocumentItem();
+    docitem.ItemId = 1;
+    docitem.AccountId = this.fromFormGroup.get('accountControl').value;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;
+    docitem.OrderId = this.fromFormGroup.get('orderControl').value;
+    docitem.TranType = financeTranTypeTransferOut;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    docitem.Desp = detailObject.Desp;
+    detailObject.Items.push(docitem);
+
+    docitem = new DocumentItem();
+    docitem.ItemId = 2;
+    docitem.AccountId = this.toFormGroup.get('accountControl').value;
+    docitem.TranType = financeTranTypeTransferIn;
+    docitem.ControlCenterId = this.toFormGroup.get('ccControl').value;
+    docitem.OrderId = this.toFormGroup.get('orderControl').value;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    docitem.Desp = detailObject.Desp;
+    detailObject.Items.push(docitem);
 
     return detailObject;
+  }
+  private _duplicateAccountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent _duplicateAccountValidator`,
+      ConsoleLogTypeEnum.debug);
+
+    const account: any = group.get('accountControl').value;
+    const fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl').value;
+    if (account && fromAccount && account === fromAccount) {
+      return { duplicatedccount: true };
+    }
+
+    return null;
   }
 }
