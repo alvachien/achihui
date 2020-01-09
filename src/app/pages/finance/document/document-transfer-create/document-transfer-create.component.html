@@ -1,165 +1,164 @@
 <nz-page-header nzBackIcon>
-    <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
-    <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
-  </nz-page-header>
-  
-  <nz-steps [nzCurrent]="currentStep">
-    <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
-    <nz-step [nzTitle]="'Finance.TransferFrom' | transloco"></nz-step>
-    <nz-step [nzTitle]="'Finance.TransferTo' | transloco"></nz-step>
-    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
-    <nz-step nzTitle="Result"></nz-step>
-  </nz-steps>
-  
-  <div class="steps-content">
-    <!-- Header -->
-    <form nz-form [formGroup]="headerFormGroup" [hidden]="currentStep !== 0">
-      <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
-        [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
-      </hih-fin-document-header>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+</nz-page-header>
 
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
-          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"
-            [nzPlaceHolder]="'Finance.Amount' | transloco">
-          </nz-input-number>
-          <ng-template #amountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{'Common.FieldIsMandatory' | transloco}}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>  
-    </form>
-  
-    <!-- From -->
-    <form nz-form [formGroup]="fromFormGroup" [hidden]="currentStep !== 1">
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
-          <nz-select formControlName="accountControl">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
-          </nz-select>
-          <ng-template #accountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{'Common.FieldIsMandatory' | transloco}}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="ccControl">
-            <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="orderControl">
-            <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+<nz-steps [nzCurrent]="currentStep">
+  <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Finance.TransferFrom' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Finance.TransferTo' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+  <nz-step nzTitle="Result"></nz-step>
+</nz-steps>
 
-    <!-- To -->
-    <form nz-form [formGroup]="toFormGroup" [hidden]="currentStep !== 2">
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
-          <nz-select formControlName="accountControl">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
-          </nz-select>
-          <ng-template #accountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{'Common.FieldIsMandatory' | transloco}}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="ccControl">
-            <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="orderControl">
-            <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
-  
-    <!-- Review and Confirm -->
-    <div [hidden]="currentStep !== 2">
-      <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
-        <div>
-          <h3 nz-title>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
-          <h2 nz-title>{{'Common.Description' |transloco}}: {{confirmInfo?.tranDesp}}</h2>
-          <h2 nz-title>{{'Finance.Incoming' | transloco}}: {{confirmInfo?.inAmount}} {{confirmInfo?.tranCurrency}}</h2>
-          <h2 nz-title>{{'Finance.Outgoing' | transloco}}: {{confirmInfo?.outAmount}} {{confirmInfo?.tranCurrency}}</h2>
+<div class="steps-content">
+  <!-- Header -->
+  <form nz-form [formGroup]="headerFormGroup" [hidden]="currentStep !== 0">
+    <hih-fin-document-header formControlName="headerControl" [docType]="curDocType" [currentUIMode]="curMode"
+      [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
+    </hih-fin-document-header>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
+        <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"
+          [nzPlaceHolder]="'Finance.Amount' | transloco">
+        </nz-input-number>
+        <ng-template #amountTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <!-- From -->
+  <form nz-form [formGroup]="fromFormGroup" [hidden]="currentStep !== 1">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
+        <nz-select formControlName="accountControl">
+          <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+        </nz-select>
+        <ng-template #accountTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <nz-select formControlName="ccControl">
+          <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <nz-select formControlName="orderControl">
+          <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <!-- To -->
+  <form nz-form [formGroup]="toFormGroup" [hidden]="currentStep !== 2">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
+        <nz-select formControlName="accountControl">
+          <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+        </nz-select>
+        <ng-template #accountTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <nz-select formControlName="ccControl">
+          <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <nz-select formControlName="orderControl">
+          <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <!-- Review and Confirm -->
+  <div [hidden]="currentStep !== 3">
+    <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
+      <div>
+        <h3 nz-title>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
+        <h2 nz-title>{{'Common.Description' |transloco}}: {{confirmInfo?.tranDesp}}</h2>
+        <h2 nz-title>{{'Finance.Incoming' | transloco}}: {{confirmInfo?.inAmount}} {{confirmInfo?.tranCurrency}}</h2>
+        <h2 nz-title>{{'Finance.Outgoing' | transloco}}: {{confirmInfo?.outAmount}} {{confirmInfo?.tranCurrency}}</h2>
+      </div>
+    </nz-spin>
+  </div>
+
+  <!-- Result -->
+  <div [hidden]="currentStep !== 4">
+    <div *ngIf="docCreateSucceed">
+      <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
+        [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+        <div nz-result-extra>
+          <button nz-button nzType="primary">Display</button>
+          <button nz-button>Create another Document</button>
         </div>
-      </nz-spin>
+      </nz-result>
     </div>
-  
-    <!-- Result -->
-    <div [hidden]="currentStep !== 3">
-      <div *ngIf="docCreateSucceed">
-        <nz-result  nzStatus="success"
-          [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
-          <div nz-result-extra>
-            <button nz-button nzType="primary">Display</button>
-            <button nz-button>Create another Document</button>
+    <div *ngIf="!docCreateSucceed">
+      <nz-result nzTitle="Submission Failed" nzStatus="error"
+        nzSubTitle="Please check and modify the following information before resubmitting.">
+        <div nz-result-content>
+          <div class="desc">
+            <h4 nz-title>The content you submitted has the following error:</h4>
+            <p nz-paragraph>
+              <i nz-icon nzType="close-circle"></i>
+              Your account has been frozen <a>Thaw immediately &gt;</a>
+            </p>
+            <p nz-paragraph>
+              <i nz-icon nzType="close-circle"></i>
+              Your account is not yet eligible to apply <a>Apply immediately &gt;</a>
+            </p>
           </div>
-        </nz-result>  
-      </div>
-      <div *ngIf="!docCreateSucceed">
-        <nz-result nzTitle="Submission Failed"
-          nzStatus="error"
-          nzSubTitle="Please check and modify the following information before resubmitting.">
-          <div nz-result-content>
-            <div class="desc">
-              <h4 nz-title>The content you submitted has the following error:</h4>
-              <p nz-paragraph>
-                <i nz-icon nzType="close-circle"></i>
-                Your account has been frozen <a>Thaw immediately &gt;</a>
-              </p>
-              <p nz-paragraph>
-                <i nz-icon nzType="close-circle"></i>
-                Your account is not yet eligible to apply <a>Apply immediately &gt;</a>
-              </p>
-            </div>
-          </div>
-          <div nz-result-extra>
-            <button nz-button nzType="primary">Go Console</button>
-            <button nz-button>Buy Again</button>
-          </div>
-        </nz-result>
-      </div>
+        </div>
+        <div nz-result-extra>
+          <button nz-button nzType="primary">Go Console</button>
+          <button nz-button>Buy Again</button>
+        </div>
+      </nz-result>
     </div>
   </div>
-  
-  <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
-      <span>{{'Common.PreviousButton' | transloco}}</span>
-    </button>
-    <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="currentStep < 3">
-      <span>{{'Common.NextButton' | transloco}}</span>
-    </button>
-  </div>
-  
+</div>
+
+<div class="steps-action">
+  <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 4">
+    <span>{{'Common.PreviousButton' | transloco}}</span>
+  </button>
+  <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled"
+    *ngIf="currentStep < 4">
+    <span>{{'Common.NextButton' | transloco}}</span>
+  </button>
+</div>

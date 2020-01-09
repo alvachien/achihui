@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -29,7 +30,8 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   constructor(
     private homeService: HomeDefOdataService,
     private uiService: UIStatusService,
-    private router: Router) {
+    private router: Router,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
@@ -94,10 +96,13 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       .subscribe((arHomeDef: HomeDef[]) => {
         this.dataSource = arHomeDef;
       }, (error: any) => {
-        // TBD.
-        // Show error dialog
-        // popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
-        //   error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefListComponent ngOnInit, fetchAllHomeDef, ${error}`,
+          ConsoleLogTypeEnum.error);
+        this.modalService.create({
+          nzTitle: 'Common.Error',
+          nzContent: error,
+          nzClosable: true,
+        });
       }, () => {
         this.isLoadingResults = false;
       });

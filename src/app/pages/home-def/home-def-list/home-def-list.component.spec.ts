@@ -20,12 +20,14 @@ describe('HomeDefListComponent', () => {
   let routerSpy: any;
   let homeService: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildHomeDefs();
+  });
 
+  beforeEach(async(() => {
     homeService = jasmine.createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
@@ -75,18 +77,29 @@ describe('HomeDefListComponent', () => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       expect(component.dataSource.length).toBeGreaterThan(0);
       expect(component.dataSource.length).toEqual(fakeData.HomeDefs.length);
+
+      flush();
+      tick();
     }));
 
     xit('should navigate to create page if create home button clicks', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       component.onCreateHome();
+      tick();
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/homedef/create']);
+
+      flush();
+      tick();
     }));
 
     xit('should choose the home successfully', fakeAsync(() => {

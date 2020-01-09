@@ -50,18 +50,18 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.headerFormGroup = new FormGroup({
-      headerControl: new FormControl(new Document(), Validators.required),
-      amountControl: new FormControl(0, Validators.required)
+      headerControl: new FormControl(new Document(), [Validators.required]),
+      amountControl: new FormControl(0, [Validators.required, Validators.min(0.01)])
     });
     this.fromFormGroup = new FormGroup({
-      accountControl: new FormControl('', Validators.required),
+      accountControl: new FormControl('', [Validators.required]),
       ccControl: new FormControl(),
       orderControl: new FormControl()
     }, [
       costObjectValidator
     ]);
     this.toFormGroup = new FormGroup({
-      accountControl: new FormControl('', Validators.required),
+      accountControl: new FormControl('', [Validators.required]),
       ccControl: new FormControl(),
       orderControl: new FormControl()
     }, [
@@ -163,7 +163,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this.docCreateSucceed = false;
       // TBD. Add error information
       this.isDocPosting = false;
-      this.currentStep = 3;
+      this.currentStep = 4;
 
       return;
     }
@@ -179,7 +179,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this.docCreateSucceed = false;
     }, () => {
       this.isDocPosting = false;
-      this.currentStep = 3;
+      this.currentStep = 4;
     });
   }
 
@@ -201,6 +201,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         break;
       case 2: // To
         if (this.toFormGroup.valid) {
+          this._updateConfirmInfo();
           this.currentStep ++;
         }
         break;

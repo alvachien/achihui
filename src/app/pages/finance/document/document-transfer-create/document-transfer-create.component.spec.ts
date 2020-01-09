@@ -105,7 +105,7 @@ describe('DocumentTransferCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentTransferCreateComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('1. should create without data', () => {
@@ -246,7 +246,7 @@ describe('DocumentTransferCreateComponent', () => {
     }));
   });
 
-  xdescribe('3. should prevent errors by the checking logic', () => {
+  describe('3. should prevent errors by the checking logic', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -274,7 +274,7 @@ describe('DocumentTransferCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
       expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -289,7 +289,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
-    it('step 1: should have accounts and orders loaded', fakeAsync(() => {
+    it('step 0: should have accounts and orders loaded', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccounts.length).toEqual(0);
       expect(component.arUIOrders.length).toEqual(0);
@@ -301,7 +301,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.arUIOrders.length).toBeGreaterThan(0);
     }));
 
-    it('step 1: amount is mandatory', fakeAsync(() => {
+    it('step 0: amount is mandatory', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccounts.length).toEqual(0);
       expect(component.arUIOrders.length).toEqual(0);
@@ -330,8 +330,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(0);
     }));
 
-    it('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
-      expect(component.headerFormGroup.valid).toBeFalsy();
+    it('step 0: shall go to step 1 for base currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -359,7 +358,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(1);
     }));
 
-    it('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
+    it('step 0: shall go to step 1 for foreign currency case', fakeAsync(() => {
       expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -377,6 +376,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      fixture.detectChanges();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
@@ -388,7 +388,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(1);
     }));
 
-    it('step 2: account is mandatory', fakeAsync(() => {
+    it('step 1: account is mandatory', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -402,32 +402,33 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('amountControl').setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.valid).toBeTruthy('Expect header from is valid');
+      expect(component.nextButtonEnabled).toBeTruthy('Expect next button is enabled');
+      expect(component.currentStep).toBe(0);
+      fixture.detectChanges();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
-      expect(component.currentStep).toBe(0);
-
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Now sit in step 2
+      // Now sit in step 1
       expect(component.currentStep).toBe(1);
 
       // However, it is invalid
       expect(component.fromFormGroup.valid).toBeFalsy();
 
       // Click the next button, still at second step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(1);
     }));
 
-    // Step 2: Asset account should not allowed
-    // Step 2: ADP account should not allowed
+    // Step 1: Asset account should not allowed
+    // Step 1: ADP account should not allowed
 
-    it('step 2: neither control center nor order', fakeAsync(() => {
+    it('step 1: neither control center nor order', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -459,13 +460,12 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.fromFormGroup.valid).toBeFalsy();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(1);
     }));
 
-    it('step 2: control center and order both', fakeAsync(() => {
+    it('step 1: control center and order both', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -499,13 +499,12 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.fromFormGroup.valid).toBeFalsy();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(1);
     }));
 
-    it('step 3: account is mandatory', fakeAsync(() => {
+    it('step 2: account is mandatory', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -534,7 +533,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -543,13 +541,12 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[2].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
     }));
 
-    it('step 3: to account shall not identical as from account', fakeAsync(() => {
+    it('step 2: to account shall not identical as from account', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -579,7 +576,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -591,16 +587,15 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.toFormGroup.valid).toBeFalsy('Expect the from account and to account are not the same');
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[2].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
     }));
 
-    // Step 3: Asset account should not allowed
-    // Step 3: ADP account should not allowed
+    // Step 2: Asset account should not allowed
+    // Step 2: ADP account should not allowed
 
-    it('step 3: neither control center nor order', fakeAsync(() => {
+    it('step 2: neither control center nor order', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -629,7 +624,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -640,13 +634,12 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[2].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
     }));
 
-    it('step 3: control center and order both', fakeAsync(() => {
+    it('step 2: control center and order both', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -676,7 +669,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -689,7 +681,6 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[2].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
