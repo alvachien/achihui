@@ -212,6 +212,7 @@ export class HomeDef extends hih.BaseModel {
       Details: this._details,
       Host: this._host,
       BaseCurrency: this._basecurr,
+      HomeMembers: [],
     };
     if (this._listMembers) {
       for (const mem of this._listMembers) {

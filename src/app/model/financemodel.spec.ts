@@ -392,7 +392,10 @@ describe('ControlCenter', () => {
     expect(instance.Name).toBeFalsy();
   });
   it('#2. onInit', () => {
+    instance.Name = 'Test';
+    expect(instance.Name).toBeTruthy();
     instance.onInit();
+    expect(instance.Name).toBeFalsy();
   });
   it('#3. writeJSONObject and onSetData shall work', () => {
     instance.Comment = 'test';
@@ -433,7 +436,10 @@ describe('Order', () => {
     expect(instance.Name).toBeFalsy();
   });
   it('#2. onInit', () => {
+    instance.Name = 'Test';
+    expect(instance.Name).toBeTruthy();
     instance.onInit();
+    expect(instance.Name).toBeFalsy();
   });
   it('#3. writeJSONObject and onSetData shall work', () => {
     instance.Comment = 'test';

@@ -6,7 +6,7 @@ import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
-  DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, } from '../model';
+  DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, RepeatFrequencyDatesAPIInput, RepeatFrequencyDatesAPIOutput, FinanceLoanCalAPIOutput, FinanceLoanCalAPIInput, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -594,6 +594,158 @@ export class FinanceOdataService {
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocument failed ${error}`,
           ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Utility part
+   */
+
+  // Calculate ADP tmp. docs
+  public calcADPTmpDocs(datainput: FinanceADPCalAPIInput): Observable<FinanceADPCalAPIOutput[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceADPCalculator';
+    let jobject: any = {
+      startDate: datainput.StartDate.format(momentDateFormat),
+      totalAmount: datainput.TotalAmount,
+      endDate: datainput.EndDate.format(momentDateFormat),
+      rptType: +datainput.RptType,
+      desp: datainput.Desp,
+    };
+    if (datainput.EndDate) {
+      jobject.endDate = datainput.EndDate.format(momentDateFormat);
+    }
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this.http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+
+        let results: FinanceADPCalAPIOutput[] = [];
+        // Get the result out.
+        let y: any = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rst: FinanceADPCalAPIOutput = {
+              TranDate: moment(tt.tranDate, momentDateFormat),
+              TranAmount: tt.tranAmount,
+              Desp: tt.desp,
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  // Calculate loan tmp. docs
+  public calcLoanTmpDocs(datainput: FinanceLoanCalAPIInput): Observable<FinanceLoanCalAPIOutput[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanCalculator';
+    let jobject: any = {
+      interestFreeLoan: datainput.InterestFreeLoan ? true : false,
+      interestRate: datainput.InterestRate ? datainput.InterestRate : 0,
+      repaymentMethod: datainput.RepaymentMethod,
+      startDate: datainput.StartDate.format(momentDateFormat),
+      totalAmount: datainput.TotalAmount,
+      totalMonths: datainput.TotalMonths,
+    };
+    if (datainput.EndDate) {
+      jobject.endDate = datainput.EndDate.format(momentDateFormat);
+    }
+    if (datainput.FirstRepayDate) {
+      jobject.firstRepayDate = datainput.FirstRepayDate.format(momentDateFormat);
+    }
+    if (datainput.RepayDayInMonth) {
+      jobject.repayDayInMonth = +datainput.RepayDayInMonth;
+    }
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this.http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+
+        let results: FinanceLoanCalAPIOutput[] = [];
+        // Get the result out.
+        let y: any = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rst: FinanceLoanCalAPIOutput = {
+              TranDate: moment(tt.tranDate, momentDateFormat),
+              TranAmount: tt.tranAmount,
+              InterestAmount: tt.interestAmount,
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  // Calculate the dates
+  public getRepeatFrequencyDates(datainput: RepeatFrequencyDatesAPIInput): Observable<RepeatFrequencyDatesAPIOutput[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/RepeatFrequencyDates';
+    let jobject: any = {
+      startDate: datainput.StartDate.format(momentDateFormat),
+      endDate: datainput.EndDate.format(momentDateFormat),
+      rptType: +datainput.RptType,
+    };
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this.http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getRepeatFrequencyDates in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+
+        let results: RepeatFrequencyDatesAPIOutput[] = [];
+        // Get the result out.
+        let y: any = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rst: RepeatFrequencyDatesAPIOutput = {
+              StartDate: moment(tt.startDate, momentDateFormat),
+              EndDate: moment(tt.endDate, momentDateFormat),
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getRepeatFrequencyDates in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));

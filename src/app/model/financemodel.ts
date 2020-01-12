@@ -1094,6 +1094,11 @@ export class ControlCenter extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this._name = undefined;
+    this._hid = undefined;
+    this._id = undefined;
+    this._comment = undefined;
+    this._owner = undefined;
 
     this._parid = undefined;
   }
@@ -1238,6 +1243,9 @@ export class Order extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this._id = undefined;
+    this._name = undefined;
+    this._cmt = undefined;
 
     this._validFrom = moment();
     this._validTo = this._validFrom.clone().add(1, 'M');

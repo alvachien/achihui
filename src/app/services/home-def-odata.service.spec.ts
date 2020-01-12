@@ -135,7 +135,7 @@ describe('HomeDefOdataService', () => {
     });
   });
 
-  xdescribe('readHomeDef', () => {
+  describe('readHomeDef', () => {
     beforeEach(() => {
       service = TestBed.get(HomeDefOdataService);
     });
@@ -159,7 +159,7 @@ describe('HomeDefOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === homeDefUrl + '/1';
+        return requrl.method === 'GET' && requrl.url === homeDefUrl + '(1)';
        });
 
       // Respond with the mock data
@@ -177,7 +177,7 @@ describe('HomeDefOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === homeDefUrl + '/1';
+        return requrl.method === 'GET' && requrl.url === homeDefUrl + '(1)';        
       });
 
       // respond with a 500 and the error message in the body
@@ -228,67 +228,6 @@ describe('HomeDefOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === homeDefUrl;
-      });
-
-      // respond with a 500 and the error message in the body
-      req.flush(msg, { status: 500, statusText: 'server failed' });
-    });
-  });
-
-  xdescribe('fetchAllMembersInChosedHome', () => {
-    let apiurl: string = environment.ApiUrl + '/api/homemember';
-
-    beforeEach(() => {
-      service = TestBed.get(HomeDefOdataService);
-
-      service.ChosedHome = fakeData.chosedHome;
-    });
-
-    afterEach(() => {
-      // After every test, assert that there are no more pending requests.
-      httpTestingController.verify();
-    });
-
-    it('should return data for success case', () => {
-      expect(service.MembersInChosedHome.length).toEqual(1);
-      service.fetchAllMembersInChosedHome().subscribe(
-        (data: any) => {
-          expect(data).toBeTruthy();
-          expect(service.MembersInChosedHome.length).toEqual(2);
-        },
-        (fail: any) => {
-          // Empty
-        },
-      );
-
-      // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl;
-       });
-
-      // Respond with the mock data
-      req.flush({
-        value: [
-          {'HomeID': 11, 'User': 'aa', 'DisplayAs': 'aa', 'Relation': 0, 'CreatedBy': 'aa', 'CreatedAt': '2017-10-01'},
-          {'HomeID': 11, 'User': 'bb', 'DisplayAs': 'bb', 'Relation': 1, 'CreatedBy': 'aa', 'CreatedAt': '2017-10-01'},
-        ],
-        '@odata.count': 2,
-      });
-    });
-
-    it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
-      service.fetchAllMembersInChosedHome().subscribe(
-        (data: any) => {
-          fail('expected to fail');
-        },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body

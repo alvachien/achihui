@@ -119,14 +119,16 @@ export class HomeDefOdataService {
    * Read a specified home defs
    */
   public readHomeDef(hid: number): Observable<HomeDef> {
-    const apiurl: string = environment.ApiUrl + '/api/homedef/' + hid.toString();
+    const apiurl: string = this.apiUrl + '(' + hid.toString() + ')';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    return this._http.get(apiurl, { headers, })
+    let params: HttpParams = new HttpParams();
+    params = params.append('$expand', 'HomeMembers');
+               
+    return this._http.get(apiurl, { headers, params, })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
@@ -151,7 +153,7 @@ export class HomeDefOdataService {
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
-}
+  }
 
   /**
    * Create a home def
@@ -184,61 +186,6 @@ export class HomeDefOdataService {
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
-  }
-
-  /**
-   * Fetch all members in the chosed home
-   */
-  public fetchAllMembersInChosedHome(forceReload?: boolean): Observable<HomeMember[]> {
-    if (!this.ChosedHome) {
-      return throwError('Home is not chosed yet');
-    }
-
-    if (!this._isMemberInChosedHomeLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/HomeMembers';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                       .append('Accept', 'application/json')
-                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-          headers,
-          params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefOdataService.`,
-            ConsoleLogTypeEnum.debug);
-
-          const rjs: any = response as any;
-          const arMembers: HomeMember[] = [];
-
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const hd: HomeMember = new HomeMember();
-              hd.parseJSONData(si);
-              arMembers.push(hd);
-            }
-          }
-
-          this.ChosedHome.setMembers(arMembers);
-          this._isMemberInChosedHomeLoaded = true;
-
-          return arMembers;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllMembersInChosedHome in HomeDefOdataService: ${error}`,
-            ConsoleLogTypeEnum.error);
-
-          this._isMemberInChosedHomeLoaded = false;
-
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
-    } else {
-      return of(this.ChosedHome.Members);
-    }
   }
 
   /**

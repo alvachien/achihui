@@ -16,7 +16,7 @@ describe('AccountExtraDownpaymentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountExtraDownpaymentComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

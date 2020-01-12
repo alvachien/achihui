@@ -48,7 +48,7 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
       <nz-select id="idCurrency" formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
-        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
+        <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
       <ng-template #currTpl let-control>
         <ng-container *ngIf="control.hasError('required')">

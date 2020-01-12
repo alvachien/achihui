@@ -1,1 +1,72 @@
-<p>account-extra-downpayment works!</p>
+<ng-container *transloco="let t">
+  <div [formGroup]="adpInfoFormGroup">
+    <!-- Start date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.StartDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startdateErrorTpl">
+        <nz-date-picker formControlName="startDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        <ng-template #startdateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- End date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.EndDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="enddateErrorTpl">
+        <nz-date-picker formControlName="endDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        <ng-template #enddateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Repeat frequency -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
+        <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
+          <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
+        </nz-select>
+        <ng-template #frqTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Description -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Description' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
+        <input nz-input formControlName="cmtControl" maxlength="45" (ngModelChange)="onChange()" required />
+        <ng-template #cmtTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Ref doc. ID -->
+  <div class="achih-control-full-width" *ngIf="refDocId">
+    <mat-label>{{'Finance.RefDoc' | transloco}}</mat-label>
+    <a routerLink='/finance/document/display/{{refDocId}}' style="margin: 5px;"
+      routerLinkActive="active">{{refDocId}}</a>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar_buttons">
+    <button nz-button nzType="primary" (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable">{{'Finance.GenerateTmpDocs' | transloco}}</button>
+  </div>
+</ng-container>

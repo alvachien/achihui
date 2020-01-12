@@ -73,7 +73,7 @@ describe('HomeDefListComponent', () => {
       expect(component.dataSource.length).toEqual(0);
     });
 
-    xit('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -84,14 +84,11 @@ describe('HomeDefListComponent', () => {
       expect(component.dataSource.length).toEqual(fakeData.HomeDefs.length);
 
       flush();
-      tick();
     }));
 
-    xit('should navigate to create page if create home button clicks', fakeAsync(() => {
+    it('should navigate to create page if create home button clicks', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
-      fixture.detectChanges();
-      tick();
       fixture.detectChanges();
 
       component.onCreateHome();
@@ -99,10 +96,9 @@ describe('HomeDefListComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/homedef/create']);
 
       flush();
-      tick();
     }));
 
-    xit('should choose the home successfully', fakeAsync(() => {
+    it('should choose the home successfully', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
