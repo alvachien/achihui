@@ -31,7 +31,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Description' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="despTpl">
-      <input nz-input id="idDesp" formControlName="despControl" maxlength="45" (ngModelChange)="onChange()" required />
+      <input nz-input formControlName="despControl" maxlength="45" (ngModelChange)="onChange()" required />
       <ng-template #despTpl let-control>
         <ng-container *ngIf="control.hasError('maxlength')">
           {{'Common.FieldMaxLength' | transloco}}
@@ -47,7 +47,7 @@
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
-      <nz-select id="idCurrency" formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
+      <nz-select formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
         <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
       <ng-template #currTpl let-control>

@@ -7,7 +7,7 @@
     <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="primary">{{'Common.Create' | transloco}}</button>
+      <a nz-button nzType="link" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
     </nz-page-header-extra>
   </nz-page-header>
@@ -24,7 +24,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
-          <td>{{data.ID}}</td>
+          <td>{{data.Id}}</td>
           <td>{{data.Name}}</td>
           <td>{{data.Comment}}</td>
         </tr>

@@ -79,9 +79,10 @@ export class HomeDefOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$expand', 'HomeMembers');
-                   
+
       return this._http.get(this.apiUrl, {
           headers,
+          params,
         })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map...`,

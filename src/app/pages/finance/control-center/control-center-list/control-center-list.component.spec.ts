@@ -18,11 +18,11 @@ describe('ControlCenterListComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
+    uiServiceStub.getUILabel = (le: any) => '';
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const finServiceStub: Partial<FinanceOdataService> = {};
     // finServiceStub.fetchAllControlCenters = new BehaviorSubject();
-  
+
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,

@@ -11,6 +11,8 @@ const routes: Routes = [
   { path: 'hierarchy', component: ControlCenterHierarchyComponent },
   { path: 'list', component: ControlCenterListComponent },
   { path: 'create', component: ControlCenterDetailComponent },
+  { path: 'display/:id', component: ControlCenterDetailComponent },
+  { path: 'edit/:id', component: ControlCenterDetailComponent },
 ];
 
 @NgModule({

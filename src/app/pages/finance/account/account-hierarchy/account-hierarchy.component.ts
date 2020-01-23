@@ -8,7 +8,6 @@ import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-fin-account-hierarchy',
@@ -32,7 +31,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: FinanceOdataService,
     private uiStatusService: UIStatusService,
-    private _router: Router,
     ) {
       this.isLoadingResults = false; // Default value
 
@@ -64,10 +62,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   nodeClick(event: NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog(event.eventName);
-  }
-
-  onCreateAccount(): void {
-    this._router.navigate(['/finance/account/create']);
   }
 
   private _refreshTree(isReload?: boolean): void {

@@ -4,7 +4,10 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { BehaviorSubject } from 'rxjs';
 import * as moment from 'moment';
 
-import { Document, DocumentItem, financeDocTypeNormal, FinanceLoanCalAPIInput, RepeatFrequencyEnum, FinanceADPCalAPIInput, momentDateFormat, } from '../model';
+import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
+  RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
+  RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
+} from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -766,7 +769,7 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // Respond with the mock account categories
@@ -1009,6 +1012,162 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+  describe('readControlCenter', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return control center in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.readControlCenter(21).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toBeGreaterThan(0);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL + '(21)' && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finControlCentersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.readControlCenter(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL + '(21)' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+  describe('createControlCenter', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should create a control center in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.createControlCenter(new ControlCenter()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.controlCenterAPIUrl;
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finControlCentersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.createControlCenter(new ControlCenter()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.controlCenterAPIUrl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('changeControlCenter', () => {
+    let cc: ControlCenter;
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+      cc = new ControlCenter();
+      cc.Id = 11;
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return order in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.changeControlCenter(cc).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to PUT from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
+          && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.changeControlCenter(cc).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
+          && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 
@@ -1290,9 +1449,9 @@ describe('FinanceOdataService', () => {
   });
 
   describe('calcADPTmpDocs', () => {
-    const calcADPTmpAPIURL: any = environment.ApiUrl + '/api/FinanceADPCalculator';
-    let inputData: FinanceADPCalAPIInput;
-    let outputData: any[];
+    const calcADPTmpAPIURL: any = environment.ApiUrl + '/api/GetRepeatedDatesWithAmount';
+    let inputData: RepeatedDatesWithAmountAPIInput;
+    let outputData: RepeatedDatesWithAmountAPIOutput[];
 
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -1300,15 +1459,15 @@ describe('FinanceOdataService', () => {
         TotalAmount: 200,
         StartDate: moment(),
         EndDate: moment().add(1, 'y'),
-        RptType: RepeatFrequencyEnum.Month,
+        RepeatType: RepeatFrequencyEnum.Month,
         Desp: 'test',
       };
       outputData = [];
-      for (let i: number = 0; i < 10; i++) {
-        let rst: any = {
-          tranDate: moment().add(i, 'M').format(momentDateFormat),
-          tranAmount: 20,
-          desp: `test${i}`,
+      for (let i = 0; i < 10; i++) {
+        const rst: RepeatedDatesWithAmountAPIOutput = {
+          TranDate: moment().add(i, 'M'),
+          TranAmount: 20,
+          Desp: `test${i}`,
         };
         outputData.push(rst);
       }
@@ -1339,7 +1498,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.calcADPTmpDocs(inputData).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1359,9 +1518,9 @@ describe('FinanceOdataService', () => {
   });
 
   describe('calcLoanTmpDocs', () => {
-    const calcLoanTmpAPIURL: any = environment.ApiUrl + '/api/FinanceLoanCalculator';
-    let inputData: FinanceLoanCalAPIInput;
-    let outputData: any[];
+    const calcLoanTmpAPIURL: any = environment.ApiUrl + '/api/GetRepeatedDatesWithAmountAndInterest';
+    let inputData: RepeatDatesWithAmountAndInterestAPIInput;
+    let outputData: RepeatDatesWithAmountAndInterestAPIOutput[];
 
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -1378,8 +1537,8 @@ describe('FinanceOdataService', () => {
         RepayDayInMonth: 1,
       };
       outputData = [];
-      for (let i: number = 0; i < 10; i++) {
-        let od: any = {
+      for (let i = 0; i < 10; i++) {
+        const od: any = {
           tranDate: moment().add(i, 'M'),
           tranAmount: 100,
           interestAmount: 0,
@@ -1413,7 +1572,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Error occurred';
+      const msg = 'Error occurred';
       service.calcLoanTmpDocs(inputData).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1425,6 +1584,73 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === calcLoanTmpAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('getRepeatedDates', () => {
+    const apiurl: any = environment.ApiUrl + '/api/GetRepeatedDates';
+    let inputData: RepeatedDatesAPIInput;
+    let outputData: RepeatedDatesAPIOutput[];
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+
+      inputData = {
+        StartDate: moment(),
+        EndDate: moment().add(1, 'y'),
+        RepeatType: RepeatFrequencyEnum.Month
+      };
+      outputData = [];
+      for (let i = 0; i < 10; i++) {
+        const od: any = {
+          StartDate: moment().add(i, 'M'),
+          EndDate: moment().add(i + 1, 'M'),
+        };
+        outputData.push(od);
+      }
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected result', () => {
+      service.getRepeatedDates(inputData).subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(outputData.length, 'should return expected data');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush(outputData);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error occurred';
+      service.getRepeatedDates(inputData).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body

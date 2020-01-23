@@ -7,13 +7,13 @@ import * as moment from 'moment';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
-  UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
+  UINameValuePair, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
-  ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
+  ReportTrendExData, FinanceAssetSoldoutDocumentAPI,
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
   Plan, DocumentWithPlanExgRate, BalanceSheetReport, ControlCenterReport, OrderReport,
   AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
-  FinanceNormalDocItemMassCreate, RepeatFrequencyDatesAPIOutput, RepeatFrequencyDatesAPIInput,
+  FinanceNormalDocItemMassCreate,
   RepeatFrequencyEnum,
 } from '../model';
 import { AuthService } from './auth.service';
@@ -22,14 +22,6 @@ import { HomeDefOdataService } from './home-def-odata.service';
 @Injectable()
 export class FinanceStorageService {
   // Buffer
-  private _isAcntCtgyListLoaded: boolean;
-  private _listAccountCategory: AccountCategory[];
-  private _isDocTypeListLoaded: boolean;
-  private _listDocType: DocumentType[];
-  private _isTranTypeListLoaded: boolean;
-  private _listTranType: TranType[];
-  private _isAsstCtgyListLoaded: boolean;
-  private _listAssetCategory: AssetCategory[];
   private _isAccountListLoaded: boolean;
   private _listAccount: Account[];
   private _isConctrolCenterListLoaded: boolean;
@@ -44,22 +36,6 @@ export class FinanceStorageService {
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
   readonly docItemAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItem';
-
-  get AccountCategories(): AccountCategory[] {
-    return this._listAccountCategory;
-  }
-
-  get DocumentTypes(): DocumentType[] {
-    return this._listDocType;
-  }
-
-  get TranTypes(): TranType[] {
-    return this._listTranType;
-  }
-
-  get AssetCategories(): AssetCategory[] {
-    return this._listAssetCategory;
-  }
 
   get Accounts(): Account[] {
     return this._listAccount;
@@ -254,132 +230,6 @@ export class FinanceStorageService {
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readAccount.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
-   * Create a control center
-   * @param objDetail Instance of control center to create
-   */
-  public createControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    const jdata: string = objDetail.writeJSONString();
-    return this._http.post(this.controlCenterAPIUrl, jdata, {
-      headers: headers,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, createControlCenter');
-        }
-
-        let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response as any);
-
-        this._listControlCenter.push(hd);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService, Failed in createControlCenter.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
-   * Change a control center
-   * @param objDetail Instance of control center to change
-   */
-  public changeControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.controlCenterAPIUrl + '/' + objDetail.Id.toString();
-
-    const jdata: string = objDetail.writeJSONString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.put(apiurl, jdata, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, changeControlCenter');
-        }
-
-        let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response as any);
-
-        let idx: number = this._listControlCenter.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this._listControlCenter.splice(idx, 1, hd);
-        } else {
-          this._listControlCenter.push(hd);
-        }
-
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService, Failed in createControlCenter.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
-   * Read control center
-   * @param ccid ID of the control center
-   */
-  public readControlCenter(ccid: number): Observable<ControlCenter> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.controlCenterAPIUrl + '/' + ccid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService`);
-        }
-
-        let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response as any);
-        // Update the buffer if necessary
-        let idx: number = this._listControlCenter.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this._listControlCenter.splice(idx, 1, hd);
-        } else {
-          this._listControlCenter.push(hd);
-        }
-
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readControlCenter.`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

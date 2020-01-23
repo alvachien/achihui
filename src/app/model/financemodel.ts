@@ -3139,20 +3139,34 @@ export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
 }
 
 /**
- * Finance ADP calculator - API input
+ * Repeat dates - input
  */
-export interface FinanceADPCalAPIInput {
-  TotalAmount: number;
+export interface RepeatedDatesAPIInput {
   StartDate: moment.Moment;
-  EndDate?: moment.Moment;
-  RptType: hih.RepeatFrequencyEnum;
+  EndDate: moment.Moment;
+  RepeatType: hih.RepeatFrequencyEnum;
+}
+
+/**
+ * Repeat dates
+ */
+export interface RepeatedDatesAPIOutput {
+  StartDate: moment.Moment;
+  EndDate: moment.Moment;
+}
+
+/**
+ * Repeated dates with Amount - Input
+ */
+export interface RepeatedDatesWithAmountAPIInput extends RepeatedDatesAPIInput {
+  TotalAmount: number;
   Desp: string;
 }
 
 /**
- * Finance ADP calculator - API output
+ * Repeated dates with Amount
  */
-export interface FinanceADPCalAPIOutput {
+export interface RepeatedDatesWithAmountAPIOutput {
   TranDate: moment.Moment;
   TranAmount: number;
   Desp: string;
@@ -3161,7 +3175,7 @@ export interface FinanceADPCalAPIOutput {
 /**
  * Finance loan calculator - API input
  */
-export interface FinanceLoanCalAPIInput {
+export interface RepeatDatesWithAmountAndInterestAPIInput {
   TotalAmount: number;
   TotalMonths: number;
   InterestRate: number;
@@ -3176,25 +3190,9 @@ export interface FinanceLoanCalAPIInput {
 /**
  * Finance loan calculator - API output
  */
-export interface FinanceLoanCalAPIOutput {
+export interface RepeatDatesWithAmountAndInterestAPIOutput {
   TranDate: moment.Moment;
   TranAmount: number;
   InterestAmount: number;
 }
 
-/**
- * Repeat frequency date - API input
- */
-export interface RepeatFrequencyDatesAPIInput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
-  RptType: hih.RepeatFrequencyEnum;
-}
-
-/**
- * Repeat frequency date - API output
- */
-export interface RepeatFrequencyDatesAPIOutput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
-}

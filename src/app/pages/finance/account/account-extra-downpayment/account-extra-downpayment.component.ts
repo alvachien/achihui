@@ -6,7 +6,8 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { LogLevel, UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
-  FinanceADPCalAPIInput, FinanceADPCalAPIOutput, ConsoleLogTypeEnum, ModelUtility,
+  RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
+  ConsoleLogTypeEnum, ModelUtility,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -28,8 +29,9 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 })
 export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
 
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean = true; // Default is changable
+  private _isChangable = true; // Default is changable
   private _onChange: (val: any) => void;
   private _onTouched: () => void;
   private _instanceObject: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -77,7 +79,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     return true;
   }
 
-  constructor(public _storageService: FinanceOdataService,
+  constructor(
+    public odataService: FinanceOdataService,
     private _homedefService: HomeDefOdataService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...', ConsoleLogTypeEnum.debug);
   }
@@ -114,21 +117,21 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       return;
     }
 
-    let datInput: FinanceADPCalAPIInput = {
+    const datInput: RepeatedDatesWithAmountAPIInput = {
       StartDate: this.extObject.StartDate.clone(),
       EndDate: this.extObject.EndDate.clone(),
-      RptType: this.extObject.RepeatType,
+      RepeatType: this.extObject.RepeatType,
       Desp: this.extObject.Comment,
       TotalAmount: this.tranAmount,
     };
 
-    this._storageService.calcADPTmpDocs(datInput)
+    this.odataService.calcADPTmpDocs(datInput)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((rsts: FinanceADPCalAPIOutput[]) => {
+      .subscribe((rsts: RepeatedDatesWithAmountAPIOutput[]) => {
       if (rsts && rsts instanceof Array && rsts.length > 0) {
-        let tmpDocs: TemplateDocADP[] = [];
-        for (let i: number = 0; i < rsts.length; i++) {
-          let item: TemplateDocADP = new TemplateDocADP();
+        const tmpDocs: TemplateDocADP[] = [];
+        for (let i = 0; i < rsts.length; i++) {
+          const item: TemplateDocADP = new TemplateDocADP();
           item.HID = this._homedefService.ChosedHome.ID;
           item.DocId = i + 1;
           item.TranType = this.tranType;

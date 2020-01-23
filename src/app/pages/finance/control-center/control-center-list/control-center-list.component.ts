@@ -1,18 +1,17 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum, 
-  ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 
 @Component({
   selector: 'hih-control-center-list',
   templateUrl: './control-center-list.component.html',
-  styleUrls: ['./control-center-list.component.less']
+  styleUrls: ['./control-center-list.component.less'],
 })
-export class ControlCenterListComponent implements OnInit {
+export class ControlCenterListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
@@ -20,12 +19,14 @@ export class ControlCenterListComponent implements OnInit {
 
   constructor(
     public odataService: FinanceOdataService,
-    public _uiStatusService: UIStatusService) {
-      this.isLoadingResults = false;
-    }
+    public router: Router,
+    ) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -33,7 +34,8 @@ export class ControlCenterListComponent implements OnInit {
     this.odataService.fetchAllControlCenters()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((value: ControlCenter[]) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
+          ConsoleLogTypeEnum.debug);
 
         this.dataSet = value;
       }, (error: any) => {
@@ -43,12 +45,20 @@ export class ControlCenterListComponent implements OnInit {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onDisplay(rid: number): void {
+    this.router.navigate(['/finance/controlcenter/display/' + rid.toString()]);
+  }
+
+  onEdit(rid: number): void {
+    this.router.navigate(['/finance/controlcenter/edit/' + rid.toString()]);
   }
 }

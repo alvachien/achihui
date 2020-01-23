@@ -196,7 +196,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   private _updateConfirmInfo(): void {
-    let doc = this._generateDocObject();
+    const doc = this._generateDocObject();
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;
@@ -204,7 +204,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.outAmount = 0;
 
     doc.Items.forEach((val: DocumentItem) => {
-      let ttid: number = this.arTranType.findIndex((tt: TranType) => {
+      const ttid: number = this.arTranType.findIndex((tt: TranType) => {
         return tt.Id === val.TranType;
       });
       if (ttid !== -1) {

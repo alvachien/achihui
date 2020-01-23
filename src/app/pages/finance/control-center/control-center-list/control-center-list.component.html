@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+<nz-spin [nzSpinning]="isLoadingResults">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
@@ -7,7 +7,7 @@
     <nz-page-header-title>{{'Finance.ControlCenter' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="primary">{{'Common.Create' | transloco}}</button>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/create">{{'Common.Create' | transloco}}</a>
       <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
     </nz-page-header-extra>
   </nz-page-header>
@@ -18,15 +18,18 @@
         <tr>
           <th>ID</th>
           <th>{{'Common.Name' | transloco}}</th>
-          <th>{{'Finance.IsAsset' | transloco}}</th>
           <th>{{'Common.Comment' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
-          <td>{{data.ID}}</td>
+          <td>
+            {{data.Id}}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
+          </td>
           <td>{{data.Name}}</td>
-          <td>{{data.AssetFlag}}</td>
           <td>{{data.Comment}}</td>
         </tr>
       </tbody>

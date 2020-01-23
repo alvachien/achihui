@@ -6,7 +6,10 @@ import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
-  DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, RepeatFrequencyDatesAPIInput, RepeatFrequencyDatesAPIOutput, FinanceLoanCalAPIOutput, FinanceLoanCalAPIInput, } from '../model';
+  DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, RepeatedDatesWithAmountAPIInput,
+  RepeatedDatesWithAmountAPIOutput,
+  RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput,
+  RepeatDatesWithAmountAndInterestAPIOutput, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -378,7 +381,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('$select', 'ID,HomeID,Name');
+      params = params.append('$select', 'ID,HomeID,Name,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
 
       return this.http.get(this.accountAPIUrl, {
@@ -437,7 +440,7 @@ export class FinanceOdataService {
         })
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceOdataService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllControlCenters, map.`,
             ConsoleLogTypeEnum.debug);
 
           this.listControlCenter = [];
@@ -455,7 +458,7 @@ export class FinanceOdataService {
           return this.listControlCenter;
         }),
         catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceOdataService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService fetchAllControlCenters.`,
             ConsoleLogTypeEnum.error);
 
           this.isConctrolCenterListLoaded = false;
@@ -466,6 +469,124 @@ export class FinanceOdataService {
     } else {
       return of(this.listControlCenter);
     }
+  }
+
+  /**
+   * Read control center
+   * @param ccid ID of the control center
+   */
+  public readControlCenter(ccid: number): Observable<ControlCenter> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.controlCenterAPIUrl + '?$select=ID,Name,Comment,Owner,ParentID&$filter=ID eq ' + ccid.toString();
+    return this.http.get(apiurl, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readControlCenter`,
+         ConsoleLogTypeEnum.debug);
+
+        const resdata = response as any;
+        const hd: ControlCenter = new ControlCenter();
+        if (resdata.value && resdata.value instanceof Array && resdata.value[0]) {
+          hd.onSetData(resdata.value[0] as any);
+          // Update the buffer if necessary
+          const idx: number = this.listControlCenter.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listControlCenter.splice(idx, 1, hd);
+          } else {
+            this.listControlCenter.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService's readControlCenter.`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Create a control center
+   * @param objDetail Instance of control center to create
+   */
+  public createControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objDetail.writeJSONString();
+    return this.http.post(this.controlCenterAPIUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService, createControlCenter', ConsoleLogTypeEnum.debug);
+
+        const hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response as any);
+
+        this.listControlCenter.push(hd);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createControlCenter, failed.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change a control center
+   * @param objDetail Instance of control center to change
+   */
+  public changeControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.controlCenterAPIUrl + '(' + objDetail.Id.toString() + ')';
+
+    const jdata: string = objDetail.writeJSONString();
+    // let params: HttpParams = new HttpParams();
+    // params = params.append('hid', this.homeService.ChosedHome.ID.toString());
+    return this.http.put(apiurl, jdata, {
+      headers,
+      // params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService, changeControlCenter',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response as any);
+
+        const idx: number = this.listControlCenter.findIndex((val: any) => {
+          return val.Id === hd.Id;
+        });
+        if (idx !== -1) {
+          this.listControlCenter.splice(idx, 1, hd);
+        } else {
+          this.listControlCenter.push(hd);
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, changeControlCenter.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -581,7 +702,7 @@ export class FinanceOdataService {
 
     const jdata: string = objDetail.writeJSONString();
     return this.http.post(this.documentAPIUrl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocument, map.`,
@@ -604,19 +725,19 @@ export class FinanceOdataService {
    */
 
   // Calculate ADP tmp. docs
-  public calcADPTmpDocs(datainput: FinanceADPCalAPIInput): Observable<FinanceADPCalAPIOutput[]> {
+  public calcADPTmpDocs(datainput: RepeatedDatesWithAmountAPIInput): Observable<RepeatedDatesWithAmountAPIOutput[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceADPCalculator';
-    let jobject: any = {
-      startDate: datainput.StartDate.format(momentDateFormat),
-      totalAmount: datainput.TotalAmount,
-      endDate: datainput.EndDate.format(momentDateFormat),
-      rptType: +datainput.RptType,
-      desp: datainput.Desp,
+    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDatesWithAmount';
+    const jobject: any = {
+      StartDate: datainput.StartDate.format(momentDateFormat),
+      TotalAmount: datainput.TotalAmount,
+      EndDate: datainput.EndDate.format(momentDateFormat),
+      RepeatType: datainput.RepeatType,
+      Desp: datainput.Desp,
     };
     if (datainput.EndDate) {
       jobject.endDate = datainput.EndDate.format(momentDateFormat);
@@ -624,17 +745,17 @@ export class FinanceOdataService {
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this.http.post(apiurl, jdata, {
-      headers: headers,
+      headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
 
-        let results: FinanceADPCalAPIOutput[] = [];
+        const results: RepeatedDatesWithAmountAPIOutput[] = [];
         // Get the result out.
-        let y: any = <any>response;
+        const y: any = response as any;
         if (y instanceof Array && y.length > 0) {
-          for (let tt of y) {
-            let rst: FinanceADPCalAPIOutput = {
+          for (const tt of y) {
+            const rst: RepeatedDatesWithAmountAPIOutput = {
               TranDate: moment(tt.tranDate, momentDateFormat),
               TranAmount: tt.tranAmount,
               Desp: tt.desp,
@@ -646,51 +767,52 @@ export class FinanceOdataService {
         return results;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceOdataService: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 
   // Calculate loan tmp. docs
-  public calcLoanTmpDocs(datainput: FinanceLoanCalAPIInput): Observable<FinanceLoanCalAPIOutput[]> {
+  public calcLoanTmpDocs(datainput: RepeatDatesWithAmountAndInterestAPIInput): Observable<RepeatDatesWithAmountAndInterestAPIOutput[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanCalculator';
-    let jobject: any = {
-      interestFreeLoan: datainput.InterestFreeLoan ? true : false,
-      interestRate: datainput.InterestRate ? datainput.InterestRate : 0,
-      repaymentMethod: datainput.RepaymentMethod,
-      startDate: datainput.StartDate.format(momentDateFormat),
-      totalAmount: datainput.TotalAmount,
-      totalMonths: datainput.TotalMonths,
+    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDatesWithAmountAndInterest';
+    const jobject: any = {
+      InterestFreeLoan: datainput.InterestFreeLoan ? true : false,
+      InterestRate: datainput.InterestRate ? datainput.InterestRate : 0,
+      RepaymentMethod: datainput.RepaymentMethod,
+      StartDate: datainput.StartDate.format(momentDateFormat),
+      TotalAmount: datainput.TotalAmount,
+      TotalMonths: datainput.TotalMonths,
     };
     if (datainput.EndDate) {
-      jobject.endDate = datainput.EndDate.format(momentDateFormat);
+      jobject.EndDate = datainput.EndDate.format(momentDateFormat);
     }
     if (datainput.FirstRepayDate) {
-      jobject.firstRepayDate = datainput.FirstRepayDate.format(momentDateFormat);
+      jobject.FirstRepayDate = datainput.FirstRepayDate.format(momentDateFormat);
     }
     if (datainput.RepayDayInMonth) {
-      jobject.repayDayInMonth = +datainput.RepayDayInMonth;
+      jobject.RepayDayInMonth = +datainput.RepayDayInMonth;
     }
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this.http.post(apiurl, jdata, {
-      headers: headers,
+      headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceOdataService`, ConsoleLogTypeEnum.debug);
 
-        let results: FinanceLoanCalAPIOutput[] = [];
+        const results: RepeatDatesWithAmountAndInterestAPIOutput[] = [];
         // Get the result out.
-        let y: any = <any>response;
+        const y: any = response as any;
         if (y instanceof Array && y.length > 0) {
-          for (let tt of y) {
-            let rst: FinanceLoanCalAPIOutput = {
+          for (const tt of y) {
+            const rst: RepeatDatesWithAmountAndInterestAPIOutput = {
               TranDate: moment(tt.tranDate, momentDateFormat),
               TranAmount: tt.tranAmount,
               InterestAmount: tt.interestAmount,
@@ -702,39 +824,41 @@ export class FinanceOdataService {
         return results;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceOdataService: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 
-  // Calculate the dates
-  public getRepeatFrequencyDates(datainput: RepeatFrequencyDatesAPIInput): Observable<RepeatFrequencyDatesAPIOutput[]> {
+  // get repeated dates
+  public getRepeatedDates(datainput: RepeatedDatesAPIInput): Observable<RepeatedDatesAPIOutput[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/RepeatFrequencyDates';
-    let jobject: any = {
-      startDate: datainput.StartDate.format(momentDateFormat),
-      endDate: datainput.EndDate.format(momentDateFormat),
-      rptType: +datainput.RptType,
+    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDates';
+    const jobject: any = {
+      StartDate: datainput.StartDate.format(momentDateFormat),
+      EndDate: datainput.EndDate.format(momentDateFormat),
+      RepeatType: +datainput.RepeatType,
     };
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this.http.post(apiurl, jdata, {
-      headers: headers,
+      headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getRepeatFrequencyDates in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getRepeatFrequencyDates in FinanceOdataService.`,
+          ConsoleLogTypeEnum.debug);
 
-        let results: RepeatFrequencyDatesAPIOutput[] = [];
+        const results: RepeatedDatesAPIOutput[] = [];
         // Get the result out.
-        let y: any = <any>response;
+        const y = response as any;
         if (y instanceof Array && y.length > 0) {
-          for (let tt of y) {
-            let rst: RepeatFrequencyDatesAPIOutput = {
+          for (const tt of y) {
+            const rst: RepeatedDatesAPIOutput = {
               StartDate: moment(tt.startDate, momentDateFormat),
               EndDate: moment(tt.endDate, momentDateFormat),
             };
@@ -745,7 +869,8 @@ export class FinanceOdataService {
         return results;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getRepeatFrequencyDates in FinanceOdataService: ${error}`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getRepeatFrequencyDates in FinanceOdataService: ${error}`,
+         ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
