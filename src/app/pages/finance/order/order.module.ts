@@ -7,6 +7,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -28,6 +30,8 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
     CommonModule,
     NzBreadCrumbModule,
     NzPageHeaderModule,
+    NzInputModule,
+    NzSelectModule,
     NzTableModule,
     NzDividerModule,
     NzTreeModule,

@@ -40,6 +40,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this.arMembers = this.homeService.ChosedHome.Members.slice();
 
     this.detailFormGroup = new FormGroup({
+      idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       cmtControl: new FormControl('', Validators.maxLength(45)),
       parentControl: new FormControl(),
@@ -86,6 +87,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                   ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`,
                     ConsoleLogTypeEnum.debug);
 
+                  this.detailFormGroup.get('idControl').setValue(x2.Id);
                   this.detailFormGroup.get('nameControl').setValue(x2.Name);
                   this.detailFormGroup.get('cmtControl').setValue(x2.Comment);
                   this.detailFormGroup.get('parentControl').setValue(x2.ParentId);

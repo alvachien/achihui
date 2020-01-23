@@ -12,6 +12,14 @@
   </nz-page-header>
 
   <form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="idControl" readonly />
+      </nz-form-control>
+    </nz-form-item>
+
     <!-- Name -->
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
