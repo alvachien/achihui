@@ -637,6 +637,125 @@ export class FinanceOdataService {
   }
 
   /**
+   * Read the order from API
+   * @param ordid Id of Order
+   */
+  public readOrder(ordid: number): Observable<Order> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${ordid}`);
+    params = params.append('$expand', `SRule`);
+    return this.http.get(this.orderAPIUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService`, ConsoleLogTypeEnum.debug);
+
+        const hd: Order = new Order();
+        const repdata = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value[0]) {
+          hd.onSetData(repdata.value[0]);
+
+          // Update the buffer if necessary
+          const idx: number = this.listOrder.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listOrder.splice(idx, 1, hd);
+          } else {
+            this.listOrder.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readOrder.`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Create an order
+   * @param ord Order instance to create
+   */
+  public createOrder(objDetail: Order): Observable<Order> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objDetail.writeJSONString();
+    return this.http.post(this.orderAPIUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceStorageService, createOrder map.', ConsoleLogTypeEnum.debug);
+
+        const hd: Order = new Order();
+        hd.onSetData(response as any);
+
+        // Buffer it
+        this.listOrder.push(hd);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change an order
+   * @param ord Order instance to change
+   */
+  public changeOrder(objDetail: Order): Observable<Order> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
+    const jdata: string = objDetail.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this.homeService.ChosedHome.ID.toString());
+    return this.http.put(apiurl, jdata, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering Map of changeOrder in FinanceStorageService: ${response}`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Order = new Order();
+        hd.onSetData(response as any);
+
+        const idx: number = this.listOrder.findIndex((val: any) => {
+          return val.Id === hd.Id;
+        });
+        if (idx !== -1) {
+          this.listOrder.splice(idx, 1, hd);
+        } else {
+          this.listOrder.push(hd);
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * Read all documents out
    * @param dtbgn Begin date
    * @param dtend End Date
@@ -708,7 +827,7 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocument, map.`,
           ConsoleLogTypeEnum.debug);
 
-        let hd: Document = new Document();
+        const hd: Document = new Document();
         hd.onSetData(response as any);
         return hd;
       }),

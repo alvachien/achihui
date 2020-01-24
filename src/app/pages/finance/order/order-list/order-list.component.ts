@@ -53,6 +53,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCreate(): void {
+    this.router.navigate(['/finance/order/create']);
+  }
+
   onDisplay(rid: number): void {
     this.router.navigate(['/finance/order/display/' + rid.toString()]);
   }

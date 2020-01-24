@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
+  Order,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -1306,6 +1307,162 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$filter');
       });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
+  describe('readOrder', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return order in success case', () => {
+      expect(service.Orders.length).toEqual(0);
+      service.readOrder(21).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.Orders.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL + '/21' && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.readOrder(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL + '/21' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createOrder', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should create an order in success case', () => {
+      expect(service.Orders.length).toEqual(0);
+      service.createOrder(new Order()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.Orders.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === orderAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.createOrder(new Order()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === orderAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('changeOrder', () => {
+    let ord: Order;
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+      ord = new Order();
+      ord.Id = 11;
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return order in success case', () => {
+      expect(service.Orders.length).toEqual(0);
+      service.changeOrder(ord).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.Orders.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to PUT from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === orderAPIURL + '/11' && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.changeOrder(ord).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === orderAPIURL + '/11' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 
