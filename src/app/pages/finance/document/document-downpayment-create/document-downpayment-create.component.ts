@@ -7,7 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
-  ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection, costObjectValidator, } from '../../../../model';
+  ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection, costObjectValidator,
+  RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
+} from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
 @Component({
@@ -38,9 +40,14 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public headerFormGroup: FormGroup;
 
-  current = 0;
+  get tranAmount(): number {
+    return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl').value;
+  }
+  get tranType(): TranType {
+    return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl').value;
+  }
 
-  index = 'First-content';
+  current = 0;
 
   pre(): void {
     this.current -= 1;
@@ -59,19 +66,16 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   changeContent(): void {
     switch (this.current) {
       case 0: {
-        this.index = 'First-content';
         break;
       }
       case 1: {
-        this.index = 'Second-content';
+        // Show the dp docs
         break;
       }
       case 2: {
-        this.index = 'third-content';
         break;
       }
       default: {
-        this.index = 'error';
       }
     }
   }

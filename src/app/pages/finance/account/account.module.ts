@@ -56,6 +56,11 @@ import { AccountExtraLoanComponent } from './account-extra-loan/account-extra-lo
     NzDatePickerModule,
     AccountRoutingModule,
     TranslocoModule,
+  ],
+  exports: [
+    AccountExtraDownpaymentComponent,
+    AccountExtraAssetComponent,
+    AccountExtraLoanComponent,
   ]
 })
 export class AccountModule { }

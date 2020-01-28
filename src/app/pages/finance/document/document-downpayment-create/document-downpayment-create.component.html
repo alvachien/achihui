@@ -24,7 +24,7 @@
     <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
       [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies" [baseCurrency]="baseCurrency">
     </hih-fin-document-header>
-
+    <nz-divider></nz-divider>
     <!-- Amount -->
     <nz-form-item>
       <nz-form-label [nzSpan]="4" nzRequired nzFor="idAmount">{{'Finance.Amount' | transloco}}</nz-form-label>
@@ -56,7 +56,7 @@
 
     <!-- CC -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="4" nzRequired nzFor="idCC">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="4" nzFor="idCC">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="8" nzErrorTip="Please select a control center">
         <nz-select id="idCC" formControlName="ccControl">
           <nz-option *ngFor="let cc of arControlCenters" [nzValue]='cc.Id' [nzLabel]="cc.Name"></nz-option>
@@ -66,7 +66,7 @@
 
     <!-- Order -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="4" nzRequired nzFor="idOrder">{{'Finance.Activity' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="4" nzFor="idOrder">{{'Finance.Activity' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="8" nzErrorTip="Please select an order">
         <nz-select id="idOrder" formControlName="orderControl">
           <nz-option *ngFor="let ord of arUIOrder" [nzValue]='ord.Id' [nzLabel]="ord.Name"></nz-option>
@@ -74,6 +74,10 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+
+  <div [hidden]="current !== 1">
+    <hih-finance-account-extra-downpayment [tranAmount]="tranAmount" [tranType]="tranType"></hih-finance-account-extra-downpayment>
+  </div>
 </div>
 
 <div class="steps-action">

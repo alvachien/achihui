@@ -35,6 +35,7 @@ import { DocumentDownpaymentCreateComponent } from './document-downpayment-creat
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create/document-asset-buy-create.component';
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create/document-asset-sold-create.component';
 import { DocumentLoanCreateComponent } from './document-loan-create/document-loan-create.component';
+import { AccountModule } from '../account/account.module';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { DocumentLoanCreateComponent } from './document-loan-create/document-loa
     NzResultModule,
     DocumentRoutingModule,
     TranslocoModule,
+    AccountModule,
   ]
 })
 export class DocumentModule { }

@@ -75,6 +75,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      ctgyControl: new FormControl(undefined, [Validators.required]),
       cmtControl: new FormControl('', Validators.maxLength(45)),
       parentControl: new FormControl(),
       ownerControl: new FormControl(),

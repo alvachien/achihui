@@ -54,7 +54,7 @@
         <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="ctgyControl">
-            <nz-option *ngFor="let cc of existedCC" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
           </nz-select>
           <ng-template #ctgyTpl let-control>
             <ng-container *ngIf="control.hasError('required')">
