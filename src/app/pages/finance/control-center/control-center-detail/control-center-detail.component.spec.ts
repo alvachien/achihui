@@ -1,11 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
+import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 
 import { ControlCenterDetailComponent } from './control-center-detail.component';
-import { getTranslocoModule } from '../../../../../testing';
+import { getTranslocoModule, ActivatedRouteUrlStub } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 
@@ -18,18 +20,23 @@ describe('ControlCenterDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => { return ''; };
+    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         NgZorroAntdModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
         getTranslocoModule(),
       ],
       declarations: [ ControlCenterDetailComponent ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
       ]
     })
     .compileComponents();

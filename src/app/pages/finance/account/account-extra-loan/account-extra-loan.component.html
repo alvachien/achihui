@@ -1,1 +1,154 @@
-<p>account-extra-loan works!</p>
+<ng-container *transloco="let t">
+  <div [formGroup]="loanInfoForm">
+    <!-- Start date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.StartDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startdateErrorTpl">
+        <nz-date-picker formControlName="startDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        <ng-template #startdateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- End date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.EndDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="enddateErrorTpl">
+        <nz-date-picker formControlName="endDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        <ng-template #enddateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Total months -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.NumberOfPeriods' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="totmonthErrorTpl">
+        <input nz-input type="number" formControlName="totalMonthControl" name="totmonth">
+        <ng-template #totmonthErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Repay day -->
+    <nz-form-item *ngIf="isFieldChangable">
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepayDayInMonth' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaydayErrorTpl">
+        <input nz-input type="number" formControlName="repayDayControl" name="repayday">
+        <ng-template #repaydayErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- First repay date -->
+    <nz-form-item *ngIf="isFieldChangable">
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.EndDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="firstrepaydateErrorTpl">
+        <nz-date-picker formControlName="firstRepayDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        <ng-template #firstrepaydateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Interest free -->
+    <nz-form-item>
+      <nz-form-control [nzSpan]="12" [nzOffset]="7">
+        <label nz-checkbox formControlName="interestFreeControl" (ngModelChange)="onChange()">
+          {{'Finance.InterestFreeLoan' | transloco}}
+        </label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Annual Rate -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.AnnualRate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="annualRateErrorTpl">
+        <input nz-input type="number" [disabled]="!isFieldChangable || extObject.InterestFree"
+          formControlName="annualRateControl" name="annualRate">
+        <ng-template #annualRateErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Repay. method -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepaymentMethod' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
+        <nz-select formControlName="repayMethodControl" (ngModelChange)="onChange()">
+          <nz-option *ngFor="let rt of uiStatusService.RepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(cr.i18nterm)"></nz-option>
+        </nz-select>
+        <ng-template #repaymethodErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Paying Account -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.PayingAccount' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="payingaccountErrorTpl">
+        <nz-select formControlName="payingAccountControl" (ngModelChange)="onChange()">
+          <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="t(acnt.Name)"></nz-option>
+        </nz-select>
+        <ng-template #payingaccountErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Partner -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.TradingPartner' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="partnerErrorTpl">
+        <input nz-input type="text" formControlName="partnerControl" name="ptner">
+        <ng-template #partnerErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Comment -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Comment' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="commentErrorTpl">
+        <input nz-input type="text" formControlName="cmtControl" name="cmt">
+        <ng-template #commentErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Ref doc. ID -->
+  <!-- <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;"
+      routerLinkActive="active">{{extObject?.RefDocId}}</a>
+  </div> -->
+</ng-container>

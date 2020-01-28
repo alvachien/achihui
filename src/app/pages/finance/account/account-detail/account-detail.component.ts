@@ -6,10 +6,11 @@ import { takeUntil } from 'rxjs/operators';
 
 import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
-  financeAccountCategoryLendTo, UICommonLabelEnum,
+  financeAccountCategoryLendTo, UICommonLabelEnum, ModelUtility,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
-  financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, } from '../../../../model';
+  financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, ConsoleLogTypeEnum,
+} from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
@@ -27,6 +28,10 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   arrayStatus: UIDisplayString[] = [];
   extObject: AccountExtra;
   arAccountCategories: AccountCategory[] = [];
+  public headerFormGroup: FormGroup;
+  public extraADPFormGroup: FormGroup;
+  public extraAssetFormGroup: FormGroup;
+  public extraLoanFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -34,14 +39,50 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get currentCategory(): number {
+    return this.headerFormGroup.get('ctgyControl').value;
+  }
+  get isAssetAccount(): boolean {
+    if (this.currentCategory === financeAccountCategoryAsset) {
+      return true;
+    }
+
+    return false;
+  }
+  get isADPAccount(): boolean {
+    if (this.currentCategory === financeAccountCategoryAdvancePayment
+      || this.currentCategory === financeAccountCategoryAdvanceReceived) {
+      return true;
+    }
+
+    return false;
+  }
+  get isLoanAccount(): boolean {
+    if (this.currentCategory === financeAccountCategoryBorrowFrom
+      || this.currentCategory === financeAccountCategoryLendTo) {
+      return true;
+    }
+
+    return false;
+  }
 
   constructor(
     public odataService: FinanceOdataService,
     public activateRoute: ActivatedRoute,
     public homeSevice: HomeDefOdataService,
-  ) { }
+  ) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`, ConsoleLogTypeEnum.debug);
+    this.headerFormGroup = new FormGroup({
+      idControl: new FormControl(),
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      cmtControl: new FormControl('', Validators.maxLength(45)),
+      parentControl: new FormControl(),
+      ownerControl: new FormControl(),
+    });
+  }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`, ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
@@ -73,17 +114,15 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               .pipe(takeUntil(this._destroyed$))
               .subscribe((x3: Account) => {
                 this._displayAccountContent(x3);
-                this.firstFormGroup.markAsPristine();
+                this.headerFormGroup.markAsPristine();
                 this.extraADPFormGroup.markAsPristine();
                 this.extraAssetFormGroup.markAsPristine();
                 this.extraLoanFormGroup.markAsPristine();
-                this.statusFormGroup.markAsPristine();
+                // this.statusFormGroup.markAsPristine();
 
                 // this._changeDetector.detectChanges();
               }, (error: any) => {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
-                }
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`, ConsoleLogTypeEnum.error);
 
                 // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
                 this.uiMode = UIMode.Invalid;
@@ -94,19 +133,22 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         }
       });
     }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`,
+        ConsoleLogTypeEnum.error);
 
       // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });
   }
+
   ngOnDestroy(): void {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnDestroy`, ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
   }
+
   public isCategoryDisabled(ctgyid: number): boolean {
     if (this.uiMode === UIMode.Create && (ctgyid === financeAccountCategoryAsset
         || ctgyid === financeAccountCategoryBorrowFrom
@@ -121,27 +163,29 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSubmit`, ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Create) {
       // this.onCreateImpl();
     } else if (this.uiMode === UIMode.Change) {
       // this.onUpdateImpl();
     }
   }
+
   private _displayAccountContent(objAcnt: Account): void {
     // Step 0.
-    this.firstFormGroup.reset();
-    this.firstFormGroup.get('nameControl').setValue(objAcnt.Name);
-    this.firstFormGroup.get('ctgyControl').setValue(objAcnt.CategoryId);
+    this.headerFormGroup.reset();
+    this.headerFormGroup.get('nameControl').setValue(objAcnt.Name);
+    this.headerFormGroup.get('ctgyControl').setValue(objAcnt.CategoryId);
     if (objAcnt.OwnerId) {
-      this.firstFormGroup.get('ownerControl').setValue(objAcnt.OwnerId);
+      this.headerFormGroup.get('ownerControl').setValue(objAcnt.OwnerId);
     }
     if (objAcnt.Comment) {
-      this.firstFormGroup.get('cmtControl').setValue(objAcnt.Comment);
+      this.headerFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
     if (!this.isFieldChangable) {
-      this.firstFormGroup.disable();
+      this.headerFormGroup.disable();
     } else {
-      this.firstFormGroup.enable();
+      this.headerFormGroup.enable();
     }
     // Step 1.
     if (this.isADPAccount) {
@@ -167,7 +211,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       }
     }
     // Step 2.
-    this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
+    // this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
   }
 
   private _generateAccount(): Account {
@@ -176,8 +220,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     acntObj.Name = this.headerFormGroup.get('nameControl').value;
     acntObj.CategoryId = this.currentCategory;
-    acntObj.OwnerId = this.firstFormGroup.get('ownerControl').value;
-    acntObj.Comment = this.firstFormGroup.get('cmtControl').value;
+    acntObj.OwnerId = this.headerFormGroup.get('ownerControl').value;
+    acntObj.Comment = this.headerFormGroup.get('cmtControl').value;
     if (this.isADPAccount) {
       // ADP
       acntObj.ExtraInfo = this.extraADPFormGroup.get('extADPControl').value;
@@ -188,7 +232,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       // Loan
       acntObj.ExtraInfo = this.extraLoanFormGroup.get('extLoanControl').value;
     }
-    acntObj.Status = this.statusFormGroup.get('statusControl').value;
+    // acntObj.Status = this.statusFormGroup.get('statusControl').value;
 
     return acntObj;
   }
@@ -203,5 +247,4 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     }
     return null;
   }
-
 }

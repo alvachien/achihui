@@ -596,58 +596,6 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('readAccount', () => {
-    beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
-    });
-
-    afterEach(() => {
-      // After every test, assert that there are no more pending requests.
-      httpTestingController.verify();
-    });
-
-    it('should return Account in success case', () => {
-      expect(service.Accounts.length).toEqual(0);
-      service.readAccount(21).subscribe(
-        (data: any) => {
-          expect(data).toBeTruthy();
-          // Should be buffered
-          expect(service.Accounts.length).toEqual(1);
-        },
-        (fail: any) => {
-          // Empty
-        },
-      );
-
-      // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL + '/21' && requrl.params.has('hid');
-      });
-
-      // Respond with the mock data
-      req.flush(fakeData.finAccountsFromAPI[0]);
-    });
-
-    it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
-      service.readAccount(21).subscribe(
-        (data: any) => {
-          fail('expected to fail');
-        },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL + '/21' && requrl.params.has('hid');
-      });
-
-      // respond with a 500 and the error message in the body
-      req.flush(msg, { status: 500, statusText: 'server failed' });
-    });
-  });
-
   describe('createLoanDocument', () => {
     let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
     beforeEach(() => {

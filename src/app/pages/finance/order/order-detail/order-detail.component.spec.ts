@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 
 import { OrderDetailComponent } from './order-detail.component';
@@ -24,6 +26,9 @@ describe('OrderDetailComponent', () => {
       imports: [
         HttpClientTestingModule,
         NgZorroAntdModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
         getTranslocoModule(),
       ],
       declarations: [ OrderDetailComponent ],
@@ -39,7 +44,7 @@ describe('OrderDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OrderDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

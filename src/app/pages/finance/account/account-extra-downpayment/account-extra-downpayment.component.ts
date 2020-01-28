@@ -1,18 +1,19 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { LogLevel, UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
+import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   ConsoleLogTypeEnum, ModelUtility,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
 @Component({
-  selector: 'hih-account-extra-downpayment',
+  selector: 'hih-finance-account-extra-downpayment',
   templateUrl: './account-extra-downpayment.component.html',
   styleUrls: ['./account-extra-downpayment.component.less'],
   providers: [
@@ -80,31 +81,37 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   }
 
   constructor(
-    public odataService: FinanceOdataService,
-    private _homedefService: HomeDefOdataService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...', ConsoleLogTypeEnum.debug);
+    public router: Router,
+    public odataService: FinanceOdataService,    
+    public homeService: HomeDefOdataService) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
+      ConsoleLogTypeEnum.debug);
   }
 
   @HostListener('change') onChange(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...',
+      ConsoleLogTypeEnum.debug);
     if (this._onChange) {
       this._onChange(this.extObject);
     }
   }
   @HostListener('blur') onTouched(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...',
+      ConsoleLogTypeEnum.debug);
     if (this._onTouched) {
       this._onTouched();
     }
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -132,7 +139,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
         const tmpDocs: TemplateDocADP[] = [];
         for (let i = 0; i < rsts.length; i++) {
           const item: TemplateDocADP = new TemplateDocADP();
-          item.HID = this._homedefService.ChosedHome.ID;
+          item.HID = this.homeService.ChosedHome.ID;
           item.DocId = i + 1;
           item.TranType = this.tranType;
           item.TranDate = rsts[i].TranDate;
@@ -152,9 +159,16 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   }
 
   public onReset(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...',
+      ConsoleLogTypeEnum.debug);
 
     this.adpInfoFormGroup.reset();
+  }
+  public onRefDocClick(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...',
+      ConsoleLogTypeEnum.debug);
+
+    this.router.navigate([`/finance/document/display/${this.refDocId}`]);
   }
 
   writeValue(val: AccountExtraAdvancePayment): void {
@@ -176,16 +190,20 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }
   }
   registerOnChange(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...',
+      ConsoleLogTypeEnum.debug);
+
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...',
+      ConsoleLogTypeEnum.debug);
 
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...',
+      ConsoleLogTypeEnum.debug);
 
     if (isDisabled) {
       this.adpInfoFormGroup.disable();

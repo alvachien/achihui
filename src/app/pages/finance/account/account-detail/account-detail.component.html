@@ -1,37 +1,93 @@
 <nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
   <nz-page-header nzBackIcon>
-    <nz-page-header-title>{{'Finance.Account' | translate}}</nz-page-header-title>
-    <nz-page-header-subtitle>{{currentMode | translate}}</nz-page-header-subtitle>
+    <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
     <nz-page-header-tags>
       <!-- <nz-tag [nzColor]="'red'">Warning</nz-tag> -->
     </nz-page-header-tags>
     <nz-page-header-extra>
       <button nz-button nzType="primary">Save</button>
     </nz-page-header-extra>
-    <nz-page-header-content>
-      <div class="wrap">
-        <div nz-row class="content padding">
-          <nz-descriptions [nzColumn]="2">
-            <nz-descriptions-item nzTitle="Created" [nzSpan]="1">Lili Qu</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Association" [nzSpan]="1"><a>421421</a></nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Creation Time" [nzSpan]="1">2017-01-10</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Effective Time" [nzSpan]="1">2017-10-10</nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Remarks" [nzSpan]="2">
-              Gonghu Road, Xihu District, Hangzhou, Zhejiang, China
-            </nz-descriptions-item>
-          </nz-descriptions>
-        </div>
-        <div nz-row class="extra-content">
-          <div nz-col nzSpan="12">
-            <span class="label">Status</span>
-            <p class="detail">Pending</p>
-          </div>
-          <div nz-col nzSpan="12">
-            <span class="label"> Price</span>
-            <p class="detail">$ 568.08</p>
-          </div>
-        </div>
-      </div>
-    </nz-page-header-content>
   </nz-page-header>
+  <div>
+    <!-- Header -->
+    <form nz-form [formGroup]="headerFormGroup">
+      <!-- ID -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input formControlName="idControl" readonly />
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Name -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+          <input nz-input formControlName="nameControl" maxlength="30" required />
+          <ng-template #nameTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+              {{'Common.FieldMaxLength' | transloco}}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Comment -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
+          <input nz-input formControlName="cmtControl" maxlength="45" />
+          <ng-template #cmtTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+              {{'Common.FieldMaxLength' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Category -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
+          <nz-select formControlName="ctgyControl">
+            <nz-option *ngFor="let cc of existedCC" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+          </nz-select>
+          <ng-template #ctgyTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Owner -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Finance.Owner' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ownerTpl">
+          <nz-select formControlName="ownerControl">
+            <nz-option *ngFor="let usr of arMembers" [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
+          </nz-select>
+          <ng-template #ownerTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  
+    <form nz-form [formGroup]="extraADPFormGroup" *ngIf="isADPAccount">
+      <hih-finance-account-extra-downpayment formControlName="extADPControl"></hih-finance-account-extra-downpayment>
+    </form>
+    <form nz-form [formGroup]="extraAssetFormGroup" *ngIf="isAssetAccount">
+      <hih-finance-account-extra-asset formControlName="extAssetControl"></hih-finance-account-extra-asset>
+    </form>
+    <form nz-form [formGroup]="extraLoanFormGroup" *ngIf="isLoanAccount">
+      <hih-finance-account-extra-loan formControlName="extLoanControl"></hih-finance-account-extra-loan>
+    </form>
+  </div>
 </nz-spin>

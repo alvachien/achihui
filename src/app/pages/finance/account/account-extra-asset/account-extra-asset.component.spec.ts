@@ -1,6 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AccountExtraAssetComponent } from './account-extra-asset.component';
+import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 
 describe('AccountExtraAssetComponent', () => {
   let component: AccountExtraAssetComponent;
@@ -8,7 +13,17 @@ describe('AccountExtraAssetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccountExtraAssetComponent ]
+      imports: [
+        NgZorroAntdModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        getTranslocoModule(),
+      ],
+      declarations: [
+        AccountExtraAssetComponent,
+      ],
     })
     .compileComponents();
   }));
@@ -16,7 +31,7 @@ describe('AccountExtraAssetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountExtraAssetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

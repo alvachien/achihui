@@ -1,1 +1,47 @@
-<p>account-extra-asset works!</p>
+<ng-container *transloco="let t">
+  <div [formGroup]="assetInfoFormGroup">
+    <!-- Category -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Category' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyErrorTpl">
+        <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
+          <nz-option *ngFor="let rt of arAssetCategories" [nzValue]="rt.ID" [nzLabel]="t(rt.Name)"></nz-option>
+        </nz-select>
+        <ng-template #ctgyErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Name -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
+        <input nz-input formControlName="nameControl" maxlength="30" required />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>      
+    </nz-form-item>
+
+    <!-- Comment -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
+        <input nz-input formControlName="commentControl" maxlength="45" />
+        <ng-template #cmtTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</ng-container>
