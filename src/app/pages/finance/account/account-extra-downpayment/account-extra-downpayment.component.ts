@@ -41,8 +41,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   refDocId?: number;
 
   public adpInfoFormGroup: FormGroup = new FormGroup({
-    startDateControl: new FormControl(moment(), [Validators.required]),
-    endDateControl: new FormControl(moment().add(1, 'y')),
+    startDateControl: new FormControl(moment().toDate(), [Validators.required]),
+    endDateControl: new FormControl(moment().add(1, 'y').toDate()),
     frqControl: new FormControl('', Validators.required),
     cmtControl: new FormControl('', Validators.maxLength(30)),
   });

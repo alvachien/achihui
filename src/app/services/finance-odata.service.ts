@@ -421,6 +421,52 @@ export class FinanceOdataService {
   }
 
   /**
+   * Read an account
+   * @param acntid ID of the account to read
+   */
+  public readAccount(acntid: number): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${acntid}`);
+    params = params.append('$expand', `ExtraDP,ExtraAsset,ExtraLoan`);
+    return this.http.get(this.accountAPIUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering readAccount in FinanceOdataService`, ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        const repdata = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value[0]) {
+          hd.onSetData(repdata.value[0]);
+
+          // Update the buffer if necessary
+          const idx: number = this.listAccount.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listAccount.splice(idx, 1, hd);
+          } else {
+            this.listAccount.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService's readAccount.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * Read all control centers
    */
   public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {

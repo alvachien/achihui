@@ -190,51 +190,6 @@ export class FinanceStorageService {
       }));
   }
 
-  /**
-   * Read an account
-   * @param acntid ID of the account to read
-   */
-  public readAccount(acntid: number): Observable<Account> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.accountAPIUrl + '/' + acntid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering readAccount in FinanceStorageService`);
-        }
-
-        let hd: Account = new Account();
-        hd.onSetData(response as any);
-
-        // Update the buffer if necessary
-        let idx: number = this._listAccount.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this._listAccount.splice(idx, 1, hd);
-        } else {
-          this._listAccount.push(hd);
-        }
-
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readAccount.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
 
   /**
    * Fetch all plans out
