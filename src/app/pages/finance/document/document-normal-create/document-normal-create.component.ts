@@ -172,7 +172,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   next(): void {
-    switch(this.currentStep) {
+    switch (this.currentStep) {
       case 0: // header
         if (this.headerForm.valid) {
           this.currentStep ++;

@@ -7,9 +7,11 @@ import * as  moment from 'moment';
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
   DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, RepeatedDatesWithAmountAPIInput,
-  RepeatedDatesWithAmountAPIOutput,
-  RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput,
-  RepeatDatesWithAmountAndInterestAPIOutput, } from '../model';
+  RepeatedDatesWithAmountAPIOutput, RepeatFrequencyEnum, financeAccountCategoryAdvancePayment,
+  RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
+  RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
+  FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI,
+} from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -886,6 +888,230 @@ export class FinanceOdataService {
   }
 
   /**
+   * Crate ADP document
+   * @param docObj Instance of document
+   * @param acntExtraObject Instance of AccountExtraAdvancePayment
+   * @param isADP true for Advance payment, false for Advance received
+   * @returns An observerable of Document
+   */
+  public createADPDocument(docObj: Document, acntExtraObject: AccountExtraAdvancePayment, isADP: boolean): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = this.documentAPIUrl + `/hihapi.Models.PostDPDocument(${this.homeService.ChosedHome.ID})`;
+
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    let acntobj: Account = new Account();
+    acntobj.HID = this.homeService.ChosedHome.ID;
+    if (isADP) {
+      acntobj.CategoryId = financeAccountCategoryAdvancePayment;
+    } else {
+      acntobj.CategoryId = financeAccountCategoryAdvanceReceived;
+    }
+    acntobj.Name = docObj.Desp;
+    acntobj.Comment = docObj.Desp;
+    acntobj.OwnerId = this.authService.authSubject.getValue().getUserId();
+    for (let tmpitem of acntExtraObject.dpTmpDocs) {
+      tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
+      tmpitem.OrderId = docObj.Items[0].OrderId;
+    }
+    acntobj.ExtraInfo = acntExtraObject;
+    sobj.accountVM = acntobj.writeJSONObject();
+
+    return this.http.post(apiurl, sobj, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createADPDocument in FinanceStorageService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createADPDocument in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Create Loan document
+   * @param jdata JSON format
+   */
+  public createLoanDocument(docObj: Document, acntObj: Account): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    sobj.accountVM = acntObj.writeJSONObject();
+
+    return this.http.post(apiurl, sobj, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceStorageService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        let hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  // Create a repayment document on a loan
+  public createLoanRepayDoc(doc: Document, loanAccountID: number, tmpdocid?: number): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDocument';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this.homeService.ChosedHome.ID.toString());
+    params = params.append('loanAccountID', loanAccountID.toString());
+    if (tmpdocid) {
+      params = params.append('tmpdocid', tmpdocid.toString());
+    }
+
+    let jdata: string = doc.writeJSONString();
+
+    return this.http.post(apiurl, jdata, {
+        headers,
+        params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`,
+          ConsoleLogTypeEnum.debug);
+
+        let hd: Document = new Document();
+        hd.onSetData(response as any);
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Create asset document
+   * @param apidetail API Data for creation
+   */
+  public createAssetBuyinDocument(apidetail: FinanceAssetBuyinDocumentAPI): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
+    let jobj: any = apidetail.writeJSONObject();
+    let jdata: string = JSON && JSON.stringify(jobj);
+
+    return this.http.post(apiurl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetBuyinDocument in FinanceStorageService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        let ndocid: number = <number>(<any>response);
+        return ndocid;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
+
+  /**
+   * Create Asset Soldout document via API
+   * @param apidetail Instance of class FinanceAssetSoldoutDocumentAPI
+   */
+  public createAssetSoldoutDocument(apidetail: FinanceAssetSoldoutDocumentAPI): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetSoldDocument';
+    let jdata: string = JSON && JSON.stringify(apidetail);
+
+    return this.http.post(apiurl, jdata, {
+        headers: headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceStorageService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        let ndocid: number = <number>(<any>response);
+        return ndocid;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+    );
+  }
+
+  /**
+   * Create Asset Value Change document via API
+   * @param apidetail Instance of class FinanceAssetValChgDocumentAPI
+   */
+  public createAssetValChgDocument(apidetail: FinanceAssetValChgDocumentAPI): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetValueChange';
+    let jdata: string = JSON && JSON.stringify(apidetail);
+
+    return this.http.post(apiurl, jdata, {
+        headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceStorageService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        let ndocid: number = <number>(<any>response);
+        return ndocid;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+    );
+  }
+
+  /**
    * Utility part
    */
 
@@ -901,12 +1127,10 @@ export class FinanceOdataService {
       StartDate: datainput.StartDate.format(momentDateFormat),
       TotalAmount: datainput.TotalAmount,
       EndDate: datainput.EndDate.format(momentDateFormat),
-      RepeatType: datainput.RepeatType,
+      RepeatType: RepeatFrequencyEnum[datainput.RepeatType],
       Desp: datainput.Desp,
     };
-    if (datainput.EndDate) {
-      jobject.endDate = datainput.EndDate.format(momentDateFormat);
-    }
+
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this.http.post(apiurl, jdata, {
@@ -917,13 +1141,13 @@ export class FinanceOdataService {
 
         const results: RepeatedDatesWithAmountAPIOutput[] = [];
         // Get the result out.
-        const y: any = response as any;
-        if (y instanceof Array && y.length > 0) {
-          for (const tt of y) {
+        const repdata: any = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value.length > 0) {
+          for (const tt of repdata.value) {
             const rst: RepeatedDatesWithAmountAPIOutput = {
-              TranDate: moment(tt.tranDate, momentDateFormat),
-              TranAmount: tt.tranAmount,
-              Desp: tt.desp,
+              TranDate: moment(tt.TranDate, momentDateFormat),
+              TranAmount: tt.TranAmount,
+              Desp: tt.Desp,
             };
 
             results.push(rst);
@@ -974,9 +1198,9 @@ export class FinanceOdataService {
 
         const results: RepeatDatesWithAmountAndInterestAPIOutput[] = [];
         // Get the result out.
-        const y: any = response as any;
-        if (y instanceof Array && y.length > 0) {
-          for (const tt of y) {
+        const repdata: any = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value.length > 0) {
+          for (const tt of repdata.value) {
             const rst: RepeatDatesWithAmountAndInterestAPIOutput = {
               TranDate: moment(tt.tranDate, momentDateFormat),
               TranAmount: tt.tranAmount,

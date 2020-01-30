@@ -8,7 +8,8 @@ import { takeUntil } from 'rxjs/operators';
 import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
   ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection, costObjectValidator,
-  RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
+  Document, DocumentItem, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn,
+  AccountExtraAdvancePayment, DocumentVerifyContext, DocumentType,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -38,13 +39,41 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeAdvancePayment;
   public baseCurrency: string;
+  // Step: Header
   public headerFormGroup: FormGroup;
+  // Step: Account Extra Info
+  public accountExtraInfoFormGroup: FormGroup;
+  // Step: Confirm
+  public confirmInfo: any = {};
+  public isDocPosting = false;
+  // Step: Result
+  public docCreateSucceed = false;
 
   get tranAmount(): number {
     return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl').value;
   }
   get tranType(): TranType {
     return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl').value;
+  }
+  get nextEnabled(): boolean {
+    let isEnabled = false;
+    switch (this.current) {
+      case 0: {
+        isEnabled = this.headerFormGroup.valid;
+        break;
+      }
+      case 1: {
+        isEnabled = this.accountExtraInfoFormGroup.valid;
+        break;
+      }
+      case 2: {
+        isEnabled = true; // Review
+      }
+      default: {
+        break;
+      }
+    }
+    return isEnabled;
   }
 
   current = 0;
@@ -59,30 +88,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     this.changeContent();
   }
 
-  done(): void {
-    console.log('done');
-  }
-
-  changeContent(): void {
-    switch (this.current) {
-      case 0: {
-        break;
-      }
-      case 1: {
-        // Show the dp docs
-        break;
-      }
-      case 2: {
-        break;
-      }
-      default: {
-      }
-    }
-  }
-
   constructor(
     private odataService: FinanceOdataService,
-    private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef,
     private homeService: HomeDefOdataService,
@@ -97,6 +104,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         ccControl: new FormControl(''),
         orderControl: new FormControl(''),
       }, [costObjectValidator]);
+      this.accountExtraInfoFormGroup = new FormGroup({
+        infoControl: new FormControl()
+      });
     }
 
   ngOnInit() {
@@ -176,8 +186,62 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onSave(): void {
+  changeContent(): void {
+    switch (this.current) {
+      case 0: {
+        break;
+      }
+      case 1: {
+        // Show the dp docs
+        break;
+      }
+      case 2: {
+        // Review
+        this._updateConfirmInfo();
+        break;
+      }
+      case 3: {
+        this.isDocPosting = true;
+        this.onSubmit();
+        break;
+      }
+      default: {
+      }
+    }
+  }
+
+  onSubmit(): void {
     // Save current document
+    const docObj: Document = this._geneateDocument();
+    const accountExtra: AccountExtraAdvancePayment = this.accountExtraInfoFormGroup.get('infoControl').value;
+
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranType,
+      Currencies: this.arCurrencies,
+      BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+    } as DocumentVerifyContext)) {
+      // Show a dialog for error details
+      // TBD.
+      // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined, docObj.VerifiedMsgs);
+
+      return;
+    }
+
+    this.odataService.createADPDocument(docObj, accountExtra, this._isADP).subscribe((x: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
+        ConsoleLogTypeEnum.debug);
+
+      this.docCreateSucceed = true;
+      // TBD.
+    }, (error: any) => {
+      // Show error message
+      this.docCreateSucceed = false;
+    });
   }
 
   private _updateCurrentTitle(): void {
@@ -187,6 +251,39 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     } else {
       this.curTitle = 'Sys.DocTy.AdvancedRecv';
       this.curDocType = financeDocTypeAdvanceReceived;
+    }
+  }
+  private _geneateDocument(): Document {
+    const doc: Document = this.headerFormGroup.get('headerControl').value;
+    doc.HID = this.homeService.ChosedHome.ID;
+    doc.DocType = this.curDocType;
+
+    const fitem: DocumentItem = new DocumentItem();
+    fitem.ItemId = 1;
+    fitem.AccountId = this.headerFormGroup.get('accountControl').value;
+    fitem.ControlCenterId = this.headerFormGroup.get('ccControl').value;
+    fitem.OrderId = this.headerFormGroup.get('orderControl').value;
+    if (this._isADP) {
+      fitem.TranType = financeTranTypeAdvancePaymentOut;
+    } else {
+      fitem.TranType = financeTranTypeAdvanceReceiveIn;
+    }
+    fitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    fitem.Desp = doc.Desp;
+    doc.Items = [fitem];
+
+    return doc;
+  }
+  private _updateConfirmInfo(): void {
+    const doc: Document = this.headerFormGroup.get('headerControl').value;
+    this.confirmInfo.tranDateString = doc.TranDateFormatString;
+    this.confirmInfo.tranDesp = doc.Desp;
+    this.confirmInfo.tranAmount = this.headerFormGroup.get('amountControl').value;
+    this.confirmInfo.tranCurrency = doc.TranCurr;
+    if (this._isADP) {
+      this.confirmInfo.tranType = financeTranTypeAdvancePaymentOut;
+    } else {
+      this.confirmInfo.tranType = financeTranTypeAdvanceReceiveIn;
     }
   }
 }

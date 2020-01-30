@@ -8,7 +8,7 @@ import * as moment from 'moment';
 
 import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
-  ConsoleLogTypeEnum, ModelUtility,
+  ConsoleLogTypeEnum, ModelUtility, TranType,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -35,11 +35,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   private _isChangable = true; // Default is changable
   private _onChange: (val: any) => void;
   private _onTouched: () => void;
-  private _instanceObject: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
 
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   refDocId?: number;
+  isLoadingTmpDocs: boolean;
+  public listTmpDocs: TemplateDocADP[] = [];
 
   public adpInfoFormGroup: FormGroup = new FormGroup({
     startDateControl: new FormControl(moment().toDate(), [Validators.required]),
@@ -50,19 +51,21 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
   @Input() tranAmount: number;
   @Input() tranType: number;
+  @Input() allTranTypes: TranType[];
 
-  get extObject(): AccountExtraAdvancePayment {
-    this._instanceObject.StartDate = this.adpInfoFormGroup.get('startDateControl').value;
-    this._instanceObject.EndDate = this.adpInfoFormGroup.get('endDateControl').value;
-    this._instanceObject.RepeatType = this.adpInfoFormGroup.get('frqControl').value;
-    this._instanceObject.Comment = this.adpInfoFormGroup.get('cmtControl').value;
+  get value(): AccountExtraAdvancePayment {
+    const inst: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    inst.StartDate = moment(this.adpInfoFormGroup.get('startDateControl').value as Date);
+    inst.EndDate = moment(this.adpInfoFormGroup.get('endDateControl').value as Date);
+    inst.RepeatType = this.adpInfoFormGroup.get('frqControl').value;
+    inst.Comment = this.adpInfoFormGroup.get('cmtControl').value;
     if (this.refDocId) {
-      this._instanceObject.RefDocId = this.refDocId;
+      inst.RefDocId = this.refDocId;
     }
 
-    this._instanceObject.dpTmpDocs = [];
+    inst.dpTmpDocs = [];
 
-    return this._instanceObject;
+    return inst;
   }
   get isFieldChangable(): boolean {
     return this._isChangable;
@@ -71,7 +74,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     if (!this.isFieldChangable) {
       return false;
     }
-    if (!this.extObject.isValid) {
+    if (!this.value.isValid) {
       return false;
     }
     if (!this.tranAmount) {
@@ -82,7 +85,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
   constructor(
     public router: Router,
-    public odataService: FinanceOdataService,    
+    public odataService: FinanceOdataService,
     public homeService: HomeDefOdataService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -92,7 +95,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...',
       ConsoleLogTypeEnum.debug);
     if (this._onChange) {
-      this._onChange(this.extObject);
+      this._onChange(this.value);
     }
   }
   @HostListener('blur') onTouched(): void {
@@ -124,11 +127,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       return;
     }
 
+    const objval: AccountExtraAdvancePayment = this.value;
     const datInput: RepeatedDatesWithAmountAPIInput = {
-      StartDate: this.extObject.StartDate.clone(),
-      EndDate: this.extObject.EndDate.clone(),
-      RepeatType: this.extObject.RepeatType,
-      Desp: this.extObject.Comment,
+      StartDate: objval.StartDate.clone(),
+      EndDate: objval.EndDate.clone(),
+      RepeatType: objval.RepeatType,
+      Desp: objval.Comment,
       TotalAmount: this.tranAmount,
     };
 
@@ -147,6 +151,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
           item.Desp = rsts[i].Desp;
           tmpDocs.push(item);
         }
+
+        this.listTmpDocs = tmpDocs.slice();
 
         // Trigger the change.
         this.onChange();
@@ -175,8 +181,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...', ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.adpInfoFormGroup.get('startDateControl').setValue(val.StartDate);
-      this.adpInfoFormGroup.get('endDateControl').setValue(val.EndDate);
+      this.adpInfoFormGroup.get('startDateControl').setValue(val.StartDate.toDate());
+      this.adpInfoFormGroup.get('endDateControl').setValue(val.EndDate.toDate());
       this.adpInfoFormGroup.get('frqControl').setValue(val.RepeatType);
       this.adpInfoFormGroup.get('cmtControl').setValue(val.Comment);
 

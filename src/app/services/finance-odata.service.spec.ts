@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
-  Order,
+  Order, Account,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -29,6 +29,7 @@ describe('FinanceOdataService', () => {
   const ccAPIURL: any = environment.ApiUrl + `/api/FinanceControlCenters`;
   const orderAPIURL: any = environment.ApiUrl + `/api/FinanceOrders`;
   const documentAPIURL: any = environment.ApiUrl + `/api/FinanceDocuments`;
+  const adpDocumentAPIURL: any = environment.ApiUrl + '/api/financeadpdocument';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -1649,6 +1650,312 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$skip')
           && requrl.params.has('$count')
           && requrl.params.has('$expand');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createADPDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+
+      fakeData.buildFinADPDocumentForCreate();
+      fakeData.buildFinAccountExtraAdvancePayment();
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createADPDocument(fakeData.finADPDocumentForCreate, fakeData.finAccountExtraAdvancePayment, true).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === adpDocumentAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finADPDocumentForCreate.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createADPDocument(fakeData.finADPDocumentForCreate, fakeData.finAccountExtraAdvancePayment, true).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === adpDocumentAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createAssetBuyinDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createAssetBuyinDocument(fakeData.buildFinAssetBuyInDocumentForCreate()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createAssetBuyinDocument(fakeData.buildFinAssetBuyInDocumentForCreate()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createAssetSoldoutDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetSoldDocument';
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createAssetSoldoutDocument(fakeData.buildFinAssetSoldoutDocumentForCreate()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createAssetSoldoutDocument(fakeData.buildFinAssetSoldoutDocumentForCreate()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createAssetValChgDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetValueChange';
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createAssetValChgDocument(fakeData.buildFinAssetValueChangeDocumentForCreate()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createAssetValChgDocument(fakeData.buildFinAssetValueChangeDocumentForCreate()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+  describe('createLoanDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.createLoanDocument(new Document(), new Account()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createLoanDocument(new Document(), new Account()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createLoanRepayDoc', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDocument';
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.createLoanRepayDoc(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
+      });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createLoanRepayDoc(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
       });
 
       // respond with a 500 and the error message in the body
