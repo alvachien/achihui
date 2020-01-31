@@ -36,6 +36,7 @@ import { DocumentDownpaymentCreateComponent } from './document-downpayment-creat
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create/document-asset-buy-create.component';
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create/document-asset-sold-create.component';
 import { DocumentLoanCreateComponent } from './document-loan-create/document-loan-create.component';
+import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create';
 import { AccountModule } from '../account/account.module';
 
 @NgModule({
@@ -51,6 +52,7 @@ import { AccountModule } from '../account/account.module';
     DocumentAssetBuyCreateComponent,
     DocumentAssetSoldCreateComponent,
     DocumentLoanCreateComponent,
+    DocumentAssetValueChangeCreateComponent,
   ],
   imports: [
     CommonModule,

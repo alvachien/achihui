@@ -10,7 +10,8 @@ import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorr
   ControlCenter, Order, TranType, financeDocTypeLendTo, UIMode,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
-  momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator, ModelUtility, financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo,
+  momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator, ModelUtility,
+  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 
@@ -90,7 +91,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit for activateRoute URL: ${rst.length}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit, forkJoin`,
         ConsoleLogTypeEnum.debug);
 
       this.arDocTypes = rst[1];
@@ -200,7 +201,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     // Do the real submit
-    let docObj: Document = this._generateDocument();
+    const docObj: Document = this._generateDocument();
 
     // Check!
     if (!docObj.onVerify({
@@ -219,7 +220,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let acntobj: Account = new Account();
+    const acntobj: Account = new Account();
     acntobj.HID = this.homeService.ChosedHome.ID;
     if (this.curDocType === financeDocTypeLendTo) {
       acntobj.CategoryId = financeAccountCategoryLendTo;
@@ -237,15 +238,18 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
     }, (error: any) => {
       // Show error message
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
+        ConsoleLogTypeEnum.error);
       // TBD.
     });
   }
+
   private _generateDocument(): Document {
-    let doc: Document = this.firstFormGroup.get('headerControl').value;
+    const doc: Document = this.firstFormGroup.get('headerControl').value;
     doc.HID = this.homeService.ChosedHome.ID;
     doc.DocType = this.curDocType;
 
-    let fitem: DocumentItem = new DocumentItem();
+    const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
     fitem.AccountId = this.firstFormGroup.get('accountControl').value;
     fitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
@@ -261,8 +265,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
     return doc;
   }
+
   private _updateConfirmInfo() {
-    let doc: Document = this.firstFormGroup.get('headerControl').value;
+    const doc: Document = this.firstFormGroup.get('headerControl').value;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;

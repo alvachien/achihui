@@ -128,7 +128,7 @@ export class HomeDefOdataService {
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$expand', 'HomeMembers');
-               
+
     return this._http.get(apiurl, { headers, params, })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map.`, ConsoleLogTypeEnum.debug);

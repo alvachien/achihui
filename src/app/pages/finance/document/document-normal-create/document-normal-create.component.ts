@@ -21,8 +21,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
-  public headerForm: FormGroup;
-  public itemsForm: FormGroup;
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
   public arUIOrders: UIOrderForSelection[] = [];
@@ -36,10 +34,15 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
   public currentStep = 0;
-  public docCreateSucceed = false;
-  public isDocPosting = false;
+  // Step: Header
+  public headerForm: FormGroup;
+  // Step: Item
+  public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
+  // Step: Result
+  public docCreateSucceed = false;
+  public isDocPosting = false;
 
   constructor(
     public homeService: HomeDefOdataService,

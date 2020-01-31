@@ -25,44 +25,46 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
   ],
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean = true; // Default is changable
-  private _refBuyDocID?: number;
-  private _refSoldDocID?: number;
+  private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
-  private _instanceObject: AccountExtraAsset = new AccountExtraAsset();
   private _arAssetCategories: AssetCategory[];
 
-  public assetInfoForm: FormGroup = new FormGroup({
-    ctgyControl: new FormControl('', [Validators.required]),
-    nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    commentControl: new FormControl('', Validators.maxLength(100)),
-  });
-  get extObject(): AccountExtraAsset {
-    this._instanceObject.CategoryID = this.assetInfoForm.get('ctgyControl').value;
-    this._instanceObject.Name = this.assetInfoForm.get('nameControl').value;
-    this._instanceObject.Comment = this.assetInfoForm.get('commentControl').value;
-    if (this._refBuyDocID) {
-      this._instanceObject.RefDocForBuy = this._refBuyDocID;
+  public assetInfoFormGroup: FormGroup;
+  public refBuyDocID?: number;
+  public refSoldDocID?: number;
+  get value(): AccountExtraAsset {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent value getter...',
+      ConsoleLogTypeEnum.debug);
+
+    const insobj: AccountExtraAsset = new AccountExtraAsset();
+    insobj.CategoryID = this.assetInfoFormGroup.get('ctgyControl').value;
+    insobj.Name = this.assetInfoFormGroup.get('nameControl').value;
+    insobj.Comment = this.assetInfoFormGroup.get('commentControl').value;
+    if (this.refBuyDocID) {
+      insobj.RefDocForBuy = this.refBuyDocID;
     }
-    if (this._refSoldDocID) {
-      this._instanceObject.RefDocForSold = this._refSoldDocID;
+    if (this.refSoldDocID) {
+      insobj.RefDocForSold = this.refSoldDocID;
     }
-    return this._instanceObject;
+    return insobj;
   }
   get isFieldChangable(): boolean {
     return this._isChangable;
   }
   @HostListener('change') onChange(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onChange...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent onChange...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._onChange) {
-      this._onChange(this.extObject);
+      this._onChange(this.value);
     }
   }
   @HostListener('blur') onTouched(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onTouched...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent onTouched...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._onTouched) {
       this._onTouched();
@@ -71,26 +73,34 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   @Input()
   get arAssetCategories(): AssetCategory[] {
     return this._arAssetCategories;
-  } 
+  }
   set arAssetCategories(ctgy: AssetCategory[]) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent arAssetCategories setter`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter`,
       ConsoleLogTypeEnum.debug);
 
     this._arAssetCategories = ctgy.slice();
   }
 
   constructor() {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent constructor`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug);
+    this.assetInfoFormGroup = new FormGroup({
+      ctgyControl: new FormControl('', [Validators.required]),
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+      commentControl: new FormControl('', Validators.maxLength(100)),
+    });
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnInit`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnInit`,
+      ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnDestroy`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnDestroy`,
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -99,63 +109,68 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
 
   writeValue(val: AccountExtraAsset): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent writeValue: ${val}`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent writeValue: ${val}`,
+      ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.assetInfoForm.get('ctgyControl').setValue(val.CategoryID);
-      this.assetInfoForm.get('nameControl').setValue(val.Name);
-      this.assetInfoForm.get('commentControl').setValue(val.Comment);
+      this.assetInfoFormGroup.get('ctgyControl').setValue(val.CategoryID);
+      this.assetInfoFormGroup.get('nameControl').setValue(val.Name);
+      this.assetInfoFormGroup.get('commentControl').setValue(val.Comment);
       if (val.RefDocForBuy) {
-        this._refBuyDocID = val.RefDocForBuy;
+        this.refBuyDocID = val.RefDocForBuy;
       } else {
-        this._refBuyDocID = undefined;
+        this.refBuyDocID = undefined;
       }
       if (val.RefDocForSold) {
-        this._refSoldDocID = val.RefDocForSold;
+        this.refSoldDocID = val.RefDocForSold;
       } else {
-        this._refSoldDocID = undefined;
+        this.refSoldDocID = undefined;
       }
     } else {
-      this._refBuyDocID = undefined;
-      this._refSoldDocID = undefined;
+      this.refBuyDocID = undefined;
+      this.refSoldDocID = undefined;
     }
   }
 
   registerOnChange(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnChange...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnChange...',
       ConsoleLogTypeEnum.debug);
 
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnTouched...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug);
 
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent setDisabledState...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent setDisabledState...',
       ConsoleLogTypeEnum.debug);
 
     if (isDisabled) {
-      this.assetInfoForm.disable();
+      this.assetInfoFormGroup.disable();
       this._isChangable = false;
     } else {
-      this.assetInfoForm.enable();
+      this.assetInfoFormGroup.enable();
       this._isChangable = true;
     }
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent validate...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent validate...',
       ConsoleLogTypeEnum.debug);
 
-    if (this.assetInfoForm.valid) {
+    if (this.assetInfoFormGroup.valid) {
       // Beside the basic form valid, it need more checks
 
       return null;
     }
 
     return { invalidForm: {valid: false, message: 'Asset fields are invalid'} };
+  }
+
+  public onRefDocClick(docid: number) {
+    // TBD.
   }
 }

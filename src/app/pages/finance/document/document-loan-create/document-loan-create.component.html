@@ -5,7 +5,7 @@
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{ curTitle | transloco}}</nz-page-header-title>
+  <nz-page-header-title>{{ documentTitle | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
   </nz-page-header-extra>
@@ -27,9 +27,9 @@
 
     <!-- Amount -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired nzFor="idAmount">{{'Finance.Amount' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="amountErrorTpl">
-        <nz-input-number id="idAmount" formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
+        <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
           [nzPlaceHolder]="'Amount'"></nz-input-number>
         <ng-template #amountErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -41,9 +41,9 @@
 
     <!-- Account -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired nzFor="idAccount">{{'Finance.Account' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="accountErrorTpl">
-        <nz-select id="idAccount" formControlName="accountControl">
+        <nz-select formControlName="accountControl">
           <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
         </nz-select>
         <ng-template #accountErrorTpl let-control>
@@ -56,9 +56,9 @@
 
     <!-- CC -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzFor="idCC">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="ccErrorTpl">
-        <nz-select id="idCC" formControlName="ccControl">
+        <nz-select formControlName="ccControl">
           <nz-option *ngFor="let cc of arControlCenters" [nzValue]='cc.Id' [nzLabel]="cc.Name"></nz-option>
         </nz-select>
         <ng-template #ccErrorTpl let-control>
@@ -71,9 +71,9 @@
 
     <!-- Order -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzFor="idOrder">{{'Finance.Activity' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="orderErrorTpl">
-        <nz-select id="idOrder" formControlName="orderControl">
+        <nz-select formControlName="orderControl">
           <nz-option *ngFor="let ord of arUIOrder" [nzValue]='ord.Id' [nzLabel]="ord.Name"></nz-option>
         </nz-select>
         <ng-template #orderErrorTpl let-control>

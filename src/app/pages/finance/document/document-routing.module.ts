@@ -8,6 +8,7 @@ import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create';
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
+import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create';
 
 const routes: Routes = [
   { path: '', component: DocumentListComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'createassetsold', component: DocumentAssetSoldCreateComponent },
   { path: 'createbrwfrm', component: DocumentLoanCreateComponent },
   { path: 'createlendto', component: DocumentLoanCreateComponent },
+  { path: 'createassetvalchg', component: DocumentAssetValueChangeCreateComponent },
 
   { path: 'edit', component: DocumentDetailComponent },
   { path: 'display', component: DocumentDetailComponent },

@@ -21,9 +21,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
-  public headerFormGroup: FormGroup;
-  public fromFormGroup: FormGroup;
-  public toFormGroup: FormGroup;
   public curDocType: number = financeDocTypeTransfer;
   public curMode: UIMode = UIMode.Create;
   public arUIOrders: UIOrderForSelection[] = [];
@@ -39,6 +36,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public currentStep = 0;
   public docCreateSucceed = false;
   public isDocPosting = false;
+  // Step: Header
+  public headerFormGroup: FormGroup;
+  // Step: From
+  public fromFormGroup: FormGroup;
+  // Step: To
+  public toFormGroup: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
 
@@ -214,7 +217,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   }
 
   private _updateConfirmInfo(): void {
-    let doc = this._generateDocObject();
+    const doc = this._generateDocObject();
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;
@@ -222,7 +225,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.outAmount = 0;
 
     doc.Items.forEach((val: DocumentItem) => {
-      let ttid: number = this.arTranType.findIndex((tt: TranType) => {
+      const ttid: number = this.arTranType.findIndex((tt: TranType) => {
         return tt.Id === val.TranType;
       });
       if (ttid !== -1) {

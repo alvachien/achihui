@@ -5,19 +5,17 @@
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{ 'Sys.DocTy.AssetSoldOut' | transloco}}</nz-page-header-title>
+  <nz-page-header-title>{{ 'Sys.DocTy.AssetValChg' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
   </nz-page-header-extra>
 </nz-page-header>
-
 <nz-steps [nzCurrent]="current">
   <nz-step nzTitle="Header"></nz-step>
-  <nz-step nzTitle="Items"></nz-step>
+  <nz-step nzTitle="Detail"></nz-step>
   <nz-step nzTitle="Review"></nz-step>
   <nz-step nzTitle="Result"></nz-step>
 </nz-steps>
-
 <div class="steps-content">
   <form nz-form [formGroup]="firstFormGroup" [hidden]="current !== 0">
     <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
@@ -88,17 +86,8 @@
     </nz-form-item>
   </form>
 
-  <!-- Items -->
-  <form nz-form [formGroup]="itemFormGroup" [hidden]="currentStep !== 1">
-    <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
-      [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
-      [arTranType]="arTranType" [arUIOrders]="arUIOrders"
-      [docType]="curDocType">
-    </hih-fin-document-items>
-  </form>
-
   <!-- Review and Confirm -->
-  <div [hidden]="currentStep !== 2">
+  <div [hidden]="currentStep !== 1">
     <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
       <div>
         <h2 nz-title>{{'Common.Name' | transloco}}: {{confirmInfo?.assetName}}</h2>
@@ -109,7 +98,7 @@
   </div>
 
   <!-- Result -->
-  <div [hidden]="currentStep !== 3">
+  <div [hidden]="currentStep !== 2">
     <div *ngIf="docCreateSucceed">
       <nz-result  nzStatus="success"
         [nzTitle]="'Finance.DocumentPosted' | transloco"

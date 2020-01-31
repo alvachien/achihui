@@ -44,4 +44,13 @@
       </nz-form-control>
     </nz-form-item>
   </div>
+  <!-- Ref doc. ID -->
+  <div class="achih-control-full-width" *ngIf="refBuyDocID">
+    <label>{{'Finance.RefDoc' | transloco}}</label>
+    <button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">{{refBuyDocID}}</button>
+  </div>
+  <div class="achih-control-full-width" *ngIf="refSoldDocID">
+    <label>{{'Finance.RefDoc' | transloco}}</label>
+    <button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">{{refSoldDocID}}</button>
+  </div>
 </ng-container>
