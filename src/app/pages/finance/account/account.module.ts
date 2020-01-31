@@ -9,7 +9,10 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -51,8 +54,11 @@ import { AccountExtraLoanComponent } from './account-extra-loan/account-extra-lo
     NzTagModule,
     NzDescriptionsModule,
     NzTabsModule,
+    NzCheckboxModule,
     NzGridModule,
     NzButtonModule,
+    NzInputModule,
+    NzInputNumberModule,
     NzDatePickerModule,
     AccountRoutingModule,
     TranslocoModule,

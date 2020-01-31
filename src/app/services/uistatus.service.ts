@@ -6,6 +6,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
 export class UIStatusService {
+  // tslint:disable:variable-name
   private _currLang: string;
   get CurrentLanguage(): string {
     return this._currLang;

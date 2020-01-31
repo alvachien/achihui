@@ -8,8 +8,9 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {
-  AccountExtraLoan, UIAccountForSelection, ConsoleLogTypeEnum, ModelUtility, IAccountCategoryFilter, BuildupAccountForSelection,
-  TemplateDocLoan, RepeatDatesWithAmountAndInterestAPIInput
+  AccountExtraLoan, UIAccountForSelection, ConsoleLogTypeEnum, ModelUtility, IAccountCategoryFilter,
+  BuildupAccountForSelection,
+  TemplateDocLoan, RepeatDatesWithAmountAndInterestAPIInput,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -30,54 +31,54 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
   ],
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean = true; // Default is changable
+  private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
-  private _instanceObject: AccountExtraLoan = new AccountExtraLoan();
+  refDocId?: number;
+  isLoadingTmpDocs =  false;
+  public listTmpDocs: TemplateDocLoan[] = [];
 
   public currentMode: string;
-  public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public loanInfoForm: FormGroup = new FormGroup({
-    startDateControl: new FormControl(moment(), [Validators.required]),
-    endDateControl: new FormControl(moment().add(1, 'y')),
-    totalMonthControl: new FormControl(12, Validators.required),
-    repayDayControl: new FormControl(),
-    firstRepayDateControl: new FormControl(),
-    interestFreeControl: new FormControl(),
-    annualRateControl: new FormControl(),
-    repayMethodControl: new FormControl('', Validators.required),
-    payingAccountControl: new FormControl(''),
-    partnerControl: new FormControl(''),
-    cmtControl: new FormControl(''),
-  });
+  public loanInfoForm: FormGroup;
+  get value(): AccountExtraLoan {
+    const objrst = new AccountExtraLoan();
+    objrst.startDate = moment(this.loanInfoForm.get('startDateControl').value as Date);
+    objrst.endDate = moment(this.loanInfoForm.get('endDateControl').value as Date);
+    objrst.TotalMonths = this.loanInfoForm.get('totalMonthControl').value;
+    objrst.RepayDayInMonth = this.loanInfoForm.get('repayDayControl').value;
+    const firstrepdate = this.loanInfoForm.get('firstRepayDateControl').value;
+    if (firstrepdate) {
+      objrst.FirstRepayDate = moment(firstrepdate as Date);
+    }
+    objrst.InterestFree = this.loanInfoForm.get('interestFreeControl').value;
+    objrst.annualRate = this.loanInfoForm.get('annualRateControl').value;
+    objrst.RepayMethod = this.loanInfoForm.get('repayMethodControl').value;
+    objrst.PayingAccount = this.loanInfoForm.get('payingAccountControl').value;
+    objrst.Partner = this.loanInfoForm.get('partnerControl').value;
+    objrst.Comment = this.loanInfoForm.get('cmtControl').value;
+    if (this.refDocId) {
+      objrst.RefDocId = this.refDocId;
+    }
 
-  get extObject(): AccountExtraLoan {
-    this._instanceObject.startDate = this.loanInfoForm.get('startDateControl').value;
-    this._instanceObject.endDate = this.loanInfoForm.get('endDateControl').value;
-    this._instanceObject.TotalMonths = this.loanInfoForm.get('totalMonthControl').value;
-    this._instanceObject.RepayDayInMonth = this.loanInfoForm.get('repayDayControl').value;
-    this._instanceObject.FirstRepayDate = this.loanInfoForm.get('firstRepayDateControl').value;
-    this._instanceObject.InterestFree = this.loanInfoForm.get('interestFreeControl').value;
-    this._instanceObject.annualRate = this.loanInfoForm.get('annualRateControl').value;
-    this._instanceObject.RepayMethod = this.loanInfoForm.get('repayMethodControl').value;
-    this._instanceObject.PayingAccount = this.loanInfoForm.get('payingAccountControl').value;
-    this._instanceObject.Partner = this.loanInfoForm.get('partnerControl').value;
-    this._instanceObject.Comment = this.loanInfoForm.get('cmtControl').value;
+    objrst.loanTmpDocs = [];
+    objrst.loanTmpDocs = this.listTmpDocs.slice();
 
-    this._instanceObject.loanTmpDocs = [];
-    // this._instanceObject.loanTmpDocs = this.dataSource.data.slice();
-
-    return this._instanceObject;
+    return objrst;
   }
   @Input() tranAmount: number;
   @Input() controlCenterID?: number;
   @Input() orderID?: number;
+  @Input() arUIAccount: UIAccountForSelection[];
 
   get isFieldChangable(): boolean {
     return this._isChangable;
+  }
+  get isInterestFree(): string {
+    return this.loanInfoForm && this.loanInfoForm.get('interestFreeControl') && this.loanInfoForm.get('interestFreeControl').value;
   }
   get canGenerateTmpDocs(): boolean {
     // Ensure it is changable
@@ -98,7 +99,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     // Interest rate
     if (this.loanInfoForm.get('interestFreeControl').value === true) {
-      if (!this.extObject.annualRate || this.extObject.annualRate < 0) {
+      const val = this.value;
+      if (!val.annualRate || val.annualRate < 0) {
         return false;
       }
     }
@@ -109,21 +111,38 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     return true;
   }
 
-  constructor(public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService,) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent constructor`,
+  constructor(
+    public odataService: FinanceOdataService,
+    public homeService: HomeDefOdataService,
+    public uiStatusService: UIStatusService,
+  ) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
       ConsoleLogTypeEnum.debug);
+
+    this.loanInfoForm = new FormGroup({
+      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new FormControl(moment().add(1, 'y').toDate()),
+      totalMonthControl: new FormControl(12, Validators.required),
+      repayDayControl: new FormControl(),
+      firstRepayDateControl: new FormControl(),
+      interestFreeControl: new FormControl(true),
+      annualRateControl: new FormControl(),
+      repayMethodControl: new FormControl(undefined, Validators.required),
+      payingAccountControl: new FormControl(),
+      partnerControl: new FormControl(''),
+      cmtControl: new FormControl(),
+    });
   }
 
   @HostListener('change') onChange(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onChange...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onChange...',
       ConsoleLogTypeEnum.debug);
     if (this._onChange) {
-      this._onChange(this.extObject);
+      this._onChange(this.value);
     }
   }
   @HostListener('blur') onTouched(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onTouched...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onTouched...',
       ConsoleLogTypeEnum.debug);
     if (this._onTouched) {
       this._onTouched();
@@ -131,7 +150,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnInit`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent ngOnInit`,
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
@@ -141,22 +160,10 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       skipLoan: true,
       skipAsset: true,
     };
-
-    forkJoin(
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(),
-    )
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: any) => {
-        this.arUIAccount = BuildupAccountForSelection(x[1], x[0]);
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtLoanExComponent ngOnInit, forkJoin, failed: ${error}`,
-          ConsoleLogTypeEnum.error);
-        // TBD.
-      });
   }
+
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnDestroy`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent ngOnDestroy`,
       ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
@@ -164,15 +171,19 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       this._destroyed$.complete();
     }
   }
+  public onRefDocClick() {
+    // TBD.
+  }
 
   public onGenerateTmpDocs(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onGenerateTmpDocs`,
+      ConsoleLogTypeEnum.debug);
     let tmpdocs: TemplateDocLoan[] = [];
-    // tmpdocs = this.dataSource.data.slice();
-    let amtTotal: number = 0;
-    let amtPaid: number = 0;
-    let monthPaid: number = 0;
-    let arKeepItems: TemplateDocLoan[] = [];
+    tmpdocs = this.listTmpDocs.slice();
+    let amtTotal = 0;
+    let amtPaid = 0;
+    let monthPaid = 0;
+    const arKeepItems: TemplateDocLoan[] = [];
     tmpdocs.forEach((val: TemplateDocLoan) => {
       amtTotal += val.TranAmount;
       if (val.RefDocId) {
@@ -183,28 +194,29 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     });
 
     // Call the API for Loan template docs.
-    let di: RepeatDatesWithAmountAndInterestAPIInput = {
+    const val = this.value;
+    const di: RepeatDatesWithAmountAndInterestAPIInput = {
       TotalAmount: amtTotal - amtPaid,
-      TotalMonths: this.extObject.TotalMonths - monthPaid,
-      InterestRate: this.extObject.annualRate / 100,
-      StartDate: this.extObject.startDate.clone(),
-      InterestFreeLoan: this.extObject.InterestFree ? true : false,
-      RepaymentMethod: this.extObject.RepayMethod,
+      TotalMonths: val.TotalMonths - monthPaid,
+      InterestRate: val.annualRate / 100,
+      StartDate: val.startDate.clone(),
+      InterestFreeLoan: val.InterestFree ? true : false,
+      RepaymentMethod: val.RepayMethod,
     };
-    if (this.extObject.endDate) {
-      di.EndDate = this.extObject.endDate.clone();
+    if (val.endDate) {
+      di.EndDate = val.endDate.clone();
     }
-    if (this.extObject.FirstRepayDate) {
-      di.FirstRepayDate = this.extObject.FirstRepayDate.clone();
+    if (val.FirstRepayDate) {
+      di.FirstRepayDate = val.FirstRepayDate.clone();
     }
-    if (this.extObject.RepayDayInMonth) {
-      di.RepayDayInMonth = this.extObject.RepayDayInMonth;
+    if (val.RepayDayInMonth) {
+      di.RepayDayInMonth = val.RepayDayInMonth;
     }
     this.odataService.calcLoanTmpDocs(di).subscribe((x: any) => {
       let rstidx: number = arKeepItems.length;
-      for (let rst of x) {
+      for (const rst of x) {
         ++rstidx;
-        let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+        const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
         tmpdoc.HID = this.homeService.ChosedHome.ID;
         tmpdoc.InterestAmount = rst.InterestAmount;
         tmpdoc.TranAmount = rst.TranAmount;
@@ -216,15 +228,14 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         if (this.orderID) {
           tmpdoc.OrderId = this.orderID;
         }
-        tmpdoc.Desp = this.extObject.Comment + ' | ' + rstidx.toString()
+        tmpdoc.Desp = val.Comment + ' | ' + rstidx.toString()
           + ' / ' + x.length.toString();
         arKeepItems.push(tmpdoc);
       }
 
-      // this.dataSource = new MatTableDataSource(arKeepItems);
-      // this.dataSource.paginator = this.paginator;
+      this.listTmpDocs = arKeepItems;
     }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtLoanComponent onGenerateTmpDocs, failed with: ${error}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtraLoanComponent onGenerateTmpDocs, failed with: ${error}`,
         ConsoleLogTypeEnum.error);
 
       // TBD.
@@ -233,8 +244,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     });
   }
 
-  writeValue(val: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+  writeValue(val: AccountExtraLoan): void {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent writeValue`, ConsoleLogTypeEnum.debug);
 
     if (val) {
       this.loanInfoForm.get('startDateControl').setValue(val.startDate);
@@ -248,23 +259,26 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       this.loanInfoForm.get('payingAccountControl').setValue(val.PayingAccount);
       this.loanInfoForm.get('partnerControl').setValue(val.Partner);
       this.loanInfoForm.get('cmtControl').setValue(val.Comment);
+      this.refDocId = val.RefDocId;
 
-      // this.dataSource = new MatTableDataSource(val.loanTmpDocs);
-      // this.dataSource.paginator = this.paginator;
+      this.listTmpDocs = val.loanTmpDocs.slice();
     }
   }
   registerOnChange(fn: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnChange`,
+      ConsoleLogTypeEnum.debug);
 
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnTouched`,
+      ConsoleLogTypeEnum.debug);
 
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent setDisabledState`,
+      ConsoleLogTypeEnum.debug);
 
     if (isDisabled) {
       this.loanInfoForm.disable();
@@ -276,14 +290,15 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent validate`,
+      ConsoleLogTypeEnum.debug);
 
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks
       if (!this.canGenerateTmpDocs) {
         return { invalidForm: {valid: false, message: 'cannot generate tmp docs'} };
       }
-      if (!this.extObject.isValid) {
+      if (!this.value.isValid) {
         return { invalidForm: {valid: false, message: 'genrated object is invalid'} };
       }
       return null;

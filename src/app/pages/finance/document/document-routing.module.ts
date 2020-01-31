@@ -21,6 +21,7 @@ const routes: Routes = [
   { path: 'createassetbuy', component: DocumentAssetBuyCreateComponent },
   { path: 'createassetsold', component: DocumentAssetSoldCreateComponent },
   { path: 'createbrwfrm', component: DocumentLoanCreateComponent },
+  { path: 'createlendto', component: DocumentLoanCreateComponent },
 
   { path: 'edit', component: DocumentDetailComponent },
   { path: 'display', component: DocumentDetailComponent },

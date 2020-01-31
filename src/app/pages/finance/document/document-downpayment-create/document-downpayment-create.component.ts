@@ -68,7 +68,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       }
       case 2: {
         isEnabled = true; // Review
+        break;
       }
+
       default: {
         break;
       }
@@ -214,6 +216,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     // Save current document
     const docObj: Document = this._geneateDocument();
     const accountExtra: AccountExtraAdvancePayment = this.accountExtraInfoFormGroup.get('infoControl').value;
+    // accountExtra.dpTmpDocs = this.accountExtraInfoFormGroup.
 
     // Check!
     if (!docObj.onVerify({

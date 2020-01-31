@@ -78,7 +78,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.AnnualRate' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="annualRateErrorTpl">
-        <input nz-input type="number" [disabled]="!isFieldChangable || extObject.InterestFree"
+        <input nz-input type="number" [disabled]="!isFieldChangable || isInterestFree"
           formControlName="annualRateControl" name="annualRate">
         <ng-template #annualRateErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -93,7 +93,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepaymentMethod' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
         <nz-select formControlName="repayMethodControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of uiStatusService.RepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(cr.i18nterm)"></nz-option>
+          <nz-option *ngFor="let rt of uiStatusService.RepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(rt.i18nterm)"></nz-option>
         </nz-select>
         <ng-template #repaymethodErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -108,7 +108,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.PayingAccount' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="payingaccountErrorTpl">
         <nz-select formControlName="payingAccountControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="t(acnt.Name)"></nz-option>
+          <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
         </nz-select>
         <ng-template #payingaccountErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -146,9 +146,39 @@
   </div>
 
   <!-- Ref doc. ID -->
-  <!-- <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
-    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
-    <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;"
-      routerLinkActive="active">{{extObject?.RefDocId}}</a>
-  </div> -->
+  <div *ngIf="refDocId">
+    <label>{{'Finance.RefDoc' | transloco}}</label>
+    <button nz-button nzType="link" (click)="onRefDocClick()">{{refDocId}}</button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar_buttons">
+    <button nz-button nzType="primary" (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable">{{'Finance.GenerateTmpDocs' | transloco}}</button>
+  </div>
+
+  <!-- Template docs-->
+  <nz-table #basicTable
+    [nzLoading]="isLoadingTmpDocs"
+    [nzData]="listTmpDocs">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Tran. type</th>
+        <th>Desp</th>
+        <th>{{'Finance.Amount' | transloco}}</th>
+        <th>{{'Finance.Amount' | transloco}}</th>
+        <th>{{'Finance.Amount' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.TranDateFormatString}}</td>
+        <td>{{data.TranType}}</td>
+        <td>{{data.Desp}}</td>
+        <td>{{data.TranAmount}}</td>
+        <td>{{data.InterestAmount}}</td>
+        <td>{{data.TranAmount + data.InterestAmount}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </ng-container>

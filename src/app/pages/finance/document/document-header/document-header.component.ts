@@ -30,7 +30,6 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private _doctype: number;
   private _uiMode: UIMode;
 
-  private _instanceObject: Document = new Document();
   private _arCurrencies: Currency[] = [];
   private _arDocTypes: DocumentType[] = [];
   private _baseCurr: string;
@@ -113,38 +112,39 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return this.docType === financeDocTypeCurrencyExchange;
   }
   get value(): Document {
-    this._instanceObject.DocType = this.headerForm.get('docTypeControl').value;
-    if (!this._instanceObject.DocType && this.docType) {
-      this._instanceObject.DocType = this.docType;
+    const insobj: Document = new Document();
+    insobj.DocType = this.headerForm.get('docTypeControl').value;
+    if (!insobj.DocType && this.docType) {
+      insobj.DocType = this.docType;
     }
-    this._instanceObject.TranCurr = this.headerForm.get('currControl').value;
+    insobj.TranCurr = this.headerForm.get('currControl').value;
     // let dateobj: Date = this.headerForm.get('dateControl').value as Date;
-    // this._instanceObject.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
-    this._instanceObject.TranDate = moment(this.headerForm.get('dateControl').value as Date);
-    this._instanceObject.Desp = this.headerForm.get('despControl').value;
-    this._instanceObject.DocType = this.docType;
+    // insobj.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
+    insobj.TranDate = moment(this.headerForm.get('dateControl').value as Date);
+    insobj.Desp = this.headerForm.get('despControl').value;
+    insobj.DocType = this.docType;
     if (this.isForeignCurrency) {
-      this._instanceObject.ExgRate = this.headerForm.get('exgControl').value;
-      this._instanceObject.ExgRate_Plan = this.headerForm.get('exgpControl').value;
+      insobj.ExgRate = this.headerForm.get('exgControl').value;
+      insobj.ExgRate_Plan = this.headerForm.get('exgpControl').value;
     } else {
-      this._instanceObject.ExgRate = undefined;
-      this._instanceObject.ExgRate_Plan = undefined;
+      insobj.ExgRate = undefined;
+      insobj.ExgRate_Plan = undefined;
     }
     if (this.isCurrencyExchangeDocument) {
-      this._instanceObject.TranCurr2 = this.headerForm.get('curr2Control').value;
+      insobj.TranCurr2 = this.headerForm.get('curr2Control').value;
       if (this.isForeignCurrency2) {
-        this._instanceObject.ExgRate2 = this.headerForm.get('exg2Control').value;
-        this._instanceObject.ExgRate_Plan2 = this.headerForm.get('exgp2Control').value;
+        insobj.ExgRate2 = this.headerForm.get('exg2Control').value;
+        insobj.ExgRate_Plan2 = this.headerForm.get('exgp2Control').value;
       } else {
-        this._instanceObject.ExgRate2 = undefined;
-        this._instanceObject.ExgRate_Plan2 = undefined;
+        insobj.ExgRate2 = undefined;
+        insobj.ExgRate_Plan2 = undefined;
       }
     } else {
-      this._instanceObject.TranCurr2 = undefined;
-      this._instanceObject.ExgRate2 = undefined;
-      this._instanceObject.ExgRate_Plan2 = undefined;
+      insobj.TranCurr2 = undefined;
+      insobj.ExgRate2 = undefined;
+      insobj.ExgRate_Plan2 = undefined;
     }
-    return this._instanceObject;
+    return insobj;
   }
   get isFieldChangable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Change || this.currentUIMode === UIMode.Create);
@@ -187,12 +187,12 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       docTypeControl: new FormControl({value: this.docType, disabled: true}, [Validators.required]),
       dateControl: new FormControl(new Date(), [Validators.required]),
       despControl: new FormControl('', [Validators.required, Validators.maxLength(44)]),
-      currControl: new FormControl('', [Validators.required]),
-      exgControl: new FormControl('', [this.exchangeRateMissingValidator]),
-      exgpControl: new FormControl(''),
-      curr2Control: new FormControl('', [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
-      exg2Control: new FormControl('', [this.exchangeRate2MissingValidator]),
-      exgp2Control: new FormControl(''),
+      currControl: new FormControl(undefined, [Validators.required]),
+      exgControl: new FormControl(undefined, [this.exchangeRateMissingValidator]),
+      exgpControl: new FormControl(undefined),
+      curr2Control: new FormControl(undefined, [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
+      exg2Control: new FormControl(undefined, [this.exchangeRate2MissingValidator]),
+      exgp2Control: new FormControl(undefined),
     });
   }
 

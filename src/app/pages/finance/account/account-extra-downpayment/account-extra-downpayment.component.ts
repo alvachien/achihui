@@ -42,12 +42,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   isLoadingTmpDocs: boolean;
   public listTmpDocs: TemplateDocADP[] = [];
 
-  public adpInfoFormGroup: FormGroup = new FormGroup({
-    startDateControl: new FormControl(moment().toDate(), [Validators.required]),
-    endDateControl: new FormControl(moment().add(1, 'y').toDate()),
-    frqControl: new FormControl('', Validators.required),
-    cmtControl: new FormControl('', Validators.maxLength(30)),
-  });
+  public adpInfoFormGroup: FormGroup;
 
   @Input() tranAmount: number;
   @Input() tranType: number;
@@ -63,7 +58,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       inst.RefDocId = this.refDocId;
     }
 
-    inst.dpTmpDocs = [];
+    inst.dpTmpDocs = this.listTmpDocs.slice();
 
     return inst;
   }
@@ -89,6 +84,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     public homeService: HomeDefOdataService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
       ConsoleLogTypeEnum.debug);
+    this.adpInfoFormGroup = new FormGroup({
+      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new FormControl(moment().add(1, 'y').toDate()),
+      frqControl: new FormControl('', Validators.required),
+      cmtControl: new FormControl('', Validators.maxLength(30)),
+    });
   }
 
   @HostListener('change') onChange(): void {
@@ -141,14 +142,14 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       .subscribe((rsts: RepeatedDatesWithAmountAPIOutput[]) => {
       if (rsts && rsts instanceof Array && rsts.length > 0) {
         const tmpDocs: TemplateDocADP[] = [];
-        for (let i = 0; i < rsts.length; i++) {
+        for (const rst of rsts) {
           const item: TemplateDocADP = new TemplateDocADP();
           item.HID = this.homeService.ChosedHome.ID;
-          item.DocId = i + 1;
+          // item.DocId = i + 1;
           item.TranType = this.tranType;
-          item.TranDate = rsts[i].TranDate;
-          item.TranAmount = rsts[i].TranAmount;
-          item.Desp = rsts[i].Desp;
+          item.TranDate = rst.TranDate;
+          item.TranAmount = rst.TranAmount;
+          item.Desp = rst.Desp;
           tmpDocs.push(item);
         }
 
@@ -228,15 +229,16 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       if (!this.canCalcTmpDocs) {
         return { invalidForm: {valid: false, message: 'Cannot calculate tmp docs'} };
       }
-      // if (this.dataSource.data.length <= 0) {
-      //   return { invalidForm: {valid: false, message: 'Lack of tmp docs'} };
-      // }
 
-      // this.dataSource.data.forEach((tmpdoc: TemplateDocADP) => {
-      //   if (!tmpdoc.onVerify()) {
-      //     return { invalidForm: {valid: false, message: 'tmp doc is invalid'} };
-      //   }
-      // });
+      if (this.listTmpDocs.length <= 0) {
+        return { invalidForm: {valid: false, message: 'Lack of tmp docs'} };
+      }
+
+      this.listTmpDocs.forEach((tmpdoc: TemplateDocADP) => {
+        if (!tmpdoc.onVerify()) {
+          return { invalidForm: {valid: false, message: 'tmp doc is invalid'} };
+        }
+      });
 
       return null;
     }

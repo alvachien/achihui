@@ -419,9 +419,9 @@ export interface AccountJson extends hih.BaseModelJson {
   Status: number;
 
   // Extra. info
-  extraInfo_ADP?: any;
-  extraInfo_AS?: any;
-  extraInfo_Loan?: any;
+  ExtraDP?: any;
+  ExtraAsset?: any;
+  ExtraLoan?: any;
 }
 
 /**
@@ -541,13 +541,13 @@ export class Account extends hih.BaseModel {
 
     if ((this.CategoryId === hih.financeAccountCategoryAdvancePayment
       || this.CategoryId === hih.financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
-      rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
+      rstObj.ExtraDP = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.financeAccountCategoryAsset && this.ExtraInfo) {
-      rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
+      rstObj.ExtraAsset = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.financeAccountCategoryBorrowFrom && this.ExtraInfo) {
-      rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
+      rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.financeAccountCategoryLendTo && this.ExtraInfo) {
-      rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
+      rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
     }
 
     return rstObj;
@@ -578,21 +578,21 @@ export class Account extends hih.BaseModel {
       this.Status = data.Status as AccountStatusEnum;
     }
 
-    if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.extraInfo_ADP) {
+    if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.ExtraDP) {
       const ei: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      ei.onSetData(data.extraInfo_ADP);
+      ei.onSetData(data.ExtraDP);
 
       this.ExtraInfo = ei;
-    } else if (data && this.CategoryId === hih.financeAccountCategoryAsset && data.extraInfo_AS) {
+    } else if (data && this.CategoryId === hih.financeAccountCategoryAsset && data.ExtraAsset) {
       const ei: AccountExtraAsset = new AccountExtraAsset();
-      ei.onSetData(data.extraInfo_AS);
+      ei.onSetData(data.ExtraAsset);
 
       this.ExtraInfo = ei;
     } else if (data
       && (this.CategoryId === hih.financeAccountCategoryBorrowFrom || this.CategoryId === hih.financeAccountCategoryLendTo)
-      && data.extraInfo_Loan) {
+      && data.ExtraLoan) {
       const ei: AccountExtraLoan = new AccountExtraLoan();
-      ei.onSetData(data.extraInfo_Loan);
+      ei.onSetData(data.ExtraLoan);
 
       this.ExtraInfo = ei;
     }
@@ -704,17 +704,17 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
   public writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
-    rstobj.direct = this.Direct;
-    rstobj.startDate = this._startDate.format(hih.momentDateFormat);
-    rstobj.endDate = this._endDate.format(hih.momentDateFormat);
-    rstobj.rptType = this.RepeatType;
-    rstobj.refDocID = this.RefDocId;
-    rstobj.defrrDays = this.DeferredDays;
-    rstobj.comment = this.Comment;
-    rstobj.dpTmpDocs = [];
+    rstobj.Direct = this.Direct;
+    rstobj.StartDate = this._startDate.format(hih.momentDateFormat);
+    rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
+    rstobj.RepeatType = this.RepeatType;
+    rstobj.ReferenceDocumentID = this.RefDocId;
+    rstobj.DefrrDays = this.DeferredDays;
+    rstobj.Comment = this.Comment;
+    rstobj.DPTmpDocs = [];
     for (const tdoc of this.dpTmpDocs) {
       const tdocjson: any = tdoc.writeJSONObject();
-      rstobj.dpTmpDocs.push(tdocjson);
+      rstobj.DPTmpDocs.push(tdocjson);
     }
 
     return rstobj;
@@ -723,34 +723,34 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.direct) {
-      this.Direct = data.direct;
+    if (data && data.Direct) {
+      this.Direct = data.Direct;
     } else {
       this.Direct = false;
     }
-    if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.momentDateFormat);
+    if (data && data.StartDate) {
+      this._startDate = moment(data.StartDate, hih.momentDateFormat);
     }
-    if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.momentDateFormat);
+    if (data && data.EndDate) {
+      this._endDate = moment(data.EndDate, hih.momentDateFormat);
     }
-    if (data && data.rptType) {
-      this.RepeatType = data.rptType;
+    if (data && data.RepeatType) {
+      this.RepeatType = data.RepeatType;
     } else {
       this.RepeatType = hih.RepeatFrequencyEnum.Month;
     }
-    if (data && data.refDocID) {
-      this.RefDocId = +data.refDocID;
+    if (data && data.ReferenceDocumentID) {
+      this.RefDocId = +data.ReferenceDocumentID;
     }
-    if (data && data.defrrDays) {
-      this.DeferredDays = data.defrrDays;
+    if (data && data.DefrrDays) {
+      this.DeferredDays = data.DefrrDays;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.dpTmpDocs && data.dpTmpDocs instanceof Array) {
+    if (data && data.DPTmpDocs && data.DPTmpDocs instanceof Array) {
       this.dpTmpDocs = [];
-      for (const val of data.dpTmpDocs) {
+      for (const val of data.DPTmpDocs) {
         const tdoc: TemplateDocADP = new TemplateDocADP();
         tdoc.onSetData(val);
         this.dpTmpDocs.push(tdoc);
@@ -2328,16 +2328,22 @@ export abstract class TemplateDocBase extends hih.BaseModel {
 
   public writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
-    rstObj.docID = this.DocId;
-    rstObj.hid = this.HID;
-    rstObj.refDocID = this.RefDocId;
-    rstObj.accountID = this.AccountId;
-    rstObj.tranDate = this._tranDate.format(hih.momentDateFormat);
-    rstObj.tranType = this.TranType;
-    rstObj.tranAmount = this.TranAmount;
-    rstObj.controlCenterID = this.ControlCenterId;
-    rstObj.orderID = this.OrderId;
-    rstObj.desp = this.Desp;
+    if (this.DocId) {
+      rstObj.DocumentID = this.DocId;
+    }
+    rstObj.HomeID = this.HID;
+    rstObj.ReferenceDocumentID = this.RefDocId;
+    rstObj.AccountID = this.AccountId;
+    rstObj.TransactionDate = this._tranDate.format(hih.momentDateFormat);
+    rstObj.TransactionType = this.TranType;
+    rstObj.TranAmount = this.TranAmount;
+    if (this.ControlCenterId) {
+      rstObj.ControlCenterID = this.ControlCenterId;
+    }
+    if (this.OrderId) {
+      rstObj.OrderID = this.OrderId;
+    }
+    rstObj.Description = this.Desp;
 
     return rstObj;
   }
@@ -2345,37 +2351,37 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.docID) {
-      this.DocId = +data.docID;
+    if (data && data.DocumentID) {
+      this.DocId = +data.DocumentID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.refDocID) {
-      this.RefDocId = +data.refDocID;
+    if (data && data.ReferenceDocumentID) {
+      this.RefDocId = +data.ReferenceDocumentID;
     }
-    if (data && data.accountID) {
-      this.AccountId = +data.accountID;
+    if (data && data.AccountID) {
+      this.AccountId = +data.AccountID;
     }
-    if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
+    if (data && data.TransactionDate) {
+      this.TranDate = moment(data.TransactionDate, hih.momentDateFormat);
     }
-    if (data && data.tranType) {
-      this.TranType = +data.tranType;
+    if (data && data.TransactionType) {
+      this.TranType = +data.TransactionType;
     }
-    if (data && data.tranAmount) {
-      this.TranAmount = +data.tranAmount;
+    if (data && data.TranAmount) {
+      this.TranAmount = +data.TranAmount;
     }
-    if (data && data.controlCenterID) {
-      this.ControlCenterId = +data.controlCenterID;
+    if (data && data.ControlCenterID) {
+      this.ControlCenterId = +data.ControlCenterID;
     }
-    if (data && data.orderID) {
-      this.OrderId = +data.orderID;
+    if (data && data.OrderID) {
+      this.OrderId = +data.OrderID;
     }
-    if (data && data.desp) {
-      this.Desp = data.desp;
+    if (data && data.Description) {
+      this.Desp = data.Description;
     }
-    this._totalAmount = data.tranAmount;
+    this._totalAmount = data.TranAmount;
   }
 }
 
@@ -2413,7 +2419,7 @@ export class TemplateDocLoan extends TemplateDocBase {
 
   public writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
-    rstObj.interestAmount = this.InterestAmount;
+    rstObj.InterestAmount = this.InterestAmount;
 
     return rstObj;
   }
@@ -2421,8 +2427,8 @@ export class TemplateDocLoan extends TemplateDocBase {
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.interestAmount) {
-      this.InterestAmount = +data.interestAmount;
+    if (data && data.InterestAmount) {
+      this.InterestAmount = +data.InterestAmount;
       this._totalAmount = this._tranAmount + this._amtInterest;
     }
   }

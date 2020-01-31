@@ -900,10 +900,11 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.documentAPIUrl + `/hihapi.Models.PostDPDocument(${this.homeService.ChosedHome.ID})`;
+    const apiurl: string = this.documentAPIUrl + `/PostDPDocument`;
 
-    let sobj: any = docObj.writeJSONObject(); // Document first
-    let acntobj: Account = new Account();
+    const sobj: any = {};
+    sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
+    const acntobj: Account = new Account();
     acntobj.HID = this.homeService.ChosedHome.ID;
     if (isADP) {
       acntobj.CategoryId = financeAccountCategoryAdvancePayment;
@@ -918,7 +919,7 @@ export class FinanceOdataService {
       tmpitem.OrderId = docObj.Items[0].OrderId;
     }
     acntobj.ExtraInfo = acntExtraObject;
-    sobj.accountVM = acntobj.writeJSONObject();
+    sobj.AccountInfo = acntobj.writeJSONObject();
 
     return this.http.post(apiurl, sobj, {
       headers,

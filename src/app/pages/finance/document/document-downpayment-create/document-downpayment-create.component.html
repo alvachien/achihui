@@ -109,7 +109,7 @@
     <div>
       <h3>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
       <h2>{{'Common.Description' | transloco}}: {{confirmInfo?.tranDesp}}</h2>
-      <h2>{{'Common.Amount' | transloco}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h2>
+      <h2>{{'Finance.Amount' | transloco}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h2>
     </div>
   </div>
 
@@ -138,7 +138,7 @@
           </div>
         </div>
         <div nz-result-extra>
-          <button nz-button nzType="primary">Go Console</button>
+          <button nz-button nzType="primary" (click)="onSubmit()">Resent</button>
           <button nz-button>Buy Again</button>
         </div>
       </nz-result>

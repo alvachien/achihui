@@ -8,6 +8,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
@@ -75,6 +76,7 @@ import { AccountModule } from '../account/account.module';
     NzInputNumberModule,
     NzAlertModule,
     NzResultModule,
+    NzCheckboxModule,
     DocumentRoutingModule,
     TranslocoModule,
     AccountModule,
