@@ -2611,6 +2611,27 @@ export class Plan extends hih.BaseModel {
 }
 
 /**
+ * Document Item view
+ */
+export class DocumentItemView {
+  public DocumentID: number;
+  public ItemID: number;
+  public HomeID: number;
+  public TransactionDate: moment.Moment;
+  public DocumentDesp: string;
+  public AccountID: number;
+  public TransactionType: number;
+  public IsExpense: boolean;
+  public Currency: string;
+  public OriginAmount: number;
+  public Amount: number;
+  public AmountInLocalCurrency: number;
+  public ControlCenterID?: number;
+  public OrderID?: number;
+  public ItemDesp: string;
+}
+
+/**
  * Report base
  */
 export class FinanceReportBase {

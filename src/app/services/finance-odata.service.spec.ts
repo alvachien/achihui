@@ -2106,6 +2106,177 @@ describe('FinanceOdataService', () => {
     });
   });
 
+  describe('getDocumentItemByAccount', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data in success case', () => {
+      service.getDocumentItemByAccount(21, 100, 100, moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('acntid')
+          && requrl.params.has('top')
+          && requrl.params.has('skip')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend');
+      });
+
+      // Respond with the mock data
+      req.flush({ totalCount: 0, contentList: [] });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getDocumentItemByAccount(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('acntid')
+          ;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getDocumentItemByControlCenter', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data in success case', () => {
+      service.getDocumentItemByControlCenter(21, 100, 100, moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('ccid')
+          && requrl.params.has('top')
+          && requrl.params.has('skip')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend');
+      });
+
+      // Respond with the mock data
+      req.flush({ totalCount: 0, contentList: [] });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getDocumentItemByControlCenter(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('ccid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getDocumentItemByOrder', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data in success case', () => {
+      service.getDocumentItemByOrder(21, moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('ordid')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend');
+      });
+
+      // Respond with the mock data
+      req.flush({ totalCount: 0, contentList: [] });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getDocumentItemByOrder(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('ordid')
+          ;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
   describe('getRepeatedDates', () => {
     const apiurl: any = environment.ApiUrl + '/api/GetRepeatedDates';
     let inputData: RepeatedDatesAPIInput;

@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account,
-  AccountExtraAsset, UICommonLabelEnum, ModelUtility,
+  AccountExtraAsset, UICommonLabelEnum, ModelUtility, AssetCategory,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator, ConsoleLogTypeEnum,
@@ -35,7 +35,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   public isDocPosting = false;
   // Step: Result
   public docCreateSucceed = false;
-  current = 0;
+  currentStep = 0;
 
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -43,8 +43,10 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  public baseCurrency: string;
   // Buffered variables
-  arMembersInChosedHome: HomeMember[];
+  arAssetCategories: AssetCategory[];
+  arMembers: HomeMember[];
   arControlCenters: ControlCenter[];
   arOrders: Order[];
   arTranTypes: TranType[];
@@ -69,20 +71,21 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._docDate = moment();
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
     this.assetAccount = new AccountExtraAsset();
-    this.arMembersInChosedHome = this.homeService.ChosedHome.Members.slice();
+    this.arMembers = this.homeService.ChosedHome.Members.slice();
 
     this.firstFormGroup = new FormGroup({
       headerControl: new FormControl('', Validators.required),
       amountControl: new FormControl(0, Validators.required),
       assetAccountControl: new FormControl('', Validators.required),
-      ownerControl: new FormControl('', Validators.required),
+      ownerControl: new FormControl(undefined, Validators.required),
       legacyControl: new FormControl(false, Validators.required),
-      ccControl: new FormControl(''),
-      orderControl: new FormControl(''),
+      ccControl: new FormControl(),
+      orderControl: new FormControl(),
     }, [costObjectValidator, this._legacyDateValidator, this._amountValidator]);
     this.itemFormGroup = new FormGroup({
-      itemControl: new FormControl(''),
+      itemControl: new FormControl(),
     });
   }
 
@@ -104,6 +107,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
         ConsoleLogTypeEnum.debug);
 
+      this.arAssetCategories = rst[1];
       this.arDocTypes = rst[2];
       this.arTranTypes = rst[3];
       this.arAccounts = rst[4];
@@ -146,7 +150,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   }
   get nextEnabled(): boolean {
     let isEnabled = false;
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -168,17 +172,17 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   }
 
   pre(): void {
-    this.current -= 1;
+    this.currentStep -= 1;
     this.changeContent();
   }
 
   next(): void {
-    this.current += 1;
+    this.currentStep += 1;
     this.changeContent();
   }
 
   changeContent(): void {
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         break;
       }

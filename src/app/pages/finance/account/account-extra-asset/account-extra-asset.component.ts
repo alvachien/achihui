@@ -78,7 +78,9 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter`,
       ConsoleLogTypeEnum.debug);
 
-    this._arAssetCategories = ctgy.slice();
+    if (ctgy) {
+      this._arAssetCategories = ctgy.slice();
+    }
   }
 
   constructor() {

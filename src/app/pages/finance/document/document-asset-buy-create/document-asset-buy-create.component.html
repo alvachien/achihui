@@ -10,7 +10,7 @@
   <nz-page-header-extra>
   </nz-page-header-extra>
 </nz-page-header>
-<nz-steps [nzCurrent]="current">
+<nz-steps [nzCurrent]="currentStep">
   <nz-step nzTitle="Header"></nz-step>
   <nz-step nzTitle="Items"></nz-step>
   <nz-step nzTitle="Review"></nz-step>
@@ -18,7 +18,7 @@
 </nz-steps>
 
 <div class="steps-content">
-  <form nz-form [formGroup]="firstFormGroup" [hidden]="current !== 0">
+  <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
     <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
       [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies" [baseCurrency]="baseCurrency">
     </hih-fin-document-header>
@@ -26,24 +26,9 @@
     <nz-divider></nz-divider>
 
     <!-- Asset Accont -->
-    <hih-finance-account-extra-asset formControlName="assetAccountControl"></hih-finance-account-extra-asset>
+    <hih-finance-account-extra-asset formControlName="assetAccountControl" [arAssetCategories]="arAssetCategories">
+    </hih-finance-account-extra-asset>
     
-    <nz-divider></nz-divider>
-
-    <!-- Amount -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" [nzErrorTip]="amountErrorTpl">
-        <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
-          [nzPlaceHolder]="'Amount'"></nz-input-number>
-        <ng-template #amountErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
     <!-- Owner -->
     <nz-form-item>
       <nz-form-label [nzSpan]="7">{{'Finance.Owner' | transloco}}</nz-form-label>
@@ -65,6 +50,22 @@
         <label nz-checkbox formControlName="legacyControl" (ngModelChange)="onIsLegacyChecked($event)">
           {{'Finance.LegacyAsset' | transloco}}
         </label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-divider></nz-divider>
+
+    <!-- Amount -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" [nzErrorTip]="amountErrorTpl">
+        <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
+          [nzPlaceHolder]="'Amount'"></nz-input-number>
+        <ng-template #amountErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
   

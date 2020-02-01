@@ -260,13 +260,13 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
     ndocitem.OrderId = this.firstFormGroup.get('orderControl').value;
     ndocitem.Desp = ndoc.Desp;
-    if (ndoc.TranAmount > 0) {
-      ndocitem.TranAmount = ndoc.TranAmount;
-      ndocitem.TranType = financeTranTypeAssetValueIncrease;
-    } else {
-      ndocitem.TranAmount = Math.abs(ndoc.TranAmount);
-      ndocitem.TranType = financeTranTypeAssetValueDecrease;
-    }
+    // if (ndoc.TranAmount > 0) {
+    //   ndocitem.TranAmount = ndoc.TranAmount;
+    //   ndocitem.TranType = financeTranTypeAssetValueIncrease;
+    // } else {
+    //   ndocitem.TranAmount = Math.abs(ndoc.TranAmount);
+    //   ndocitem.TranType = financeTranTypeAssetValueDecrease;
+    // }
     ndoc.Items = [ndocitem];
 
     return ndoc;

@@ -10,7 +10,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesWithAmountAPIOutput, RepeatFrequencyEnum, financeAccountCategoryAdvancePayment,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
-  FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem,
+  FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1273,7 +1273,7 @@ export class FinanceOdataService {
    */
   public getDocumentItemByAccount(
     acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
-    dtend?: moment.Moment): Observable<BaseListModel<DocumentItem>> {
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
     let headers: HttpHeaders = new HttpHeaders();
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
@@ -1304,15 +1304,12 @@ export class FinanceOdataService {
           ConsoleLogTypeEnum.debug);
 
         const data: any = response as any;
-        let ardi: DocumentItemWithBalance[] = [];
+        const ardi: DocumentItemView[] = [];
         if (data && data.value && data.value instanceof Array && data.value.length > 0) {
-          for (let di of data.value) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            ardi.push(docitem);
+          for (const di of data.value) {
+            ardi.push(di as DocumentItemView);
           }
         }
-
         return {
           totalCount: data.totalCount,
           contentList: ardi,
@@ -1332,112 +1329,122 @@ export class FinanceOdataService {
    * Get document items by control center
    * @param ccid Control center ID
    */
-  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
-    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  public getDocumentItemByControlCenter(
+    ccid: number,
+    top?: number,
+    skip?: number,
+    dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
+      let headers: HttpHeaders = new HttpHeaders();
+      const hid = this.homeService.ChosedHome.ID;
+      const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
+      const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    params = params.append('ccid', ccid.toString());
-    if (top) {
-      params = params.append('top', top.toString());
-    }
-    if (skip) {
-      params = params.append('skip', skip.toString());
-    }
-    if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
-    }
-    if (dtend) {
-      params = params.append('dtend', dtend.format(momentDateFormat));
-    }
-
-    return this._http.get(this.docItemAPIUrl, {
-      headers: headers,
-      params: params,
-    })
-    .pipe(map((response: HttpResponse<any>) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService: ${response}`);
-        console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService.`);
+      let params: HttpParams = new HttpParams();
+      params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+      params = params.append(
+        '$filter',
+        `HomeID eq ${hid} and ControlCenterID eq ${ccid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
+      params = params.append('$count', `true`);
+      if (top) {
+        params = params.append('$top', `${top}`);
+      }
+      if (skip) {
+        params = params.append('$skip', `${skip}`);
       }
 
-      let data: any = <any>response;
-      let ardi: DocumentItemWithBalance[] = [];
-      if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
-        for (let di of data.contentList) {
-          let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-          docitem.onSetData(di);
-          ardi.push(docitem);
-        }
-      }
+      return this.http.get(this.docItemViewAPIUrl, {
+        headers,
+        params,
+      })
+        .pipe(map((response: HttpResponse<any>) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceOdataService.`,
+            ConsoleLogTypeEnum.debug);
 
-      return {
-        totalCount: data.totalCount,
-        contentList: ardi,
-      };
-    }),
-    catchError((errresp: HttpErrorResponse) => {
-      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-      return throwError(errmsg);
-    }),
-    );
-  }
+          const data: any = response as any;
+          const ardi: DocumentItemView[] = [];
+          if (data && data.value && data.value instanceof Array && data.value.length > 0) {
+            for (const di of data.value) {
+              ardi.push(di as DocumentItemView);
+            }
+          }
+          return {
+            totalCount: data.totalCount,
+            contentList: ardi,
+          };
+        }),
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByControlCenter in FinanceOdataService: ${errresp}`,
+           ConsoleLogTypeEnum.error);
+
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
+        );
+    }
 
   /**
    * Get document items by order
    * @param ordid Order ID
    */
-  public getDocumentItemByOrder(ordid: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
+  public getDocumentItemByOrder(
+    ordid: number,
+    dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
     let headers: HttpHeaders = new HttpHeaders();
+    const hid = this.homeService.ChosedHome.ID;
+    const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
+    const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    params = params.append('ordid', ordid.toString());
-    if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
-    }
-    if (dtend) {
-      params = params.append('dtend', dtend.format(momentDateFormat));
-    }
+    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+    params = params.append(
+      '$filter',
+      `HomeID eq ${hid} and OrderID eq ${ordid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
+    params = params.append('$count', `true`);
+    // if (top) {
+    //   params = params.append('$top', `${top}`);
+    // }
+    // if (skip) {
+    //   params = params.append('$skip', `${skip}`);
+    // }
 
-    return this._http.get(this.docItemAPIUrl, {
-        headers: headers,
-        params: params,
-      })
+    return this.http.get(this.docItemViewAPIUrl, {
+      headers,
+      params,
+    })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService: ${response}`);
-          console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService.`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceOdataService.`,
+          ConsoleLogTypeEnum.debug);
 
-        let data: any = <any>response;
-        let ardi: DocumentItemWithBalance[] = [];
-        if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
-          for (let di of data.contentList) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            ardi.push(docitem);
+        const data: any = response as any;
+        const ardi: DocumentItemView[] = [];
+        if (data && data.value && data.value instanceof Array && data.value.length > 0) {
+          for (const di of data.value) {
+            ardi.push(di as DocumentItemView);
           }
         }
-
         return {
           totalCount: data.totalCount,
           contentList: ardi,
         };
       }),
       catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByOrder in FinanceOdataService: ${errresp}`,
+         ConsoleLogTypeEnum.error);
+
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
       }),
       );
   }
+
   // Private methods
   private buildTranTypeHierarchy(listTranType: TranType[]): void {
     listTranType.forEach((value: any, index: number) => {

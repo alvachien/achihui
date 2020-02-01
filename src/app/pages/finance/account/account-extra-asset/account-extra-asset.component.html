@@ -4,7 +4,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Category' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyErrorTpl">
-        <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
+        <nz-select formControlName="ctgyControl" (ngModelChange)="onChange()">
           <nz-option *ngFor="let rt of arAssetCategories" [nzValue]="rt.ID" [nzLabel]="t(rt.Name)"></nz-option>
         </nz-select>
         <ng-template #ctgyErrorTpl let-control>
@@ -44,6 +44,7 @@
       </nz-form-control>
     </nz-form-item>
   </div>
+
   <!-- Ref doc. ID -->
   <div class="achih-control-full-width" *ngIf="refBuyDocID">
     <label>{{'Finance.RefDoc' | transloco}}</label>
