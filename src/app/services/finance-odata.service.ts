@@ -10,7 +10,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesWithAmountAPIOutput, RepeatFrequencyEnum, financeAccountCategoryAdvancePayment,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
-  FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI,
+  FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -40,6 +40,7 @@ export class FinanceOdataService {
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenters';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrders';
   readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocuments';
+  readonly docItemViewAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItemViews';
 
   // Buffer in current page.
   get Currencies(): Currency[] {
@@ -1266,6 +1267,177 @@ export class FinanceOdataService {
       }));
   }
 
+  /**
+   * Get document items by account
+   * @param acntid Account ID
+   */
+  public getDocumentItemByAccount(
+    acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItem>> {
+    let headers: HttpHeaders = new HttpHeaders();
+    const hid = this.homeService.ChosedHome.ID;
+    const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
+    const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+    params = params.append(
+      '$filter',
+      `HomeID eq ${hid} and AccountID eq ${acntid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
+    params = params.append('$count', `true`);
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+
+    return this.http.get(this.docItemViewAPIUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceOdataService.`,
+          ConsoleLogTypeEnum.debug);
+
+        const data: any = response as any;
+        let ardi: DocumentItemWithBalance[] = [];
+        if (data && data.value && data.value instanceof Array && data.value.length > 0) {
+          for (let di of data.value) {
+            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+            docitem.onSetData(di);
+            ardi.push(docitem);
+          }
+        }
+
+        return {
+          totalCount: data.totalCount,
+          contentList: ardi,
+        };
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByAccount in FinanceOdataService: ${errresp}`,
+         ConsoleLogTypeEnum.error);
+
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
+
+  /**
+   * Get document items by control center
+   * @param ccid Control center ID
+   */
+  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('ccid', ccid.toString());
+    if (top) {
+      params = params.append('top', top.toString());
+    }
+    if (skip) {
+      params = params.append('skip', skip.toString());
+    }
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
+    }
+
+    return this._http.get(this.docItemAPIUrl, {
+      headers: headers,
+      params: params,
+    })
+    .pipe(map((response: HttpResponse<any>) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService: ${response}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService.`);
+      }
+
+      let data: any = <any>response;
+      let ardi: DocumentItemWithBalance[] = [];
+      if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+        for (let di of data.contentList) {
+          let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+          docitem.onSetData(di);
+          ardi.push(docitem);
+        }
+      }
+
+      return {
+        totalCount: data.totalCount,
+        contentList: ardi,
+      };
+    }),
+    catchError((errresp: HttpErrorResponse) => {
+      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+      return throwError(errmsg);
+    }),
+    );
+  }
+
+  /**
+   * Get document items by order
+   * @param ordid Order ID
+   */
+  public getDocumentItemByOrder(ordid: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('ordid', ordid.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
+    }
+
+    return this._http.get(this.docItemAPIUrl, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService.`);
+        }
+
+        let data: any = <any>response;
+        let ardi: DocumentItemWithBalance[] = [];
+        if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+          for (let di of data.contentList) {
+            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+            docitem.onSetData(di);
+            ardi.push(docitem);
+          }
+        }
+
+        return {
+          totalCount: data.totalCount,
+          contentList: ardi,
+        };
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
   // Private methods
   private buildTranTypeHierarchy(listTranType: TranType[]): void {
     listTranType.forEach((value: any, index: number) => {

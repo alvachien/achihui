@@ -3201,4 +3201,3 @@ export interface RepeatDatesWithAmountAndInterestAPIOutput {
   TranAmount: number;
   InterestAmount: number;
 }
-
