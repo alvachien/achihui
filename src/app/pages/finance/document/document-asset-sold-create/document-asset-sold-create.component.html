@@ -11,7 +11,7 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-steps [nzCurrent]="current">
+<nz-steps [nzCurrent]="currentStep">
   <nz-step nzTitle="Header"></nz-step>
   <nz-step nzTitle="Items"></nz-step>
   <nz-step nzTitle="Review"></nz-step>
@@ -19,7 +19,7 @@
 </nz-steps>
 
 <div class="steps-content">
-  <form nz-form [formGroup]="firstFormGroup" [hidden]="current !== 0">
+  <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
     <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
       [arDocTypes]="arDocTypes" [arCurrencies] = "arCurrencies" [baseCurrency]="baseCurrency">
     </hih-fin-document-header>

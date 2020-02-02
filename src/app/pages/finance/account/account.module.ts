@@ -17,6 +17,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { TranslocoModule } from '@ngneat/transloco';
 
@@ -60,6 +61,7 @@ import { AccountExtraLoanComponent } from './account-extra-loan/account-extra-lo
     NzInputModule,
     NzInputNumberModule,
     NzDatePickerModule,
+    NzAlertModule,
     AccountRoutingModule,
     TranslocoModule,
   ],

@@ -1,4 +1,12 @@
 <ng-container *transloco="let t">
+  <div *ngIf="controlError">
+    <nz-alert nzType="error"
+      [nzMessage]="t(controlError.value)"
+      [nzDescription]="t(controlError.value)"
+      nzShowIcon>
+    </nz-alert>
+  </div>
+  
   <div [formGroup]="loanInfoForm">
     <!-- Start date -->
     <nz-form-item>
@@ -54,7 +62,7 @@
 
     <!-- First repay date -->
     <nz-form-item *ngIf="isFieldChangable">
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.EndDate' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.FirstRepayDate' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="firstrepaydateErrorTpl">
         <nz-date-picker formControlName="firstRepayDateControl" (ngModelChange)="onChange()"></nz-date-picker>
         <ng-template #firstrepaydateErrorTpl let-control>
@@ -148,12 +156,12 @@
   <!-- Ref doc. ID -->
   <div *ngIf="refDocId">
     <label>{{'Finance.RefDoc' | transloco}}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick()">{{refDocId}}</button>
+    <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">{{refDocId}}</button>
   </div>
 
   <!-- Toolbar -->
   <div class="toolbar_buttons">
-    <button nz-button nzType="primary" (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable">{{'Finance.GenerateTmpDocs' | transloco}}</button>
+    <button nz-button nzType="primary" (click)="onGenerateTmpDocs()" [disabled]="!canGenerateTmpDocs">{{'Finance.GenerateTmpDocs' | transloco}}</button>
   </div>
 
   <!-- Template docs-->
@@ -163,7 +171,6 @@
     <thead>
       <tr>
         <th>Date</th>
-        <th>Tran. type</th>
         <th>Desp</th>
         <th>{{'Finance.Amount' | transloco}}</th>
         <th>{{'Finance.Amount' | transloco}}</th>
@@ -173,7 +180,6 @@
     <tbody>
       <tr *ngFor="let data of basicTable.data">
         <td>{{data.TranDateFormatString}}</td>
-        <td>{{data.TranType}}</td>
         <td>{{data.Desp}}</td>
         <td>{{data.TranAmount}}</td>
         <td>{{data.InterestAmount}}</td>

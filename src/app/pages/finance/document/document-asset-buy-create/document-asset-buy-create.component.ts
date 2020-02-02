@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, } from '@angular/forms';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -148,7 +147,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       this.itemFormGroup.enable();
     }
   }
-  get nextEnabled(): boolean {
+  get nextButtonEnabled(): boolean {
     let isEnabled = false;
     switch (this.currentStep) {
       case 0: {

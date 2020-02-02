@@ -47,7 +47,6 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetValChg;
   // Step: Confirm
-  public confirmInfo: any = {};
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
@@ -56,6 +55,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
   tranAmount: number;
+  // Step: Confirm
+  public confirmInfo: any = {};
+  public isDocPosting = false;
+  // Step: Result
+  public docCreateSucceed = false;
+  currentStep = 0;
 
   // Variables
   arMembersInChosedHome: HomeMember[];
@@ -135,7 +140,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this.uiOrderFilter = undefined;
     }, (error: any) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent ngOnInit forkJoin, failed',
-      ConsoleLogTypeEnum.error);
+        ConsoleLogTypeEnum.error);
       // this._snackbar.open(error.toString(), undefined, {
       //   duration: 2000,
       // });
@@ -145,9 +150,66 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnDestroy',
       ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+  }
+
+  get nextButtonEnabled(): boolean {
+    let isEnabled = false;
+    switch (this.currentStep) {
+      case 0: {
+        isEnabled = this.firstFormGroup.valid;
+        break;
+      }
+      case 1: {
+        // isEnabled = this.itemFormGroup.valid;
+        break;
+      }
+      case 2: {
+        isEnabled = true; // Review
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+    return isEnabled;
+  }
+
+  pre(): void {
+    this.currentStep -= 1;
+    this.changeContent();
+  }
+
+  next(): void {
+    this.currentStep += 1;
+    this.changeContent();
+  }
+
+  changeContent(): void {
+    switch (this.currentStep) {
+      case 0: {
+        break;
+      }
+      case 1: {
+        this._updateConfirmInfo();
+        break;
+      }
+      case 2: {
+        // Review
+        break;
+      }
+      case 3: {
+        this.isDocPosting = true;
+        this.onSubmit();
+        break;
+      }
+      default: {
+      }
     }
   }
 

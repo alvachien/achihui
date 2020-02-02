@@ -36,7 +36,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   public isDocPosting = false;
   // Step: Result
   public docCreateSucceed = false;
-  current = 0;
+  currentStep = 0;
 
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -140,9 +140,10 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
-  get nextEnabled(): boolean {
+
+  get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -164,17 +165,17 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.current -= 1;
+    this.currentStep -= 1;
     this.changeContent();
   }
 
   next(): void {
-    this.current += 1;
+    this.currentStep += 1;
     this.changeContent();
   }
 
   changeContent(): void {
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         break;
       }

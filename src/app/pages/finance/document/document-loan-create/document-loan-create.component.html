@@ -10,6 +10,7 @@
   <nz-page-header-extra>
   </nz-page-header-extra>
 </nz-page-header>
+
 <nz-steps [nzCurrent]="current">
   <nz-step nzTitle="Header"></nz-step>
   <nz-step nzTitle="Loan Detail"></nz-step>
@@ -29,8 +30,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="amountErrorTpl">
-        <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"
-          [nzPlaceHolder]="'Amount'"></nz-input-number>
+        <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01"></nz-input-number>
         <ng-template #amountErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
@@ -86,10 +86,11 @@
   </form>
 
   <form nz-form [formGroup]="extraFormGroup" [hidden]="current !== 1">
-    <hih-finance-account-extra-loan formControlName="loanAccountControl" 
-      [tranAmount]="confirmInfo?.tranAmount" 
-      [controlCenterID]="confirmInfo?.controlCenterID"
-      [orderID]="confirmInfo?.orderID"
+    <hih-finance-account-extra-loan
+      formControlName="loanAccountControl" 
+      [tranAmount]="tranAmount" 
+      [controlCenterID]="controlCenterID"
+      [orderID]="orderID"
       [arUIAccount] = "arUIAccount">
     </hih-finance-account-extra-loan>
   </form>
@@ -139,7 +140,7 @@
   <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0 && current < 3">
     <span>{{'Common.PreviousButton' | transloco}}</span>
   </button>
-  <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextEnabled">
+  <button nz-button nzType="primary" (click)="next()" *ngIf="current < 3" [disabled]="!nextEnabled">
     <span>{{'Common.NextButton' | transloco}}</span>
   </button>
 </div>

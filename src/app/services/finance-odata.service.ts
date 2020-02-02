@@ -951,16 +951,17 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+    const apiurl: string = environment.ApiUrl + '/api/PostLoanDocument';
 
-    let sobj: any = docObj.writeJSONObject(); // Document first
-    sobj.accountVM = acntObj.writeJSONObject();
+    const sobj: any = {};
+    sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
+    sobj.AccountInfo = acntObj.writeJSONObject();
 
     return this.http.post(apiurl, sobj, {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceStorageService: ' + response,
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
         let hd: Document = new Document();
@@ -968,7 +969,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceStorageService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceOdataService.`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -1023,8 +1024,9 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
-    let jobj: any = apidetail.writeJSONObject();
+    const apiurl: string = this.documentAPIUrl + '/PostAssetBuyDocument';
+    let jobj: any = {};
+    jobj.DocumentInfo = apidetail.writeJSONObject();
     let jdata: string = JSON && JSON.stringify(jobj);
 
     return this.http.post(apiurl, jdata, {
@@ -1041,7 +1043,7 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
           ConsoleLogTypeEnum.error);
 
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
       }),
       );
@@ -1177,11 +1179,21 @@ export class FinanceOdataService {
       InterestFreeLoan: datainput.InterestFreeLoan ? true : false,
       InterestRate: datainput.InterestRate ? datainput.InterestRate : 0,
       RepaymentMethod: datainput.RepaymentMethod,
+      // StartDate: {
+      //   Year: datainput.StartDate.year(),
+      //   Month: datainput.StartDate.month() + 1,
+      //   Day: datainput.StartDate.date(),
+      // },
       StartDate: datainput.StartDate.format(momentDateFormat),
       TotalAmount: datainput.TotalAmount,
       TotalMonths: datainput.TotalMonths,
     };
     if (datainput.EndDate) {
+      // jobject.EndDate = {
+      //   Year: datainput.EndDate.year(),
+      //   Month: datainput.EndDate.month() + 1,
+      //   Day: datainput.EndDate.date(),
+      // };
       jobject.EndDate = datainput.EndDate.format(momentDateFormat);
     }
     if (datainput.FirstRepayDate) {
@@ -1204,9 +1216,9 @@ export class FinanceOdataService {
         if (repdata && repdata.value instanceof Array && repdata.value.length > 0) {
           for (const tt of repdata.value) {
             const rst: RepeatDatesWithAmountAndInterestAPIOutput = {
-              TranDate: moment(tt.tranDate, momentDateFormat),
-              TranAmount: tt.tranAmount,
-              InterestAmount: tt.interestAmount,
+              TranDate: moment(tt.TranDate, momentDateFormat),
+              TranAmount: tt.TranAmount,
+              InterestAmount: tt.InterestAmount,
             };
 
             results.push(rst);

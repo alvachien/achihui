@@ -86,21 +86,24 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       return false;
     }
 
+    const val = this.value;
     // Repayment method
-    if (!this.loanInfoForm.get('repayMethodControl').value) {
+    if (val.RepayMethod === undefined || val.RepayMethod === null) {
       return false;
     }
 
     // Total months
-    if (!this.loanInfoForm.get('totalMonthControl').value
-      || this.loanInfoForm.get('totalMonthControl').value <= 0) {
+    if (val.TotalMonths <= 0) {
       return false;
     }
 
     // Interest rate
-    if (this.loanInfoForm.get('interestFreeControl').value === true) {
-      const val = this.value;
-      if (!val.annualRate || val.annualRate < 0) {
+    if (val.InterestFree) {
+      if (val.annualRate > 0) {
+        return false;
+      }
+    } else {
+      if (val.annualRate <= 0) {
         return false;
       }
     }
@@ -110,12 +113,37 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     return true;
   }
+  get controlError(): any {
+    const err = this.validate(undefined);
+    if (err) {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent controlError: ${err}`,
+        ConsoleLogTypeEnum.debug);
+
+      if (err.noitems) {
+        return { value: 'Finance.NoDocumentItem' };
+      } else if (err.itemwithoutaccount) {
+        return { value: 'Finance.AccountIsMust' };
+      } else if (err.itemwithouttrantype) {
+        return { value: 'Finance.TransactionTypeIsMust' };
+      } else if (err.itemwithoutamount) {
+        return { value: 'Finance.AmountIsMust' };
+      } else if (err.itemwithwrongcostobject) {
+        return { value: 'Finance.EitherControlCenterOrOrder' };
+      } else if (err.itemwithoutdesp) {
+        return { value: 'Finance.DespIsMust' };
+      } else if (err.invalidForm) {
+        return { value: err.invalidForm.message };
+      } else {
+        return { value: 'Common.Error' };
+      }
+    }
+    return err;
+  }
 
   constructor(
     public odataService: FinanceOdataService,
     public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-  ) {
+    public uiStatusService: UIStatusService, ) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
@@ -171,13 +199,15 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       this._destroyed$.complete();
     }
   }
-  public onRefDocClick() {
+
+  public onRefDocClick(rid: number) {
     // TBD.
   }
 
   public onGenerateTmpDocs(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onGenerateTmpDocs`,
       ConsoleLogTypeEnum.debug);
+
     let tmpdocs: TemplateDocLoan[] = [];
     tmpdocs = this.listTmpDocs.slice();
     let amtTotal = 0;
@@ -196,7 +226,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     // Call the API for Loan template docs.
     const val = this.value;
     const di: RepeatDatesWithAmountAndInterestAPIInput = {
-      TotalAmount: amtTotal - amtPaid,
+      TotalAmount: this.tranAmount - amtTotal + amtPaid,
       TotalMonths: val.TotalMonths - monthPaid,
       InterestRate: val.annualRate / 100,
       StartDate: val.startDate.clone(),
@@ -234,6 +264,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       }
 
       this.listTmpDocs = arKeepItems;
+
+      this.onChange();
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtraLoanComponent onGenerateTmpDocs, failed with: ${error}`,
         ConsoleLogTypeEnum.error);
@@ -245,7 +277,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   }
 
   writeValue(val: AccountExtraLoan): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent writeValue`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent writeValue`,
+      ConsoleLogTypeEnum.debug);
 
     if (val) {
       this.loanInfoForm.get('startDateControl').setValue(val.startDate);
@@ -264,6 +297,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       this.listTmpDocs = val.loanTmpDocs.slice();
     }
   }
+
   registerOnChange(fn: any): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnChange`,
       ConsoleLogTypeEnum.debug);
@@ -295,11 +329,14 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks
-      if (!this.canGenerateTmpDocs) {
-        return { invalidForm: {valid: false, message: 'cannot generate tmp docs'} };
-      }
+      // if (!this.canGenerateTmpDocs) {
+      //   return { invalidForm: {valid: false, message: 'cannot generate tmp docs'} };
+      // }
       if (!this.value.isValid) {
         return { invalidForm: {valid: false, message: 'genrated object is invalid'} };
+      }
+      if (!this.listTmpDocs) {
+        return { invalidForm: {valid: false, message: 'No tmp docs'} };
       }
       return null;
     }

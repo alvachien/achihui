@@ -6,7 +6,7 @@ import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
+import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
   ControlCenter, Order, TranType, financeDocTypeLendTo, UIMode,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
@@ -51,6 +51,16 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public docCreateSucceed = false;
   current = 0;
 
+  get tranAmount(): number {
+    return this.firstFormGroup && this.firstFormGroup.get('amountControl').value;
+  }
+  get controlCenterID(): number {
+    return this.firstFormGroup && this.firstFormGroup.get('ccControl').value;
+  }
+  get orderID(): number {
+    return this.firstFormGroup && this.firstFormGroup.get('orderControl').value;
+  }
+
   constructor(
     private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
@@ -73,7 +83,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       orderControl: new FormControl(undefined),
     }, [costObjectValidator]);
     this.extraFormGroup = new FormGroup({
-      loanAccountControl: new FormControl('', Validators.required),
+      loanAccountControl: new FormControl(),
     });
   }
 
