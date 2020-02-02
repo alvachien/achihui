@@ -31,7 +31,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" [nzErrorTip]="accountErrorTpl">
         <nz-select formControlName="accountControl">
-          <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+          <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
         </nz-select>
         <ng-template #accountErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">

@@ -42,6 +42,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   public detailObject: FinanceAssetValChgDocumentAPI;
+  public baseCurrency: string;
 
   // Step: Generic info
   public firstFormGroup: FormGroup;
@@ -88,6 +89,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ConsoleLogTypeEnum.debug);
 
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
+    this.baseCurrency = this._homeService.ChosedHome.BaseCurrency;
   }
 
   ngOnInit(): void {
@@ -345,4 +347,3 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     return null;
   }
 }
-

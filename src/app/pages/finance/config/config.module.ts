@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { FinanceUIModule } from '../finance-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { ConfigRoutingModule } from './config-routing.module';
@@ -26,11 +22,7 @@ import { TranTypeListComponent } from './tran-type-list';
   ],
   imports: [
     CommonModule,
-    NzTabsModule,
-    NzTableModule,
-    NzBreadCrumbModule,
-    NzPageHeaderModule,
-    NzSpinModule,
+    FinanceUIModule,
     ConfigRoutingModule,
     TranslocoModule,
   ]

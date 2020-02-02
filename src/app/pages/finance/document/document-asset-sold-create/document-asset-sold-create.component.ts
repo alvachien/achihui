@@ -24,6 +24,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   private _docDate: moment.Moment;
+  public baseCurrency: string;
 
   public detailObject: FinanceAssetSoldoutDocumentAPI;
   // Step: Generic info
@@ -67,6 +68,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
     this.arMembersInChosedHome = this.homeService.ChosedHome.Members.slice();
     this._docDate = moment();
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
   }
 
   ngOnInit(): void {
