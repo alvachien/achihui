@@ -14,7 +14,7 @@ export class UIAccountCtgyFilterExPipe implements PipeTransform {
           if (args.includedCategories.findIndex((ctgyid: number) => {
             return value.CategoryId === ctgyid;
           }) === -1) {
-              return false;
+            return false;
           }
         }
 
@@ -23,7 +23,7 @@ export class UIAccountCtgyFilterExPipe implements PipeTransform {
           if (args.excludedCategories.findIndex((ctgyid: number) => {
             return value.CategoryId === ctgyid;
           }) !== -1) {
-              return false;
+            return false;
           }
         }
       }

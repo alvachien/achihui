@@ -4,10 +4,10 @@ import { UIAccountForSelection, financeAccountCategoryCash, financeAccountCatego
   financeAccountCategoryAsset, financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo } from '../../../model';
 
 describe('UIAccountCtgyFilterExPipe', () => {
-  let allAccounts: UIAccountForSelection[] = [];
+  const allAccounts: UIAccountForSelection[] = [];
   let pipe: UIAccountCtgyFilterExPipe;
 
-  beforeEach(() => {
+  beforeAll(() => {
     pipe = new UIAccountCtgyFilterExPipe();
 
     // Create accounts for testing
@@ -80,7 +80,7 @@ describe('UIAccountCtgyFilterExPipe', () => {
     expect(pipe).toBeTruthy();
   });
   it('2. include cash account, exclude nothing', () => {
-    let rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
+    const rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
       includedCategories: [
         financeAccountCategoryCash,
       ],
@@ -91,7 +91,7 @@ describe('UIAccountCtgyFilterExPipe', () => {
     // expect(rstAccounts[0].Name).toContain('Cash');
   });
   it('3. include nothing, exclude cash account', () => {
-    let rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
+    const rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
       includedCategories: [
       ],
       excludedCategories: [
@@ -104,7 +104,7 @@ describe('UIAccountCtgyFilterExPipe', () => {
     });
   });
   it('4. exclude adp, adr, asset, borrow and lend', () => {
-    let rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
+    const rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
       includedCategories: [
         financeAccountCategoryCash,
       ],

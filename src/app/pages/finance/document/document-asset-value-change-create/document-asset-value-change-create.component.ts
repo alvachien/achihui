@@ -13,6 +13,7 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccoun
   financeTranTypeAssetValueDecrease, FinanceAssetValChgDocumentAPI,
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator, ModelUtility,
   ConsoleLogTypeEnum,
+  DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
@@ -20,6 +21,7 @@ import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../..
 class DocItemWithBlance {
   docId: number;
   tranDate: string;
+  desp: string;
   tranAmount: number;
   balance: number;
   newBalance: number;
@@ -47,17 +49,16 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetValChg;
-  // Step: Confirm
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
-  // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
   tranAmount: number;
   // Step: Confirm
   public confirmInfo: any = {};
+  public existingDocItems: DocItemWithBlance[] = [];
   public isDocPosting = false;
   // Step: Result
   public docCreateSucceed = false;
@@ -74,7 +75,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   curMode: UIMode = UIMode.Create;
 
   get NewEstimatedAmount(): number {
-    let amtctrl: any = this.firstFormGroup.get('amountControl');
+    const amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
@@ -82,10 +83,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
   constructor(
     private _storageService: FinanceOdataService,
-    private _uiStatusService: UIStatusService,
     private _homeService: HomeDefOdataService,
     private _router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
@@ -93,7 +93,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit',
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
@@ -116,7 +116,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this._storageService.fetchAllOrders(),
       this._storageService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit forkJoin',
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
         ConsoleLogTypeEnum.debug);
 
       this.arDocTypes = rst[2];
@@ -141,7 +141,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
     }, (error: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent ngOnInit forkJoin, failed',
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
         ConsoleLogTypeEnum.error);
       // this._snackbar.open(error.toString(), undefined, {
       //   duration: 2000,
@@ -166,15 +166,10 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         isEnabled = this.firstFormGroup.valid;
         break;
       }
-      case 1: {
-        // isEnabled = this.itemFormGroup.valid;
-        break;
-      }
-      case 2: {
+      case 1: { // Review
         isEnabled = true; // Review
         break;
       }
-
       default: {
         break;
       }
@@ -220,7 +215,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ConsoleLogTypeEnum.debug);
 
     // Generate the doc, and verify it
-    let docobj: Document = this._generateDoc();
+    const docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
       ControlCenters: this.arControlCenters,
       Orders: this.arOrders,
@@ -249,10 +244,10 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this._storageService.createAssetValChgDocument(this.detailObject).subscribe((nid: number) => {
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
-      ConsoleLogTypeEnum.debug);
+        ConsoleLogTypeEnum.debug);
     }, (err: string) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit',
-      ConsoleLogTypeEnum.error);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
+        ConsoleLogTypeEnum.error);
 
       return;
     });
@@ -271,15 +266,29 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     // Fetch the existing items
     this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID).subscribe((x: any) => {
       // Get the output
-      let items: any[] = [];
+      this.existingDocItems = [];
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
-        for (let di of x.contentList) {
-          let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-          docitem.onSetData(di);
-
-          let di2: DocItemWithBlance = new DocItemWithBlance();
-          di2.fromData(docitem);
-          items.push(di2);
+        let docitems: DocumentItemView[] = x.contentList as DocumentItemView[];
+        docitems = docitems.sort((a, b) => {
+          if (a.TransactionDate.isBefore(b.TransactionDate)) {
+            return -1;
+          }
+          if (a.TransactionDate.isAfter(b.TransactionDate)) {
+            return 1;
+          }
+          return 0;
+        });
+        let curbal2 = 0;
+        for (const ditem of docitems) {
+          let dbal: DocItemWithBlance = new DocItemWithBlance();
+          dbal.docId = ditem.DocumentID;
+          dbal.tranDate = ditem.TransactionDate.format(momentDateFormat);
+          dbal.tranAmount = ditem.Amount;
+          dbal.balance = curbal2;
+          dbal.newBalance = dbal.balance + ditem.Amount;
+          dbal.desp = ditem.ItemDesp;
+          curbal2 = dbal.newBalance;
+          this.existingDocItems.push(dbal);
         }
       }
 
@@ -289,26 +298,23 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       fakebalance.tranAmount = 0;
       fakebalance.balance = 0;
       fakebalance.newBalance = this.NewEstimatedAmount;
-      items.push(fakebalance);
+      this.existingDocItems.push(fakebalance);
 
       // Sorting
-      items = items.sort((a: any, b: any) => {
+      this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
         return a.tranDate.localeCompare(b.tranDate);
       });
 
       let curbal = 0;
-      for (let idx: number = 0; idx < items.length; idx++) {
-        curbal += items[idx].tranAmount;
-        if (items[idx].docId) {
-          items[idx].newBalance = curbal;
+      for (let idx: number = 0; idx < this.existingDocItems.length; idx++) {
+        curbal += this.existingDocItems[idx].tranAmount;
+        if (this.existingDocItems[idx].docId) {
+          this.existingDocItems[idx].newBalance = curbal;
         } else {
-          items[idx].tranAmount = items[idx].newBalance - curbal;
-          this.tranAmount = items[idx].tranAmount;
+          this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
+          this.tranAmount = this.existingDocItems[idx].tranAmount;
         }
       }
-
-      // this.dataSource = new MatTableDataSource(items);
-      // this.dataSource.paginator = this.paginator;
     });
   }
 

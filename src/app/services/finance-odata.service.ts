@@ -384,7 +384,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('$select', 'ID,HomeID,Name,Comment');
+      params = params.append('$select', 'ID,HomeID,Name,CategoryID,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
 
       return this.http.get(this.accountAPIUrl, {
@@ -1295,10 +1295,10 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
     params = params.append(
       '$filter',
-      `HomeID eq ${hid} and AccountID eq ${acntid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
+      `HomeID eq ${hid} and AccountID eq ${acntid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
     params = params.append('$count', `true`);
     if (top) {
       params = params.append('$top', `${top}`);
@@ -1319,11 +1319,13 @@ export class FinanceOdataService {
         const ardi: DocumentItemView[] = [];
         if (data && data.value && data.value instanceof Array && data.value.length > 0) {
           for (const di of data.value) {
-            ardi.push(di as DocumentItemView);
+            const div: DocumentItemView = di as DocumentItemView;
+            div.TransactionDate = moment(di.TransactionDate, momentDateFormat);
+            ardi.push(div);
           }
         }
         return {
-          totalCount: data.totalCount,
+          totalCount: data['@odata.count'],
           contentList: ardi,
         };
       }),
