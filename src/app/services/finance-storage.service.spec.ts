@@ -17,7 +17,7 @@ import {
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
-describe('FinanceStorageService', () => {
+xdescribe('FinanceStorageService', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;

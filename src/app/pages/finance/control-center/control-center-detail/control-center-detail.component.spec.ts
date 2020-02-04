@@ -5,6 +5,7 @@ import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterDetailComponent } from './control-center-detail.component';
 import { getTranslocoModule, ActivatedRouteUrlStub } from '../../../../../testing';
@@ -19,7 +20,7 @@ describe('ControlCenterDetailComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
+    uiServiceStub.getUILabel = (le: any) => '';
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -31,6 +32,7 @@ describe('ControlCenterDetailComponent', () => {
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
+        RouterTestingModule,
       ],
       declarations: [ ControlCenterDetailComponent ],
       providers: [

@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
+import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 import { DocumentDownpaymentCreateComponent } from './document-downpayment-create.component';
 import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
@@ -57,6 +58,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       'fetchAllControlCenters',
       'fetchAllOrders',
       'createADPDocument',
+      'fetchAllCurrencies',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
@@ -65,8 +67,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     createDocSpy = storageService.createADPDocument.and.returnValue(of({}));
-    const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
-    fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
 
@@ -81,6 +82,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
         getTranslocoModule(),
       ],
       declarations: [
+        AccountExtraDownpaymentComponent,
         DocumentHeaderComponent,
         DocumentItemsComponent,
         DocumentDownpaymentCreateComponent,
@@ -112,7 +114,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
     expect(component).toBeTruthy();
 
-    fixture.detectChanges(); // ngOnInit
+    // fixture.detectChanges(); // ngOnInit
 
     // tick(); // Complete the Observables in ngOnInit
     // fixture.detectChanges();

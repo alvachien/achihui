@@ -530,9 +530,13 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.controlCenterAPIUrl + '?$select=ID,Name,Comment,Owner,ParentID&$filter=ID eq ' + ccid.toString();
+    const apiurl: string = this.controlCenterAPIUrl;
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${ccid}`);
+    params = params.append('$select', `ID,Name,Comment,Owner,ParentID`);
     return this.http.get(apiurl, {
       headers,
+      params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readControlCenter`,
@@ -915,7 +919,7 @@ export class FinanceOdataService {
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this.authService.authSubject.getValue().getUserId();
-    for (let tmpitem of acntExtraObject.dpTmpDocs) {
+    for (const tmpitem of acntExtraObject.dpTmpDocs) {
       tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
       tmpitem.OrderId = docObj.Items[0].OrderId;
     }
@@ -951,7 +955,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/PostLoanDocument';
+    const apiurl: string = this.documentAPIUrl + '/PostLoanDocument';
 
     const sobj: any = {};
     sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
@@ -964,7 +968,7 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
-        let hd: Document = new Document();
+        const hd: Document = new Document();
         hd.onSetData(response as any);
         return hd;
       }),
@@ -983,7 +987,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDocument';
+    const apiurl: string = this.documentAPIUrl + '/PostLoanRepayDocument';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.homeService.ChosedHome.ID.toString());
     params = params.append('loanAccountID', loanAccountID.toString());
@@ -991,23 +995,23 @@ export class FinanceOdataService {
       params = params.append('tmpdocid', tmpdocid.toString());
     }
 
-    let jdata: string = doc.writeJSONString();
+    const jdata: string = doc.writeJSONString();
 
     return this.http.post(apiurl, jdata, {
         headers,
         params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceOdataService: ${response}`,
           ConsoleLogTypeEnum.debug);
 
-        let hd: Document = new Document();
+        const hd: Document = new Document();
         hd.onSetData(response as any);
 
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -1025,22 +1029,22 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetBuyDocument';
-    let jobj: any = {};
+    const jobj: any = {};
     jobj.DocumentInfo = apidetail.writeJSONObject();
-    let jdata: string = JSON && JSON.stringify(jobj);
+    const jdata: string = JSON && JSON.stringify(jobj);
 
     return this.http.post(apiurl, jdata, {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetBuyinDocument in FinanceStorageService: ' + response,
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetBuyinDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
-        let ndocid: number = <number>(<any>response);
+        const ndocid: number = +(response as any);
         return ndocid;
       }),
       catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
           ConsoleLogTypeEnum.error);
 
         const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
@@ -1059,24 +1063,24 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetSoldDocument';
-    let jdata: string = JSON && JSON.stringify(apidetail);
+    const apiurl: string = this.documentAPIUrl + '/PostAssetSellDocument';
+    const jdata: string = JSON && JSON.stringify(apidetail);
 
     return this.http.post(apiurl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceStorageService: ' + response,
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
-        let ndocid: number = <number>(<any>response);
+        const ndocid: number = +(response as any);
         return ndocid;
       }),
       catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
           ConsoleLogTypeEnum.error);
 
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
       }),
     );
@@ -1092,24 +1096,24 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetValueChange';
-    let jdata: string = JSON && JSON.stringify(apidetail);
+    const apiurl: string = this.documentAPIUrl + '/PostAssetValueChangeDocument';
+    const jdata: string = JSON && JSON.stringify(apidetail);
 
     return this.http.post(apiurl, jdata, {
         headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceStorageService: ' + response,
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
-        let ndocid: number = <number>(<any>response);
+        const ndocid: number = +(response as any);
         return ndocid;
       }),
       catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
           ConsoleLogTypeEnum.error);
 
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
       }),
     );

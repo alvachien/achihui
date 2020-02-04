@@ -27,9 +27,8 @@ describe('FinanceOdataService', () => {
   const assetCategoryAPIURL: any = environment.ApiUrl + `/api/FinanceAssetCategories`;
   const accountAPIURL: any = environment.ApiUrl + `/api/FinanceAccounts`;
   const ccAPIURL: any = environment.ApiUrl + `/api/FinanceControlCenters`;
-  const orderAPIURL: any = environment.ApiUrl + `/api/FinanceOrders`;
   const documentAPIURL: any = environment.ApiUrl + `/api/FinanceDocuments`;
-  const adpDocumentAPIURL: any = environment.ApiUrl + '/api/financeadpdocument';
+  const adpDocumentAPIURL: any = documentAPIURL + `/PostDPDocument`;
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -771,7 +770,7 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,Comment');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // Respond with the mock account categories
@@ -798,7 +797,7 @@ describe('FinanceOdataService', () => {
         && requrl.params.has('$select')
         && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       req.flush({}); // Respond with no data
@@ -821,7 +820,7 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // respond with a 404 and the error message in the body
@@ -878,6 +877,7 @@ describe('FinanceOdataService', () => {
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
+
   describe('readAccount', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -903,15 +903,15 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.accountAPIUrl && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
-      req.flush(fakeData.finAccountsFromAPI[0]);
+      req.flush({value: fakeData.finAccountsFromAPI[0]});
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.readAccount(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -922,7 +922,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === accountAPIURL + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.accountAPIUrl && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body
@@ -1067,6 +1067,7 @@ describe('FinanceOdataService', () => {
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
+
   describe('readControlCenter', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -1091,11 +1092,11 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL + '(21)' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.controlCenterAPIUrl && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
-      req.flush(fakeData.finControlCentersFromAPI[0]);
+      req.flush({value: [fakeData.finControlCentersFromAPI[0]]});
     });
 
     it('should return error in case error appear', () => {
@@ -1110,7 +1111,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === ccAPIURL + '(21)' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.controlCenterAPIUrl && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body
@@ -1195,8 +1196,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to PUT from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
-          && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '(11)';
       });
 
       // Respond with the mock data
@@ -1215,8 +1215,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
-          && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '(11)';
       });
 
       // respond with a 500 and the error message in the body
@@ -1250,7 +1249,7 @@ describe('FinanceOdataService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1277,7 +1276,7 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1300,7 +1299,7 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1324,7 +1323,7 @@ describe('FinanceOdataService', () => {
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1337,7 +1336,7 @@ describe('FinanceOdataService', () => {
       service.fetchAllOrders().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1354,7 +1353,7 @@ describe('FinanceOdataService', () => {
       );
       const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === orderAPIURL
+          && requrl.url === service.orderAPIUrl
           && requrl.params.has('$expand')
           && requrl.params.has('$filter');
       });
@@ -1386,15 +1385,15 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orderAPIUrl && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
-      req.flush(fakeData.finOrdersFromAPI[0]);
+      req.flush({value: [fakeData.finOrdersFromAPI[0]]});
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.readOrder(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1405,7 +1404,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === orderAPIURL + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orderAPIUrl && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body
@@ -1437,7 +1436,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === orderAPIURL;
+        return requrl.method === 'POST' && requrl.url === service.orderAPIUrl;
       });
 
       // Respond with the mock data
@@ -1456,7 +1455,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === orderAPIURL;
+        return requrl.method === 'POST' && requrl.url === service.orderAPIUrl;
       });
 
       // respond with a 500 and the error message in the body
@@ -1491,7 +1490,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to PUT from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === orderAPIURL + '/11' && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11' && requrl.params.has('hid');
       });
 
       // Respond with the mock data
@@ -1510,7 +1509,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === orderAPIURL + '/11' && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11' && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body
@@ -1710,10 +1709,11 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createAssetBuyinDocument', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
+    let apiurl: string;
 
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
+      apiurl = service.documentAPIUrl + '/PostAssetBuyDocument';
     });
 
     afterEach(() => {
@@ -1741,7 +1741,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createAssetBuyinDocument(fakeData.buildFinAssetBuyInDocumentForCreate()).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1761,9 +1761,10 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createAssetSoldoutDocument', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetSoldDocument';
+    let apiurl: string;
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
+      apiurl = service.documentAPIUrl + '/PostAssetSellDocument';
     });
 
     afterEach(() => {
@@ -1791,7 +1792,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createAssetSoldoutDocument(fakeData.buildFinAssetSoldoutDocumentForCreate()).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1811,9 +1812,10 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createAssetValChgDocument', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetValueChange';
+    let apiurl: string;
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
+      apiurl = service.documentAPIUrl + '/PostAssetValueChangeDocument';
     });
 
     afterEach(() => {
@@ -1841,7 +1843,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createAssetValChgDocument(fakeData.buildFinAssetValueChangeDocumentForCreate()).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1859,10 +1861,12 @@ describe('FinanceOdataService', () => {
       req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
+
   describe('createLoanDocument', () => {
-    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+    let apiurl: string;
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
+      apiurl = service.documentAPIUrl + '/PostLoanDocument';
     });
 
     afterEach(() => {
@@ -1890,7 +1894,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createLoanDocument(new Document(), new Account()).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1910,9 +1914,10 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createLoanRepayDoc', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDocument';
+    let apiurl: string;
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
+      apiurl = service.documentAPIUrl + '/PostLoanRepayDocument';
     });
 
     afterEach(() => {
@@ -1932,9 +1937,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl
-          && requrl.params.has('hid')
-          && requrl.params.has('loanAccountID');
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // Respond with the mock data
@@ -1942,7 +1945,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createLoanRepayDoc(new Document(), 22, 1).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1953,9 +1956,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl
-          && requrl.params.has('hid')
-          && requrl.params.has('loanAccountID');
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body
@@ -2009,7 +2010,7 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(outputData);
+      req.flush({value: outputData});
     });
 
     it('should return error in case error appear', () => {
@@ -2083,7 +2084,7 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(outputData);
+      req.flush({value: outputData});
     });
 
     it('should return error in case error appear', () => {
@@ -2129,12 +2130,10 @@ describe('FinanceOdataService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('acntid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip')
-          && requrl.params.has('dtbgn')
-          && requrl.params.has('dtend');
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter')
+          && requrl.params.has('$top')
+          && requrl.params.has('$skip');
       });
 
       // Respond with the mock data
@@ -2142,7 +2141,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.getDocumentItemByAccount(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -2154,8 +2153,8 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('acntid')
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter')
           ;
       });
 
@@ -2187,12 +2186,10 @@ describe('FinanceOdataService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('ccid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip')
-          && requrl.params.has('dtbgn')
-          && requrl.params.has('dtend');
+          && requrl.params.has('$filter')
+          && requrl.params.has('$select')
+          && requrl.params.has('$top')
+          && requrl.params.has('$skip');
       });
 
       // Respond with the mock data
@@ -2200,7 +2197,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.getDocumentItemByControlCenter(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -2212,8 +2209,8 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('ccid');
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body
@@ -2244,10 +2241,8 @@ describe('FinanceOdataService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('ordid')
-          && requrl.params.has('dtbgn')
-          && requrl.params.has('dtend');
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
@@ -2255,7 +2250,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.getDocumentItemByOrder(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -2267,8 +2262,8 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.docItemViewAPIUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('ordid')
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter')
           ;
       });
 
