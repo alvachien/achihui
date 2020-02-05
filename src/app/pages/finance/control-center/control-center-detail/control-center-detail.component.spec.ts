@@ -8,13 +8,27 @@ import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterDetailComponent } from './control-center-detail.component';
-import { getTranslocoModule, ActivatedRouteUrlStub } from '../../../../../testing';
-import { AuthService, UIStatusService, } from '../../../../services';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../testing';
+import { AuthService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 
 describe('ControlCenterDetailComponent', () => {
   let component: ControlCenterDetailComponent;
   let fixture: ComponentFixture<ControlCenterDetailComponent>;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildCurrencies();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
+    fakeData.buildFinAccountExtraAdvancePayment();
+    fakeData.buildFinADPDocumentForCreate();
+  });
 
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
@@ -22,7 +36,9 @@ describe('ControlCenterDetailComponent', () => {
     const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => '';
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    // const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const homeService: Partial<HomeDefOdataService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({
       imports: [
@@ -39,6 +55,7 @@ describe('ControlCenterDetailComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: HomeDefOdataService, useValue: homeService },
       ]
     })
     .compileComponents();

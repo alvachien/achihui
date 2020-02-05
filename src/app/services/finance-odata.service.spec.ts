@@ -907,7 +907,7 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush({value: fakeData.finAccountsFromAPI[0]});
+      req.flush({value: [fakeData.finAccountsFromAPI[0]]});
     });
 
     it('should return error in case error appear', () => {
@@ -1620,7 +1620,8 @@ describe('FinanceOdataService', () => {
         value: [
           {
             Items: [], 'ID': 94, 'HomeID': 1, 'DocType': 1, 'TranDate': '2019-04-12', 'TranCurr': 'CNY',
-            'Desp': 'Test New ADP Doc | 5 / 12', 'ExgRate': 0.0, 'ExgRate_Plan': false, 'TranCurr2': null, 'ExgRate2': 0.0, 'ExgRate_Plan2': false,
+            'Desp': 'Test New ADP Doc | 5 / 12', 'ExgRate': 0.0, 'ExgRate_Plan': false, 'TranCurr2': null,
+            'ExgRate2': 0.0, 'ExgRate_Plan2': false,
             'TranAmount': -166.67, 'CreatedBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
             'CreatedAt': '2019-01-03', 'UpdatedBy': null, 'UpdatedAt': '0001-01-01'
           }],
@@ -1629,7 +1630,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllDocuments(moment(), moment().add(1, 'M'), 10, 0).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1689,7 +1690,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createADPDocument(fakeData.finADPDocumentForCreate, fakeData.finAccountExtraAdvancePayment, true).subscribe(
         (data: any) => {
           fail('expected to fail');

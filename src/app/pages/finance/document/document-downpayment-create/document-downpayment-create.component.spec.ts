@@ -90,11 +90,11 @@ describe('DocumentDownpaymentCreateComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        // { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
-        { provide: Router, useValue: routerSpy },      ]
+        // { provide: Router, useValue: routerSpy },
+      ]
     })
     .compileComponents();
   }));
