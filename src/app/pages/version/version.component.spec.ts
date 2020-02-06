@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
+import { getTranslocoModule } from '../../../testing';
 import { VersionComponent } from './version.component';
 
 describe('VersionComponent', () => {
@@ -11,6 +12,7 @@ describe('VersionComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NgZorroAntdModule,
+        getTranslocoModule(),
       ],
       declarations: [
         VersionComponent,
@@ -22,7 +24,7 @@ describe('VersionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VersionComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -9,7 +9,9 @@ describe('FatalErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgZorroAntdModule],
+      imports: [
+        NgZorroAntdModule
+      ],
       declarations: [ FatalErrorComponent ]
     })
     .compileComponents();

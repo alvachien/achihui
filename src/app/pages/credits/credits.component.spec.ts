@@ -33,5 +33,5 @@ describe('CreditsComponent', () => {
 
   it('credits', () => {
     expect(component.creditApp.length).toBeGreaterThan(0);
-  })
+  });
 });

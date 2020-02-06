@@ -1,28 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
-import { LackAuthorityComponent } from './lack-authority.component';
+import { getTranslocoModule } from '../../../testing';
+import { WelcomeComponent } from './welcome.component';
 
-describe('LackAuthorityComponent', () => {
-  let component: LackAuthorityComponent;
-  let fixture: ComponentFixture<LackAuthorityComponent>;
+describe('WelcomeComponent', () => {
+  let component: WelcomeComponent;
+  let fixture: ComponentFixture<WelcomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         NgZorroAntdModule,
+        getTranslocoModule(),
       ],
       declarations: [
-        LackAuthorityComponent,
+        WelcomeComponent,
       ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LackAuthorityComponent);
+    fixture = TestBed.createComponent(WelcomeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

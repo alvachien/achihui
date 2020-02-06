@@ -19,21 +19,30 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    ) {
-      this.isLoadingResults = false;
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent constructor...', ConsoleLogTypeEnum.debug);
-    }
+    public uiStatusService: UIStatusService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnInit...',
+      ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
     this.odataService.fetchAllAssetCategories()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: AssetCategory[]) => {
-        this.dataSet = x;
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent fetchAllAssetCategories...',
+        ConsoleLogTypeEnum.debug);
+
+      this.dataSet = x;
     }, (error: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AssetTypeListComponent fetchAllAssetCategories failed ${error}`,
+        ConsoleLogTypeEnum.error);
       // TBD: report error
     }, () => {
       this.isLoadingResults = false;
@@ -41,6 +50,9 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

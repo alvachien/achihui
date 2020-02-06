@@ -6,20 +6,30 @@ import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { CurrencyComponent } from './currency.component';
-import { getTranslocoModule } from '../../../../testing';
-import { AuthService, UIStatusService, } from '../../../services';
+import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 
 describe('CurrencyComponent', () => {
   let component: CurrencyComponent;
   let fixture: ComponentFixture<CurrencyComponent>;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+  });
 
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    uiServiceStub.getUILabel = (le: any) => '';
+    // const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const storageService: any = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllCurrencies',
+    ]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -34,6 +44,7 @@ describe('CurrencyComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: FinanceOdataService, useValue: storageService },
       ]
     })
     .compileComponents();

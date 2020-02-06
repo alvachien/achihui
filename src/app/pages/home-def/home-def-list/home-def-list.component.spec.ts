@@ -37,7 +37,6 @@ describe('HomeDefListComponent', () => {
       imports: [
         NoopAnimationsModule,
         HttpClientTestingModule,
-        RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],

@@ -14,7 +14,9 @@ describe('HomeDefDetailComponent', () => {
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
-      declarations: [ HomeDefDetailComponent ]
+      declarations: [
+        HomeDefDetailComponent,
+      ]
     })
     .compileComponents();
   }));

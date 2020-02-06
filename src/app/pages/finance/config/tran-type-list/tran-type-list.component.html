@@ -13,7 +13,7 @@
       <tr *ngFor="let data of basicTable.data">
         <td>{{data.Id}}</td>
         <td>{{data.Name}}</td>
-        <td>{{data.Expense}}</td>
+        <td><nz-switch [(ngModel)]="data.Expense" nzDisabled></nz-switch></td>
         <td>{{data.ParId}}</td>
         <td>{{data.Comment}}</td>
       </tr>

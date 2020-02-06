@@ -19,26 +19,39 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    ) {
-      this.isLoadingResults = false;
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent constructor...', ConsoleLogTypeEnum.debug);
-    }
+    public uiStatusService: UIStatusService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInt...',
+      ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.odataService.fetchAllTranTypes()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: TranType[]) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInit, fetchAllTranTypes...',
+          ConsoleLogTypeEnum.debug);
+
         this.dataSet = x;
     }, (error: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeListComponent OnInit, fetchAllTranTypes failed ${error}`,
+        ConsoleLogTypeEnum.error);
+      // TBD.
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent onDestroy...',
+      ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

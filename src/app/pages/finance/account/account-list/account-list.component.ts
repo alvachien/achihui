@@ -5,13 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Book, ModelUtility, ConsoleLogTypeEnum,
+  getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, AccountCategory,
 } from '../../../../model';
 
 @Component({
   selector: 'hih-fin-account-list',
   templateUrl: './account-list.component.html',
-  styleUrls: ['./account-list.component.less']
+  styleUrls: ['./account-list.component.less'],
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
@@ -19,14 +19,17 @@ export class AccountListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: Account[] = [];
   isReload: boolean;
+  arCategories: AccountCategory[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    ) {
-      this.isLoadingResults = false;
-      this.isReload = false;
-    }
+    public uiStatusService: UIStatusService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+    this.isReload = false;
+  }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...',
@@ -43,6 +46,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
 
         if (data instanceof Array && data.length > 0) {
           // Parse the data
+          this.arCategories = data[0];
           this.dataSet = data[1] as Account[];
         }
       }, (error: any) => {

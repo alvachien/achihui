@@ -15,8 +15,7 @@ import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
   HomeChoseGuardService,
   CanDeactivateGuardService, UIStatusService, SideNavService, TagsService,
-  FinanceOdataService,
-  HomeDefOdataService,
+  FinanceOdataService, HomeDefOdataService, LanguageOdataService,
 } from './services';
 import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
@@ -48,6 +47,7 @@ registerLocaleData(en);
     CanDeactivateGuardService,
     UIStatusService,
     SideNavService,
+    LanguageOdataService,
     HomeDefOdataService,
     FinanceOdataService,
     {

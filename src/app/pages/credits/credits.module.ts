@@ -7,7 +7,9 @@ import { CreditsRoutingModule } from './credits-routing.module';
 import { CreditsComponent } from './credits.component';
 
 @NgModule({
-  declarations: [CreditsComponent],
+  declarations: [
+    CreditsComponent
+  ],
   imports: [
     CommonModule,
     TranslocoModule,

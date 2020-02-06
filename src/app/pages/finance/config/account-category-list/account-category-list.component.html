@@ -12,7 +12,7 @@
       <tr *ngFor="let data of basicTable.data">
         <td>{{data.ID}}</td>
         <td>{{data.Name | transloco}}</td>
-        <td>{{data.AssetFlag}}</td>
+        <td><nz-switch [(ngModel)]="data.AssetFlag" nzDisabled></nz-switch></td>
         <td>{{data.Comment}}</td>
       </tr>
     </tbody>

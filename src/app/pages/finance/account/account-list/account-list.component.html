@@ -19,6 +19,8 @@
         <tr>
           <th>ID</th>
           <th>{{'Common.Name' | transloco}}</th>
+          <th>{{'Common.Category' | transloco}}</th>
+          <th>{{'Common.Status' | transloco}}</th>
           <th>{{'Common.Comment' | transloco}}</th>
         </tr>
       </thead>
@@ -26,6 +28,13 @@
         <tr *ngFor="let data of basicTable.data">
           <td>{{data.Id}}</td>
           <td>{{data.Name}}</td>
+          <td>
+            <nz-select [ngModel]="data.Category" nzDisabled>
+              <nz-option *ngFor="let ctgy of arCategories" [nzValue]='ctgy.ID' [nzLabel]="ctgy.Name"></nz-option>
+            </nz-select>
+          </td>
+          <td>
+          </td>
           <td>{{data.Comment}}</td>
         </tr>
       </tbody>

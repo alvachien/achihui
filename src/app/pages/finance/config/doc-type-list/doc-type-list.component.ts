@@ -19,27 +19,39 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    ) {
-      this.isLoadingResults = false;
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...', ConsoleLogTypeEnum.debug);
-    }
+    public uiStatusService: UIStatusService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent OnInit...',
+      ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
     this.odataService.fetchAllDocTypes()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: DocumentType[]) => {
-        this.dataSet = x;
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent fetchAllDocTypes...',
+        ConsoleLogTypeEnum.debug);
+
+      this.dataSet = x;
     }, (error: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocTypeListComponent fetchAllDocTypes failed ${error}`,
+        ConsoleLogTypeEnum.error);
+      // TBD.
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent OnDestory...',
+      ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

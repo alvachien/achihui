@@ -1,12 +1,11 @@
 <nz-list [nzDataSource]="creditApp" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-    <ng-template #item let-item>
-        <nz-list-item>
-            <nz-list-item-meta [nzTitle]="nzTitle"
-                [nzDescription]="item.desp">
-                <ng-template #nzTitle>
-                    <a href="item.url">{{ item.name }}</a>
-                </ng-template>
-            </nz-list-item-meta>
-        </nz-list-item>
-    </ng-template>
+  <ng-template #item let-item>
+    <nz-list-item>
+      <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="item.desp">
+        <ng-template #nzTitle>
+          <a href="item.url">{{ item.name }}</a>
+        </ng-template>
+      </nz-list-item-meta>
+    </nz-list-item>
+  </ng-template>
 </nz-list>

@@ -17,7 +17,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   isLoadingResults: boolean;
-  displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   public dataSource: HomeDef[] = [];
 
   get IsCurrentHomeChosed(): boolean {
@@ -32,20 +31,23 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     private uiService: UIStatusService,
     private router: Router,
     public modalService: NzModalService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this._fetchData();
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);

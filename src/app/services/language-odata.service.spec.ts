@@ -80,7 +80,7 @@ describe('LanguageOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'Deliberate 404';
+      const msg = 'Deliberate 404';
       service.fetchAllLanguages().subscribe(
         (langs: any) => {
           fail('expected to fail');

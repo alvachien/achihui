@@ -9,7 +9,9 @@ import { VersionRoutingModule } from './version-routing.module';
 import { VersionComponent } from './version.component';
 
 @NgModule({
-  declarations: [VersionComponent],
+  declarations: [
+    VersionComponent
+  ],
   imports: [
     CommonModule,
     NzTimelineModule,
