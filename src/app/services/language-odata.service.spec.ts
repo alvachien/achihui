@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 
 describe('LanguageOdataService', () => {
   let httpTestingController: HttpTestingController;
-  const curAPIURL: any = environment.ApiUrl + '/api/Languages';
+  const dataAPIURL: any = environment.ApiUrl + '/api/Languages';
   let fakeData: FakeDataHelper;
 
   beforeEach(() => {
@@ -56,11 +56,13 @@ describe('LanguageOdataService', () => {
       );
 
       // Service should have made one request to GET languages from expected URL
-      const req: any = httpTestingController.expectOne(curAPIURL);
+      const req: any = httpTestingController.expectOne(dataAPIURL);
       expect(req.request.method).toEqual('GET');
 
       // Respond with the mock languages
-      req.flush(fakeData.appLanguagesFromAPI);
+      req.flush({
+        value: fakeData.appLanguagesFromAPI
+      });
     });
 
     it('should be OK returning no languages', () => {
@@ -75,8 +77,8 @@ describe('LanguageOdataService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(curAPIURL);
-      req.flush([]); // Respond with no data
+      const req: any = httpTestingController.expectOne(dataAPIURL);
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -90,7 +92,7 @@ describe('LanguageOdataService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(curAPIURL);
+      const req: any = httpTestingController.expectOne(dataAPIURL);
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -107,15 +109,17 @@ describe('LanguageOdataService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(curAPIURL);
+      const requests: any = httpTestingController.match(dataAPIURL);
       expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.appLanguagesFromAPI);
+      requests[0].flush({
+        value: fakeData.appLanguagesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
       expect(service.Languages.length).toEqual(fakeData.appLanguagesFromAPI.length, 'buffer should not changed');
       service.fetchAllLanguages().subscribe();
-      const requests2: any = httpTestingController.match(curAPIURL);
+      const requests2: any = httpTestingController.match(dataAPIURL);
       expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -128,7 +132,7 @@ describe('LanguageOdataService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(curAPIURL);
+      const requests3: any = httpTestingController.match(dataAPIURL);
       expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });

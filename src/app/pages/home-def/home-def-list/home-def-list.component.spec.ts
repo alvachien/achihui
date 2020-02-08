@@ -1,55 +1,72 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { HttpClientTestingModule, HttpTestingController, } from '@angular/common/http/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NgZorroAntdModule, NzModalService, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { BehaviorSubject, of } from 'rxjs';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { HomeDefListComponent } from './home-def-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, } from '../../../services';
 import { UserAuthInfo } from '../../../model';
+import { MessageDialogComponent } from '../../message-dialog';
 
 describe('HomeDefListComponent', () => {
   let component: HomeDefListComponent;
   let fixture: ComponentFixture<HomeDefListComponent>;
-  let http: HttpTestingController;
   let fakeData: FakeDataHelper;
   let fetchAllHomeDefSpy: any;
-  let routerSpy: any;
   let homeService: any;
+  let authServiceStub: Partial<AuthService>;
+  let uiServiceStub: Partial<UIStatusService>;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildHomeDefs();
-  });
 
-  beforeEach(async(() => {
+    authServiceStub = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    uiServiceStub = {};
     homeService = jasmine.createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+  });
 
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
         HttpClientTestingModule,
         NgZorroAntdModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterTestingModule,
         getTranslocoModule(),
       ],
       declarations: [
         HomeDefListComponent,
+        MessageDialogComponent,
       ],
       providers: [
-        UIStatusService,
+        // { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-        { provide: Router, useValue: routerSpy },
+        // { provide: Router, useValue: routerSpy },
+        { provide: NZ_I18N, useValue: en_US },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -64,7 +81,12 @@ describe('HomeDefListComponent', () => {
   });
 
   describe('2. shall work with data', () => {
+    let routerstub: Router;
+
     beforeEach(() => {
+      routerstub = TestBed.get(Router);
+      spyOn(routerstub, 'navigate');
+
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
     });
 
@@ -92,7 +114,9 @@ describe('HomeDefListComponent', () => {
 
       component.onCreateHome();
       tick();
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/homedef/create']);
+
+      expect(routerstub.navigate).toHaveBeenCalled();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/homedef/create']);
 
       flush();
     }));
@@ -106,46 +130,52 @@ describe('HomeDefListComponent', () => {
       component.onChooseHome(component.dataSource[0]);
       tick(); // Complete the observables.
       expect(component.IsCurrentHomeChosed).toBeTruthy();
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+
+      expect(routerstub.navigate).toHaveBeenCalled();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/']);
     }));
   });
 
-  // xdescribe('3. shall display error dialog for exception', () => {
-  //   let overlayContainer: OverlayContainer;
-  //   let overlayContainerElement: HTMLElement;
+  describe('3. shall display error dialog for exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
 
-  //   beforeEach(() => {
-  //     fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
-  //   });
+    beforeEach(() => {
+      fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
+    });
 
-  //   beforeEach(inject([OverlayContainer],
-  //     (oc: OverlayContainer) => {
-  //     overlayContainer = oc;
-  //     overlayContainerElement = oc.getContainerElement();
-  //   }));
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
 
-  //   afterEach(() => {
-  //     overlayContainer.ngOnDestroy();
-  //   });
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
 
-  //   xit('should display error when Service fails', fakeAsync(() => {
-  //     // tell spy to return an async error observable
-  //     fetchAllHomeDefSpy.and.returnValue(asyncError<string>('Service failed'));
+    it('should display error when Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllHomeDefSpy.and.returnValue(asyncError<string>('Service failed'));
 
-  //     fixture.detectChanges();
-  //     tick(); // complete the Observable in ngOnInit
-  //     fixture.detectChanges();
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
 
-  //     // Expect there is a dialog
-  //     expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
-  //     // Since there is only one button
-  //     (overlayContainerElement.querySelector('button') as HTMLElement).click();
-  //     fixture.detectChanges();
-  //     flush();
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
 
-  //     expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-  //     flush();
-  //   }));
-  // });
+      flush();
+    }));
+  });
 });

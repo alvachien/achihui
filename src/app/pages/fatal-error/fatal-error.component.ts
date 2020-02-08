@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
+import { UIStatusService } from '../../services';
+
 @Component({
   selector: 'hih-fatal-error',
   templateUrl: './fatal-error.component.html',
-  styleUrls: ['./fatal-error.component.less']
+  styleUrls: ['./fatal-error.component.less'],
 })
-export class FatalErrorComponent implements OnInit {
+export class FatalErrorComponent {
+  errorContext: string;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private uiStatus: UIStatusService) {
+    this.errorContext = this.uiStatus.latestError;
   }
 }

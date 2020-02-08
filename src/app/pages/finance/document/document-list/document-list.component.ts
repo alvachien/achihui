@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
@@ -39,7 +41,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   constructor(
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
-    private router: Router) {
+    private router: Router,
+    public modalService: NzModalService) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...', ConsoleLogTypeEnum.debug);
       this.isLoadingResults = false;
     }
@@ -77,9 +80,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
         this.fetchData();
       }, (error: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
         // Error
-        // TBD.
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
       });
   }
 

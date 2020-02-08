@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
@@ -20,7 +22,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   constructor(
     public odataService: FinanceOdataService,
     public router: Router,
-    ) {
+    public modalService: NzModalService) {
     this.isLoadingResults = false;
   }
 
@@ -39,7 +41,13 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
         this.dataSet = value;
       }, (error: any) => {
-        // TBD
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
       }, () => {
         this.isLoadingResults = false;
       });

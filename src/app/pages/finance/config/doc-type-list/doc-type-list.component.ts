@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { LogLevel, DocumentType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
@@ -15,11 +17,12 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
-  dataSet: DocumentType[];
+  dataSet: DocumentType[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,) {
+    public uiStatusService: UIStatusService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -42,7 +45,11 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocTypeListComponent fetchAllDocTypes failed ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD.
+
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     }, () => {
       this.isLoadingResults = false;
     });

@@ -64,7 +64,7 @@ describe('getOverviewScopeRange', () => {
 
   it('CurrentMonth', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentMonth);
-    expect(rst.BeginDate.day()).toEqual(1);
+    expect(rst.BeginDate.date()).toEqual(1);
     expect(rst.BeginDate.month()).toEqual(rst.EndDate.month());
   });
 });

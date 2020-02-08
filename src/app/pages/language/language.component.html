@@ -6,37 +6,35 @@
     </nz-breadcrumb>
     <nz-page-header-content>
       <div class="wrap">
-        <div class="content">
-          <div class="content">
-            <p nz-paragraph>
-              {{'Common.Languages' | transloco}}
-            </p>
-            <p nz-paragraph>
-              The list of languages which supported.
-            </p>
-            <div>
-              <nz-table #basicTable [nzData]="dataSource">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>{{'Common.Name' | transloco}}</th>
-                    <th>{{'Common.EnglishName' | transloco}}</th>
-                    <th>{{'Common.NativeName' | transloco}}</th>
-                    <th>{{'Common.LanguageSupportedInApp' | transloco}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let data of basicTable.data">
-                    <td>{{ data.Lcid }}</td>
-                    <td>{{ data.IsoName }}</td>
-                    <td>{{ data.EnglishName }}</td>
-                    <td>{{ data.NativeName }}</td>
-                    <td><nz-switch [(ngModel)]="data.AppFlag" nzDisabled></nz-switch></td>
-                  </tr>
-                </tbody>
-              </nz-table>
-            </div>
-          </div>
+        <p nz-paragraph>
+          {{'Common.Languages' | transloco}}
+        </p>
+        <p nz-paragraph>
+          The list of languages which supported.
+        </p>
+        <div>
+          <nz-table #langTable [nzData]="dataSource">
+            <thead>
+              <tr>
+                <th></th>
+                <th>{{'Common.Name' | transloco}}</th>
+                <th>{{'Common.EnglishName' | transloco}}</th>
+                <th>{{'Common.NativeName' | transloco}}</th>
+                <th>{{'Common.LanguageSupportedInApp' | transloco}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of langTable.data">
+                <td>{{ data.Lcid }}</td>
+                <td>{{ data.IsoName }}</td>
+                <td>{{ data.EnglishName }}</td>
+                <td>{{ data.NativeName }}</td>
+                <td>
+                  <nz-switch [ngModel]="data.AppFlag" nzDisabled></nz-switch>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
         </div>
       </div>
     </nz-page-header-content>

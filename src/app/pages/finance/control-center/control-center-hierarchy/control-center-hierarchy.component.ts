@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
@@ -12,18 +14,21 @@ import { LogLevel, ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../.
   styleUrls: ['./control-center-hierarchy.component.less'],
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   ccTreeNodes: NzTreeNodeOptions[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
-    public _uiStatusService: UIStatusService) {
+    public _uiStatusService: UIStatusService,
+    public modalService: NzModalService) {
       this.isLoadingResults = false;
     }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -38,7 +43,13 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           this.ccTreeNodes = this._buildControlCenterTree(value, 1);
         }
       }, (error: any) => {
-        // TBD.
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
       }, () => {
         this.isLoadingResults = false;
       });

@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
@@ -31,7 +33,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: FinanceOdataService,
     private uiStatusService: UIStatusService,
-    ) {
+    public modalService: NzModalService) {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
+        ConsoleLogTypeEnum.debug);
       this.isLoadingResults = false; // Default value
 
       this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
@@ -88,8 +92,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
           ConsoleLogTypeEnum.error);
 
-        // TBD.
-        // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
       }, () => {
         this.isLoadingResults = false;
       });

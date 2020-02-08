@@ -25,6 +25,10 @@ export class CreditsComponent {
       url: 'http://echarts.baidu.com/',
       desp: 'A powerful, interactive charting and visualization library for browser.'
     }, {
+      name: 'Transloco',
+      url: 'https://transloco.netlify.com/',
+      desp: 'The internationalization (i18n) library for Angular.'
+    }, {
       name: 'fullcalendar',
       url: 'https://fullcalendar.io/',
       desp: 'the most popular full-sized JavaScript Calendar',

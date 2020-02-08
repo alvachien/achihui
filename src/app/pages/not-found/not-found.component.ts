@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './not-found.component.html',
   styleUrls: ['./not-found.component.less'],
 })
-export class NotFoundComponent implements OnInit {
+export class NotFoundComponent {
 
   constructor() { }
 
-  ngOnInit() {
-  }
 }

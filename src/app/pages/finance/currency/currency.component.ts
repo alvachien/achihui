@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { FinanceOdataService } from '../../../services';
@@ -16,7 +18,9 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;
 
-  constructor(public _currService: FinanceOdataService) {
+  constructor(
+    public currService: FinanceOdataService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CurrencyComponent constructor...`,
       ConsoleLogTypeEnum.debug);
 
@@ -30,23 +34,24 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = false;
-    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$))
-    .subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CurrencyComponent OnInit fetchAllCurrencies...`,
-        ConsoleLogTypeEnum.debug);
-      if (x) {
-        this.dataSource = x;
-      }
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${error}...`,
-        ConsoleLogTypeEnum.error);
-      // TBD.
-      // this._snackBar.open(error.toString(), undefined, {
-      //   duration: 2000,
-      // });
-    }, () => {
-      this.isLoadingResults = false;
-    });
+    this.currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CurrencyComponent OnInit fetchAllCurrencies...`,
+          ConsoleLogTypeEnum.debug);
+        if (x) {
+          this.dataSource = x;
+        }
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${error}...`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 
   ngOnDestroy() {

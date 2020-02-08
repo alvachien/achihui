@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { LogLevel, AssetCategory, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
@@ -19,7 +21,8 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,) {
+    public uiStatusService: UIStatusService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -43,7 +46,11 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AssetTypeListComponent fetchAllAssetCategories failed ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD: report error
+
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     }, () => {
       this.isLoadingResults = false;
     });

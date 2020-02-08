@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AccountCategoryListComponent } from './account-category-list';
 import { AssetCategoryListComponent } from './asset-category-list';
@@ -17,11 +18,13 @@ describe('ConfigComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        FormsModule,
+        ReactiveFormsModule,
         RouterTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
-      declarations: [ 
+      declarations: [
         AccountCategoryListComponent,
         AssetCategoryListComponent,
         DocTypeListComponent,

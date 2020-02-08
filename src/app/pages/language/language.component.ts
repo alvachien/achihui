@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../../model';
 import { LanguageOdataService } from '../../services';
@@ -16,7 +18,9 @@ export class LanguageComponent implements OnInit, OnDestroy {
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 
-  constructor(public odataService: LanguageOdataService) {
+  constructor(
+    public odataService: LanguageOdataService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LanguageComponent constructor...`,
       ConsoleLogTypeEnum.debug);
 
@@ -29,25 +33,24 @@ export class LanguageComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = false;
+    this.isLoadingResults = true;
     this.odataService.fetchAllLanguages().pipe(takeUntil(this._destroyed$))
-    .subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LanguageComponent OnInit fetchAllLanguages...`,
-        ConsoleLogTypeEnum.debug);
-      if (x) {
-        this.dataSource = x;
-      }
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LanguageComponent OnInit fetchAllLanguages, failed ${error}...`,
-        ConsoleLogTypeEnum.error);
+      .subscribe((x: AppLanguage[]) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LanguageComponent OnInit fetchAllLanguages...`,
+          ConsoleLogTypeEnum.debug);
 
-      // TBD.
-      // this._snackBar.open(error.toString(), undefined, {
-      //   duration: 2000,
-      // });
-    }, () => {
-      this.isLoadingResults = false;
-    });
+        this.dataSource = x;
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LanguageComponent OnInit fetchAllLanguages, failed ${error}...`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 
   ngOnDestroy() {

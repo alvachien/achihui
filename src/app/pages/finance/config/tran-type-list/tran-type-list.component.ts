@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { LogLevel, TranType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
@@ -15,11 +17,12 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
-  dataSet: TranType[];
+  dataSet: TranType[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,) {
+    public uiStatusService: UIStatusService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -42,7 +45,10 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeListComponent OnInit, fetchAllTranTypes failed ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD.
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     }, () => {
       this.isLoadingResults = false;
     });

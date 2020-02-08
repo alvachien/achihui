@@ -1,5 +1,7 @@
-<nz-result nzStatus="500" nzTitle="500" nzSubTitle="Sorry, there is an error on server.">
+<nz-result nzStatus="500" *transloco="let t"
+  [nzTitle]="t('Common.PageFatalErrorHeader')"
+  [nzSubTitle]="errorContext">
   <div nz-result-extra>
-    <button nz-button nzType="primary">Back Home</button>
+    <button nz-button nzType="primary">{{'Common.Back' | transloco}}</button>
   </div>
 </nz-result>

@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
@@ -19,7 +21,8 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public router: Router) {
+    public router: Router,
+    public modalService: NzModalService) {
       this.isLoadingResults = false;
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
         ConsoleLogTypeEnum.debug);
@@ -37,7 +40,13 @@ export class OrderListComponent implements OnInit, OnDestroy {
       .subscribe((x: Order[]) => {
         this.dataSet = x;
     }, (error: any) => {
-      // TBD.
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
+        ConsoleLogTypeEnum.error);
+
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     }, () => {
       this.isLoadingResults = false;
     });

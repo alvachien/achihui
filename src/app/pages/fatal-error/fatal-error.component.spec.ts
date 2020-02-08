@@ -1,18 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { FatalErrorComponent } from './fatal-error.component';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { UIStatusService } from '../../services';
 
 describe('FatalErrorComponent', () => {
   let component: FatalErrorComponent;
   let fixture: ComponentFixture<FatalErrorComponent>;
+  const uiServiceStub: Partial<UIStatusService> = {};
 
   beforeEach(async(() => {
+    uiServiceStub.latestError = '';
+
     TestBed.configureTestingModule({
       imports: [
-        NgZorroAntdModule
+        NgZorroAntdModule,
+        getTranslocoModule()
       ],
-      declarations: [ FatalErrorComponent ]
+      declarations: [
+        FatalErrorComponent,
+      ],
+      providers: [
+        { provide: UIStatusService, useValue: uiServiceStub },
+      ]
     })
     .compileComponents();
   }));
@@ -20,10 +31,16 @@ describe('FatalErrorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FatalErrorComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display last error', () => {
+    uiServiceStub.latestError = 'error';
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

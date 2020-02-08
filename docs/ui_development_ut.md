@@ -48,7 +48,7 @@ Then:
     ]
 ```
 
-### [Obsoleted] TranslateService (and Translate Pipe)
+### [Obsoleted, and use TranslocoService instead] TranslateService (and Translate Pipe)
 
 ```typescript
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -127,14 +127,18 @@ describe('AppComponent', () => {
 
 ### Router
 
+Import ```RouterTestingModule``` from Angular libary.
 ```typescript
-const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+import { RouterTestingModule } from '@angular/router/testing';
 ```
 
-Add it into the providers section:
-
+And in the testing methods:
 ```typescript
-{ provide: Router, useValue: routerSpy },
+  const routerstub = TestBed.get(Router);
+  spyOn(routerstub, 'navigate');
+
+  expect(routerstub.navigate).toHaveBeenCalled();
+  expect(routerstub.navigate).toHaveBeenCalledWith(['/']);
 ```
 
 ### ActivatedRoute
@@ -149,7 +153,7 @@ Add it into the providers section:
 { provide: ActivatedRoute, useValue: activatedRouteStub },
 ```
 
-### [Obsoleted] HomeDefService
+### [Obsoleted, use HomeDefOdataService instead] HomeDefService
 
 The method fetchHomeMembers has been retired.
 
@@ -179,6 +183,22 @@ Add it into the providers section:
 { provide: HomeDefDetailService, useValue: homeService },
 ```
 
+### HomeDefOdataService
+
+Create Partial object:
+```typescript
+    const homeService: Partial<HomeDefOdataService> = {
+        ChosedHome: fakeData.chosedHome,
+        MembersInChosedHome: fakeData.chosedHome.Members,
+    };
+```
+
+Add it into the providers section:
+
+```typescript
+{ provide: HomeDefOdataService, useValue: homeService },
+```
+
 ### AuthService
 
 ```typescript
@@ -192,7 +212,7 @@ Add it into the providers section:
 { provide: AuthService, useValue: authServiceStub },
 ```
 
-### [Obsoleted] FinCurrencyService
+### [Obsoleted, use FinanceOdataService instead] FinCurrencyService
 
 ```typescript
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
@@ -236,7 +256,7 @@ Add it into the providers section:
 { provide: ThemeStorage, useValue: themeStorageStub },
 ```
 
-### DateAdapter
+### [Obsoleted] DateAdapter
 
 Add it into the providers section:
 
@@ -253,7 +273,7 @@ Add into providers section:
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
 ```
 
-### [Obsoleted] FinanceStorageService
+### [Obsoleted, Use FinanceOdataService instead] FinanceStorageService
 
 ```typescript
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
@@ -280,6 +300,33 @@ Add it into the providers section:
 { provide: FinanceStorageService, useValue: stroageService },
 ```
 
+### FinanceOdataService
+
+```typescript
+    const stroageService: any = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllAccountCategories',
+      'fetchAllDocTypes',
+      'fetchAllTranTypes',
+      'fetchAllAccounts',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
+      'fetchAllAssetCategories',
+    ]);
+    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
+    const fetchAllAssetCategoriesSpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
+    const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
+    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of([]));
+    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
+    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+```
+
+Add it into the providers section:
+
+```typescript
+{ provide: FinanceOdataService, useValue: stroageService },
+```
+
 ### Pipes (like uiAccountStatusFilter)
 
 Just add them into declaration sections:
@@ -294,7 +341,7 @@ Just add them into declaration sections:
       ]
 ```
 
-### LearnStorageService
+### [Obsoleted] LearnStorageService
 
 ```typescript
     const lrnStroageService: any = jasmine.createSpyObj('LearnStorageService', [
@@ -309,7 +356,7 @@ Add it into the providers section:
     { provide: LearnStorageService, useValue: lrnStroageService },
 ```
 
-### [Obsoleted] LangaugeService
+### [Obsoleted, Use LangaugeOdataService instead] LangaugeService
 
 ```typescript
     const langService: any = jasmine.createSpyObj('LanguageService', ['fetchAllLanguages']);
@@ -321,6 +368,20 @@ Add the provider:
 
 ```typescript
     { provide: LanguageService, useValue: langService },
+```
+
+### LangaugeOdataService
+
+```typescript
+    const langService: any = jasmine.createSpyObj('LangaugeOdataService', ['fetchAllLanguages']);
+    const fetchAllLanguagesSpy: any = langService.fetchAllLanguages.and.return();
+    langService.Languages = [];
+```
+
+Add the provider:
+
+```typescript
+    { provide: LangaugeOdataService, useValue: langService },
 ```
 
 ### [Obsoleted] Material Controls
@@ -340,8 +401,64 @@ There are two ways to switch the tab:
 Or,
 
 ```typescript
-      let tabLabel = fixture.debugElement.queryAll(By.css('.mat-tab-label'))[1];
-      tabLabel.nativeElement.click();
+  let tabLabel = fixture.debugElement.queryAll(By.css('.mat-tab-label'))[1];
+  tabLabel.nativeElement.click();
+```
+
+### Testing Components with Popup dialog
+
+To test components with popup dialogs:
+
+Add following imports:
+```typescript
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+
+import { MessageDialogComponent } from '../../../message-dialog';
+```
+
+Then, 
+```typescript
+    TestBed.configureTestingModule({
+      declarations: [
+        ...
+        MessageDialogComponent,
+      ],
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
+```
+
+Writing testing as following:
+
+```typescript
+  describe('2. should prevent errors by the checking logic', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it(() => {
+      // Dialog
+      const dlgElement: any = overlayContainerElement.querySelector('.ant-modal-body');
+      expect(dlgElement.textContent).toContain('XXX',
+        'Expected dialog to show the error message: XXX');
+      flush();
+
+    });
+  });
 ```
 
 ## FMI (Frequently Met Issues)
@@ -357,11 +474,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 And import them both:
 
 ```typescript
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        ...
-    ]
+  imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      ...
+  ]
 ```
 
 ### Error: TypeError: Cannot read property 'length' of undefined
@@ -369,12 +486,12 @@ And import them both:
 It mostly probably coming from Paginator's binding:
 
 ```HTML
-      <mat-paginator #paginator
-        [length]="_storageService.TranTypes.length"
-        [pageIndex]="0"
-        [pageSize]="15"
-        [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
+  <mat-paginator #paginator
+    [length]="_storageService.TranTypes.length"
+    [pageIndex]="0"
+    [pageSize]="15"
+    [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator>
 ```
 
 Just remove the binding here.
@@ -390,10 +507,10 @@ import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform
 And:
 
 ```typescript
-    imports: [
-        NoopAnimationsModule,
-        ...
-    ]
+  imports: [
+      NoopAnimationsModule,
+      ...
+  ]
 ```
 
 ### Error: Can't bind to 'routerLink' since it isn't a known property of 'a'
@@ -407,10 +524,10 @@ import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../testing
 Then,
 
 ```typescript
-      declarations: [
-        RouterLinkDirectiveStub,
-        ...,
-      ],
+  declarations: [
+    RouterLinkDirectiveStub,
+    ...,
+  ],
 ```
 
 ### Failed: Template parse errors: 'router-outlet' is not a known element
@@ -424,15 +541,20 @@ import { RouterTestingModule } from '@angular/router/testing';
 Then:
 
 ```typescript
-    imports: [
-        RouterTestingModule,
-        ...
-    ]
+  imports: [
+    RouterTestingModule,
+    ...
+  ]
 ```
 
 ### Error: Failed: Cannot read property 'root' of undefined
 
 Once using ```RouterTestingModule```, you shall not use other provider for ```Router``` or other directive for ```routeLink``.
+And it shall use ```RouterTestingModule```, and use following codes to spy method ```navigate```.
+```typescript
+  const routerstub = TestBed.get(Router);
+  spyOn(routerstub, 'navigate');
+```
 
 ### Error: NullInjectorError: No provider for Location
 
@@ -442,6 +564,9 @@ Solution is, add ```RouterTestingModule``` into the ```imports``` sections of te
 
 Solution is, shall use ```HttpClientTestingModule``` instead of ```HttpTestingController```.
 
+### Error: [@ant-design/icons-angular]:the icon arrow-left-o does not exist or is not registered.
+
+Solution is, import ```HttpClientTestingModule```.
 
 ### Asynchronous service testing
 
@@ -454,8 +579,8 @@ Refer to ```LanguageService.spec.ts``` for an resuable testing.
 To check the URL without parameters, is quite simple:
 
 ```typescript
-    const req: any = httpTestingController.expectOne(currAPIURL);
-    expect(req.request.method).toEqual('GET');
+  const req: any = httpTestingController.expectOne(currAPIURL);
+  expect(req.request.method).toEqual('GET');
 ```
 
 To check the URL with parameters, normally you get two error messages (in sequence) like:
@@ -465,9 +590,9 @@ To check the URL with parameters, normally you get two error messages (in sequen
 
 ```typescript
     const req: any = httpTestingController.expectOne(requrl => {
-        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('$select');
     });
-    expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+    expect(req.request.params.get('$select')).toEqual(fakeData.chosedHome.ID.toString());
 ```
 
 ### Handling parameters on spy function
@@ -475,17 +600,17 @@ To check the URL with parameters, normally you get two error messages (in sequen
 First approach:
 
 ```typescript
-    fetchAllTagsSpy
-        .withArgs(true).and.returnValue(asyncData(fakeData.tagsCount));
+  fetchAllTagsSpy
+    .withArgs(true).and.returnValue(asyncData(fakeData.tagsCount));
 ```
 
 Second approach:
 
 ```typescript
-    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.callFake(() => {
-      console.log('Entering fakeing function 1');
-      return of([]);
-    });
+  fetchAllAccountsSpy = storageService.fetchAllAccounts.and.callFake(() => {
+    console.log('Entering fakeing function 1');
+    return of([]);
+  });
 ```
 
 ### Trigger change detect on-demand not by default
@@ -516,18 +641,18 @@ inputEl.triggerEventHandler('input', {target: inputEl.nativeElement});
 
 ### Using .toHaveBeenCalledWith to check router
 
-You use routerSpy to hook the navigate method of Router.
+You use ```routerStub``` to ```spyOn``` the navigate method of ```Router```.
 
 Then, you can use:
 
 ```typescript
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/url1/url2']);
+  expect(routerStub.navigate).toHaveBeenCalledWith(['/url1/url2']);
 ```
 
 In case the navigate contains parameters:
 
 ```typescript
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/display', acnt.Id]);
+  expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/display', acnt.Id]);
 ```
 
 ### Testing routerLink's target
@@ -535,14 +660,14 @@ In case the navigate contains parameters:
 Using codes below:
 
 ```typescript
-    const linkDes: any = fixture.debugElement
-        .queryAll(By.directive(RouterLinkDirectiveStub));
+  const linkDes: any = fixture.debugElement
+      .queryAll(By.directive(RouterLinkDirectiveStub));
 
-    const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
-    expect(routerLinks.length).toBe(3, 'should have 3 routerLinks');
-    expect(routerLinks[0].linkParams).toBe('/a');
-    expect(routerLinks[1].linkParams).toBe('/b');
-    expect(routerLinks[2].linkParams).toBe('/c');
+  const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
+  expect(routerLinks.length).toBe(3, 'should have 3 routerLinks');
+  expect(routerLinks[0].linkParams).toBe('/a');
+  expect(routerLinks[1].linkParams).toBe('/b');
+  expect(routerLinks[2].linkParams).toBe('/c');
 ```
 
 Test the link is work:
@@ -570,58 +695,88 @@ Therefore, use NoopAnimationsModule will help.
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 ```
 
-### Expecting a snackbar
+### [Obsoleted] Expecting a snackbar (Material Library)
 
 Ensure the definition of overlayContainerElement was defined:
 
 ```typescript
-    let overlayContainer: OverlayContainer;
-    let overlayContainerElement: HTMLElement;
+  let overlayContainer: OverlayContainer;
+  let overlayContainerElement: HTMLElement;
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+  beforeEach(inject([OverlayContainer],
+    (oc: OverlayContainer) => {
+    overlayContainer = oc;
+    overlayContainerElement = oc.getContainerElement();
+  }));
 
-    afterEach(() => {
-      overlayContainer.ngOnDestroy();
-    });
+  afterEach(() => {
+    overlayContainer.ngOnDestroy();
+  });
 ```
 
 Then, expect there is a snackbar for 'text':
 
 ```typescript
-    let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-    expect(messageElement.textContent).toContain('text', 'Expected snack bar to show the error message: text');
+  let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+  expect(messageElement.textContent).toContain('text', 'Expected snack bar to show the error message: text');
 ```
 
-### Expecting a dialog
+### [Obsoleted] Expecting a dialog (Material Library)
 
 Ensure the definition of overlayContainerElement was defined:
 
 ```typescript
-    let overlayContainer: OverlayContainer;
-    let overlayContainerElement: HTMLElement;
+  let overlayContainer: OverlayContainer;
+  let overlayContainerElement: HTMLElement;
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+  beforeEach(inject([OverlayContainer],
+    (oc: OverlayContainer) => {
+    overlayContainer = oc;
+    overlayContainerElement = oc.getContainerElement();
+  }));
 
-    afterEach(() => {
-      overlayContainer.ngOnDestroy();
-    });
+  afterEach(() => {
+    overlayContainer.ngOnDestroy();
+  });
 ```
 
 Expect there is a popup dialog for text:
 
 ```typescript
-    expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
-    // Since there is only one button
-    (overlayContainerElement.querySelector('button') as HTMLElement).click();
-    tick();
-    fixture.detectChanges();
-    expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+  expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+  // Since there is only one button
+  (overlayContainerElement.querySelector('button') as HTMLElement).click();
+  tick();
+  fixture.detectChanges();
+  expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+```
+
+### Expecting a dialog (Ant Design Library)
+
+Ensure the definition of overlayContainerElement was defined:
+
+```typescript
+  let overlayContainer: OverlayContainer;
+  let overlayContainerElement: HTMLElement;
+
+  beforeEach(inject([OverlayContainer],
+    (oc: OverlayContainer) => {
+    overlayContainer = oc;
+    overlayContainerElement = oc.getContainerElement();
+  }));
+
+  afterEach(() => {
+    overlayContainer.ngOnDestroy();
+  });
+```
+
+Expect there is a popup dialog for error:
+
+```typescript
+  expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+  // OK button
+  (overlayContainerElement.querySelector('button') as HTMLElement).click();
+  tick();
+  fixture.detectChanges();
+  expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 ```

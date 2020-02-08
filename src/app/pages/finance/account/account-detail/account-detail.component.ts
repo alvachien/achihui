@@ -71,7 +71,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     public activateRoute: ActivatedRoute,
     public homeSevice: HomeDefOdataService,
   ) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
+      ConsoleLogTypeEnum.debug);
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
@@ -83,7 +84,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`,
+      ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
@@ -142,7 +144,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnDestroy`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnDestroy`,
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -164,7 +167,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSubmit`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSubmit`,
+      ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Create) {
       // this.onCreateImpl();
     } else if (this.uiMode === UIMode.Change) {

@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { NotFoundComponent } from './not-found.component';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
@@ -9,8 +10,13 @@ describe('NotFoundComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgZorroAntdModule],
-      declarations: [ NotFoundComponent ]
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
+      declarations: [
+        NotFoundComponent,
+      ],
     })
     .compileComponents();
   }));
