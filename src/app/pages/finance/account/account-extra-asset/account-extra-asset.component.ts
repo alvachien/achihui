@@ -1,7 +1,7 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { ReplaySubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
 } from '../../../../model';
@@ -24,15 +24,20 @@ import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
   private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
   private _arAssetCategories: AssetCategory[];
+  private _refBuyDocID?: number;
+  private _refSoldDocID?: number;
 
   public assetInfoFormGroup: FormGroup;
-  public refBuyDocID?: number;
-  public refSoldDocID?: number;
+  get refBuyDocID(): number | null {
+    return this._refBuyDocID;
+  }
+  get refSoldDocID(): number | null {
+    return this._refSoldDocID;
+  }
   get value(): AccountExtraAsset {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent value getter...',
       ConsoleLogTypeEnum.debug);
@@ -81,12 +86,14 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
   }
 
-  constructor() {
+  constructor(
+    public router: Router,
+  ) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug);
     this.assetInfoFormGroup = new FormGroup({
-      ctgyControl: new FormControl('', [Validators.required]),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+      ctgyControl: new FormControl(undefined, [Validators.required]),
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       commentControl: new FormControl('', Validators.maxLength(100)),
     });
   }
@@ -94,18 +101,11 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   ngOnInit() {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnInit`,
       ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnDestroy`,
       ConsoleLogTypeEnum.debug);
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   writeValue(val: AccountExtraAsset): void {
@@ -117,18 +117,18 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       this.assetInfoFormGroup.get('nameControl').setValue(val.Name);
       this.assetInfoFormGroup.get('commentControl').setValue(val.Comment);
       if (val.RefDocForBuy) {
-        this.refBuyDocID = val.RefDocForBuy;
+        this._refBuyDocID = val.RefDocForBuy;
       } else {
-        this.refBuyDocID = undefined;
+        this._refBuyDocID = null;
       }
       if (val.RefDocForSold) {
-        this.refSoldDocID = val.RefDocForSold;
+        this._refSoldDocID = val.RefDocForSold;
       } else {
-        this.refSoldDocID = undefined;
+        this._refSoldDocID = null;
       }
     } else {
-      this.refBuyDocID = undefined;
-      this.refSoldDocID = undefined;
+      this._refBuyDocID = null;
+      this._refSoldDocID = null;
     }
   }
 
@@ -171,6 +171,6 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
 
   public onRefDocClick(docid: number) {
-    // TBD.
+    this.router.navigate(['/finance/document/display/' + docid.toString()]);
   }
 }

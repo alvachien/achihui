@@ -395,8 +395,15 @@ export interface IAccountVerifyContext {
  * Account extra info
  */
 export abstract class AccountExtra {
-  public writeJSONObject(): any {
-    return {};
+  private accountID: number;
+  get AccountID(): number {
+    return this.accountID;
+  }
+
+  public writeJSONObject(): AccountExtraBaseJson {
+    return {
+      AccountID: this.accountID,
+    };
   }
   public onInit(): void {
     // Empty
@@ -404,7 +411,7 @@ export abstract class AccountExtra {
   public onComplete(): void {
     // Empty
   }
-  public onSetData(data: any): void {
+  public onSetData(data: AccountExtraBaseJson): void {
     // Empty
   }
 }
@@ -621,6 +628,26 @@ export interface IAccountCategoryFilterEx {
 }
 
 /**
+ * Extra info, JSON format
+ */
+export class AccountExtraBaseJson {
+  public AccountID: number;
+}
+
+/**
+ * Extra info: Advance payment, JSON format
+ */
+export class AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
+  public Direct: boolean;
+  public StartDate: string;
+  public EndDate: string;
+  public RepeatType: string;
+  public RefenceDocumentID: number;
+  public DefrrDays: string;
+  public Comment: string;
+}
+
+/**
  * Extra info: Advance payment
  */
 export class AccountExtraAdvancePayment extends AccountExtra {
@@ -764,6 +791,17 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 }
 
 /**
+ * Extra info: Asset, JSON format
+ */
+export class AccountExtraAssetJson extends AccountExtraBaseJson {
+  public CategoryID: number;
+  public Name: string;
+  public Comment: string;
+  public RefenceBuyDocumentID: number;
+  public RefenceSoldDocumentID?: number;
+}
+
+/**
  * Extra info: Asset
  */
 export class AccountExtraAsset extends AccountExtra {
@@ -809,38 +847,54 @@ export class AccountExtraAsset extends AccountExtra {
     return aobj;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): AccountExtraAssetJson {
     const rstobj: any = super.writeJSONObject();
-    rstobj.categoryID = this.CategoryID;
-    rstobj.name = this.Name;
-    rstobj.comment = this.Comment;
-    rstobj.refDocForBuy = this.RefDocForBuy;
+    rstobj.CategoryID = this.CategoryID;
+    rstobj.Name = this.Name;
+    rstobj.Comment = this.Comment;
+    rstobj.RefenceBuyDocumentID = this.RefDocForBuy;
     if (this.RefDocForSold) {
-      rstobj.refDocForSold = this.RefDocForSold;
+      rstobj.RefenceSoldDocumentID = this.RefDocForSold;
     }
 
-    return rstobj;
+    return rstobj as AccountExtraAssetJson;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: AccountExtraAssetJson): void {
     super.onSetData(data);
 
-    if (data && data.categoryID) {
-      this.CategoryID = +data.categoryID;
+    if (data && data.CategoryID) {
+      this.CategoryID = +data.CategoryID;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.refDocForBuy) {
-      this.RefDocForBuy = +data.refDocForBuy;
+    if (data && data.RefenceBuyDocumentID) {
+      this.RefDocForBuy = +data.RefenceBuyDocumentID;
     }
-    if (data && data.refDocForSold) {
-      this.RefDocForSold = +data.refDocForSold;
+    if (data && data.RefenceSoldDocumentID) {
+      this.RefDocForSold = +data.RefenceSoldDocumentID;
     }
   }
+}
+
+/**
+ * Extra info: Loan, JSON format
+ */
+export class AccountExtraLoanJson extends AccountExtraBaseJson {
+  public StartDate: string;
+  public AnnualRate?: number;
+  public InterestFree?: boolean;
+  public RepaymentMethod?: string;
+  public TotalMonths?: number;
+  public RefDocID: number;
+  public Others: string;
+  public EndDate?: string;
+  public PayingAccount?: number;
+  public Partner: string;
 }
 
 /**

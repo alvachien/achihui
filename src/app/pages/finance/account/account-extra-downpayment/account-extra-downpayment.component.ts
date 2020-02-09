@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
@@ -35,10 +37,13 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   private _isChangable = true; // Default is changable
   private _onChange: (val: any) => void;
   private _onTouched: () => void;
+  private _refDocID?: number;
 
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  refDocId?: number;
+  get refDocId(): number | undefined {
+    return this._refDocID;
+  }
   isLoadingTmpDocs: boolean;
   public listTmpDocs: TemplateDocADP[] = [];
 
@@ -81,13 +86,14 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   constructor(
     public router: Router,
     public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService) {
+    public homeService: HomeDefOdataService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.adpInfoFormGroup = new FormGroup({
       startDateControl: new FormControl(moment().toDate(), [Validators.required]),
       endDateControl: new FormControl(moment().add(1, 'y').toDate()),
-      frqControl: new FormControl('', Validators.required),
+      frqControl: new FormControl(undefined, Validators.required),
       cmtControl: new FormControl('', Validators.maxLength(30)),
     });
   }
@@ -161,7 +167,11 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD
+      
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     });
   }
 
@@ -171,11 +181,11 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     this.adpInfoFormGroup.reset();
   }
-  public onRefDocClick(): void {
+  public onRefDocClick(docid: number): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...',
       ConsoleLogTypeEnum.debug);
 
-    this.router.navigate([`/finance/document/display/${this.refDocId}`]);
+    this.router.navigate([`/finance/document/display/${docid}`]);
   }
 
   writeValue(val: AccountExtraAdvancePayment): void {
@@ -188,12 +198,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       this.adpInfoFormGroup.get('cmtControl').setValue(val.Comment);
 
       if (val.RefDocId) {
-        this.refDocId = val.RefDocId;
+        this._refDocID = val.RefDocId;
       } else {
-        this.refDocId = undefined;
+        this._refDocID = undefined;
       }
     } else {
-      this.refDocId = undefined;
+      this._refDocID = undefined;
     }
   }
   registerOnChange(fn: any): void {

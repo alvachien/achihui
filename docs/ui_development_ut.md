@@ -187,10 +187,10 @@ Add it into the providers section:
 
 Create Partial object:
 ```typescript
-    const homeService: Partial<HomeDefOdataService> = {
-        ChosedHome: fakeData.chosedHome,
-        MembersInChosedHome: fakeData.chosedHome.Members,
-    };
+  const homeService: Partial<HomeDefOdataService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+  };
 ```
 
 Add it into the providers section:

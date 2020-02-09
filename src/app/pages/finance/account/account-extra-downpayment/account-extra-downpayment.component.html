@@ -61,9 +61,7 @@
   <!-- Ref doc. ID -->
   <div class="achih-control-full-width" *ngIf="refDocId">
     <label>{{'Finance.RefDoc' | transloco}}</label>
-    <!-- <a routerLink='/finance/document/display/{{refDocId}}' style="margin: 5px;"
-      routerLinkActive="active">{{refDocId}}</a> -->
-    <button nz-button nzType="link" (click)="onRefDocClick()">{{refDocId}}</button>
+    <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">{{refDocId}}</button>
   </div>
 
   <!-- Toolbar -->
