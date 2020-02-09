@@ -2,11 +2,9 @@ import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListene
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
 } from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
 @Component({
   selector: 'hih-finance-account-extra-asset',

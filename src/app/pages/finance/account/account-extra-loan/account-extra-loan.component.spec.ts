@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
 import { getTranslocoModule, ActivatedRouteUrlStub } from '../../../../../testing';
@@ -32,11 +36,14 @@ describe('AccountExtraLoanComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        NgZorroAntdModule,
+        HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
+        NgZorroAntdModule,
+        RouterTestingModule,
         NoopAnimationsModule,
-        HttpClientTestingModule,
+        BrowserDynamicTestingModule,
+        RouterTestingModule,
         getTranslocoModule(),
       ],
       declarations: [
