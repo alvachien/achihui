@@ -70,16 +70,29 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     public odataService: FinanceOdataService,
     public activateRoute: ActivatedRoute,
     public homeSevice: HomeDefOdataService,
-  ) {
+    public uiStatusService: UIStatusService ) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug);
+
+    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       ctgyControl: new FormControl(undefined, [Validators.required]),
       cmtControl: new FormControl('', Validators.maxLength(45)),
-      parentControl: new FormControl(),
+      statusControl: new FormControl(),
       ownerControl: new FormControl(),
+    });
+
+    this.extraADPFormGroup = new FormGroup({
+      extADPControl: new FormControl()
+    });
+    this.extraAssetFormGroup = new FormGroup({
+      extAssetControl: new FormControl()
+    });
+    this.extraLoanFormGroup = new FormGroup({
+      extLoanControl: new FormControl()
     });
   }
 
@@ -90,8 +103,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAssetCategories(),
-    ])
+      this.odataService.fetchAllAssetCategories()])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
       this.arAccountCategories = rst[0];
@@ -121,11 +133,11 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                 this.extraADPFormGroup.markAsPristine();
                 this.extraAssetFormGroup.markAsPristine();
                 this.extraLoanFormGroup.markAsPristine();
-                // this.statusFormGroup.markAsPristine();
 
                 // this._changeDetector.detectChanges();
               }, (error: any) => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`, ConsoleLogTypeEnum.error);
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
+                  ConsoleLogTypeEnum.error);
 
                 // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
                 this.uiMode = UIMode.Invalid;

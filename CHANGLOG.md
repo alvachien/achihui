@@ -5,7 +5,7 @@ Released at 2020.6.30
 Bug fixing and Feature list
 - Suits the new OData-based API (HIHAPI);
 - Remove Material library;
-- Add Ant Design support;
+- Add Ant Design library;
 - Rewrite nearly all pages;
 
 ## Version 0.8.x

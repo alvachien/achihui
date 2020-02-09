@@ -158,6 +158,7 @@ export class ModelUtility {
    */
   public static hasDuplicatesInStringArray(strarray: string): boolean {
     const valuesSoFar: any = Object.create(undefined);
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < strarray.length; ++i) {
       const value: any = strarray[i];
       if (value in valuesSoFar) {

@@ -6,7 +6,7 @@
       <!-- <nz-tag [nzColor]="'red'">Warning</nz-tag> -->
     </nz-page-header-tags>
     <nz-page-header-extra>
-      <button nz-button nzType="primary">Save</button>
+      <button nz-button nzType="primary">{{'Common.Save' | transloco}}</button>
     </nz-page-header-extra>
   </nz-page-header>
   <div>
@@ -36,25 +36,12 @@
         </nz-form-control>
       </nz-form-item>
   
-      <!-- Comment -->
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
-          <input nz-input formControlName="cmtControl" maxlength="45" />
-          <ng-template #cmtTpl let-control>
-            <ng-container *ngIf="control.hasError('maxlength')">
-              {{'Common.FieldMaxLength' | transloco}}
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-  
       <!-- Category -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="ctgyControl">
-            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.Id" [nzLabel]="t(cc.Name)"></nz-option>
           </nz-select>
           <ng-template #ctgyTpl let-control>
             <ng-container *ngIf="control.hasError('required')">
@@ -64,6 +51,21 @@
         </nz-form-control>
       </nz-form-item>
   
+      <!-- Status -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Status' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="statusTpl">
+          <nz-select formControlName="statusControl">
+            <nz-option *ngFor="let sts of arrayStatus" [nzValue]='sts.value' [nzLabel]="t(sts.i18nterm)"></nz-option>
+          </nz-select>
+          <ng-template #statusTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
       <!-- Owner -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{'Finance.Owner' | transloco}}</nz-form-label>
@@ -78,15 +80,28 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
+
+      <!-- Comment -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
+          <input nz-input formControlName="cmtControl" maxlength="45" />
+          <ng-template #cmtTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+              {{'Common.FieldMaxLength' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
     </form>
   
-    <form nz-form [formGroup]="extraADPFormGroup" *ngIf="isADPAccount">
+    <form nz-form [formGroup]="extraADPFormGroup" [hidden]="!isADPAccount">
       <hih-finance-account-extra-downpayment formControlName="extADPControl"></hih-finance-account-extra-downpayment>
     </form>
-    <form nz-form [formGroup]="extraAssetFormGroup" *ngIf="isAssetAccount">
+    <form nz-form [formGroup]="extraAssetFormGroup" [hidden]="!isAssetAccount">
       <hih-finance-account-extra-asset formControlName="extAssetControl"></hih-finance-account-extra-asset>
     </form>
-    <form nz-form [formGroup]="extraLoanFormGroup" *ngIf="isLoanAccount">
+    <form nz-form [formGroup]="extraLoanFormGroup" [hidden]="!isLoanAccount">
       <hih-finance-account-extra-loan formControlName="extLoanControl"></hih-finance-account-extra-loan>
     </form>
   </div>

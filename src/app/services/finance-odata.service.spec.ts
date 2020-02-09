@@ -770,7 +770,7 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Status,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // Respond with the mock account categories
@@ -797,7 +797,7 @@ describe('FinanceOdataService', () => {
         && requrl.params.has('$select')
         && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Status,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       req.flush({}); // Respond with no data
@@ -820,7 +820,7 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
-      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Comment');
+      expect(req.request.params.get('$select')).toEqual('ID,HomeID,Name,CategoryID,Status,Comment');
       expect(req.request.params.get('$filter')).toEqual(`HomeID eq ${fakeData.chosedHome.ID}`);
 
       // respond with a 404 and the error message in the body
@@ -927,6 +927,93 @@ describe('FinanceOdataService', () => {
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createAccount', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should be OK for create normal cash accounts', () => {
+      expect(service.Accounts.length).toEqual(0, 'should not buffered yet');
+
+      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe(
+        (acnt: any) => {
+          expect(service.Accounts.length).toEqual(1, 'should has buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === accountAPIURL;
+      });
+
+      req.flush(fakeData.getFinCashAccountForCreation()); // Respond with data
+    });
+
+    it('should be OK for create normal creditcard accounts', () => {
+      expect(service.Accounts.length).toEqual(0, 'should not buffered yet');
+
+      service.createAccount(fakeData.getFinCreditcardAccountForCreation()).subscribe(
+        (acnt: any) => {
+          expect(service.Accounts.length).toEqual(1, 'should has buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === accountAPIURL;
+      });
+
+      req.flush(fakeData.getFinCreditcardAccountForCreation()); // Respond with data
+    });
+
+    it('should return error for 404 error', () => {
+      const msg = 'Deliberate 404';
+      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === accountAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: msg });
+    });
+
+    it('should return error for 500 error', () => {
+      const msg = '500: Internal error';
+      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === accountAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: msg });
     });
   });
 
@@ -1521,13 +1608,13 @@ describe('FinanceOdataService', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
 
-      let doc: Document = new Document();
+      const doc: Document = new Document();
       doc.Id = 100;
       doc.DocType = financeDocTypeNormal;
       doc.Desp = 'Test';
       doc.TranCurr = fakeData.chosedHome.BaseCurrency;
       doc.TranDate = moment();
-      let ditem: DocumentItem = new DocumentItem();
+      const ditem: DocumentItem = new DocumentItem();
       ditem.ItemId = 1;
       ditem.AccountId = 11;
       ditem.ControlCenterId = 1;
@@ -1563,7 +1650,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createDocument(fakeData.finNormalDocumentForCreate).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1619,11 +1706,11 @@ describe('FinanceOdataService', () => {
       req.flush({
         value: [
           {
-            Items: [], 'ID': 94, 'HomeID': 1, 'DocType': 1, 'TranDate': '2019-04-12', 'TranCurr': 'CNY',
-            'Desp': 'Test New ADP Doc | 5 / 12', 'ExgRate': 0.0, 'ExgRate_Plan': false, 'TranCurr2': null,
-            'ExgRate2': 0.0, 'ExgRate_Plan2': false,
-            'TranAmount': -166.67, 'CreatedBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-            'CreatedAt': '2019-01-03', 'UpdatedBy': null, 'UpdatedAt': '0001-01-01'
+            Items: [], ID: 94, HomeID: 1, DocType: 1, TranDate: '2019-04-12', TranCurr: 'CNY',
+            Desp: 'Test New ADP Doc | 5 / 12', ExgRate: 0.0, ExgRate_Plan: false, TranCurr2: null,
+            ExgRate2: 0.0, ExgRate_Plan2: false,
+            TranAmount: -166.67, CreatedBy: 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            CreatedAt: '2019-01-03', UpdatedBy: null, UpdatedAt: '0001-01-01'
           }],
         '@odata.count': 15
       });

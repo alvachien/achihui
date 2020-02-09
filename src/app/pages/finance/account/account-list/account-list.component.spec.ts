@@ -12,7 +12,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { AccountListComponent } from './account-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('AccountListComponent', () => {
@@ -109,6 +109,84 @@ describe('AccountListComponent', () => {
 
       expect(component.dataSet.length).toBeGreaterThan(0);
       expect(component.dataSet.length).toEqual(fakeData.finAccounts.length);
+
+      flush();
+    }));
+
+    it('shall navigate to display account', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      const routerstub = TestBed.get(Router);
+      spyOn(routerstub, 'navigate');
+
+      // Display
+      component.onDisplay(fakeData.finAccounts[0].Id);
+
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/display/' + fakeData.finAccounts[0].Id.toString()]);
+
+      flush();
+    }));
+
+    it('shall navigate to edit account', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      const routerstub = TestBed.get(Router);
+      spyOn(routerstub, 'navigate');
+
+      // Display
+      component.onEdit(fakeData.finAccounts[0].Id);
+
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/edit/' + fakeData.finAccounts[0].Id.toString()]);
+
+      flush();
+    }));
+
+    it('filter by category Cash shall work', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.selectedCategoryFilter.push(financeAccountCategoryCash);
+
+      // Display
+      component.doFilter(component.selectedCategoryFilter, component.selectedStatusFilter);
+      tick();
+      fixture.detectChanges();
+
+      expect(component.dataSet.length).toEqual(fakeData.finAccounts.filter((val: Account) => {
+        return val.CategoryId === financeAccountCategoryCash;
+      }).length);
+
+      flush();
+    }));
+
+    it('filter by status Normal shall work', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.selectedStatusFilter.push(AccountStatusEnum.Normal);
+
+      // Display
+      component.doFilter(component.selectedCategoryFilter, component.selectedStatusFilter);
+      tick();
+      fixture.detectChanges();
+
+      expect(component.dataSet.length).toEqual(fakeData.finAccounts.filter((val: Account) => {
+        return val.Status === AccountStatusEnum.Normal;
+      }).length);
 
       flush();
     }));

@@ -77,9 +77,9 @@ export class FinanceOdataService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private homeService: HomeDefOdataService,
-    ) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...', ConsoleLogTypeEnum.debug);
+    private homeService: HomeDefOdataService) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...',
+      ConsoleLogTypeEnum.debug);
 
     this.isCurrencylistLoaded = false; // Performance improvement
     this.listCurrency = [];
@@ -99,6 +99,10 @@ export class FinanceOdataService {
     this.listOrder = [];
   }
 
+  /**
+   * fetch all currencies, and save it to buffer
+   * @param forceReload set to true to enforce reload all currencies
+   */
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
       const currencyAPIUrl: string = environment.ApiUrl + '/api/Currencies';
@@ -146,7 +150,10 @@ export class FinanceOdataService {
     }
   }
 
-  // Account categories
+  /**
+   * fetch all account categories, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   */
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this.isAcntCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
@@ -198,7 +205,10 @@ export class FinanceOdataService {
     }
   }
 
-  // Doc type
+  /**
+   * fetch all document types, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   */
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this.isDocTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
@@ -250,7 +260,10 @@ export class FinanceOdataService {
     }
   }
 
-  // Tran type
+  /**
+   * fetch all transaction types, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   */
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this.isTranTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
@@ -325,7 +338,10 @@ export class FinanceOdataService {
     }
   }
 
-  // Asset categories
+  /**
+   * fetch all asset categories, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   */
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this.isAsstCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
@@ -375,6 +391,10 @@ export class FinanceOdataService {
     }
   }
 
+  /**
+   * fetch all accounts, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   */
   public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
     if (!this.isAccountListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
@@ -384,7 +404,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('$select', 'ID,HomeID,Name,CategoryID,Comment');
+      params = params.append('$select', 'ID,HomeID,Name,CategoryID,Status,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
 
       return this.http.get(this.accountAPIUrl, {
@@ -392,7 +412,7 @@ export class FinanceOdataService {
         params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceOdataService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllAccounts.`,
             ConsoleLogTypeEnum.debug);
 
           this.listAccount = [];
@@ -410,7 +430,7 @@ export class FinanceOdataService {
           return this.listAccount;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceOdataService.`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllAccount failed ${error}.`,
               ConsoleLogTypeEnum.error);
 
             this.isAccountListLoaded = false;
@@ -424,7 +444,7 @@ export class FinanceOdataService {
   }
 
   /**
-   * Read an account
+   * Read an account, and save/update the buffer
    * @param acntid ID of the account to read
    */
   public readAccount(acntid: number): Observable<Account> {
@@ -441,7 +461,7 @@ export class FinanceOdataService {
       params,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering readAccount in FinanceOdataService`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readAccount`, ConsoleLogTypeEnum.debug);
 
         const hd: Account = new Account();
         const repdata = response as any;
@@ -462,7 +482,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService's readAccount.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readAccount failed: ${error}.`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -470,7 +490,39 @@ export class FinanceOdataService {
   }
 
   /**
-   * Read all control centers
+   * Create an account
+   * @param objAcnt Account to create
+   */
+  public createAccount(objAcnt: Account): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objAcnt.writeJSONString();
+    return this.http.post(this.accountAPIUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        hd.onSetData((response as any).value);
+        this.listAccount.push(hd);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * fetch all control centers, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
    */
   public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
     if (!this.isConctrolCenterListLoaded || forceReload) {
@@ -521,7 +573,7 @@ export class FinanceOdataService {
   }
 
   /**
-   * Read control center
+   * Read control center, save/update the buffer
    * @param ccid ID of the control center
    */
   public readControlCenter(ccid: number): Observable<ControlCenter> {
@@ -560,7 +612,8 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService's readControlCenter.`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readControlCenter failed ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -581,7 +634,8 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService, createControlCenter', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createControlCenter',
+          ConsoleLogTypeEnum.debug);
 
         const hd: ControlCenter = new ControlCenter();
         hd.onSetData(response as any);
@@ -590,7 +644,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createControlCenter, failed.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createControlCenter, failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -617,7 +671,7 @@ export class FinanceOdataService {
       // params,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService, changeControlCenter',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeControlCenter',
           ConsoleLogTypeEnum.debug);
 
         const hd: ControlCenter = new ControlCenter();
@@ -635,7 +689,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, changeControlCenter.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenter failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -643,7 +697,8 @@ export class FinanceOdataService {
   }
 
   /**
-   * Read all orders out
+   * fetch all orders, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
    */
   public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
     if (!this.isOrderListLoaded || forceReload) {
@@ -659,7 +714,7 @@ export class FinanceOdataService {
 
       return this.http.get(this.orderAPIUrl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceOdataService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllOrders`,
             ConsoleLogTypeEnum.debug);
 
           this.listOrder = [];
@@ -678,7 +733,8 @@ export class FinanceOdataService {
           return this.listOrder;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceOdataService.`, ConsoleLogTypeEnum.error);
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllOrders failed ${error}`,
+              ConsoleLogTypeEnum.error);
 
             this.isOrderListLoaded = false;
 
@@ -707,7 +763,8 @@ export class FinanceOdataService {
       params,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceStorageService readOrder`,
+          ConsoleLogTypeEnum.debug);
 
         const hd: Order = new Order();
         const repdata = response as any;
@@ -728,7 +785,8 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readOrder.`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceStorageService readOrder failed ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -749,7 +807,8 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceStorageService, createOrder map.', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceStorageService createOrder.',
+          ConsoleLogTypeEnum.debug);
 
         const hd: Order = new Order();
         hd.onSetData(response as any);
@@ -759,7 +818,8 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceStorageService createOrder failed: ${error}.`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -775,7 +835,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
+    const apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.homeService.ChosedHome.ID.toString());
@@ -809,7 +869,7 @@ export class FinanceOdataService {
   }
 
   /**
-   * Read all documents out
+   * Read all documents
    * @param dtbgn Begin date
    * @param dtend End Date
    * @param top The maximum returned amount
@@ -835,7 +895,7 @@ export class FinanceOdataService {
 
     return this.http.get(this.documentAPIUrl, { headers, params })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, map.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllDocuments.`,
           ConsoleLogTypeEnum.debug);
 
         const listRst: Document[] = [];

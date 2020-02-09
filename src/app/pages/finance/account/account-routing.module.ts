@@ -10,8 +10,8 @@ const routes: Routes = [
   { path: 'hierarchy', component: AccountHierarchyComponent },
   { path: 'list', component: AccountListComponent },
   { path: 'create', component: AccountDetailComponent },
-  { path: 'display', component: AccountDetailComponent },
-  { path: 'edit', component: AccountDetailComponent },
+  { path: 'display/:id', component: AccountDetailComponent },
+  { path: 'edit/:id', component: AccountDetailComponent },
 ];
 
 @NgModule({

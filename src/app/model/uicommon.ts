@@ -79,6 +79,15 @@ export class UIRouteLink {
 }
 
 /**
+ * Interface: Table Filter Values
+ */
+export interface ITableFilterValues {
+  text: string;
+  value: any;
+  byDefault?: boolean;
+}
+
+/**
  * Name value pair
  */
 export class UINameValuePair<T> {
@@ -106,9 +115,9 @@ export class UIDisplayString {
  */
 export class UIDisplayStringUtil {
   public static getUICommonLabelStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in UICommonLabelEnum) {
+    for (const se in UICommonLabelEnum) {
       if (Number.isNaN(+se)) {
         // Allowed
       } else {
@@ -124,9 +133,9 @@ export class UIDisplayStringUtil {
   }
 
   public static getQuestionBankTypeStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in QuestionBankTypeEnum) {
+    for (const se in QuestionBankTypeEnum) {
       if (Number.isNaN(+se)) {
         // Do nothing
       } else {
@@ -142,9 +151,9 @@ export class UIDisplayStringUtil {
   }
 
   public static getTagTypeStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in TagTypeEnum) {
+    for (const se in TagTypeEnum) {
       if (Number.isNaN(+se)) {
         // Do nothing
       } else {
@@ -160,9 +169,9 @@ export class UIDisplayStringUtil {
   }
 
   public static getOverviewScopeStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in OverviewScopeEnum) {
+    for (const se in OverviewScopeEnum) {
       if (Number.isNaN(+se)) {
         // Do nothing
       } else {
@@ -178,9 +187,9 @@ export class UIDisplayStringUtil {
   }
 
   public static getAccountStatusStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in AccountStatusEnum) {
+    for (const se in AccountStatusEnum) {
       if (Number.isNaN(+se)) {
         // Do nothing
       } else {
@@ -196,9 +205,9 @@ export class UIDisplayStringUtil {
   }
 
   public static getRepaymentMethodStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let se in RepaymentMethodEnum) {
+    for (const se in RepaymentMethodEnum) {
       if (Number.isNaN(+se)) {
         // Do nothing
       } else {
@@ -214,16 +223,16 @@ export class UIDisplayStringUtil {
   }
 
   public static getEnPOSStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let pe in EnPOSEnum) {
+    for (const pe in EnPOSEnum) {
       // if (Number.isNaN(+pe)) {
       // } else {
-        arrst.push({
-          value: +pe,
-          i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(<EnPOSEnum>pe),
-          displaystring: '',
-        });
+      arrst.push({
+        value: +pe,
+        i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(pe as EnPOSEnum),
+        displaystring: '',
+      });
       // }
     }
 
@@ -231,15 +240,15 @@ export class UIDisplayStringUtil {
   }
 
   public static getRepeatFrequencyDisplayStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let rfe in RepeatFrequencyEnum) {
+    for (const rfe in RepeatFrequencyEnum) {
       if (Number.isNaN(+rfe)) {
         // Do nothing
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(<RepeatFrequencyEnum>+rfe),
+          i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(+rfe as RepeatFrequencyEnum),
           displaystring: '',
         } as UIDisplayString);
       }
@@ -249,15 +258,15 @@ export class UIDisplayStringUtil {
   }
 
   public static getTranTypeLevelDisplayStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let rfe in TranTypeLevelEnum) {
+    for (const rfe in TranTypeLevelEnum) {
       if (Number.isNaN(+rfe)) {
         // Do nothing
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(<TranTypeLevelEnum>+rfe),
+          i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(+rfe as TranTypeLevelEnum),
           displaystring: '',
         } as UIDisplayString);
       }
@@ -267,15 +276,15 @@ export class UIDisplayStringUtil {
   }
 
   public static getGeneralFilterOperatorDisplayStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let rfe in GeneralFilterOperatorEnum) {
+    for (const rfe in GeneralFilterOperatorEnum) {
       if (Number.isNaN(+rfe)) {
         // Do nothing
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(<GeneralFilterOperatorEnum>+rfe),
+          i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(+rfe as GeneralFilterOperatorEnum),
           displaystring: '',
         } as UIDisplayString);
       }
@@ -285,15 +294,15 @@ export class UIDisplayStringUtil {
   }
 
   public static getFinanceQuickAccessTypeEnumStrings(): UIDisplayString[] {
-    let arrst: UIDisplayString[] = [];
+    const arrst: UIDisplayString[] = [];
 
-    for (let qat in FinanceQuickAccessTypeEnum) {
+    for (const qat in FinanceQuickAccessTypeEnum) {
       if (Number.isNaN(+qat)) {
         // Do nothing
       } else {
         arrst.push({
           value: +qat,
-          i18nterm: UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(<FinanceQuickAccessTypeEnum>+qat),
+          i18nterm: UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(+qat as FinanceQuickAccessTypeEnum),
           displaystring: '',
         } as UIDisplayString);
       }

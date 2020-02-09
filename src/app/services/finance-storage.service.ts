@@ -63,39 +63,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Create an account
-   * @param objAcnt Account to create
-   */
-  public createAccount(objAcnt: Account): Observable<Account> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    const jdata: string = objAcnt.writeJSONString();
-    return this._http.post(this.accountAPIUrl, jdata, {
-      headers: headers,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]:' + response);
-        }
-
-        let hd: Account = new Account();
-        hd.onSetData(response as any);
-        this._listAccount.push(hd);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in createAccount in FinanceStorageService.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
    * Change an account
    * @param objAcnt Instance of Account to change
    */

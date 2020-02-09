@@ -19,21 +19,37 @@
         <tr>
           <th>ID</th>
           <th>{{'Common.Name' | transloco}}</th>
-          <th>{{'Common.Category' | transloco}}</th>
-          <th>{{'Common.Status' | transloco}}</th>
+          <th nzShowFilter
+            [nzFilters]="listCategoryFilter"
+            (nzFilterChange)="doFilter($event, selectedStatusFilter)">
+            {{'Common.Category' | transloco}}
+          </th>
+          <th nzShowFilter
+            [nzFilters]="listStatusFilter"
+            (nzFilterChange)="doFilter(selectedCategoryFilter, $event)">
+            {{'Common.Status' | transloco}}
+          </th>
           <th>{{'Common.Comment' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
-          <td>{{data.Id}}</td>
+          <td>
+            {{data.Id}}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
+          </td>
           <td>{{data.Name}}</td>
           <td>
-            <nz-select [ngModel]="data.Category" nzDisabled>
-              <nz-option *ngFor="let ctgy of arCategories" [nzValue]='ctgy.ID' [nzLabel]="ctgy.Name"></nz-option>
+            <nz-select [ngModel]="data.CategoryId" nzDisabled>
+              <nz-option *ngFor="let ctgy of arCategories" [nzValue]='ctgy.ID' [nzLabel]="t(ctgy.Name)"></nz-option>
             </nz-select>
           </td>
           <td>
+            <nz-select [ngModel]="data.Status" nzDisabled>
+              <nz-option *ngFor="let sts of arrayStatus" [nzValue]='sts.value' [nzLabel]="t(sts.i18nterm)"></nz-option>
+            </nz-select>
           </td>
           <td>{{data.Comment}}</td>
         </tr>

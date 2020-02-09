@@ -416,7 +416,7 @@ export interface AccountJson extends hih.BaseModelJson {
   CategoryID: number;
   Comment?: string;
   Owner?: string;
-  Status: number;
+  Status?: any;
 
   // Extra. info
   ExtraDP?: any;
@@ -575,7 +575,11 @@ export class Account extends hih.BaseModel {
       this.OwnerId = data.Owner;
     }
     if (data && data.Status) {
-      this.Status = data.Status as AccountStatusEnum;
+      if (typeof data.Status === 'string') {
+        this.Status = AccountStatusEnum[data.Status];
+      } else if (typeof data.Status === 'number') {
+        this.Status = data.Status as AccountStatusEnum;
+      }
     }
 
     if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.ExtraDP) {
