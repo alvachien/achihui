@@ -446,7 +446,7 @@ export class EventHabitDetail {
   get HabitID(): number {
     return this._habitID;
   }
-  set HID(hid: number) {
+  set HabitID(hid: number) {
     this._habitID = hid;
   }
   get StartDate(): moment.Moment {

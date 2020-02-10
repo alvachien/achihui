@@ -1,11 +1,9 @@
 import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
 import { TranslocoService } from '@ngneat/transloco';
 
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN } from './model';
+import { appNavItems, appLanguage, UIStatusEnum, HomeDef, ModelUtility, ConsoleLogTypeEnum } from './model';
 import { AuthService, UIStatusService, HomeDefOdataService } from './services';
 
 @Component({
@@ -26,23 +24,27 @@ export class AppComponent {
     private translocoService: TranslocoService,
     private _authService: AuthService,
     public _homeService: HomeDefOdataService,
-    private _zone: NgZone,
-    private _changeDetectorRef: ChangeDetectorRef,) {
-      this._authService.authContent.subscribe((x: any) => {
-        this._zone.run(() => {
-          this.isLoggedIn = x.isAuthorized;
-          if (this.isLoggedIn) {
-            this.titleLogin = x.getUserName();
-          }
-        });
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
+    private _zone: NgZone) {    
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', 
+      ConsoleLogTypeEnum.debug);
+
+    this._authService.authContent.subscribe((x: any) => {
+      this._zone.run(() => {
+        this.isLoggedIn = x.isAuthorized;
+        if (this.isLoggedIn) {
+          this.titleLogin = x.getUserName();
         }
       });
+    }, (error: any) => {
+      ModelUtility.writeConsoleLog(`AC HIH UI [Error]: Entering AppComponent constructor failed to subscribe to user: ${error}`, 
+        ConsoleLogTypeEnum.error);
+    });
    }
 
   switchLanguage(lang: string) {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage', 
+      ConsoleLogTypeEnum.debug);
+
     if (lang === 'en_US') {
       this.i18n.setLocale(en_US);
       this.translocoService.setActiveLang('en');
@@ -53,13 +55,20 @@ export class AppComponent {
   }
 
   public onLogon(): void {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon', 
+      ConsoleLogTypeEnum.log);
+
     if (environment.LoginRequired) {
       this._authService.doLogin();
     } else {
-      console.log('No logon is required!');
+      ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon, no need to logon', 
+        ConsoleLogTypeEnum.log);
     }
   }
   public onLogout(): void {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogout', 
+      ConsoleLogTypeEnum.log);
+
     if (environment.LoginRequired) {
       this._authService.doLogout();
     }

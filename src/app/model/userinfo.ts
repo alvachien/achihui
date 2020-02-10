@@ -61,7 +61,11 @@ export class UserAuthInfo {
   public cleanContent(): void {
     this.currentUser = undefined;
     this.isAuthorized = false;
-  }
+    this.userName = undefined;
+    this.userId = undefined;
+    this.userMailbox = undefined;
+    this.accessToken = undefined;
+}
 
   public getUserName(): string {
     return this.userName;

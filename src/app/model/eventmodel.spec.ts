@@ -16,6 +16,14 @@ describe('GeneralEvent', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
     instance.IsPublic = false;
+    instance.ID = 1;
+    instance.HID = 1;
+    instance.StartTime = moment();
+    instance.Assignee = 'test';
+    instance.Content = 'test_content';
+
+    expect(instance.StartTimeFormatString).toBeTruthy();
+    expect(instance.EndTimeFormatString).toEqual('');
 
     const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
@@ -36,6 +44,11 @@ describe('RecurEvent', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
     instance.IsPublic = false;
+    instance.ID = 1;
+    instance.HID = 1;
+    instance.Assignee = 'test';
+    instance.Content = 'test_content';
+    expect(instance.EndTimeFormatString).toEqual('');
 
     const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
@@ -55,6 +68,10 @@ describe('EventHabit', () => {
 
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
+    instance.ID = 1;
+    instance.HID = 1;
+    instance.assignee = 'test';
+    instance.content = 'test_content';
 
     const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
@@ -74,6 +91,8 @@ describe('EventHabitDetail', () => {
 
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
+    instance.ID = 1;
+    instance.HabitID = 1;
 
     const jsondata: any = {};
     expect(jsondata).toBeTruthy();

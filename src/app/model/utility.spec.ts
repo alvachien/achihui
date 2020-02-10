@@ -3,6 +3,7 @@
 //
 
 import { ModelUtility } from './utility';
+import { M } from '@angular/cdk/keycodes';
 
 describe('Unit test for ModelUtility in Model', () => {
 
@@ -52,5 +53,24 @@ describe('Unit test for ModelUtility in Model', () => {
     let str: string = 'ABCdab_123';
     let nrst: number = ModelUtility.GetPasswordStrengthLevel(str);
     expect(nrst).toBeTruthy();
+
+    nrst = ModelUtility.GetPasswordStrengthLevel('1234');
+    expect(nrst).toEqual(0);
+  });
+
+  it('#7. CheckStringLength', () => {
+    let str: string = 'adsaf';
+
+    expect(ModelUtility.CheckStringLength(str, 3, 15)).toBeTrue();
+    expect(ModelUtility.CheckStringLength(str, 1, 3)).toBeFalse();
+  });
+
+  xit('#8. hasDuplicatesInStringArray', () => {
+    expect(ModelUtility.hasDuplicatesInStringArray('adsdae')).toBeTrue();
+    expect(ModelUtility.hasDuplicatesInStringArray('abcewf')).toBeFalse();
+  });
+
+  it('#9. prefixInteger', () => {
+    expect(ModelUtility.prefixInteger(2, 3)).toEqual('002');
   });
 });
