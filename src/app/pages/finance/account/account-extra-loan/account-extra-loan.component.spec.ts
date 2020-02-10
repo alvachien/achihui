@@ -127,6 +127,8 @@ describe('AccountExtraLoanComponent', () => {
     expect(loanval2.startDate).toBeTruthy();
     expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
     expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+
+    flush();
   }));
 });
 

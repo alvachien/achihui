@@ -84,7 +84,7 @@ export class HomeDefOdataService {
           params,
         })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map...`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef...`,
             ConsoleLogTypeEnum.debug);
 
           this._listHomeDefList = [];
@@ -102,7 +102,7 @@ export class HomeDefOdataService {
           return this._listHomeDefList;
         }),
         catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef, Failed: ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef failed: ${error}`,
             ConsoleLogTypeEnum.error);
 
           this._islistLoaded = false;
@@ -119,21 +119,23 @@ export class HomeDefOdataService {
    * Read a specified home defs
    */
   public readHomeDef(hid: number): Observable<HomeDef> {
-    const apiurl: string = this.apiUrl + '(' + hid.toString() + ')';
-
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$expand', 'HomeMembers');
+    params = params.append('$filter', `ID eq ${hid}`);
 
-    return this._http.get(apiurl, { headers, params, })
+    return this._http.get(this.apiUrl, {
+      headers,
+      params, })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map.`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef.`,
+          ConsoleLogTypeEnum.debug);
 
         const hd: HomeDef = new HomeDef();
-        hd.parseJSONData(response as any);
+        hd.parseJSONData((response as any).value[0]);
 
         // Buffer it
         const nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {

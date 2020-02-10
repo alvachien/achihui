@@ -38,8 +38,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     public finService: FinanceOdataService,
     public storageService: HomeDefOdataService,
     private activateRoute: ActivatedRoute,
-    private modalService: NzModalService,
-  ) {
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 

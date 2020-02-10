@@ -239,7 +239,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   }
 
   public onRefDocClick(rid: number) {
-    // TBD.
+    this.router.navigate([`/finance/document/display/${rid}`]);
   }
 
   public onGenerateTmpDocs(): void {
@@ -322,12 +322,22 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.loanInfoForm.get('startDateControl').setValue(val.startDate.toDate());
-      this.loanInfoForm.get('endDateControl').setValue(val.endDate.toDate());
+      if (val.startDate) {
+        this.loanInfoForm.get('startDateControl').setValue(val.startDate.toDate());
+      } else {
+        this.loanInfoForm.get('startDateControl').setValue(undefined);
+      }
+      if (val.endDate) {
+        this.loanInfoForm.get('endDateControl').setValue(val.endDate.toDate());
+      } else {
+        this.loanInfoForm.get('endDateControl').setValue(undefined);
+      }
       this.loanInfoForm.get('totalMonthControl').setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl').setValue(val.RepayDayInMonth);
       if (val.FirstRepayDate) {
         this.loanInfoForm.get('firstRepayDateControl').setValue(val.FirstRepayDate.toDate());
+      } else {
+        this.loanInfoForm.get('firstRepayDateControl').setValue(undefined);
       }
       this.loanInfoForm.get('interestFreeControl').setValue(val.InterestFree);
       this.loanInfoForm.get('annualRateControl').setValue(val.annualRate);
