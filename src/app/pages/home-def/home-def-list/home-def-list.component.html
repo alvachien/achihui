@@ -3,42 +3,40 @@
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>{{'Nav.HomeList' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-
-    <nz-page-header-content>
-      <div class="wrap">
-        <p nz-paragraph>
-          {{'Common.RequireChooseHome' | transloco}}
-        </p>
-        <div>
-          <nz-table #basicTable [nzData]="dataSource">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>{{'Common.Name' | transloco}}</th>
-                <th>{{'Common.Host' | transloco}}</th>
-                <th>{{'Finance.Currency' | transloco}}</th>
-                <th>{{'Common.Detail' | transloco}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of basicTable.data">
-                <td>
-                  <span>{{ row.ID }}</span>
-                  <nz-divider nzType="vertical"></nz-divider>
-                  <a (click)="onChooseHome(row)"
-                    *ngIf="!IsCurrentHomeChosed">{{'Common.ChooseThisHome' | transloco}}</a>
-                  <a (click)="onDisplayHome(row)"
-                    *ngIf="IsCurrentHomeChosed">{{'Common.DisplayDetails' | transloco}}</a>
-                </td>
-                <td>{{ row.Name }}</td>
-                <td>{{ row.CreatorDisplayAs }}</td>
-                <td>{{ row.BaseCurrency }}</td>
-                <td>{{ row.Details }}</td>
-              </tr>
-            </tbody>
-          </nz-table>
-        </div>
-      </div>
-    </nz-page-header-content>
+    <nz-page-header-extra>
+      <a nz-button nzType="link" routerLink="/homedef/create">{{'Common.Create' | transloco}}</a>
+    </nz-page-header-extra>
   </nz-page-header>
+  <div class="wrap">
+    <p nz-paragraph>
+      {{'Common.RequireChooseHome' | transloco}}
+    </p>
+    <div>
+      <nz-table #basicTable [nzData]="dataSource">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{'Common.Name' | transloco}}</th>
+            <th>{{'Common.Host' | transloco}}</th>
+            <th>{{'Finance.Currency' | transloco}}</th>
+            <th>{{'Common.Detail' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of basicTable.data">
+            <td>
+              <span>{{ row.ID }}</span>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">{{'Common.ChooseThisHome' | transloco}}</a>
+              <a (click)="onDisplayHome(row)" *ngIf="IsCurrentHomeChosed">{{'Common.DisplayDetails' | transloco}}</a>
+            </td>
+            <td>{{ row.Name }}</td>
+            <td>{{ row.CreatorDisplayAs }}</td>
+            <td>{{ row.BaseCurrency }}</td>
+            <td>{{ row.Details }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
 </nz-spin>

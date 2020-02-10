@@ -1,1 +1,49 @@
-<p>home-def-detail works!</p>
+<nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')">
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/homelist">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <a nz-button nzType="link" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<form nz-form [formGroup]="detailFormGroup">
+  <!-- ID -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="12">
+      <input nz-input formControlName="idControl" readonly />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Name -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+      <input nz-input formControlName="nameControl" maxlength="30" required />
+      <ng-template #nameTpl let-control>
+        <ng-container *ngIf="control.hasError('maxlength')">
+          {{'Common.FieldMaxLength' | transloco}}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('required')">
+          {{'Common.FieldIsMandatory' | transloco}}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Base Currency -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
+      <input nz-input formControlName="baseCurrControl" maxlength="30" required />
+      <ng-template #currTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{'Common.FieldIsMandatory' | transloco}}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

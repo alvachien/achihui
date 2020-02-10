@@ -14,7 +14,7 @@ import { HomeDefOdataService, } from '../../../services';
   styleUrls: ['./home-def-list.component.less'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
   isLoadingResults: boolean;
@@ -66,7 +66,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   public onChooseHome(row: HomeDef): void {
     this.homeService.ChosedHome = row;
 
-    // this.homeService.fetchAllMembersInChosedHome().subscribe(x => {
     if (this.homeService.RedirectURL) {
       const url: string = this.homeService.RedirectURL;
       this.homeService.RedirectURL = '';
@@ -75,7 +74,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/']);
     }
-    // });
   }
 
   public onHomeDefRowSelect(row: HomeDef): void {

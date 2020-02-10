@@ -57,7 +57,6 @@ describe('HomeDefListComponent', () => {
         // { provide: UIStatusService, useValue: uiServiceStub },
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-        // { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
       ],
     });

@@ -19,7 +19,8 @@ export class HomeDefOdataService {
   // Buffer
   private _islistLoaded: boolean;
   private _listHomeDefList: HomeDef[];
-  private _isMemberInChosedHomeLoaded: boolean;
+  // API url.
+  readonly apiUrl = environment.ApiUrl + `/api/HomeDefines`;
 
   get HomeDefs(): HomeDef[] {
     return this._listHomeDefList;
@@ -31,7 +32,8 @@ export class HomeDefOdataService {
     return this.curHomeSelected.value;
   }
   set ChosedHome(hd: HomeDef) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefOdataService: ${hd}`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService ChosedHome setter: ${hd}`,
+      ConsoleLogTypeEnum.debug);
 
     if (hd) {
       this.curHomeSelected.next(hd);
@@ -54,15 +56,12 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure;
 
-  readonly apiUrl = environment.ApiUrl + `/api/HomeDefines`;
-
   constructor(
     private _http: HttpClient,
     private _authService: AuthService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
 
     this._islistLoaded = false; // Performance improvement
-    this._isMemberInChosedHomeLoaded = false;
     this._listHomeDefList = [];
   }
 
@@ -182,7 +181,7 @@ export class HomeDefOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, createHomeDef, Failed: ${error}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService createHomeDef failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
