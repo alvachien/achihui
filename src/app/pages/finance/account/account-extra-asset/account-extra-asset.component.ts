@@ -43,9 +43,19 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       ConsoleLogTypeEnum.debug);
 
     const insobj: AccountExtraAsset = new AccountExtraAsset();
-    insobj.CategoryID = this.assetInfoFormGroup.get('ctgyControl').value;
-    insobj.Name = this.assetInfoFormGroup.get('nameControl').value;
-    insobj.Comment = this.assetInfoFormGroup.get('commentControl').value;
+    let controlVal = this.assetInfoFormGroup.get('ctgyControl').value;
+    if (controlVal) {
+      insobj.CategoryID = controlVal as number;
+    }
+    controlVal = this.assetInfoFormGroup.get('nameControl').value;
+    if (controlVal) {
+      insobj.Name = controlVal as string;
+    }
+    controlVal = this.assetInfoFormGroup.get('commentControl').value;
+    if (controlVal) {
+      insobj.Comment = controlVal as string;
+    }
+
     if (this.refBuyDocID) {
       insobj.RefDocForBuy = this.refBuyDocID;
     }
@@ -91,6 +101,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   ) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug);
+
     this.assetInfoFormGroup = new FormGroup({
       ctgyControl: new FormControl(undefined, [Validators.required]),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),

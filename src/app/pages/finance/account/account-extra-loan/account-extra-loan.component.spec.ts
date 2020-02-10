@@ -1,40 +1,57 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { ViewChild, Component } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
+import * as moment from 'moment';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
-import { getTranslocoModule, ActivatedRouteUrlStub } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo, UIAccountForSelection } from '../../../../model';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
+import { UserAuthInfo, UIAccountForSelection, BuildupAccountForSelection, AccountExtraLoan } from '../../../../model';
 
 describe('AccountExtraLoanComponent', () => {
   let testcomponent: AccountExtraLoanTestFormComponent;
   let fixture: ComponentFixture<AccountExtraLoanTestFormComponent>;
+  let fakeData: FakeDataHelper;
+  let storageService: any;
+  let homeService: Partial<HomeDefOdataService>;
+  let calcLoanTmpDocsSpy: any;
+  const authServiceStub: Partial<AuthService> = {};
+  const uiServiceStub: Partial<UIStatusService> = {};
+  let arUIAccounts: UIAccountForSelection[];
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrencies();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
+
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
+      'calcLoanTmpDocs',
+    ]);
+    calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(of([]));
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
+
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    uiServiceStub.getUILabel = (le: any) => '';
+    arUIAccounts = BuildupAccountForSelection(fakeData.finAccounts, fakeData.finAccountCategories);
+  });
 
   beforeEach(async(() => {
-    const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => '';
-    const storageService: any = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllAccountCategories',
-      'fetchAllDocTypes',
-      'fetchAllTranTypes',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
-      'createADPDocument',
-      'fetchAllCurrencies',
-    ]);
-
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -54,7 +71,9 @@ describe('AccountExtraLoanComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: NZ_I18N, useValue: en_US },
       ]
     })
     .compileComponents();
@@ -69,6 +88,46 @@ describe('AccountExtraLoanComponent', () => {
   it('should create', () => {
     expect(testcomponent).toBeTruthy();
   });
+
+  it('shall work with data 1: init status', fakeAsync(() => {
+    testcomponent.tranAmount = 100;
+    testcomponent.controlCenterID = fakeData.finControlCenters[0].Id;
+    testcomponent.arUIAccount = arUIAccounts;
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.dirty).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    flush();
+  }));
+
+  it('shall work with data 2: input start date', fakeAsync(() => {
+    testcomponent.tranAmount = 100;
+    testcomponent.controlCenterID = fakeData.finControlCenters[0].Id;
+    testcomponent.arUIAccount = arUIAccounts;
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const loan1: AccountExtraLoan = new AccountExtraLoan();
+    const startdt = moment().add(1, 'M');
+    loan1.startDate = startdt;
+    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    expect(loanval2.startDate).toBeTruthy();
+    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+  }));
 });
 
 @Component({
@@ -86,13 +145,13 @@ describe('AccountExtraLoanComponent', () => {
 })
 export class AccountExtraLoanTestFormComponent {
   public formGroup: FormGroup;
-  public tranAmount: number = 0;
+  public tranAmount = 0;
   public controlCenterID?: number;
   public orderID?: number;
   public arUIAccount: UIAccountForSelection[] = [];
 
   @ViewChild(AccountExtraLoanComponent, {static: true}) extraComponent: AccountExtraLoanComponent;
-  
+
   constructor() {
     this.formGroup = new FormGroup({
       extraControl: new FormControl()

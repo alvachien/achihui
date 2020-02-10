@@ -74,7 +74,7 @@ describe('AccountExtraAssetComponent', () => {
     tick();
     fixture.detectChanges();
 
-    let ast1: AccountExtraAsset = new AccountExtraAsset();
+    const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     testingComponent.formGroup.get('infoControl').setValue(ast1);
     flush();
@@ -83,7 +83,7 @@ describe('AccountExtraAssetComponent', () => {
 
     expect(testingComponent.formGroup.valid).toBeFalse();
 
-    let astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeFalsy();
@@ -95,7 +95,7 @@ describe('AccountExtraAssetComponent', () => {
   it('shall work with data 3: input category and name', fakeAsync(() => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
-    let ast1: AccountExtraAsset = new AccountExtraAsset();
+    const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     ast1.Name = 'test';
     testingComponent.formGroup.get('infoControl').setValue(ast1);
@@ -105,7 +105,7 @@ describe('AccountExtraAssetComponent', () => {
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
 
-    let astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeTruthy();
@@ -118,7 +118,7 @@ describe('AccountExtraAssetComponent', () => {
   it('shall work with data 4: input category, name, comment and refenence docs', fakeAsync(() => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
-    let ast1: AccountExtraAsset = new AccountExtraAsset();
+    const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     ast1.Name = 'test';
     ast1.Comment = 'comem';
@@ -131,7 +131,7 @@ describe('AccountExtraAssetComponent', () => {
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
 
-    let astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeTruthy();
@@ -182,7 +182,7 @@ export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: FormGroup;
   public arAssetCategories: AssetCategory[] = [];
   @ViewChild(AccountExtraAssetComponent, {static: true}) assetComponent: AccountExtraAssetComponent;
-  
+
   constructor() {
     this.formGroup = new FormGroup({
       infoControl: new FormControl()

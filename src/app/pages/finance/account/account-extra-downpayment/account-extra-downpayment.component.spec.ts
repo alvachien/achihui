@@ -106,8 +106,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    let dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    let startdt = moment().add(1, 'M');
+    const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    const startdt = moment().add(1, 'M');
     dp1.StartDate = startdt;
     testcomponent.formGroup.get('extraControl').setValue(dp1);
     flush();
@@ -116,7 +116,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    let dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
+    const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
     expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
     expect(dpval2.RepeatType).toBeFalsy();
@@ -139,12 +139,12 @@ describe('AccountExtraDownpaymentComponent', () => {
 })
 export class FinanceAccountExtraDPTestFormComponent {
   public formGroup: FormGroup;
-  public tranAmount: number = 0;
+  public tranAmount = 0;
   public arTranTypes: TranType[] = [];
-  public tranType: number = 100;
+  public tranType = 100;
 
   @ViewChild(AccountExtraDownpaymentComponent, {static: true}) extraComponent: AccountExtraDownpaymentComponent;
-  
+
   constructor() {
     this.formGroup = new FormGroup({
       extraControl: new FormControl()

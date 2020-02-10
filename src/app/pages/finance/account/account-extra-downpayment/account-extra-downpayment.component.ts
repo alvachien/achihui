@@ -10,7 +10,7 @@ import { translate } from '@ngneat/transloco';
 
 import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
-  ConsoleLogTypeEnum, ModelUtility, TranType,
+  ConsoleLogTypeEnum, ModelUtility, TranType, RepeatFrequencyEnum,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -55,10 +55,24 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
   get value(): AccountExtraAdvancePayment {
     const inst: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    inst.StartDate = moment(this.adpInfoFormGroup.get('startDateControl').value as Date);
-    inst.EndDate = moment(this.adpInfoFormGroup.get('endDateControl').value as Date);
-    inst.RepeatType = this.adpInfoFormGroup.get('frqControl').value;
-    inst.Comment = this.adpInfoFormGroup.get('cmtControl').value;
+
+    let controlVal = this.adpInfoFormGroup.get('startDateControl').value;
+    if (controlVal) {
+      inst.StartDate = moment(controlVal as Date);
+    }
+    controlVal = this.adpInfoFormGroup.get('endDateControl').value;
+    if (controlVal) {
+      inst.EndDate = moment(controlVal as Date);
+    }
+    controlVal = this.adpInfoFormGroup.get('frqControl').value;
+    if (controlVal) {
+      inst.RepeatType = controlVal as RepeatFrequencyEnum;
+    }
+    controlVal = this.adpInfoFormGroup.get('cmtControl').value;
+    if (controlVal) {
+      inst.Comment = controlVal as string;
+    }
+
     if (this.refDocId) {
       inst.RefDocId = this.refDocId;
     }
@@ -90,6 +104,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
     this.adpInfoFormGroup = new FormGroup({
       startDateControl: new FormControl(moment().toDate(), [Validators.required]),
       endDateControl: new FormControl(moment().add(1, 'y').toDate()),
@@ -167,7 +182,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`,
         ConsoleLogTypeEnum.error);
-      
+
       this.modalService.error({
         nzTitle: translate('Common.Error'),
         nzContent: error
