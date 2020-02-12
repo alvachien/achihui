@@ -13,16 +13,6 @@ export enum HomeMemberRelationEnum {
   Parent = 3,
 }
 
-export function getHomeMemberRelationString(re: HomeMemberRelationEnum): string {
-  switch (re) {
-    case HomeMemberRelationEnum.Self: return 'Sys.MemRel.Self';
-    case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
-    case HomeMemberRelationEnum.Child: return 'Sys.MemRel.Children';
-    case HomeMemberRelationEnum.Parent: return 'Sys.MemRel.Parent';
-    default: return '';
-  }
-}
-
 /**
  * Home members
  */
@@ -66,12 +56,22 @@ export class HomeMember {
   set Relation(rel: HomeMemberRelationEnum) {
     this._relation = rel;
   }
-  get RelationString(): string {
-    return getHomeMemberRelationString(this._relation);
+
+  get isValid(): boolean {
+    if (!this.User) {
+      return false;
+    }
+    if (!this.DisplayAs) {
+      return false;
+    }
+    if (this.Relation === null) {
+      return false;
+    }
+    return true;
   }
 
   constructor() {
-    // Empty
+    this._relation = null;
   }
 
   public parseJSONData(data: IHomeMemberJson): void {
@@ -82,6 +82,8 @@ export class HomeMember {
     }
     if (data.Relation) {
       this._relation = HomeMemberRelationEnum[data.Relation as unknown as keyof typeof HomeMemberRelationEnum];
+    } else {
+      this._relation = null;
     }
   }
   public generateJSONData(): IHomeMemberJson {

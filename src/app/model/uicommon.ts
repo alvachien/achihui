@@ -1,5 +1,6 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
 import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, } from './financemodel';
+import { HomeMemberRelationEnum } from './homedef';
 import { EnPOSEnum } from './learnmodel';
 import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
@@ -99,7 +100,8 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum;
+  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum
+  | HomeMemberRelationEnum;
 
 /**
  * UI Display string
@@ -311,6 +313,25 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
+  public static getHomeMemberRelationEnumStrings(): UIDisplayString[] {
+    const arrst: UIDisplayString[] = [];
+
+    for (const qat in HomeMemberRelationEnum) {
+      if (Number.isNaN(+qat)) {
+        // Do nothing
+      } else {
+        arrst.push({
+          value: +qat,
+          i18nterm: UIDisplayStringUtil.getHomeMemberRelationEnumDisplayString(+qat as HomeMemberRelationEnum),
+          displaystring: '',
+        } as UIDisplayString);
+      }
+    }
+
+    return arrst;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
   // Get display string for each enum
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
     switch (le) {
@@ -512,6 +533,16 @@ export class UIDisplayStringUtil {
       case FinanceQuickAccessTypeEnum.Document: return 'Finance.Document';
       case FinanceQuickAccessTypeEnum.ControlCenter:  return 'Finance.ControlCenter';
       case FinanceQuickAccessTypeEnum.Order: return 'Finance.Activity';
+      default: return '';
+    }
+  }
+
+  public static getHomeMemberRelationEnumDisplayString(re: HomeMemberRelationEnum): string {
+    switch (re) {
+      case HomeMemberRelationEnum.Self: return 'Sys.MemRel.Self';
+      case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
+      case HomeMemberRelationEnum.Child: return 'Sys.MemRel.Children';
+      case HomeMemberRelationEnum.Parent: return 'Sys.MemRel.Parent';
       default: return '';
     }
   }

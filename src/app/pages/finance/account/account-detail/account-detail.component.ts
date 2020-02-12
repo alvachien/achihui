@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, Validatio
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
 
 import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum, ModelUtility,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
-  financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, ConsoleLogTypeEnum,
+  financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, ConsoleLogTypeEnum, AssetCategory,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
@@ -28,6 +29,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   arrayStatus: UIDisplayString[] = [];
   extObject: AccountExtra;
   arAccountCategories: AccountCategory[] = [];
+  arAssetCategories: AssetCategory[] = [];
   public headerFormGroup: FormGroup;
   public extraADPFormGroup: FormGroup;
   public extraAssetFormGroup: FormGroup;
@@ -70,7 +72,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     public odataService: FinanceOdataService,
     public activateRoute: ActivatedRoute,
     public homeSevice: HomeDefOdataService,
-    public uiStatusService: UIStatusService ) {
+    public uiStatusService: UIStatusService,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
@@ -107,6 +110,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
       this.arAccountCategories = rst[0];
+      this.arAssetCategories = rst[1];
 
       // Distinguish current mode
       this.activateRoute.url.subscribe((x: any) => {
@@ -139,8 +143,12 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                 ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
                   ConsoleLogTypeEnum.error);
 
-                // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
                 this.uiMode = UIMode.Invalid;
+                this.modalService.create({
+                  nzTitle: 'Common.Error',
+                  nzContent: error,
+                  nzClosable: true,
+                });
               });
           } else {
             // this._changeDetector.detectChanges();

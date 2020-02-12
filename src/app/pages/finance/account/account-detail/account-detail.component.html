@@ -99,7 +99,8 @@
       <hih-finance-account-extra-downpayment formControlName="extADPControl"></hih-finance-account-extra-downpayment>
     </form>
     <form nz-form [formGroup]="extraAssetFormGroup" [hidden]="!isAssetAccount">
-      <hih-finance-account-extra-asset formControlName="extAssetControl"></hih-finance-account-extra-asset>
+      <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">        
+      </hih-finance-account-extra-asset>
     </form>
     <form nz-form [formGroup]="extraLoanFormGroup" [hidden]="!isLoanAccount">
       <hih-finance-account-extra-loan formControlName="extLoanControl"></hih-finance-account-extra-loan>

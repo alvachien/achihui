@@ -5,7 +5,7 @@
   <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <a nz-button nzType="link" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+    <button nz-button nzType="link" [disabled]="!isSaveAllowed" (click)="onSave()">{{'Common.Save' | transloco}}</button>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -57,10 +57,10 @@
 </div>
 
 <div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="!isAddItemAllowed" (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
+  <button nz-button nzType="primary" [disabled]="!isFieldChangable" (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
 </div>
 
-<nz-table #basicTable nzBordered [nzData]="arMembers">
+<nz-table #basicTable nzBordered [nzData]="listMembers">
   <thead>
     <tr>
       <th nz-width="150">{{'Common.User' | transloco}}</th>
@@ -100,7 +100,7 @@
         <nz-form-item>
           <nz-form-control nzHasFeedback [nzErrorTip]="rltTpl">
             <nz-select [nzDisabled]="!isFieldChangable" [(ngModel)]="data.Relation" (ngModelChange)="onChange()">
-              <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
+              <nz-option *ngFor="let tt of listMemRel" [nzValue]='tt.value' [nzLabel]="t(tt.i18nterm)"></nz-option>
             </nz-select>
             <ng-template #rltTpl let-control>
               <ng-container *ngIf="control.hasError('required')">

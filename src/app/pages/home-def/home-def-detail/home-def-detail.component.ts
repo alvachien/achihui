@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 
 import { HomeDef, Currency, UIMode, getUIModeString, HomeMember,
-  ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+  ModelUtility, ConsoleLogTypeEnum, UIDisplayString, UIDisplayStringUtil, HomeMemberRelationEnum } from '../../../model';
 import { AuthService, HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../services';
 
 @Component({
@@ -24,13 +24,40 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   public uiMode: UIMode = UIMode.Create;
   public arCurrencies: Currency[] = [];
   public detailForm: FormGroup;
-  public arMembers: HomeMember[] = [];
+  public listMembers: HomeMember[] = [];
+  public listMemRel: UIDisplayString[] = [];
 
   get IsCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isSaveAllowed(): boolean {
+    if (this.isFieldChangable) {
+      return this.detailForm.valid && this.isItemsValid;
+    }
+    return false;
+  }
+  get isItemsValid(): boolean {
+    if (this.listMembers.length > 0) {
+      let bvalid = true;
+      let selfitem = 0;
+      this.listMembers.forEach((val: HomeMember) => {
+        if (!val.isValid) {
+          bvalid = false;
+        }
+        if (val.Relation === HomeMemberRelationEnum.Self) {
+          ++selfitem;
+        }
+      });
+      if (selfitem !== 1) {
+        bvalid = false;
+      }
+
+      return bvalid;
+    }
+    return false;
   }
 
   constructor(
@@ -41,6 +68,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    this.listMemRel = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
 
     this.detailForm = new FormGroup({
       idControl: new FormControl({value: -1, disable: true }),
@@ -100,21 +129,27 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                 this.detailForm.enable();
               }
 
-              this.arMembers = dtl.Members.slice();
-            }, (error: any) => {
+              this.listMembers = dtl.Members.slice();
+            }, (error2: any) => {
               this.isLoadingResults = false;
 
               // Show error dialog
-              // popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
-              //   error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
+              this.modalService.create({
+                nzTitle: 'Common.Error',
+                nzContent: error2,
+                nzClosable: true,
+              });
             });
           }
         }
       });
     }, (error: any) => {
       // Show error dialog
-      // popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
-      //   error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
+      this.modalService.create({
+        nzTitle: 'Common.Error',
+        nzContent: error,
+        nzClosable: true,
+      });
     });
   }
 
@@ -126,6 +161,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onChange() {    
   }
 
   onSave() {
