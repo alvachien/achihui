@@ -20,10 +20,10 @@ describe('HomeMember', () => {
     hmem.User = 'abc';
     hmem.DisplayAs = 'Abc';
     hmem.Relation = HomeMemberRelationEnum.Self;
-    
-    let jdata = hmem.generateJSONData();
+
+    const jdata = hmem.generateJSONData();
     expect(jdata).toBeTruthy();
-    let hmem2: HomeMember = new HomeMember();
+    const hmem2: HomeMember = new HomeMember();
     hmem2.parseJSONData(jdata);
     expect(hmem2).toBeTruthy();
 
@@ -53,7 +53,7 @@ describe('HomeDef', () => {
     hdobj.Details = 'Test case 1';
     hdobj.Host = 'abc';
 
-    let hmem: HomeMember = new HomeMember();
+    const hmem: HomeMember = new HomeMember();
     hmem.HomeID = 1;
     hmem.User = 'abc';
     hmem.DisplayAs = 'Abc';
@@ -63,10 +63,10 @@ describe('HomeDef', () => {
     expect(hdobj.isValid).toBeTruthy();
     expect(hdobj.Members.length).toEqual(1);
 
-    let jdata = hdobj.generateJSONData();
+    const jdata = hdobj.generateJSONData();
     expect(jdata).toBeTruthy();
 
-    let hdobj2: HomeDef = new HomeDef();
+    const hdobj2: HomeDef = new HomeDef();
     hdobj2.parseJSONData(jdata);
     expect(hdobj2).toBeTruthy();
     expect(hdobj2.Members.length).toEqual(1);

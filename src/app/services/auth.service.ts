@@ -32,19 +32,16 @@ export class AuthService {
   public userLoadededEvent: EventEmitter<User> = new EventEmitter<User>();
 
   constructor() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor...', ConsoleLogTypeEnum.debug);
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor...',
+      ConsoleLogTypeEnum.debug);
 
     this.mgr = new UserManager(authSettings);
 
     this.mgr.getUser().then((u: any) => {
       if (u) {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: AuthService constructor, user get successfully as following: ', 
-            ConsoleLogTypeEnum.debug);
-          ModelUtility.writeConsoleLog(u);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor, get following user:',
+          ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(u);
 
         // Set the content
         this.authSubject.value.setContent(u);
@@ -57,16 +54,14 @@ export class AuthService {
 
       this.authSubject.next(this.authSubject.value);
     }, (reason: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: AuthService failed to fetch user:', ConsoleLogTypeEnum.error);
-        ModelUtility.writeConsoleLog(reason, ConsoleLogTypeEnum.error);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AuthService constructor, get user failed:',
+        ConsoleLogTypeEnum.error);
+      ModelUtility.writeConsoleLog(reason, ConsoleLogTypeEnum.error);
     });
 
     this.mgr.events.addUserUnloaded(() => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: User unloaded', ConsoleLogTypeEnum.debug);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService User unloaded handler',
+        ConsoleLogTypeEnum.debug);
       this.authSubject.value.cleanContent();
 
       this.authSubject.next(this.authSubject.value);
@@ -74,13 +69,15 @@ export class AuthService {
 
     this.mgr.events.addAccessTokenExpiring(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Warn]: token expiring', ConsoleLogTypeEnum.warn);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Warn]: Entering AuthService, Access token expiring',
+          ConsoleLogTypeEnum.warn);
       }
     });
 
     this.mgr.events.addAccessTokenExpired(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: token expired', ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AuthService, Access token expired',
+          ConsoleLogTypeEnum.warn);
       }
 
       this.doLogin();
@@ -88,129 +85,114 @@ export class AuthService {
   }
 
   public doLogin(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Start the login...', ConsoleLogTypeEnum.debug);
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogin...',
+      ConsoleLogTypeEnum.debug);
 
     if (this.mgr) {
       this.mgr.signinRedirect().then(() => {
-      // this.mgr.signinSilent().then(function(){
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.info('AC_HIH_UI [Debug]: Redirecting for login...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogin, redirecting...',
+          ConsoleLogTypeEnum.debug);
       }).catch((er: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI [Error]: Sign-in error', er);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService doLogin failed: ${er}`,
+          ConsoleLogTypeEnum.error);
       });
     }
   }
 
   public doLogout(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Start the logout...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...',
+      ConsoleLogTypeEnum.debug);
 
     if (this.mgr) {
       this.mgr.signoutRedirect().then(() => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.info('AC_HIH_UI [Debug]: redirecting for logout...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout, redirecting...',
+          ConsoleLogTypeEnum.debug);
       }).catch((er: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI [Error]: Sign-out error', er);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService doLogout failed: ${er}`,
+          ConsoleLogTypeEnum.error);
       });
     }
   }
 
   clearState(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService clearState...',
+      ConsoleLogTypeEnum.debug);
+
     this.mgr.clearStaleState().then(() => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: clearStateState success');
-      }
-    }).catch((e: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC_HIH_UI [Error]: clearStateState error', e.message);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService clearState success...',
+        ConsoleLogTypeEnum.debug);
+    }).catch((er: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService doLogout failed: ${er}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   getUser(): void {
     this.mgr.getUser().then((user: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: got user', user);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService getUser success...',
+        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(user, ConsoleLogTypeEnum.debug);
 
       this.userLoadededEvent.emit(user);
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService getUser failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   removeUser(): void {
     this.mgr.removeUser().then(() => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService removeUser success...',
+        ConsoleLogTypeEnum.debug);
+
       this.userLoadededEvent.emit(undefined);
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: user removed');
-      }
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService removeUser failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   startSigninMainWindow(): void {
     this.mgr.signinRedirect({ data: 'some data' }).then(() => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: signinRedirect done');
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService startSigninMainWindow success...',
+        ConsoleLogTypeEnum.debug);
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService startSigninMainWindow failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   endSigninMainWindow(): void {
     this.mgr.signinRedirectCallback().then((user: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: signed in', user);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService endSigninMainWindow success...',
+        ConsoleLogTypeEnum.debug);
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService endSigninMainWindow failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   startSignoutMainWindow(): void {
     this.mgr.signoutRedirect().then((resp: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: signed out', resp);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService startSignoutMainWindow success...',
+        ConsoleLogTypeEnum.debug);
+
       setTimeout(() => {
-        console.debug('AC_HIH_UI [Debug]: testing to see if fired...');
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService startSignoutMainWindow, re-test...');
       }, 5000);
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService startSignoutMainWindow failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 
   endSignoutMainWindow(): void {
     this.mgr.signoutRedirectCallback().then((resp: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: signed out', resp);
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService endSignoutMainWindow success...',
+        ConsoleLogTypeEnum.debug);
     }).catch((err: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(err);
-      }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AuthService endSignoutMainWindow failed: ${err}`,
+        ConsoleLogTypeEnum.error);
     });
   }
 }

@@ -131,4 +131,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   onSave() {
     // Save the data
   }
+
+  onCreateMember() {
+  }
 }

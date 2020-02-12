@@ -22,10 +22,11 @@ export class AppComponent {
   constructor(
     private i18n: NzI18nService,
     private translocoService: TranslocoService,
+    // tslint:disable:variable-name
     private _authService: AuthService,
     public _homeService: HomeDefOdataService,
-    private _zone: NgZone) {    
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', 
+    private _zone: NgZone) {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor',
       ConsoleLogTypeEnum.debug);
 
     this._authService.authContent.subscribe((x: any) => {
@@ -36,13 +37,13 @@ export class AppComponent {
         }
       });
     }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC HIH UI [Error]: Entering AppComponent constructor failed to subscribe to user: ${error}`, 
+      ModelUtility.writeConsoleLog(`AC HIH UI [Error]: Entering AppComponent constructor failed to subscribe to user: ${error}`,
         ConsoleLogTypeEnum.error);
     });
    }
 
   switchLanguage(lang: string) {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage', 
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage',
       ConsoleLogTypeEnum.debug);
 
     if (lang === 'en_US') {
@@ -55,18 +56,18 @@ export class AppComponent {
   }
 
   public onLogon(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon', 
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon',
       ConsoleLogTypeEnum.log);
 
     if (environment.LoginRequired) {
       this._authService.doLogin();
     } else {
-      ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon, no need to logon', 
+      ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon, no need to logon',
         ConsoleLogTypeEnum.log);
     }
   }
   public onLogout(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogout', 
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogout',
       ConsoleLogTypeEnum.log);
 
     if (environment.LoginRequired) {
