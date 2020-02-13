@@ -10,6 +10,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { TranslocoModule, } from '@ngneat/transloco';
 
@@ -39,6 +40,7 @@ import { HomeDefDetailComponent } from './home-def-detail';
     NzInputModule,
     NzSelectModule,
     NzResultModule,
+    NzAlertModule,
     TranslocoModule,
   ]
 })

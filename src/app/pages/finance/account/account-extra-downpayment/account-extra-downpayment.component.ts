@@ -57,19 +57,19 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     const inst: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
 
     let controlVal = this.adpInfoFormGroup.get('startDateControl').value;
-    if (controlVal) {
+    if (controlVal !== undefined) {
       inst.StartDate = moment(controlVal as Date);
     }
     controlVal = this.adpInfoFormGroup.get('endDateControl').value;
-    if (controlVal) {
+    if (controlVal !== undefined) {
       inst.EndDate = moment(controlVal as Date);
     }
     controlVal = this.adpInfoFormGroup.get('frqControl').value;
-    if (controlVal) {
+    if (controlVal !== undefined) {
       inst.RepeatType = controlVal as RepeatFrequencyEnum;
     }
     controlVal = this.adpInfoFormGroup.get('cmtControl').value;
-    if (controlVal) {
+    if (controlVal !== undefined) {
       inst.Comment = controlVal as string;
     }
 
@@ -190,12 +190,13 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     });
   }
 
-  public onReset(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...',
-      ConsoleLogTypeEnum.debug);
+  // public onReset(): void {
+  //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...',
+  //     ConsoleLogTypeEnum.debug);
 
-    this.adpInfoFormGroup.reset();
-  }
+  //   this.adpInfoFormGroup.reset();
+  // }
+
   public onRefDocClick(docid: number): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...',
       ConsoleLogTypeEnum.debug);
@@ -209,7 +210,9 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     if (val) {
       this.adpInfoFormGroup.get('startDateControl').setValue(val.StartDate.toDate());
       this.adpInfoFormGroup.get('endDateControl').setValue(val.EndDate.toDate());
-      this.adpInfoFormGroup.get('frqControl').setValue(val.RepeatType);
+      if (val.RepeatType !== null && val.RepeatType !== undefined) {
+        this.adpInfoFormGroup.get('frqControl').setValue(val.RepeatType);
+      }
       this.adpInfoFormGroup.get('cmtControl').setValue(val.Comment);
 
       if (val.RefDocId) {
@@ -221,18 +224,21 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       this._refDocID = undefined;
     }
   }
+
   registerOnChange(fn: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...',
       ConsoleLogTypeEnum.debug);
 
     this._onChange = fn;
   }
+
   registerOnTouched(fn: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug);
 
     this._onTouched = fn;
   }
+
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...',
       ConsoleLogTypeEnum.debug);

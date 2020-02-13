@@ -697,11 +697,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
     this._startDate = moment();
     this._endDate = moment().add(1, 'y');
-    this._comment = undefined;
-    this.RepeatType = undefined;
+    this._comment = null;
+    this.RepeatType = null;
     this.dpTmpDocs = [];
-    this.DeferredDays = undefined;
-    this.Direct = undefined;
+    this.DeferredDays = null;
+    this.Direct = null;
   }
 
   get isValid(): boolean {
@@ -711,7 +711,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     if (this.StartDate.isSameOrAfter(this.EndDate)) {
       return false;
     }
-    if (this.RepeatType === undefined) {
+    if (this.RepeatType === null || this.RepeatType === undefined) {
       return false;
     }
     if (!this.Comment) {
