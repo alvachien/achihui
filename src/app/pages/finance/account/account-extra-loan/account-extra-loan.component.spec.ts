@@ -40,7 +40,6 @@ describe('AccountExtraLoanComponent', () => {
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'calcLoanTmpDocs',
     ]);
-    calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -52,6 +51,7 @@ describe('AccountExtraLoanComponent', () => {
   });
 
   beforeEach(async(() => {
+    calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -82,6 +82,9 @@ describe('AccountExtraLoanComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountExtraLoanTestFormComponent);
     testcomponent = fixture.componentInstance;
+    testcomponent.tranAmount = 100;
+    testcomponent.controlCenterID = fakeData.finControlCenters[0].Id;
+    testcomponent.arUIAccount = arUIAccounts;
     // fixture.detectChanges();
   });
 
@@ -90,10 +93,6 @@ describe('AccountExtraLoanComponent', () => {
   });
 
   it('shall work with data 1: init status', fakeAsync(() => {
-    testcomponent.tranAmount = 100;
-    testcomponent.controlCenterID = fakeData.finControlCenters[0].Id;
-    testcomponent.arUIAccount = arUIAccounts;
-
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -105,10 +104,6 @@ describe('AccountExtraLoanComponent', () => {
   }));
 
   it('shall work with data 2: input start date', fakeAsync(() => {
-    testcomponent.tranAmount = 100;
-    testcomponent.controlCenterID = fakeData.finControlCenters[0].Id;
-    testcomponent.arUIAccount = arUIAccounts;
-
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -130,6 +125,28 @@ describe('AccountExtraLoanComponent', () => {
 
     flush();
   }));
+
+  it('shall work with disabled mode', fakeAsync(() => {
+    fixture.detectChanges();
+    expect(testcomponent.extraComponent.isFieldChangable).toBeTruthy();
+
+    testcomponent.formGroup.disable();
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.extraComponent.isFieldChangable).toBeFalsy();
+  }));
+
+  it('shall work with reference doc.', fakeAsync(() => {
+    const routerstub = TestBed.get(Router);
+    spyOn(routerstub, 'navigate');
+
+    testcomponent.extraComponent.onRefDocClick(123);
+    expect(routerstub.navigate).toHaveBeenCalledTimes(1);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
+  }));
+
 });
 
 @Component({

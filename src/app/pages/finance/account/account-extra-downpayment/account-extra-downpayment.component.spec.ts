@@ -12,9 +12,9 @@ import { ViewChild, Component } from '@angular/core';
 import * as moment from 'moment';
 
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, FormGroupHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, TranType, AccountExtraAdvancePayment, RepeatFrequencyEnum } from '../../../../model';
+import { UserAuthInfo, TranType, AccountExtraAdvancePayment, RepeatFrequencyEnum, RepeatedDatesWithAmountAPIOutput } from '../../../../model';
 
 describe('AccountExtraDownpaymentComponent', () => {
   let testcomponent: FinanceAccountExtraDPTestFormComponent;
@@ -37,7 +37,6 @@ describe('AccountExtraDownpaymentComponent', () => {
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'calcADPTmpDocs',
     ]);
-    calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -48,6 +47,7 @@ describe('AccountExtraDownpaymentComponent', () => {
   });
 
   beforeEach(async(() => {
+    calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -142,8 +142,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
@@ -172,8 +172,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
     expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
@@ -184,7 +184,29 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.RefDocId).toBeFalsy();
   }));
 
-  it('shall work with data 5: input start date, repeat type, comment, calcTmpDocs', fakeAsync(() => {
+  it('shall work with data 4a: input start date, repeat type, comment but without tranamount', fakeAsync(() => {
+    testcomponent.tranAmount = undefined;
+    testcomponent.arTranTypes = fakeData.finTranTypes;
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    const startdt = moment().add(1, 'M');
+    dp1.StartDate = startdt;
+    dp1.RepeatType = RepeatFrequencyEnum.Month;
+    dp1.Comment = 'test';
+    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+  }));
+
+  it('shall work with data 5: input start date, repeat type, comment, calcTmpDocs (no return)', fakeAsync(() => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
@@ -202,13 +224,147 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
     expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     testcomponent.extraComponent.onGenerateTmpDocs();
     expect(testcomponent.formGroup.valid).toBeFalse();
   }));
+
+  it('shall work with data 6: input start date, repeat type, comment, calcTmpDocs (with return)', fakeAsync(() => {
+    testcomponent.tranAmount = 100;
+    testcomponent.arTranTypes = fakeData.finTranTypes;
+    let aroutput: RepeatedDatesWithAmountAPIOutput[] = [];
+    aroutput.push({
+      TranDate: moment(),
+      TranAmount: 10,
+      Desp: '1'    
+    } as RepeatedDatesWithAmountAPIOutput);
+    aroutput.push({
+      TranDate: moment().add(1, 'M'),
+      TranAmount: 10,
+      Desp: '2'
+    } as RepeatedDatesWithAmountAPIOutput);
+    calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(asyncData(aroutput));
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    const startdt = moment().add(1, 'M');
+    dp1.StartDate = startdt;
+    dp1.RepeatType = RepeatFrequencyEnum.Month;
+    dp1.Comment = 'test';
+    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    testcomponent.extraComponent.onGenerateTmpDocs();
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.valid).toBeTruthy();
+
+    flush();
+  }));
+
+  it('shall work with disabled mode', fakeAsync(() => {
+    testcomponent.tranAmount = 100;
+    testcomponent.arTranTypes = fakeData.finTranTypes;
+
+    fixture.detectChanges();
+    expect(testcomponent.extraComponent.isFieldChangable).toBeTruthy();
+
+    testcomponent.formGroup.disable();
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.extraComponent.isFieldChangable).toBeFalsy();
+  }));
+
+  it('shall work with reference doc.', fakeAsync(() => {
+    testcomponent.tranAmount = 100;
+    testcomponent.arTranTypes = fakeData.finTranTypes;
+
+    const routerstub = TestBed.get(Router);
+    spyOn(routerstub, 'navigate');
+
+    testcomponent.extraComponent.onRefDocClick(123);
+    expect(routerstub.navigate).toHaveBeenCalledTimes(1);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
+  }));
+
+  describe('calcTmpDocs return exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(asyncError<string>('Service failed'));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall display error dialog', fakeAsync(() => {
+      testcomponent.tranAmount = 100;
+      testcomponent.arTranTypes = fakeData.finTranTypes;
+  
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      const startdt = moment().add(1, 'M');
+      dp1.StartDate = startdt;
+      dp1.RepeatType = RepeatFrequencyEnum.Month;
+      dp1.Comment = 'test';
+      testcomponent.formGroup.get('extraControl').setValue(dp1);
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
+      expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+      expect(testcomponent.formGroup.valid).toBeFalse();
+  
+      testcomponent.extraComponent.onGenerateTmpDocs();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+  });
 });
 
 @Component({
