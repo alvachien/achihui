@@ -36,10 +36,10 @@ export class MessageDialogComponent {
   }
 
   handleOk(): void {
-    this.modal.destroy({ data: 'this the result data' });
+    this.modal.destroy({ data: 'this is result data of OK' });
   }
   handleCancel() {
-    this.modal.destroy({ data: 'this the result data' });
+    this.modal.destroy({ data: 'this is result data of Cancel' });
   }
 }
 

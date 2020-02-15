@@ -7,7 +7,7 @@ import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
+import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 

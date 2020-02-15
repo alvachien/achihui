@@ -106,4 +106,15 @@ describe('AppComponent', () => {
     //   expect(authServiceStub.doLogout).toHaveBeenCalledTimes(1);
     // }
   }));
+
+  it('switch language shall work', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    component.switchLanguage('zh_CN');
+    expect(component).toBeTruthy();
+    component.switchLanguage('en_US');
+    expect(component).toBeTruthy();
+  }));
 });

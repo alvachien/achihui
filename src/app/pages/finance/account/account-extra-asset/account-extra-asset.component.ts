@@ -104,7 +104,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
 
     this.assetInfoFormGroup = new FormGroup({
       ctgyControl: new FormControl(undefined, [Validators.required]),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       commentControl: new FormControl('', Validators.maxLength(100)),
     });
   }

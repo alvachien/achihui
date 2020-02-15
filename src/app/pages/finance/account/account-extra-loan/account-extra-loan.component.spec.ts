@@ -12,9 +12,9 @@ import { BehaviorSubject, of } from 'rxjs';
 import * as moment from 'moment';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
-import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../testing';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, UIAccountForSelection, BuildupAccountForSelection, AccountExtraLoan } from '../../../../model';
+import { UserAuthInfo, UIAccountForSelection, BuildupAccountForSelection, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan } from '../../../../model';
 
 describe('AccountExtraLoanComponent', () => {
   let testcomponent: AccountExtraLoanTestFormComponent;
@@ -116,6 +116,7 @@ describe('AccountExtraLoanComponent', () => {
     tick();
     fixture.detectChanges();
 
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
@@ -125,6 +126,220 @@ describe('AccountExtraLoanComponent', () => {
 
     flush();
   }));
+
+  it('shall work with data 3: input start date, total months', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const loan1: AccountExtraLoan = new AccountExtraLoan();
+    const startdt = moment().add(1, 'M');
+    loan1.startDate = startdt;
+    loan1.TotalMonths = 24;
+    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    expect(loanval2.startDate).toBeTruthy();
+    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+
+    flush();
+  }));
+
+  it('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const loan1: AccountExtraLoan = new AccountExtraLoan();
+    const startdt = moment().add(1, 'M');
+    loan1.startDate = startdt;
+    loan1.TotalMonths = 24;
+    loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    expect(loanval2.startDate).toBeTruthy();
+    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+
+    flush();
+  }));
+
+  it('shall work with data 5: interest free case', fakeAsync(() => {
+    let tmpdocs: TemplateDocLoan[] = [];
+    for (let i: number = 0; i < 12; i++) {
+      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      tmpdoc.DocId = i + 1;
+      tmpdoc.TranAmount = 8333.34;
+      tmpdoc.Desp = `test${i + 1}`;
+      tmpdoc.TranType = 28;
+      tmpdoc.TranDate = moment().add(i + 1, 'M');
+      tmpdoc.ControlCenterId = 1;
+      tmpdoc.AccountId = 22;
+      tmpdocs.push(tmpdoc);
+    }
+    calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const loan1: AccountExtraLoan = new AccountExtraLoan();
+    const startdt = moment().add(1, 'M');
+    loan1.startDate = startdt;
+    loan1.TotalMonths = 24;
+    loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    expect(loan1.isAccountValid).toBeTruthy();
+
+    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+
+    testcomponent.extraComponent.onGenerateTmpDocs();
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.valid).toBeTruthy();
+
+    flush();
+  }));
+
+  it('shall work with data 6: interest case', fakeAsync(() => {
+    let tmpdocs: TemplateDocLoan[] = [];
+    for (let i: number = 0; i < 12; i++) {
+      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      tmpdoc.DocId = i + 1;
+      tmpdoc.TranAmount = 8333.34;
+      tmpdoc.InterestAmount = 362.50;
+      tmpdoc.Desp = `test${i + 1}`;
+      tmpdoc.TranType = 28;
+      tmpdoc.TranDate = moment().add(i + 1, 'M');
+      tmpdoc.ControlCenterId = 1;
+      tmpdoc.AccountId = 22;
+      tmpdocs.push(tmpdoc);
+    }
+    calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const loan1: AccountExtraLoan = new AccountExtraLoan();
+    const startdt = moment().add(1, 'M');
+    loan1.startDate = startdt;
+    loan1.endDate = startdt.add(2, 'years');
+    loan1.TotalMonths = 24;
+    loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
+    loan1.InterestFree = false;
+    loan1.RepayDayInMonth = 15;
+    expect(loan1.isAccountValid).toBeTruthy();
+
+    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.valid).toBeFalse();
+
+    expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+
+    testcomponent.extraComponent.onGenerateTmpDocs();
+    flush();
+    tick();
+    fixture.detectChanges();
+
+    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.valid).toBeTruthy();
+
+    flush();
+  }));
+
+  describe('calcLoanTmpDocs return exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(asyncError<string>('Service failed'));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall display error dialog', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      const loan1: AccountExtraLoan = new AccountExtraLoan();
+      const startdt = moment().add(1, 'M');
+      loan1.startDate = startdt;
+      loan1.endDate = startdt.add(2, 'years');
+      loan1.TotalMonths = 24;
+      loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
+      loan1.InterestFree = false;
+      loan1.RepayDayInMonth = 15;
+      expect(loan1.isAccountValid).toBeTruthy();
+  
+      testcomponent.formGroup.get('extraControl').setValue(loan1);
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+      expect(testcomponent.formGroup.valid).toBeFalse();
+  
+      expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+  
+      testcomponent.extraComponent.onGenerateTmpDocs();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+  });
 
   it('shall work with disabled mode', fakeAsync(() => {
     fixture.detectChanges();
@@ -146,7 +361,6 @@ describe('AccountExtraLoanComponent', () => {
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
   }));
-
 });
 
 @Component({

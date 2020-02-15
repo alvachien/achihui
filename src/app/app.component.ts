@@ -36,9 +36,6 @@ export class AppComponent {
           this.titleLogin = x.getUserName();
         }
       });
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC HIH UI [Error]: Entering AppComponent constructor failed to subscribe to user: ${error}`,
-        ConsoleLogTypeEnum.error);
     });
    }
 
@@ -61,9 +58,6 @@ export class AppComponent {
 
     if (environment.LoginRequired) {
       this._authService.doLogin();
-    } else {
-      ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon, no need to logon',
-        ConsoleLogTypeEnum.log);
     }
   }
   public onLogout(): void {
@@ -81,9 +75,5 @@ export class AppComponent {
 
   public onOpenPhotoGallery(): void {
     window.open(environment.AppGallery, '_blank');
-  }
-
-  public onOpenGithubRepo(): void {
-    window.open('https://github.com/alvachien/achihui', '_blank');
   }
 }

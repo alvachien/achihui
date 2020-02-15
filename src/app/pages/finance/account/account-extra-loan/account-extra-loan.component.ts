@@ -123,25 +123,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
 
     const val = this.value;
-    // Repayment method
-    if (val.RepayMethod === undefined || val.RepayMethod === null) {
+    if (!this.value.isAccountValid) {
       return false;
-    }
-
-    // Total months
-    if (val.TotalMonths <= 0) {
-      return false;
-    }
-
-    // Interest rate
-    if (val.InterestFree) {
-      if (val.annualRate > 0) {
-        return false;
-      }
-    } else {
-      if (val.annualRate <= 0) {
-        return false;
-      }
     }
     if (!this.tranAmount) {
       return false;
@@ -386,14 +369,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks
-      // if (!this.canGenerateTmpDocs) {
-      //   return { invalidForm: {valid: false, message: 'cannot generate tmp docs'} };
-      // }
       if (!this.value.isValid) {
         return { invalidForm: {valid: false, message: 'genrated object is invalid'} };
-      }
-      if (!this.listTmpDocs) {
-        return { invalidForm: {valid: false, message: 'No tmp docs'} };
       }
       return null;
     }

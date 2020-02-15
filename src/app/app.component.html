@@ -153,8 +153,12 @@
               </a>
               <nz-dropdown-menu #menuApps="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>AC Gallery</li>
-                  <li nz-menu-item>Math Learn</li>
+                  <li nz-menu-item>
+                    <button nz-button type="link" (click)="onOpenPhotoGallery()">AC Gallery</button>
+                  </li>
+                  <li nz-menu-item>
+                    <button nz-button type="link" (click)="onOpenMathExcises()">Math Learn</button>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>

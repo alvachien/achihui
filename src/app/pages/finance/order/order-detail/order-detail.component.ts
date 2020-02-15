@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
   SettlementRule, } from '../../../../model';
-import { thistle } from 'color-name';
 
 @Component({
   selector: 'hih-fin-order-detail',
@@ -23,6 +22,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public arControlCenters: ControlCenter[] = [];
+  // Form: detail
   public detailFormGroup: FormGroup;
   public listRules: SettlementRule[] = [];
 
@@ -36,7 +36,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   constructor(
     private homeService: HomeDefOdataService,
     private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService) {
+    private odataService: FinanceOdataService,
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -55,77 +56,87 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
-    this.odataService.fetchAllControlCenters().pipe(takeUntil(this._destroyed$)).subscribe((cc: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
+    this.activateRoute.url.subscribe((x: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug);
 
-      this.arControlCenters = cc;
-      this.activateRoute.url.subscribe((x: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
-          ConsoleLogTypeEnum.debug);
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode = UIMode.Create;
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
-
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this.odataService.readOrder(this.routerID)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((x2: Order) => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOninit, succeed to readOrder : ${x2}`,
-                  ConsoleLogTypeEnum.debug);
-
-                this.detailFormGroup.get('idControl').setValue(x2.Id);
-                this.detailFormGroup.get('nameControl').setValue(x2.Name);
-                this.detailFormGroup.get('validFromControl').setValue(x2.ValidFrom.toDate());
-                this.detailFormGroup.get('validToControl').setValue(x2.ValidTo.toDate());
-                if (x2.Comment) {
-                  this.detailFormGroup.get('cmtControl').setValue(x2.Comment);
-                }
-
-                // Disable the form
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                }
-
-                this.listRules = x2.SRules;
-              }, (error: any) => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, failed to readOrder : ${error}`,
-                  ConsoleLogTypeEnum.error);
-
-                // this._snackbar.open(error.toString(), undefined, {
-                //   duration: 2000,
-                // });
-              }, () => {
-                // Nothing
-              });
-          }
+          this.uiMode = UIMode.Display;
         }
-      }, (error: any) => {
-        // Shall never happen
-        this.uiMode = UIMode.Invalid;
-      }, () => {
-        // Empty
-      });
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters : ${error}`,
-        ConsoleLogTypeEnum.error);
-      this.uiMode = UIMode.Invalid;
-      // this._snackbar.open(error.toString(), undefined, {
-      //   duration: 2000,
-      // });
+        this.currentMode = getUIModeString(this.uiMode);
+      }
+
+      switch(this.uiMode) {
+        case UIMode.Change:
+        case UIMode.Display: {
+          forkJoin([
+            this.odataService.fetchAllControlCenters(),  
+            this.odataService.readOrder(this.routerID)
+          ])
+          .pipe(takeUntil(this._destroyed$))
+          .subscribe((rsts: any) => {
+            this.arControlCenters = rsts[0];
+
+            this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
+            this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
+            this.detailFormGroup.get('validFromControl').setValue(rsts[1].ValidFrom.toDate());
+            this.detailFormGroup.get('validToControl').setValue(rsts[1].ValidTo.toDate());
+            if (rsts[1].Comment) {
+              this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
+            }
+
+            // Disable the form
+            if (this.uiMode === UIMode.Display) {
+              this.detailFormGroup.disable();
+            }
+
+            this.listRules = rsts[1].SRules;
+          }, (error: any) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${error}`,
+              ConsoleLogTypeEnum.error);
+            this.uiMode = UIMode.Invalid;
+            this.modalService.create({
+              nzTitle: 'Common.Error',
+              nzContent: error,
+              nzClosable: true,
+            });
+          });
+        }
+        break;
+
+        case UIMode.Create:
+        default: {
+          this.odataService.fetchAllControlCenters()
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((cc: any) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
+              ConsoleLogTypeEnum.debug);
+
+            this.arControlCenters = cc;
+          }, (error: any) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters : ${error}`,
+              ConsoleLogTypeEnum.error);
+              this.modalService.create({
+                nzTitle: 'Common.Error',
+                nzContent: error,
+                nzClosable: true,
+              });
+          });
+        }
+        break;
+      }
     });
   }
+
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
@@ -145,6 +156,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     //   this.onChangeOrder();
     // }
   }
+
   public onCreateRule(): void {
     const srules: SettlementRule[] = this.listRules.slice();
     const srule: SettlementRule = new SettlementRule();
@@ -152,6 +164,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     srules.push(srule);
     this.listRules = srules;
   }
+
   private onCreateOrder(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...', ConsoleLogTypeEnum.debug);
 
@@ -211,6 +224,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       this.listRules = srules;
     }
   }
+
   private getNextRuleID(): number {
     if (this.listRules.length <= 0) {
       return 1;

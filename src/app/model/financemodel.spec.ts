@@ -263,16 +263,35 @@ describe('AccountExtraAdvancePayment', () => {
     expect(instance.isValid).toEqual(false);
   });
 
-  it('#6. valid case', () => {
+  it('#6. account valid case', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
     instance.Comment = 'test';
 
+    expect(instance.isAccountValid).toEqual(true);
+    expect(instance.isValid).toEqual(false);
+  });
+
+  it('#7. valid case', () => {
+    expect(instance.isValid).toEqual(false);
+
+    instance.RepeatType = hih.RepeatFrequencyEnum.Month;
+    instance.Comment = 'test';
+    instance.dpTmpDocs.push({
+      DocId: 1,
+      AccountId: 1,
+      TranType: 2,
+      TranAmount: 100,
+      ControlCenterId: 1,
+      Desp: 'Test',
+      TranDate: moment(),
+    } as TemplateDocADP);
+
     expect(instance.isValid).toEqual(true);
   });
 
-  it('#7. clone shall work', () => {
+  it('#8. clone shall work', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
@@ -285,7 +304,7 @@ describe('AccountExtraAdvancePayment', () => {
     expect(instance.EndDate.isSame(instance2.EndDate)).toBeTruthy();
   });
 
-  it('#8. onSetData and writeObject shall work', () => {
+  it('#9. onSetData and writeObject shall work', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;

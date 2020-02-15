@@ -104,6 +104,7 @@ describe('DocumentListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
@@ -123,6 +124,54 @@ describe('DocumentListComponent', () => {
 
     //   flush();
     // }));
+
+    it('shall trigger navigation on menus for document creating', () => {
+      const routerstub = TestBed.get(Router);
+      spyOn(routerstub, 'navigate');
+  
+      component.onCreateNormalDocument();;
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);
+  
+      component.onCreateTransferDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createtransfer']);
+
+      component.onCreateADPDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createadp']);
+
+      component.onCreateADRDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createadr']);
+
+      component.onCreateExgDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createexg']);
+
+      component.onCreateAssetBuyInDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createassetbuy']);
+
+      component.onCreateAssetSoldOutDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createassetsold']);
+
+      component.onCreateBorrowFromDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createbrwfrm']);
+
+      component.onCreateLendToDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createlendto']);
+
+      component.onCreateAssetValChgDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createassetvalchg']);
+
+      component.onCreateRepayDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createrepayex']);
+
+      // component.onDisplayDocument(doc: Document): void {
+      //   expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display', doc.Id]);
+      // }
+
+      component.onMassCreateNormalDocument();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/masscreatenormal']);
+
+      component.onMassCreateNormalDocument2();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/masscreatenormal2']);
+    });
   });
 
   xdescribe('3. shall display error dialog for exception', () => {

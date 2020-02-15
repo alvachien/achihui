@@ -704,7 +704,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     this.Direct = null;
   }
 
-  get isValid(): boolean {
+  get isAccountValid(): boolean {
     if (!this.StartDate || !this.EndDate || !this.StartDate.isValid || !this.EndDate.isValid) {
       return false;
     }
@@ -717,6 +717,17 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     if (!this.Comment) {
       return false;
     }
+
+    return true;
+  }
+  get isValid(): boolean {
+    if (!this.isAccountValid) {
+      return false;
+    }
+    if (this.dpTmpDocs.length <= 0) {
+      return false;
+    }
+
     return true;
   }
 
@@ -982,16 +993,70 @@ export class AccountExtraLoan extends AccountExtra {
     this._repayDayInMonth = rdim;
   }
 
-  get isValid(): boolean {
-    if (this.startDate === undefined) {
+  get isAccountValid(): boolean {
+    if (this.startDate === undefined || this.startDate === null) {
       return false;
     }
-    if (this.RepayMethod === undefined) {
+    if (this.endDate && this.endDate.isAfter(this.startDate)) {
+      return false;
+    }
+
+    if (this.InterestFree && this.annualRate !== 0) {
+      return false;
+    }
+    if (this.annualRate < 0) {
+      return false;
+    }
+    if (this.RepayMethod === RepaymentMethodEnum.EqualPrincipal
+      || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset)
+    {
+      if (this.TotalMonths <= 0) {
+        return false;
+      }
+    }
+    else if (this.RepayMethod === RepaymentMethodEnum.DueRepayment)
+    {
+      if (!this.endDate) {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+    if (this.FirstRepayDate && this.RepayDayInMonth) {
+      if (this.FirstRepayDate.date() !== this.RepayDayInMonth) {
+        return false;
+      }
+    }
+    if (this.RepayDayInMonth) {
+      if (this.RepayDayInMonth <= 0 || this.RepayDayInMonth > 30) {
+        return false;
+      }
+    }
+    if (this.FirstRepayDate) {
+      let bgndate = this.startDate.add(30, 'days');
+      let enddate = this.startDate.add(60, 'days');
+      if (!this.FirstRepayDate.isBetween(bgndate, enddate))
+      {
+        return false;
+      }
+    }
+
+    if (this.RepayMethod === undefined || this.RepayMethod === null) {
       return false;
     }
     if (this.TotalMonths === undefined || this.TotalMonths <= 0) {
       return false;
     }
+
+    return true;
+  }
+
+  get isValid(): boolean {
+    if (!this.isAccountValid) {
+      return false;
+    }
+
     if (this.loanTmpDocs.length <= 0) {
       return false;
     }

@@ -126,7 +126,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
           ConsoleLogTypeEnum.error);
 
-        // TBD.
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error
+        });
       }, () => {
         this.isLoadingResults = false;
       });

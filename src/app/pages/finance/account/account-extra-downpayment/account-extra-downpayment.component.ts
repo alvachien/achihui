@@ -88,7 +88,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     if (!this.isFieldChangable) {
       return false;
     }
-    if (!this.value.isValid) {
+    if (!this.value.isAccountValid) {
       return false;
     }
     if (!this.tranAmount) {
@@ -253,23 +253,14 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...',
+      ConsoleLogTypeEnum.debug);
 
     if (this.adpInfoFormGroup.valid) {
       // Beside the basic form valid, it need more checks
-      if (!this.canCalcTmpDocs) {
-        return { invalidForm: {valid: false, message: 'Cannot calculate tmp docs'} };
+      if (!this.value.isValid) {
+        return { invalidForm: {valid: false, message: 'Value is invalid'} };
       }
-
-      if (this.listTmpDocs.length <= 0) {
-        return { invalidForm: {valid: false, message: 'Lack of tmp docs'} };
-      }
-
-      this.listTmpDocs.forEach((tmpdoc: TemplateDocADP) => {
-        if (!tmpdoc.onVerify()) {
-          return { invalidForm: {valid: false, message: 'tmp doc is invalid'} };
-        }
-      });
 
       return null;
     }

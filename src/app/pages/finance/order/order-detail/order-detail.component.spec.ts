@@ -1,21 +1,31 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject } from 'rxjs';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { OrderDetailComponent } from './order-detail.component';
-import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, } from '../../../../../testing';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('OrderDetailComponent', () => {
   let component: OrderDetailComponent;
   let fixture: ComponentFixture<OrderDetailComponent>;
   let fakeData: FakeDataHelper;
+  let storageService: any;
+  let fetchAllControlCentersSpy: any;
+  let readOrderSpy: any;
+  let activatedRouteStub: any;
+  const authServiceStub: Partial<AuthService> = {};
+  const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService>;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -26,40 +36,55 @@ describe('OrderDetailComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
-    fakeData.buildFinAccountExtraAdvancePayment();
-    fakeData.buildFinADPDocumentForCreate();
+
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllControlCenters',
+      'readOrder',
+    ]);
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    readOrderSpy = storageService.readOrder.and.returnValue(of({}));
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
+
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {
-    const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => '';
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
-    const homeService: Partial<HomeDefOdataService> = {};
-    homeService.ChosedHome = fakeData.chosedHome;
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         FormsModule,
         ReactiveFormsModule,
+        NgZorroAntdModule,
+        RouterTestingModule,
         NoopAnimationsModule,
+        BrowserDynamicTestingModule,
         RouterTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ OrderDetailComponent ],
+      declarations: [
+        OrderDetailComponent,
+        MessageDialogComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        // { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeService },
       ]
-    })
-    .compileComponents();
+    });
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          MessageDialogComponent,
+        ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -70,5 +95,109 @@ describe('OrderDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('create mode', () => {
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+    });
+
+    it('create mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.isCreateMode).toBeTruthy();
+    }));
+  });
+
+  describe('2. change mode', () => {
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+    });
+
+    it('change mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.isCreateMode).toBeFalsy();
+
+      flush();
+    }));
+  });
+
+  describe('3. display mode', () => {
+    beforeEach(() => {      
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+    });
+
+    it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(component.isCreateMode).toBeFalsy();
+
+      flush();
+    }));
+  });
+
+  describe('4. shall display error dialog for exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should display error when Service fails on control center', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
   });
 });

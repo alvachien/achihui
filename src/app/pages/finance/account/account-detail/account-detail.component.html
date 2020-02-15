@@ -41,7 +41,7 @@
         <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="ctgyControl">
-            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.Id" [nzLabel]="t(cc.Name)"></nz-option>
+            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.Id" [nzLabel]="t(cc.Name)" [nzDisabled]="isCategoryDisabled(cc)"></nz-option>
           </nz-select>
           <ng-template #ctgyTpl let-control>
             <ng-container *ngIf="control.hasError('required')">
@@ -96,14 +96,23 @@
     </form>
   
     <form nz-form [formGroup]="extraADPFormGroup" [hidden]="!isADPAccount">
-      <hih-finance-account-extra-downpayment formControlName="extADPControl"></hih-finance-account-extra-downpayment>
+      <hih-finance-account-extra-downpayment formControlName="extADPControl"
+        [tranAmount]="tranAmount"
+        [tranType]="tranType"
+        [allTranTypes]="arTranTypes">
+      </hih-finance-account-extra-downpayment>
     </form>
     <form nz-form [formGroup]="extraAssetFormGroup" [hidden]="!isAssetAccount">
       <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">        
       </hih-finance-account-extra-asset>
     </form>
     <form nz-form [formGroup]="extraLoanFormGroup" [hidden]="!isLoanAccount">
-      <hih-finance-account-extra-loan formControlName="extLoanControl"></hih-finance-account-extra-loan>
+      <hih-finance-account-extra-loan formControlName="extLoanControl"
+        [tranAmount]="tranAmount"
+        [controlCenterID]="controlCenterID"
+        [orderID]="orderID"
+        [arUIAccount]="arUIAccount">
+      </hih-finance-account-extra-loan>
     </form>
   </div>
 </nz-spin>
