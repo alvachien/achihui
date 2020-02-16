@@ -5,6 +5,8 @@ import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UICommonLabelEnum, BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
@@ -84,19 +86,13 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   constructor(
     private _storageService: FinanceOdataService,
     private _homeService: HomeDefOdataService,
-    private _router: Router) {
+    private _router: Router,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
     this.baseCurrency = this._homeService.ChosedHome.BaseCurrency;
-  }
-
-  ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
 
     this.firstFormGroup = new FormGroup({
       accountControl: new FormControl('', Validators.required),
@@ -105,6 +101,13 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ccControl: new FormControl(''),
       orderControl: new FormControl(''),
     }, [costObjectValidator, this._amountValidator]);
+  }
+
+  ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit',
+      ConsoleLogTypeEnum.debug);
+
+    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -143,9 +146,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
         ConsoleLogTypeEnum.error);
-      // this._snackbar.open(error.toString(), undefined, {
-      //   duration: 2000,
-      // });
+      
+      this.modalService.create({
+        nzTitle: translate('Common.Error'),
+        nzContent: error,
+        nzClosable: true,
+      });
     });
   }
 
@@ -249,6 +255,11 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
         ConsoleLogTypeEnum.error);
 
+      this.modalService.create({
+        nzTitle: translate('Common.Error'),
+        nzContent: err,
+        nzClosable: true,
+      });
       return;
     });
   }

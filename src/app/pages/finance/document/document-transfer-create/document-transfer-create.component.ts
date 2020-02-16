@@ -11,6 +11,7 @@ import {
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { takeUntil } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -128,7 +129,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
         this.modalService.create({
-          nzTitle: 'Common.Error',
+          nzTitle: translate('Common.Error'),
           nzContent: error,
           nzClosable: true,
         });

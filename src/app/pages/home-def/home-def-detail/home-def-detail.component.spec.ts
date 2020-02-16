@@ -1,18 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
+import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../testing';
+import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
 import { AuthService, HomeDefOdataService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo } from '../../../model';
+import { MessageDialogComponent } from '../../message-dialog';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
@@ -30,10 +31,6 @@ describe('HomeDefDetailComponent', () => {
     fakeData.buildCurrencies();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
-    fakeData.buildFinConfigData();
-    fakeData.buildFinAccounts();
-    fakeData.buildFinControlCenter();
-    fakeData.buildFinOrders();
 
     homeService = jasmine.createSpyObj('HomeDefOdataService', [
       'readHomeDef',
@@ -64,6 +61,7 @@ describe('HomeDefDetailComponent', () => {
       ],
       declarations: [
         HomeDefDetailComponent,
+        MessageDialogComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -71,8 +69,15 @@ describe('HomeDefDetailComponent', () => {
         { provide: FinanceOdataService, useValue: finService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          MessageDialogComponent,
+        ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -83,5 +88,74 @@ describe('HomeDefDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('create mode', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+    });
+
+    it('create mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.IsCreateMode).toBeTruthy();
+
+      flush();
+    }));
+  });
+
+  describe('2. change mode', () => {
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      readHomeDefSpy.and.returnValue(asyncData(fakeData.chosedHome));
+    });
+
+    it('change mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.IsCreateMode).toBeFalsy();
+
+      flush();
+    }));
+  });
+
+  describe('3. display mode', () => {
+    beforeEach(() => {      
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      readHomeDefSpy.and.returnValue(asyncData(fakeData.chosedHome));
+    });
+
+    it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(component.IsCreateMode).toBeFalsy();
+
+      flush();
+    }));
   });
 });

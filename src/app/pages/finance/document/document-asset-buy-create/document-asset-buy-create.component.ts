@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, Validatio
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account,
   AccountExtraAsset, UICommonLabelEnum, ModelUtility, AssetCategory,
@@ -65,7 +67,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
     private _uiStatusService: UIStatusService,
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
-  ) {
+    private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
@@ -124,7 +126,10 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${error}`,
         ConsoleLogTypeEnum.error);
 
-      // TBD.
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: error
+      });
     });
   }
 

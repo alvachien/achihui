@@ -76,17 +76,17 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onHomeDefRowSelect(row: HomeDef): void {
-    if (!this.IsCurrentHomeChosed) {
-      this.onChooseHome(row);
-    } else {
-      this.onDisplayHome(row);
-    }
-  }
+  // public onHomeDefRowSelect(row: HomeDef): void {
+  //   if (!this.IsCurrentHomeChosed) {
+  //     this.onChooseHome(row);
+  //   } else {
+  //     this.onDisplayHome(row);
+  //   }
+  // }
 
-  public onRefresh(): void {
-    this._fetchData(true);
-  }
+  // public onRefresh(): void {
+  //   this._fetchData(true);
+  // }
 
   private _fetchData(forceLoad?: boolean): void {
     this.isLoadingResults = true;

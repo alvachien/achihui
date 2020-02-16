@@ -185,7 +185,8 @@
     "TendencyChart": "Tendency Chart",
     "HIHAuthor": "Writen and Maintained by Alva Chien",
     "FieldIsMandatory": "Please input value to mandatory field",
-    "FieldMaxLength": "Please correct your input as it beyond max length"
+    "FieldMaxLength": "Please correct your input as it beyond max length",
+    "Result": "Result"
   },
   "Sys": {
     "Currency": {

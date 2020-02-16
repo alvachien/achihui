@@ -1,115 +1,119 @@
-<nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')" *transloco="let t">
-  <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/homelist">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
-  <nz-page-header-extra>
-    <button nz-button nzType="link" [disabled]="!isSaveAllowed" (click)="onSave()">{{'Common.Save' | transloco}}</button>
-  </nz-page-header-extra>
-</nz-page-header>
+<div *transloco="let t">
 
-<form nz-form [formGroup]="detailFormGroup">
-  <!-- ID -->
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12">
-      <input nz-input formControlName="idControl" readonly />
-    </nz-form-control>
-  </nz-form-item>
+  <nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/homelist">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="link" [disabled]="!isSaveAllowed"
+        (click)="onSave()">{{'Common.Save' | transloco}}</button>
+    </nz-page-header-extra>
+  </nz-page-header>
 
-  <!-- Name -->
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
-      <input nz-input formControlName="nameControl" maxlength="30" required />
-      <ng-template #nameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{'Common.FieldMaxLength' | transloco}}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
-        </ng-container>
-      </ng-template>
-    </nz-form-control>
-  </nz-form-item>
+  <form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="idControl" readonly />
+      </nz-form-control>
+    </nz-form-item>
 
-  <!-- Base Currency -->
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
-      <input nz-input formControlName="baseCurrControl" maxlength="30" required />
-      <ng-template #currTpl let-control>
-        <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
-        </ng-container>
-      </ng-template>
-    </nz-form-control>
-  </nz-form-item>
-</form>
+    <!-- Name -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+        <input nz-input formControlName="nameControl" maxlength="30" required />
+        <ng-template #nameTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
 
-<div *ngIf="controlError">
-  <nz-alert nzType="error"
-    [nzMessage]="t(controlError.value)"
-    [nzDescription]="t(controlError.value)"
-    nzShowIcon>
-  </nz-alert>
+    <!-- Base Currency -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
+        <input nz-input formControlName="baseCurrControl" maxlength="30" required />
+        <ng-template #currTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div *ngIf="controlError">
+    <nz-alert nzType="error" [nzMessage]="t(controlError.value)" [nzDescription]="t(controlError.value)" nzShowIcon>
+    </nz-alert>
+  </div>
+
+  <div class="toolbar_buttons">
+    <button nz-button nzType="primary" [disabled]="!isFieldChangable"
+      (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
+  </div>
+
+  <nz-table #basicTable nzBordered [nzData]="listMembers">
+    <thead>
+      <tr>
+        <th nz-width="150">{{'Common.User' | transloco}}</th>
+        <th nz-width="200">{{'Common.DisplayAs' | transloco}}</th>
+        <th nz-width="100">{{'Common.Relationship' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
+              <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+              <ng-template #usrTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-divider nzType="vertical"></nz-divider>
+          <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed"
+            (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="dspurTpl">
+              <input nz-input [(ngModel)]="data.DisplayAs" (ngModelChange)="onChange()"
+                [disabled]="!isFieldChangable" />
+              <ng-template #dspurTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="rltTpl">
+              <nz-select [nzDisabled]="!isFieldChangable" [(ngModel)]="data.Relation" (ngModelChange)="onChange()">
+                <nz-option *ngFor="let tt of listMemRel" [nzValue]='tt.value' [nzLabel]="t(tt.i18nterm)"></nz-option>
+              </nz-select>
+              <ng-template #rltTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
 </div>
-
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="!isFieldChangable" (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
-</div>
-
-<nz-table #basicTable nzBordered [nzData]="listMembers">
-  <thead>
-    <tr>
-      <th nz-width="150">{{'Common.User' | transloco}}</th>
-      <th nz-width="200">{{'Common.DisplayAs' | transloco}}</th>
-      <th nz-width="100">{{'Common.Relationship' | transloco}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of basicTable.data">
-      <td>
-        <nz-form-item>
-          <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
-            <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
-            <ng-template #usrTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{'Common.FieldIsMandatory' | transloco}}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
-      </td>
-      <td>
-        <nz-form-item>
-          <nz-form-control nzHasFeedback [nzErrorTip]="dspurTpl">
-            <input nz-input [(ngModel)]="data.DisplayAs" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
-            <ng-template #dspurTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{'Common.FieldIsMandatory' | transloco}}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </td>
-      <td>
-        <nz-form-item>
-          <nz-form-control nzHasFeedback [nzErrorTip]="rltTpl">
-            <nz-select [nzDisabled]="!isFieldChangable" [(ngModel)]="data.Relation" (ngModelChange)="onChange()">
-              <nz-option *ngFor="let tt of listMemRel" [nzValue]='tt.value' [nzLabel]="t(tt.i18nterm)"></nz-option>
-            </nz-select>
-            <ng-template #rltTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{'Common.FieldIsMandatory' | transloco}}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>

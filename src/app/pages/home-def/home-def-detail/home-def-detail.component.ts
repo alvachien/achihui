@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { HomeDef, Currency, UIMode, getUIModeString, HomeMember,
   ModelUtility, ConsoleLogTypeEnum, UIDisplayString, UIDisplayStringUtil, HomeMemberRelationEnum } from '../../../model';
@@ -23,7 +24,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public arCurrencies: Currency[] = [];
-  public detailForm: FormGroup;
+  public detailFormGroup: FormGroup;
   public listMembers: HomeMember[] = [];
   public listMemRel: UIDisplayString[] = [];
 
@@ -35,7 +36,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
   get isSaveAllowed(): boolean {
     if (this.isFieldChangable) {
-      return this.detailForm.valid && this.isItemsValid;
+      return this.detailFormGroup.valid && this.isItemsValid;
     }
     return false;
   }
@@ -71,7 +72,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
     this.listMemRel = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
 
-    this.detailForm = new FormGroup({
+    this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: -1, disable: true }),
       nameControl: new FormControl('', Validators.required),
       baseCurrControl: new FormControl('', Validators.required),
@@ -87,69 +88,80 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.finService.fetchAllCurrencies()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((curries: Currency[]) => {
-      this.arCurrencies = curries;
+    // Distinguish current mode
+    this.activateRoute.url.subscribe((x: any) => {
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode = UIMode.Create;
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
 
-      // Distinguish current mode
-      this.activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this.uiMode = UIMode.Display;
+        }
+        this.currentMode = getUIModeString(this.uiMode);
+      }
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this.isLoadingResults = true;
-
+      switch(this.uiMode) {
+        case UIMode.Change:
+        case UIMode.Display: {
+          this.isLoadingResults = true;
+          forkJoin([
+            this.finService.fetchAllCurrencies(),
             this.storageService.readHomeDef(this.routerID)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((dtl: HomeDef) => {
+          ]).subscribe((rsts: any[]) => {
+            this.arCurrencies = rsts[0];
 
-              this.isLoadingResults = false;
-              this.detailForm.get('nameControl').setValue(dtl.Name);
-              this.detailForm.get('baseCurrControl').setValue(dtl.BaseCurrency);
-              this.detailForm.get('hostControl').setValue(dtl.Host);
-              this.detailForm.get('detailControl').setValue(dtl.Details);
-              this.detailForm.markAsUntouched();
-              this.detailForm.markAsPristine();
+            this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
+            this.detailFormGroup.get('baseCurrControl').setValue(rsts[1].BaseCurrency);
+            this.detailFormGroup.get('hostControl').setValue(rsts[1].Host);
+            this.detailFormGroup.get('detailControl').setValue(rsts[1].Details);
+            this.detailFormGroup.markAsUntouched();
+            this.detailFormGroup.markAsPristine();
 
-              if (this.uiMode === UIMode.Display) {
-                this.detailForm.disable();
-              } else if (this.uiMode === UIMode.Change) {
-                this.detailForm.enable();
-              }
+            if (this.uiMode === UIMode.Display) {
+              this.detailFormGroup.disable();
+            } else if (this.uiMode === UIMode.Change) {
+              this.detailFormGroup.enable();
+            }
 
-              this.listMembers = dtl.Members.slice();
-            }, (error2: any) => {
-              this.isLoadingResults = false;
+            this.listMembers = rsts[1].Members.slice();
+          }, (error: any) => {
+            // Show error dialog
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: error,
+              nzClosable: true,
+            });
+          }, () => {
+            this.isLoadingResults = false;
+          });
+        }
+        break;
 
+        case UIMode.Create:
+        default: {
+          this.isLoadingResults = true;
+          this.finService.fetchAllCurrencies()
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((curries: Currency[]) => {
+              this.arCurrencies = curries;
+            }, (error: any) => {
               // Show error dialog
               this.modalService.create({
-                nzTitle: 'Common.Error',
-                nzContent: error2,
+                nzTitle: translate('Common.Error'),
+                nzContent: error,
                 nzClosable: true,
               });
-            });
-          }
+            }, () => {
+              this.isLoadingResults = false;
+            });  
         }
-      });
-    }, (error: any) => {
-      // Show error dialog
-      this.modalService.create({
-        nzTitle: 'Common.Error',
-        nzContent: error,
-        nzClosable: true,
-      });
+        break;
+      }
     });
   }
 

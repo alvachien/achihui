@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { OrderDetailComponent } from './order-detail.component';
 import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -76,8 +76,11 @@ describe('OrderDetailComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeService },
+        { provide: FinanceOdataService, useValue: storageService },
+        { provide: NZ_I18N, useValue: en_US },
       ]
     });
+
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
@@ -106,11 +109,15 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.isCreateMode).toBeTruthy();
+
+      flush();
     }));
   });
 
@@ -123,6 +130,8 @@ describe('OrderDetailComponent', () => {
     });
 
     it('change mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -145,6 +154,8 @@ describe('OrderDetailComponent', () => {
     });
 
     it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

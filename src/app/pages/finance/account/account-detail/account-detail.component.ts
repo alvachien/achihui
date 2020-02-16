@@ -163,7 +163,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
             this.uiMode = UIMode.Invalid;
             this.modalService.create({
-              nzTitle: 'Common.Error',
+              nzTitle: translate('Common.Error'),
               nzContent: error,
               nzClosable: true,
             });

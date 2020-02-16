@@ -8,6 +8,7 @@ import { NzModalService } from 'ng-zorro-antd';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
   SettlementRule, } from '../../../../model';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   selector: 'hih-fin-order-detail',
@@ -78,6 +79,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       switch(this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
+          this.isLoadingResults = true;
           forkJoin([
             this.odataService.fetchAllControlCenters(),  
             this.odataService.readOrder(this.routerID)
@@ -105,16 +107,20 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error);
             this.uiMode = UIMode.Invalid;
             this.modalService.create({
-              nzTitle: 'Common.Error',
+              nzTitle: translate('Common.Error'),
               nzContent: error,
               nzClosable: true,
             });
+          }, () => {
+            this.isLoadingResults = false;
           });
         }
         break;
 
         case UIMode.Create:
         default: {
+          this.isLoadingResults = true;
+
           this.odataService.fetchAllControlCenters()
             .pipe(takeUntil(this._destroyed$))
             .subscribe((cc: any) => {
@@ -125,11 +131,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           }, (error: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters : ${error}`,
               ConsoleLogTypeEnum.error);
-              this.modalService.create({
-                nzTitle: 'Common.Error',
-                nzContent: error,
-                nzClosable: true,
-              });
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: error,
+              nzClosable: true,
+            });
+          }, () => {
+            this.isLoadingResults = false;
           });
         }
         break;

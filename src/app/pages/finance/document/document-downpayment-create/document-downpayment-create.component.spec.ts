@@ -1,25 +1,30 @@
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 import { DocumentDownpaymentCreateComponent } from './document-downpayment-create.component';
-import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../testing';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentDownpaymentCreateComponent', () => {
   let component: DocumentDownpaymentCreateComponent;
   let fixture: ComponentFixture<DocumentDownpaymentCreateComponent>;
   let fakeData: FakeDataHelper;
+  let storageService: any;
   let fetchAllAccountCategoriesSpy: any;
+  let fetchAllAssetCategoriesSpy: any;
   let fetchAllDocTypesSpy: any;
   let fetchAllTranTypesSpy: any;
   let fetchAllAccountsSpy: any;
@@ -27,8 +32,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
   let createDocSpy: any;
-  let routerSpy: any;
   let activatedRouteStub: any;
+  const authServiceStub: Partial<AuthService> = {};
+  const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService>;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -39,19 +46,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
-    fakeData.buildFinAccountExtraAdvancePayment();
-    fakeData.buildFinADPDocumentForCreate();
-  });
 
-  beforeEach(async(() => {
-    const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => '';
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
-    const storageService: any = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
+      'fetchAllAssetCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
       'fetchAllAccounts',
@@ -61,6 +59,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       'fetchAllCurrencies',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
@@ -68,8 +67,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     createDocSpy = storageService.createADPDocument.and.returnValue(of({}));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
-    const homeService: Partial<HomeDefOdataService> = {};
-    homeService.ChosedHome = fakeData.chosedHome;
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
+
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    uiServiceStub.getUILabel = (le: any) => '';
+  });
+
+  beforeEach(async(() => {
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -86,6 +94,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
         DocumentHeaderComponent,
         DocumentItemsComponent,
         DocumentDownpaymentCreateComponent,
+        MessageDialogComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -93,10 +102,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
-        // { provide: Router, useValue: routerSpy },
+        { provide: NZ_I18N, useValue: en_US },
       ]
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          MessageDialogComponent,
+        ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -107,6 +123,30 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('working with data', () => {
+    beforeEach(() => {
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+    });
+
+    it('setp 0: initial status', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.current).toEqual(0);
+      expect(component.headerFormGroup.valid).toBeFalsy();
+
+      flush();
+    }));
   });
 
   it('1a. should create with adr', fakeAsync(() => {

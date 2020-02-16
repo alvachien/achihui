@@ -5,6 +5,8 @@ import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
@@ -62,7 +64,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     private odataService: FinanceOdataService,
     private _uiStatusService: UIStatusService,
     private homeService: HomeDefOdataService,
-    private _router: Router) {
+    private _router: Router,
+    public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
@@ -126,10 +129,11 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
         ConsoleLogTypeEnum.error);
 
-      // TBD.
-      // this._snackbar.open(error.toString(), undefined, {
-      //   duration: 2000,
-      // });
+      this.modalService.create({
+        nzTitle: translate('Common.Error'),
+        nzContent: error,
+        nzClosable: true,
+      });
     });
   }
 

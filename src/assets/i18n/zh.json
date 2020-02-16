@@ -185,7 +185,8 @@
     "TendencyChart": "趋势图",
     "HIHAuthor": "作者: Alva Chien",
     "FieldIsMandatory": "必填字段，请输入值",
-    "FieldMaxLength": "输入值已超出最大长度"
+    "FieldMaxLength": "输入值已超出最大长度",
+    "Result": "结果"
   },
   "Sys": {
     "Currency": {

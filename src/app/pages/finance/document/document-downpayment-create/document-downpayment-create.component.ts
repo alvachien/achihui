@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
@@ -95,7 +97,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef,
     private homeService: HomeDefOdataService,
-    private _router: Router) {
+    private _router: Router,
+    private modalService: NzModalService) {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
         ConsoleLogTypeEnum.debug);
       this.headerFormGroup = new FormGroup({
@@ -174,7 +177,11 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       }, (error: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
           ConsoleLogTypeEnum.error);
-        // TBD.
+        this.modalService.create({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
       });
   }
 
