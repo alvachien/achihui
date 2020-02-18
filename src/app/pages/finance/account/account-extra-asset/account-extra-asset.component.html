@@ -19,7 +19,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
-        <input nz-input formControlName="nameControl" maxlength="30" required />
+        <input nz-input formControlName="nameControl" maxlength="30" />
         <ng-template #nameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
             {{'Common.FieldMaxLength' | transloco}}

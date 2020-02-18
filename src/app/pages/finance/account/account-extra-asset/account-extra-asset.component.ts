@@ -88,7 +88,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     return this._arAssetCategories;
   }
   set arAssetCategories(ctgy: AssetCategory[]) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'}`,
       ConsoleLogTypeEnum.debug);
 
     if (ctgy) {

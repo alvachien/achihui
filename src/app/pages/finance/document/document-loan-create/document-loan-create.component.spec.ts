@@ -12,7 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -143,4 +143,199 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
   });  
+
+  describe('shall display error dialog when service failed', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should display error when Account Category fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when Doc type fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when Tran. type fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when currency fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when account fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when control center fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when order fetched fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+  });
+
 });

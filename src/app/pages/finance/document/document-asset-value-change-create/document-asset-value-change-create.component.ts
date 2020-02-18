@@ -95,8 +95,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.baseCurrency = this._homeService.ChosedHome.BaseCurrency;
 
     this.firstFormGroup = new FormGroup({
-      accountControl: new FormControl('', Validators.required),
-      headerControl: new FormControl('', Validators.required),
+      accountControl: new FormControl(undefined, Validators.required),
+      headerControl: new FormControl(new Document(), Validators.required),
       amountControl: new FormControl(0, Validators.required),
       ccControl: new FormControl(''),
       orderControl: new FormControl(''),
@@ -275,7 +275,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.confirmInfo.tranDateString = this.firstFormGroup.get('headerControl').value.TranDateFormatString;
 
     // Fetch the existing items
-    this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID).subscribe((x: any) => {
+    this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Get the output
       this.existingDocItems = [];
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {

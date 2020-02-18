@@ -153,6 +153,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Currency service failed',
       //   'Expected snack bar to show the error message: Currency service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -167,6 +177,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Account category service failed',
       //   'Expected snack bar to show the error message: Account category service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -182,6 +202,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Doc type service failed',
       //   'Expected snack bar to show the error message: Doc type service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -197,6 +227,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Tran type service failed',
       //   'Expected snack bar to show the error message: Tran type service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -212,6 +252,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Account service failed',
       //   'Expected snack bar to show the error message: Account service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -227,6 +277,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Control center service failed',
       //   'Expected snack bar to show the error message: Control center service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -242,6 +302,16 @@ describe('DocumentTransferCreateComponent', () => {
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Order service failed',
       //   'Expected snack bar to show the error message: Order service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
   });

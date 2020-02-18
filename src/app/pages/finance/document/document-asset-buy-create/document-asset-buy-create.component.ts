@@ -28,7 +28,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetBuyIn;
-  public assetAccount: AccountExtraAsset;
+  // public assetAccount: AccountExtraAsset;
   // Step: Items
   public itemFormGroup: FormGroup;
   // Step: Confirm
@@ -73,13 +73,13 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
 
     this._docDate = moment();
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
-    this.assetAccount = new AccountExtraAsset();
+    // this.assetAccount = new AccountExtraAsset();
     this.arMembers = this.homeService.ChosedHome.Members.slice();
 
     this.firstFormGroup = new FormGroup({
-      headerControl: new FormControl('', Validators.required),
+      headerControl: new FormControl(new Document(), Validators.required),
+      assetAccountControl: new FormControl(new AccountExtraAsset(), Validators.required),
       amountControl: new FormControl(0, Validators.required),
-      assetAccountControl: new FormControl('', Validators.required),
       ownerControl: new FormControl(undefined, Validators.required),
       legacyControl: new FormControl(false, Validators.required),
       ccControl: new FormControl(),
@@ -259,14 +259,10 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);
 
-      // TBD>
+      // TBD
 
       return;
     });
-  }
-
-  public onBackToList(): void {
-    this._router.navigate(['/finance/document/']);
   }
 
   private _updateConfirmInfo(): void {

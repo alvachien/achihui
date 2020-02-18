@@ -49,7 +49,6 @@ describe('DocumentNormalCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => '';
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
     const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
@@ -90,7 +89,6 @@ describe('DocumentNormalCreateComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        // { provide: Router, useValue: routerSpy },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
@@ -502,7 +500,17 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Currency service failed',
         'Expected dialog to show the error message: Currency service failed');
+  
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
       flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();  
     }));
 
     it('2. should display error when accont category service fails', fakeAsync(() => {
@@ -515,6 +523,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Account category service failed',
         'Expected snack bar to show the error message: Account category service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -528,6 +546,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Doc type service failed',
         'Expected snack bar to show the error message: Doc type service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -541,6 +569,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Tran type service failed',
         'Expected snack bar to show the error message: Tran type service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -554,6 +592,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Account service failed',
         'Expected snack bar to show the error message: Account service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -567,6 +615,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Control center service failed',
         'Expected snack bar to show the error message: Control center service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
 
@@ -582,6 +640,16 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Order service failed',
         'Expected snack bar to show the error message: Order service failed');
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
       flush();
     }));
   });

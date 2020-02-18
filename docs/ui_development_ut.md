@@ -568,6 +568,16 @@ Solution is, shall use ```HttpClientTestingModule``` instead of ```HttpTestingCo
 
 Solution is, import ```HttpClientTestingModule```.
 
+### Error: TypeError: _co.t is not a function
+
+There is an error in HTML file when using ```transloco```. 
+
+Solution is, add a root DIV element:
+```HTML
+<div *transloco="let t">
+</div>
+```
+
 ### Asynchronous service testing
 
 There are several kind of methods to test it, see example [origin link](https://stackblitz.com/angular/gqeobkypklv?file=src%2Fapp%2Ftwain%2Ftwain.component.spec.ts)

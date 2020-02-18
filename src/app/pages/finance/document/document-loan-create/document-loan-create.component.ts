@@ -70,7 +70,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
-  ) {
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -141,7 +141,12 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD.
+
+      this.modalService.create({
+        nzTitle: translate('Common.Error'),
+        nzContent: error,
+        nzClosable: true,
+      });
     });
   }
 
