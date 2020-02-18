@@ -997,11 +997,11 @@ export class AccountExtraLoan extends AccountExtra {
     if (this.startDate === undefined || this.startDate === null) {
       return false;
     }
-    if (this.endDate && this.endDate.isAfter(this.startDate)) {
+    if (this.endDate && this.endDate.isSameOrBefore(this.startDate)) {
       return false;
     }
 
-    if (this.InterestFree && this.annualRate !== 0) {
+    if (this.InterestFree && this.annualRate) {
       return false;
     }
     if (this.annualRate < 0) {
@@ -1042,9 +1042,6 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
 
-    if (this.RepayMethod === undefined || this.RepayMethod === null) {
-      return false;
-    }
     if (this.TotalMonths === undefined || this.TotalMonths <= 0) {
       return false;
     }

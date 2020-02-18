@@ -246,9 +246,8 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    const startdt = moment().add(1, 'M');
-    loan1.startDate = startdt;
-    loan1.endDate = startdt.add(2, 'years');
+    loan1.startDate = moment().add(1, 'M');
+    loan1.endDate = moment().add(2, 'years');
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
     loan1.InterestFree = false;
@@ -300,9 +299,8 @@ describe('AccountExtraLoanComponent', () => {
       fixture.detectChanges();
   
       const loan1: AccountExtraLoan = new AccountExtraLoan();
-      const startdt = moment().add(1, 'M');
-      loan1.startDate = startdt;
-      loan1.endDate = startdt.add(2, 'years');
+      loan1.startDate = moment().add(1, 'M');
+      loan1.endDate = moment().add(2, 'years');
       loan1.TotalMonths = 24;
       loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
       loan1.InterestFree = false;
@@ -329,7 +327,7 @@ describe('AccountExtraLoanComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();

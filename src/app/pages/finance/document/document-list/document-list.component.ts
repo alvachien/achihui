@@ -43,12 +43,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     public uiStatusService: UIStatusService,
     private router: Router,
     public modalService: NzModalService) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...', ConsoleLogTypeEnum.debug);
-      this.isLoadingResults = false;
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this.selectedDocScope = OverviewScopeEnum.All;
@@ -66,7 +68,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     forkJoin(arseqs)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((val: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
+          ConsoleLogTypeEnum.debug);
 
         this.arDocTypes = val[0];
         this.arCurrencies = val[1];
@@ -86,13 +89,15 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         // Error
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: error
+          nzContent: error,
+          nzClosable: true,
         });
       });
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -128,7 +133,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: error
+          nzContent: error,
+          nzClosable: true,
         });
       }, () => {
         this.isLoadingResults = false;

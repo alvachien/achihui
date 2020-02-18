@@ -344,7 +344,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: back to step 0 shall work ', fakeAsync(() => {
+    it('setp 1: back to step 0 shall work', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -435,7 +435,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -459,7 +459,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -483,7 +483,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -507,7 +507,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -531,7 +531,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -555,7 +555,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -579,7 +579,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -603,7 +603,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();

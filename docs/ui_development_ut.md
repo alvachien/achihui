@@ -785,7 +785,7 @@ Expect there is a popup dialog for error:
 ```typescript
   expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
   // OK button
-  (overlayContainerElement.querySelector('button') as HTMLElement).click();
+  (overlayContainerElement.querySelector('.ant-modal-close') as HTMLElement).click();
   tick();
   fixture.detectChanges();
   expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);

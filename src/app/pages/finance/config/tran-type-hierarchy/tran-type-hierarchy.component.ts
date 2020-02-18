@@ -23,7 +23,8 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     public modalService: NzModalService) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...', ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...',
+        ConsoleLogTypeEnum.debug);
      }
 
   ngOnInit() {

@@ -8,11 +8,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import * as moment from 'moment';
 
 import { DocumentListComponent } from './document-list.component';
 import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentListComponent', () => {
@@ -30,6 +31,10 @@ describe('DocumentListComponent', () => {
   let fetchAllDocumentsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  const ardocs: BaseListModel<Document> = {
+    totalCount: 0,
+    contentList: [],
+  };
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -108,22 +113,79 @@ describe('DocumentListComponent', () => {
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+
+      // Delete all docs
+      ardocs.totalCount = 2;
+      ardocs.contentList.push({
+        Id: 1,
+        HID: fakeData.chosedHome.ID,
+        DocType: financeDocTypeNormal,
+        TranCurr: fakeData.chosedHome.BaseCurrency,
+        Desp: 'test',
+        TranDate: moment(),
+        Items: [{
+            DocId: 1,
+            ItemId: 1,
+            AccountId: fakeData.finAccounts[0].Id,
+            TranType: fakeData.finTranTypes[0].Id,
+            TranAmount: 100,
+          } as DocumentItem, {
+            DocId: 1,
+            ItemId: 2,
+            AccountId: fakeData.finAccounts[0].Id,
+            TranType: fakeData.finTranTypes[2].Id,
+            TranAmount: 300,
+          } as DocumentItem,
+        ]
+      } as Document);
+      ardocs.contentList.push({
+        Id: 2,
+        HID: fakeData.chosedHome.ID,
+        DocType: financeDocTypeNormal,
+        TranCurr: fakeData.chosedHome.BaseCurrency,
+        Desp: 'test',
+        TranDate: moment(),
+        Items: [{
+            DocId: 2,
+            ItemId: 1,
+            AccountId: fakeData.finAccounts[0].Id,
+            TranType: fakeData.finTranTypes[0].Id,
+            TranAmount: 200,
+          } as DocumentItem, {
+            DocId: 2,
+            ItemId: 2,
+            AccountId: fakeData.finAccounts[0].Id,
+            TranType: fakeData.finTranTypes[2].Id,
+            TranAmount: 400,
+          } as DocumentItem,
+        ]
+      } as Document);
+
+      fetchAllDocumentsSpy.and.returnValue(asyncData(ardocs));
     });
 
     it('should not show data before OnInit', () => {
       expect(component.listOfDocs.length).toEqual(0);
     });
 
-    // it('should show data after OnInit', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit()
-    //   tick(); // Complete the observables in ngOnInit
-    //   fixture.detectChanges();
+    it('should show data after OnInit', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
-    //   expect(component.dataSet.length).toBeGreaterThan(0);
-    //   expect(component.dataSet.length).toEqual(fakeData.finAccountCategories.length);
+      expect(component.listOfDocs.length).toBeGreaterThan(0);
+      // expect(component.listOfDocs.length).toEqual(ardocs.totalCount);
 
-    //   flush();
-    // }));
+      flush();
+    }));
 
     it('shall trigger navigation on menus for document creating', () => {
       const routerstub = TestBed.get(Router);
@@ -180,6 +242,13 @@ describe('DocumentListComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllDocumentsSpy.and.returnValue(asyncData(ardocs));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -192,7 +261,7 @@ describe('DocumentListComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it('should display error when account category fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -205,7 +274,177 @@ describe('DocumentListComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when currencies fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when doc type fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when tran type fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when account fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when control center fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when order fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when docs fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllDocumentsSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();

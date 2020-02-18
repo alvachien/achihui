@@ -25,6 +25,7 @@
 /libpeerconnection.log
 npm-debug.log
 testem.log
+debug.log
 /typings
 /elder_app
 

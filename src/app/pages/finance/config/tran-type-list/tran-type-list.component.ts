@@ -47,7 +47,8 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
         ConsoleLogTypeEnum.error);
       this.modalService.error({
         nzTitle: translate('Common.Error'),
-        nzContent: error
+        nzContent: error,
+        nzClosable: true,
       });
     }, () => {
       this.isLoadingResults = false;

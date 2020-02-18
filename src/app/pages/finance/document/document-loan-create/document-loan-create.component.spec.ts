@@ -8,13 +8,14 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import * as moment from 'moment';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem, Account, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentLoanCreateComponent', () => {
@@ -142,7 +143,304 @@ describe('DocumentLoanCreateComponent', () => {
 
       flush();
     }));
+
+    it('setp 0: document header is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.current).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      // Update document header - missed desp
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      // dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.nextEnabled).toBeFalsy();
+
+      // Now add the desp back
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      flush();
+    }));
   });  
+
+  it('setp 0: account is manadatory', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.current).toEqual(0);
+    expect(component.firstFormGroup.valid).toBeFalsy();
+
+    // Update document header - missed desp
+    let dochead: Document = new Document();
+    dochead.TranDate = moment();
+    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+    dochead.Desp = 'test';
+    component.firstFormGroup.get('headerControl').setValue(dochead);
+    component.firstFormGroup.get('headerControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();;
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Account - missing
+    // Amount
+    component.firstFormGroup.get('amountControl').setValue(100.20);
+    component.firstFormGroup.get('amountControl').markAsDirty();
+    // Control center
+    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+    component.firstFormGroup.get('ccControl').markAsDirty();
+    // Order - empty
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Add an account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    component.firstFormGroup.get('accountControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    flush();
+  }));
+
+  it('setp 0: amount is manadatory', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.current).toEqual(0);
+    expect(component.firstFormGroup.valid).toBeFalsy();
+
+    // Update document header - missed desp
+    let dochead: Document = new Document();
+    dochead.TranDate = moment();
+    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+    dochead.Desp = 'test';
+    component.firstFormGroup.get('headerControl').setValue(dochead);
+    component.firstFormGroup.get('headerControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();;
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    component.firstFormGroup.get('accountControl').markAsDirty();
+    // Amount - missing
+    // Control center
+    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+    component.firstFormGroup.get('ccControl').markAsDirty();
+    // Order - empty
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Add amount back
+    component.firstFormGroup.get('amountControl').setValue(100.20);
+    component.firstFormGroup.get('amountControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    flush();
+  }));
+
+  it('setp 0: costing object is manadatory', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.current).toEqual(0);
+    expect(component.firstFormGroup.valid).toBeFalsy();
+
+    // Update document header - missed desp
+    let dochead: Document = new Document();
+    dochead.TranDate = moment();
+    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+    dochead.Desp = 'test';
+    component.firstFormGroup.get('headerControl').setValue(dochead);
+    component.firstFormGroup.get('headerControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();;
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    component.firstFormGroup.get('accountControl').markAsDirty();
+    // Amount - missing
+    component.firstFormGroup.get('amountControl').setValue(100.20);
+    component.firstFormGroup.get('amountControl').markAsDirty();
+    // Control center - empty
+    // Order - empty
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Second false case: input both
+    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+    component.firstFormGroup.get('ccControl').markAsDirty();
+    component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+    component.firstFormGroup.get('orderControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Now correct it - remove order
+    component.firstFormGroup.get('orderControl').setValue(undefined);
+    component.firstFormGroup.get('orderControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    flush();
+  }));
+
+  it('setp 1: back to step 0 shall work', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.current).toEqual(0);
+    expect(component.firstFormGroup.valid).toBeFalsy();
+
+    // Update document header - missed desp
+    let dochead: Document = new Document();
+    dochead.TranDate = moment();
+    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+    dochead.Desp = 'test';
+    component.firstFormGroup.get('headerControl').setValue(dochead);
+    component.firstFormGroup.get('headerControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();;
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    component.firstFormGroup.get('accountControl').markAsDirty();
+    // Amount
+    component.firstFormGroup.get('amountControl').setValue(100.20);
+    component.firstFormGroup.get('amountControl').markAsDirty();
+    // Control center
+    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+    component.firstFormGroup.get('ccControl').markAsDirty();
+    // Order - empty
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    // Go to next page
+    component.next();
+    tick();
+    fixture.detectChanges();
+    expect(component.current).toEqual(1);
+
+    // Go back to step 0
+    component.pre();
+    tick();
+    fixture.detectChanges();
+    expect(component.current).toEqual(0);
+
+    flush();
+  }));
+
+  it('setp 1: loan extra info is manadatory', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.current).toEqual(0);
+    expect(component.firstFormGroup.valid).toBeFalsy();
+
+    // Update document header - missed desp
+    let dochead: Document = new Document();
+    dochead.TranDate = moment();
+    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+    dochead.Desp = 'test';
+    component.firstFormGroup.get('headerControl').setValue(dochead);
+    component.firstFormGroup.get('headerControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeFalsy();;
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    component.firstFormGroup.get('accountControl').markAsDirty();
+    // Amount
+    component.firstFormGroup.get('amountControl').setValue(100.20);
+    component.firstFormGroup.get('amountControl').markAsDirty();
+    // Control center
+    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+    component.firstFormGroup.get('ccControl').markAsDirty();
+    // Order - empty
+    tick();
+    fixture.detectChanges();
+    expect(component.firstFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    // Go to next page
+    component.next();
+    tick();
+    fixture.detectChanges();
+    expect(component.current).toEqual(1);
+
+    expect(component.extraFormGroup.valid).toBeFalsy();
+    expect(component.nextEnabled).toBeFalsy();
+
+    // Update the correct extra info
+    const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+    extraLoan.startDate = moment();
+    extraLoan.endDate = moment().add(1, 'y');
+    extraLoan.InterestFree = true;
+    extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    extraLoan.TotalMonths = 12;
+    expect(extraLoan.isAccountValid).toBeTruthy();
+    extraLoan.loanTmpDocs.push(
+      {
+        DocId: 1,
+        AccountId: fakeData.finAccounts[0].Id,
+        TranType: fakeData.finTranTypes[0].Id,
+        TranAmount: 100,
+        ControlCenterId: fakeData.finControlCenters[0].Id,
+        Desp: 'test',
+        TranDate: moment().add(1, 'd')
+      } as TemplateDocLoan);
+    expect(extraLoan.isValid).toBeTruthy();
+    component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+    component.extraFormGroup.get('loanAccountControl').markAsDirty();
+    tick();
+    fixture.detectChanges();
+    expect(component.extraFormGroup.valid).toBeTruthy();
+    expect(component.nextEnabled).toBeTruthy();
+
+    flush();
+  }));
 
   describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
@@ -182,7 +480,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -206,7 +504,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -230,7 +528,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -254,7 +552,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -278,7 +576,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -302,7 +600,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -326,7 +624,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -337,5 +635,4 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
   });
-
 });

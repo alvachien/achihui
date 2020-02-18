@@ -295,7 +295,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
       this.modalService.error({
         nzTitle: translate('Common.Error'),
-        nzContent: error
+        nzContent: error,
+        nzClosable: true,
       });
     });
   }

@@ -5,7 +5,7 @@
 import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, AccountJson,
   DocumentType, DocumentTypeJson, AssetCategory, AssetCategoryJson, AccountExtraAdvancePayment,
   AccountExtraAsset, AccountExtraLoan, ControlCenter, Order, SettlementRule,
-  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum, } from './financemodel';
+  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum, RepaymentMethodEnum, } from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
@@ -393,6 +393,19 @@ describe('AccountExtraLoan', () => {
     const instance2: AccountExtraLoan = new AccountExtraLoan();
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
+  });
+  it('#5. isAccountValid', () => {
+    expect(instance.isAccountValid).toBeFalsy();
+    instance.InterestFree = true;
+    instance.startDate = moment();
+    instance.endDate = moment().subtract(1, 'd');    
+    expect(instance.isAccountValid).toBeFalsy();
+    instance.endDate = moment().add(1, 'y');
+    expect(instance.isAccountValid).toBeFalsy();
+    instance.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    expect(instance.isAccountValid).toBeFalsy();
+    instance.TotalMonths = 12;
+    expect(instance.isAccountValid).toBeTruthy();
   });
 });
 

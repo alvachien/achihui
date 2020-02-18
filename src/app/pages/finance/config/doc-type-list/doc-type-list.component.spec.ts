@@ -134,7 +134,7 @@ describe('DocTypeListComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
