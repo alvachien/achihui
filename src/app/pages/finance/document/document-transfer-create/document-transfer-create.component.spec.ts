@@ -29,8 +29,22 @@ describe('DocumentTransferCreateComponent', () => {
   let fetchAllControlCentersSpy: any;
   let fetchAllOrdersSpy: any;
   let createDocumentSpy: any;
+
   const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
+  const authServiceStub: Partial<AuthService> = {};
+  const uiServiceStub: Partial<UIStatusService> = {};
+  const homeService: Partial<HomeDefOdataService> = {};
+  const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+    'fetchAllCurrencies',
+    'fetchAllDocTypes',
+    'fetchAllAccountCategories',
+    'fetchAllTranTypes',
+    'fetchAllAccounts',
+    'fetchAllControlCenters',
+    'fetchAllOrders',
+    'createDocument',
+  ]);
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -41,26 +55,10 @@ describe('DocumentTransferCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinAccounts();
     fakeData.buildFinOrders();
-  });
 
-  beforeEach(async(() => {
-    const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => '';
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllCurrencies',
-      'fetchAllDocTypes',
-      'fetchAllAccountCategories',
-      'fetchAllTranTypes',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
-      'createDocument',
-    ]);
     fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
@@ -69,7 +67,9 @@ describe('DocumentTransferCreateComponent', () => {
     fetchAllControlCentersSpy = odataService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = odataService.fetchAllOrders.and.returnValue(of([]));
     createDocumentSpy = odataService.createDocument.and.returnValue(of({}));
+  });
 
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -88,7 +88,6 @@ describe('DocumentTransferCreateComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
-        // { provide: Router, useValue: routerSpy },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
@@ -155,7 +154,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Currency service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -179,7 +178,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Account category service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -204,7 +203,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Doc type service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -229,7 +228,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Tran type service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -254,7 +253,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Account service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -279,7 +278,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Control center service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -304,7 +303,7 @@ describe('DocumentTransferCreateComponent', () => {
       //   'Expected snack bar to show the error message: Order service failed');
 
       // Close the dialog
-      const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -754,6 +753,111 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
+    }));
+
+    it('step 3: review and confirm', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      // curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('amountControl').setValue(100);
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component.currentStep).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component.currentStep).toBe(2);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      tick();
+      fixture.detectChanges();
+      expect(component.toFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(3);
+      expect(component.isDocPosting).toBeFalsy();
+
+      // You can also one step back
+      component.pre();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(2);      
+
+      flush();
+    }));
+
+    it('step 4: will create the doc and show the result', fakeAsync(() => {
+      // createDocumentSpy.and.returnValue();
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      // curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('amountControl').setValue(100);
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component.currentStep).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component.currentStep).toBe(2);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      tick();
+      fixture.detectChanges();
+      expect(component.toFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(3);
+      expect(component.isDocPosting).toBeFalsy();
+
+
+      flush();
     }));
   });
 });
