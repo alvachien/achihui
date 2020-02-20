@@ -789,8 +789,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component.currentStep).toBe(2);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
@@ -810,11 +810,16 @@ describe('DocumentTransferCreateComponent', () => {
     }));
 
     it('step 4: will create the doc and show the result', fakeAsync(() => {
-      // createDocumentSpy.and.returnValue();
+      createDocumentSpy.and.returnValue(asyncData({
+        ID: 1,
+        TranCurr: fakeData.chosedHome.BaseCurrency,
+        Desp: 'Test'
+      }));
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      // Step 0
       let curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
@@ -831,7 +836,7 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Now sit in step 2
+      // Now sit in step 1
       expect(component.currentStep).toBe(1);
 
       component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -842,10 +847,10 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Now in step 3
+      // Now in step 2
       expect(component.currentStep).toBe(2);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
@@ -853,9 +858,24 @@ describe('DocumentTransferCreateComponent', () => {
       // Click the next button
       nextButtonNativeEl.click();
       fixture.detectChanges();
+
+      // Now in stp 3
       expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
 
+      // Now in step 4
+      expect(component.currentStep).toBe(4);
+      expect(component.isDocPosting).toBeTruthy();
+
+      // Now the call is finished
+      tick();
+      fixture.detectChanges();
+      expect(createDocumentSpy).toHaveBeenCalled();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docCreateSucceed).toBeTruthy();
 
       flush();
     }));

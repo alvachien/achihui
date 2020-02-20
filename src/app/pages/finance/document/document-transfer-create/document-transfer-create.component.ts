@@ -209,7 +209,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
           this.currentStep ++;
         }
         break;
-      case 3: // Confirm
+      case 3: // Review
         this.onSave();
         break;
       default:
