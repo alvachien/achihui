@@ -809,9 +809,81 @@ describe('DocumentTransferCreateComponent', () => {
       flush();
     }));
 
+    it('step 3: shall popup dialog for invalid generated doc', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 0
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('amountControl').setValue(100);
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component.currentStep).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      tick();
+      fixture.detectChanges();
+      expect(component.toFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3
+      expect(component.currentStep).toBe(3);
+      expect(component.isDocPosting).toBeFalsy();
+      // Just for test - make the check failed
+      component.headerFormGroup.get('amountControl').setValue(0);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      flush();
+      fixture.detectChanges(); // Trigers the generate document object, and it failed
+
+      // Expect an error dialog
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      expect(messageElement).toBeTruthy();
+
+      // Close the dialog
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      flush();
+    }));
+
     it('step 4: will create the doc and show the result', fakeAsync(() => {
       createDocumentSpy.and.returnValue(asyncData({
-        ID: 1,
+        Id: 1,
         TranCurr: fakeData.chosedHome.BaseCurrency,
         Desp: 'Test'
       }));
@@ -867,15 +939,98 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Now in step 4
+      expect(component.isDocPosting).toBeTruthy();
+
+      // Now the call is finished
+      tick();
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+      expect(createDocumentSpy).toHaveBeenCalled();
       expect(component.currentStep).toBe(4);
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeTruthy();
+
+      tick();
+      
+      // Navigation shall work
+      const routerstub = TestBed.get(Router);
+      spyOn(routerstub, 'navigate');
+  
+      component.onDisplayCreatedDoc();;
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/1']);
+
+      flush();
+    }));
+
+    it('step 4: will show the failed result', fakeAsync(() => {
+      createDocumentSpy.and.returnValue(asyncError('failed in creation'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 0
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      // curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('amountControl').setValue(100);
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 1
+      expect(component.currentStep).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 2
+      expect(component.currentStep).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      tick();
+      fixture.detectChanges();
+      expect(component.toFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in stp 3
+      expect(component.currentStep).toBe(3);
+      expect(component.isDocPosting).toBeFalsy();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 4
       expect(component.isDocPosting).toBeTruthy();
 
       // Now the call is finished
       tick();
       fixture.detectChanges();
       expect(createDocumentSpy).toHaveBeenCalled();
-      expect(component.isDocPosting).toBeFalsy();
-      expect(component.docCreateSucceed).toBeTruthy();
+      tick();
+      fixture.detectChanges();
+      
+      expect(component.currentStep).toBe(4);
+      expect(component.isDocPosting).toBeFalsy('expect variable isDocPosting is false');
+      expect(component.docIdCreated).toBeNull('expect variable docIdCreated is null');
+      expect(component.docPostingFailed).toEqual('failed in creation');
 
       flush();
     }));

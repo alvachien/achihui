@@ -186,7 +186,10 @@
     "HIHAuthor": "作者: Alva Chien",
     "FieldIsMandatory": "必填字段，请输入值",
     "FieldMaxLength": "输入值已超出最大长度",
-    "Result": "结果"
+    "Result": "结果",
+    "SubmissionFailed": "提交失败",
+    "ResubmissionHint": "请检查以下信息，修正后再次提交。",
+    "TitleOfSubmitError": "你提交的内容有如下错误"
   },
   "Sys": {
     "Currency": {

@@ -186,7 +186,10 @@
     "HIHAuthor": "Writen and Maintained by Alva Chien",
     "FieldIsMandatory": "Please input value to mandatory field",
     "FieldMaxLength": "Please correct your input as it beyond max length",
-    "Result": "Result"
+    "Result": "Result",
+    "SubmissionFailed": "Submission Failed",
+    "ResubmissionHint": "Please check and modify the following information before resubmitting.",
+    "TitleOfSubmitError": "The content you submitted has the following error"
   },
   "Sys": {
     "Currency": {

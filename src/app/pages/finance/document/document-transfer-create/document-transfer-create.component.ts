@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
+import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   financeDocTypeTransfer, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
@@ -10,8 +12,7 @@ import {
   BuildupAccountForSelection, BuildupOrderForSelection, costObjectValidator, financeTranTypeTransferOut, financeTranTypeTransferIn,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { takeUntil } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -35,8 +36,10 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
   public currentStep = 0;
-  public docCreateSucceed = false;
+  // public docCreateSucceed = false;
+  public docIdCreated?: number = null;
   public isDocPosting = false;
+  public docPostingFailed: string;
   // Step: Header
   public headerFormGroup: FormGroup;
   // Step: From
@@ -50,7 +53,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     public homeService: HomeDefOdataService,
     public uiStatusService: UIStatusService,
     public odataService: FinanceOdataService,
-    public modalService: NzModalService) {
+    public modalService: NzModalService,
+    public router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.headerFormGroup = new FormGroup({
@@ -74,9 +78,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  get curDocDate(): moment.Moment {
-    return moment();
-  }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
       return this.headerFormGroup.valid;
@@ -150,6 +151,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave...',
       ConsoleLogTypeEnum.debug);
 
+    this.isDocPosting = true;
     // Save the doc
     const detailObject: Document = this._generateDocObject();
     if (!detailObject.onVerify({
@@ -163,27 +165,27 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
-      // popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
-      this.docCreateSucceed = false;
-      // TBD. Add error information
+
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       this.isDocPosting = false;
-      this.currentStep = 4;
 
       return;
     }
 
     // Now call to the service
+    this.currentStep = 4;
     this.odataService.createDocument(detailObject).subscribe((doc) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
-      this.docCreateSucceed = true;
+      this.docIdCreated = doc.Id;
+      this.isDocPosting = false;
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
         ConsoleLogTypeEnum.error);
-      this.docCreateSucceed = false;
-    }, () => {
+      this.docPostingFailed = error;
+      this.docIdCreated = null;
       this.isDocPosting = false;
-      this.currentStep = 4;
+    }, () => {
     });
   }
 
@@ -216,6 +218,9 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         break;
     }
   }
+  public onDisplayCreatedDoc(): void {
+    this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+  }
 
   private _updateConfirmInfo(): void {
     const doc = this._generateDocObject();
@@ -242,6 +247,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     const detailObject: Document = this.headerFormGroup.get('headerControl').value as Document;
     detailObject.HID = this.homeService.ChosedHome.ID;
     detailObject.DocType = this.curDocType;
+    detailObject.Items = [];
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;

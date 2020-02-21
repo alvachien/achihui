@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -37,6 +38,8 @@ describe('DocumentAssetBuyCreateComponent', () => {
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
   let assetAccount: any;
+  const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -127,6 +130,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
   });
 
   describe('working with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
@@ -137,6 +143,16 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
       createAssetBuyinDocumentSpy = storageService.createAssetBuyinDocument.and.returnValue(of({}));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('setp 0: initial status', fakeAsync(() => {
@@ -383,6 +399,122 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 0: shall go to step 1 with valid legacy case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(1);
+      expect(component.itemFormGroup.disabled).toBeTrue();
+
+      // Shall go back to step 0
+      component.pre();
+      fixture.detectChanges();
+      expect(component.currentStep).toEqual(0);
+
+      flush();
+    }));
+
+    it('setp 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(true);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(1);
+      expect(component.itemFormGroup.enable).toBeTrue();
+
+      // Shall go back to step 0
+      component.pre();
+      fixture.detectChanges();
+      expect(component.currentStep).toEqual(0);
 
       flush();
     }));
