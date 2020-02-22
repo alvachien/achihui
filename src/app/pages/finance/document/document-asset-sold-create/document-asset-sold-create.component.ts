@@ -16,6 +16,7 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccoun
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-asset-sold-create',
@@ -38,7 +39,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docCreateSucceed = false;
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
   currentStep = 0;
 
   public curMode: UIMode = UIMode.Create;
@@ -173,25 +175,22 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
   pre(): void {
     this.currentStep -= 1;
-    this.changeContent();
   }
 
   next(): void {
-    this.currentStep += 1;
-    this.changeContent();
-  }
-
-  changeContent(): void {
     switch (this.currentStep) {
       case 0: {
+        this.currentStep ++;
         break;
       }
       case 1: {
+        this.currentStep ++;
         this._updateConfirmInfo();
         break;
       }
       case 2: {
         // Review
+        this.currentStep ++;
         break;
       }
       case 3: {
@@ -199,13 +198,14 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         this.onSubmit();
         break;
       }
-      default: {
-      }
+
+      default:
+      break;
     }
   }
 
   onSubmit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent onSubmit',
       ConsoleLogTypeEnum.debug);
 
     // Generate the doc, and verify it
@@ -219,7 +219,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       Currencies: this.arCurrencies,
       BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
     })) {
-
+      popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
+      this.isDocPosting = false;
       return;
     }
 
@@ -241,15 +242,19 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument',
         ConsoleLogTypeEnum.debug);
+
+      this.currentStep = 3;
+      this.docIdCreated = nid;
+      this.isDocPosting = false;
     }, (err: string) => {
       // Handle the error
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);
 
-      // TBD.
-      return;
-    }, () => {
-      // DO nothing
+      this.currentStep = 3;
+      this.docIdCreated = null;
+      this.docPostingFailed = err;
+      this.isDocPosting = false;
     });
   }
 
@@ -273,6 +278,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this.homeService.ChosedHome.ID;
     ndoc.DocType = this.curDocType;
+
+    ndoc.Items = [];
     // Add items
     ndoc.Items = this.itemFormGroup.get('itemControl').value;
 

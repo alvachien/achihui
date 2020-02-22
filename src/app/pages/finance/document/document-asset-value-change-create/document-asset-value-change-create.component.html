@@ -13,9 +13,9 @@
   </nz-page-header>
 
   <nz-steps [nzCurrent]="currentStep">
-    <nz-step [nzTitle]="t('Common.Header')"></nz-step>
-    <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
-    <nz-step [nzTitle]="t('Common.Result')"></nz-step>
+    <nz-step [nzTitle]="'Common.Header' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
 
   <div class="steps-content">
@@ -127,30 +127,29 @@
 
     <!-- Result -->
     <div [hidden]="currentStep !== 2">
-      <div *ngIf="docCreateSucceed">
+      <div *ngIf="docIdCreated">
         <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">
           <div nz-result-extra>
-            <button nz-button nzType="primary">{{'Common.Display' | transloco}}</button>
+            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
             <button nz-button>Create another Document</button>
           </div>
         </nz-result>
       </div>
-      <div *ngIf="!docCreateSucceed">
-        <nz-result nzTitle="Submission Failed" nzStatus="error"
-          nzSubTitle="Please check and modify the following information before resubmitting.">
+      <div *ngIf="!docIdCreated">
+        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
           <div nz-result-content>
-            <div class="result_failed_content">
-              <h4 nz-title>The content you submitted has the following error:</h4>
-              <p nz-paragraph *ngFor="let svcerror of serviceErrors">
+            <div class="desc">
+              <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
+              <p nz-paragraph>
                 <i nz-icon nzType="close-circle"></i>
-                {{svcerror}}
+                {{docPostingFailed}}
               </p>
             </div>
           </div>
           <div nz-result-extra>
-            <button nz-button nzType="primary">Go Console</button>
-            <button nz-button>Buy Again</button>
+            <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
           </div>
         </nz-result>
       </div>
@@ -159,10 +158,10 @@
 
   <div class="steps-action">
     <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 2">
-      <span>{{'Common.PreviousButton' | transloco}}</span>
+      <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
     </button>
-    <button nz-button nzType="primary" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="currentStep < 2">
-      <span>{{'Common.NextButton' | transloco}}</span>
+    <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled" *ngIf="currentStep < 2">
+      {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>

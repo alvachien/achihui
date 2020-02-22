@@ -8,6 +8,8 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import * as moment from 'moment';
+import { By } from '@angular/platform-browser';
 
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 import { DocumentHeaderComponent } from '../document-header';
@@ -15,7 +17,7 @@ import { DocumentItemsComponent } from '../document-items';
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem, Account, financeAccountCategoryAsset, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('DocumentAssetSoldCreateComponent', () => {
@@ -31,9 +33,13 @@ describe('DocumentAssetSoldCreateComponent', () => {
   let fetchAllOrdersSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
+  let createAssetSoldoutDocumentSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
+  let assetAccount: Account;
+  const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -44,6 +50,9 @@ describe('DocumentAssetSoldCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+    assetAccount = fakeData.finAccounts.find((val: Account) => {
+      return val.CategoryId === financeAccountCategoryAsset;
+    });
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
@@ -54,6 +63,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       'fetchAllControlCenters',
       'fetchAllOrders',
       'fetchAllCurrencies',
+      'createAssetSoldoutDocument',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
@@ -63,6 +73,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
+    createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -128,7 +139,8 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
+      createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(asyncData(1));
     });
 
     it('setp 0: initial status', fakeAsync(() => {
@@ -141,7 +153,458 @@ describe('DocumentAssetSoldCreateComponent', () => {
 
       flush();
     }));
+
+    it('setp 0: document header is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      // Update document header - missed desp
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      // dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Now correct the header's desp
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 0: asset account is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account - missing
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add the asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 0: amount is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount - missing
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add the missing part
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 0: shall go to step 1 when input is valid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toBe(1);
+
+      // Previous
+      component.pre();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(0);
+
+      flush();
+    }));
+
+    it('setp 1: item is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toBe(1);
+      expect(component.itemFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.itemFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 1: item amount shall equal to the amount in header', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toBe(1);
+      expect(component.itemFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.itemFormGroup.valid).toBeFalsy('Amount is mismatch');
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      flush();
+    }));
+
+    it('setp 1: shall go to step 2 when input is valid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toBe(2);
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 2: shall show success page', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      expect(component.currentStep).toBe(2);
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeTruthy();
+      expect(createAssetSoldoutDocumentSpy).toHaveBeenCalled();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toEqual(1);
+
+      flush();
+    }));
   });
+
   describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -154,7 +617,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer],

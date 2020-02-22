@@ -50,7 +50,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docCreateSucceed = false;
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
   current = 0;
 
   get tranAmount(): number {
@@ -249,15 +250,22 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl').value as AccountExtraLoan;
 
-    this.odataService.createLoanDocument(docObj, acntobj).subscribe((x: any) => {
+    this.odataService.createLoanDocument(docObj, acntobj).subscribe((nid: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
         ConsoleLogTypeEnum.debug);
 
+      this.current = 4;
+      this.docIdCreated = nid;
+      this.isDocPosting = false;  
     }, (error: any) => {
       // Show error message
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
         ConsoleLogTypeEnum.error);
-      // TBD.
+
+      this.current = 4;
+      this.docIdCreated = null;
+      this.docPostingFailed = error;
+      this.isDocPosting = false;  
     });
   }
 
@@ -265,6 +273,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     const doc: Document = this.firstFormGroup.get('headerControl').value;
     doc.HID = this.homeService.ChosedHome.ID;
     doc.DocType = this.curDocType;
+    doc.Items = [];
 
     const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;

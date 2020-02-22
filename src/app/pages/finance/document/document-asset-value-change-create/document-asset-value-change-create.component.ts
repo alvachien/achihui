@@ -63,7 +63,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public existingDocItems: DocItemWithBlance[] = [];
   public isDocPosting = false;
   // Step: Result
-  public docCreateSucceed = false;
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
   currentStep = 0;
 
   // Variables
@@ -251,16 +252,18 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
         ConsoleLogTypeEnum.debug);
+
+      this.currentStep = 2;
+      this.docIdCreated = nid;
+      this.isDocPosting = false;
     }, (err: string) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
         ConsoleLogTypeEnum.error);
 
-      this.modalService.create({
-        nzTitle: translate('Common.Error'),
-        nzContent: err,
-        nzClosable: true,
-      });
-      return;
+      this.currentStep = 2;
+      this.docIdCreated = null;
+      this.docPostingFailed = err;
+      this.isDocPosting = false;
     });
   }
 
@@ -335,6 +338,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homeService.ChosedHome.ID;
     ndoc.DocType = this.curDocType;
+    ndoc.Items = [];
 
     // Add items
     let ndocitem: DocumentItem = new DocumentItem();

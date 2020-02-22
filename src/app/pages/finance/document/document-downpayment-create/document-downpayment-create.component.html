@@ -148,10 +148,10 @@
 
   <div class="steps-action">
     <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0 && current < 3">
-      <span>{{'Common.PreviousButton' | transloco}}</span>
+      <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
     </button>
-    <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextEnabled">
-      <span>{{'Common.NextButton' | transloco}}</span>
+    <button nz-button nzType="default" id="button_next_step" (click)="next()" *ngIf="current < 3" [disabled]="!nextEnabled">
+      {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>

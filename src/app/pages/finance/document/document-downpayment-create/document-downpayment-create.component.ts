@@ -267,6 +267,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     const doc: Document = this.headerFormGroup.get('headerControl').value;
     doc.HID = this.homeService.ChosedHome.ID;
     doc.DocType = this.curDocType;
+    doc.Items = [];
 
     const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;

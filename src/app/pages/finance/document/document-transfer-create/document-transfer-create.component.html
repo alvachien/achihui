@@ -155,7 +155,7 @@
     </button>
     <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled"
       *ngIf="currentStep < 4">
-      <i nz-icon nzType="right"></i>{{'Common.NextButton' | transloco}}
+      {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>
