@@ -112,7 +112,7 @@ describe('DocumentNormalCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. should prevent errors by the checking logic', () => {
+  describe('3. working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -192,6 +192,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       flush();
     }));
+    
     it('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -462,7 +463,7 @@ describe('DocumentNormalCreateComponent', () => {
     // Reset should work
   });
 
-  describe('1. Exception case handling', () => {
+  describe('2. Exception case handling', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 

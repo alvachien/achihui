@@ -403,7 +403,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: shall go to step 1 with valid legacy case', fakeAsync(() => {
+    it('setp 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -451,7 +451,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.disabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBeTrue();
 
       // Shall go back to step 0
       component.pre();
@@ -461,7 +461,459 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
+    it('setp 1: item is manadatory with non-legacy case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(1);
+      expect(component.itemFormGroup.enabled).toBeTrue();
+
+      // No items
+      expect(component.itemFormGroup.valid).toBeFalse();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Now add items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.itemFormGroup.valid).toBeTrue();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 1: item amount shall equal to amount in step 0 with non-legacy case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      expect(component.currentStep).toEqual(1);
+      expect(component.itemFormGroup.enabled).toBeTrue();
+
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.itemFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      flush();
+    }));
+
+    it('setp 2: go to review page with valid non-legacy case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      expect(component.currentStep).toBe(2);
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('setp 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
+      createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      // Fake an error
+      dochead.Desp = '';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.markAsDirty();
+      fixture.detectChanges();
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3.
+      tick();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(2);
+      expect(component.isDocPosting).toBeFalsy();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 3: display success result page with valid non-legacy case', fakeAsync(() => {
+      createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.20;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3.
+      expect(component.isDocPosting).toBeTruthy();
+      tick();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(4);
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toEqual(1);
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 3: display failed  result page with valid non-legacy case', fakeAsync(() => {
+      createAssetBuyinDocumentSpy.and.returnValue(asyncError('doc failed to create'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Asset account
+      component.firstFormGroup.get('assetAccountControl').setValue(assetAccount.ExtraInfo as AccountExtraAsset);
+      component.firstFormGroup.get('assetAccountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.chosedHome.Members[0].User);
+      component.firstFormGroup.get('ownerControl').markAsDirty();
+      // Legacy
+      component.firstFormGroup.get('legacyControl').setValue(false);
+      component.firstFormGroup.get('legacyControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.20;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3.
+      expect(component.isDocPosting).toBeTruthy();
+      tick();
+      fixture.detectChanges();
+      expect(component.currentStep).toBe(4);
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.docPostingFailed).toBeTruthy();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 0: shall go to step 1 with valid legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -473,7 +925,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       let dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = moment().subtract(1, 'y');
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl').setValue(dochead);
@@ -509,7 +961,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enable).toBeTrue();
+      expect(component.itemFormGroup.disabled).toBeTrue();
 
       // Shall go back to step 0
       component.pre();

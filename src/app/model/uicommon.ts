@@ -596,3 +596,20 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
 
   return null;
 };
+
+/**
+ * Validator for doc items
+ * @param group Instance of the form group
+ */
+// export const itemExistenceValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+//   let items: any = group.get('itemControl').value;
+//   if (items instanceof Array) {
+//     if (items.length === 0) {
+//       return { noitem: true };
+//     }
+//   } else {
+//     return { invaliditems: true };
+//   }
+
+//   return null;
+// };

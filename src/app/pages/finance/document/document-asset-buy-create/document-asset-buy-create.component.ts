@@ -11,7 +11,8 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account,
   AccountExtraAsset, UICommonLabelEnum, ModelUtility, AssetCategory,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator, ConsoleLogTypeEnum,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
+  ConsoleLogTypeEnum,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -63,6 +64,9 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   get IsLegacyAsset(): boolean {
     return this.firstFormGroup && this.firstFormGroup.get('legacyControl')!.value;
   }
+  get tranAmount(): number {
+    return this.firstFormGroup && this.firstFormGroup.get('amountControl')!.value;
+  }
 
   constructor(
     private _router: Router,
@@ -88,8 +92,8 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       orderControl: new FormControl(),
     }, [costObjectValidator, this._legacyDateValidator, this._amountValidator]);
     this.itemFormGroup = new FormGroup({
-      itemControl: new FormControl(),
-    });
+      itemControl: new FormControl(undefined),
+    }, [this.amountEqualsValidator]);
   }
 
   ngOnInit(): void {
@@ -180,39 +184,31 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
 
   pre(): void {
     this.currentStep -= 1;
-    this.changeContent();
   }
 
   next(): void {
-    this.currentStep += 1;
-    this.changeContent();
-  }
-
-  public onDisplayCreatedDoc(): void {
-    this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
-  }
-
-  changeContent(): void {
     switch (this.currentStep) {
       case 0: {
+        this.currentStep += 1;
         break;
       }
       case 1: {
         this._updateConfirmInfo();
+        this.currentStep += 1;
         break;
       }
       case 2: {
         // Review
-        break;
-      }
-      case 3: {
-        this.isDocPosting = true;
         this.onSubmit();
         break;
       }
-      default: {
-      }
+      default:
+      break;
     }
+  }
+
+  public onDisplayCreatedDoc(): void {
+    this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
   }
 
   public onSubmit(): void {
@@ -238,6 +234,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       }
     }
 
+    this.isDocPosting = true;
     // Do the real submit.
     let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this.homeService.ChosedHome.ID;
@@ -259,15 +256,19 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
         ConsoleLogTypeEnum.debug);
+
+      this.currentStep = 4;
       this.docIdCreated = nid;
+      this.isDocPosting = false;
     }, (err: string) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);
 
       // Handle the error
+      this.currentStep = 4;
       this.docIdCreated = null;
       this.docPostingFailed = err;
-      return;
+      this.isDocPosting = false;
     });
   }
 
@@ -317,6 +318,41 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
     if (!this.IsLegacyAsset) {
       let amt: any = group.get('amountControl').value;
       if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
+        return { amountisinvalid: true };
+      }
+    }
+
+    return null;
+  }
+  private amountEqualsValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent amountEqualsValidator',
+      ConsoleLogTypeEnum.debug);
+
+    if (!this.IsLegacyAsset) {
+      if (this.tranAmount) {
+        const aritems = group.get('itemControl').value as DocumentItem[];
+        let amtInItems = 0;
+        if (aritems) {
+          aritems.forEach((val: DocumentItem) => {
+            if (val.TranType) {
+              let ttobj = this.arTranTypes.find((t: TranType) => {
+                return t.Id === val.TranType;
+              });
+              if (ttobj) {
+                if (ttobj.Expense) {
+                  amtInItems -= val.TranAmount;
+                } else {
+                  amtInItems += val.TranAmount;
+                }
+              }
+            }
+          });  
+        }
+
+        if (amtInItems !== this.tranAmount) {
+          return { amountMismatch: true };
+        }
+      } else {
         return { amountisinvalid: true };
       }
     }

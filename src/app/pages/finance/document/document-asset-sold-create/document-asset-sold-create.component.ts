@@ -12,8 +12,8 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccoun
   AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, momentDateFormat, ModelUtility,
-  financeDocTypeAssetSoldOut, FinanceAssetSoldoutDocumentAPI,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator, ConsoleLogTypeEnum,
+  financeDocTypeAssetSoldOut, FinanceAssetSoldoutDocumentAPI, ConsoleLogTypeEnum,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
@@ -72,13 +72,6 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.arMembersInChosedHome = this.homeService.ChosedHome.Members.slice();
     this._docDate = moment();
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
-  }
-
-  ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
 
     this.firstFormGroup = new FormGroup({
       accountControl: new FormControl('', Validators.required),
@@ -88,8 +81,16 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       orderControl: new FormControl(''),
     }, [costObjectValidator, this._headerAmountValidator]);
     this.itemFormGroup = new FormGroup({
-      itemControl: new FormControl(''),
+      itemControl: new FormControl(),
+    // }, [itemExistenceValidator, this._itemAmountValidator]);
     }, [this._itemAmountValidator]);
+  }
+
+  ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
+      ConsoleLogTypeEnum.debug);
+
+    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -296,14 +297,16 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     let items: DocumentItem[] = group.get('itemControl').value;
 
     let totalAmt: number = 0;
-    for (let item of items) {
-      let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
-        return valtt.Id === item.TranType;
-      }).Expense;
-      if (bExpense) {
-        totalAmt -= item.TranAmount;
-      } else {
-        totalAmt += item.TranAmount;
+    if (items) {
+      for (let item of items) {
+        let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
+          return valtt.Id === item.TranType;
+        }).Expense;
+        if (bExpense) {
+          totalAmt -= item.TranAmount;
+        } else {
+          totalAmt += item.TranAmount;
+        }
       }
     }
 
