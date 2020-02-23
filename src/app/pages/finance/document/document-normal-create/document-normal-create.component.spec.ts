@@ -32,6 +32,7 @@ describe('DocumentNormalCreateComponent', () => {
   let fetchAllOrdersSpy: any;
   let createDocumentSpy: any;
   const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -164,9 +165,7 @@ describe('DocumentNormalCreateComponent', () => {
       // Shall not allow go the next page
       expect(component.nextButtonEnabled).toBeFalse();
 
-      // Event call the next
-      component.next();
-      expect(component.currentStep).toEqual(0);
+      flush();
     }));
 
     it('step 0: should go to next page if header is valid for document with local currency', fakeAsync(() => {
@@ -244,9 +243,6 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.currentStep).toEqual(1);
 
       expect(component.nextButtonEnabled).toBeFalse();
-      // Event call the next
-      component.next();
-      expect(component.currentStep).toEqual(1);
 
       flush();
     }));
@@ -256,9 +252,7 @@ describe('DocumentNormalCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      // Shall not allow go the next page
-      expect(component.nextButtonEnabled).toBeFalse();
-
+      // Step 0.
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
@@ -267,12 +261,9 @@ describe('DocumentNormalCreateComponent', () => {
       component.headerForm.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-
-      // Event call the next
       component.next();
-      expect(component.currentStep).toEqual(1);
 
-      // Items
+      // Step 1.
       const aritems: DocumentItem[] = [];
       const aritem: DocumentItem = new  DocumentItem();
       aritem.ItemId = 1;
@@ -293,7 +284,76 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
     }));
 
-    // Step 2: Review and confirm
+    it('step 2: should popup an error dialog if verification failed on generated object', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 0.
+      const docheader = new Document();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 200;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemsForm.get('itemControl').setValue(aritems);
+      component.itemsForm.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      expect(component.currentStep).toEqual(2);
+      // Fake an error in generated doc
+      docheader.Desp = '';
+      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      nextButtonNativeEl.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(2);
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
 
     it('step 3: should display error result when service return failure', fakeAsync(() => {
       createDocumentSpy.and.returnValue(asyncError<string>('create document failed'));
@@ -347,11 +407,8 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      expect(component.docCreateSucceed).toBeFalse();
-
-      // There shall be display the error
-      const elems = fixture.debugElement.query(By.css('.result_failed_content'));
-      expect(elems).toBeTruthy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.docPostingFailed).toBeTruthy();
     }));
 
     it('step 3: should save document for base currency case', fakeAsync(() => {

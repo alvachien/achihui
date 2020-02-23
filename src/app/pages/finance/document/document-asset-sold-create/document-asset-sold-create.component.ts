@@ -241,6 +241,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.currentStep = 3;
       this.docIdCreated = nid;
       this.isDocPosting = false;
+      this.docPostingFailed = null;
     }, (err: string) => {
       // Handle the error
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,

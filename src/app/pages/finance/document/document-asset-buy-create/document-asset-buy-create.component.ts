@@ -260,6 +260,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       this.currentStep = 4;
       this.docIdCreated = nid;
       this.isDocPosting = false;
+      this.docPostingFailed = null;
     }, (err: string) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);

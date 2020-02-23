@@ -244,7 +244,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.currentStep = 3;
       this.docIdCreated = ndoc.Id;
       this.isDocPosting = false;
-      // TBD.
+      this.docPostingFailed = null;
     }, (error: any) => {
       // Show error message
       this.currentStep = 3;

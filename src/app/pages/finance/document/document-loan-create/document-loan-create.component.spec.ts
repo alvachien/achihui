@@ -25,17 +25,19 @@ describe('DocumentLoanCreateComponent', () => {
   let fakeData: FakeDataHelper;
   let storageService: any;
   let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAssetCategoriesSpy: any;
   let fetchAllDocTypesSpy: any;
   let fetchAllTranTypesSpy: any;
   let fetchAllAccountsSpy: any;
   let fetchAllOrdersSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
+  let createLoanDocumentSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
+  const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -49,22 +51,22 @@ describe('DocumentLoanCreateComponent', () => {
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
-      'fetchAllAssetCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
       'fetchAllCurrencies',
+      'createLoanDocument',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
+    createLoanDocumentSpy = storageService.createLoanDocument.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -128,7 +130,6 @@ describe('DocumentLoanCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
       fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
@@ -189,272 +190,579 @@ describe('DocumentLoanCreateComponent', () => {
 
       flush();
     }));
+
+    it('setp 0: account is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+  
+      // Update document header - missed desp
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Account - missing
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Add an account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+  
+      flush();
+    }));
+  
+    it('setp 0: amount is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+  
+      // Update document header - missed desp
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount - missing
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Add amount back
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+  
+      flush();
+    }));
+  
+    it('setp 0: costing object is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      expect(component.currentStep).toEqual(0);
+      expect(component.firstFormGroup.valid).toBeFalsy();
+  
+      // Update document header - missed desp
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount - missing
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center - empty
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Second false case: input both
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Now correct it - remove order
+      component.firstFormGroup.get('orderControl').setValue(undefined);
+      component.firstFormGroup.get('orderControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+  
+      flush();
+    }));
+  
+    it('setp 1: back to step 0 shall work', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toEqual(1);
+  
+      // Go back to step 0
+      component.pre();
+      tick();
+      fixture.detectChanges();
+      expect(component.currentStep).toEqual(0);
+  
+      flush();
+    }));
+  
+    it('setp 1: loan extra info is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+  
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.extraFormGroup.valid).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
+  
+      // Update the correct extra info
+      const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+      extraLoan.startDate = moment();
+      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.InterestFree = true;
+      extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      extraLoan.TotalMonths = 12;
+      expect(extraLoan.isAccountValid).toBeTruthy();
+      extraLoan.loanTmpDocs.push(
+        {
+          DocId: 1,
+          AccountId: fakeData.finAccounts[0].Id,
+          TranType: fakeData.finTranTypes[0].Id,
+          TranAmount: 100,
+          ControlCenterId: fakeData.finControlCenters[0].Id,
+          Desp: 'test',
+          TranDate: moment().add(1, 'd')
+        } as TemplateDocLoan);
+      expect(extraLoan.isValid).toBeTruthy();
+      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.extraFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+  
+      flush();
+    }));
+
+    it('setp 2: shall go to step 2 in valid case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+      extraLoan.startDate = moment();
+      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.InterestFree = true;
+      extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      extraLoan.TotalMonths = 12;
+      expect(extraLoan.isAccountValid).toBeTruthy();
+      extraLoan.loanTmpDocs.push(
+        {
+          DocId: 1,
+          AccountId: fakeData.finAccounts[0].Id,
+          TranType: fakeData.finTranTypes[0].Id,
+          TranAmount: 100,
+          ControlCenterId: fakeData.finControlCenters[0].Id,
+          Desp: 'test',
+          TranDate: moment().add(1, 'd')
+        } as TemplateDocLoan);
+      expect(extraLoan.isValid).toBeTruthy();
+      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Go to next page
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toBe(2);
+  
+      flush();
+    }));
+
+    it('setp 2: shall popup error dialog if verfication failed in generated object', fakeAsync(() => {
+      createLoanDocumentSpy.and.returnValue(asyncData({
+        Id: 1
+      } as Document));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+      extraLoan.startDate = moment();
+      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.InterestFree = true;
+      extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      extraLoan.TotalMonths = 12;
+      expect(extraLoan.isAccountValid).toBeTruthy();
+      extraLoan.loanTmpDocs.push(
+        {
+          DocId: 1,
+          AccountId: fakeData.finAccounts[0].Id,
+          TranType: fakeData.finTranTypes[0].Id,
+          TranAmount: 100,
+          ControlCenterId: fakeData.finControlCenters[0].Id,
+          Desp: 'test',
+          TranDate: moment().add(1, 'd')
+        } as TemplateDocLoan);
+      expect(extraLoan.isValid).toBeTruthy();
+      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Go to next page
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      // Fake an error in generated doc
+      dochead.Desp = '';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      nextButtonNativeEl.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(2);
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 3: shall display success result after document posted', fakeAsync(() => {
+      createLoanDocumentSpy.and.returnValue(asyncData({
+        Id: 1
+      } as Document));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+      extraLoan.startDate = moment();
+      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.InterestFree = true;
+      extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      extraLoan.TotalMonths = 12;
+      expect(extraLoan.isAccountValid).toBeTruthy();
+      extraLoan.loanTmpDocs.push(
+        {
+          DocId: 1,
+          AccountId: fakeData.finAccounts[0].Id,
+          TranType: fakeData.finTranTypes[0].Id,
+          TranAmount: 100,
+          ControlCenterId: fakeData.finControlCenters[0].Id,
+          Desp: 'test',
+          TranDate: moment().add(1, 'd')
+        } as TemplateDocLoan);
+      expect(extraLoan.isValid).toBeTruthy();
+      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Go to next page
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeTruthy();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(createLoanDocumentSpy).toHaveBeenCalled();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBe(1);
+      expect(component.currentStep).toBe(3);
+
+      flush();
+    }));
+
+    it('setp 3: shall display error result after document failed to post', fakeAsync(() => {
+      createLoanDocumentSpy.and.returnValue(asyncError('Failed to post'));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Step 0
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+  
+      // Go to next page
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1.
+      const extraLoan: AccountExtraLoan = new AccountExtraLoan();
+      extraLoan.startDate = moment();
+      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.InterestFree = true;
+      extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      extraLoan.TotalMonths = 12;
+      expect(extraLoan.isAccountValid).toBeTruthy();
+      extraLoan.loanTmpDocs.push(
+        {
+          DocId: 1,
+          AccountId: fakeData.finAccounts[0].Id,
+          TranType: fakeData.finTranTypes[0].Id,
+          TranAmount: 100,
+          ControlCenterId: fakeData.finControlCenters[0].Id,
+          Desp: 'test',
+          TranDate: moment().add(1, 'd')
+        } as TemplateDocLoan);
+      expect(extraLoan.isValid).toBeTruthy();
+      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Go to next page
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeTruthy();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(createLoanDocumentSpy).toHaveBeenCalled();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(3);
+
+      flush();
+    }));
   });  
-
-  it('setp 0: account is manadatory', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(component.currentStep).toEqual(0);
-    expect(component.firstFormGroup.valid).toBeFalsy();
-
-    // Update document header - missed desp
-    let dochead: Document = new Document();
-    dochead.TranDate = moment();
-    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-    dochead.Desp = 'test';
-    component.firstFormGroup.get('headerControl').setValue(dochead);
-    component.firstFormGroup.get('headerControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Account - missing
-    // Amount
-    component.firstFormGroup.get('amountControl').setValue(100.20);
-    component.firstFormGroup.get('amountControl').markAsDirty();
-    // Control center
-    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-    component.firstFormGroup.get('ccControl').markAsDirty();
-    // Order - empty
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Add an account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    component.firstFormGroup.get('accountControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    flush();
-  }));
-
-  it('setp 0: amount is manadatory', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(component.currentStep).toEqual(0);
-    expect(component.firstFormGroup.valid).toBeFalsy();
-
-    // Update document header - missed desp
-    let dochead: Document = new Document();
-    dochead.TranDate = moment();
-    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-    dochead.Desp = 'test';
-    component.firstFormGroup.get('headerControl').setValue(dochead);
-    component.firstFormGroup.get('headerControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    component.firstFormGroup.get('accountControl').markAsDirty();
-    // Amount - missing
-    // Control center
-    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-    component.firstFormGroup.get('ccControl').markAsDirty();
-    // Order - empty
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Add amount back
-    component.firstFormGroup.get('amountControl').setValue(100.20);
-    component.firstFormGroup.get('amountControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    flush();
-  }));
-
-  it('setp 0: costing object is manadatory', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(component.currentStep).toEqual(0);
-    expect(component.firstFormGroup.valid).toBeFalsy();
-
-    // Update document header - missed desp
-    let dochead: Document = new Document();
-    dochead.TranDate = moment();
-    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-    dochead.Desp = 'test';
-    component.firstFormGroup.get('headerControl').setValue(dochead);
-    component.firstFormGroup.get('headerControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    component.firstFormGroup.get('accountControl').markAsDirty();
-    // Amount - missing
-    component.firstFormGroup.get('amountControl').setValue(100.20);
-    component.firstFormGroup.get('amountControl').markAsDirty();
-    // Control center - empty
-    // Order - empty
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Second false case: input both
-    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-    component.firstFormGroup.get('ccControl').markAsDirty();
-    component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-    component.firstFormGroup.get('orderControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Now correct it - remove order
-    component.firstFormGroup.get('orderControl').setValue(undefined);
-    component.firstFormGroup.get('orderControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    flush();
-  }));
-
-  it('setp 1: back to step 0 shall work', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(component.currentStep).toEqual(0);
-    expect(component.firstFormGroup.valid).toBeFalsy();
-
-    // Update document header - missed desp
-    let dochead: Document = new Document();
-    dochead.TranDate = moment();
-    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-    dochead.Desp = 'test';
-    component.firstFormGroup.get('headerControl').setValue(dochead);
-    component.firstFormGroup.get('headerControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    component.firstFormGroup.get('accountControl').markAsDirty();
-    // Amount
-    component.firstFormGroup.get('amountControl').setValue(100.20);
-    component.firstFormGroup.get('amountControl').markAsDirty();
-    // Control center
-    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-    component.firstFormGroup.get('ccControl').markAsDirty();
-    // Order - empty
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    // Go to next page
-    component.next();
-    tick();
-    fixture.detectChanges();
-    expect(component.currentStep).toEqual(1);
-
-    // Go back to step 0
-    component.pre();
-    tick();
-    fixture.detectChanges();
-    expect(component.currentStep).toEqual(0);
-
-    flush();
-  }));
-
-  it('setp 1: loan extra info is manadatory', fakeAsync(() => {
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(component.currentStep).toEqual(0);
-    expect(component.firstFormGroup.valid).toBeFalsy();
-
-    // Update document header - missed desp
-    let dochead: Document = new Document();
-    dochead.TranDate = moment();
-    dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-    dochead.Desp = 'test';
-    component.firstFormGroup.get('headerControl').setValue(dochead);
-    component.firstFormGroup.get('headerControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    component.firstFormGroup.get('accountControl').markAsDirty();
-    // Amount
-    component.firstFormGroup.get('amountControl').setValue(100.20);
-    component.firstFormGroup.get('amountControl').markAsDirty();
-    // Control center
-    component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-    component.firstFormGroup.get('ccControl').markAsDirty();
-    // Order - empty
-    tick();
-    fixture.detectChanges();
-    expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    // Go to next page
-    component.next();
-    tick();
-    fixture.detectChanges();
-    expect(component.currentStep).toEqual(1);
-
-    expect(component.extraFormGroup.valid).toBeFalsy();
-    expect(component.nextButtonEnabled).toBeFalsy();
-
-    // Update the correct extra info
-    const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-    extraLoan.startDate = moment();
-    extraLoan.endDate = moment().add(1, 'y');
-    extraLoan.InterestFree = true;
-    extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-    extraLoan.TotalMonths = 12;
-    expect(extraLoan.isAccountValid).toBeTruthy();
-    extraLoan.loanTmpDocs.push(
-      {
-        DocId: 1,
-        AccountId: fakeData.finAccounts[0].Id,
-        TranType: fakeData.finTranTypes[0].Id,
-        TranAmount: 100,
-        ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: 'test',
-        TranDate: moment().add(1, 'd')
-      } as TemplateDocLoan);
-    expect(extraLoan.isValid).toBeTruthy();
-    component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-    component.extraFormGroup.get('loanAccountControl').markAsDirty();
-    tick();
-    fixture.detectChanges();
-    expect(component.extraFormGroup.valid).toBeTruthy();
-    expect(component.nextButtonEnabled).toBeTruthy();
-
-    flush();
-  }));
 
   describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
@@ -462,7 +770,6 @@ describe('DocumentLoanCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
       fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));

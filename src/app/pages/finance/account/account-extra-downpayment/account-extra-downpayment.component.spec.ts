@@ -123,6 +123,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.RepeatType).toBeFalsy();
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
+
+    flush();
   }));
 
   it('shall work with data 3: input start date, repeat type', fakeAsync(() => {
@@ -152,6 +154,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
+
+    flush();
   }));
 
   it('shall work with data 4: input start date, repeat type, comment', fakeAsync(() => {
@@ -182,6 +186,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
     expect(dpval2.Comment).toEqual(dp1.Comment);
     expect(dpval2.RefDocId).toBeFalsy();
+
+    flush();
   }));
 
   it('shall work with data 4a: input start date, repeat type, comment but without tranamount', fakeAsync(() => {
@@ -204,6 +210,8 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
+
+    flush();
   }));
 
   it('shall work with data 5: input start date, repeat type, comment, calcTmpDocs (no return)', fakeAsync(() => {
@@ -230,6 +238,8 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     testcomponent.extraComponent.onGenerateTmpDocs();
     expect(testcomponent.formGroup.valid).toBeFalse();
+
+    flush();
   }));
 
   it('shall work with data 6: input start date, repeat type, comment, calcTmpDocs (with return)', fakeAsync(() => {

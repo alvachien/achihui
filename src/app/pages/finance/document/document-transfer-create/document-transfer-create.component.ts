@@ -179,6 +179,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         ConsoleLogTypeEnum.debug);
       this.docIdCreated = doc.Id;
       this.isDocPosting = false;
+      this.docPostingFailed = null;
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
         ConsoleLogTypeEnum.error);

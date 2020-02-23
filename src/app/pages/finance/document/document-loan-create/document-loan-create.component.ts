@@ -244,13 +244,14 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl').value as AccountExtraLoan;
 
-    this.odataService.createLoanDocument(docObj, acntobj).subscribe((nid: any) => {
+    this.odataService.createLoanDocument(docObj, acntobj).subscribe((nid: Document) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
         ConsoleLogTypeEnum.debug);
 
       this.currentStep = 3;
-      this.docIdCreated = nid;
-      this.isDocPosting = false;  
+      this.docIdCreated = nid.Id;
+      this.isDocPosting = false;
+      this.docPostingFailed = null;
     }, (error: any) => {
       // Show error message
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,

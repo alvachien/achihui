@@ -249,6 +249,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this.currentStep = 2;
       this.docIdCreated = nid;
       this.isDocPosting = false;
+      this.docPostingFailed = null;
     }, (err: string) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
         ConsoleLogTypeEnum.error);

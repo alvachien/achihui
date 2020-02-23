@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { takeUntil } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
 import {
   financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
@@ -10,8 +12,7 @@ import {
   BuildupAccountForSelection, BuildupOrderForSelection,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { takeUntil } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-normal-create',
@@ -42,8 +43,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Confirm
   public confirmInfo: any = {};
   // Step: Result
-  public docCreateSucceed = false;
-  public isDocPosting = false;
+  public isDocPosting: boolean = false;
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
 
   constructor(
     public homeService: HomeDefOdataService,
@@ -62,15 +64,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   get curDocDate(): moment.Moment {
     return moment();
-  }
-  get nextButtonEnabled(): boolean {
-    if (this.currentStep === 0) {
-      return this.headerForm.valid;
-    } else if (this.currentStep === 1) {
-      return this.itemsForm.valid;
-    } else {
-      return true;
-    }
   }
 
   ngOnInit() {
@@ -147,12 +140,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
-      // popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
-      this.docCreateSucceed = false;
-      // TBD. Add error information
-      this.isDocPosting = false;
-      this.currentStep = 3;
 
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
+      this.isDocPosting = false;
+  
       return;
     }
 
@@ -160,14 +151,17 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.odataService.createDocument(detailObject).subscribe((doc) => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
         ConsoleLogTypeEnum.debug);
-      this.docCreateSucceed = true;
+      this.isDocPosting = false;
+      this.docIdCreated = doc.Id;
+      this.currentStep = 3;
+      this.docPostingFailed = null;
     }, (error: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
         ConsoleLogTypeEnum.error);
-      this.docCreateSucceed = false;
-    }, () => {
       this.isDocPosting = false;
+      this.docIdCreated = null;
       this.currentStep = 3;
+      this.docPostingFailed = error;
     });
   }
 
@@ -177,25 +171,32 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   next(): void {
     switch (this.currentStep) {
-      case 0: // header
-        if (this.headerForm.valid) {
-          this.currentStep ++;
-        }
-        break;
-      case 1: // item
-        if (this.itemsForm.valid) {
-          // Update confirm info
-          this._updateConfirmInfo();
+      case 0: {
+        this.currentStep ++;
+        break;  
+      }
+      case 1: {
+        this._updateConfirmInfo();
 
-          this.currentStep ++;
-        }
+        this.currentStep ++;
         break;
-      case 2: // Review and confirm
+      }
+      case 2: {
         this.isDocPosting = true;
         this.onSave();
         break;
+      }
       default:
         break;
+    }
+  }
+  get nextButtonEnabled(): boolean {
+    if (this.currentStep === 0) {
+      return this.headerForm.valid;
+    } else if (this.currentStep === 1) {
+      return this.itemsForm.valid;
+    } else {
+      return true;
     }
   }
 

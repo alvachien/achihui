@@ -34,7 +34,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
   let fetchAllOrdersSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
-  let createDocSpy: any;
+  let createADPDocumentSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -70,7 +70,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = storageService.createADPDocument.and.returnValue(of({}));
+    createADPDocumentSpy = storageService.createADPDocument.and.returnValue(of({}));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -521,7 +521,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: show reach step 2 in valid case', fakeAsync(() => {
+    it('setp 2: show go to step 2 in valid case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -589,6 +589,281 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(2);
+
+      flush();
+    }));
+
+    it('setp 2: popup dialog if verification failed in generated object', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      expect(component.headerFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.headerFormGroup.get('headerControl').setValue(dochead);
+      component.headerFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.valid).toBeFalsy();
+      // Account
+      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.headerFormGroup.get('amountControl').setValue(100.20);
+      component.headerFormGroup.get('amountControl').markAsDirty();
+      // Tran. type
+      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      // Control center
+      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Now go to step 1
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toEqual(1);
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add extra info.
+      const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      const startdt = moment().add(1, 'M');
+      dp1.StartDate = startdt;
+      dp1.RepeatType = RepeatFrequencyEnum.Month;
+      dp1.Comment = 'test';
+      dp1.dpTmpDocs.push({
+        TranType: fakeData.finTranTypes[0].Id,
+        TranDate: moment(),
+        TranAmount: 100,
+        Desp: 'test'
+      } as TemplateDocADP);
+      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.nextButtonEnabled).toBeTruthy();
+      // Click th next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component.currentStep).toBe(2);
+      // Fake an error in generated doc
+      dochead.Desp = '';
+      component.headerFormGroup.get('headerControl').setValue(dochead);
+      component.headerFormGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      nextButtonNativeEl.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(2);
+      flush();
+      tick();
+      fixture.detectChanges();
+      
+      flush();
+    }));
+
+    it('setp 3: show success result if document posted', fakeAsync(() => {
+      createADPDocumentSpy.and.returnValue(asyncData({
+        Id: 1
+      } as Document));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      expect(component.headerFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.headerFormGroup.get('headerControl').setValue(dochead);
+      component.headerFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.valid).toBeFalsy();
+      // Account
+      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.headerFormGroup.get('amountControl').setValue(100.20);
+      component.headerFormGroup.get('amountControl').markAsDirty();
+      // Tran. type
+      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      // Control center
+      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Now go to step 1
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toEqual(1);
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add extra info.
+      const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      const startdt = moment().add(1, 'M');
+      dp1.StartDate = startdt;
+      dp1.RepeatType = RepeatFrequencyEnum.Month;
+      dp1.Comment = 'test';
+      dp1.dpTmpDocs.push({
+        TranType: fakeData.finTranTypes[0].Id,
+        TranDate: moment(),
+        TranAmount: 100,
+        Desp: 'test'
+      } as TemplateDocADP);
+      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.nextButtonEnabled).toBeTruthy();
+      // Click th next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component.currentStep).toBe(2);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeTruthy();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(createADPDocumentSpy).toHaveBeenCalled();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBe(1);
+      expect(component.currentStep).toBe(3);
+
+      flush();
+    }));
+
+    it('setp 3: show error result if document failed to post', fakeAsync(() => {
+      createADPDocumentSpy.and.returnValue(asyncError('error on document posting'));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      expect(component.headerFormGroup.valid).toBeFalsy();
+
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.headerFormGroup.get('headerControl').setValue(dochead);
+      component.headerFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.valid).toBeFalsy();
+      // Account
+      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.headerFormGroup.get('amountControl').setValue(100.20);
+      component.headerFormGroup.get('amountControl').markAsDirty();
+      // Tran. type
+      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      // Control center
+      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+      expect(component.headerFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+
+      // Now go to step 1
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      expect(component.currentStep).toEqual(1);
+      expect(component.nextButtonEnabled).toBeFalsy();
+
+      // Add extra info.
+      const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      const startdt = moment().add(1, 'M');
+      dp1.StartDate = startdt;
+      dp1.RepeatType = RepeatFrequencyEnum.Month;
+      dp1.Comment = 'test';
+      dp1.dpTmpDocs.push({
+        TranType: fakeData.finTranTypes[0].Id,
+        TranDate: moment(),
+        TranAmount: 100,
+        Desp: 'test'
+      } as TemplateDocADP);
+      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.nextButtonEnabled).toBeTruthy();
+      // Click th next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component.currentStep).toBe(2);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeTruthy();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(createADPDocumentSpy).toHaveBeenCalled();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(3);
 
       flush();
     }));
