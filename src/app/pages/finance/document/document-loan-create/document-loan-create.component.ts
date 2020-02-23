@@ -16,6 +16,7 @@ import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
   financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -52,7 +53,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public docIdCreated?: number = null;
   public docPostingFailed: string;
-  current = 0;
+  currentStep = 0;
 
   get tranAmount(): number {
     return this.firstFormGroup && this.firstFormGroup.get('amountControl').value;
@@ -161,9 +162,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  get nextEnabled(): boolean {
+  get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -185,35 +186,28 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.current -= 1;
-    this.changeContent();
+    this.currentStep -= 1;
   }
 
   next(): void {
-    this.current += 1;
-    this.changeContent();
-  }
-
-  changeContent(): void {
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
+        this.currentStep ++;
         break;
       }
       case 1: {
         this._updateConfirmInfo();
+        this.currentStep ++;
         break;
       }
       case 2: {
         // Review
-        break;
-      }
-      case 3: {
         this.isDocPosting = true;
         this.onSubmit();
         break;
       }
-      default: {
-      }
+      default:
+        break;
     }
   }
 
@@ -232,8 +226,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
-      // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-      //   undefined, docObj.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
+      this.isDocPosting = false;
 
       return;
     }
@@ -254,7 +248,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
         ConsoleLogTypeEnum.debug);
 
-      this.current = 4;
+      this.currentStep = 3;
       this.docIdCreated = nid;
       this.isDocPosting = false;  
     }, (error: any) => {
@@ -262,7 +256,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
         ConsoleLogTypeEnum.error);
 
-      this.current = 4;
+      this.currentStep = 3;
       this.docIdCreated = null;
       this.docPostingFailed = error;
       this.isDocPosting = false;  

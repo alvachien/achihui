@@ -9,6 +9,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
+import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
@@ -122,6 +123,9 @@ describe('DocumentLoanCreateComponent', () => {
   });
   
   describe('working with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
@@ -133,12 +137,22 @@ describe('DocumentLoanCreateComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
     });
 
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
     it('setp 0: initial status', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
-      expect(component.current).toEqual(0);
+      expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
@@ -149,7 +163,7 @@ describe('DocumentLoanCreateComponent', () => {
       tick();
       fixture.detectChanges();
 
-      expect(component.current).toEqual(0);
+      expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -162,7 +176,7 @@ describe('DocumentLoanCreateComponent', () => {
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();;
-      expect(component.nextEnabled).toBeFalsy();
+      expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add the desp back
       dochead.Desp = 'test';
@@ -182,7 +196,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
     expect(component.firstFormGroup.valid).toBeFalsy();
 
     // Update document header - missed desp
@@ -195,7 +209,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Account - missing
     // Amount
@@ -208,7 +222,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Add an account
     component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -216,7 +230,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     flush();
   }));
@@ -226,7 +240,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
     expect(component.firstFormGroup.valid).toBeFalsy();
 
     // Update document header - missed desp
@@ -239,7 +253,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Account
     component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -252,7 +266,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Add amount back
     component.firstFormGroup.get('amountControl').setValue(100.20);
@@ -260,7 +274,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     flush();
   }));
@@ -270,7 +284,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
     expect(component.firstFormGroup.valid).toBeFalsy();
 
     // Update document header - missed desp
@@ -283,7 +297,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Account
     component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -296,7 +310,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Second false case: input both
     component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
@@ -306,7 +320,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Now correct it - remove order
     component.firstFormGroup.get('orderControl').setValue(undefined);
@@ -314,7 +328,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     flush();
   }));
@@ -324,7 +338,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
     expect(component.firstFormGroup.valid).toBeFalsy();
 
     // Update document header - missed desp
@@ -337,7 +351,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Account
     component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -352,19 +366,19 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     // Go to next page
     component.next();
     tick();
     fixture.detectChanges();
-    expect(component.current).toEqual(1);
+    expect(component.currentStep).toEqual(1);
 
     // Go back to step 0
     component.pre();
     tick();
     fixture.detectChanges();
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
 
     flush();
   }));
@@ -374,7 +388,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.current).toEqual(0);
+    expect(component.currentStep).toEqual(0);
     expect(component.firstFormGroup.valid).toBeFalsy();
 
     // Update document header - missed desp
@@ -387,7 +401,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeFalsy();;
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Account
     component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
@@ -402,16 +416,16 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.firstFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     // Go to next page
     component.next();
     tick();
     fixture.detectChanges();
-    expect(component.current).toEqual(1);
+    expect(component.currentStep).toEqual(1);
 
     expect(component.extraFormGroup.valid).toBeFalsy();
-    expect(component.nextEnabled).toBeFalsy();
+    expect(component.nextButtonEnabled).toBeFalsy();
 
     // Update the correct extra info
     const extraLoan: AccountExtraLoan = new AccountExtraLoan();
@@ -437,7 +451,7 @@ describe('DocumentLoanCreateComponent', () => {
     tick();
     fixture.detectChanges();
     expect(component.extraFormGroup.valid).toBeTruthy();
-    expect(component.nextEnabled).toBeTruthy();
+    expect(component.nextButtonEnabled).toBeTruthy();
 
     flush();
   }));

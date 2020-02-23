@@ -14,10 +14,10 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccoun
   InfoMessage, MessageType, financeDocTypeAssetValChg, financeTranTypeAssetValueIncrease,
   financeTranTypeAssetValueDecrease, FinanceAssetValChgDocumentAPI,
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator, ModelUtility,
-  ConsoleLogTypeEnum,
-  DocumentItemView,
+  ConsoleLogTypeEnum, DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 // Assistant class
 class DocItemWithBlance {
@@ -174,7 +174,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         break;
       }
       case 1: { // Review
-        isEnabled = true; // Review
+        isEnabled = (this.existingDocItems.length > 0); // Review
         break;
       }
       default: {
@@ -186,34 +186,25 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
   pre(): void {
     this.currentStep -= 1;
-    this.changeContent();
   }
 
   next(): void {
-    this.currentStep += 1;
-    this.changeContent();
-  }
-
-  changeContent(): void {
     switch (this.currentStep) {
       case 0: {
-        break;
-      }
-      case 1: {
         this._updateConfirmInfo();
-        break;
+        this.currentStep ++;
       }
-      case 2: {
+      break;
+
+      case 1: {
         // Review
-        break;
-      }
-      case 3: {
         this.isDocPosting = true;
         this.onSubmit();
-        break;
       }
-      default: {
-      }
+      break;
+
+      default: 
+      break;
     }
   }
 
@@ -232,6 +223,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
     })) {
+      popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
+      this.isDocPosting = false;
       return;
     }
 
@@ -278,11 +271,11 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.confirmInfo.tranDateString = this.firstFormGroup.get('headerControl').value.TranDateFormatString;
 
     // Fetch the existing items
+    this.existingDocItems = [];
     this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       // Get the output
-      this.existingDocItems = [];
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
         let docitems: DocumentItemView[] = x.contentList as DocumentItemView[];
         docitems = docitems.sort((a, b) => {
@@ -306,30 +299,30 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
           curbal2 = dbal.newBalance;
           this.existingDocItems.push(dbal);
         }
-      }
 
-      let fakebalance: DocItemWithBlance = new DocItemWithBlance();
-      // fakebalance.docId = 0;
-      fakebalance.tranDate = this.confirmInfo.tranDateString;
-      fakebalance.tranAmount = 0;
-      fakebalance.balance = 0;
-      fakebalance.newBalance = this.NewEstimatedAmount;
-      this.existingDocItems.push(fakebalance);
-
-      // Sorting
-      this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
-        return a.tranDate.localeCompare(b.tranDate);
-      });
-
-      let curbal = 0;
-      for (let idx: number = 0; idx < this.existingDocItems.length; idx++) {
-        curbal += this.existingDocItems[idx].tranAmount;
-        if (this.existingDocItems[idx].docId) {
-          this.existingDocItems[idx].newBalance = curbal;
-        } else {
-          this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
-          this.tranAmount = this.existingDocItems[idx].tranAmount;
-        }
+        let fakebalance: DocItemWithBlance = new DocItemWithBlance();
+        fakebalance.docId = 0;
+        fakebalance.tranDate = this.confirmInfo.tranDateString;
+        fakebalance.tranAmount = 0;
+        fakebalance.balance = 0;
+        fakebalance.newBalance = this.NewEstimatedAmount;
+        this.existingDocItems.push(fakebalance);
+  
+        // Sorting
+        this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
+          return a.tranDate.localeCompare(b.tranDate);
+        });
+  
+        let curbal = 0;
+        for (let idx: number = 0; idx < this.existingDocItems.length; idx++) {
+          curbal += this.existingDocItems[idx].tranAmount;
+          if (this.existingDocItems[idx].docId) {
+            this.existingDocItems[idx].newBalance = curbal;
+          } else {
+            this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
+            this.tranAmount = this.existingDocItems[idx].tranAmount;
+          }
+        }  
       }
     });
   }
@@ -347,13 +340,16 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
     ndocitem.OrderId = this.firstFormGroup.get('orderControl').value;
     ndocitem.Desp = ndoc.Desp;
-    // if (ndoc.TranAmount > 0) {
-    //   ndocitem.TranAmount = ndoc.TranAmount;
-    //   ndocitem.TranType = financeTranTypeAssetValueIncrease;
-    // } else {
-    //   ndocitem.TranAmount = Math.abs(ndoc.TranAmount);
-    //   ndocitem.TranType = financeTranTypeAssetValueDecrease;
-    // }
+    let gitem = this.existingDocItems.find((val: DocItemWithBlance) => {
+      return val.docId === 0;
+    });
+    if (gitem.tranAmount > 0) {
+      ndocitem.TranAmount = gitem.tranAmount;
+      ndocitem.TranType = financeTranTypeAssetValueIncrease;
+    } else {
+      ndocitem.TranAmount = Math.abs(gitem.tranAmount);
+      ndocitem.TranType = financeTranTypeAssetValueDecrease;
+    }
     ndoc.Items = [ndocitem];
 
     return ndoc;

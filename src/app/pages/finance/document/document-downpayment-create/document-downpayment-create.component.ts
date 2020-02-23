@@ -14,6 +14,7 @@ import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UI
   AccountExtraAdvancePayment, DocumentVerifyContext, DocumentType,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-downpayment-create',
@@ -49,7 +50,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docCreateSucceed = false;
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
+  currentStep = 0;
 
   get tranAmount(): number {
     return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl').value;
@@ -57,9 +60,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   get tranType(): TranType {
     return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl').value;
   }
-  get nextEnabled(): boolean {
+  get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.current) {
+    switch (this.currentStep) {
       case 0: {
         isEnabled = this.headerFormGroup.valid;
         break;
@@ -78,18 +81,6 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       }
     }
     return isEnabled;
-  }
-
-  current = 0;
-
-  pre(): void {
-    this.current -= 1;
-    this.changeContent();
-  }
-
-  next(): void {
-    this.current += 1;
-    this.changeContent();
   }
 
   constructor(
@@ -112,6 +103,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.accountExtraInfoFormGroup = new FormGroup({
         infoControl: new FormControl()
       });
+      this.currentStep = 0;
     }
 
   ngOnInit() {
@@ -131,7 +123,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     ])
     .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`, ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`,
+          ConsoleLogTypeEnum.debug);
 
         // Accounts
         this.arAccounts = rst[3];
@@ -170,7 +163,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
               };
               this.uiOrderFilter = true;
 
-              this._cdr.detectChanges();
+              // this._cdr.detectChanges();
             }
           }
         });
@@ -195,27 +188,30 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeContent(): void {
-    switch (this.current) {
+  pre(): void {
+    this.currentStep -= 1;
+  }
+
+  next(): void {
+    switch (this.currentStep) {
       case 0: {
+        this.currentStep ++;
         break;
       }
       case 1: {
         // Show the dp docs
+        this.currentStep ++;
+        this._updateConfirmInfo();
         break;
       }
       case 2: {
         // Review
-        this._updateConfirmInfo();
-        break;
-      }
-      case 3: {
         this.isDocPosting = true;
         this.onSubmit();
         break;
       }
-      default: {
-      }
+      default:
+      break;
     }
   }
 
@@ -235,22 +231,26 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       Currencies: this.arCurrencies,
       BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
     } as DocumentVerifyContext)) {
-      // Show a dialog for error details
-      // TBD.
-      // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined, docObj.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
+      this.isDocPosting = false;
 
       return;
     }
 
-    this.odataService.createADPDocument(docObj, accountExtra, this._isADP).subscribe((x: any) => {
+    this.odataService.createADPDocument(docObj, accountExtra, this._isADP).subscribe((ndoc: Document) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
         ConsoleLogTypeEnum.debug);
 
-      this.docCreateSucceed = true;
+      this.currentStep = 3;
+      this.docIdCreated = ndoc.Id;
+      this.isDocPosting = false;
       // TBD.
     }, (error: any) => {
       // Show error message
-      this.docCreateSucceed = false;
+      this.currentStep = 3;
+      this.docIdCreated = null;
+      this.docPostingFailed = error;
+      this.isDocPosting = false;
     });
   }
 
@@ -263,6 +263,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.curDocType = financeDocTypeAdvanceReceived;
     }
   }
+
   private _geneateDocument(): Document {
     const doc: Document = this.headerFormGroup.get('headerControl').value;
     doc.HID = this.homeService.ChosedHome.ID;

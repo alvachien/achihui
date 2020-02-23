@@ -131,6 +131,9 @@ describe('DocumentAssetSoldCreateComponent', () => {
   });
 
   describe('working with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(asyncData(fakeData.finAssetCategories));
@@ -141,6 +144,16 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
       createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(asyncData(1));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('setp 0: initial status', fakeAsync(() => {
@@ -531,7 +544,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: shall show success page', fakeAsync(() => {
+    it('setp 2: shall popup dialog in verification failed', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -589,17 +602,190 @@ describe('DocumentAssetSoldCreateComponent', () => {
 
       // Step 2.
       expect(component.currentStep).toBe(2);
+      fixture.detectChanges();
+      // Fake an error in generated doc
+      dochead.Desp = '';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.currentStep).toBe(2);
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 3: shall show success page', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
       // Click the next button
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.isDocPosting).toBeTruthy();
+      // Step 2.
+      expect(component.currentStep).toBe(2);
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
       expect(createAssetSoldoutDocumentSpy).toHaveBeenCalled();
-      flush();
       tick();
       fixture.detectChanges();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toEqual(1);
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('setp 3: shall show failed page', fakeAsync(() => {
+      createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(asyncError('Failed in creation'));
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
+      tick();
+      fixture.detectChanges();
+  
+      // Update a valid document header
+      let dochead: Document = new Document();
+      dochead.TranDate = moment();
+      dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl').setValue(dochead);
+      component.firstFormGroup.get('headerControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl').markAsDirty();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100.20);
+      component.firstFormGroup.get('amountControl').markAsDirty();
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl').markAsDirty();
+      // Order - empty
+      tick();
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 1
+      // Add the items
+      const aritems: DocumentItem[] = [];
+      const aritem: DocumentItem = new  DocumentItem();
+      aritem.ItemId = 1;
+      aritem.AccountId = fakeData.finAccounts[0].Id;
+      aritem.Desp = 'Test 1';
+      aritem.TranAmount = 100.2;
+      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      aritems.push(aritem);
+      component.itemFormGroup.get('itemControl').setValue(aritems);
+      component.itemFormGroup.get('itemControl').markAsDirty();
+      tick();
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2.
+      expect(component.currentStep).toBe(2);
+      fixture.detectChanges();
+      // Click the next button
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(createAssetSoldoutDocumentSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+      expect(component.isDocPosting).toBeFalsy();
+      expect(component.docIdCreated).toBeNull();
+      expect(component.docPostingFailed).toBeTruthy();
+      flush();
+      tick();
+      fixture.detectChanges();
 
       flush();
     }));

@@ -48,7 +48,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" [nzErrorTip]="amountErrorTpl">
-          <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01" [nzPlaceHolder]="'Amount'">
+          <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01">
           </nz-input-number>
           <ng-template #amountErrorTpl let-control>
             <ng-container *ngIf="control.hasError('required')">

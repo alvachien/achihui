@@ -215,6 +215,10 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
         this.adpInfoFormGroup.get('frqControl').setValue(val.RepeatType);
       }
       this.adpInfoFormGroup.get('cmtControl').setValue(val.Comment);
+      this.listTmpDocs = [];
+      if (val.dpTmpDocs) {
+        this.listTmpDocs = val.dpTmpDocs.slice();
+      }
 
       if (val.RefDocId) {
         this._refDocID = val.RefDocId;

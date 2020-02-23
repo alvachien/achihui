@@ -12,15 +12,15 @@
     </nz-page-header-extra>
   </nz-page-header>
 
-  <nz-steps [nzCurrent]="current">
+  <nz-steps [nzCurrent]="currentStep">
     <nz-step [nzTitle]="t('Common.Header')"></nz-step>
-    <nz-step nzTitle="Loan Detail"></nz-step>
+    <nz-step [nzTitle]="t(documentTitle)"></nz-step>
     <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
     <nz-step [nzTitle]="t('Common.Result')"></nz-step>
   </nz-steps>
 
   <div class="steps-content">
-    <form nz-form [formGroup]="firstFormGroup" [hidden]="current !== 0">
+    <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
       <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
         [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
       </hih-fin-document-header>
@@ -86,13 +86,13 @@
       </nz-form-item>
     </form>
 
-    <form nz-form [formGroup]="extraFormGroup" [hidden]="current !== 1">
+    <form nz-form [formGroup]="extraFormGroup" [hidden]="currentStep !== 1">
       <hih-finance-account-extra-loan formControlName="loanAccountControl" [tranAmount]="tranAmount"
         [controlCenterID]="controlCenterID" [orderID]="orderID" [arUIAccount]="arUIAccount">
       </hih-finance-account-extra-loan>
     </form>
 
-    <div [hidden]="current !== 2">
+    <div [hidden]="currentStep !== 2">
       <div>
         <h3>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
         <h2>{{'Common.Description' | transloco}}: {{confirmInfo?.tranDesp}}</h2>
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <div [hidden]="current !== 3">
+    <div [hidden]="currentStep !== 3">
       <div *ngIf="docIdCreated">
         <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">
@@ -131,10 +131,10 @@
   </div>
 
   <div class="steps-action">
-    <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0 && current < 3">
+    <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
       <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
     </button>
-    <button nz-button nzType="primary" id="button_next_step" (click)="next()" *ngIf="current < 3" [disabled]="!nextEnabled">
+    <button nz-button nzType="primary" id="button_next_step" (click)="next()" *ngIf="currentStep < 3" [disabled]="!nextButtonEnabled">
       {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>

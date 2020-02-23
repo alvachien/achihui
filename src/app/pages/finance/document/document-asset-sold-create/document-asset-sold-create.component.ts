@@ -84,7 +84,6 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     }, [costObjectValidator, this._headerAmountValidator]);
     this.itemFormGroup = new FormGroup({
       itemControl: new FormControl(),
-    // }, [itemExistenceValidator, this._itemAmountValidator]);
     }, [this._itemAmountValidator]);
   }
 
@@ -190,10 +189,6 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       }
       case 2: {
         // Review
-        this.currentStep ++;
-        break;
-      }
-      case 3: {
         this.isDocPosting = true;
         this.onSubmit();
         break;
