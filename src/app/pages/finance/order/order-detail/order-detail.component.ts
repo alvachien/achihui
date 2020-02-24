@@ -33,6 +33,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get saveButtonEnabled(): boolean {
+    return this.isFieldChangable && this.detailFormGroup.valid && this.listRules.length > 0;
+  }
 
   constructor(
     private homeService: HomeDefOdataService,

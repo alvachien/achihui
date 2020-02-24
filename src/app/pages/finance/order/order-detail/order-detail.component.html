@@ -8,7 +8,7 @@
     <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <button nz-button nzType="primary" (click)="onSubmit()"
-        [disabled]="!isFieldChangable || !detailFormGroup.valid">{{'Common.Save' | transloco}}</button>
+        [disabled]="!saveButtonEnabled">{{'Common.Save' | transloco}}</button>
     </nz-page-header-extra>
   </nz-page-header>
 
@@ -76,6 +76,7 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+
   <div class="toolbar_buttons">
     <button nz-button nzType="primary" (click)="onCreateRule()" [disabled]="!isFieldChangable">{{'Finance.CreateItem' | transloco}}</button>
   </div>

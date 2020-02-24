@@ -7,6 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import * as moment from 'moment';
 
 import { OrderDetailComponent } from './order-detail.component';
 import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
@@ -105,7 +106,7 @@ describe('OrderDetailComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it('init without error', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -116,6 +117,33 @@ describe('OrderDetailComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.isCreateMode).toBeTruthy();
+
+      flush();
+    }));
+
+    it('Name is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      // component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('validFromControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('validToControl').setValue(moment().add(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeFalsy();
+
+      component.detailFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
 
       flush();
     }));
