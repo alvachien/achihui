@@ -1577,6 +1577,13 @@ export class SettlementRule {
         this.VerifiedMsgs.push(msg);
         brst = false;
       }
+    } else {
+      if (!this.ControlCenterId) {
+        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+        this.VerifiedMsgs.push(msg);
+        brst = false;
+      }
     }
 
     // Precent

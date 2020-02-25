@@ -568,10 +568,18 @@ export class GeneralFilterItem {
  * @param group Instance of the form group
  */
 export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  let startDate: moment.Moment = group.get('startDateControl').value.startOf('day');
-  let endDate: moment.Moment = group.get('endDateControl').value.startOf('day');
+  let strdt = group.get('startDateControl').value as Date;
+  if (!strdt) {
+    return { invalidStartDate: true };
+  }
+  let enddt = group.get('endDateControl').value as Date;
+  if (!enddt) {
+    return { invalidEndDate: true };
+  }
+  let startDate: moment.Moment = moment(strdt).startOf('day');
+  let endDate: moment.Moment = moment(enddt).startOf('day');
   if (!endDate.isSameOrAfter(startDate)) {
-    return  { 'invalidDateRange': true };
+    return  { invalidDateRange: true };
   }
 
   return null;

@@ -4,11 +4,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
-  SettlementRule, } from '../../../../model';
-import { translate } from '@ngneat/transloco';
+  SettlementRule, dateRangeValidator, } from '../../../../model';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-order-detail',
@@ -34,7 +36,15 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get saveButtonEnabled(): boolean {
-    return this.isFieldChangable && this.detailFormGroup.valid && this.listRules.length > 0;
+    if (this.isFieldChangable && this.detailFormGroup.valid && this.listRules.length > 0) {
+      let failidx = this.listRules.findIndex((rule: SettlementRule) => {
+        return !rule.onVerify();
+      });
+      if (failidx === -1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   constructor(
@@ -49,10 +59,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      validFromControl: new FormControl('',[Validators.required]),
-      validToControl: new FormControl('',[Validators.required]),
+      startDateControl: new FormControl(moment().toDate(),[Validators.required]),
+      endDateControl: new FormControl(moment().add(1, 'y').toDate(),[Validators.required]),
       cmtControl: new FormControl(),
-    });
+    }, [dateRangeValidator]);
   }
 
   ngOnInit() {
@@ -93,8 +103,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
             this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
             this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
-            this.detailFormGroup.get('validFromControl').setValue(rsts[1].ValidFrom.toDate());
-            this.detailFormGroup.get('validToControl').setValue(rsts[1].ValidTo.toDate());
+            this.detailFormGroup.get('startDateControl').setValue(rsts[1].ValidFrom.toDate());
+            this.detailFormGroup.get('endDateControl').setValue(rsts[1].ValidTo.toDate());
             if (rsts[1].Comment) {
               this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
             }
@@ -159,13 +169,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...',
+      ConsoleLogTypeEnum.debug);
 
-    // if (this.uiMode === UIMode.Create) {
-    //   this.onCreateOrder();
-    // } else if (this.uiMode === UIMode.Change) {
-    //   this.onChangeOrder();
-    // }
+    if (this.uiMode === UIMode.Create) {
+       this.onCreateOrder();
+    } else if (this.uiMode === UIMode.Change) {
+       this.onChangeOrder();
+    }
   }
 
   public onCreateRule(): void {
@@ -177,7 +188,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
 
   private onCreateOrder(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...',
+      ConsoleLogTypeEnum.debug);
 
     const objOrder: Order = this._generateOrder();
 
@@ -185,8 +197,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (!objOrder.onVerify({
       ControlCenters: this.arControlCenters,
     })) {
-      // Show a dialog for error details
-      // TBD.
+      popupDialog(this.modalService, 'Common.Error', objOrder.VerifiedMsgs);
 
       return;
     }
@@ -194,7 +205,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     this.odataService.createOrder(objOrder).subscribe((x: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, createOrderEvent`,
         ConsoleLogTypeEnum.debug);
-
     }, (error: any) => {
       // Show error message
     });
@@ -210,8 +220,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (!ordObj.onVerify({
       ControlCenters: this.arControlCenters,
     })) {
-      // Show a dialog for error details
-      // TBD.
+      popupDialog(this.modalService, 'Common.Error', ordObj.VerifiedMsgs);
       return;
     }
 
@@ -254,8 +263,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     const ordInstance: Order = new Order();
     ordInstance.HID = this.homeService.ChosedHome.ID;
     ordInstance.Name = this.detailFormGroup.get('nameControl').value;
-    ordInstance.ValidFrom = this.detailFormGroup.get('validFromControl').value;
-    ordInstance.ValidTo = this.detailFormGroup.get('validToControl').value;
+    ordInstance.ValidFrom = this.detailFormGroup.get('startDateControl').value;
+    ordInstance.ValidTo = this.detailFormGroup.get('endDateControl').value;
     ordInstance.Comment = this.detailFormGroup.get('cmtControl').value;
     ordInstance.SRules = this.listRules.slice();
     return ordInstance;

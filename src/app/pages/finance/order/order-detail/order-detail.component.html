@@ -41,7 +41,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ValidFrom' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validfromErrorTpl">
-        <nz-date-picker formControlName="validFromControl"></nz-date-picker>
+        <nz-date-picker formControlName="startDateControl"></nz-date-picker>
         <ng-template #validfromErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
@@ -54,7 +54,7 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ValidTo' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validtoErrorTpl">
-        <nz-date-picker formControlName="validToControl"></nz-date-picker>
+        <nz-date-picker formControlName="endDateControl"></nz-date-picker>
         <ng-template #validtoErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}

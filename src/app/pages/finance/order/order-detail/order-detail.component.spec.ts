@@ -133,9 +133,9 @@ describe('OrderDetailComponent', () => {
       // Name
       // component.detailFormGroup.get('nameControl').setValue('test');
       // Valid from
-      component.detailFormGroup.get('validFromControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('validToControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
       // Comment
       component.detailFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
@@ -144,6 +144,75 @@ describe('OrderDetailComponent', () => {
       component.detailFormGroup.get('nameControl').setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
+
+      flush();
+    }));
+
+    it('Validity is manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('endDateControl').setValue(moment().subtract(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeFalsy();
+
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();      
+
+      flush();
+    }));
+
+    it('Settlement rules are manadatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Add the rules
+      component.onCreateRule();
+      expect(component.listRules.length).toBe(1);
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Add the second rule
+      component.onCreateRule();
+      expect(component.listRules.length).toBe(2);
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Change it.
+      component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.listRules[0].Precent = 30;
+      component.listRules[1].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.listRules[1].Precent = 70;
+      fixture.detectChanges();
+      expect(component.saveButtonEnabled).toBeTruthy();
 
       flush();
     }));
@@ -221,6 +290,8 @@ describe('OrderDetailComponent', () => {
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
       fixture.detectChanges();
 
       // Expect there is a dialog
