@@ -230,6 +230,48 @@ describe('OrderDetailComponent', () => {
       flush();
     }));
 
+    it('shall show success result', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Add the rules
+      component.onCreateRule();
+      expect(component.listRules.length).toBe(1);
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Add the second rule
+      component.onCreateRule();
+      expect(component.listRules.length).toBe(2);
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      // Change it.
+      component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.listRules[0].Precent = 30;
+      component.listRules[1].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.listRules[1].Precent = 70;
+      fixture.detectChanges();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      flush();
+    }));
+
     it('should display error when Service fails on control center', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
