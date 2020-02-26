@@ -10,7 +10,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import * as moment from 'moment';
 
 import { OrderDetailComponent } from './order-detail.component';
-import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
+import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError,
+  ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -101,9 +102,21 @@ describe('OrderDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('create mode', () => {
+  describe('1. create mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+    });
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('init without error', fakeAsync(() => {
@@ -216,14 +229,52 @@ describe('OrderDetailComponent', () => {
 
       flush();
     }));
+
+    it('should display error when Service fails on control center', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
   });
 
   describe('2. change mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+    });
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('change mode init without error', fakeAsync(() => {
@@ -240,14 +291,77 @@ describe('OrderDetailComponent', () => {
 
       flush();
     }));
+
+    it('should display error when Service fails on control center', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when Service fails on read order', fakeAsync(() => {
+      // tell spy to return an async error observable
+      readOrderSpy.and.returnValue(asyncError<string>('read order failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
   });
 
   describe('3. display mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
     beforeEach(() => {      
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+    });
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('display mode init without error', fakeAsync(() => {
@@ -264,25 +378,6 @@ describe('OrderDetailComponent', () => {
 
       flush();
     }));
-  });
-
-  describe('4. shall display error dialog for exception', () => {
-    let overlayContainer: OverlayContainer;
-    let overlayContainerElement: HTMLElement;
-
-    beforeEach(() => {
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
-    });
-
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
-
-    afterEach(() => {
-      overlayContainer.ngOnDestroy();
-    });
 
     it('should display error when Service fails on control center', fakeAsync(() => {
       // tell spy to return an async error observable
@@ -295,17 +390,43 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when Service fails on read order', fakeAsync(() => {
+      // tell spy to return an async error observable
+      readOrderSpy.and.returnValue(asyncError<string>('read order failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

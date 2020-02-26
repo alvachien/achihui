@@ -5,3 +5,4 @@ export * from './router-link-directive-stub';
 export * from './transloco-testing.module';
 export * from './fake-data-helper';
 export * from './form-group-helper';
+export * from './testing-constants';
