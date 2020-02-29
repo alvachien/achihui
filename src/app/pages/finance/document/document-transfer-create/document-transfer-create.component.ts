@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 
 import {
   financeDocTypeTransfer, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
@@ -174,20 +174,26 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
     // Now call to the service
     this.currentStep = 4;
-    this.odataService.createDocument(detailObject).subscribe((doc) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...',
-        ConsoleLogTypeEnum.debug);
-      this.docIdCreated = doc.Id;
-      this.isDocPosting = false;
-      this.docPostingFailed = null;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
-        ConsoleLogTypeEnum.error);
-      this.docPostingFailed = error;
-      this.docIdCreated = null;
-      this.isDocPosting = false;
-    }, () => {
-    });
+    this.odataService.createDocument(detailObject)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.isDocPosting = false;
+      }))
+      .subscribe({
+        next: (doc) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...',
+            ConsoleLogTypeEnum.debug);
+          this.docIdCreated = doc.Id;
+          this.docPostingFailed = null;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
+            ConsoleLogTypeEnum.error);
+          this.docPostingFailed = error;
+          this.docIdCreated = null;
+          this.isDocPosting = false;
+        },
+      });
   }
 
   pre(): void {

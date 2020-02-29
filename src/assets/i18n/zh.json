@@ -538,6 +538,7 @@
     "OrderFetchFailedOrNoOrder": "无法获取订单信息，或尚未创建订单",
     "ActivityFetchFailedOrNoActivity": "无法获取活动信息，或尚未创建活动",
     "DocumentPosted": "凭证已创建",
+    "ActivitySaved": "活动信息已经保存",
     "DocumentUpdated": "凭证已更新",
     "NoExchangeRate": "未定义汇率",
     "UnnecessaryExchangeRate": "本币操作无需汇率",

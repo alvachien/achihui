@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { LogLevel, AccountCategory, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-fin-account-category-list',
@@ -36,24 +35,28 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllAccountCategories()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: AccountCategory[]) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit fetchAllAccountCategories...',
-        ConsoleLogTypeEnum.debug);
-
-      this.dataSet = x;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountCategoryListComponent fetchAllAccountCategories failed ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.error({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false)
+      )
+      .subscribe({
+        next: (x: AccountCategory[]) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit fetchAllAccountCategories...',
+            ConsoleLogTypeEnum.debug);
+    
+          this.dataSet = x;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountCategoryListComponent fetchAllAccountCategories failed ${error}`,
+            ConsoleLogTypeEnum.error);
+    
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
       });
-    }, () => {
-      this.isLoadingResults = false;
-    });
   }
 
   ngOnDestroy() {

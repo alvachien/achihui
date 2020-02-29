@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -244,23 +244,28 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl').value as AccountExtraLoan;
 
-    this.odataService.createLoanDocument(docObj, acntobj).subscribe((nid: Document) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
-        ConsoleLogTypeEnum.debug);
-
-      this.currentStep = 3;
-      this.docIdCreated = nid.Id;
-      this.isDocPosting = false;
-      this.docPostingFailed = null;
-    }, (error: any) => {
-      // Show error message
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.currentStep = 3;
-      this.docIdCreated = null;
-      this.docPostingFailed = error;
-      this.isDocPosting = false;  
+    this.odataService.createLoanDocument(docObj, acntobj)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.currentStep = 3;
+        this.isDocPosting = false;
+      }))
+    .subscribe({
+      next: (nid: Document) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
+          ConsoleLogTypeEnum.debug);
+  
+        this.docIdCreated = nid.Id;
+        this.docPostingFailed = null;
+      },
+      error: (error: any) => {
+        // Show error message
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
+          ConsoleLogTypeEnum.error);
+  
+        this.docIdCreated = null;
+        this.docPostingFailed = error;
+      },
     });
   }
 

@@ -1556,6 +1556,7 @@ export class SettlementRule {
 
   public onVerify(context?: IOrderVerifyContext): boolean {
     let brst = true;
+    this.VerifiedMsgs = []; // Empty the messages
 
     // ID
     if (this.RuleId <= 0) {

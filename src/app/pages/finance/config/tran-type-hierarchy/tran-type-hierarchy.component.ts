@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
-import { LogLevel, AccountCategory, AssetCategory, DocumentType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-fin-tran-type-hierarchy',

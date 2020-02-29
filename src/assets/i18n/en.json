@@ -538,6 +538,7 @@
     "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all",
     "ActivityFetchFailedOrNoActivity": "Failed to fetch activity or no activity created at all",
     "DocumentPosted": "Document Posted",
+    "ActivitySaved": "Activity saved successfully",
     "DocumentUpdated": "Document Updated",
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
@@ -237,21 +237,26 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.odataService.createADPDocument(docObj, accountExtra, this._isADP).subscribe((ndoc: Document) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
-        ConsoleLogTypeEnum.debug);
-
-      this.currentStep = 3;
-      this.docIdCreated = ndoc.Id;
-      this.isDocPosting = false;
-      this.docPostingFailed = null;
-    }, (error: any) => {
-      // Show error message
-      this.currentStep = 3;
-      this.docIdCreated = null;
-      this.docPostingFailed = error;
-      this.isDocPosting = false;
-    });
+    this.odataService.createADPDocument(docObj, accountExtra, this._isADP)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.currentStep = 3;
+        this.isDocPosting = false;
+      }))
+      .subscribe({
+        next: (ndoc: Document) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
+            ConsoleLogTypeEnum.debug);
+    
+          this.docIdCreated = ndoc.Id;
+          this.docPostingFailed = null;
+        },
+        error: (error: any) => {
+          // Show error message
+          this.docIdCreated = null;
+          this.docPostingFailed = error;
+        } 
+      });
   }
 
   private _updateCurrentTitle(): void {

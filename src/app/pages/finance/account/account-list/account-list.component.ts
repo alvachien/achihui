@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -57,34 +57,38 @@ export class AccountListComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts(this.isReload),
     ])
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((data: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit, forkJoin...',
-          ConsoleLogTypeEnum.debug);
-
-        if (data instanceof Array && data.length > 0) {
-          // Parse the data
-          this.arCategories = data[0];
-          this.dataSet = data[1];
-
-          this.arCategories.forEach((val: AccountCategory) => {
-            this.listCategoryFilter.push({
-              text: translate(val.Name),
-              value: val.ID
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false)
+      )
+      .subscribe({
+        next: (data: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit, forkJoin...',
+            ConsoleLogTypeEnum.debug);
+  
+          if (data instanceof Array && data.length > 0) {
+            // Parse the data
+            this.arCategories = data[0];
+            this.dataSet = data[1];
+  
+            this.arCategories.forEach((val: AccountCategory) => {
+              this.listCategoryFilter.push({
+                text: translate(val.Name),
+                value: val.ID
+              });
             });
+          }
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit, forkJoin, failed ${error}`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
           });
-        }
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit, forkJoin, failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
+        },
       });
   }
 

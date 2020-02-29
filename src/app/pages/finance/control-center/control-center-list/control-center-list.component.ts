@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -34,23 +34,27 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllControlCenters()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((value: ControlCenter[]) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
-          ConsoleLogTypeEnum.debug);
-
-        this.dataSet = value;
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false)
+      )
+      .subscribe({
+        next: (value: ControlCenter[]) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
+            ConsoleLogTypeEnum.debug);
+  
+          this.dataSet = value;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
       });
   }
 

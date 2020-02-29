@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -36,21 +36,23 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllOrders()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: Order[]) => {
-        this.dataSet = x;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.error({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
+      .pipe(takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false))
+      .subscribe({
+        next: (x: Order[]) => {
+          this.dataSet = x;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
+            ConsoleLogTypeEnum.error);
+    
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
       });
-    }, () => {
-      this.isLoadingResults = false;
-    });
   }
 
   ngOnDestroy() {

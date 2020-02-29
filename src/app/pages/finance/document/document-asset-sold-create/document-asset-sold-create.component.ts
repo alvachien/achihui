@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd';
@@ -102,40 +102,43 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
-        ConsoleLogTypeEnum.debug);
-
-      this.arDocTypes = rst[2];
-      this.arTranTypes = rst[3];
-      this.arAccounts = rst[4];
-      this.arControlCenters = rst[5];
-      this.arOrders = rst[6];
-      this.arCurrencies = rst[7];
-
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilterEx = {
-        includedCategories: [ financeAccountCategoryAsset ],
-        excludedCategories: [],
-      };
-      this.uiRevAccountCtgyFilterEx = {
-        includedCategories: [],
-        excludedCategories: [ financeAccountCategoryAsset ],
-      };
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-      this.uiOrderFilter = undefined;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.create({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
-      });
+    ]).pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (rst: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
+          ConsoleLogTypeEnum.debug);
+  
+        this.arDocTypes = rst[2];
+        this.arTranTypes = rst[3];
+        this.arAccounts = rst[4];
+        this.arControlCenters = rst[5];
+        this.arOrders = rst[6];
+        this.arCurrencies = rst[7];
+  
+        // Accounts
+        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+        this.uiAccountStatusFilter = undefined;
+        this.uiAccountCtgyFilterEx = {
+          includedCategories: [ financeAccountCategoryAsset ],
+          excludedCategories: [],
+        };
+        this.uiRevAccountCtgyFilterEx = {
+          includedCategories: [],
+          excludedCategories: [ financeAccountCategoryAsset ],
+        };
+        // Orders
+        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+        this.uiOrderFilter = undefined;
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+  
+        this.modalService.create({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      }
     });
   }
 
@@ -233,24 +236,26 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.detailObject.items.push(val);
     });
 
-    this.odataService.createAssetSoldoutDocument(this.detailObject).subscribe((nid: number) => {
+    this.odataService.createAssetSoldoutDocument(this.detailObject)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.currentStep = 3;
+        this.isDocPosting = false;
+      }))
+      .subscribe((nid: number) => {
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument',
         ConsoleLogTypeEnum.debug);
 
-      this.currentStep = 3;
       this.docIdCreated = nid;
-      this.isDocPosting = false;
       this.docPostingFailed = null;
     }, (err: string) => {
       // Handle the error
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);
 
-      this.currentStep = 3;
       this.docIdCreated = null;
       this.docPostingFailed = err;
-      this.isDocPosting = false;
     });
   }
 

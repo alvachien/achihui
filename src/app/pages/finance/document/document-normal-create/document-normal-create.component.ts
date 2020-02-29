@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
 import {
@@ -148,20 +148,25 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
 
     // Now call to the service
-    this.odataService.createDocument(detailObject).subscribe((doc) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
-        ConsoleLogTypeEnum.debug);
+    this.odataService.createDocument(detailObject)
+    .pipe(takeUntil(this._destroyed$),
+    finalize(() => {
       this.isDocPosting = false;
-      this.docIdCreated = doc.Id;
       this.currentStep = 3;
-      this.docPostingFailed = null;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
-        ConsoleLogTypeEnum.error);
-      this.isDocPosting = false;
-      this.docIdCreated = null;
-      this.currentStep = 3;
-      this.docPostingFailed = error;
+    }))
+    .subscribe({
+      next: (doc) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
+          ConsoleLogTypeEnum.debug);
+        this.docIdCreated = doc.Id;
+        this.docPostingFailed = null;
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
+          ConsoleLogTypeEnum.error);
+        this.docIdCreated = null;
+        this.docPostingFailed = error;
+      },
     });
   }
 

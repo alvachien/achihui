@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd';
@@ -119,40 +119,43 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._storageService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
-        ConsoleLogTypeEnum.debug);
-
-      this.arDocTypes = rst[2];
-      this.arTranTypes = rst[3];
-      this.arAccounts = rst[4];
-      this.arControlCenters = rst[5];
-      this.arOrders = rst[6];
-      this.arCurrencies = rst[7];
-
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilterEx = {
-        includedCategories: [financeAccountCategoryAsset],
-        excludedCategories: [],
-      };
-      this.uiRevAccountCtgyFilterEx = {
-        includedCategories: [],
-        excludedCategories: [financeAccountCategoryAsset],
-      };
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-      this.uiOrderFilter = undefined;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
-        ConsoleLogTypeEnum.error);
-      
-      this.modalService.create({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
-      });
+    ]).pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (rst: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
+          ConsoleLogTypeEnum.debug);
+  
+        this.arDocTypes = rst[2];
+        this.arTranTypes = rst[3];
+        this.arAccounts = rst[4];
+        this.arControlCenters = rst[5];
+        this.arOrders = rst[6];
+        this.arCurrencies = rst[7];
+  
+        // Accounts
+        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+        this.uiAccountStatusFilter = undefined;
+        this.uiAccountCtgyFilterEx = {
+          includedCategories: [financeAccountCategoryAsset],
+          excludedCategories: [],
+        };
+        this.uiRevAccountCtgyFilterEx = {
+          includedCategories: [],
+          excludedCategories: [financeAccountCategoryAsset],
+        };
+        // Orders
+        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+        this.uiOrderFilter = undefined;
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
+          ConsoleLogTypeEnum.error);
+        
+        this.modalService.create({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      },
     });
   }
 
@@ -241,24 +244,29 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       this.detailObject.items.push(val);
     });
 
-    this._storageService.createAssetValChgDocument(this.detailObject).subscribe((nid: number) => {
-      // New doc created with ID returned
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
-        ConsoleLogTypeEnum.debug);
-
-      this.currentStep = 2;
-      this.docIdCreated = nid;
-      this.isDocPosting = false;
-      this.docPostingFailed = null;
-    }, (err: string) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
-        ConsoleLogTypeEnum.error);
-
-      this.currentStep = 2;
-      this.docIdCreated = null;
-      this.docPostingFailed = err;
-      this.isDocPosting = false;
-    });
+    this._storageService.createAssetValChgDocument(this.detailObject)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.currentStep = 2;
+        this.isDocPosting = false;
+      }))
+      .subscribe({
+        next: (nid: number) => {
+          // New doc created with ID returned
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
+            ConsoleLogTypeEnum.debug);
+    
+          this.docIdCreated = nid;
+          this.docPostingFailed = null;
+        },
+        error: (err: string) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
+            ConsoleLogTypeEnum.error);
+    
+          this.docIdCreated = null;
+          this.docPostingFailed = err;
+        },
+      });
   }
 
   private _updateConfirmInfo(): void {

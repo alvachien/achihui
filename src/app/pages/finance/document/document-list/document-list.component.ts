@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
-import { takeUntil, catchError, map } from 'rxjs/operators';
+import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -66,32 +66,38 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
     ];
     forkJoin(arseqs)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((val: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
-          ConsoleLogTypeEnum.debug);
-
-        this.arDocTypes = val[0];
-        this.arCurrencies = val[1];
-        this.arAccountCategories = val[2];
-        this.arTranTypes = val[3];
-        this.arAccounts = val[4];
-        this.arControlCenters = val[5];
-        this.arOrders = val[6];
-        this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
-        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-
-        this.fetchData();
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        // Error
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.isLoadingResults = false;
+      }))
+      .subscribe({
+        next: (val: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
+            ConsoleLogTypeEnum.debug);
+  
+          this.arDocTypes = val[0];
+          this.arCurrencies = val[1];
+          this.arAccountCategories = val[2];
+          this.arTranTypes = val[3];
+          this.arAccounts = val[4];
+          this.arControlCenters = val[5];
+          this.arOrders = val[6];
+          this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
+          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+  
+          this.fetchData();
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
+            ConsoleLogTypeEnum.error);
+  
+          // Error
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
       });
   }
 
@@ -113,31 +119,33 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     const { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
     this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((revdata: BaseListModel<Document>) => {
-        if (revdata) {
-          if (revdata.totalCount) {
-            this.totalDocumentCount = +revdata.totalCount;
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isLoadingResults = false))
+      .subscribe({
+        next: (revdata: BaseListModel<Document>) => {
+          if (revdata) {
+            if (revdata.totalCount) {
+              this.totalDocumentCount = +revdata.totalCount;
+            } else {
+              this.totalDocumentCount = 0;
+            }
+  
+            this.listOfDocs = revdata.contentList;
           } else {
             this.totalDocumentCount = 0;
+            this.listOfDocs = [];
           }
-
-          this.listOfDocs = revdata.contentList;
-        } else {
-          this.totalDocumentCount = 0;
-          this.listOfDocs = [];
-        }
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
       });
   }
 

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
@@ -76,29 +76,33 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     const reqs = [this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)];
     forkJoin(reqs)
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((data: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
-          ConsoleLogTypeEnum.debug);
-
-        if (data instanceof Array && data.length > 0) {
-          // Parse the data
-          this.availableCategories = data[0];
-          this.availableAccounts = this._filterAccountsByStatus(data[1] as Account[]);
-
-          this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false)
+      )
+      .subscribe({
+        next: (data: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
+            ConsoleLogTypeEnum.debug);
+  
+          if (data instanceof Array && data.length > 0) {
+            // Parse the data
+            this.availableCategories = data[0];
+            this.availableAccounts = this._filterAccountsByStatus(data[1] as Account[]);
+  
+            this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+          }
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
         }
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
       });
   }
   private _filterAccountsByStatus(allAccounts: Account[]): Account[] {

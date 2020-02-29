@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
@@ -82,32 +82,36 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               this.odataService.fetchAllControlCenters(),
               this.odataService.readControlCenter(this.routerID)
             ])
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe((rsts: any[]) => {
-              this.existedCC = rsts[0];
-
-              this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
-              this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
-              this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
-              this.detailFormGroup.get('parentControl').setValue(rsts[1].ParentId);
-              this.detailFormGroup.get('ownerControl').setValue(rsts[1].Owner);
-              this.detailFormGroup.markAsPristine();
-              if (this.uiMode === UIMode.Display) {
-                this.detailFormGroup.disable();
-              } else {
-                this.detailFormGroup.enable();
-              }
-            }, (error: any) => {
-              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`,
-                ConsoleLogTypeEnum.error);
-
-              this.modalService.create({
-                nzTitle: translate('Common.Error'),
-                nzContent: error,
-                nzClosable: true,
-              });
-            }, () => {
-              this.isLoadingResults = false;
+            .pipe(
+              takeUntil(this._destroyed$),
+              finalize(() => this.isLoadingResults = false)
+            )
+            .subscribe({
+              next: (rsts: any[]) => {
+                this.existedCC = rsts[0];
+  
+                this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
+                this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
+                this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
+                this.detailFormGroup.get('parentControl').setValue(rsts[1].ParentId);
+                this.detailFormGroup.get('ownerControl').setValue(rsts[1].Owner);
+                this.detailFormGroup.markAsPristine();
+                if (this.uiMode === UIMode.Display) {
+                  this.detailFormGroup.disable();
+                } else {
+                  this.detailFormGroup.enable();
+                }
+              },
+              error: (error: any) => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`,
+                  ConsoleLogTypeEnum.error);
+  
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: error,
+                  nzClosable: true,
+                });
+              },
             });
           }
           break;
@@ -116,24 +120,28 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           default: {
             this.isLoadingResults = true;
             this.odataService.fetchAllControlCenters()
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((cclist: ControlCenter[]) => {
-                ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
-                  ConsoleLogTypeEnum.debug);
-        
-                // Load all control centers.
-                this.existedCC = cclist;
-              }, (error: any) => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${error}`,
-                  ConsoleLogTypeEnum.error);
-                
-                this.modalService.create({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: error,
-                  nzClosable: true,
-                });
-              }, () => {
-                this.isLoadingResults = false;
+              .pipe(
+                takeUntil(this._destroyed$),
+                finalize(() => this.isLoadingResults = false)
+              )
+              .subscribe({
+                next: (cclist: ControlCenter[]) => {
+                  ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
+                    ConsoleLogTypeEnum.debug);
+          
+                  // Load all control centers.
+                  this.existedCC = cclist;
+                },
+                error: (error: any) => {
+                  ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${error}`,
+                    ConsoleLogTypeEnum.error);
+                  
+                  this.modalService.create({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: error,
+                    nzClosable: true,
+                  });
+                },
               });
           }
           break;
@@ -195,7 +203,12 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private _createControlCenter(detailObject: ControlCenter): void {
     this.odataService.createControlCenter(detailObject)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => {
+          // Finalized
+        })
+      )
       .subscribe((x: ControlCenter) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`,
           ConsoleLogTypeEnum.debug);

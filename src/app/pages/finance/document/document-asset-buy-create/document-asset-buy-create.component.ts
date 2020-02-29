@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize, } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
@@ -110,33 +110,36 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
-        ConsoleLogTypeEnum.debug);
-
-      this.arAssetCategories = rst[1];
-      this.arDocTypes = rst[2];
-      this.arTranTypes = rst[3];
-      this.arAccounts = rst[4];
-      this.arControlCenters = rst[5];
-      this.arOrders = rst[6];
-      this.arCurrencies = rst[7];
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-      this.uiOrderFilter = undefined;
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.error({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
-      });
+    ]).pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (rst: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
+          ConsoleLogTypeEnum.debug);
+  
+        this.arAssetCategories = rst[1];
+        this.arDocTypes = rst[2];
+        this.arTranTypes = rst[3];
+        this.arAccounts = rst[4];
+        this.arControlCenters = rst[5];
+        this.arOrders = rst[6];
+        this.arCurrencies = rst[7];
+        // Accounts
+        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+        this.uiAccountStatusFilter = undefined;
+        this.uiAccountCtgyFilter = undefined;
+        // Orders
+        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+        this.uiOrderFilter = undefined;
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${error}`,
+          ConsoleLogTypeEnum.error);
+  
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      },
     });
   }
 
@@ -252,25 +255,30 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       apidetail.items.push(val);
     });
 
-    this.odataService.createAssetBuyinDocument(apidetail).subscribe((nid: number) => {
-      // New doc created with ID returned
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
-        ConsoleLogTypeEnum.debug);
-
-      this.currentStep = 4;
-      this.docIdCreated = nid;
-      this.isDocPosting = false;
-      this.docPostingFailed = null;
-    }, (err: string) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
-        ConsoleLogTypeEnum.error);
-
-      // Handle the error
-      this.currentStep = 4;
-      this.docIdCreated = null;
-      this.docPostingFailed = err;
-      this.isDocPosting = false;
-    });
+    this.odataService.createAssetBuyinDocument(apidetail)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => {
+        this.isDocPosting = false;
+        this.currentStep = 4;
+      }))
+      .subscribe({
+        next: (nid: number) => {
+          // New doc created with ID returned
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
+            ConsoleLogTypeEnum.debug);
+    
+          this.docIdCreated = nid;
+          this.docPostingFailed = null;
+        },
+        error: (err: string) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+    
+          // Handle the error
+          this.docIdCreated = null;
+          this.docPostingFailed = err;
+        }
+      });
   }
 
   private _updateConfirmInfo(): void {

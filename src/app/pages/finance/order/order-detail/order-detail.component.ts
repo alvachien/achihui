@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
@@ -28,6 +28,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   // Form: detail
   public detailFormGroup: FormGroup;
   public listRules: SettlementRule[] = [];
+  // Submitting
+  isOrderSubmitting: boolean = false;
+  isOrderSubmitted: boolean = false;
+  orderIdCreated?: number = null;
+  orderSavedFailed: string;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -97,7 +102,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllControlCenters(),  
             this.odataService.readOrder(this.routerID)
           ])
-          .pipe(takeUntil(this._destroyed$))
+          .pipe(takeUntil(this._destroyed$),
+            finalize(() => {
+              this.isLoadingResults = false;
+            }))
           .subscribe((rsts: any) => {
             this.arControlCenters = rsts[0];
 
@@ -114,6 +122,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.disable();
             }
 
+            this.listRules = [];
             this.listRules = rsts[1].SRules;
           }, (error: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${error}`,
@@ -149,8 +158,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               nzContent: error,
               nzClosable: true,
             });
-          }, () => {
-            this.isLoadingResults = false;
           });
         }
         break;
@@ -172,10 +179,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...',
       ConsoleLogTypeEnum.debug);
 
+    this.isOrderSubmitting = true;
     if (this.uiMode === UIMode.Create) {
-       this.onCreateOrder();
+      this.onCreateOrder();
     } else if (this.uiMode === UIMode.Change) {
-       this.onChangeOrder();
+      this.onChangeOrder();
     }
   }
 
@@ -198,16 +206,33 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       ControlCenters: this.arControlCenters,
     })) {
       popupDialog(this.modalService, 'Common.Error', objOrder.VerifiedMsgs);
+      this.isOrderSubmitting = false;
 
       return;
     }
 
-    this.odataService.createOrder(objOrder).subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, createOrderEvent`,
-        ConsoleLogTypeEnum.debug);
-    }, (error: any) => {
-      // Show error message
-    });
+    this.odataService.createOrder(objOrder)
+      .pipe(finalize(() => {
+        this.isOrderSubmitting = false;
+        this.isOrderSubmitted =  true;
+      })) 
+      .subscribe({
+        next: (neword: Order) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder`,
+            ConsoleLogTypeEnum.debug);
+          
+          this.orderIdCreated = neword.Id;
+          this.orderSavedFailed = null;
+        },
+        error: (error: any) => {
+          // Show error message
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          this.orderIdCreated = null;
+          this.orderSavedFailed = error;
+        }
+      });
   }
 
   private onChangeOrder(): void {
@@ -221,15 +246,38 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       ControlCenters: this.arControlCenters,
     })) {
       popupDialog(this.modalService, 'Common.Error', ordObj.VerifiedMsgs);
+      this.isOrderSubmitting = false;
+
       return;
     }
 
-    this.odataService.changeOrder(ordObj).subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, changeOrderEvent`,
-        ConsoleLogTypeEnum.debug);
-    }, (error: any) => {
-      // Show error message
-    });
+    this.odataService.changeOrder(ordObj)
+      .pipe(finalize(() => {
+        this.isOrderSubmitting = false;
+        this.isOrderSubmitted =  true;
+      })) 
+      .subscribe({
+        next: (x: Order) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
+            ConsoleLogTypeEnum.debug);
+          
+          this.orderSavedFailed = null;          
+        },
+        error: (error: any) => {
+          // Show error message
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          this.orderSavedFailed = error;
+        }
+      });
+  }
+
+  public goBack(): void {
+    this.isOrderSubmitted = false;
+    this.isOrderSubmitting = false;
+    this.orderIdCreated = null;
+    this.orderSavedFailed = null;
   }
 
   public onDeleteRule(rule: SettlementRule): void {
@@ -243,6 +291,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       srules.splice(idx);
       this.listRules = srules;
     }
+  }
+
+  public onDisplayOrder(): void {
+    // Display order
   }
 
   private getNextRuleID(): number {
@@ -263,9 +315,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     const ordInstance: Order = new Order();
     ordInstance.HID = this.homeService.ChosedHome.ID;
     ordInstance.Name = this.detailFormGroup.get('nameControl').value;
-    ordInstance.ValidFrom = this.detailFormGroup.get('startDateControl').value;
-    ordInstance.ValidTo = this.detailFormGroup.get('endDateControl').value;
+    ordInstance.ValidFrom = moment(this.detailFormGroup.get('startDateControl').value);
+    ordInstance.ValidTo = moment(this.detailFormGroup.get('endDateControl').value);
     ordInstance.Comment = this.detailFormGroup.get('cmtControl').value;
+    ordInstance.SRules = [];
     ordInstance.SRules = this.listRules.slice();
     return ordInstance;
   }

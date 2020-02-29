@@ -24,6 +24,8 @@ describe('OrderDetailComponent', () => {
   let storageService: any;
   let fetchAllControlCentersSpy: any;
   let readOrderSpy: any;
+  let createOrderSpy: any;
+  let changeOrderSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -42,9 +44,13 @@ describe('OrderDetailComponent', () => {
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllControlCenters',
       'readOrder',
+      'createOrder',
+      'changeOrder',
     ]);
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     readOrderSpy = storageService.readOrder.and.returnValue(of({}));
+    createOrderSpy = storageService.createOrder.and.returnValue(of({}));
+    changeOrderSpy = storageService.changeOrder.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -108,6 +114,7 @@ describe('OrderDetailComponent', () => {
 
     beforeEach(() => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      createOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
     beforeEach(inject([OverlayContainer],
       (oc: OverlayContainer) => {
@@ -251,23 +258,208 @@ describe('OrderDetailComponent', () => {
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
 
-      // Add the rules
-      component.onCreateRule();
-      expect(component.listRules.length).toBe(1);
-      expect(component.saveButtonEnabled).toBeFalsy();
+      if (fakeData.finControlCenters.length > 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
 
-      // Add the second rule
-      component.onCreateRule();
-      expect(component.listRules.length).toBe(2);
-      expect(component.saveButtonEnabled).toBeFalsy();
+        // Add the second rule
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(2);
+        expect(component.saveButtonEnabled).toBeFalsy();
 
-      // Change it.
-      component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
-      component.listRules[0].Precent = 30;
-      component.listRules[1].ControlCenterId = fakeData.finControlCenters[0].Id;
-      component.listRules[1].Precent = 70;
+        // Change it.
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 30;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[1].Id;
+        component.listRules[1].Precent = 70;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else if (fakeData.finControlCenters.length === 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 100;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else {
+        // Let it fails
+        expect(fakeData.finControlCenters.length).toBeTruthy();
+      }
+
+      // Do the save
+      component.onSubmit();
+      expect(component.isOrderSubmitting).toBeTrue();
+      expect(createOrderSpy).toHaveBeenCalled();
+
+      tick();
       fixture.detectChanges();
-      expect(component.saveButtonEnabled).toBeTruthy();
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.orderIdCreated).toBeTruthy();
+      expect(component.orderSavedFailed).toBeFalsy();
+
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('shall show failed result', fakeAsync(() => {
+      createOrderSpy.and.returnValue(asyncError('failed in creation'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      if (fakeData.finControlCenters.length > 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        // Add the second rule
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(2);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        // Change it.
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 30;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[1].Id;
+        component.listRules[1].Precent = 70;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else if (fakeData.finControlCenters.length === 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 100;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else {
+        // Let it fails
+        expect(fakeData.finControlCenters.length).toBeTruthy();
+      }
+
+      // Do the save
+      component.onSubmit();
+      expect(component.isOrderSubmitting).toBeTrue();
+      expect(createOrderSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.orderIdCreated).toBeFalsy();
+      expect(component.orderSavedFailed).toBeTruthy();
+
+      flush();
+    }));
+
+    it('shall popup error dialog if settlement rules are invalid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      // Name
+      component.detailFormGroup.get('nameControl').setValue('test');
+      // Valid from
+      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      // Valid to
+      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      // Comment
+      component.detailFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeFalsy();
+
+      if (fakeData.finControlCenters.length > 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        // Add the second rule
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(2);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        // Change it.
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 30;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[1].Precent = 70;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else if (fakeData.finControlCenters.length === 1) {
+        // Add the rules
+        component.onCreateRule();
+        expect(component.listRules.length).toBe(1);
+        expect(component.saveButtonEnabled).toBeFalsy();
+
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+        component.listRules[0].Precent = 110;
+        fixture.detectChanges();
+        expect(component.saveButtonEnabled).toBeTruthy();
+      } else {
+        // Let it fails
+        expect(fakeData.finControlCenters.length).toBeTruthy();
+      }
+
+      // Do the save
+      component.onSubmit();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.orderIdCreated).toBeNull();
+      flush();
+      tick();
+      fixture.detectChanges();
 
       flush();
     }));
@@ -308,6 +500,7 @@ describe('OrderDetailComponent', () => {
 
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+      changeOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
     beforeEach(inject([OverlayContainer],
       (oc: OverlayContainer) => {
@@ -330,6 +523,117 @@ describe('OrderDetailComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.isCreateMode).toBeFalsy();
+      expect(component.listRules.length).toBeGreaterThan(0);
+
+      flush();
+    }));
+
+    it('shall show success result', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+      // Change the name
+      component.detailFormGroup.get('nameControl').setValue('test2');
+      component.detailFormGroup.get('nameControl').markAsDirty();
+
+      expect(component.saveButtonEnabled).toBeTrue();
+
+      // Do the save
+      component.onSubmit();
+      expect(component.isOrderSubmitting).toBeTrue();
+      expect(changeOrderSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderSavedFailed).toBeFalsy();
+
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('shall show failed result', fakeAsync(() => {
+      changeOrderSpy.and.returnValue(asyncError('failed in creation'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+      // Change the name
+      component.detailFormGroup.get('nameControl').setValue('test2');
+      component.detailFormGroup.get('nameControl').markAsDirty();
+
+      expect(component.saveButtonEnabled).toBeTrue();
+
+      // Do the save
+      component.onSubmit();
+      expect(component.isOrderSubmitting).toBeTrue();
+      expect(changeOrderSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderSavedFailed).toBeTruthy();
+
+      flush();
+    }));
+
+    it('shall popup error dialog if settlement rules are invalid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+      expect(component.listRules.length).toBeGreaterThan(0);
+
+      let nidx = component.listRules.length;
+      component.onCreateRule();
+      component.listRules[nidx].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.listRules[nidx].Precent = 50;
+      fixture.detectChanges();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      // Do the save
+      component.onSubmit();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      fixture.detectChanges();
+
+      expect(component.isOrderSubmitting).toBeFalsy();
+      expect(component.orderIdCreated).toBeNull();
+      flush();
+      tick();
+      fixture.detectChanges();
 
       flush();
     }));
