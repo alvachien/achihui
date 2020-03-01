@@ -2,7 +2,7 @@
 // Unit test for homedef.ts
 //
 
-import { HomeMember, HomeDef, HomeMemberRelationEnum } from './homedef';
+import { HomeMember, HomeDef, HomeMemberRelationEnum, HomeMsg, HomeKeyFigure, } from './homedef';
 
 describe('HomeMember', () => {
   let hmem: HomeMember;
@@ -47,6 +47,19 @@ describe('HomeDef', () => {
     expect(hdobj.isValid).toBeFalsy();
   });
 
+  it('check valid', () => {
+    expect(hdobj.isValid).toBeFalsy();
+
+    hdobj.Name = 'test';
+    expect(hdobj.isValid).toBeFalsy();
+
+    hdobj.Host = 'abc';
+    expect(hdobj.isValid).toBeFalsy();
+
+    hdobj.BaseCurrency = 'ABC';
+    expect(hdobj.isValid).toBeTruthy();
+  });
+
   it('Generate and Parse JSON', () => {
     hdobj.Name = 'Test';
     hdobj.BaseCurrency = 'CNY';
@@ -74,5 +87,73 @@ describe('HomeDef', () => {
     expect(hdobj2.BaseCurrency).toEqual(hdobj.BaseCurrency);
     expect(hdobj2.Details).toEqual(hdobj.Details);
     expect(hdobj2.Host).toEqual(hdobj.Host);
+  });
+});
+
+describe('HomeMsg', () => {
+  let hmsg: HomeMsg;
+
+  beforeEach(() => {
+    hmsg = new HomeMsg();
+  });
+
+  it('init', () => {
+    expect(hmsg).toBeTruthy();
+  });
+
+  it('onSetData and writeObject', () => {
+    hmsg.HID = 1;
+    hmsg.ID = 1;
+    hmsg.UserTo = 'abc';
+    hmsg.UserFrom = 'def';
+    hmsg.UserToDisplayAs = 'ABC';
+    hmsg.UserFrom = 'DEF';
+    let sentdatestring = hmsg.SendDateFormatString;
+    expect(sentdatestring).toBeTruthy();
+    hmsg.Title = 'test';
+    hmsg.Content = 'test';
+    let gobj = hmsg.writeJSONObject();
+    expect(gobj).toBeTruthy();
+
+    let hmsg2 = new HomeMsg();
+    hmsg2.onSetData(gobj);
+    expect(hmsg2).toBeTruthy();
+    expect(hmsg2.UserTo).toEqual('abc');
+    expect(hmsg2.UserFrom).toEqual('DEF');
+    expect(hmsg2.ID).toBe(1);
+    expect(hmsg2.Title).toEqual('test');
+    expect(hmsg2.Content).toEqual('test');
+  });
+});
+
+
+describe('HomeKeyFigure', () => {
+  let hkg = new HomeKeyFigure();
+
+  beforeEach(() => {
+    hkg = new HomeKeyFigure();
+  });
+
+  it('init', () => {
+    expect(hkg).toBeTruthy();
+  });
+
+  it('onSetData', () => {
+    hkg.onSetData({
+      totalAsset: 100,
+      totalLiability: 20,
+      totalAssetUnderMyName: 90,
+      totalLiabilityUnderMyName: 10,
+      totalUnreadMessage: 0,
+      myUnCompletedEvents: 1,
+      myCompletedEvents: 2,
+    });
+
+    expect(hkg.TotalAssets).toEqual(100);
+    expect(hkg.TotalLiabilities).toEqual(20);
+    expect(hkg.TotalAssetsUnderMyName).toEqual(90);
+    expect(hkg.TotalLiabilitiesUnderMyName).toEqual(10);
+    expect(hkg.MyUnCompletedEvents).toEqual(1);
+    expect(hkg.MyCompletedEvents).toEqual(2);
   });
 });

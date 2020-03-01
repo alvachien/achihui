@@ -5,7 +5,7 @@
 import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, AccountJson,
   DocumentType, DocumentTypeJson, AssetCategory, AssetCategoryJson, AccountExtraAdvancePayment,
   AccountExtraAsset, AccountExtraLoan, ControlCenter, Order, SettlementRule,
-  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum, RepaymentMethodEnum, } from './financemodel';
+  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum, RepaymentMethodEnum, IAccountVerifyContext, } from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
@@ -208,8 +208,35 @@ describe('Account', () => {
 
   it('#1. onVerify: name is must', () => {
     instance.Comment = 'test';
+    instance.CategoryId = 1;
 
     expect(instance.onVerify()).toBeFalsy();
+  });
+  it('#2. onVerify: category is must', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
+
+    expect(instance.onVerify()).toBeFalsy();
+  });
+  it('#3. onVerify: category shall be valid', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
+    instance.CategoryId = 11;
+
+    expect(instance.onVerify({
+      Categories: [{
+          ID: 1,
+          Name: 'Ctgy 1'
+        } as AccountCategory, {
+          ID: 2,
+          Name: 'Ctgy 2'
+        } as AccountCategory
+      ]
+    } as IAccountVerifyContext)).toBeFalsy();
+  });
+
+  it('onSetData and writeObject', () => {
+
   });
 });
 

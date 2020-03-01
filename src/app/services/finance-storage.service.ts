@@ -9,12 +9,9 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
-  ReportTrendExData, FinanceAssetSoldoutDocumentAPI,
-  FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
+  ReportTrendExData, DocumentCreatedFrequenciesByUser,
   Plan, DocumentWithPlanExgRate, BalanceSheetReport, ControlCenterReport, OrderReport,
-  AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
   FinanceNormalDocItemMassCreate,
-  RepeatFrequencyEnum,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -22,12 +19,7 @@ import { HomeDefOdataService } from './home-def-odata.service';
 @Injectable()
 export class FinanceStorageService {
   // Buffer
-  private _isAccountListLoaded: boolean;
   private _listAccount: Account[];
-  private _isConctrolCenterListLoaded: boolean;
-  private _listControlCenter: ControlCenter[];
-  private _isOrderListLoaded: boolean;
-  private _listOrder: Order[];
 
   readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlan';
   readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocument';
@@ -36,23 +28,6 @@ export class FinanceStorageService {
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
   readonly docItemAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItem';
-
-  get Accounts(): Account[] {
-    return this._listAccount;
-  }
-
-  get ControlCenters(): ControlCenter[] {
-    return this._listControlCenter;
-  }
-
-  get Orders(): Order[] {
-    return this._listOrder;
-  }
-
-  // Events
-  changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
-  createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
-  changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -151,58 +126,6 @@ export class FinanceStorageService {
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Failed in changeAccount in FinanceStorageService.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-
-  /**
-   * Fetch all plans out
-   * @param top The maximum returned amount
-   * @param skip Skip the amount
-   *
-   */
-  public fetchAllPlans(top?: number, skip?: number): Observable<Plan[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    if (top) {
-      params = params.append('top', top.toString());
-    }
-    if (skip !== undefined) {
-      params = params.append('skip', skip.toString());
-    }
-
-    return this._http.get(this.planAPIUrl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService fetchAllPlans map.`);
-        }
-
-        let listRst: Plan[] = [];
-        const rjs: any = <any>response;
-        if (rjs instanceof Array && rjs.length > 0) {
-          for (const si of rjs) {
-            const rst: Plan = new Plan();
-            rst.onSetData(si);
-            listRst.push(rst);
-          }
-        }
-
-        return listRst;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService fetchAllPlans failed: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -431,41 +354,6 @@ export class FinanceStorageService {
         }
 
         return docLoan;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-
-
-  /**
-   * Read the document from API
-   * @param docid Id of Document
-   */
-  public readDocument(docid: number): Observable<Document> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.documentAPIUrl + '/' + docid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService`);
-        }
-
-        let hd: Document = new Document();
-        hd.onSetData(response as any);
-        return hd;
       }),
       catchError((errresp: HttpErrorResponse) => {
         const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

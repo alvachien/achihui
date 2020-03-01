@@ -1,1 +1,9 @@
-<p>plan-list works!</p>
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <nz-page-header nzBackIcon>
+    <nz-page-header-title>{{'Finance.Plan' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
+    </nz-page-header-extra>
+  </nz-page-header>
+</nz-spin>

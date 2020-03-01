@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
-  Order, Account,
+  Order, Account, Plan,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -1597,6 +1597,65 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllPlans', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllPlans().subscribe(
+        (data: Plan[]) => {
+          expect(data.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [{
+          id: 1, hid: 1, planType: 0, accountID: 4,
+          startDate: '2019-03-23', targetDate: '2019-04-23', targetBalance: 10.00, tranCurr: 'CNY',
+          description: 'Test plan 1', createdBy: 'aaa', createdAt: '2019-03-23'
+        }]
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchAllPlans().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body

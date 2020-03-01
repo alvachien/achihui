@@ -3,7 +3,7 @@
 //
 
 import { isOverviewDateInScope, OverviewScopeEnum, MultipleNamesObject, AppLanguage,
-  AppLanguageJson, getOverviewScopeRange, momentDateFormat,
+  AppLanguageJson, getOverviewScopeRange, momentDateFormat, Tag, TagTypeEnum, TagCount,
 } from './common';
 import * as moment from 'moment';
 
@@ -55,6 +55,54 @@ describe('AppLanguage', () => {
   });
 });
 
+describe('Tag', () => {
+  let objTag: Tag;
+
+  beforeEach(() => {
+    objTag = new Tag();
+  })
+
+  it('init', () => {
+    expect(objTag).toBeTruthy();
+  });
+
+  it('onSetData', () => {
+    objTag.onSetData({
+      tagType: 10,
+      tagID: 123,
+      tagSubID: 456,
+      term: 'abc'
+    });
+    expect(objTag.LinkTarget).toEqual('/finance/document/display/123');
+    expect(objTag.TagType).toEqual(TagTypeEnum.FinanceDocumentItem);
+    expect(objTag.TagID).toEqual(123);
+    expect(objTag.TagSubID).toEqual(456);
+    expect(objTag.Term).toEqual('abc');
+  });
+});
+
+describe('TagCount', () => {
+  let tcount: TagCount;
+
+  beforeEach(() => {
+    tcount = new TagCount();
+  })
+
+  it('init', () => {
+    expect(tcount).toBeTruthy();
+  })
+
+  it('onSetData', () => {
+    tcount.onSetData({
+      term: 'abc',
+      termCount: 10
+    });
+
+    expect(tcount.Term).toBe('abc');
+    expect(tcount.TermCount).toEqual(10);
+  });
+});
+
 describe('getOverviewScopeRange', () => {
   let curdata: moment.Moment;
 
@@ -67,4 +115,20 @@ describe('getOverviewScopeRange', () => {
     expect(rst.BeginDate.date()).toEqual(1);
     expect(rst.BeginDate.month()).toEqual(rst.EndDate.month());
   });
+  it('CurrentYear', () => {
+    const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentYear);
+    expect(rst.BeginDate.date()).toEqual(1);
+  });
+  it('PreviousMonth', () => {
+    const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousMonth);
+    expect(rst.BeginDate.date()).toEqual(1);
+  });
+  it('PreviousYear', () => {
+    const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousYear);
+    expect(rst.BeginDate.date()).toEqual(1);
+  });
+  it('CurrentWeek', () => {
+    const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentWeek);
+    expect(rst.BeginDate).toBeTruthy();
+  })
 });

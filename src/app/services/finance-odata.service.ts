@@ -11,6 +11,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
+  Plan,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -35,12 +36,15 @@ export class FinanceOdataService {
   private listControlCenter: ControlCenter[];
   private isOrderListLoaded: boolean;
   private listOrder: Order[];
+  private isPlanListLoaded: boolean;
+  private listPlan: Plan[];
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenters';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrders';
   readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocuments';
   readonly docItemViewAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItemViews';
+  readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlans';
 
   // Buffer in current page.
   get Currencies(): Currency[] {
@@ -74,6 +78,10 @@ export class FinanceOdataService {
     return this.listOrder;
   }
 
+  get Plans(): Plan[] {
+    return this.listPlan;
+  }
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -97,6 +105,8 @@ export class FinanceOdataService {
     this.listControlCenter = [];
     this.isOrderListLoaded = false;
     this.listOrder = [];
+    this.isPlanListLoaded = false;
+    this.listPlan = [];
   }
 
   /**
@@ -707,6 +717,7 @@ export class FinanceOdataService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
       let params: HttpParams = new HttpParams();
       // params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
       params = params.append('$filter', `HomeID eq ${hid}`);
@@ -866,6 +877,55 @@ export class FinanceOdataService {
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
+  }
+
+  /**
+   * fetch all orders, and save it to buffer
+   * @param forceReload set to true to enforce reload all data
+   *
+   */
+  public fetchAllPlans(forceReload?: boolean): Observable<Plan[]> {
+    if (!this.isPlanListLoaded || forceReload) {
+      const hid = this.homeService.ChosedHome.ID;
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('$filter', `HomeID eq ${hid}`);
+
+      return this.http.get(this.planAPIUrl, { headers, params, })
+        .pipe(map((response: HttpResponse<any>) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllPlans`,
+            ConsoleLogTypeEnum.debug);
+
+          this.listPlan = [];
+          const rjs: any = response;
+          const amt = rjs['@odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: Plan = new Plan();
+              rst.onSetData(si);
+              this.listPlan.push(rst);
+            }
+          }
+
+          this.isPlanListLoaded = true;
+
+          return this.listPlan;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllPlans failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            this.isPlanListLoaded = false;
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
+    } else {
+      return of(this.listPlan);
+    }
   }
 
   /**

@@ -229,6 +229,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   private _displayAccountContent(objAcnt: Account): void {
     // Step 0.
     this.headerFormGroup.reset();
+    this.headerFormGroup.get('idControl').setValue(objAcnt.Id);
     this.headerFormGroup.get('nameControl').setValue(objAcnt.Name);
     this.headerFormGroup.get('ctgyControl').setValue(objAcnt.CategoryId);
     if (objAcnt.OwnerId) {
@@ -237,36 +238,14 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     if (objAcnt.Comment) {
       this.headerFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
-    if (!this.isFieldChangable) {
-      this.headerFormGroup.disable();
-    } else {
-      this.headerFormGroup.enable();
-    }
     // Step 1.
     if (this.isADPAccount) {
       this.extraADPFormGroup.get('extADPControl').setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);
-      if (!this.isFieldChangable) {
-        this.extraADPFormGroup.disable();
-      } else {
-        this.extraADPFormGroup.enable();
-      }
     } else if (this.isAssetAccount) {
       this.extraAssetFormGroup.get('extAssetControl').setValue(objAcnt.ExtraInfo as AccountExtraAsset);
-      if (!this.isFieldChangable) {
-        this.extraAssetFormGroup.disable();
-      } else {
-        this.extraAssetFormGroup.enable();
-      }
     } else if (this.isLoanAccount) {
       this.extraLoanFormGroup.get('extLoanControl').setValue(objAcnt.ExtraInfo as AccountExtraLoan);
-      if (!this.isFieldChangable) {
-        this.extraLoanFormGroup.disable();
-      } else {
-        this.extraLoanFormGroup.enable();
-      }
     }
-    // Step 2.
-    // this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
   }
 
   private _generateAccount(): Account {
