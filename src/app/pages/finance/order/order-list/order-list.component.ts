@@ -23,10 +23,11 @@ export class OrderListComponent implements OnInit, OnDestroy {
     public odataService: FinanceOdataService,
     public router: Router,
     public modalService: NzModalService) {
-      this.isLoadingResults = false;
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
-        ConsoleLogTypeEnum.debug);
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnInit...',
