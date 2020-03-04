@@ -144,7 +144,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
 
           this.odataService.fetchAllControlCenters()
-            .pipe(takeUntil(this._destroyed$))
+            .pipe(takeUntil(this._destroyed$),
+            finalize(() => this.isLoadingResults = false))
             .subscribe((cc: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
               ConsoleLogTypeEnum.debug);

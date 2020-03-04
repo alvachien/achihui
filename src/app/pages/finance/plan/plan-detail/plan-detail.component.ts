@@ -129,24 +129,24 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          this.isLoadingResults = true;
+          // this.isLoadingResults = true;
 
-          this.odataService.fetchAllControlCenters()
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe((cc: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters`,
-              ConsoleLogTypeEnum.debug);
+          // this.odataService.fetchAllControlCenters()
+          //   .pipe(takeUntil(this._destroyed$))
+          //   .subscribe((cc: any) => {
+          //   ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters`,
+          //     ConsoleLogTypeEnum.debug);
 
-            this.arControlCenters = cc;
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, fetchAllControlCenters : ${error}`,
-              ConsoleLogTypeEnum.error);
-            this.modalService.create({
-              nzTitle: translate('Common.Error'),
-              nzContent: error,
-              nzClosable: true,
-            });
-          });
+          //   this.arControlCenters = cc;
+          // }, (error: any) => {
+          //   ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, fetchAllControlCenters : ${error}`,
+          //     ConsoleLogTypeEnum.error);
+          //   this.modalService.create({
+          //     nzTitle: translate('Common.Error'),
+          //     nzContent: error,
+          //     nzClosable: true,
+          //   });
+          // });
         }
         break;
       }

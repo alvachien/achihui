@@ -45,14 +45,17 @@
             <a [routerLink]="['/', 'finance', 'report']">{{'Finance.Reports' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'plan']">{{'Finance.Plan' | transloco}}</a>
+            <a [routerLink]="['/', 'finance', 'plan']">{{'Common.Plan' | transloco}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="t('Nav.LearningTrace')" nzIcon="read">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a>Object</a>
+            <a [routerLink]="['/', 'learn', 'category']">{{'Learning.LearningCategory' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'learn', 'object']">{{'Learning.LearningObjects' | transloco}}</a>
           </li>
         </ul>
       </li>
