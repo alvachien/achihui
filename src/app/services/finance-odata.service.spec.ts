@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
-  Order, Account, Plan,
+  Order, Account, Plan, PlanTypeEnum,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -1656,6 +1656,123 @@ describe('FinanceOdataService', () => {
         return requrl.method === 'GET'
           && requrl.url === service.planAPIUrl
           && requrl.params.has('$filter');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readPlan', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return plan in success case', () => {
+      service.readPlan(21).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      let planData: Plan = new Plan();
+      planData.StartDate = moment();
+      planData.AccountCategoryID = 1;
+      planData.AccountID = 21;
+      planData.Description = 'test';
+      planData.PlanType = PlanTypeEnum.Account;
+      planData.TargetBalance = 20;
+      planData.TranCurrency = 'CNY';
+      planData.ID = 21;
+      req.flush(planData.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.readPlan(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createPlan', () => {
+    let planData: Plan;
+    beforeEach(() => {
+      planData = new Plan();
+      planData.StartDate = moment();
+      planData.AccountCategoryID = 1;
+      planData.AccountID = 21;
+      planData.Description = 'test';
+      planData.PlanType = PlanTypeEnum.Account;
+      planData.TargetBalance = 20;
+      planData.TranCurrency = 'CNY';
+      planData.ID = 21;
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should create a plan in success case', () => {
+      service.createPlan(planData).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.planAPIUrl;
+      });
+
+      // Respond with the mock data
+      req.flush(planData.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createPlan(planData).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.planAPIUrl;
       });
 
       // respond with a 500 and the error message in the body

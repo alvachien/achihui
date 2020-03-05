@@ -818,7 +818,7 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceStorageService createOrder.',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createOrder.',
           ConsoleLogTypeEnum.debug);
 
         const hd: Order = new Order();
@@ -829,7 +829,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceStorageService createOrder failed: ${error}.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createOrder failed: ${error}.`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -926,6 +926,68 @@ export class FinanceOdataService {
     } else {
       return of(this.listPlan);
     }
+  }
+
+  /**
+   * Create the plan
+   */
+  public createPlan(nplan: Plan): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = nplan.writeJSONString();
+    return this.http.post(this.planAPIUrl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug('AC_HIH_UI [Debug]: Entering FinanceOdataService, createPlan');
+        }
+
+        let hd: Plan = new Plan();
+        hd.onSetData(response);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering FinanceOdataService createPlan failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * read the plan
+   */
+  public readPlan(planid: number): Observable<Plan> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = this.planAPIUrl + '(' + planid.toString() + ')';
+    return this.http.get(apiurl, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
+        }
+
+        let hd: Plan = new Plan();
+        hd.onSetData(response);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan, failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**

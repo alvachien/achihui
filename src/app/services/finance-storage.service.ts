@@ -133,71 +133,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Create the plan
-   */
-  public createPlan(nplan: Plan): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    const jdata: string = nplan.writeJSONString();
-    return this._http.post(this.planAPIUrl, jdata, {
-      headers: headers,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, createPlan, map');
-        }
-
-        let hd: Plan = new Plan();
-        hd.onSetData(response);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan failed: ${error}`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
-   * read the plan
-   */
-  public readPlan(planid: number): Observable<Plan> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.planAPIUrl + '/' + planid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
-        }
-
-        let hd: Plan = new Plan();
-        hd.onSetData(response);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan, failed: ${error}`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
    * Mass Create documents
    * @param objDetail instance of document which to be created
    */
@@ -271,8 +206,6 @@ export class FinanceStorageService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
-
-
 
   /**
    * Update Loan document

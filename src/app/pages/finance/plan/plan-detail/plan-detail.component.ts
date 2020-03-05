@@ -28,10 +28,10 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   // Form: detail
   public detailFormGroup: FormGroup;
   // Submitting
-  isOrderSubmitting: boolean = false;
-  isOrderSubmitted: boolean = false;
-  orderIdCreated?: number = null;
-  orderSavedFailed: string;
+  isObjectSubmitting: boolean = false;
+  isObjectSubmitted: boolean = false;
+  objectIdCreated?: number = null;
+  objectSavedFailed: string;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -54,6 +54,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl(),
+      typeControl: new FormControl(undefined, [Validators.required]),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       startDateControl: new FormControl(moment().toDate(),[Validators.required]),
       endDateControl: new FormControl(moment().add(1, 'y').toDate(),[Validators.required]),
@@ -167,7 +168,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PlanDetailComponent onSubmit...',
       ConsoleLogTypeEnum.debug);
 
-    this.isOrderSubmitting = true;
+    this.isObjectSubmitting = true;
     if (this.uiMode === UIMode.Create) {
       this.onCreatePlan();
     } else if (this.uiMode === UIMode.Change) {
@@ -184,7 +185,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     // Check!
     if (!dataObj.onVerify()) {
       popupDialog(this.modalService, 'Common.Error', dataObj.VerifiedMsgs);
-      this.isOrderSubmitting = false;
+      this.isObjectSubmitting = false;
 
       return;
     }
@@ -222,7 +223,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     // Check!
     if (!dataObj.onVerify()) {
       popupDialog(this.modalService, 'Common.Error', dataObj.VerifiedMsgs);
-      this.isOrderSubmitting = false;
+      this.isObjectSubmitting = false;
 
       return;
     }
@@ -250,10 +251,10 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   }
 
   public goBack(): void {
-    this.isOrderSubmitted = false;
-    this.isOrderSubmitting = false;
-    this.orderIdCreated = null;
-    this.orderSavedFailed = null;
+    this.isObjectSubmitted = false;
+    this.isObjectSubmitting = false;
+    this.objectIdCreated = null;
+    this.objectSavedFailed = null;
   }
 
   public onDisplayPlan(): void {
