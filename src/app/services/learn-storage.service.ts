@@ -12,9 +12,6 @@ import * as moment from 'moment';
 @Injectable()
 export class LearnStorageService {
   // Buffer
-  private _isCtgyListLoaded: boolean = false;
-  private _listCategory: LearnCategory[];
-
   private _isEnWordListLoaded: boolean = false;
   private _isEnSentListLoaded: boolean = false;
 
@@ -22,10 +19,6 @@ export class LearnStorageService {
   readonly objecturl: string = environment.ApiUrl + '/api/learnobject';
   readonly historyurl: string = environment.ApiUrl + '/api/learnhistory';
   readonly questionurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
-
-  get Categories(): LearnCategory[] {
-    return this._listCategory;
-  }
 
   listEnWordChange: BehaviorSubject<EnWord[]> = new BehaviorSubject<EnWord[]>([]);
   get EnWords(): EnWord[] {
@@ -50,14 +43,10 @@ export class LearnStorageService {
       console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService constructor...');
     }
 
-    this._isCtgyListLoaded = false;
-    this._listCategory = [];
-
     this._isEnWordListLoaded = false;
     this._isEnSentListLoaded = false;
   }
 
-  // Object
   /**
    * Fetch all all histories information
    */

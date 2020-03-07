@@ -86,7 +86,9 @@ describe('LearnOdataService', () => {
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock categories
-      req.flush(fakeData.learnCategoriesFromAPI);
+      req.flush({
+        value: fakeData.learnCategoriesFromAPI
+      });
     });
 
     it('should be OK returning no categories', () => {
@@ -104,8 +106,7 @@ describe('LearnOdataService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.categoryurl;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -142,7 +143,9 @@ describe('LearnOdataService', () => {
         return requrl.method === 'GET' && requrl.url === service.categoryurl;
        });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-      reqs[0].flush(fakeData.learnCategoriesFromAPI);
+      reqs[0].flush({
+        value: fakeData.learnCategoriesFromAPI
+      });
       httpTestingController.verify();
 
       // Second call
@@ -177,7 +180,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.get(LearnOdataService);
     });
 
     afterEach(() => {
@@ -235,7 +238,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.get(LearnOdataService);
     });
 
     afterEach(() => {
@@ -255,7 +258,7 @@ describe('LearnOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'PUT' && requrl.url === service.objecturl + '(2)';
        });
 
       // Respond with the mock data
@@ -275,7 +278,7 @@ describe('LearnOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'PUT' && requrl.url === service.objecturl + '(2)';
       });
 
       // respond with a 500 and the error message in the body
@@ -293,7 +296,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.get(LearnOdataService);
     });
 
     afterEach(() => {
@@ -313,7 +316,7 @@ describe('LearnOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '(2)';
        });
 
       // Respond with the mock data
@@ -333,7 +336,7 @@ describe('LearnOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '(2)';
       });
 
       // respond with a 500 and the error message in the body
@@ -351,7 +354,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.get(LearnOdataService);
     });
 
     afterEach(() => {
@@ -371,11 +374,13 @@ describe('LearnOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'GET' && requrl.url === service.objecturl;
        });
 
       // Respond with the mock data
-      req.flush(item.writeJSONObject());
+      req.flush({
+        value: [item.writeJSONObject()],
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -391,7 +396,7 @@ describe('LearnOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.objecturl + '/2';
+        return requrl.method === 'GET' && requrl.url === service.objecturl;
       });
 
       // respond with a 500 and the error message in the body
@@ -401,7 +406,7 @@ describe('LearnOdataService', () => {
 
   describe('fetchAllObjects', () => {
     beforeEach(() => {
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.get(LearnOdataService);
     });
 
     afterEach(() => {
@@ -421,8 +426,7 @@ describe('LearnOdataService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.objecturl
-          && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.objecturl;
        });
 
       // Respond with the mock data
@@ -433,8 +437,8 @@ describe('LearnOdataService', () => {
       obj1.CategoryId = 1;
       obj1.Content = 'test1';
       req.flush({
-        totalCount: 2,
-        contentList: [obj1],
+        '@odata.count': 2,
+        value: [obj1],
       });
     });
 
@@ -451,8 +455,7 @@ describe('LearnOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.objecturl
-          && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.objecturl;
       });
 
       // respond with a 500 and the error message in the body

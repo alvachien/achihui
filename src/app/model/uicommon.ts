@@ -1,5 +1,5 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
-import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, } from './financemodel';
+import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, PlanTypeEnum, } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
 import { EnPOSEnum } from './learnmodel';
 import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
@@ -101,7 +101,7 @@ export class UINameValuePair<T> {
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
   | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum
-  | HomeMemberRelationEnum;
+  | HomeMemberRelationEnum | PlanTypeEnum;
 
 /**
  * UI Display string
@@ -305,6 +305,24 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +qat,
           i18nterm: UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(+qat as FinanceQuickAccessTypeEnum),
+          displaystring: '',
+        } as UIDisplayString);
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getFinancePlanTypeEnumDisplayStrings(): UIDisplayString[] {
+    const arrst: UIDisplayString[] = [];
+
+    for (const qat in PlanTypeEnum) {
+      if (Number.isNaN(+qat)) {
+        // Do nothing
+      } else {
+        arrst.push({
+          value: +qat,
+          i18nterm: UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(+qat as PlanTypeEnum),
           displaystring: '',
         } as UIDisplayString);
       }
@@ -543,6 +561,16 @@ export class UIDisplayStringUtil {
       case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
       case HomeMemberRelationEnum.Child: return 'Sys.MemRel.Children';
       case HomeMemberRelationEnum.Parent: return 'Sys.MemRel.Parent';
+      default: return '';
+    }
+  }
+
+  public static getFinancePlanTypeEnumDisplayString(pte: PlanTypeEnum): string {
+    switch (pte) {
+      case PlanTypeEnum.Account: return 'Finance.Account';
+      case PlanTypeEnum.AccountCategory: return 'Finance.AccountCategory';
+      case PlanTypeEnum.ControlCenter: return 'Finance.ControlCenter';
+      case PlanTypeEnum.TranType: return 'Finance.TransactionType';
       default: return '';
     }
   }

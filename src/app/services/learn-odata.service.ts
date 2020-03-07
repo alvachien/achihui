@@ -16,8 +16,6 @@ import { HomeDefOdataService } from './home-def-odata.service';
 export class LearnOdataService {
   private isCategoryListLoaded: boolean;
   private listCategory: LearnCategory[];
-  private isObjectListLoaded: boolean;
-  private listObject: LearnObject[];
 
   // URLs
   readonly categoryurl: string = environment.ApiUrl + '/api/LearnCategories';
@@ -110,10 +108,11 @@ export class LearnOdataService {
               .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'ID,HomeID,Name,CategoryID,Status,Comment');
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID}`);
+    params = params.append('$select', 'ID,HomeID,CategoryID,Name');
     if (ctgyID) {
-      params = params.append('ctgyid', ctgyID.toString());
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and CategoryID eq ${ctgyID}`);
+    } else {
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID}`);
     }
 
     return this.http.get(this.objecturl, {
@@ -121,16 +120,14 @@ export class LearnOdataService {
         params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
-          console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService.`);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllObjects map...',
+          ConsoleLogTypeEnum.debug);
 
-        const rjs: any = <any>response;
         let listRst: LearnObject[] = [];
-
-        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-          for (const si of rjs.contentList) {
+        const rjs: any = response;
+        const amt = rjs['@odata.count'];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
             const rst: LearnObject = new LearnObject();
             rst.onSetData(si);
             listRst.push(rst);
@@ -140,10 +137,8 @@ export class LearnOdataService {
         return listRst;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          // console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
-          console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService.`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LearnOdataService fetchAllObjects failed ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -154,6 +149,9 @@ export class LearnOdataService {
    * @param obj Object to create
    */
   public createObject(obj: LearnObject): Observable<LearnObject> {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService createObject',
+      ConsoleLogTypeEnum.debug);
+
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -161,21 +159,19 @@ export class LearnOdataService {
 
     const jdata: string = obj.writeJSONString();
     return this.http.post(this.objecturl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]:' + response);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService createObject map...',
+          ConsoleLogTypeEnum.debug);
 
         let hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService createObject, failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LearnOdataService createObject failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -186,30 +182,31 @@ export class LearnOdataService {
    * @param obj Object to create
    */
   public updateObject(obj: LearnObject): Observable<LearnObject> {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService updateObject',
+      ConsoleLogTypeEnum.debug);
+
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.objecturl + '/' + obj.Id.toString();
+    let apiurl: string = this.objecturl + '(' + obj.Id.toString() + ')';
 
     const jdata: string = obj.writeJSONString();
-    return this._http.put(apiurl, jdata, {
+    return this.http.put(apiurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService updateObject');
-        }
-
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService updateObject, map...',
+          ConsoleLogTypeEnum.debug);
+  
         let hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService updateObject, failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LearnOdataService updateObject failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -220,28 +217,28 @@ export class LearnOdataService {
    * @param obj Object to create
    */
   public deleteObject(oid: number): Observable<any> {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService deleteObject',
+      ConsoleLogTypeEnum.debug);
+
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.objecturl + '/' + oid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.delete(apiurl, {
-        headers: headers,
-        params: params,
+    let apiurl: string = this.objecturl + '(' + oid.toString() + ')';
+    return this.http.delete(apiurl, {
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteObject, map' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering LearnOdataService, deleteObject, map' + response);
         }
 
         return <any>response;
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService readObject, failed: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnOdataService deleteObject, failed: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -253,36 +250,38 @@ export class LearnOdataService {
    * @param objid ID of the object to read
    */
   public readObject(objid: number): Observable<LearnObject> {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService readObject',
+      ConsoleLogTypeEnum.debug);
+
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.objecturl + '/' + objid.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${objid}`);
+    return this.http.get(this.objecturl, {
+        headers,
+        params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService readObject`);
-        }
-
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService readObject, map',
+          ConsoleLogTypeEnum.debug);
+  
         let hd: LearnObject = new LearnObject();
-        hd.onSetData(response);
+        const repdata = response as any;
+        if (repdata.value instanceof Array && repdata.value.length === 1) {
+          hd.onSetData(repdata.value[0]);
+        }
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService readObject, failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LearnOdataService readObject, failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
-
 
   private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]): void {
     listCtgy.forEach((value: any, index: number) => {

@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
-  HomeChoseGuardService,
+  HomeChoseGuardService, LearnOdataService,
   CanDeactivateGuardService, UIStatusService, SideNavService, TagsService,
   FinanceOdataService, HomeDefOdataService, LanguageOdataService,
 } from './services';
@@ -49,6 +49,7 @@ registerLocaleData(en);
     SideNavService,
     LanguageOdataService,
     HomeDefOdataService,
+    LearnOdataService,
     FinanceOdataService,
     {
       provide: TRANSLOCO_CONFIG,

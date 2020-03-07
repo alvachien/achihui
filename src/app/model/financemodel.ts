@@ -2696,44 +2696,62 @@ export class Plan extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
 
     rstObj.ID = this.ID;
-    rstObj.HID = this.HID;
-    rstObj.planType = +this.PlanType;
-    rstObj.accountID = this.AccountID;
-    rstObj.startDate = this.StartDate.format(hih.momentDateFormat);
-    rstObj.targetDate = this.TargetDate.format(hih.momentDateFormat);
-    rstObj.targetBalance = this.TargetBalance;
-    rstObj.tranCurr = this.TranCurrency;
-    rstObj.description = this.Description;
+    rstObj.HomeID = this.HID;
+    rstObj.PlanType = PlanTypeEnum[this.PlanType];
+    switch(this.PlanType) {
+      case PlanTypeEnum.Account:
+        rstObj.AccountID = this.AccountID;
+        break;
+      case PlanTypeEnum.AccountCategory:
+        rstObj.AccountCategoryID = this.AccountCategoryID;
+        break;
+      case PlanTypeEnum.ControlCenter:
+        rstObj.ControlCenterID = this.ControlCenterID;
+        break;
+      case PlanTypeEnum.TranType:
+        rstObj.TranTypeID = this.TranTypeID;
+      default:
+        break;
+    }    
+    rstObj.StartDate = this.StartDate.format(hih.momentDateFormat);
+    rstObj.TargetDate = this.TargetDate.format(hih.momentDateFormat);
+    rstObj.TargetBalance = this.TargetBalance;
+    rstObj.TranCurr = this.TranCurrency;
+    rstObj.Description = this.Description;
     return rstObj;
   }
   public onSetData(data: any): void {
     super.onSetData(data);
-    if (data && data.id) {
-      this.ID = +data.id;
+    if (data && data.ID) {
+      this.ID = +data.ID;
     }
-    if (data && data.HID) {
+    if (data && data.HomeID) {
       this.HID = +data.HID;
     }
-    if (data && data.planType) {
-      this.PlanType = data.planType;
+    if (data && data.PlanType) {
+      if (typeof data.PlanType === 'string') {
+        this.PlanType = PlanTypeEnum[data.PlanType as string];
+      } else if (typeof data.Status === 'number') {
+        this.PlanType = data.PlanType as PlanTypeEnum;
+      }
     }
-    if (data && data.accountID) {
-      this.AccountID = data.accountID;
+    if (data && data.AccountID) {
+      this.AccountID = data.AccountID;
     }
-    if (data && data.startDate) {
-      this.StartDate = moment(data.startDate, hih.momentDateFormat);
+    if (data && data.StartDate) {
+      this.StartDate = moment(data.StartDate, hih.momentDateFormat);
     }
-    if (data && data.targetDate) {
-      this.TargetDate = moment(data.targetDate, hih.momentDateFormat);
+    if (data && data.TargetDate) {
+      this.TargetDate = moment(data.TargetDate, hih.momentDateFormat);
     }
-    if (data && data.targetBalance) {
-      this.TargetBalance = data.targetBalance;
+    if (data && data.TargetBalance) {
+      this.TargetBalance = data.TargetBalance;
     }
-    if (data && data.tranCurr) {
-      this.TranCurrency = data.tranCurr;
+    if (data && data.TranCurr) {
+      this.TranCurrency = data.TranCurr;
     }
-    if (data && data.description) {
-      this.Description = data.description;
+    if (data && data.Description) {
+      this.Description = data.Description;
     }
   }
 }
