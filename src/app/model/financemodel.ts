@@ -2738,6 +2738,15 @@ export class Plan extends hih.BaseModel {
     if (data && data.AccountID) {
       this.AccountID = data.AccountID;
     }
+    if (data && data.AccountCategoryID) {
+      this.AccountCategoryID = data.AccountCategoryID;
+    }
+    if (data && data.TranTypeID) {
+      this.TranTypeID = data.TranTypeID;
+    }
+    if (data && data.ControlCenterID) {
+      this.ControlCenterID = data.ControlCenterID;
+    }
     if (data && data.StartDate) {
       this.StartDate = moment(data.StartDate, hih.momentDateFormat);
     }

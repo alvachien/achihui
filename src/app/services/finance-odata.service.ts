@@ -779,7 +779,7 @@ export class FinanceOdataService {
 
         const hd: Order = new Order();
         const repdata = response as any;
-        if (repdata && repdata.value instanceof Array && repdata.value[0]) {
+        if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
           hd.onSetData(repdata.value[0]);
 
           // Update the buffer if necessary
@@ -968,22 +968,35 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.planAPIUrl + '(' + planid.toString() + ')';
-    return this.http.get(apiurl, {
-      headers,
-    })
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${planid}`);
+    return this.http.get(this.planAPIUrl, { headers, params })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
         }
 
         let hd: Plan = new Plan();
-        hd.onSetData(response);
+        const rjs: any = response;
+        if (rjs.value instanceof Array && rjs.value.length === 1) {
+          hd.onSetData(rjs.value[0]);
+
+          // Update the buffer if necessary
+          const idx: number = this.listPlan.findIndex((val: Plan) => {
+            return val.ID === hd.ID;
+          });
+          if (idx !== -1) {
+            this.listPlan.splice(idx, 1, hd);
+          } else {
+            this.listPlan.push(hd);
+          }
+        }
+
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan, failed: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService readPlan, failed: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

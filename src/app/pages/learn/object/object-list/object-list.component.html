@@ -1,1 +1,30 @@
-<p>object-list works!</p>
+<nz-page-header nzBackIcon>
+  <nz-page-header-title>{{'Learning.LearningObject' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>{{'Common.ID' | transloco}}</th>
+        <th>{{'Common.Category' | transloco}}</th>
+        <th>{{'Common.Name' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.Id}}</td>
+        <td>
+          <nz-select [(ngModel)]="data.CategoryId">
+            <nz-option *ngFor="let ctgy of arCategories" [nzValue]='ctgy.Id' [nzLabel]="ctgy.FullDisplayText"></nz-option>
+          </nz-select>
+        </td>
+        <td>{{data.Name}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>

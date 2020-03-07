@@ -12,22 +12,22 @@
       <tr>
         <th>ID</th>
         <th>{{'Common.Type' | transloco}}</th>
-        <th>{{'Common.ValidFrom' | transloco}}</th>
-        <th>{{'Common.ValidTo' | transloco}}</th>
+        <th>{{'Common.Start' | transloco}}</th>
+        <th>{{'Common.Stop' | transloco}}</th>
         <th>{{'Common.Description' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
         <td>
-          {{data.Id}}
+          {{data.ID}}
           <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
-          <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
+          <button nz-button nzType="link" (click)="onDisplay(data.ID)">{{'Common.Display' | transloco}}</button>
+          <button nz-button nzType="link" (click)="onEdit(data.ID)">{{'Common.Edit' | transloco}}</button>
         </td>
-        <td>{{data.PlanType}}</td>
-        <td>{{data.StartDate}}</td>
-        <td>{{data.TargetDate}}</td>
+        <td>{{getPlanTypeDisplayString(data.PlanType) | transloco}}</td>
+        <td>{{getDateDisplayString(data.StartDate)}}</td>
+        <td>{{getDateDisplayString(data.TargetDate)}}</td>
         <td>{{data.Description}}</td>
       </tr>
     </tbody>

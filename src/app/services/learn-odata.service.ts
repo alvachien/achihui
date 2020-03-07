@@ -61,9 +61,9 @@ export class LearnOdataService {
 
           const rjs: any = response as any;
           this.listCategory = [];
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const amt = rjs['@odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: LearnCategory = new LearnCategory();
               rst.onSetData(si);
               this.listCategory.push(rst);
@@ -72,6 +72,7 @@ export class LearnOdataService {
 
           // Prepare for the hierarchy
           this.buildLearnCategoryHierarchy(this.listCategory);
+
           // Sort it
           this.listCategory.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);

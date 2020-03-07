@@ -294,25 +294,25 @@ export class LearnCategory extends hih.BaseModel {
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.parID) {
-      this.ParentId = +data.parID;
+    if (data && data.ParentID) {
+      this.ParentId = +data.ParentID;
     } else {
       this.ParentId = undefined;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.sysFlag) {
-      this.SysFlag = data.sysFlag;
-    } else {
-      this.SysFlag = false;
-    }
+    // if (data && data.sysFlag) {
+    //   this.SysFlag = data.sysFlag;
+    // } else {
+    //   this.SysFlag = false;
+    // }
   }
 }
 
@@ -381,35 +381,31 @@ export class LearnObject extends hih.BaseModel {
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
-    rstObj.hid = this.HID;
-    rstObj.id = this.Id;
-    rstObj.categoryId = this.CategoryId;
-    rstObj.name = this.Name;
-    rstObj.content = this.Content;
+    rstObj.HomeID = this.HID;
+    rstObj.ID = this.Id;
+    rstObj.CategoryId = this.CategoryId;
+    rstObj.Name = this.Name;
+    rstObj.Content = this.Content;
     return rstObj;
   }
 
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.categoryID) {
-      this.CategoryId = +data.categoryID;
+    if (data && data.CategoryID) {
+      this.CategoryId = +data.CategoryID;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.content) {
-      this.Content = data.content;
-    }
-
-    if (data && data.categoryName) {
-      this.CategoryName = data.categoryName;
+    if (data && data.Content) {
+      this.Content = data.Content;
     }
   }
 }

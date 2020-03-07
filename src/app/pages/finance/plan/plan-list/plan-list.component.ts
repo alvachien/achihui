@@ -4,8 +4,10 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
-import { LogLevel, Plan, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
+import { LogLevel, Plan, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+  PlanTypeEnum, momentDateFormat, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -75,5 +77,14 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   onEdit(rid: number): void {
     this.router.navigate(['/finance/plan/edit/' + rid.toString()]);
+  }
+
+  public getPlanTypeDisplayString(pt: PlanTypeEnum): string {
+    return UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(pt);
+  }
+  public getDateDisplayString(dt: moment.Moment): string {
+    if (dt) {
+      return dt.format(momentDateFormat);
+    }
   }
 }

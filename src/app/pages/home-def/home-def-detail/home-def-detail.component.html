@@ -63,8 +63,8 @@
   <nz-table #basicTable nzBordered [nzData]="listMembers">
     <thead>
       <tr>
-        <th nz-width="150">{{'Common.User' | transloco}}</th>
-        <th nz-width="200">{{'Common.DisplayAs' | transloco}}</th>
+        <th nz-width="150">{{'Login.User' | transloco}}</th>
+        <th nz-width="200">{{'Login.DisplayAs' | transloco}}</th>
         <th nz-width="100">{{'Common.Relationship' | transloco}}</th>
       </tr>
     </thead>
@@ -73,7 +73,13 @@
         <td>
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
-              <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+              <nz-input-group [nzSuffix]="suffixTemplate">
+                <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+              </nz-input-group>
+              <ng-template #suffixTemplate>
+                <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed"
+                  (click)="onDeleteMember(data)">{{'Common.Delete' | transloco}}</button>
+              </ng-template>
               <ng-template #usrTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
                   {{'Common.FieldIsMandatory' | transloco}}
@@ -81,9 +87,6 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed"
-            (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
         </td>
         <td>
           <nz-form-item>

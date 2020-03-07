@@ -161,13 +161,13 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.detailFormGroup.get('startDateControl').setValue(planObj.StartDate.toDate());
             this.detailFormGroup.get('endDateControl').setValue(planObj.TargetDate.toDate());
             this.detailFormGroup.get('despControl').setValue(planObj.Description);
-            this.detailFormGroup.get('typeControl').setValue(planObj.PlanType);
             this.detailFormGroup.get('accountControl').setValue(planObj.AccountID);
             this.detailFormGroup.get('acntCtgyControl').setValue(planObj.AccountCategoryID);
             this.detailFormGroup.get('tranTypeControl').setValue(planObj.TranTypeID);
             this.detailFormGroup.get('controlCenterControl').setValue(planObj.ControlCenterID);
             this.detailFormGroup.get('amountControl').setValue(planObj.TargetBalance);
             this.detailFormGroup.get('currControl').setValue(planObj.TranCurrency);
+            this.detailFormGroup.get('typeControl').setValue(planObj.PlanType);
       
             // Disable the form
             if (this.uiMode === UIMode.Display) {
@@ -327,7 +327,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     switch(newType) {
       case PlanTypeEnum.Account: {
         if (this.isFieldChangable) {
-          this.detailFormGroup.get('accountControl').setValue(undefined);
           this.detailFormGroup.get('accountControl').enable();
           this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
           this.detailFormGroup.get('acntCtgyControl').disable();
@@ -343,7 +342,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         if (this.isFieldChangable) {
           this.detailFormGroup.get('accountControl').setValue(undefined);
           this.detailFormGroup.get('accountControl').disable();
-          this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
           this.detailFormGroup.get('acntCtgyControl').enable();
           this.detailFormGroup.get('tranTypeControl').setValue(undefined);
           this.detailFormGroup.get('tranTypeControl').disable();
@@ -359,7 +357,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           this.detailFormGroup.get('accountControl').disable();
           this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
           this.detailFormGroup.get('acntCtgyControl').disable();
-          this.detailFormGroup.get('tranTypeControl').setValue(undefined);
           this.detailFormGroup.get('tranTypeControl').enable();
           this.detailFormGroup.get('controlCenterControl').setValue(undefined);
           this.detailFormGroup.get('controlCenterControl').disable();
@@ -375,7 +372,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           this.detailFormGroup.get('acntCtgyControl').disable();
           this.detailFormGroup.get('tranTypeControl').setValue(undefined);
           this.detailFormGroup.get('tranTypeControl').disable();
-          this.detailFormGroup.get('controlCenterControl').setValue(undefined);
           this.detailFormGroup.get('controlCenterControl').enable();
         }
         break;
