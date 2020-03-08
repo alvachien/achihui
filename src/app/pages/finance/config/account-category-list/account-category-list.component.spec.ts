@@ -10,7 +10,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { AccountCategoryListComponent } from './account-category-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -129,17 +129,17 @@ describe('AccountCategoryListComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

@@ -239,12 +239,14 @@ export class EnSentence extends hih.BaseModel {
   }
 }
 
+/**
+ * LearnCategory: Learn category JsonFormat
+ */
 export interface LearnCategoryJson {
-  id: number;
-  parID?: number;
-  name: string;
-  comment?: string;
-  sysFlag: boolean;
+  ID: number;
+  ParentID?: number;
+  Name: string;
+  Comment?: string;
 }
 
 /**
@@ -286,12 +288,16 @@ export class LearnCategory extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): LearnCategoryJson {
     let rstObj: any = super.writeJSONObject();
+    rstObj.ID = this.Id;
+    rstObj.ParentID = this.ParentId;
+    rstObj.Name = this.Name;
+    rstObj.Comment = this.Comment;
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: LearnCategoryJson): void {
     super.onSetData(data);
 
     if (data && data.ID) {

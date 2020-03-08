@@ -83,7 +83,6 @@ describe('LearnOdataService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.categoryurl;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock categories
       req.flush({
@@ -149,7 +148,14 @@ describe('LearnOdataService', () => {
       httpTestingController.verify();
 
       // Second call
-      service.fetchAllCategories().subscribe();
+      service.fetchAllCategories().subscribe(
+        (curries: any) => {
+          expect(curries.length).toEqual(fakeData.learnCategoriesFromAPI.length, 'should return expected categories');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.categoryurl;
        });

@@ -7,7 +7,7 @@ import {
   BookCategory, BookCategoryJson,
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
-  ControlCenter, ControlCenterJson, Order, OrderJson,
+  ControlCenter, ControlCenterJson, Order, OrderJson, Plan, PlanTypeEnum,
   Document, DocumentItem, AccountExtraAdvancePayment,
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
@@ -15,7 +15,7 @@ import {
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
   financeAccountCategoryAdvancePayment, LearnObject, LearnHistory,
   SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
-  Location, LocationJson,
+  Location, LocationJson, financeTranTypeInterestOut,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -41,6 +41,7 @@ export class FakeDataHelper {
   private _finControlCentersFromAPI: ControlCenterJson[];
   private _finOrders: Order[];
   private _finOrdersFromAPI: OrderJson[];
+  private _finPlans: Plan[];
   private _finNormalDocumentForCreate: Document;
   private _finTransferDocumentForCreate: Document;
   private _finADPDocumentForCreate: Document;
@@ -167,6 +168,11 @@ export class FakeDataHelper {
   get finOrdersFromAPI(): OrderJson[] {
     if (this._finOrdersFromAPI) {
       return this._finOrdersFromAPI;
+    }
+  }
+  get finPlans(): Plan[] {
+    if (this._finPlans) {
+      return this._finPlans;
     }
   }
   get finNormalDocumentForCreate(): Document {
@@ -1173,22 +1179,19 @@ export class FakeDataHelper {
   public buildLearnCategoriesFromAPI(): void {
     this._learnCategoriesFromAPI = [];
     const c1: LearnCategoryJson = {
-      id: 1,
-      name: 'Category 1',
-      sysFlag: true,
+      ID: 1,
+      Name: 'Category 1',
     };
     this._learnCategoriesFromAPI.push(c1);
     const c2: LearnCategoryJson = {
-      id: 2,
-      name: 'Category 2',
-      sysFlag: true,
+      ID: 2,
+      Name: 'Category 2',
     };
     this._learnCategoriesFromAPI.push(c2);
     const c11: LearnCategoryJson = {
-      id: 11,
-      name: 'Category 1',
-      sysFlag: true,
-      parID: 1,
+      ID: 11,
+      Name: 'Category 1.Child',
+      ParentID: 1,
     };
     this._learnCategoriesFromAPI.push(c11);
   }
@@ -1401,6 +1404,23 @@ export class FakeDataHelper {
         SRule: [],
       };
       this._finOrdersFromAPI.push(ctgy as OrderJson);
+    }
+  }
+  public buildFinPlans(): void {
+    this._finPlans = [];
+    let obj: Plan;
+    for (let i = 0; i < 2; i++) {
+      obj = new Plan();
+      obj.ID = i + 1;
+      obj.HID = this._chosedHome ? this._chosedHome.ID : 0;
+      obj.StartDate = moment();
+      obj.TargetDate = moment().add(1, 'y');
+      obj.TargetBalance = 500;
+      obj.TranCurrency = this._chosedHome ? this._chosedHome.BaseCurrency : '';
+      obj.Description = `Desp ${i + 1}`;
+      obj.PlanType = PlanTypeEnum.TranType;
+      obj.TranTypeID = financeTranTypeInterestOut;
+      this._finPlans.push(obj);
     }
   }
   public setFinNormalDocumentForCreate(doc: Document): void {

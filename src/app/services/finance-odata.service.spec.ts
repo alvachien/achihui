@@ -1685,7 +1685,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl;
       });
 
       // Respond with the mock data
@@ -1698,7 +1698,9 @@ describe('FinanceOdataService', () => {
       planData.TargetBalance = 20;
       planData.TranCurrency = 'CNY';
       planData.ID = 21;
-      req.flush(planData.writeJSONObject());
+      req.flush({
+        value: [planData.writeJSONObject()],
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -1713,7 +1715,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl;
       });
 
       // respond with a 500 and the error message in the body

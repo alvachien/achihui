@@ -11,7 +11,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 
 import { DocumentListComponent } from './document-list.component';
-import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogCloseButton, ElementClass_DialogContent } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -236,7 +236,7 @@ describe('DocumentListComponent', () => {
     });
   });
 
-  xdescribe('3. shall display error dialog for exception', () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -268,19 +268,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -292,19 +294,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -316,19 +320,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -340,19 +346,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -364,19 +372,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -388,19 +398,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -412,19 +424,21 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
@@ -440,17 +454,17 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
