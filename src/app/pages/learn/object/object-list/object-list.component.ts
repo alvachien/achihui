@@ -16,6 +16,7 @@ import { LearnOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./object-list.component.less'],
 })
 export class ObjectListComponent implements OnInit, OnDestroy {
+  // tslint:disable-next-line: variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
   dataSet: LearnObject[] = [];

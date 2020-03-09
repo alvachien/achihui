@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.0.46",
+  "version": "1.0.50",
   "private": true,
   "description": "UI layer for HIH.",
   "keywords": [
@@ -29,8 +29,10 @@
     "@angular/router": "^8.2.14",
     "@ngneat/transloco": "^2.12.4",
     "actslib": "^0.4.7",
+    "echarts": "^4.6.0",
     "moment": "^2.24.0",
     "ng-zorro-antd": "^8.5.2",
+    "ngx-echarts": "^4.2.2",
     "oidc-client": "^1.10.1",
     "rxjs": "^6.5.4",
     "screenfull": "^5.0.0",

@@ -16,6 +16,7 @@ import { LearnOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./category-list.component.less'],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
+  // tslint:disable-next-line: variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
   dataSet: LearnCategory[] = [];

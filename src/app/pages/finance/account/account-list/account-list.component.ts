@@ -39,12 +39,6 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.isReload = false;
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
-    this.arrayStatus.forEach((val: UIDisplayString) => {
-      this.listStatusFilter.push({
-        text: translate(val.i18nterm),
-        value: (+val.value) as AccountStatusEnum
-      });
-    });
   }
 
   ngOnInit() {
@@ -65,12 +59,12 @@ export class AccountListComponent implements OnInit, OnDestroy {
         next: (data: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit, forkJoin...',
             ConsoleLogTypeEnum.debug);
-  
+
           if (data instanceof Array && data.length > 0) {
             // Parse the data
             this.arCategories = data[0];
             this.dataSet = data[1];
-  
+
             this.arCategories.forEach((val: AccountCategory) => {
               this.listCategoryFilter.push({
                 text: translate(val.Name),
@@ -82,7 +76,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit, forkJoin, failed ${error}`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,

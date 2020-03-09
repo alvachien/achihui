@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, UrlSegment } from '@angular/router';
+import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { BehaviorSubject, of, } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -88,6 +88,7 @@ describe('PlanDetailComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
@@ -213,8 +214,454 @@ describe('PlanDetailComponent', () => {
       flush();
     }));
 
+    it('it shall create plan with type Account successfully', fakeAsync(() => {
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.Account);
+      component.detailFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.markAsDirty();
+
+      component.detailFormGroup.markAsDirty();
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createPlanSpy).toHaveBeenCalled();
+      expect(component.isObjectSubmitted).toEqual(true);
+      expect(component.isObjectSubmitting).toEqual(false);
+      expect(component.objectIdCreated).toBeTruthy();
+
+      flush();
+    }));
+
+    it('it shall create plan with type Account Category successfully', fakeAsync(() => {
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.AccountCategory);
+      component.detailFormGroup.get('acntCtgyControl').setValue(fakeData.finAccountCategories[0].ID);
+      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.markAsDirty();
+
+      component.detailFormGroup.markAsDirty();
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createPlanSpy).toHaveBeenCalled();
+      expect(component.isObjectSubmitted).toEqual(true);
+      expect(component.isObjectSubmitting).toEqual(false);
+      expect(component.objectIdCreated).toBeTruthy();
+
+      flush();
+    }));
+
+    it('it shall create plan with type Control Center successfully', fakeAsync(() => {
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.ControlCenter);
+      component.detailFormGroup.get('controlCenterControl').setValue(fakeData.finControlCenters[0].Id);
+      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.markAsDirty();
+
+      component.detailFormGroup.markAsDirty();
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createPlanSpy).toHaveBeenCalled();
+      expect(component.isObjectSubmitted).toEqual(true);
+      expect(component.isObjectSubmitting).toEqual(false);
+      expect(component.objectIdCreated).toBeTruthy();
+
+      flush();
+    }));
+
+    it('it shall create plan with type Tran type successfully', fakeAsync(() => {
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.TranType);
+      component.detailFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.markAsDirty();
+
+      component.detailFormGroup.markAsDirty();
+      fixture.detectChanges();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+      expect(component.saveButtonEnabled).toBeTruthy();
+
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createPlanSpy).toHaveBeenCalled();
+      expect(component.isObjectSubmitted).toEqual(true);
+      expect(component.isObjectSubmitting).toEqual(false);
+      expect(component.objectIdCreated).toBeTruthy();
+
+      flush();
+    }));
+
     it('shall popup dialog for currencies service failure', fakeAsync(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('currencies service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for transaction type service failure', fakeAsync(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncError('transaction type service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for account category service failure', fakeAsync(() => {
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('account category service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for account service failure', fakeAsync(() => {
+      fetchAllAccountsSpy.and.returnValue(asyncError('accounts service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for control center service failure', fakeAsync(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncError('control center service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+  });
+
+  describe('2. display mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      readPlanSpy.and.returnValue(asyncData(fakeData.finPlans[0]));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(component.isCreateMode).toBeFalsy();
+      expect(component.detailFormGroup.disabled).toBeTruthy();
+
+      flush();
+    }));
+
+    it('shall popup dialog for currencies service failure', fakeAsync(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncError('currencies service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for transaction type service failure', fakeAsync(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncError('transaction type service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for account category service failure', fakeAsync(() => {
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('account category service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for account service failure', fakeAsync(() => {
+      fetchAllAccountsSpy.and.returnValue(asyncError('accounts service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for control center service failure', fakeAsync(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncError('control center service failed'));
+
+      fixture.detectChanges();
+      tick(); // activateRoute
+      fixture.detectChanges();
+      tick(); // forkJoin
+      fixture.detectChanges();
+      tick(); // nz-spin
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('shall popup dialog for read plan service failure', fakeAsync(() => {
+      readPlanSpy.and.returnValue(asyncError('read plan service failed'));
 
       fixture.detectChanges();
       tick(); // activateRoute

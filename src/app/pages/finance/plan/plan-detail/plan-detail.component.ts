@@ -35,8 +35,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   // Form: detail
   public detailFormGroup: FormGroup;
   // Submitting
-  isObjectSubmitting: boolean = false;
-  isObjectSubmitted: boolean = false;
+  isObjectSubmitting = false;
+  isObjectSubmitted = false;
   objectIdCreated?: number = null;
   objectSavedFailed: string;
 
@@ -49,8 +49,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   get saveButtonEnabled(): boolean {
     if (this.isFieldChangable) {
       if (this.detailFormGroup.valid) {
-        let planType = this.detailFormGroup.get('typeControl').value as PlanTypeEnum;
-        switch(planType) {
+        const planType = this.detailFormGroup.get('typeControl').value as PlanTypeEnum;
+        switch (planType) {
           case PlanTypeEnum.Account:
             if (this.detailFormGroup.get('accountControl').value) {
               return true;
@@ -97,8 +97,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl(),
       typeControl: new FormControl(undefined, [Validators.required]),
-      startDateControl: new FormControl(moment().toDate(),[Validators.required]),
-      endDateControl: new FormControl(moment().add(1, 'y').toDate(),[Validators.required]),
+      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new FormControl(moment().add(1, 'y').toDate(), [Validators.required]),
       despControl: new FormControl('', [Validators.required]),
       accountControl: new FormControl({value: undefined, disabled: true}),
       acntCtgyControl: new FormControl({value: undefined, disabled: true}),
@@ -133,7 +133,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
       }
 
-      switch(this.uiMode) {
+      switch (this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
@@ -156,7 +156,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.arUIAccounts = BuildupAccountForSelection(rsts[3], rsts[2]);
             this.arControlCenters = rsts[4];
 
-            let planObj = rsts[5] as Plan;
+            const planObj = rsts[5] as Plan;
             this.detailFormGroup.get('idControl').setValue(planObj.ID);
             this.detailFormGroup.get('startDateControl').setValue(planObj.StartDate.toDate());
             this.detailFormGroup.get('endDateControl').setValue(planObj.TargetDate.toDate());
@@ -168,7 +168,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.detailFormGroup.get('amountControl').setValue(planObj.TargetBalance);
             this.detailFormGroup.get('currControl').setValue(planObj.TranCurrency);
             this.detailFormGroup.get('typeControl').setValue(planObj.PlanType);
-      
+
             // Disable the form
             if (this.uiMode === UIMode.Display) {
               this.detailFormGroup.disable();
@@ -183,8 +183,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               nzClosable: true,
             });
           });
+          break;
         }
-        break;
 
         case UIMode.Create:
         default: {
@@ -217,8 +217,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               nzClosable: true,
             });
           });
+
+          break;
         }
-        break;
       }
     });
   }
@@ -263,12 +264,12 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => {
         this.isObjectSubmitting = false;
         this.isObjectSubmitted =  true;
-      })) 
+      }))
       .subscribe({
         next: (newplan: Plan) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent, onCreatePlan`,
             ConsoleLogTypeEnum.debug);
-          
+
           this.objectIdCreated = newplan.ID;
           this.objectSavedFailed = null;
         },
@@ -301,13 +302,13 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     //   .pipe(finalize(() => {
     //     this.isOrderSubmitting = false;
     //     this.isOrderSubmitted =  true;
-    //   })) 
+    //   }))
     //   .subscribe({
     //     next: (x: Order) => {
     //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent, onChangeOrder`,
     //         ConsoleLogTypeEnum.debug);
-          
-    //       this.orderSavedFailed = null;          
+
+    //       this.orderSavedFailed = null;
     //     },
     //     error: (error: any) => {
     //       // Show error message
@@ -322,9 +323,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public onPlanTypeChanged(event: any): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent, onPlanTypeChanged: ${event}`,
       ConsoleLogTypeEnum.debug);
-    
-    let newType: PlanTypeEnum = event as PlanTypeEnum;
-    switch(newType) {
+
+    const newType: PlanTypeEnum = event as PlanTypeEnum;
+    switch (newType) {
       case PlanTypeEnum.Account: {
         if (this.isFieldChangable) {
           this.detailFormGroup.get('accountControl').enable();
@@ -390,7 +391,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   }
 
   public onDisplayPlan(): void {
-    // Display order
+    // Display plan
   }
 
   private _generatePlan(): Plan {
@@ -403,7 +404,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     dataInstance.TargetDate = moment(this.detailFormGroup.get('endDateControl').value as Date);
     dataInstance.Description = this.detailFormGroup.get('despControl').value;
     dataInstance.PlanType = this.detailFormGroup.get('typeControl').value as PlanTypeEnum;
-    switch(dataInstance.PlanType) {
+    switch (dataInstance.PlanType) {
       case PlanTypeEnum.AccountCategory:
         dataInstance.AccountCategoryID = this.detailFormGroup.get('acntCtgyControl').value;
         break;

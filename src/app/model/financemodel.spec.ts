@@ -236,7 +236,11 @@ describe('Account', () => {
   });
 
   it('onSetData and writeObject', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
 
+    const writeObj: AccountJson = instance.writeJSONObject();
+    expect(writeObj).toBeTruthy();
   });
 });
 

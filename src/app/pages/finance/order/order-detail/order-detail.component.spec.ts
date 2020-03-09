@@ -694,7 +694,7 @@ describe('OrderDetailComponent', () => {
   describe('3. display mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(() => {      
+    beforeEach(() => {
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));

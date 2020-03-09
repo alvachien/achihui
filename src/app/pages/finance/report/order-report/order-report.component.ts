@@ -11,5 +11,4 @@ export class OrderReportComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
