@@ -65,7 +65,6 @@ describe('DocumentListComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

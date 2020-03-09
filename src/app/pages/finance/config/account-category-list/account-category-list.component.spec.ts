@@ -36,7 +36,6 @@ describe('AccountCategoryListComponent', () => {
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

@@ -51,7 +51,6 @@ describe('AccountDetailComponent', () => {
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

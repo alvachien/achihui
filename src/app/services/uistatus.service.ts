@@ -1,7 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
-import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, } from '../model';
+import { QuestionBankItem, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
@@ -19,41 +18,6 @@ export class UIStatusService {
     }
   }
 
-  private _arrOverviewScopes: UIDisplayString[] = [];
-  get OverviewScopeStrings(): UIDisplayString[] {
-    return this._arrOverviewScopes;
-  }
-
-  private _arrQuestionBankType: UIDisplayString[] = [];
-  get QuestionBankTypeStrings(): UIDisplayString[] {
-    return this._arrQuestionBankType;
-  }
-
-  private _arrTagType: UIDisplayString[] = [];
-  get TagTypeStrings(): UIDisplayString[] {
-    return this._arrTagType;
-  }
-
-  private _arrRepayMethod: UIDisplayString[] = [];
-  get RepaymentMethods(): UIDisplayString[] {
-    return this._arrRepayMethod;
-  }
-
-  private _arrEnPOS: UIDisplayString[] = [];
-  get EnPOSStrings(): UIDisplayString[] {
-    return this._arrEnPOS;
-  }
-
-  private _arrTranTypeLevel: UIDisplayString[] = [];
-  get TranTypeLevelStrings(): UIDisplayString[] {
-    return  this._arrTranTypeLevel;
-  }
-
-  private _arrFinQuickAccessType: UIDisplayString[] = [];
-  get FinanceQuickAccessTypeStrings(): UIDisplayString[] {
-    return this._arrFinQuickAccessType;
-  }
-
   private _latestError: string;
   get latestError(): string {
     return this._latestError;
@@ -62,45 +26,9 @@ export class UIStatusService {
     this._latestError = le;
   }
 
-  private _docTempLoan: TemplateDocLoan;
-  get currentTemplateLoanDoc(): TemplateDocLoan {
-    return this._docTempLoan;
-  }
-  set currentTemplateLoanDoc(doc: TemplateDocLoan) {
-    this._docTempLoan = doc;
-  }
-
-  private _objLearnID: number;
-  get currentLearnObjectID(): number {
-    return this._objLearnID;
-  }
-  set currentLearnObjectID(objid: number) {
-    this._objLearnID = objid;
-  }
-
-  public arrLabels: UIDisplayString[] = [];
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
   constructor(private _tranService: TranslocoService) {
-    this._arrOverviewScopes = UIDisplayStringUtil.getOverviewScopeStrings();
-    this._arrQuestionBankType = UIDisplayStringUtil.getQuestionBankTypeStrings();
-    this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
-    this._arrRepayMethod = UIDisplayStringUtil.getRepaymentMethodStrings();
-    this._arrEnPOS = UIDisplayStringUtil.getEnPOSStrings();
-    this._arrTranTypeLevel = UIDisplayStringUtil.getTranTypeLevelDisplayStrings();
-    this._arrFinQuickAccessType = UIDisplayStringUtil.getFinanceQuickAccessTypeEnumStrings();
-
-    this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
-  }
-
-  public getUILabel(le: UICommonLabelEnum): string {
-    for (let lab of this.arrLabels) {
-      if (lab.value === le) {
-        return lab.displaystring ? lab.displaystring : lab.i18nterm;
-      }
-    }
-
-    return '';
   }
 
   /**
@@ -119,11 +47,6 @@ export class UIStatusService {
   }
 
   private onLanguageChanged(): void {
-    let arstrings: string[] = [];
-    for (let lab of this.arrLabels) {
-      arstrings.push(lab.i18nterm);
-    }
-
     // this._tranService.get(arstrings).subscribe((x: any) => {
     //   for (let attr in x) {
     //     for (let lab of this.arrLabels) {

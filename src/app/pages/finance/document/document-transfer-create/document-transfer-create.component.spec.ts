@@ -57,7 +57,6 @@ describe('DocumentTransferCreateComponent', () => {
     fakeData.buildFinOrders();
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
     homeService.ChosedHome = fakeData.chosedHome;
     fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));

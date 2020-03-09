@@ -313,7 +313,7 @@ describe('LearnOdataService', () => {
     it('should return data for success case', () => {
       service.deleteObject(2).subscribe(
         (data: any) => {
-          // expect(data).toBeTruthy();
+          expect(data).toBeTruthy();
         },
         (fail: any) => {
           // Empty

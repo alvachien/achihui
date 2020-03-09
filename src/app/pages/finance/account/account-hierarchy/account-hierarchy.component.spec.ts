@@ -41,7 +41,6 @@ describe('AccountHierarchyComponent', () => {
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

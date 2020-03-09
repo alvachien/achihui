@@ -40,7 +40,6 @@ describe('ObjectListComponent', () => {
     fetchAllCategoriesSpy = storageService.fetchAllCategories.and.returnValue(of([]));
     fetchAllObjectsSpy = storageService.fetchAllObjects.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

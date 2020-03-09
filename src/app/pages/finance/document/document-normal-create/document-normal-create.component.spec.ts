@@ -49,7 +49,6 @@ describe('DocumentNormalCreateComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => '';
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
     const odataService: any = jasmine.createSpyObj('FinanceOdataService', [

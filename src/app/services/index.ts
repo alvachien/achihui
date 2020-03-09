@@ -9,7 +9,6 @@ export * from './tags.service';
 export * from './event-storage.service';
 
 export * from './uistatus.service';
-export * from './side-nav.service';
 
 export * from './language-odata.service';
 export * from './home-def-odata.service';

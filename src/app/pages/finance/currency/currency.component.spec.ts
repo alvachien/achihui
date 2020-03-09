@@ -30,7 +30,6 @@ describe('CurrencyComponent', () => {
     fakeData.buildCurrencies();
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',

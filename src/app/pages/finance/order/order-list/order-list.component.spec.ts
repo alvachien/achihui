@@ -38,7 +38,6 @@ describe('OrderListComponent', () => {
     ]);
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
   });
 
   beforeEach(async(() => {

@@ -231,8 +231,7 @@ Just use UIStatusService directly because it has no dependencies.
 The following are outdated stub for UIStatusService.
 
 ```typescript
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
+  const uiServiceStub: Partial<UIStatusService> = {};
 ```
 
 Add it into the providers section:
@@ -244,9 +243,9 @@ Add it into the providers section:
 ### [Obsoleted] ThemeStorage
 
 ```typescript
-    const themeStorageStub: Partial<ThemeStorage> = {};
-    themeStorageStub.getStoredTheme = () => { return undefined; };
-    themeStorageStub.onThemeUpdate = new EventEmitter<any>();
+  const themeStorageStub: Partial<ThemeStorage> = {};
+  themeStorageStub.getStoredTheme = () => { return undefined; };
+  themeStorageStub.onThemeUpdate = new EventEmitter<any>();
 ```
 
 Add it into the providers section:

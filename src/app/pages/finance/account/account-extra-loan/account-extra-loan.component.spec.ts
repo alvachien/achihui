@@ -46,7 +46,6 @@ describe('AccountExtraLoanComponent', () => {
     };
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub.getUILabel = (le: any) => '';
     arUIAccounts = BuildupAccountForSelection(fakeData.finAccounts, fakeData.finAccountCategories);
   });
 
