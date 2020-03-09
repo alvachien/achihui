@@ -1642,7 +1642,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllPlans().subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1689,7 +1689,7 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      let planData: Plan = new Plan();
+      const planData: Plan = new Plan();
       planData.StartDate = moment();
       planData.AccountCategoryID = 1;
       planData.AccountID = 21;
@@ -1704,7 +1704,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.readPlan(21).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1763,7 +1763,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createPlan(planData).subscribe(
         (data: any) => {
           fail('expected to fail');

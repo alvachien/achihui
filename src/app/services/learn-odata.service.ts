@@ -124,7 +124,7 @@ export class LearnOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllObjects map...',
           ConsoleLogTypeEnum.debug);
 
-        let listRst: LearnObject[] = [];
+        const listRst: LearnObject[] = [];
         const rjs: any = response;
         const amt = rjs['@odata.count'];
         if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -166,7 +166,7 @@ export class LearnOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService createObject map...',
           ConsoleLogTypeEnum.debug);
 
-        let hd: LearnObject = new LearnObject();
+        const hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
       }),
@@ -191,17 +191,17 @@ export class LearnOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.objecturl + '(' + obj.Id.toString() + ')';
+    const apiurl: string = this.objecturl + '(' + obj.Id.toString() + ')';
 
     const jdata: string = obj.writeJSONString();
     return this.http.put(apiurl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService updateObject, map...',
           ConsoleLogTypeEnum.debug);
-  
-        let hd: LearnObject = new LearnObject();
+
+        const hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
       }),
@@ -226,16 +226,15 @@ export class LearnOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.objecturl + '(' + oid.toString() + ')';
+    const apiurl: string = this.objecturl + '(' + oid.toString() + ')';
     return this.http.delete(apiurl, {
         headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering LearnOdataService, deleteObject, map' + response);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService deleteObject, map',
+          ConsoleLogTypeEnum.debug);
 
-        return <any>response;
+        return response;
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
@@ -268,8 +267,8 @@ export class LearnOdataService {
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService readObject, map',
           ConsoleLogTypeEnum.debug);
-  
-        let hd: LearnObject = new LearnObject();
+
+        const hd: LearnObject = new LearnObject();
         const repdata = response as any;
         if (repdata.value instanceof Array && repdata.value.length === 1) {
           hd.onSetData(repdata.value[0]);

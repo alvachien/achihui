@@ -939,21 +939,19 @@ export class FinanceOdataService {
 
     const jdata: string = nplan.writeJSONString();
     return this.http.post(this.planAPIUrl, jdata, {
-      headers: headers,
+      headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceOdataService, createPlan');
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService createPlan`,
+          ConsoleLogTypeEnum.debug);
 
-        let hd: Plan = new Plan();
+        const hd: Plan = new Plan();
         hd.onSetData(response);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceOdataService createPlan failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createPlan failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -972,11 +970,10 @@ export class FinanceOdataService {
     params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${planid}`);
     return this.http.get(this.planAPIUrl, { headers, params })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readPlan`,
+          ConsoleLogTypeEnum.debug);
 
-        let hd: Plan = new Plan();
+        const hd: Plan = new Plan();
         const rjs: any = response;
         if (rjs.value instanceof Array && rjs.value.length === 1) {
           hd.onSetData(rjs.value[0]);
