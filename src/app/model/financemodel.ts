@@ -2813,22 +2813,42 @@ export class FinanceReportBase {
   }
 
   public onSetData(data: any): void {
-    if (data && data.debitBalance) {
-      this.DebitBalance = +data.debitBalance;
+    if (data && data.DebitBalance) {
+      this.DebitBalance = +data.DebitBalance;
     } else {
       this.DebitBalance = 0;
     }
 
-    if (data && data.creditBalance) {
-      this.CreditBalance = +data.creditBalance;
+    if (data && data.CreditBalance) {
+      this.CreditBalance = +data.CreditBalance;
     } else {
       this.CreditBalance = 0;
     }
 
-    if (data && data.balance) {
-      this.Balance = +data.balance;
+    if (data && data.Balance) {
+      this.Balance = +data.Balance;
     } else {
       this.Balance = 0;
+    }
+  }
+}
+
+/**
+ * Report by Account
+ */
+export class FinanceReportByAccount extends FinanceReportBase {
+  private _accountID: number;
+  get AccountId(): number {
+    return this._accountID;
+  }
+  set AccountId(acid: number) {
+    this._accountID = acid;
+  }
+  public onSetData(data: any): void {
+    super.onSetData(data);
+
+    if (data && data.AccountID) {
+      this.AccountId = +data.AccountID;
     }
   }
 }

@@ -21,7 +21,8 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   dataSet: Plan[] = [];
 
-  constructor(public odataService: FinanceOdataService,
+  constructor(
+    public odataService: FinanceOdataService,
     public router: Router,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...',

@@ -1,13 +1,31 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.Report' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.Reports' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{'Finance.Report' | transloco}}</nz-page-header-title>
+  <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-extra>
     <!-- <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button> -->
   </nz-page-header-extra>
 </nz-page-header>
-<div>
 
+<div style="background: #ECECEC;padding:30px;">
+  <div nz-row [nzGutter]="8">
+    <div nz-col [nzSpan]="8">
+      <nz-card nzTitle="Accounts" [nzActions]="[actionAccountDrilldown]">
+        <p>Accounts</p>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="8">
+      <nz-card nzTitle="Control Centers" [nzActions]="[actionControlCenterDrilldown]">
+        <p>Control Centers</p>
+      </nz-card>
+    </div>
+  </div>
+  <ng-template #actionAccountDrilldown>
+    <button nz-button nzType="default" (click)="onDrillDownToAccount()"><i nz-icon nzType="setting"></i></button>
+  </ng-template>
+  <ng-template #actionControlCenterDrilldown>
+    <button nz-button nzType="default"><i nz-icon nzType="setting"></i></button>
+  </ng-template>
 </div>

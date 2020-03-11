@@ -11,7 +11,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
-  Plan,
+  Plan, FinanceReportByAccount,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1309,6 +1309,46 @@ export class FinanceOdataService {
         return throwError(errmsg);
       }),
     );
+  }
+
+  /**
+   * fetch all reports by account
+   *
+   */
+  public fetchAllReportsByAccount(): Observable<FinanceReportByAccount[]> {
+    const hid = this.homeService.ChosedHome.ID;
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${hid}`);
+
+    const apiurl = environment.ApiUrl + '/api/FinanceReportByAccounts';
+    return this.http.get(apiurl, { headers, params, })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByAccount`,
+          ConsoleLogTypeEnum.debug);
+
+        const listResults: FinanceReportByAccount[] = [];
+        const rjs: any = response;
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportByAccount = new FinanceReportByAccount();
+            rst.onSetData(si);
+            listResults.push(rst);
+          }
+        }
+
+        return listResults;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllReportsByAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
