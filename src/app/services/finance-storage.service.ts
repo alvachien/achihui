@@ -10,7 +10,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   UINameValuePair, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
   ReportTrendExData, DocumentCreatedFrequenciesByUser,
-  Plan, DocumentWithPlanExgRate, BalanceSheetReport, ControlCenterReport, OrderReport,
+  Plan, DocumentWithPlanExgRate, BalanceSheetReport,
   FinanceNormalDocItemMassCreate,
 } from '../model';
 import { AuthService } from './auth.service';
@@ -580,126 +580,6 @@ export class FinanceStorageService {
 
         // It's an empty Ok();
         return true;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-  /**
-   * Get Balance sheet report
-   */
-  public getReportBS(): Observable<BalanceSheetReport[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportBS';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
-        }
-
-        let reportdata: BalanceSheetReport[] = [];
-        if (response instanceof Array && response.length > 0) {
-          for (let bs of response) {
-            let rbs: BalanceSheetReport = new BalanceSheetReport();
-            rbs.onSetData(bs);
-            reportdata.push(rbs);
-          }
-        }
-
-        return reportdata;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-  /**
-   * Get Control center report
-   */
-  public getReportCC(): Observable<ControlCenterReport[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportCC';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportCC.`);
-        }
-
-        let reportdata: ControlCenterReport[] = [];
-        if (response instanceof Array && response.length > 0) {
-          for (let bs of response) {
-            let rbs: ControlCenterReport = new ControlCenterReport();
-            rbs.onSetData(bs);
-            reportdata.push(rbs);
-          }
-        }
-
-        return reportdata;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-  /**
-   * Get Order report
-   */
-  public getReportOrder(): Observable<OrderReport[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportOrder';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
-        }
-
-        let reportdata: OrderReport[] = [];
-        if (response instanceof Array && response.length > 0) {
-          for (let bs of response) {
-            let rbs: OrderReport = new OrderReport();
-            rbs.onSetData(bs);
-            reportdata.push(rbs);
-          }
-        }
-
-        return reportdata;
       }),
       catchError((errresp: HttpErrorResponse) => {
         const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

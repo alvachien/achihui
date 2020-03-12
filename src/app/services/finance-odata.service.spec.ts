@@ -29,6 +29,9 @@ describe('FinanceOdataService', () => {
   const ccAPIURL: any = environment.ApiUrl + `/api/FinanceControlCenters`;
   const documentAPIURL: any = environment.ApiUrl + `/api/FinanceDocuments`;
   const adpDocumentAPIURL: any = documentAPIURL + `/PostDPDocument`;
+  const reportByAccountURL: any = environment.ApiUrl + `/api/FinanceReportByAccounts`;
+  const reportByCCURL: any = environment.ApiUrl + `/api/FinanceReportByControlCenters`;
+  const reportByOrderURL: any = environment.ApiUrl + `/api/FinanceReportByOrders`;
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -1205,6 +1208,7 @@ describe('FinanceOdataService', () => {
       req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
+
   describe('createControlCenter', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -2224,6 +2228,180 @@ describe('FinanceOdataService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
       });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllReportsByAccount', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllReportsByAccount().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByAccountURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, AccountID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.fetchAllReportsByAccount().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByAccountURL
+          && requrl.params.has('$filter');
+    });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllReportsByControlCenter', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllReportsByControlCenter().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByCCURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, ControlCenterID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.fetchAllReportsByControlCenter().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByCCURL
+          && requrl.params.has('$filter');
+    });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllReportsByOrder', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllReportsByOrder().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByOrderURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, OrderID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.fetchAllReportsByOrder().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByOrderURL
+          && requrl.params.has('$filter');
+    });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });

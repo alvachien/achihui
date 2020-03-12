@@ -10,6 +10,26 @@
     <!-- <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button> -->
   </nz-page-header-extra>
 </nz-page-header>
-<div>
 
-</div>
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>{{'Finance.Debit' | transloco}}</th>
+        <th>{{'Finance.Credit' | transloco}}</th>
+        <th>{{'Finance.Balance' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>
+          {{data.OrderId}}
+        </td>
+        <td>{{data.DebitBalance}}</td>
+        <td>{{data.CreditBalance}}</td>
+        <td>{{data.Balance}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>

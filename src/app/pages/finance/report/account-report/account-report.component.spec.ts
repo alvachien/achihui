@@ -12,7 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
   ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { AccountReportComponent } from './account-report.component';
 
@@ -21,7 +21,9 @@ describe('AccountReportComponent', () => {
   let fixture: ComponentFixture<AccountReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllPlansSpy: any;
+  let fetchAllReportsByAccountSpy: any;
+  let fetchAllAccountCategoriesSpy: any;
+  let fetchAllAccountsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -29,12 +31,17 @@ describe('AccountReportComponent', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
-    fakeData.buildFinPlans();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllPlans',
+      'fetchAllReportsByAccount',
+      'fetchAllAccountCategories',
+      'fetchAllAccounts'
     ]);
-    fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
+    fetchAllReportsByAccountSpy = storageService.fetchAllReportsByAccount.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -78,5 +85,161 @@ describe('AccountReportComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('2. shall work with data', () => {
+    let arRptData: FinanceReportByAccount[] = [];
+    beforeEach(() => {
+      arRptData = [];
+      arRptData.push({
+        HomeID: 1,
+        AccountId: 1,
+        DebitBalance: 30,
+        CreditBalance: 20,
+        Balance: 10
+      } as FinanceReportByAccount);
+      arRptData.push({
+        HomeID: 1,
+        AccountId: 2,
+        DebitBalance: 300,
+        CreditBalance: 10,
+        Balance: 290
+      } as FinanceReportByAccount);
+      fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptData));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+    });
+
+    it('should not show data before OnInit', () => {
+      expect(component.dataSet.length).toEqual(0);
+    });
+
+    it('should show data after OnInit', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.dataSet.length).toBeGreaterThan(0);
+      expect(component.dataSet.length).toEqual(arRptData.length);
+
+      flush();
+    }));
+  });
+
+  describe('3. shall display error dialog for exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    let arRptData: FinanceReportByAccount[] = [];
+
+    beforeEach(() => {
+      arRptData = [];
+      arRptData.push({
+        HomeID: 1,
+        AccountId: 1,
+        DebitBalance: 30,
+        CreditBalance: 20,
+        Balance: 10
+      } as FinanceReportByAccount);
+      arRptData.push({
+        HomeID: 1,
+        AccountId: 2,
+        DebitBalance: 300,
+        CreditBalance: 10,
+        Balance: 290
+      } as FinanceReportByAccount);
+      fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptData));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should display error when Report by account Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllReportsByAccountSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when account Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when account category Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
   });
 });

@@ -79,6 +79,7 @@ describe('PlanListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllPlansSpy.and.returnValue(asyncData(fakeData.finPlans));

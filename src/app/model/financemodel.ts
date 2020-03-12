@@ -1008,19 +1008,15 @@ export class AccountExtraLoan extends AccountExtra {
       return false;
     }
     if (this.RepayMethod === RepaymentMethodEnum.EqualPrincipal
-      || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset)
-    {
+      || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset) {
       if (this.TotalMonths <= 0) {
         return false;
       }
-    }
-    else if (this.RepayMethod === RepaymentMethodEnum.DueRepayment)
-    {
+    } else if (this.RepayMethod === RepaymentMethodEnum.DueRepayment) {
       if (!this.endDate) {
         return false;
       }
-    }
-    else {
+    } else {
       return false;
     }
     if (this.FirstRepayDate && this.RepayDayInMonth) {
@@ -1034,10 +1030,9 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
     if (this.FirstRepayDate) {
-      let bgndate = this.startDate.add(30, 'days');
-      let enddate = this.startDate.add(60, 'days');
-      if (!this.FirstRepayDate.isBetween(bgndate, enddate))
-      {
+      const bgndate = this.startDate.add(30, 'days');
+      const enddate = this.startDate.add(60, 'days');
+      if (!this.FirstRepayDate.isBetween(bgndate, enddate)) {
         return false;
       }
     }
@@ -2698,7 +2693,7 @@ export class Plan extends hih.BaseModel {
     rstObj.ID = this.ID;
     rstObj.HomeID = this.HID;
     rstObj.PlanType = PlanTypeEnum[this.PlanType];
-    switch(this.PlanType) {
+    switch (this.PlanType) {
       case PlanTypeEnum.Account:
         rstObj.AccountID = this.AccountID;
         break;
@@ -2710,9 +2705,10 @@ export class Plan extends hih.BaseModel {
         break;
       case PlanTypeEnum.TranType:
         rstObj.TranTypeID = this.TranTypeID;
+        break;
       default:
         break;
-    }    
+    }
     rstObj.StartDate = this.StartDate.format(hih.momentDateFormat);
     rstObj.TargetDate = this.TargetDate.format(hih.momentDateFormat);
     rstObj.TargetBalance = this.TargetBalance;
@@ -2790,9 +2786,12 @@ export class DocumentItemView {
  * Report base
  */
 export class FinanceReportBase {
+  private hid: number;
   private _debitBalance: number;
   private _creditBalance: number;
   private _balance: number;
+  get HomeID(): number { return this.hid; }
+  set HomeID(hid: number) { this.hid = hid; }
   get DebitBalance(): number {
     return this._debitBalance;
   }
@@ -2907,30 +2906,20 @@ export class BalanceSheetReport extends FinanceReportBase {
 /**
  * Control center report
  */
-export class ControlCenterReport extends FinanceReportBase {
+export class FinanceReportByControlCenter extends FinanceReportBase {
   private _ccID: number;
-  private _ccName: string;
   get ControlCenterId(): number {
     return this._ccID;
   }
   set ControlCenterId(ccid: number) {
     this._ccID = ccid;
   }
-  get ControlCenterName(): string {
-    return this._ccName;
-  }
-  set ControlCenterName(ccname: string) {
-    this._ccName = ccname;
-  }
 
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.controlCenterID) {
-      this.ControlCenterId = +data.controlCenterID;
-    }
-    if (data && data.controlCenterName) {
-      this.ControlCenterName = data.controlCenterName;
+    if (data && data.ControlCenterID) {
+      this.ControlCenterId = +data.ControlCenterID;
     }
   }
 }
@@ -2938,30 +2927,20 @@ export class ControlCenterReport extends FinanceReportBase {
 /**
  * Order report
  */
-export class OrderReport extends FinanceReportBase {
+export class FinanceReportByOrder extends FinanceReportBase {
   private _orderID: number;
-  private _orderName: string;
   get OrderId(): number {
     return this._orderID;
   }
   set OrderId(oid: number) {
     this._orderID = oid;
   }
-  get OrderName(): string {
-    return this._orderName;
-  }
-  set OrderName(oname: string) {
-    this._orderName = oname;
-  }
 
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.orderID) {
-      this.OrderId = +data.orderID;
-    }
-    if (data && data.orderName) {
-      this.OrderName = data.orderName;
+    if (data && data.OrderID) {
+      this.OrderId = +data.OrderID;
     }
   }
 }

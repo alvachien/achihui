@@ -214,7 +214,7 @@ describe('LearnOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
 
       service.createObject(item).subscribe(
         (data: any) => {
@@ -272,7 +272,7 @@ describe('LearnOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
 
       service.updateObject(item).subscribe(
         (data: any) => {
@@ -313,7 +313,7 @@ describe('LearnOdataService', () => {
     it('should return data for success case', () => {
       service.deleteObject(2).subscribe(
         (data: any) => {
-          expect(data).toBeTruthy();
+          expect(data).toEqual('');
         },
         (fail: any) => {
           // Empty
@@ -330,7 +330,7 @@ describe('LearnOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
 
       service.deleteObject(2).subscribe(
         (data: any) => {
@@ -390,7 +390,7 @@ describe('LearnOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
 
       service.readObject(2).subscribe(
         (data: any) => {
@@ -436,7 +436,7 @@ describe('LearnOdataService', () => {
        });
 
       // Respond with the mock data
-      let obj1: LearnObject = new LearnObject();
+      const obj1: LearnObject = new LearnObject();
       obj1.Id = 1;
       obj1.Name = 'test1';
       obj1.HID = 1;
@@ -449,7 +449,7 @@ describe('LearnOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
 
       service.fetchAllObjects().subscribe(
         (data: any) => {

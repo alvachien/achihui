@@ -11,7 +11,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
-  Plan, FinanceReportByAccount,
+  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1345,6 +1345,86 @@ export class FinanceOdataService {
       }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllReportsByAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+  }
+
+  /**
+   * fetch all reports by control center
+   *
+   */
+  public fetchAllReportsByControlCenter(): Observable<FinanceReportByControlCenter[]> {
+    const hid = this.homeService.ChosedHome.ID;
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${hid}`);
+
+    const apiurl = environment.ApiUrl + '/api/FinanceReportByControlCenters';
+    return this.http.get(apiurl, { headers, params, })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByControlCenter`,
+          ConsoleLogTypeEnum.debug);
+
+        const listResults: FinanceReportByControlCenter[] = [];
+        const rjs: any = response;
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportByControlCenter = new FinanceReportByControlCenter();
+            rst.onSetData(si);
+            listResults.push(rst);
+          }
+        }
+
+        return listResults;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllReportsByControlCenter failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+  }
+
+  /**
+   * fetch all reports by account
+   *
+   */
+  public fetchAllReportsByOrder(): Observable<FinanceReportByOrder[]> {
+    const hid = this.homeService.ChosedHome.ID;
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${hid}`);
+
+    const apiurl = environment.ApiUrl + '/api/FinanceReportByOrders';
+    return this.http.get(apiurl, { headers, params, })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByOrder`,
+          ConsoleLogTypeEnum.debug);
+
+        const listResults: FinanceReportByOrder[] = [];
+        const rjs: any = response;
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportByOrder = new FinanceReportByOrder();
+            rst.onSetData(si);
+            listResults.push(rst);
+          }
+        }
+
+        return listResults;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllReportsByOrder failed ${error}`,
             ConsoleLogTypeEnum.error);
 
           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

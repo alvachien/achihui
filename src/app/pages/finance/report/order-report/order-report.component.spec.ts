@@ -12,7 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
   ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, FinanceReportByOrder, Order, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { OrderReportComponent } from './order-report.component';
 
@@ -21,7 +21,8 @@ describe('OrderReportComponent', () => {
   let fixture: ComponentFixture<OrderReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllPlansSpy: any;
+  let fetchAllReportsByOrderSpy: any;
+  let fetchAllOrdersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -29,12 +30,16 @@ describe('OrderReportComponent', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
-    fakeData.buildFinPlans();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllPlans',
+      'fetchAllReportsByOrder',
+      'fetchAllOrders'
     ]);
-    fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
+    fetchAllReportsByOrderSpy = storageService.fetchAllReportsByOrder.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -78,5 +83,133 @@ describe('OrderReportComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('2. shall work with data', () => {
+    let arRptData: FinanceReportByOrder[] = [];
+    beforeEach(() => {
+      arRptData = [];
+      arRptData.push({
+        HomeID: 1,
+        OrderId: 1,
+        DebitBalance: 30,
+        CreditBalance: 20,
+        Balance: 10
+      } as FinanceReportByOrder);
+      arRptData.push({
+        HomeID: 1,
+        OrderId: 2,
+        DebitBalance: 300,
+        CreditBalance: 10,
+        Balance: 290
+      } as FinanceReportByOrder);
+      fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptData));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    it('should not show data before OnInit', () => {
+      expect(component.dataSet.length).toEqual(0);
+    });
+
+    it('should show data after OnInit', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.dataSet.length).toBeGreaterThan(0);
+      expect(component.dataSet.length).toEqual(arRptData.length);
+
+      flush();
+    }));
+  });
+
+  describe('3. shall display error dialog for exception', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    let arRptData: FinanceReportByOrder[] = [];
+
+    beforeEach(() => {
+      arRptData = [];
+      arRptData.push({
+        HomeID: 1,
+        OrderId: 1,
+        DebitBalance: 30,
+        CreditBalance: 20,
+        Balance: 10
+      } as FinanceReportByOrder);
+      arRptData.push({
+        HomeID: 1,
+        OrderId: 2,
+        DebitBalance: 300,
+        CreditBalance: 10,
+        Balance: 290
+      } as FinanceReportByOrder);
+      fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptData));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should display error when Report by order Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllReportsByOrderSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when order Service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
   });
 });

@@ -41,23 +41,23 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts()
     ])
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
-      .subscribe({
-        next: (x: any[]) => {
-          this.dataSet = x[0];
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit, fetchAllReportsByAccount failed ${error}`,
-            ConsoleLogTypeEnum.error);
+    .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isLoadingResults = false))
+    .subscribe({
+      next: (x: any[]) => {
+        this.dataSet = x[0];
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
+          ConsoleLogTypeEnum.error);
 
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error,
-            nzClosable: true,
-          });
-        },
-      });
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -69,5 +69,4 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
-
 }

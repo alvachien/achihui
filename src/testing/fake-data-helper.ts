@@ -984,7 +984,7 @@ export class FakeDataHelper {
     acnt.Name = 'Asset 1';
     acnt.CategoryId = financeAccountCategoryAsset;
     acnt.Status = AccountStatusEnum.Normal;
-    let asset: AccountExtraAsset = new AccountExtraAsset();
+    const asset: AccountExtraAsset = new AccountExtraAsset();
     asset.Name = 'Asset Test';
     asset.CategoryID = 1;
     acnt.ExtraInfo = asset;
@@ -995,7 +995,7 @@ export class FakeDataHelper {
     acnt.Name = 'Borrow from 1';
     acnt.CategoryId = financeAccountCategoryBorrowFrom;
     acnt.Status = AccountStatusEnum.Normal;
-    let brwInfo: AccountExtraLoan = new AccountExtraLoan();
+    const brwInfo: AccountExtraLoan = new AccountExtraLoan();
     brwInfo.Comment = 'Borrow test';
     brwInfo.PayingAccount = 11;
     brwInfo.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
@@ -1005,7 +1005,7 @@ export class FakeDataHelper {
     brwInfo.endDate = brwInfo.startDate.add(1, 'y');
     brwInfo.loanTmpDocs = [];
     for (let i = 0; i < 12; i++) {
-      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.InterestAmount = 362.50;
@@ -1024,7 +1024,7 @@ export class FakeDataHelper {
     acnt.Name = 'Lend to 1';
     acnt.CategoryId = financeAccountCategoryLendTo;
     acnt.Status = AccountStatusEnum.Normal;
-    let lendto: AccountExtraLoan = new AccountExtraLoan();
+    const lendto: AccountExtraLoan = new AccountExtraLoan();
     lendto.Comment = 'Lend test';
     lendto.PayingAccount = 11;
     lendto.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
@@ -1033,7 +1033,7 @@ export class FakeDataHelper {
     lendto.startDate = moment().subtract(1, 'M').startOf('day');
     lendto.endDate = brwInfo.startDate.add(1, 'y');
     for (let i = 0; i < 5; i++) {
-      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.InterestAmount = 362.50;
@@ -1052,11 +1052,11 @@ export class FakeDataHelper {
     acnt.Name = 'ADP test 1';
     acnt.CategoryId = financeAccountCategoryAdvancePayment;
     acnt.Status = AccountStatusEnum.Normal;
-    let extadp: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    const extadp: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     extadp.Comment = 'ADP Test 1';
     extadp.RepeatType = RepeatFrequencyEnum.Month;
     for (let i = 0; i < 10; i++) {
-      let item: TemplateDocADP = new TemplateDocADP();
+      const item: TemplateDocADP = new TemplateDocADP();
       if (this._chosedHome) {
         item.HID = this._chosedHome.ID;
       }
