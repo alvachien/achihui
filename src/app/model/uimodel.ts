@@ -4,61 +4,6 @@ import * as moment from 'moment';
 
 // tslint:disable:variable-name
 
-// Nav Item
-export class SidenavItem {
-  name: string;
-  icon: string;
-  color: string;
-  route: any;
-  parent: SidenavItem;
-  subItems: SidenavItem[];
-  position: number;
-  badge: string;
-  badgeColor: string;
-  customClass: string;
-
-  constructor(model?: any) {
-    if (model) {
-      this.name = model.name;
-      this.icon = model.icon;
-      this.color = model.color;
-      this.route = model.route;
-      this.parent = model.parent;
-      this.subItems = this.mapSubItems(model.subItems);
-      this.position = model.position;
-      this.badge = model.badge;
-      this.badgeColor = model.badgeColor;
-      this.customClass = model.customClass;
-    }
-  }
-
-  hasSubItems(): boolean {
-    if (this.subItems) {
-      return this.subItems.length > 0;
-    }
-
-    return false;
-  }
-
-  hasParent(): boolean {
-    return !!this.parent;
-  }
-
-  mapSubItems(list: SidenavItem[]): SidenavItem[] {
-    if (list) {
-      list.forEach((item: any, index: number) => {
-        list[index] = new SidenavItem(item);
-      });
-
-      return list;
-    }
-  }
-
-  isRouteString(): boolean {
-    return this.route instanceof String || typeof this.route === 'string';
-  }
-}
-
 /**
  * Account for selection
  */

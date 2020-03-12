@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'hih-credits',
   templateUrl: './credits.component.html',
-  styleUrls: ['./credits.component.less']
+  styleUrls: ['./credits.component.less'],
 })
 export class CreditsComponent {
 
@@ -28,10 +28,6 @@ export class CreditsComponent {
       name: 'Transloco',
       url: 'https://transloco.netlify.com/',
       desp: 'The internationalization (i18n) library for Angular.'
-    }, {
-      name: 'fullcalendar',
-      url: 'https://fullcalendar.io/',
-      desp: 'the most popular full-sized JavaScript Calendar',
     }, {
       name: 'Moment.js',
       url: 'https://momentjs.com/',
