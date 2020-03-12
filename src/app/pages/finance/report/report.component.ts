@@ -16,4 +16,10 @@ export class ReportComponent implements OnInit {
   onDrillDownToAccount() {
     this.router.navigate(['/finance/report/account']);
   }
+  onDrillDownToControlCenter() {
+    this.router.navigate(['/finance/report/controlcenter']);
+  }
+  onDrillDownToOrder() {
+    this.router.navigate(['/finance/report/order']);
+  }
 }

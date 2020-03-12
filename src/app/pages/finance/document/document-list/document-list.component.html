@@ -62,7 +62,11 @@
         <ng-template ngFor let-data [ngForOf]="docTable.data">
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id]"></td>
-            <td>{{data.Id}}</td>
+            <td>
+              {{data.Id}}
+              <nz-divider nzType="vertical"></nz-divider>
+              <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
+            </td>
             <td>
               <nz-select [(ngModel)]="data.TranCurr" nzDisabled>
                 <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' ' + cr.Symbol"></nz-option>

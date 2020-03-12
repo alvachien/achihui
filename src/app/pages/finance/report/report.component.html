@@ -21,11 +21,19 @@
         <p>Control Centers</p>
       </nz-card>
     </div>
+    <div nz-col [nzSpan]="8">
+      <nz-card nzTitle="Order" [nzActions]="[actionOrderDrilldown]">
+        <p>Control Centers</p>
+      </nz-card>
+    </div>
   </div>
   <ng-template #actionAccountDrilldown>
-    <button nz-button nzType="default" (click)="onDrillDownToAccount()"><i nz-icon nzType="setting"></i></button>
+    <button nz-button nzType="default" (click)="onDrillDownToAccount()"><i nz-icon nzType="bars"></i></button>
   </ng-template>
   <ng-template #actionControlCenterDrilldown>
-    <button nz-button nzType="default"><i nz-icon nzType="setting"></i></button>
+    <button nz-button nzType="default" (click)="onDrillDownToControlCenter()"><i nz-icon nzType="bars"></i></button>
+  </ng-template>
+  <ng-template #actionOrderDrilldown>
+    <button nz-button nzType="default" (click)="onDrillDownToOrder()"><i nz-icon nzType="bars"></i></button>
   </ng-template>
 </div>

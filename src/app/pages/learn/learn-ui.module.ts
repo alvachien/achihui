@@ -26,6 +26,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
     NzFormModule,
     NzLayoutModule,
     NzSwitchModule,
+    NzIconModule,
   ],
   exports: [
     FormsModule,
@@ -89,6 +91,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
     NzFormModule,
     NzLayoutModule,
     NzSwitchModule,
+    NzIconModule,
   ]
 })
 export class LearnUIModule { }
