@@ -5,9 +5,11 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable/public-api';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
+import {
+  Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 
@@ -29,23 +31,25 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   availableCategories: AccountCategory[];
   availableAccounts: Account[];
   accountTreeNodes: NzTreeNodeOptions[] = [];
+  col = 8;
+  id = -1;
 
   constructor(
     private odataService: FinanceOdataService,
     private uiStatusService: UIStatusService,
     public modalService: NzModalService) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
-        ConsoleLogTypeEnum.debug);
-      this.isLoadingResults = false; // Default value
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+    this.isLoadingResults = false; // Default value
 
-      this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
-      this.selectedStatus = AccountStatusEnum.Normal;
-      this.selectedAccounts = [];
-      this.availableCategories = [];
-      this.availableAccounts = [];
-      this.selectedAccountScope = OverviewScopeEnum.CurrentMonth;
-      this.selectedAccountCtgyScope = OverviewScopeEnum.CurrentMonth;
-    }
+    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.selectedStatus = AccountStatusEnum.Normal;
+    this.selectedAccounts = [];
+    this.availableCategories = [];
+    this.availableAccounts = [];
+    this.selectedAccountScope = OverviewScopeEnum.CurrentMonth;
+    this.selectedAccountCtgyScope = OverviewScopeEnum.CurrentMonth;
+  }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
@@ -68,6 +72,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog(event.eventName);
   }
 
+  onResize({ col }: NzResizeEvent): void {
+    cancelAnimationFrame(this.id);
+    this.id = requestAnimationFrame(() => {
+      this.col = col!;
+    });
+  }
+
   private _refreshTree(isReload?: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...',
       ConsoleLogTypeEnum.debug);
@@ -84,19 +95,19 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         next: (data: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
             ConsoleLogTypeEnum.debug);
-  
+
           if (data instanceof Array && data.length > 0) {
             // Parse the data
             this.availableCategories = data[0];
             this.availableAccounts = this._filterAccountsByStatus(data[1] as Account[]);
-  
+
             this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
           }
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,
@@ -122,7 +133,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // Root nodes!
         const node: NzTreeNodeOptions = {
           key: val.ID.toString(),
-          title: val.Name,
+          title: translate(val.Name),
           isLeaf: false,
           icon: 'cluster'
         };

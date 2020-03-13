@@ -27,6 +27,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
 
@@ -66,6 +68,8 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzLayoutModule,
     NzSwitchModule,
     NzIconModule,
+    NzBadgeModule,
+    NzResizableModule,
     NgxEchartsModule,
   ],
   exports: [
@@ -99,6 +103,8 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzLayoutModule,
     NzSwitchModule,
     NzIconModule,
+    NzBadgeModule,
+    NzResizableModule,
     NgxEchartsModule,
 
     UIAccountCtgyFilterExPipe,

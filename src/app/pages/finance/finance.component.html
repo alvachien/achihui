@@ -1,20 +1,29 @@
-<div style="background: #ECECEC; padding: 30px;">
-  <nz-row [nzGutter]="16">
-    <nz-col [nzSpan]="12">
-      <nz-card>
-        <nz-statistic [nzValue]="11.28 | number: '1.0-2'" [nzTitle]="'Active'" [nzPrefix]="prefixTplOne"
-          [nzSuffix]="'%'" [nzValueStyle]="{ color: '#3F8600' }">
-        </nz-statistic>
-        <ng-template #prefixTplOne><i nz-icon nzType="arrow-up"></i></ng-template>
-      </nz-card>
-    </nz-col>
-    <nz-col [nzSpan]="12">
-      <nz-card>
-        <nz-statistic [nzValue]="9.3 | number: '1.0-2'" [nzTitle]="'Idle'" [nzPrefix]="prefixTplTwo" [nzSuffix]="'%'"
-          [nzValueStyle]="{ color: '#CF1322' }">
-        </nz-statistic>
-        <ng-template #prefixTplTwo><i nz-icon nzType="arrow-down"></i></ng-template>
-      </nz-card>
-    </nz-col>
-  </nz-row>
+<div>
+  <nz-calendar>
+    <ul *nzDateCell="let date" class="events">
+      <ng-container [ngSwitch]="date.getDate()">
+        <ng-container *ngSwitchCase="8">
+          <li *ngFor="let item of listDataMap.eight">
+            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+          </li>
+        </ng-container>
+        <ng-container *ngSwitchCase="10">
+          <li *ngFor="let item of listDataMap.ten">
+            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+          </li>
+        </ng-container>
+        <ng-container *ngSwitchCase="11">
+          <li *ngFor="let item of listDataMap.eleven">
+            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
+    <ng-container *nzMonthCell="let month">
+      <div *ngIf="getMonthData(month) as monthData" class="notes-month">
+        <section>{{ monthData }}</section>
+        <span>Backlog number</span>
+      </div>
+    </ng-container>
+  </nz-calendar>
 </div>

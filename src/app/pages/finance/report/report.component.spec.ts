@@ -21,7 +21,13 @@ describe('ReportComponent', () => {
   let fixture: ComponentFixture<ReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllPlansSpy: any;
+  let fetchAllReportsByAccountSpy: any;
+  let fetchAllReportsByControlCenterSpy: any;
+  let fetchAllReportsByOrderSpy: any;
+  let fetchAllAccountCategoriesSpy: any;
+  let fetchAllAccountsSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let fetchAllOrdersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -29,12 +35,27 @@ describe('ReportComponent', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
-    fakeData.buildFinPlans();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllPlans',
+      'fetchAllReportsByAccount',
+      'fetchAllReportsByControlCenter',
+      'fetchAllReportsByOrder',
+      'fetchAllAccountCategories',
+      'fetchAllAccounts',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
     ]);
-    fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
+    fetchAllReportsByAccountSpy = storageService.fetchAllReportsByAccount.and.returnValue(of([]));
+    fetchAllReportsByControlCenterSpy = storageService.fetchAllReportsByControlCenter.and.returnValue(of([]));
+    fetchAllReportsByOrderSpy = storageService.fetchAllReportsByOrder.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 

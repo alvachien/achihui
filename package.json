@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.0.55",
+  "version": "1.0.58",
   "private": true,
   "description": "UI layer for HIH.",
   "keywords": [
@@ -44,6 +44,7 @@
     "@angular/cli": "^8.3.21",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
+    "@types/echarts": "^4.4.3",
     "@types/jasmine": "^3.5.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.12.24",
