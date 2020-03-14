@@ -24,38 +24,37 @@
         <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="1">{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</label>
         <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="2">
           {{'Finance.RepeatlyMassCreateNormalDocs' | transloco}}
-
-          <form nz-form [formGroup]="repeatInfoFormGroup" *ngIf="massCreateType === '2'">
-            <!-- Date -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl" style="text-align: left;">
-                <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
-                <ng-template #dateRangeErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{'Common.FieldIsMandatory' | transloco}}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-
-            <!-- Repeat frequency -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
-                <nz-select formControlName="frqControl">
-                  <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
-                </nz-select>
-                <ng-template #frqTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{'Common.FieldIsMandatory' | transloco}}
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-          </form>
         </label>
       </nz-radio-group>
+      <form nz-form [formGroup]="repeatInfoFormGroup" *ngIf="massCreateType === '2'">
+        <!-- Date -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
+            <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+            <ng-template #dateRangeErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{'Common.FieldIsMandatory' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Repeat frequency -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
+            <nz-select formControlName="frqControl">
+              <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
+            </nz-select>
+            <ng-template #frqTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{'Common.FieldIsMandatory' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
     </div>
 
     <!-- Items -->

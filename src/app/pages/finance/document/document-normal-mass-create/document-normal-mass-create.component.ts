@@ -10,7 +10,7 @@ import { translate } from '@ngneat/transloco';
 import {
   financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection,
+  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -45,6 +45,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     lineHeight: '40px'
   };
   public repeatInfoFormGroup: FormGroup;
+  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   // Step: Item
   public itemsFormGroup: FormGroup;
   listOfControl: Array<{ id: number; controlInstance: string }> = [];
@@ -160,6 +161,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
       // return this.headerForm.valid;
+      return true;
     } else if (this.currentStep === 1) {
       return this.itemsFormGroup.valid;
     } else {

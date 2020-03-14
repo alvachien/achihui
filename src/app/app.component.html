@@ -11,14 +11,14 @@
       <li nz-submenu nzOpen [nzTitle]="t('Common.Dashboard')" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'welcome']">Welcome</a>
+            <a [routerLink]="['/', 'welcome']">{{'Common.WelcomeToHIH' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/welcome2">Monitor</a>
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="t('Nav.FinanceTrace')" nzIcon="money-collect">
+      <li nz-submenu [nzTitle]="'Nav.FinanceTrace' | transloco" nzIcon="money-collect">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'finance', 'overview']">{{'Common.Overview' | transloco}}</a>
@@ -49,7 +49,7 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="t('Nav.LearningTrace')" nzIcon="read">
+      <li nz-submenu [nzTitle]="'Nav.LearningTrace' | transloco" nzIcon="read">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'learn', 'category']">{{'Learning.LearningCategory' | transloco}}</a>
@@ -59,7 +59,7 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu nzTitle="Help" nzIcon="question-circle">
+      <li nz-submenu [nzTitle]="'Common.Help' | transloco" nzIcon="question-circle">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/about">{{'Nav.About' | transloco}}</a>
