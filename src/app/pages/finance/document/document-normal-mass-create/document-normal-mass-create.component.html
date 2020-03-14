@@ -1,0 +1,44 @@
+<nz-page-header nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.NormalDocMassCreate' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Finance.NormalDocMassCreate' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+</nz-page-header>
+
+<div *transloco="let t">
+  <nz-steps [nzCurrent]="currentStep">
+    <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
+  </nz-steps>
+
+  <div class="steps-content">
+    <!-- Header -->
+    <div nz-row [hidden]="currentStep !== 0">
+      <nz-radio-group [(ngModel)]="massCreateType">
+        <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="1">{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</label>
+        <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="2">
+          {{'Finance.RepeatlyMassCreateNormalDocs' | transloco}}
+          <form nz-form [formGroup]="repeatTypeForm" *ngIf="massCreateType === '2'">
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl" style="text-align: left;">
+                <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+                <ng-template #dateRangeErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        </label>
+      </nz-radio-group>      
+    </div>
+  </div>
+</div>

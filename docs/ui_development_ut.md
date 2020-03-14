@@ -42,10 +42,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 Then:
 
 ```typescript
-    imports: [
-        HttpClientTestingModule,
-        ...
-    ]
+  imports: [
+    HttpClientTestingModule,
+    ...
+  ]
 ```
 
 ### [Obsoleted, and use TranslocoService instead] TranslateService (and Translate Pipe)
@@ -59,21 +59,21 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 Then:
 
 ```typescript
-    imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot({
-            loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient],
-            },
-        }),
-        ...
-    ],
-    providers: [
-        TranslateService,
-        ...
-    ]
+  imports: [
+    HttpClientTestingModule,
+    TranslateModule.forRoot({
+        loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderTestFactory,
+        deps: [HttpClient],
+        },
+    }),
+    ...
+  ],
+  providers: [
+    TranslateService,
+    ...
+  ]
 ```
 
 Test factory function

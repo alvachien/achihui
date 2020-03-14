@@ -5,11 +5,10 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable/public-api';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import {
-  Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
+import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 
@@ -142,6 +141,12 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // // node.nodetype = AccountTreeNodeTypeEnum.category;
         // node.isLeaf = false;
         node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +node.key);
+        if (node.children) {
+          node.isLeaf = false;
+        } else {
+          node.isLeaf = true;
+        }
+
         data.push(node);
       });
     } else {

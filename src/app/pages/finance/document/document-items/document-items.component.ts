@@ -299,4 +299,21 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       this.onChange();
     }
   }
+  public onCopyCurrentItem(di: DocumentItem): void {
+    const di2: DocumentItem = new DocumentItem();
+    di2.ItemId = ModelUtility.getFinanceNextItemID(this.listItems);
+    di2.AccountId = di.AccountId;
+    di2.ControlCenterId = di.ControlCenterId;
+    di2.Desp = di.Desp;
+    di2.OrderId = di.OrderId;
+    di2.TranAmount = di.TranAmount;
+    di2.TranType = di.TranType;
+    di2.UseCurr2 = di.UseCurr2;
+    this.listItems = [
+      ...this.listItems,
+      di2
+    ];
+
+    this.onChange();
+  }
 }

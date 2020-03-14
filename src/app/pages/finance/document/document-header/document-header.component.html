@@ -17,7 +17,7 @@
   <!-- Tran date -->
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trandateErrorTpl">
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left;">
       <nz-date-picker id="idTranDate" formControlName="dateControl" (ngModelChange)="onChange()"></nz-date-picker>
       <ng-template #trandateErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">

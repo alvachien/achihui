@@ -29,6 +29,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
 
@@ -69,6 +70,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzSwitchModule,
     NzIconModule,
     NzBadgeModule,
+    NzRadioModule,
     NzResizableModule,
     NgxEchartsModule,
   ],
@@ -104,6 +106,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzSwitchModule,
     NzIconModule,
     NzBadgeModule,
+    NzRadioModule,
     NzResizableModule,
     NgxEchartsModule,
 

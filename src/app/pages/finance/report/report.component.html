@@ -9,50 +9,55 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<div style="background: #ECECEC;padding:30px;">
-  <div nz-row [nzGutter]="8">
-    <div nz-col [nzSpan]="12">
-      <nz-card [nzTitle]="'Finance.Accounts' | transloco" [nzActions]="[actionAccountDrilldown]">
-        <div nz-row [nzGutter]="8">
-          <div nz-col [nzSpan]="12" style="height: 120px;">
-            <nz-statistic [nzValue]="reportAccountAsset | number: '1.0-2'" [nzTitle]="'Finance.Assets' | transloco" [nzPrefix]="prefixTplAsset"
-              [nzSuffix]="baseCurrency" [nzValueStyle]="{ color: '#3F8600' }">
-            </nz-statistic>
-            <ng-template #prefixTplAsset><i nz-icon nzType="up-circle"></i></ng-template>  
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <div style="background: #ECECEC;padding:30px;">
+    <div nz-row [nzGutter]="8">
+      <div nz-col [nzSpan]="12">
+        <nz-card [nzTitle]="'Finance.Accounts' | transloco" [nzActions]="[actionAccountDrilldown]">
+          <div nz-row [nzGutter]="8">
+            <div nz-col [nzSpan]="12" style="height: 120px;">
+              <nz-statistic [nzValue]="reportAccountAsset | number: '1.0-2'" [nzTitle]="'Finance.Assets' | transloco"
+                [nzPrefix]="prefixTplAsset" [nzSuffix]="baseCurrency" [nzValueStyle]="{ color: '#3F8600' }">
+              </nz-statistic>
+              <ng-template #prefixTplAsset><i nz-icon nzType="up-circle"></i></ng-template>
+            </div>
+            <div nz-col [nzSpan]="12" style="height: 120px;">
+              <nz-statistic [nzValue]="reportAccountLibility | number: '1.0-2'"
+                [nzTitle]="'Finance.Liabilities' | transloco" [nzPrefix]="prefixTplLibility" [nzSuffix]="baseCurrency"
+                [nzValueStyle]="{ color: '#EF8600' }">
+              </nz-statistic>
+              <ng-template #prefixTplLibility><i nz-icon nzType="down-circle"></i></ng-template>
+            </div>
+            <div nz-col [nzSpan]="24">
+              <div echarts [options]="chartAccountOption" style="height: 200px;"
+                (chartClick)="onDrillDownToAccount($event)"></div>
+            </div>
           </div>
-          <div nz-col [nzSpan]="12" style="height: 120px;">
-            <nz-statistic [nzValue]="reportAccountLibility | number: '1.0-2'" [nzTitle]="'Finance.Liabilities' | transloco" [nzPrefix]="prefixTplLibility"
-              [nzSuffix]="baseCurrency" [nzValueStyle]="{ color: '#EF8600' }">
-            </nz-statistic>
-            <ng-template #prefixTplLibility><i nz-icon nzType="down-circle"></i></ng-template>
-          </div>
+        </nz-card>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-card [nzTitle]="'Finance.ControlCenters' | transloco" [nzActions]="[actionControlCenterDrilldown]">
           <div nz-col [nzSpan]="24">
-            <div echarts [options]="chartAccountOption" style="height: 200px;" (chartClick)="onDrillDownToAccount($event)"></div>            
+            <div echarts [options]="chartControlCenterOption" style="height: 320px;"
+              (chartClick)="onDrillDownToControlCenter($event)"></div>
           </div>
-        </div>
-      </nz-card>
-    </div>
-    <div nz-col [nzSpan]="12">
-      <nz-card [nzTitle]="'Finance.ControlCenters' | transloco" [nzActions]="[actionControlCenterDrilldown]">
-        <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartControlCenterOption" style="height: 320px;" (chartClick)="onDrillDownToControlCenter($event)"></div>            
-        </div>
-      </nz-card>
-    </div>
+        </nz-card>
+      </div>
 
-    <div nz-col [nzSpan]="24">
-      <nz-card [nzTitle]="'Finance.Orders' | transloco" [nzActions]="[actionOrderDrilldown]">
-        <p>Orders</p>
-      </nz-card>
+      <div nz-col [nzSpan]="24">
+        <nz-card [nzTitle]="'Finance.Orders' | transloco" [nzActions]="[actionOrderDrilldown]">
+          <p>Orders</p>
+        </nz-card>
+      </div>
     </div>
+    <ng-template #actionAccountDrilldown>
+      <button nz-button nzType="default" (click)="onDrillDownToAccount()"><i nz-icon nzType="bars"></i></button>
+    </ng-template>
+    <ng-template #actionControlCenterDrilldown>
+      <button nz-button nzType="default" (click)="onDrillDownToControlCenter()"><i nz-icon nzType="bars"></i></button>
+    </ng-template>
+    <ng-template #actionOrderDrilldown>
+      <button nz-button nzType="default" (click)="onDrillDownToOrder()"><i nz-icon nzType="bars"></i></button>
+    </ng-template>
   </div>
-  <ng-template #actionAccountDrilldown>
-    <button nz-button nzType="default" (click)="onDrillDownToAccount()"><i nz-icon nzType="bars"></i></button>
-  </ng-template>
-  <ng-template #actionControlCenterDrilldown>
-    <button nz-button nzType="default" (click)="onDrillDownToControlCenter()"><i nz-icon nzType="bars"></i></button>
-  </ng-template>
-  <ng-template #actionOrderDrilldown>
-    <button nz-button nzType="default" (click)="onDrillDownToOrder()"><i nz-icon nzType="bars"></i></button>
-  </ng-template>
-</div>
+</nz-spin>

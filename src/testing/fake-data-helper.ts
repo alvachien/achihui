@@ -1360,6 +1360,18 @@ export class FakeDataHelper {
       ctgy.Name = `Control Center ${i + 1}`;
       this._finControlCenters.push(ctgy);
     }
+    ctgy = new ControlCenter();
+    ctgy.Id = 5;
+    ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
+    ctgy.Name = `Control Center 1.1`;
+    ctgy.ParentId = 1;
+    this._finControlCenters.push(ctgy);
+    ctgy = new ControlCenter();
+    ctgy.Id = 6;
+    ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
+    ctgy.Name = `Control Center 1.1.1`;
+    ctgy.ParentId = 5;
+    this._finControlCenters.push(ctgy);
   }
   public buildFinControlCenterFromAPI(): void {
     this._finControlCentersFromAPI = [];

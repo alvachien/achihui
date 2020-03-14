@@ -6,7 +6,8 @@ import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { Account, Document, ControlCenter, AccountCategory, TranType,
+import {
+  Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
@@ -67,14 +68,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     ];
     forkJoin(arseqs)
       .pipe(takeUntil(this._destroyed$),
-      finalize(() => {
-        this.isLoadingResults = false;
-      }))
+        finalize(() => {
+          this.isLoadingResults = false;
+        }))
       .subscribe({
         next: (val: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
             ConsoleLogTypeEnum.debug);
-  
+
           this.arDocTypes = val[0];
           this.arCurrencies = val[1];
           this.arAccountCategories = val[2];
@@ -84,13 +85,13 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arOrders = val[6];
           this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
           this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-  
+
           this.fetchData();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
             ConsoleLogTypeEnum.error);
-  
+
           // Error
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -117,10 +118,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.pageIndex = 0;
     }
     this.isLoadingResults = true;
-    const { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+    const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
     this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
       .pipe(takeUntil(this._destroyed$),
-      finalize(() => this.isLoadingResults = false))
+        finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (revdata: BaseListModel<Document>) => {
           if (revdata) {
@@ -129,7 +130,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
             } else {
               this.totalDocumentCount = 0;
             }
-  
+
             this.listOfDocs = revdata.contentList;
           } else {
             this.totalDocumentCount = 0;
@@ -139,7 +140,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,
@@ -187,8 +188,5 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
   public onMassCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/masscreatenormal']);
-  }
-  public onMassCreateNormalDocument2(): void {
-    this.router.navigate(['/finance/document/masscreatenormal2']);
   }
 }

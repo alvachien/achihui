@@ -21,6 +21,7 @@ import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
 import { MessageDialogComponent } from './pages/message-dialog';
 
+registerLocaleData(zh);
 registerLocaleData(en);
 
 @NgModule({

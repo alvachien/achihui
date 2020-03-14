@@ -10,7 +10,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -81,28 +81,27 @@ describe('TranTypeHierarchyComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('2. shall work with data', () => {
+  describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
     });
 
-    // it('should not show data before OnInit', () => {
-    //   expect(component.dataSet.length).toEqual(0);
-    // });
+    it('should not show data before OnInit', () => {
+      expect(component.ttTreeNodes.length).toEqual(0);
+    });
 
-    // it('should show data after OnInit', fakeAsync(() => {
-    //   fixture.detectChanges(); // ngOnInit()
-    //   tick(); // Complete the observables in ngOnInit
-    //   fixture.detectChanges();
+    it('should show data after OnInit', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
 
-    //   expect(component.dataSet.length).toBeGreaterThan(0);
-    //   expect(component.dataSet.length).toEqual(fakeData.finAccountCategories.length);
+      expect(component.ttTreeNodes.length).toBeGreaterThan(0);
 
-    //   flush();
-    // }));
+      flush();
+    }));
   });
 
-  xdescribe('3. shall display error dialog for exception', () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -129,17 +128,17 @@ describe('TranTypeHierarchyComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

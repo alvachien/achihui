@@ -27,8 +27,11 @@
           <li nz-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | transloco}}</li>
           <li nz-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | transloco}}</li>
           <li nz-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | transloco}}</li>
-          </ul>
+        </ul>
       </nz-dropdown-menu>
+      <button nz-button (click)="onMassCreateNormalDocument()">
+        {{'Finance.NormalDocMassCreate' | transloco}}
+      </button>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-select [ngModel]="selectedDocScope">
         <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>

@@ -43,13 +43,13 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
         next: (x: DocumentType[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent fetchAllDocTypes...',
             ConsoleLogTypeEnum.debug);
-    
+
           this.dataSet = x;
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocTypeListComponent fetchAllDocTypes failed ${error}`,
             ConsoleLogTypeEnum.error);
-    
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,

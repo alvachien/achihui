@@ -1,1 +1,4 @@
-<p>tran-type-hierarchy works!</p>
+<nz-spin [nzSpinning]="isLoadingResults">
+  <nz-tree [nzData]="ttTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
+  </nz-tree>
+</nz-spin>

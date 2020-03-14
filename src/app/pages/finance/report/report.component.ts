@@ -6,8 +6,7 @@ import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 import { EChartOption } from 'echarts';
 
-import {
-  FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
   ControlCenter, Order,
 } from '../../../model';
@@ -51,7 +50,7 @@ export class ReportComponent implements OnInit {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountReportComponent ngOnInit...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
     // Load data
@@ -83,7 +82,7 @@ export class ReportComponent implements OnInit {
           this.buildInfo();
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReportComponent ngOnInit forkJoin failed ${error}`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({
@@ -113,14 +112,16 @@ export class ReportComponent implements OnInit {
       const bal = this.dataReportByAccount.find((val3: FinanceReportByAccount) => {
         return val.Id === val3.AccountId;
       });
-      const ctgy: AccountCategory = this.arAccountCategories.find((val2: AccountCategory) => {
-        return val.CategoryId === val2.ID;
-      });
+      if (bal !== undefined) {
+        const ctgy: AccountCategory = this.arAccountCategories.find((val2: AccountCategory) => {
+          return val.CategoryId === val2.ID;
+        });
 
-      if (ctgy.AssetFlag) {
-        this.reportAccountAsset += bal.Balance;
-      } else {
-        this.reportAccountLibility += bal.Balance;
+        if (ctgy.AssetFlag) {
+          this.reportAccountAsset += bal.Balance;
+        } else {
+          this.reportAccountLibility += bal.Balance;
+        }
       }
     });
     // Echarts
@@ -182,6 +183,14 @@ export class ReportComponent implements OnInit {
       },
       yAxis: {
         type: 'value'
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          dataView: {show: true, readOnly: true},
+          restore: {show: true},
+          saveAsImage: {show: true},
+        }
       },
       series: [{
         data: ccval,

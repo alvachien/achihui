@@ -313,7 +313,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   private currencyMustDiffForExchgValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
-      if (this.headerForm.get('curr2Control').value && this.headerForm.get('currControl').value 
+      if (this.headerForm.get('curr2Control').value && this.headerForm.get('currControl').value
         && this.headerForm.get('curr2Control').value === this.headerForm.get('currControl').value) {
         return { currencyMustDiff: true };
       }
@@ -322,4 +322,3 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return null;
   }
 }
-

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -43,19 +44,26 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Confirm
   public confirmInfo: any = {};
   // Step: Result
-  public isDocPosting: boolean = false;
+  public isDocPosting = false;
   public docIdCreated?: number = null;
   public docPostingFailed: string;
 
   constructor(
-    public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public odataService: FinanceOdataService,
-    public modalService: NzModalService) {
+    private homeService: HomeDefOdataService,
+    private uiStatusService: UIStatusService,
+    private odataService: FinanceOdataService,
+    private modalService: NzModalService,
+    private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    // Set the default currency
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+
+    const docObj: Document = new Document();
+    docObj.TranCurr = this.baseCurrency;
     this.headerForm = new FormGroup({
-      headerControl: new FormControl(new Document(), Validators.required),
+      headerControl: new FormControl(docObj, Validators.required),
     });
     this.itemsForm = new FormGroup({
       itemControl: new FormControl([]),
@@ -99,9 +107,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         this.arCurrencies = rst[5];
         // Doc. type
         this.arDocTypes = rst[6];
-
-        // Set the default currency
-        this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
@@ -143,7 +148,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
       popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       this.isDocPosting = false;
-  
+
       return;
     }
 
@@ -170,6 +175,22 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     });
   }
 
+  onDisplayCreatedDoc(): void {
+    if (this.docIdCreated !== null) {
+      this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
+  }
+
+  onReset(): void {
+    this.currentStep = 0;
+    this.itemsForm.reset();
+    this.headerForm.reset();
+    this.confirmInfo = {};
+    this.isDocPosting = false;
+    this.docIdCreated = null;
+    this.docPostingFailed = null;
+  }
+
   pre(): void {
     this.currentStep -= 1;
   }
@@ -178,7 +199,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     switch (this.currentStep) {
       case 0: {
         this.currentStep ++;
-        break;  
+        break;
       }
       case 1: {
         this._updateConfirmInfo();

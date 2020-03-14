@@ -1,26 +1,30 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
-  <nz-page-header nzBackIcon>
-    <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'Finance.ControlCenters' | transloco}}</nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <nz-page-header-title>{{'Finance.ControlCenter' | transloco}}</nz-page-header-title>
-    <nz-page-header-subtitle>{{'Common.HierarchyView' | transloco}}</nz-page-header-subtitle>
-    <nz-page-header-extra>
-      <a nz-button nzType="link" routerLink="/finance/controlcenter/create">{{'Common.Create' | transloco}}</a>
-      <a nz-button nzType="link" routerLink="/finance/controlcenter/list">{{'Common.ListView' | transloco}}</a>
-    </nz-page-header-extra>
-  </nz-page-header>
-  
-  <div nz-row>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
-      <nz-tree [nzData]="ccTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
-      </nz-tree>
-    </div>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" nzXl="16">
-      <div>
-        TBD.
+<nz-page-header nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.ControlCenters' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Finance.ControlCenter' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.HierarchyView' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <a nz-button nzType="link" routerLink="/finance/controlcenter/create">{{'Common.Create' | transloco}}</a>
+    <a nz-button nzType="link" routerLink="/finance/controlcenter/list">{{'Common.ListView' | transloco}}</a>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<div nz-row *transloco="let t">
+  <div class="col" nz-col nz-resizable (nzResize)="onResize($event)" [nzMinColumn]="3" [nzMaxColumn]="20"
+    [nzGridColumnCount]="24" [nzSpan]="col">
+    <nz-resize-handle nzDirection="right">
+      <div class="right-wrap">
+        <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
       </div>
+    </nz-resize-handle>
+    <div>
+      <nz-spin [nzSpinning]="isLoadingResults">
+        <nz-tree [nzData]="ccTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
+        </nz-tree>
+      </nz-spin>
     </div>
   </div>
-</nz-spin>
+  <div class="col right" nz-col [nzSpan]="24 - col">Content changed after the selection.</div>
+</div>

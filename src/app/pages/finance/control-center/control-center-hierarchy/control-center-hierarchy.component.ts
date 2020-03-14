@@ -4,6 +4,7 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
@@ -18,13 +19,18 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   ccTreeNodes: NzTreeNodeOptions[] = [];
+  col = 8;
+  id = -1;
 
   constructor(
     public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService,
     public modalService: NzModalService) {
-      this.isLoadingResults = false;
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...',
@@ -42,7 +48,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
         next: (value: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters.',
             ConsoleLogTypeEnum.debug);
-  
+
           if (value) {
             this.ccTreeNodes = this._buildControlCenterTree(value, 1);
           }
@@ -50,7 +56,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters failed ${error}`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,
@@ -67,6 +73,13 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onResize({ col }: NzResizeEvent): void {
+    cancelAnimationFrame(this.id);
+    this.id = requestAnimationFrame(() => {
+      this.col = col!;
+    });
   }
 
   private _buildControlCenterTree(value: ControlCenter[], level: number, id?: number): NzTreeNodeOptions[] {

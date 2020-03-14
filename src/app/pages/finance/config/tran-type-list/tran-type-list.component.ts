@@ -43,7 +43,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
         next: (x: TranType[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInit, fetchAllTranTypes...',
             ConsoleLogTypeEnum.debug);
-  
+
           this.dataSet = x;
         },
         error: (error: any) => {

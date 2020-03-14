@@ -1,5 +1,5 @@
-<ng-container class="achih-control-full-width" *transloco="let t">
-  <div *ngIf="controlError">
+<ng-container *transloco="let t">
+  <div *ngIf="controlError" style="text-align: left;">
     <nz-alert nzType="error"
       [nzMessage]="t(controlError.value)"
       [nzDescription]="t(controlError.value)"
@@ -30,6 +30,7 @@
           {{ data.ItemId }}
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteDocItem(data)">{{'Common.Delete' | transloco}}</button>
+          <button nz-button nzType="link" [disabled]="!isAddItemAllowed" (click)="onCopyCurrentItem(data)">{{'Common.Copy' | transloco}}</button>
         </td>
         <td>
           <nz-form-item>
