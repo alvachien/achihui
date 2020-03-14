@@ -189,10 +189,10 @@ describe('DocumentListComponent', () => {
     it('shall trigger navigation on menus for document creating', () => {
       const routerstub = TestBed.get(Router);
       spyOn(routerstub, 'navigate');
-  
+
       component.onCreateNormalDocument();;
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);
-  
+
       component.onCreateTransferDocument();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createtransfer']);
 
@@ -229,9 +229,6 @@ describe('DocumentListComponent', () => {
 
       component.onMassCreateNormalDocument();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/masscreatenormal']);
-
-      component.onMassCreateNormalDocument2();
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/masscreatenormal2']);
     });
   });
 

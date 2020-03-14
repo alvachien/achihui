@@ -190,7 +190,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       flush();
     }));
-    
+
     it('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -297,7 +297,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.headerForm.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -557,7 +557,7 @@ describe('DocumentNormalCreateComponent', () => {
       const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain('Currency service failed',
         'Expected dialog to show the error message: Currency service failed');
-  
+
       // Close the dialog
       const closeBtn  = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
@@ -567,7 +567,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();  
+      flush();
     }));
 
     it('2. should display error when accont category service fails', fakeAsync(() => {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -41,12 +41,13 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public massCreateType = '1';
   public createTypeControlStyle = {
     display: 'block',
-    height: '30px',
-    lineHeight: '30px'
+    height: '40px',
+    lineHeight: '40px'
   };
-  public repeatTypeForm: FormGroup;
+  public repeatInfoFormGroup: FormGroup;
   // Step: Item
-  public itemsForm: FormGroup;
+  public itemsFormGroup: FormGroup;
+  listOfControl: Array<{ id: number; controlInstance: string }> = [];
   // Step: Confirm
   public confirmInfo: any = {};
   // Step: Result
@@ -59,6 +60,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private uiStatusService: UIStatusService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
+    private fb: FormBuilder,
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -68,11 +70,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     const docObj: Document = new Document();
     docObj.TranCurr = this.baseCurrency;
-    this.repeatTypeForm = new FormGroup({
+    this.repeatInfoFormGroup = new FormGroup({
       dateRangeControl: new FormControl(undefined, Validators.required),
-    });
-    this.itemsForm = new FormGroup({
-      itemControl: new FormControl([]),
+      frqControl: new FormControl(undefined, Validators.required),
     });
   }
 
@@ -81,6 +81,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
+    this.itemsFormGroup = this.fb.group({});
+    this.addField();
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -127,6 +129,69 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+  }
+
+  pre(): void {
+    this.currentStep -= 1;
+  }
+
+  next(): void {
+    switch (this.currentStep) {
+      case 0: {
+        this.currentStep ++;
+        break;
+      }
+      case 1: {
+        // this._updateConfirmInfo();
+
+        this.currentStep ++;
+        break;
+      }
+      case 2: {
+        this.isDocPosting = true;
+        // this.onSave();
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  get nextButtonEnabled(): boolean {
+    if (this.currentStep === 0) {
+      // return this.headerForm.valid;
+    } else if (this.currentStep === 1) {
+      return this.itemsFormGroup.valid;
+    } else {
+      return true;
+    }
+  }
+
+  addField(e?: MouseEvent): void {
+    if (e) {
+      e.preventDefault();
+    }
+    const id = this.listOfControl.length > 0 ? this.listOfControl[this.listOfControl.length - 1].id + 1 : 0;
+
+    const control = {
+      id,
+      controlInstance: `passenger${id}`
+    };
+    const index = this.listOfControl.push(control);
+    console.log(this.listOfControl[this.listOfControl.length - 1]);
+    this.itemsFormGroup.addControl(
+      this.listOfControl[index - 1].controlInstance,
+      new FormControl(null, Validators.required)
+    );
+  }
+
+  removeField(i: { id: number; controlInstance: string }, e: MouseEvent): void {
+    e.preventDefault();
+    if (this.listOfControl.length > 1) {
+      const index = this.listOfControl.indexOf(i);
+      this.listOfControl.splice(index, 1);
+      console.log(this.listOfControl);
+      this.itemsFormGroup.removeControl(i.controlInstance);
     }
   }
 }
