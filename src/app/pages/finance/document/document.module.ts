@@ -17,6 +17,8 @@ import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create/d
 import { DocumentLoanCreateComponent } from './document-loan-create/document-loan-create.component';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create';
+import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create';
+import { DocumentNormalMassCreateItemComponent } from './document-normal-mass-create-item';
 import { AccountModule } from '../account/account.module';
 
 @NgModule({
@@ -34,6 +36,8 @@ import { AccountModule } from '../account/account.module';
     DocumentLoanCreateComponent,
     DocumentAssetValueChangeCreateComponent,
     DocumentNormalMassCreateComponent,
+    DocumentRecurredMassCreateComponent,
+    DocumentNormalMassCreateItemComponent,
   ],
   imports: [
     CommonModule,

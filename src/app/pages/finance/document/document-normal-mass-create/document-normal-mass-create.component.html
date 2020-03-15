@@ -3,9 +3,9 @@
     <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.NormalDocMassCreate' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{'Finance.NormalDocMassCreate' | transloco}}</nz-page-header-title>
+  <nz-page-header-title>{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
 </nz-page-header>
 
@@ -20,73 +20,26 @@
   <div class="steps-content">
     <!-- Header -->
     <div nz-row [hidden]="currentStep !== 0">
-      <nz-radio-group [(ngModel)]="massCreateType">
-        <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="1">{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</label>
-        <label nz-radio [ngStyle]="createTypeControlStyle" nzValue="2">
-          {{'Finance.RepeatlyMassCreateNormalDocs' | transloco}}
-        </label>
-      </nz-radio-group>
-      <form nz-form [formGroup]="repeatInfoFormGroup" *ngIf="massCreateType === '2'">
-        <!-- Date -->
-        <nz-form-item>
-          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
-          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
-            <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
-            <ng-template #dateRangeErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{'Common.FieldIsMandatory' | transloco}}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-
-        <!-- Repeat frequency -->
-        <nz-form-item>
-          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
-          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
-            <nz-select formControlName="frqControl">
-              <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
-            </nz-select>
-            <ng-template #frqTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                {{'Common.FieldIsMandatory' | transloco}}
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
+      <form nz-form [formGroup]="itemsFormGroup">
+        <div formArrayName="items">
+          <div *ngFor="let item of itemsFormGroup?.get('items')['controls']; let i=index">
+            <hih-document-normal-mass-create-item 
+              [group]="itemsFormGroup?.get('items')['controls'][i]"
+              [arUIAccount]="arUIAccount"
+              [arUIOrder]="arUIOrder"
+              [arControlCenter]="arControlCenter"
+              [arTranType]="arTranType"
+              (createItemClicked)="createNewItem()"
+              (copyItemClicked)="createNewItem()"
+              (removeItemClicked)="removeItem(i)">
+            </hih-document-normal-mass-create-item>
+          </div>
+        </div>  
       </form>
     </div>
 
     <!-- Items -->
     <div nz-row [hidden]="currentStep !== 1">
-      <form nz-form [formGroup]="itemsFormGroup">
-        <nz-form-item *ngFor="let control of listOfControl; let i = index">
-          <nz-form-label [nzXs]="24" [nzSm]="4" *ngIf="i == 0" [nzFor]="control.controlInstance">
-            Passengers
-          </nz-form-label>
-          <nz-form-control
-            [nzXs]="24"
-            [nzSm]="20"
-            [nzOffset]="i == 0 ? 0 : 4"
-            nzErrorTip="Please input passenger's name or delete this field.">
-            <input
-              class="passenger-input"
-              nz-input
-              placeholder="placeholder"
-              [attr.id]="control.id"
-              [formControlName]="control.controlInstance" />
-            <i nz-icon nzType="minus-circle-o" class="dynamic-delete-button" (click)="removeField(control, $event)"></i>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-control [nzXs]="{ span: 24, offset: 0 }" [nzSm]="{ span: 20, offset: 4 }">
-            <button nz-button nzType="dashed" class="add-button" (click)="addField($event)">
-              <i nz-icon nzType="plus"></i>
-              Add field
-            </button>
-          </nz-form-control>
-        </nz-form-item>
-      </form>
     </div>
   </div>
 

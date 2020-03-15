@@ -1,0 +1,76 @@
+<div [formGroup]="itemFormGroup">
+  <div nz-row>
+    <button nz-button nzType="link" (click)="fireCreateItemEvent()"><i nz-icon nzType="plus" nzTheme="outline"></i>Create New Item</button>
+    <button nz-button nzType="link" (click)="fireCopyItemEvent()"><i nz-icon nzType="copy" nzTheme="outline"></i>Copy Item</button>
+    <button nz-button nzType="link" (click)="fireRemoveItemEvent()"><i nz-icon nzType="minus" nzTheme="outline"></i>Remove Current Item</button>
+  </div>
+  <nz-divider></nz-divider>
+  <div nz-row [nzGutter]="8">
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="7" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left;">
+          <nz-date-picker formControlName="dateControl"></nz-date-picker>
+          <ng-template #trandateErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>    
+    </div>
+
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="7" nzHasFeedback [nzErrorTip]="accountTpl">
+          <nz-select formControlName="accountControl">
+            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+          </nz-select>
+          <ng-template #accountTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>          
+    </div>
+
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>{{'Finance.TransactionType' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="7" nzHasFeedback [nzErrorTip]="trantypeTpl">
+          <nz-select formControlName="tranTypeControl">
+            <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
+          </nz-select>
+          <ng-template #trantypeTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="8">
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>{{'Finance.Amount' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="7" nzHasFeedback [nzErrorTip]="amountTpl">
+          <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl">
+          </nz-input-number>
+          <ng-template #amountTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="8">
+    </div>
+    <div nz-col [nzSpan]="8">
+    </div>
+  </div>
+</div>

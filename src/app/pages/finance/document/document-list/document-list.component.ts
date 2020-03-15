@@ -38,6 +38,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arUIOrders: UIOrderForSelection[] = [];
   public arTranTypes: TranType[] = [];
+  public selectedRange: any[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
@@ -188,5 +189,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
   public onMassCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/masscreatenormal']);
+  }
+  public onMassCreateRecurredDocument(): void {
+    this.router.navigate(['/finance/document/masscreaterecurred']);
   }
 }

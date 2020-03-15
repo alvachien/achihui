@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -37,18 +37,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
   public currentStep = 0;
-  // Step: Header
-  public massCreateType = '1';
-  public createTypeControlStyle = {
-    display: 'block',
-    height: '40px',
-    lineHeight: '40px'
-  };
-  public repeatInfoFormGroup: FormGroup;
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   // Step: Item
   public itemsFormGroup: FormGroup;
-  listOfControl: Array<{ id: number; controlInstance: string }> = [];
   // Step: Confirm
   public confirmInfo: any = {};
   // Step: Result
@@ -68,13 +58,6 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
-
-    const docObj: Document = new Document();
-    docObj.TranCurr = this.baseCurrency;
-    this.repeatInfoFormGroup = new FormGroup({
-      dateRangeControl: new FormControl(undefined, Validators.required),
-      frqControl: new FormControl(undefined, Validators.required),
-    });
   }
 
   ngOnInit() {
@@ -82,9 +65,10 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-    this.itemsFormGroup = this.fb.group({});
-    this.addField();
-
+    this.itemsFormGroup = this.fb.group({
+      items: this.fb.array([]),
+    });
+    
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
@@ -112,6 +96,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         this.arCurrencies = rst[5];
         // Doc. type
         this.arDocTypes = rst[6];
+
+        // Create first item
+        this.createNewItem();
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
@@ -131,6 +118,31 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  initItem(): FormGroup {
+    return this.fb.group({
+      dateControl: [new Date(), Validators.required],
+      accountControl: ['', Validators.required],
+      tranTypeControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      // currControl: ['', Validators.required],
+      // despControl: ['', Validators.required],
+      // ccControl: [''],
+      // orderControl: [''],
+    });
+  }
+
+  createNewItem(): void {
+    const control: any = <FormArray>this.itemsFormGroup.controls.items;
+    const addrCtrl: any = this.initItem();
+
+    control.push(addrCtrl);
+  }
+
+  removeItem(i: number): void {
+    const control: any = <FormArray>this.itemsFormGroup.controls.items;
+    control.removeAt(i);
   }
 
   pre(): void {
@@ -166,34 +178,6 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       return this.itemsFormGroup.valid;
     } else {
       return true;
-    }
-  }
-
-  addField(e?: MouseEvent): void {
-    if (e) {
-      e.preventDefault();
-    }
-    const id = this.listOfControl.length > 0 ? this.listOfControl[this.listOfControl.length - 1].id + 1 : 0;
-
-    const control = {
-      id,
-      controlInstance: `passenger${id}`
-    };
-    const index = this.listOfControl.push(control);
-    console.log(this.listOfControl[this.listOfControl.length - 1]);
-    this.itemsFormGroup.addControl(
-      this.listOfControl[index - 1].controlInstance,
-      new FormControl(null, Validators.required)
-    );
-  }
-
-  removeField(i: { id: number; controlInstance: string }, e: MouseEvent): void {
-    e.preventDefault();
-    if (this.listOfControl.length > 1) {
-      const index = this.listOfControl.indexOf(i);
-      this.listOfControl.splice(index, 1);
-      console.log(this.listOfControl);
-      this.itemsFormGroup.removeControl(i.controlInstance);
     }
   }
 }

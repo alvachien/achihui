@@ -7,7 +7,7 @@
     <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nz-dropdown [nzDropdownMenu]="menuCreateDocument">
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="menuCreateDocument">
         {{'Common.Create' | transloco}}
         <i nz-icon nzType="down"></i>
       </button>
@@ -29,14 +29,22 @@
           <li nz-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | transloco}}</li>
         </ul>
       </nz-dropdown-menu>
-      <button nz-button (click)="onMassCreateNormalDocument()">
-        {{'Finance.NormalDocMassCreate' | transloco}}
-      </button>
       <nz-divider nzType="vertical"></nz-divider>
-      <nz-select [ngModel]="selectedDocScope">
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="menuMassCreateDocument">
+        {{'Common.MassCreate' | transloco}}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #menuMassCreateDocument="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onMassCreateNormalDocument()">{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</li>
+          <li nz-menu-item (click)="onMassCreateRecurredDocument()">{{'Finance.MassCreateRecurredNormalDocs' | transloco}}</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-divider nzType="vertical"></nz-divider>
+      <!-- <nz-select [ngModel]="selectedDocScope">
         <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
-      </nz-select>
-      <nz-range-picker></nz-range-picker>
+      </nz-select> -->
+      <nz-range-picker [(ngModel)]="selectedRange"></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>

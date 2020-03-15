@@ -10,6 +10,7 @@ import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create';
+import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create';
 
 const routes: Routes = [
   { path: '', component: DocumentListComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'createnormal', component: DocumentNormalCreateComponent },
   { path: 'createtransfer', component: DocumentTransferCreateComponent },
   { path: 'masscreatenormal', component: DocumentNormalMassCreateComponent },
+  { path: 'masscreaterecurred', component: DocumentRecurredMassCreateComponent },
 
   { path: 'createadp', component: DocumentDownpaymentCreateComponent },
   { path: 'createadr', component: DocumentDownpaymentCreateComponent },
