@@ -27,6 +27,10 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
   imports: [
@@ -60,6 +64,10 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzLayoutModule,
     NzSwitchModule,
     NzIconModule,
+    NzBadgeModule,
+    NzRadioModule,
+    NzResizableModule,
+    NgxEchartsModule,
   ],
   exports: [
     FormsModule,
@@ -92,6 +100,10 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzLayoutModule,
     NzSwitchModule,
     NzIconModule,
+    NzBadgeModule,
+    NzRadioModule,
+    NzResizableModule,
+    NgxEchartsModule,
   ]
 })
 export class LearnUIModule { }
