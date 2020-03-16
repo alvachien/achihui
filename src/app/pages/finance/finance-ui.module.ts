@@ -30,6 +30,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
 
@@ -72,6 +73,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzBadgeModule,
     NzRadioModule,
     NzResizableModule,
+    NzCollapseModule,
     NgxEchartsModule,
   ],
   exports: [
@@ -108,6 +110,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzBadgeModule,
     NzRadioModule,
     NzResizableModule,
+    NzCollapseModule,
     NgxEchartsModule,
 
     UIAccountCtgyFilterExPipe,

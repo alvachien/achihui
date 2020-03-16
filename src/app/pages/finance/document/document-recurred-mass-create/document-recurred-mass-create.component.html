@@ -8,3 +8,12 @@
   <nz-page-header-title>{{'Finance.MassCreateRecurredNormalDocs' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
 </nz-page-header>
+
+<div *transloco="let t">
+  <nz-steps [nzCurrent]="currentStep">
+    <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
+  </nz-steps>
+</div>

@@ -68,7 +68,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.itemsFormGroup = this.fb.group({
       items: this.fb.array([]),
     });
-    
+
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
@@ -127,22 +127,26 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       tranTypeControl: ['', Validators.required],
       amountControl: ['', Validators.required],
       // currControl: ['', Validators.required],
-      // despControl: ['', Validators.required],
-      // ccControl: [''],
-      // orderControl: [''],
+      despControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
     });
   }
 
   createNewItem(): void {
-    const control: any = <FormArray>this.itemsFormGroup.controls.items;
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
   }
 
   removeItem(i: number): void {
-    const control: any = <FormArray>this.itemsFormGroup.controls.items;
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     control.removeAt(i);
+  }
+
+  onSave(): void {
+    // save it
   }
 
   pre(): void {

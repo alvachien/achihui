@@ -16,6 +16,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>{{'Common.Name' | transloco}}</th>
         <th>{{'Finance.Debit' | transloco}}</th>
         <th>{{'Finance.Credit' | transloco}}</th>
         <th>{{'Finance.Balance' | transloco}}</th>
@@ -23,12 +24,11 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{data.ControlCenterId}}
-        </td>
-        <td>{{data.DebitBalance}}</td>
-        <td>{{data.CreditBalance}}</td>
-        <td>{{data.Balance}}</td>
+        <td>{{data.ControlCenterId}}</td>
+        <td>{{data.ControlCenterName}}</td>
+        <td>{{data.DebitBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span></td>
+        <td>{{data.CreditBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span></td>
+        <td>{{data.Balance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span></td>
       </tr>
     </tbody>
   </nz-table>

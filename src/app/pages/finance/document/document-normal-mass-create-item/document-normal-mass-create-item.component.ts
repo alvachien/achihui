@@ -10,18 +10,17 @@ import { UIAccountForSelection, UIOrderForSelection, Account, ControlCenter, Ord
   styleUrls: ['./document-normal-mass-create-item.component.less'],
 })
 export class DocumentNormalMassCreateItemComponent implements OnInit {
-
-  @Input('arUIAccount')
-  public arUIAccount: UIAccountForSelection[] = [];
-  @Input('arUIOrder')
-  public arUIOrder: UIOrderForSelection[] = [];
-  @Input('arControlCenter')
-  arControlCenter: ControlCenter[] = [];
-  @Input('arTranType')
+  @Input()
+  public arUIAccounts: UIAccountForSelection[] = [];
+  @Input()
+  public arUIOrders: UIOrderForSelection[] = [];
+  @Input()
+  arControlCenters: ControlCenter[] = [];
+  @Input()
   arTranType: TranType[] = [];
-  @Input('localCurrency')
-  localCurrency: String;
-  @Input('group')
+  @Input()
+  localCurrency;
+  @Input()
   public itemFormGroup: FormGroup;
 
   @Output()

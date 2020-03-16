@@ -5,8 +5,8 @@ import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { LogLevel, FinanceReportByControlCenter, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory } from '../../../../model';
-import { FinanceOdataService, UIStatusService, } from '../../../../services';
+  momentDateFormat, Account, AccountCategory, ControlCenter, } from '../../../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
 @Component({
   selector: 'hih-finance-report-controlcenter',
@@ -17,15 +17,20 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
-  dataSet: FinanceReportByControlCenter[] = [];
+  dataSet: any[] = [];
+  arReportByControlCenter: FinanceReportByControlCenter[] = [];
+  arControlCenter: ControlCenter[] = [];
+  baseCurrency: string;
 
   constructor(
     public odataService: FinanceOdataService,
-    public modalService: NzModalService) {
+    private homeService: HomeDefOdataService,
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
+    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
   }
 
   ngOnInit() {
@@ -44,7 +49,10 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       finalize(() => this.isLoadingResults = false))
     .subscribe({
       next: (x: any[]) => {
-        this.dataSet = x[0];
+        this.arReportByControlCenter = x[0];
+        this.arControlCenter = x[1];
+
+        this.buildReportList();
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${error}`,
@@ -67,5 +75,23 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  private buildReportList(): void {
+    this.dataSet = [];
+    this.arReportByControlCenter.forEach((bal: FinanceReportByControlCenter) => {
+      const ccobj = this.arControlCenter.find((cc: ControlCenter) => {
+        return cc.Id === bal.ControlCenterId;
+      });
+      if (ccobj) {
+        this.dataSet.push({
+          ControlCenterId: bal.ControlCenterId,
+          ControlCenterName: ccobj.Name,
+          DebitBalance: bal.DebitBalance,
+          CreditBalance: bal.CreditBalance,
+          Balance: bal.Balance,
+        });
+      }
+    });
   }
 }
