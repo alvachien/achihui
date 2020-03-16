@@ -11,9 +11,50 @@
 
 <div *transloco="let t">
   <nz-steps [nzCurrent]="currentStep">
-    <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.SearchCriteria' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
+
+  <div class="steps-content">
+    <!-- Header -->
+    <form nz-form [formGroup]="searchFormGroup" [hidden]="currentStep !== 0">
+      <div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+          <!-- Date Range -->
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
+              <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+              <ng-template #dateRangeErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <!-- Repeat frequency -->
+          <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
+              <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
+                <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
+              </nz-select>
+              <ng-template #frqTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        
+      </div>
+    </form>
+  </div>
 </div>

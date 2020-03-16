@@ -9,7 +9,7 @@ import { translate } from '@ngneat/transloco';
 
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection,
+  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -23,6 +23,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
+  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   public arUIOrders: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   public arCurrencies: Currency[] = [];
@@ -35,7 +36,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step: Header
-  public headerForm: FormGroup;
+  public searchFormGroup: FormGroup;
   // Step: Item
   public itemsForm: FormGroup;
   // Step: Confirm
@@ -138,7 +139,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      return this.headerForm.valid;
+      return this.searchFormGroup.valid;
     } else if (this.currentStep === 1) {
       return this.itemsForm.valid;
     } else {
