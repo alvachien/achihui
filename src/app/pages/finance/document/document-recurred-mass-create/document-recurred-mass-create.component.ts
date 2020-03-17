@@ -17,7 +17,7 @@ import { popupDialog } from '../../../message-dialog';
 @Component({
   selector: 'hih-document-recurred-mass-create',
   templateUrl: './document-recurred-mass-create.component.html',
-  styleUrls: ['./document-recurred-mass-create.component.less']
+  styleUrls: ['./document-recurred-mass-create.component.less'],
 })
 export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
@@ -35,9 +35,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public baseCurrency: string;
   public currentStep = 0;
-  // Step: Header
+  // Step 0: Search Criteria
   public searchFormGroup: FormGroup;
-  // Step: Item
+  // Step 1: Existing documents
   public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -57,6 +57,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+
+    this.searchFormGroup = new FormGroup({
+      dateRangeControl: new FormControl(undefined, [Validators.required]),
+      frqControl: new FormControl(undefined, [Validators.required]),
+      tranTypeControl: new FormControl(),
+      includSubTranTypeControl: new FormControl(),
+      ccControl: new FormControl(),
+      orderControl: new FormControl(),
+    });
   }
 
   ngOnInit() {
@@ -112,6 +121,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
+
   pre(): void {
     this.currentStep -= 1;
   }
@@ -141,10 +151,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     if (this.currentStep === 0) {
       return this.searchFormGroup.valid;
     } else if (this.currentStep === 1) {
-      return this.itemsForm.valid;
+      // return this.itemsForm.valid;
+      return true;
     } else {
       return true;
     }
   }
-
 }

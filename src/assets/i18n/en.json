@@ -193,7 +193,8 @@
     "Result": "Result",
     "SubmissionFailed": "Submission Failed",
     "ResubmissionHint": "Please check and modify the following information before resubmitting.",
-    "TitleOfSubmitError": "The content you submitted has the following error"
+    "TitleOfSubmitError": "The content you submitted has the following error",
+    "SearchCriteria": "Search Criteria"
   },
   "Sys": {
     "Currency": {

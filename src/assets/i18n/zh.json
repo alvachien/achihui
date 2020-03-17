@@ -193,7 +193,8 @@
     "Result": "结果",
     "SubmissionFailed": "提交失败",
     "ResubmissionHint": "请检查以下信息，修正后再次提交。",
-    "TitleOfSubmitError": "你提交的内容有如下错误"
+    "TitleOfSubmitError": "你提交的内容有如下错误",
+    "SearchCriteria": "搜索条件"
   },
   "Sys": {
     "Currency": {
