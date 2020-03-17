@@ -402,37 +402,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Delete the document
-   * @param docid ID fo the doc
-   */
-  public deleteDocument(docid: number): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.documentAPIUrl + '/' + docid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.delete(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Map of deleteDocument in FinanceStorageService.');
-        }
-
-        return <any>response;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-  /**
    * Get ADP tmp docs: for document item overview page
    */
   public getADPTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<TemplateDocADP[]> {
@@ -768,52 +737,6 @@ export class FinanceStorageService {
         return throwError(errmsg);
       }),
       );
-  }
-
-  /**
-   * search document item
-   */
-  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocItemSearch';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    if (top) {
-      params = params.append('top', top.toString());
-    }
-    if (skip) {
-      params = params.append('skip', skip.toString());
-    }
-    const apidata: any = { fieldList: filters };
-    const jdata: string = JSON && JSON.stringify(apidata);
-
-    return this._http.post(apiurl, jdata, {
-      headers: headers,
-      params: params,
-    }).pipe(map((x: any) => {
-      let arrst: DocumentItemWithBalance[] = [];
-      if (x && x.contentList instanceof Array && x.contentList.length > 0) {
-        x.contentList.forEach((value: any) => {
-          const rst: DocumentItemWithBalance = new DocumentItemWithBalance();
-          rst.onSetData(value);
-          arrst.push(rst);
-        });
-      }
-
-      return {
-        totalCount: x.totalCount,
-        items: arrst,
-      };
-    }),
-    catchError((errresp: HttpErrorResponse) => {
-      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-      return throwError(errmsg);
-    }),
-    );
   }
 
   /**

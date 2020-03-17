@@ -11,7 +11,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
-  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder
+  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1109,6 +1109,35 @@ export class FinanceOdataService {
   }
 
   /**
+   * Delete the document
+   * @param docid ID fo the doc
+   */
+  public deleteDocument(docid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.documentAPIUrl + '(' + docid.toString() + ')';
+    return this.http.delete(apiurl, {
+        headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, deleteDocument, map.`,
+          ConsoleLogTypeEnum.debug);
+
+        return response as any;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, deleteDocument failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
+  }
+
+  /**
    * Crate ADP document
    * @param docObj Instance of document
    * @param acntExtraObject Instance of AccountExtraAdvancePayment
@@ -1646,6 +1675,11 @@ export class FinanceOdataService {
   /**
    * Get document items by account
    * @param acntid Account ID
+   * @param top Top records returned
+   * @param skip Records to be skipped
+   * @param dtbgn Begin date of transaction date
+   * @param dtend End date of transaction date
+   *
    */
   public getDocumentItemByAccount(
     acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
@@ -1706,6 +1740,11 @@ export class FinanceOdataService {
   /**
    * Get document items by control center
    * @param ccid Control center ID
+   * @param top Top records returned
+   * @param skip Records to be skipped
+   * @param dtbgn Begin date of transaction date
+   * @param dtend End date of transaction date
+   *
    */
   public getDocumentItemByControlCenter(
     ccid: number,
@@ -1767,9 +1806,16 @@ export class FinanceOdataService {
   /**
    * Get document items by order
    * @param ordid Order ID
+   * @param top Top records returned
+   * @param skip Records to be skipped
+   * @param dtbgn Begin date of transaction date
+   * @param dtend End date of transaction date
+   *
    */
   public getDocumentItemByOrder(
     ordid: number,
+    top?: number,
+    skip?: number,
     dtbgn?: moment.Moment,
     dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
     let headers: HttpHeaders = new HttpHeaders();
@@ -1786,12 +1832,12 @@ export class FinanceOdataService {
       '$filter',
       `HomeID eq ${hid} and OrderID eq ${ordid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
     params = params.append('$count', `true`);
-    // if (top) {
-    //   params = params.append('$top', `${top}`);
-    // }
-    // if (skip) {
-    //   params = params.append('$skip', `${skip}`);
-    // }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
 
     return this.http.get(this.docItemViewAPIUrl, {
       headers,
@@ -1821,6 +1867,62 @@ export class FinanceOdataService {
         return throwError(errmsg);
       }),
       );
+  }
+
+  /**
+   * search document item
+   */
+  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
+    filters.forEach((flt: GeneralFilterItem) => {
+      let subfilter = 
+      filterstr += ` and `;
+    });
+    params = params.append('$filter', filterstr );
+    params = params.append('$count', `true`);
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    const apidata: any = { fieldList: filters };
+    const jdata: string = JSON && JSON.stringify(apidata);
+
+    return this.http.get(this.docItemViewAPIUrl, {
+      headers,
+      params,
+    }).pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceOdataService.`,
+        ConsoleLogTypeEnum.debug);
+
+      const data: any = response as any;
+      const ardi: DocumentItemView[] = [];
+      if (data && data.value && data.value instanceof Array && data.value.length > 0) {
+        for (const di of data.value) {
+          ardi.push(di as DocumentItemView);
+        }
+      }
+      return {
+        totalCount: data.totalCount,
+        contentList: ardi,
+      };
+    }),
+    catchError((errresp: HttpErrorResponse) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByOrder in FinanceOdataService: ${errresp}`,
+        ConsoleLogTypeEnum.error);
+
+      const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+      return throwError(errmsg);
+    }),
+    );
   }
 
   // Private methods

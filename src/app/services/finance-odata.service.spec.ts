@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
-  Order, Account, Plan, PlanTypeEnum,
+  Order, Account, Plan, PlanTypeEnum, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -1851,6 +1851,58 @@ describe('FinanceOdataService', () => {
     });
   });
 
+  describe('deleteDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.deleteDocument(1).subscribe(
+        (data: any) => {
+          // expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to DELETE from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE'
+          && requrl.url === service.documentAPIUrl + '(1)';
+      });
+
+      // Respond with the mock data
+      req.flush('', { status: 200, statusText: 'OK' });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.deleteDocument(1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      // Service should have made one request to DELETE from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE'
+          && requrl.url === service.documentAPIUrl + '(1)';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
   describe('fetchAllDocuments', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -2673,7 +2725,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data in success case', () => {
-      service.getDocumentItemByOrder(21, moment(), moment().add(1, 'y')).subscribe(
+      service.getDocumentItemByOrder(21, 100, 0, moment(), moment().add(1, 'y')).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2709,6 +2761,77 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$select')
           && requrl.params.has('$filter')
           ;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('searchDocItem', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocItemSearch';
+    let arItem: GeneralFilterItem[] = [];
+
+    beforeEach(() => {
+      let item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'test';
+      item.operator = GeneralFilterOperatorEnum.Equal;
+      item.valueType = GeneralFilterValueType.string;
+      arItem.push(item);
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.searchDocItem(arItem, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        'contentList': [
+          {
+            'docID': 473, 'itemID': 2, 'hid': 0, 'tranDate': '2017-12-02', 'docDesp': '美元兑换', 'accountID': 4,
+            'tranType': 37, 'tranTypeName': '转账收入', 'tranType_Exp': false, 'useCurr2': true, 'tranCurr': 'USD',
+            'tranAmount': 1000.00, 'tranAmount_Org': 1000.00, 'tranAmount_LC': 6632.00, 'controlCenterID': 0,
+            'orderID': 12, 'desp': '美元兑换'
+          },
+          {
+            'docID': 474, 'itemID': 1, 'hid': 0, 'tranDate': '2017-12-04', 'docDesp': '12.4在美国开支', 'accountID': 4,
+            'tranType': 46, 'tranTypeName': '早中晚餐', 'tranType_Exp': true, 'useCurr2': false, 'tranCurr': 'USD',
+            'tranAmount': -6.55, 'tranAmount_Org': 6.55, 'tranAmount_LC': -43.434, 'controlCenterID': 0, 'orderID': 12,
+            'desp': 'Walmart买面包和橙子'
+          }], 'totalCount': 17
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.searchDocItem(arItem).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body
