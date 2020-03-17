@@ -9,7 +9,7 @@ import { translate } from '@ngneat/transloco';
 
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
+  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum, momentDateFormat, GeneralFilterValueType, DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -38,6 +38,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // Step 0: Search Criteria
   public searchFormGroup: FormGroup;
   // Step 1: Existing documents
+  public listExistingDocItems: DocumentItemView[] = [];
   public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -130,6 +131,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     switch (this.currentStep) {
       case 0: {
         this.currentStep ++;
+        this.fetchAllDocItemView();
         break;
       }
       case 1: {
@@ -156,5 +158,32 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     } else {
       return true;
     }
+  }
+
+  private fetchAllDocItemView(): void {
+    let filters: GeneralFilterItem[] = [];
+    // Date range
+    let dtrange = this.searchFormGroup.get('dateRangeControl').value as any[];
+    filters.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: moment(dtrange[0] as Date).format(momentDateFormat),
+      valueType: GeneralFilterValueType.date,
+      highValue: moment(dtrange[1] as Date).format(momentDateFormat),
+    });
+    let ttval = this.searchFormGroup.get('tranTypeControl').value;
+    if (ttval) {
+      filters.push({
+        fieldName: 'TransactionType',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: ttval as number,
+        valueType: GeneralFilterValueType.number,
+        highValue: 0,
+      });
+    }
+
+    this.odataService.searchDocItem(filters).subscribe((x: any) => {
+      this.listExistingDocItems = x.contentList;
+    });
   }
 }

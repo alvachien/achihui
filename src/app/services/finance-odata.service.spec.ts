@@ -2769,15 +2769,15 @@ describe('FinanceOdataService', () => {
   });
 
   describe('searchDocItem', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocItemSearch';
-    let arItem: GeneralFilterItem[] = [];
+    let arFilters: GeneralFilterItem[] = [];
 
     beforeEach(() => {
       let item: GeneralFilterItem = new GeneralFilterItem();
-      item.fieldName = 'test';
+      item.fieldName = 'TransactionDate';
       item.operator = GeneralFilterOperatorEnum.Equal;
-      item.valueType = GeneralFilterValueType.string;
-      arItem.push(item);
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
       service = TestBed.get(FinanceOdataService);
     });
 
@@ -2787,7 +2787,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      service.searchDocItem(arItem, 100, 10).subscribe(
+      service.searchDocItem(arFilters, 100, 10).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2798,30 +2798,26 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'GET' 
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
-      req.flush({
-        'contentList': [
-          {
-            'docID': 473, 'itemID': 2, 'hid': 0, 'tranDate': '2017-12-02', 'docDesp': '美元兑换', 'accountID': 4,
-            'tranType': 37, 'tranTypeName': '转账收入', 'tranType_Exp': false, 'useCurr2': true, 'tranCurr': 'USD',
-            'tranAmount': 1000.00, 'tranAmount_Org': 1000.00, 'tranAmount_LC': 6632.00, 'controlCenterID': 0,
-            'orderID': 12, 'desp': '美元兑换'
-          },
-          {
-            'docID': 474, 'itemID': 1, 'hid': 0, 'tranDate': '2017-12-04', 'docDesp': '12.4在美国开支', 'accountID': 4,
-            'tranType': 46, 'tranTypeName': '早中晚餐', 'tranType_Exp': true, 'useCurr2': false, 'tranCurr': 'USD',
-            'tranAmount': -6.55, 'tranAmount_Org': 6.55, 'tranAmount_LC': -43.434, 'controlCenterID': 0, 'orderID': 12,
-            'desp': 'Walmart买面包和橙子'
-          }], 'totalCount': 17
+      req.flush({"@odata.context":"http://localhost:25688/api/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)",
+        "@odata.count":2,
+        "value":[{
+          "DocumentID":668,"ItemID":1,"TransactionDate":"2018-03-27","AccountID":8,"TransactionType":3,"Currency":"CNY","OriginAmount":30.00,"Amount":30.00,"ControlCenterID":9,"OrderID":null,"ItemDesp":"3\u6708\u4efd\u5de5\u8d44"
+        },{
+          "DocumentID":688,"ItemID":2,"TransactionDate":"2018-04-26","AccountID":8,"TransactionType":3,"Currency":"CNY","OriginAmount":254.22,"Amount":254.22,"ControlCenterID":9,"OrderID":null,"ItemDesp":"Alva 04\u5de5\u8d44"
+        }]
       });
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
-      service.searchDocItem(arItem).subscribe(
+      const msg = 'server failed';
+      service.searchDocItem(arFilters).subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2831,7 +2827,10 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
 
       // respond with a 500 and the error message in the body

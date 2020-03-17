@@ -12,8 +12,8 @@
 <div *transloco="let t">
   <nz-steps [nzCurrent]="currentStep">
     <nz-step [nzTitle]="'Common.SearchCriteria' | transloco"></nz-step>
-    <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
-    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Existing Items'"></nz-step>
+    <nz-step [nzTitle]="'Default Values'"></nz-step>
     <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
 
@@ -113,6 +113,32 @@
 
     <!-- Step 1: Existing documents -->
     <div nz-row [hidden]="currentStep !== 1">
+      <nz-table #basicTable
+        [nzLoading]="isLoadingResults"
+        [nzData]="listExistingDocItems">
+        <thead>
+          <tr>
+            <th>Doc ID</th>
+            <th>Item ID</th>
+            <th>Date</th>
+            <th>Desp</th>
+            <th>{{'Finance.Amount' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{data.DocumentID}}</td>
+            <td>{{data.ItemID}}</td>
+            <td>{{data.TransactionDate}}</td>
+            <td>{{data.DocumentDesp}}</td>
+            <td>{{data.OriginAmount}}<span style="padding-left: 3px;">{{data.Currency}}</span></td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+    <!-- Step 2: Default values -->
+    <div nz-row [hidden]="currentStep !== 2">
 
     </div>
   </div>

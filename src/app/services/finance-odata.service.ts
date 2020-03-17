@@ -11,7 +11,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
-  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem
+  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1879,11 +1879,167 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
+    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
     let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
     filters.forEach((flt: GeneralFilterItem) => {
-      let subfilter = 
-      filterstr += ` and `;
+      let subfilter = '';
+      switch (flt.operator) {
+        case GeneralFilterOperatorEnum.Equal: {
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              subfilter = `${flt.fieldName} eq '${flt.lowValue}'`;
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+
+        case GeneralFilterOperatorEnum.Between: {
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+
+        case GeneralFilterOperatorEnum.LargerEqual: {
+          // ge
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+        
+        case GeneralFilterOperatorEnum.LargerThan: {
+          // gt
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+        
+        case GeneralFilterOperatorEnum.LessEqual: {
+          // le
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+        
+        case GeneralFilterOperatorEnum.LessThan: {
+          // lt
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+        
+        case GeneralFilterOperatorEnum.Like: {
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              subfilter = `contains(${flt.fieldName}, '${flt.lowValue}')`;
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              break;
+            case GeneralFilterValueType.number:
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+        
+        case GeneralFilterOperatorEnum.NotEqual: {
+          // ne
+          switch (flt.valueType) {
+            case GeneralFilterValueType.string:
+              break;
+            case GeneralFilterValueType.boolean:
+              break;
+            case GeneralFilterValueType.date:
+              subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
+              break;
+            case GeneralFilterValueType.number:
+              subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+
+        default:
+          break;
+      }
+      
+      if (subfilter) {
+        filterstr += ` and ${subfilter}`;
+      }
     });
     params = params.append('$filter', filterstr );
     params = params.append('$count', `true`);
@@ -1893,8 +2049,6 @@ export class FinanceOdataService {
     if (skip) {
       params = params.append('$skip', `${skip}`);
     }
-    const apidata: any = { fieldList: filters };
-    const jdata: string = JSON && JSON.stringify(apidata);
 
     return this.http.get(this.docItemViewAPIUrl, {
       headers,

@@ -483,50 +483,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Fetch previous doc with planned exchange rate
-   * @param tgtcurr Target currency
-   */
-  public fetchPreviousDocWithPlanExgRate(tgtcurr: string): Observable<DocumentWithPlanExgRate[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    params = params.append('tgtcurr', tgtcurr);
-
-    return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService`);
-        }
-
-        let ardocs: DocumentWithPlanExgRate[] = [];
-        if (response instanceof Array && response.length > 0) {
-          for (let it of response) {
-            if (it) {
-              let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
-              pvdoc.onSetData(it);
-              ardocs.push(pvdoc);
-            }
-          }
-        }
-
-        return ardocs;
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
-  }
-
-  /**
    * Update previous document with planned exchange rate
    * @param obj Object for planned exchange rate
    */
