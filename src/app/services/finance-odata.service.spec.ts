@@ -1645,6 +1645,44 @@ describe('FinanceOdataService', () => {
       });
     });
 
+    it('should fetch data only once (call multiple times)', () => {
+      service.fetchAllPlans().subscribe(
+        (data: Plan[]) => {
+          expect(data.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [{
+          id: 1, hid: 1, planType: 0, accountID: 4,
+          startDate: '2019-03-23', targetDate: '2019-04-23', targetBalance: 10.00, tranCurr: 'CNY',
+          description: 'Test plan 1', createdBy: 'aaa', createdAt: '2019-03-23'
+        }]
+      });
+
+      httpTestingController.verify();
+
+      // Second call
+      service.fetchAllPlans().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('$filter');
+      });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'server failed';
       service.fetchAllPlans().subscribe(
@@ -2322,6 +2360,41 @@ describe('FinanceOdataService', () => {
       });
     });
 
+    it('shall fetch data only once when call multiple times', () => {
+      service.fetchAllReportsByAccount().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByAccountURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, AccountID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+
+      httpTestingController.verify();
+      service.fetchAllReportsByAccount().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByAccountURL
+          && requrl.params.has('$filter');
+      });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'server failed';
       service.fetchAllReportsByAccount().subscribe(
@@ -2378,6 +2451,41 @@ describe('FinanceOdataService', () => {
         ],
         '@odata.count': 1
       });
+    });
+
+    it('should fetch data only onece when call multiple times', () => {
+      service.fetchAllReportsByControlCenter().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByCCURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, ControlCenterID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+
+      httpTestingController.verify();
+      service.fetchAllReportsByControlCenter().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByCCURL
+          && requrl.params.has('$filter');
+      });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
     });
 
     it('should return error in case error appear', () => {
@@ -2438,6 +2546,41 @@ describe('FinanceOdataService', () => {
       });
     });
 
+    it('should call only once when call multiple times', () => {
+      service.fetchAllReportsByOrder().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByOrderURL
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [
+          { HomeID: 1, OrderID: 1, DebitBalance: 3, CreditBalance: 1, Balance: 2 }
+        ],
+        '@odata.count': 1
+      });
+
+      httpTestingController.verify();
+      service.fetchAllReportsByOrder().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === reportByOrderURL
+          && requrl.params.has('$filter');
+      });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'server failed';
       service.fetchAllReportsByOrder().subscribe(
@@ -2453,7 +2596,7 @@ describe('FinanceOdataService', () => {
         return requrl.method === 'GET'
           && requrl.url === reportByOrderURL
           && requrl.params.has('$filter');
-    });
+      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });
@@ -2769,15 +2912,24 @@ describe('FinanceOdataService', () => {
   });
 
   describe('searchDocItem', () => {
-    let arFilters: GeneralFilterItem[] = [];
+    const arFilters: GeneralFilterItem[] = [];
+    let objrst: any = {};
+
+    beforeAll(() => {
+      objrst = {
+        '@odata.context': 'http://localhost:25688/api/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)',
+        '@odata.count': 2,
+        value: [{
+          DocumentID: 668, ItemID: 1, TransactionDate: '2018-03-27', AccountID: 8, TransactionType: 3, Currency: 'CNY',
+          OriginAmount: 30.00, Amount: 30.00, ControlCenterID: 9, OrderID: null, ItemDesp: '3\u6708\u4efd\u5de5\u8d44'
+        }, {
+          DocumentID: 688, ItemID: 2, TransactionDate: '2018-04-26', AccountID: 8, TransactionType: 3, Currency: 'CNY',
+          OriginAmount: 254.22, Amount: 254.22, ControlCenterID: 9, OrderID: null, ItemDesp: 'Alva 04\u5de5\u8d44'
+        }],
+      };
+    });
 
     beforeEach(() => {
-      let item: GeneralFilterItem = new GeneralFilterItem();
-      item.fieldName = 'TransactionDate';
-      item.operator = GeneralFilterOperatorEnum.Equal;
-      item.valueType = GeneralFilterValueType.date;
-      item.lowValue = '2020-02-03';
-      arFilters.push(item);
       service = TestBed.get(FinanceOdataService);
     });
 
@@ -2786,7 +2938,14 @@ describe('FinanceOdataService', () => {
       httpTestingController.verify();
     });
 
-    it('should return data for success case', () => {
+    it('should return data for Equal case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.Equal;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
+
       service.searchDocItem(arFilters, 100, 10).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
@@ -2798,21 +2957,190 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' 
+        return requrl.method === 'GET'
           && requrl.url === service.docItemViewAPIUrl
           && requrl.params.has('$select')
           && requrl.params.has('$filter');
       });
 
       // Respond with the mock data
-      req.flush({"@odata.context":"http://localhost:25688/api/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)",
-        "@odata.count":2,
-        "value":[{
-          "DocumentID":668,"ItemID":1,"TransactionDate":"2018-03-27","AccountID":8,"TransactionType":3,"Currency":"CNY","OriginAmount":30.00,"Amount":30.00,"ControlCenterID":9,"OrderID":null,"ItemDesp":"3\u6708\u4efd\u5de5\u8d44"
-        },{
-          "DocumentID":688,"ItemID":2,"TransactionDate":"2018-04-26","AccountID":8,"TransactionType":3,"Currency":"CNY","OriginAmount":254.22,"Amount":254.22,"ControlCenterID":9,"OrderID":null,"ItemDesp":"Alva 04\u5de5\u8d44"
-        }]
+      req.flush(objrst);
+    });
+
+    it('should return data for Between case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.Between;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      item.highValue = '2020-12-31';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
       });
+
+      // Respond with the mock data
+      req.flush(objrst);
+    });
+
+    it('should return data for Between case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.Between;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      item.highValue = '2020-12-31';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush(objrst);
+    });
+
+    it('should return data for greater than case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.LargerThan;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush(objrst);
+    });
+
+    it('should return data for greater or equal case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.LargerEqual;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush(objrst);
+    });
+
+    it('should return data for less or equal case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.LessEqual;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush(objrst);
+    });
+
+    it('should return data for less case', () => {
+      const item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'TransactionDate';
+      item.operator = GeneralFilterOperatorEnum.LessThan;
+      item.valueType = GeneralFilterValueType.date;
+      item.lowValue = '2020-02-03';
+      arFilters.push(item);
+
+      service.searchDocItem(arFilters, 100, 10).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.docItemViewAPIUrl
+          && requrl.params.has('$select')
+          && requrl.params.has('$filter');
+      });
+
+      // Respond with the mock data
+      req.flush(objrst);
     });
 
     it('should return error in case error appear', () => {

@@ -11,7 +11,8 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
-  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType
+  Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
+  GeneralFilterOperatorEnum, GeneralFilterValueType
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1900,8 +1901,8 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
 
         case GeneralFilterOperatorEnum.Between: {
           switch (flt.valueType) {
@@ -1918,8 +1919,8 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
 
         case GeneralFilterOperatorEnum.LargerEqual: {
           // ge
@@ -1937,9 +1938,9 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
-        
+
         case GeneralFilterOperatorEnum.LargerThan: {
           // gt
           switch (flt.valueType) {
@@ -1956,9 +1957,9 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
-        
+
         case GeneralFilterOperatorEnum.LessEqual: {
           // le
           switch (flt.valueType) {
@@ -1975,9 +1976,9 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
-        
+
         case GeneralFilterOperatorEnum.LessThan: {
           // lt
           switch (flt.valueType) {
@@ -1994,9 +1995,9 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
-        
+
         case GeneralFilterOperatorEnum.Like: {
           switch (flt.valueType) {
             case GeneralFilterValueType.string:
@@ -2011,9 +2012,9 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
-        
+
         case GeneralFilterOperatorEnum.NotEqual: {
           // ne
           switch (flt.valueType) {
@@ -2030,13 +2031,13 @@ export class FinanceOdataService {
             default:
               break;
           }
+          break;
         }
-        break;
 
         default:
           break;
       }
-      
+
       if (subfilter) {
         filterstr += ` and ${subfilter}`;
       }

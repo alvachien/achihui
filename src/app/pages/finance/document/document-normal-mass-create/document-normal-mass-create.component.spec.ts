@@ -11,13 +11,12 @@ import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import * as moment from 'moment';
 
-import { DocumentHeaderComponent } from '../document-header';
-import { DocumentItemsComponent } from '../document-items';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create.component';
+import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 
 describe('DocumentNormalMassCreateComponent', () => {
   let component: DocumentNormalMassCreateComponent;
@@ -31,8 +30,6 @@ describe('DocumentNormalMassCreateComponent', () => {
   let fetchAllControlCentersSpy: any;
   let fetchAllOrdersSpy: any;
   let createDocumentSpy: any;
-  const modalClassName = '.ant-modal-body';
-  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -81,10 +78,9 @@ describe('DocumentNormalMassCreateComponent', () => {
         getTranslocoModule(),
       ],
       declarations: [
-        DocumentHeaderComponent,
-        DocumentItemsComponent,
-        DocumentNormalMassCreateComponent,
+        DocumentNormalMassCreateItemComponent,
         MessageDialogComponent,
+        DocumentNormalMassCreateComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -110,5 +106,9 @@ describe('DocumentNormalMassCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  xdescribe('work with data', () => {
+
   });
 });

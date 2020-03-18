@@ -9,7 +9,8 @@ import { translate } from '@ngneat/transloco';
 
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum, momentDateFormat, GeneralFilterValueType, DocumentItemView,
+  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
+  momentDateFormat, GeneralFilterValueType, DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -161,9 +162,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   private fetchAllDocItemView(): void {
-    let filters: GeneralFilterItem[] = [];
+    const filters: GeneralFilterItem[] = [];
     // Date range
-    let dtrange = this.searchFormGroup.get('dateRangeControl').value as any[];
+    const dtrange = this.searchFormGroup.get('dateRangeControl').value as any[];
     filters.push({
       fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
