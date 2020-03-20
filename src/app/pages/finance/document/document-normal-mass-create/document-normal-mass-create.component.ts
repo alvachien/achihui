@@ -10,7 +10,7 @@ import { translate } from '@ngneat/transloco';
 import {
   financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
+  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, costObjectValidator,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -130,7 +130,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
-    });
+    }, [costObjectValidator]);
   }
 
   createNewItem(): void {
@@ -176,6 +176,10 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
+      const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+      if (control.length <= 0) {
+        return false;
+      }
       // return this.headerForm.valid;
       return true;
     } else if (this.currentStep === 1) {

@@ -108,7 +108,41 @@ describe('DocumentNormalMassCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('work with data', () => {
+  describe('work with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
 
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.currentStep).toEqual(0);
+      expect(component.nextButtonEnabled).toBeFalsy();
+    }));
   });
 });

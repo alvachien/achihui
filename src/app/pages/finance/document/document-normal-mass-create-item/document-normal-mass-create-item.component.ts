@@ -9,7 +9,7 @@ import { UIAccountForSelection, UIOrderForSelection, Account, ControlCenter, Ord
   templateUrl: './document-normal-mass-create-item.component.html',
   styleUrls: ['./document-normal-mass-create-item.component.less'],
 })
-export class DocumentNormalMassCreateItemComponent implements OnInit {
+export class DocumentNormalMassCreateItemComponent {
   @Input()
   public arUIAccounts: UIAccountForSelection[] = [];
   @Input()
@@ -31,10 +31,6 @@ export class DocumentNormalMassCreateItemComponent implements OnInit {
   removeItemClicked = new EventEmitter<any>();
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 

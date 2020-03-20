@@ -16,7 +16,6 @@ import { DocumentItemsComponent } from '../document-items';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentNormalMassCreateItemComponent } from './document-normal-mass-create-item.component';
 
 describe('DocumentNormalMassCreateItemComponent', () => {
@@ -49,5 +48,26 @@ describe('DocumentNormalMassCreateItemComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('event createItemClicked shall work', () => {
+    spyOn(component.createItemClicked, 'emit');
+
+    component.fireCreateItemEvent();
+    expect(component.createItemClicked.emit).toHaveBeenCalledWith();
+  });
+
+  it('event copyItemClicked shall work', () => {
+    spyOn(component.copyItemClicked, 'emit');
+
+    component.fireCopyItemEvent();
+    expect(component.copyItemClicked.emit).toHaveBeenCalledWith();
+  });
+
+  it('event removeItemClicked shall work', () => {
+    spyOn(component.removeItemClicked, 'emit');
+
+    component.fireRemoveItemEvent();
+    expect(component.removeItemClicked.emit).toHaveBeenCalledWith();
   });
 });

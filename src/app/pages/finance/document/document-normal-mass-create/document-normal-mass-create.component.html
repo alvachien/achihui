@@ -10,8 +10,14 @@
 </nz-page-header>
 
 <div *transloco="let t">
+  <nz-steps [nzCurrent]="currentStep">
+    <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
+  </nz-steps>
+
   <div class="steps-content">
-    <!-- Header -->
+    <!-- Step 0: Item -->
     <div nz-row [hidden]="currentStep !== 0">
       <form nz-form [formGroup]="itemsFormGroup">
         <div formArrayName="items">
@@ -36,11 +42,25 @@
         </div>  
       </form>
     </div>
+
+    <!-- Step 1: Confirm -->
+    <div nz-row [hidden]="currentStep !== 1">
+
+    </div>
+
+    <!-- Step 2: Result -->
+    <div nz-row [hidden]="currentStep !== 2">
+
+    </div>
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="onSubmit()">
-      <i nz-icon nzType="save"></i>{{'Common.Save' | transloco}}
+    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+      <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
+    </button>
+    <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled"
+      *ngIf="currentStep < 3">
+      {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>

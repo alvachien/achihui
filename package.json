@@ -1,8 +1,8 @@
 {
   "name": "achihui",
-  "version": "1.0.60",
+  "version": "1.0.62",
   "private": true,
-  "description": "UI layer for HIH.",
+  "description": "UI layer for Home Information Hub.",
   "keywords": [
     "hih",
     "ui"
