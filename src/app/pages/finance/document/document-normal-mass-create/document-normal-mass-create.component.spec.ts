@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { BehaviorSubject, of } from 'rxjs';
@@ -136,13 +136,15 @@ describe('DocumentNormalMassCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('step 0: should create one initial item', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      const control: FormArray = component.itemsFormGroup.controls.items as FormArray;
+      expect(control.length).toEqual(1);
+
       expect(component.currentStep).toEqual(0);
-      expect(component.nextButtonEnabled).toBeFalsy();
     }));
   });
 });

@@ -107,4 +107,41 @@ describe('DocumentRecurredMassCreateComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('work with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('Step 0: initial status', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+    }));
+  });
 });
