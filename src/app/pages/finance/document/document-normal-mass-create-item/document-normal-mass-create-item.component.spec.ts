@@ -50,24 +50,24 @@ describe('DocumentNormalMassCreateItemComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('event createItemClicked shall work', () => {
-    spyOn(component.createItemClicked, 'emit');
+  // it('event createItemClicked shall work', () => {
+  //   spyOn(component.createItemClicked, 'emit');
 
-    component.fireCreateItemEvent();
-    expect(component.createItemClicked.emit).toHaveBeenCalledWith();
-  });
+  //   component.fireCreateItemEvent();
+  //   expect(component.createItemClicked.emit).toHaveBeenCalledWith();
+  // });
 
-  it('event copyItemClicked shall work', () => {
-    spyOn(component.copyItemClicked, 'emit');
+  // it('event copyItemClicked shall work', () => {
+  //   spyOn(component.copyItemClicked, 'emit');
 
-    component.fireCopyItemEvent();
-    expect(component.copyItemClicked.emit).toHaveBeenCalledWith();
-  });
+  //   component.fireCopyItemEvent();
+  //   expect(component.copyItemClicked.emit).toHaveBeenCalledWith();
+  // });
 
-  it('event removeItemClicked shall work', () => {
-    spyOn(component.removeItemClicked, 'emit');
+  // it('event removeItemClicked shall work', () => {
+  //   spyOn(component.removeItemClicked, 'emit');
 
-    component.fireRemoveItemEvent();
-    expect(component.removeItemClicked.emit).toHaveBeenCalledWith();
-  });
+  //   component.fireRemoveItemEvent();
+  //   expect(component.removeItemClicked.emit).toHaveBeenCalledWith();
+  // });
 });

@@ -7,8 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
-import {
-  financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
+import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, costObjectValidator,
 } from '../../../../model';
@@ -98,7 +97,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         this.arDocTypes = rst[6];
 
         // Create first item
-        this.createNewItem();
+        this.createItem();
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
@@ -120,29 +119,22 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  initItem(): FormGroup {
-    return this.fb.group({
-      dateControl: [new Date(), Validators.required],
-      accountControl: ['', Validators.required],
-      tranTypeControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      // currControl: ['', Validators.required],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    }, [costObjectValidator]);
+  onCreateNewItem(event: MouseEvent): void {
+    event.stopPropagation();
+
+    this.createItem();
   }
 
-  createNewItem(): void {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
-    const addrCtrl: any = this.initItem();
+  onCopyItem(event: MouseEvent, i: number): void {
+    event.stopPropagation();
 
-    control.push(addrCtrl);
+    this.copyItem(i);
   }
 
-  removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
-    control.removeAt(i);
+  onRemoveItem(event: MouseEvent, i: number) {
+    event.stopPropagation();
+
+    this.removeItem(i);
   }
 
   onSave(): void {
@@ -156,12 +148,11 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
+        this._updateConfirmInfo();
         this.currentStep ++;
         break;
       }
       case 1: {
-        // this._updateConfirmInfo();
-
         this.currentStep ++;
         break;
       }
@@ -176,16 +167,69 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
-      if (control.length <= 0) {
+      const controlArray: FormArray = this.itemsFormGroup.controls.items as FormArray;
+      if (controlArray.length <= 0) {
         return false;
       }
-      // return this.headerForm.valid;
-      return true;
+      return controlArray.valid;
     } else if (this.currentStep === 1) {
       return this.itemsFormGroup.valid;
     } else {
       return true;
+    }
+  }
+
+  // Step 0: Items
+  private initItem(): FormGroup {
+    return this.fb.group({
+      dateControl: [new Date(), Validators.required],
+      accountControl: [undefined, Validators.required],
+      tranTypeControl: [undefined, Validators.required],
+      amountControl: [0, Validators.required],
+      // currControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+      ccControl: [undefined],
+      orderControl: [undefined],
+    }, {
+      validators: [costObjectValidator],
+    });
+  }
+  private createItem(): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const addrCtrl: any = this.initItem();
+
+    control.push(addrCtrl);
+  }
+  private copyItem(i: number): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const newItem: FormGroup = this.initItem();
+    const oldItem = control.at(i);
+    newItem.get('dateControl').setValue(oldItem.get('dateControl').value);
+    newItem.get('accountControl').setValue(oldItem.get('accountControl').value);
+    newItem.get('tranTypeControl').setValue(oldItem.get('tranTypeControl').value);
+    newItem.get('amountControl').setValue(oldItem.get('amountControl').value);
+    newItem.get('despControl').setValue(oldItem.get('despControl').value);
+    newItem.get('ccControl').setValue(oldItem.get('ccControl').value);
+    newItem.get('orderControl').setValue(oldItem.get('orderControl').value);
+
+    control.push(newItem);
+  }
+  private removeItem(i: number): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    control.removeAt(i);
+  }
+  // Step 1: Confirm
+  private _updateConfirmInfo(): void {
+    this.confirmInfo = {};
+    this.confirmInfo.docsByDate = [];
+
+    const controlArrays: FormArray = this.itemsFormGroup.controls.items as FormArray;
+
+    for(var i = 0; i < controlArrays.length; i ++) {
+      this.confirmInfo.docsByDate = [
+        ...this.confirmInfo.docsByDate,
+        controlArrays.at(i).get('dateControl').value,
+      ];
     }
   }
 }

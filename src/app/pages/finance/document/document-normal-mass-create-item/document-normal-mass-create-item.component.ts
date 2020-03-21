@@ -19,28 +19,11 @@ export class DocumentNormalMassCreateItemComponent {
   @Input()
   arTranType: TranType[] = [];
   @Input()
-  localCurrency;
+  baseCurrency: string;
   @Input()
   public itemFormGroup: FormGroup;
 
-  @Output()
-  createItemClicked = new EventEmitter<any>();
-  @Output()
-  copyItemClicked = new EventEmitter<any>();
-  @Output()
-  removeItemClicked = new EventEmitter<any>();
-
   constructor() {
     // Empty
-  }
-
-  fireCreateItemEvent(): void {
-    this.createItemClicked.emit();
-  }
-  fireCopyItemEvent(): void {
-    this.copyItemClicked.emit();
-  }
-  fireRemoveItemEvent(): void {
-    this.removeItemClicked.emit();
   }
 }

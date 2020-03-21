@@ -56,17 +56,17 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="ccControl">
+          <nz-select formControlName="ccControl" nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="orderControl">
+          <nz-select formControlName="orderControl" nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </nz-form-control>
@@ -89,17 +89,17 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="ccControl">
+          <nz-select formControlName="ccControl" nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback>
-          <nz-select formControlName="orderControl">
+          <nz-select formControlName="orderControl" nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </nz-form-control>

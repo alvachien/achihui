@@ -22,30 +22,36 @@
       <form nz-form [formGroup]="itemsFormGroup">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
-            <nz-collapse-panel *ngFor="let item of itemsFormGroup?.get('items')['controls']; let i=index" 
-              [nzHeader]="i" [nzActive]="true" [nzExtra]="extraTpl">
+            <nz-collapse-panel *ngFor="let item of itemsFormGroup?.get('items')['controls']; index as i; first as isFirst; last as isLast" 
+              [nzHeader]="headerTpl" [nzActive]="true">
               <hih-document-normal-mass-create-item 
                 [itemFormGroup]="itemsFormGroup?.get('items')['controls'][i]"
                 [arUIAccounts]="arUIAccounts"
                 [arUIOrders]="arUIOrders"
                 [arControlCenters]="arControlCenters"
+                [baseCurrency]="baseCurrency"
                 [arTranType]="arTranType">
               </hih-document-normal-mass-create-item>
+              <ng-template #headerTpl>
+                <button nz-button nzType="primary" (click)="onCopyItem($event, i)"><i nz-icon nzType="copy"></i></button>
+                <button nz-button nzType="default" (click)="onCreateNewItem($event)"><i nz-icon nzType="plus"></i></button>
+                <button nz-button nzType="danger" [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)"><i nz-icon nzType="minus"></i></button>
+              </ng-template>
             </nz-collapse-panel>
           </nz-collapse>
-          <ng-template #extraTpl>
-            <!-- You can use stopPropagation if you don't want the panel to toggle -->
-            <i nz-icon nzType="plus" (click)="$event.stopPropagation(); createNewItem();"></i>
-            <i nz-icon nzType="copy" (click)="$event.stopPropagation(); createNewItem(i);"></i>
-            <i nz-icon nzType="minus" (click)="$event.stopPropagation(); removeItem(i);"></i>
-          </ng-template>
-        </div>  
+        </div>
       </form>
     </div>
 
     <!-- Step 1: Confirm -->
     <div nz-row [hidden]="currentStep !== 1">
-
+      <nz-descriptions nzTitle="Document" nzBordered>
+        <nz-descriptions-item nzTitle="Count" [nzSpan]="3">
+          Count of created documents
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Document Date" *ngFor="let dateinfo of confirmInfo.docsByDate">{{dateinfo}}</nz-descriptions-item>
+      </nz-descriptions>
+      <nz-divider></nz-divider>
     </div>
 
     <!-- Step 2: Result -->
