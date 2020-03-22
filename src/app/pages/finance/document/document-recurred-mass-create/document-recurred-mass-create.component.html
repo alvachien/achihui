@@ -57,6 +57,25 @@
         </div>
 
         <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="24">
+            <!-- Account type -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
+                <nz-select formControlName="accountControl">
+                  <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                </nz-select>
+                <ng-template #accountErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
             <!-- Transaction type -->
             <nz-form-item>
@@ -87,7 +106,7 @@
           <div nz-col [nzSpan]="12">
             <!-- Control center -->
             <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+              <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
               <nz-form-control [nzSpan]="12">
                 <nz-select formControlName="ccControl">
                   <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
@@ -99,7 +118,7 @@
           <div nz-col [nzSpan]="12">
             <!-- Order -->
             <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Activity' | transloco}}</nz-form-label>
+              <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback>
                 <nz-select formControlName="orderControl">
                   <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
@@ -114,7 +133,7 @@
     <!-- Step 1: Existing documents -->
     <div nz-row [hidden]="currentStep !== 1">
       <nz-table #basicTable
-        [nzLoading]="isLoadingResults"
+        [nzLoading]="isReadingExistingItem"
         [nzData]="listExistingDocItems">
         <thead>
           <tr>

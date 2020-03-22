@@ -3,6 +3,49 @@ import * as moment from 'moment';
 
 // tslint:disable:variable-name
 
+export const financeAccountCategoryCash: number = 1;
+export const financeAccountCategoryDeposit: number = 2;
+export const financeAccountCategoryCreditCard: number = 3;
+export const financeAccountCategoryAsset: number = 7;
+export const financeAccountCategoryAdvancePayment: number = 8; // Advance payment
+export const financeAccountCategoryBorrowFrom: number = 9;
+export const financeAccountCategoryLendTo: number = 10;
+export const financeAccountCategoryAdvanceReceived: number = 11;
+export const financeAccountCategoryInsurance: number = 12;
+
+export const financeDocTypeNormal: number = 1;
+export const financeDocTypeTransfer: number = 2; // Transfer doc
+export const financeDocTypeCurrencyExchange: number = 3; // Currency exchange
+export const financeDocTypeAdvancePayment: number = 5;
+// export const FinanceDocType_CreditcardRepay: number = 6;
+export const financeDocTypeAssetBuyIn: number = 7;
+export const financeDocTypeAssetSoldOut: number = 8;
+export const financeDocTypeBorrowFrom: number = 9;
+export const financeDocTypeLendTo: number = 10;
+export const financeDocTypeRepay: number = 11;
+export const financeDocTypeAdvanceReceived: number = 12;
+export const financeDocTypeAssetValChg: number = 13;
+export const financeDocTypeInsurance: number = 14;
+
+export const financeTranTypeOpeningAsset: number = 1;
+export const financeTranTypeOpeningLiability: number = 82;
+export const financeTranTypeTransferIn: number = 37;
+export const financeTranTypeTransferOut: number = 60;
+export const financeTranTypeBorrowFrom: number = 80;
+export const financeTranTypeLendTo: number = 81;
+export const financeTranTypeRepaymentOut: number = 86;
+export const financeTranTypeRepaymentIn: number = 87;
+export const financeTranTypeAdvancePaymentOut: number = 88; // Advance payment - out
+export const financeTranTypeAdvanceReceiveIn: number = 91; // Advance receive - in
+export const financeTranTypeInterestOut: number = 55;
+export const financeTranTypeInterestIn: number = 8;
+export const financeTranTypeAssetValueDecrease: number = 89;
+export const financeTranTypeAssetValueIncrease: number = 90;
+export const financeTranTypeAssetSoldout: number = 92;
+export const financeTranTypeAssetSoldoutIncome: number = 93;
+export const financeTranTypeInsuranceReturn: number = 36;
+export const financeTranTypeInsurancePay: number = 34;
+
 /**
  * Finance quick access type
  */
@@ -546,14 +589,14 @@ export class Account extends hih.BaseModel {
     rstObj.Comment = this.Comment;
     rstObj.Owner = this.OwnerId;
 
-    if ((this.CategoryId === hih.financeAccountCategoryAdvancePayment
-      || this.CategoryId === hih.financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
+    if ((this.CategoryId === financeAccountCategoryAdvancePayment
+      || this.CategoryId === financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
       rstObj.ExtraDP = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.financeAccountCategoryAsset && this.ExtraInfo) {
+    } else if (this.CategoryId === financeAccountCategoryAsset && this.ExtraInfo) {
       rstObj.ExtraAsset = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.financeAccountCategoryBorrowFrom && this.ExtraInfo) {
+    } else if (this.CategoryId === financeAccountCategoryBorrowFrom && this.ExtraInfo) {
       rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.financeAccountCategoryLendTo && this.ExtraInfo) {
+    } else if (this.CategoryId === financeAccountCategoryLendTo && this.ExtraInfo) {
       rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
     }
 
@@ -589,18 +632,18 @@ export class Account extends hih.BaseModel {
       }
     }
 
-    if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.ExtraDP) {
+    if (data && this.CategoryId === financeAccountCategoryAdvancePayment && data.ExtraDP) {
       const ei: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       ei.onSetData(data.ExtraDP);
 
       this.ExtraInfo = ei;
-    } else if (data && this.CategoryId === hih.financeAccountCategoryAsset && data.ExtraAsset) {
+    } else if (data && this.CategoryId === financeAccountCategoryAsset && data.ExtraAsset) {
       const ei: AccountExtraAsset = new AccountExtraAsset();
       ei.onSetData(data.ExtraAsset);
 
       this.ExtraInfo = ei;
     } else if (data
-      && (this.CategoryId === hih.financeAccountCategoryBorrowFrom || this.CategoryId === hih.financeAccountCategoryLendTo)
+      && (this.CategoryId === financeAccountCategoryBorrowFrom || this.CategoryId === financeAccountCategoryLendTo)
       && data.ExtraLoan) {
       const ei: AccountExtraLoan = new AccountExtraLoan();
       ei.onSetData(data.ExtraLoan);
@@ -1984,7 +2027,7 @@ export class Document extends hih.BaseModel {
       chkrst = false;
     }
 
-    if (this.DocType === hih.financeDocTypeTransfer || this.DocType === hih.financeDocTypeCurrencyExchange) {
+    if (this.DocType === financeDocTypeTransfer || this.DocType === financeDocTypeCurrencyExchange) {
       if (Math.abs(amtTotal) >= 0.01) {
         this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
         chkrst = false;
@@ -3319,60 +3362,81 @@ export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
   }
 }
 
-/**
- * Repeat dates - input
- */
-export interface RepeatedDatesAPIInput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
-  RepeatType: hih.RepeatFrequencyEnum;
+// Normal document Mass Create
+export class FinanceNormalDocItemMassCreate {
+  public tranDate: moment.Moment;
+  public accountID: number;
+  public tranType: number;
+  public tranAmount: number;
+  public tranCurrency: string;
+  public controlCenterID?: number;
+  public orderID?: number;
+  public desp: string;
+
+  // Tag
+  public tagTerms: string[];
+
+  get isValid(): boolean {
+    if (!this.desp) {
+      return false;
+    }
+    if (this.accountID <= 0) {
+      return false;
+    }
+    if (this.tranType <= 0) {
+      return false;
+    }
+    if (this.tranAmount <= 0) {
+      return false;
+    }
+    if (!this.tranCurrency) {
+      return false;
+    }
+    if (this.controlCenterID) {
+      if (this.orderID) {
+        return false;
+      }
+    } else if (this.orderID) {
+      if (this.controlCenterID) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }
 
 /**
- * Repeat dates
+ * Confirm info for Mass Create
  */
-export interface RepeatedDatesAPIOutput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
-}
-
-/**
- * Repeated dates with Amount - Input
- */
-export interface RepeatedDatesWithAmountAPIInput extends RepeatedDatesAPIInput {
-  TotalAmount: number;
-  Desp: string;
-}
-
-/**
- * Repeated dates with Amount
- */
-export interface RepeatedDatesWithAmountAPIOutput {
-  TranDate: moment.Moment;
-  TranAmount: number;
-  Desp: string;
-}
-
-/**
- * Finance loan calculator - API input
- */
-export interface RepeatDatesWithAmountAndInterestAPIInput {
-  TotalAmount: number;
-  TotalMonths: number;
-  InterestRate: number;
-  StartDate: moment.Moment;
-  EndDate?: moment.Moment;
-  InterestFreeLoan: boolean;
-  RepaymentMethod: number;
-  FirstRepayDate?: moment.Moment;
-  RepayDayInMonth?: number;
-}
-
-/**
- * Finance loan calculator - API output
- */
-export interface RepeatDatesWithAmountAndInterestAPIOutput {
-  TranDate: moment.Moment;
-  TranAmount: number;
-  InterestAmount: number;
+export class FinanceDocumentMassCreateConfirm {
+  // public countOfDocuments: number;
+  public listDocByDate: Array<{
+    dateString: string,
+    count: number,
+    itemByAccount: Array<{
+      accountID: number,
+      accountName: string;
+      debitAmount: number,
+      creditAmount: number
+    }>,
+    itemByControlCenter: Array<{
+      controlCenterID: number,
+      controlCenterName: string;
+      debitAmount: number,
+      creditAmount: number,
+    }>,
+    itemByOrder: Array<{
+      orderID: number,
+      orderName: string,
+      debitAmount: number,
+      creditAmount: number
+    }>,
+    itemByTranType: Array<{
+      tranTypeID: number,
+      tranTypeName: string,
+      amount: number,
+    }>
+  }>;
 }

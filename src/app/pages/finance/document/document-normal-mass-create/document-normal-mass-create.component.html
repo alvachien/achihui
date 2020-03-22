@@ -45,18 +45,61 @@
 
     <!-- Step 1: Confirm -->
     <div nz-row [hidden]="currentStep !== 1">
-      <nz-descriptions nzTitle="Document" nzBordered>
-        <nz-descriptions-item nzTitle="Count" [nzSpan]="3">
-          Count of created documents
-        </nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Document Date" *ngFor="let dateinfo of confirmInfo.docsByDate">{{dateinfo}}</nz-descriptions-item>
-      </nz-descriptions>
-      <nz-divider></nz-divider>
+      <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex">
+        <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
+          <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
+            {{docinfo.TranDateFormatString}}
+          </nz-descriptions-item>
+          <div *ngFor="let iteminfo of docinfo.Items">
+            <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+              {{getAccountName(iteminfo.AccountId)}} ({{iteminfo.AccountId}})
+            </nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+              {{getTranTypeName(iteminfo.TranType)}} ({{iteminfo.TranType}})
+            </nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+              {{iteminfo.TranAmount}} <span style="margin-left: 3px;">{{baseCurrency}}</span>
+            </nz-descriptions-item>
+            <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+              {{getControlCenterName(iteminfo.ControlCenterId)}} ({{iteminfo.ControlCenterId}})
+            </nz-descriptions-item>  
+            <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+              {{getOrderName(iteminfo.OrderId)}} ({{iteminfo.OrderId}})
+            </nz-descriptions-item>  
+          </div>
+        </nz-descriptions>
+        <nz-divider *ngIf="!isConfirmLast"></nz-divider>  
+      </div>
     </div>
 
     <!-- Step 2: Result -->
     <div nz-row [hidden]="currentStep !== 2">
-
+      <div *ngIf="docIdCreated">
+        <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+          <div nz-result-extra>
+            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
+            <button nz-button (click)="onReset()">Create another Document</button>
+          </div>
+        </nz-result>
+      </div>
+      <div *ngIf="!docIdCreated">
+        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+          <div nz-result-content>
+            <div class="desc">
+              <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
+              <p nz-paragraph>
+                <i nz-icon nzType="close-circle"></i>
+                {{docPostingFailed}}
+              </p>
+            </div>
+          </div>
+          <div nz-result-extra>
+            <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
+          </div>
+        </nz-result>
+      </div>
     </div>
   </div>
 

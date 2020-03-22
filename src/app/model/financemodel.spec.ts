@@ -6,7 +6,8 @@ import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, 
   DocumentType, DocumentTypeJson, AssetCategory, AssetCategoryJson, AccountExtraAdvancePayment,
   AccountExtraAsset, AccountExtraLoan, ControlCenter, Order, SettlementRule,
   Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum,
-  RepaymentMethodEnum, IAccountVerifyContext, } from './financemodel';
+  RepaymentMethodEnum, IAccountVerifyContext, financeDocTypeCurrencyExchange, financeTranTypeTransferOut,
+  financeTranTypeTransferIn, } from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
@@ -900,7 +901,7 @@ describe('Document', () => {
     // Ref: https://github.com/alvachien/achihui/issues/260
     instance.HID = 1;
     instance.Id = 1;
-    instance.DocType = hih.financeDocTypeCurrencyExchange;
+    instance.DocType = financeDocTypeCurrencyExchange;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranCurr2 = 'USD';
     instance.ExgRate2 = 673.11;
@@ -911,7 +912,7 @@ describe('Document', () => {
     di.ItemId = 1;
     di.AccountId = fakeData.finAccounts[0].Id;
     di.ControlCenterId = fakeData.finControlCenters[0].Id;
-    di.TranType = hih.financeTranTypeTransferOut;
+    di.TranType = financeTranTypeTransferOut;
     di.TranAmount = 1009.67;
     di.Desp = 'Test 1';
     instance.Items.push(di);
@@ -919,7 +920,7 @@ describe('Document', () => {
     di.ItemId = 2;
     di.AccountId = fakeData.finAccounts[1].Id;
     di.ControlCenterId = fakeData.finControlCenters[0].Id;
-    di.TranType = hih.financeTranTypeTransferIn;
+    di.TranType = financeTranTypeTransferIn;
     di.TranAmount = 150;
     di.UseCurr2 = true;
     di.Desp = 'Test 2';

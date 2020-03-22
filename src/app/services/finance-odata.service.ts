@@ -1639,7 +1639,7 @@ export class FinanceOdataService {
     const jobject: any = {
       StartDate: datainput.StartDate.format(momentDateFormat),
       EndDate: datainput.EndDate.format(momentDateFormat),
-      RepeatType: +datainput.RepeatType,
+      RepeatType: RepeatFrequencyEnum[+datainput.RepeatType],
     };
     const jdata: string = JSON && JSON.stringify(jobject);
 

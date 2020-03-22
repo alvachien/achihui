@@ -10,7 +10,8 @@ import { translate } from '@ngneat/transloco';
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
-  momentDateFormat, GeneralFilterValueType, DocumentItemView,
+  momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
+  RepeatFrequencyEnum,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -39,6 +40,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // Step 0: Search Criteria
   public searchFormGroup: FormGroup;
   // Step 1: Existing documents
+  public isReadingExistingItem = false;
+  public listDates: any;
   public listExistingDocItems: DocumentItemView[] = [];
   public itemsForm: FormGroup;
   // Step: Confirm
@@ -63,6 +66,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.searchFormGroup = new FormGroup({
       dateRangeControl: new FormControl(undefined, [Validators.required]),
       frqControl: new FormControl(undefined, [Validators.required]),
+      accountControl: new FormControl(undefined, [Validators.required]),
       tranTypeControl: new FormControl(),
       includSubTranTypeControl: new FormControl(),
       ccControl: new FormControl(),
@@ -172,19 +176,68 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       valueType: GeneralFilterValueType.date,
       highValue: moment(dtrange[1] as Date).format(momentDateFormat),
     });
-    let ttval = this.searchFormGroup.get('tranTypeControl').value;
-    if (ttval) {
+    // Tran. type
+    let idval = this.searchFormGroup.get('tranTypeControl').value;
+    if (idval) {
       filters.push({
         fieldName: 'TransactionType',
         operator: GeneralFilterOperatorEnum.Equal,
-        lowValue: ttval as number,
+        lowValue: idval as number,
+        valueType: GeneralFilterValueType.number,
+        highValue: 0,
+      });
+    }
+    // Account
+    idval = this.searchFormGroup.get('accountControl').value;
+    if (idval) {
+      filters.push({
+        fieldName: 'AccountID',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: idval as number,
+        valueType: GeneralFilterValueType.number,
+        highValue: 0,
+      });
+    }
+    // Control center
+    idval = this.searchFormGroup.get('ccControl').value;
+    if (idval) {
+      filters.push({
+        fieldName: 'ControlCenterID',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: idval as number,
+        valueType: GeneralFilterValueType.number,
+        highValue: 0,
+      });
+    }
+    // Order
+    idval = this.searchFormGroup.get('orderControl').value;
+    if (idval) {
+      filters.push({
+        fieldName: 'OrderID',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: idval as number,
         valueType: GeneralFilterValueType.number,
         highValue: 0,
       });
     }
 
-    this.odataService.searchDocItem(filters).subscribe((x: any) => {
-      this.listExistingDocItems = x.contentList;
-    });
+    const datinput: RepeatedDatesAPIInput = {
+      StartDate: moment(dtrange[0] as Date),
+      EndDate: moment(dtrange[1] as Date),
+      RepeatType: this.searchFormGroup.get('frqControl').value as RepeatFrequencyEnum,
+    };
+
+    forkJoin([
+      this.odataService.getRepeatedDates(datinput),
+      this.odataService.searchDocItem(filters)
+      ])    
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isReadingExistingItem = false))
+      .subscribe({
+        next: (x: any[]) => {
+          this.listDates = x[0];
+          this.listExistingDocItems = x[1].contentList;
+        }
+      });
   }
 }

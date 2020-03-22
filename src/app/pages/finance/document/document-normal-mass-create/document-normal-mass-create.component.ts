@@ -10,6 +10,7 @@ import { translate } from '@ngneat/transloco';
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, costObjectValidator,
+  FinanceDocumentMassCreateConfirm, FinanceNormalDocItemMassCreate, momentDateFormat,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -38,8 +39,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public currentStep = 0;
   // Step: Item
   public itemsFormGroup: FormGroup;
+  public arItems: FinanceNormalDocItemMassCreate[] = [];
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
   public docIdCreated?: number = null;
@@ -57,6 +59,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.confirmInfo = [];
   }
 
   ngOnInit() {
@@ -138,7 +141,46 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
 
   onSave(): void {
-    // save it
+    // Save it
+    if (this.confirmInfo.length <= 0) {
+      // TBD. error dialog
+      return;
+    }
+
+    let errorOccur = false;
+    this.confirmInfo.forEach(doc => {
+      if (!doc.onVerify()) {
+        errorOccur = true;        
+      }
+    });
+    if (errorOccur) {
+      // TBD.
+      return;
+    }
+
+    const requests: any[] = [];
+    this.confirmInfo.forEach(doc => {
+      requests.push(this.odataService.createDocument(doc));
+    });
+    forkJoin(requests)
+    .pipe(takeUntil(this._destroyed$),
+    finalize(() => {
+      this.isDocPosting = false;
+      this.currentStep = 2;
+    })).subscribe({
+      next: (doc) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
+          ConsoleLogTypeEnum.debug);
+        // this.docIdCreated = doc.Id;
+        this.docPostingFailed = null;
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
+          ConsoleLogTypeEnum.error);
+        // this.docIdCreated = null;
+        this.docPostingFailed = error;
+      },
+    });
   }
 
   pre(): void {
@@ -148,17 +190,14 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
+        this._generateItems();
         this._updateConfirmInfo();
         this.currentStep ++;
         break;
       }
       case 1: {
-        this.currentStep ++;
-        break;
-      }
-      case 2: {
         this.isDocPosting = true;
-        // this.onSave();
+        this.onSave();
         break;
       }
       default:
@@ -177,6 +216,31 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     } else {
       return true;
     }
+  }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find(acnt => {
+      return acnt.Id === acntid;
+    });
+    return acntObj ? acntObj.Name : '';
+  }
+  public getControlCenterName(ccid: number): string {
+    const ccObj = this.arControlCenters.find(cc => {
+      return cc.Id === ccid;
+    });
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number): string {
+    const orderObj = this.arOrders.find(ord => {
+      return ord.Id === ordid;
+    });
+    return orderObj ? orderObj.Name : '';
+  }
+  public getTranTypeName(ttid: number): string {
+    const tranTypeObj = this.arTranType.find(tt => {
+      return tt.Id === ttid;
+    });
+
+    return tranTypeObj ? tranTypeObj.Name : '';
   }
 
   // Step 0: Items
@@ -203,14 +267,16 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   private copyItem(i: number): void {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const newItem: FormGroup = this.initItem();
-    const oldItem = control.at(i);
-    newItem.get('dateControl').setValue(oldItem.get('dateControl').value);
-    newItem.get('accountControl').setValue(oldItem.get('accountControl').value);
-    newItem.get('tranTypeControl').setValue(oldItem.get('tranTypeControl').value);
-    newItem.get('amountControl').setValue(oldItem.get('amountControl').value);
-    newItem.get('despControl').setValue(oldItem.get('despControl').value);
-    newItem.get('ccControl').setValue(oldItem.get('ccControl').value);
-    newItem.get('orderControl').setValue(oldItem.get('orderControl').value);
+    const oldItem = control.value[i];
+    if (oldItem) {
+      newItem.get('dateControl').setValue(oldItem.dateControl);
+      newItem.get('accountControl').setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl').setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl').setValue(oldItem.amountControl);
+      newItem.get('despControl').setValue(oldItem.despControl);
+      newItem.get('ccControl').setValue(oldItem.ccControl);
+      newItem.get('orderControl').setValue(oldItem.orderControl);
+    }
 
     control.push(newItem);
   }
@@ -218,18 +284,88 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     control.removeAt(i);
   }
-  // Step 1: Confirm
-  private _updateConfirmInfo(): void {
-    this.confirmInfo = {};
-    this.confirmInfo.docsByDate = [];
-
+  private _generateItems(): void {
+    this.arItems = [];
     const controlArrays: FormArray = this.itemsFormGroup.controls.items as FormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
-      this.confirmInfo.docsByDate = [
-        ...this.confirmInfo.docsByDate,
-        controlArrays.at(i).get('dateControl').value,
-      ];
+      const control = controlArrays.value[i];
+
+      const docitem = new FinanceNormalDocItemMassCreate();
+      if (control.dateControl) {
+        docitem.tranDate = moment(control.dateControl);
+      }
+      if (control.accountControl) {
+        docitem.accountID = control.accountControl;
+      }
+      if (control.tranTypeControl) {
+        docitem.tranType = control.tranTypeControl;
+      }
+      if (control.amountControl) {
+        docitem.tranAmount = control.amountControl;
+      }
+      if (control.despControl) {
+        docitem.desp = control.despControl;
+      }
+      if (control.ccControl) {
+        docitem.controlCenterID = control.ccControl;
+      }
+      if (control.orderControl) {
+        docitem.orderID = control.orderControl;
+      }
+
+      this.arItems.push(docitem);
     }
+  }
+  // Step 1: Confirm
+  private _updateConfirmInfo(): void {
+    this.confirmInfo = [];
+
+    this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
+      let docObj = this.confirmInfo.find(val => {
+        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
+      });
+
+      if (docObj !== undefined) {
+        const docitem = new DocumentItem();
+        docitem.ItemId = 1;
+        docitem.AccountId = item.accountID;
+        docitem.TranAmount = item.tranType;
+        docitem.TranType = item.tranType;
+        docitem.Desp = item.desp;
+        docitem.ControlCenterId = item.controlCenterID;
+        docitem.OrderId = item.orderID;
+
+        docObj.Items.forEach(di => {
+          if (docitem.ItemId < di.ItemId) {
+            docitem.ItemId = di.ItemId;
+          }
+        });
+        docitem.ItemId++;
+        docObj.Items.push(docitem);
+      } else {
+        docObj = new Document();
+        docObj.Desp = item.tranDate.format(momentDateFormat);
+        docObj.DocType = financeDocTypeNormal;
+        docObj.HID = this.homeService.ChosedHome.ID;
+        docObj.TranCurr = this.baseCurrency;
+        docObj.TranDate = moment(item.tranDate);
+        const docitem = new DocumentItem();
+        docitem.ItemId = 1;
+        docitem.AccountId = item.accountID;
+        docitem.TranAmount = item.tranType;
+        docitem.TranType = item.tranType;
+        docitem.Desp = item.desp;
+        docitem.ControlCenterId = item.controlCenterID;
+        docitem.OrderId = item.orderID;
+        docObj.Items.push(docitem);
+
+        this.confirmInfo.push(docObj);
+      }
+    });
+  }
+  // Step 2: Do posting
+  private _doPosting(): void {
+
   }
 }
