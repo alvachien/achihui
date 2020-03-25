@@ -137,21 +137,46 @@
         [nzData]="listExistingDocItems">
         <thead>
           <tr>
-            <th>Doc ID</th>
-            <th>Item ID</th>
-            <th>Date</th>
-            <th>Desp</th>
-            <th>{{'Finance.Amount' | transloco}}</th>
+            <th nzShowExpand></th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Count</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td>{{data.DocumentID}}</td>
-            <td>{{data.ItemID}}</td>
-            <td>{{data.TransactionDate}}</td>
-            <td>{{data.DocumentDesp}}</td>
-            <td>{{data.OriginAmount}}<span style="padding-left: 3px;">{{data.Currency}}</span></td>
-          </tr>
+          <ng-template ngFor let-data [ngForOf]="basicTable.data">
+            <tr>
+              <td nzShowExpand [(nzExpand)]="data.expand"></td>
+              <td>{{ data.StartDate }}</td>
+              <td>{{ data.EndDate }}</td>
+              <td>{{ data.Items.length }}</td>
+            </tr>
+            <tr [nzExpand]="data.expand">
+              <td></td>
+              <td colspan="3">
+                <nz-table #innerTable [nzData]="data.Items" nzSize="middle" [nzShowPagination]="false">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Item ID</th>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Account</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of innerTable.data">
+                      <td>{{ data.DocID }}</td>
+                      <td>{{ data.ItemID }}</td>
+                      <td>{{ data.TransactionDate }}</td>
+                      <td>{{ data.TranAmount }}</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </nz-table>
+              </td>
+            </tr>
+          </ng-template>
         </tbody>
       </nz-table>
     </div>

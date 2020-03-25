@@ -1653,8 +1653,8 @@ export class FinanceOdataService {
         const results: RepeatedDatesAPIOutput[] = [];
         // Get the result out.
         const y = response as any;
-        if (y instanceof Array && y.length > 0) {
-          for (const tt of y) {
+        if (y && y.value && y.value instanceof Array && y.value.length > 0) {
+          for (const tt of y.value) {
             const rst: RepeatedDatesAPIOutput = {
               StartDate: moment(tt.startDate, momentDateFormat),
               EndDate: moment(tt.endDate, momentDateFormat),

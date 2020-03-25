@@ -12,9 +12,17 @@ import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUti
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
   momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
   RepeatFrequencyEnum,
+  RepeatedDatesAPIOutput,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+
+interface DocumentCountByDateRange {
+  StartDate: moment.Moment;
+  EndDate: moment.Moment;
+  expand: boolean;
+  Items: DocumentItemView[];
+}
 
 @Component({
   selector: 'hih-document-recurred-mass-create',
@@ -41,8 +49,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public searchFormGroup: FormGroup;
   // Step 1: Existing documents
   public isReadingExistingItem = false;
-  public listDates: any;
-  public listExistingDocItems: DocumentItemView[] = [];
+  public listDates: RepeatedDatesAPIOutput[];
+  public listExistingDocItems: DocumentCountByDateRange[] = [];
   public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -75,7 +83,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
@@ -108,7 +116,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         // Doc. type
         this.arDocTypes = rst[6];
       }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${error}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentRecurredMassCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
         this.modalService.create({
           nzTitle: translate('Common.Error'),
@@ -119,7 +127,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
@@ -236,7 +244,22 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: any[]) => {
           this.listDates = x[0];
-          this.listExistingDocItems = x[1].contentList;
+          let arallitems = x[1].contentList;
+          this.listExistingDocItems = [];
+
+          // For dates
+          this.listDates.forEach(datrange => {
+            let aritems = arallitems.some(div => {
+              return moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate);
+            });
+
+            this.listExistingDocItems.push({
+              StartDate: datrange.StartDate,
+              EndDate: datrange.EndDate,
+              expand: false,
+              Items: aritems,
+            });
+          });
         }
       });
   }
