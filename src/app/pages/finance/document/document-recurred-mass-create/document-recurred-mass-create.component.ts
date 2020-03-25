@@ -17,11 +17,20 @@ import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUti
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 
-interface DocumentCountByDateRange {
+class DocumentCountByDateRange {
   StartDate: moment.Moment;
+  get StartDateString(): string {
+    return this.StartDate? this.StartDate.format(momentDateFormat) : '';
+  }
   EndDate: moment.Moment;
+  get EndDateString(): string {
+    return this.EndDate? this.EndDate.format(momentDateFormat): '';
+  }
   expand: boolean;
-  Items: DocumentItemView[];
+  Items: DocumentItemView[] = [];
+  get ItemsCount(): number {
+    return this.Items.length;
+  }
 }
 
 @Component({
@@ -51,7 +60,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public isReadingExistingItem = false;
   public listDates: RepeatedDatesAPIOutput[];
   public listExistingDocItems: DocumentCountByDateRange[] = [];
-  public itemsForm: FormGroup;
+  // Step 2: Default value
+  public defaultValueFormGroup: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   // Step: Result
@@ -77,6 +87,17 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       accountControl: new FormControl(undefined, [Validators.required]),
       tranTypeControl: new FormControl(),
       includSubTranTypeControl: new FormControl(),
+      ccControl: new FormControl(),
+      orderControl: new FormControl(),
+    });
+
+    this.defaultValueFormGroup = new FormGroup({
+      dateControl: new FormControl(new Date(), [Validators.required]),
+      accountControl: new FormControl(undefined, [Validators.required]),
+      tranTypeControl: new FormControl(undefined, [Validators.required]),
+      amountControl: new FormControl(0, [Validators.required]),
+      // currControl: ['', Validators.required],
+      despControl: new FormControl('', [Validators.required]),
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     });
@@ -172,6 +193,31 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       return true;
     }
   }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find(acnt => {
+      return acnt.Id === acntid;
+    });
+    return acntObj ? acntObj.Name : '';
+  }
+  public getControlCenterName(ccid: number): string {
+    const ccObj = this.arControlCenters.find(cc => {
+      return cc.Id === ccid;
+    });
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number): string {
+    const orderObj = this.arOrders.find(ord => {
+      return ord.Id === ordid;
+    });
+    return orderObj ? orderObj.Name : '';
+  }
+  public getTranTypeName(ttid: number): string {
+    const tranTypeObj = this.arTranType.find(tt => {
+      return tt.Id === ttid;
+    });
+
+    return tranTypeObj ? tranTypeObj.Name : '';
+  }
 
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
@@ -249,16 +295,19 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
           // For dates
           this.listDates.forEach(datrange => {
-            let aritems = arallitems.some(div => {
-              return moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate);
+            let aritems: DocumentItemView[] = [];
+            arallitems.forEach(div => {
+              if (moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate)) {
+                aritems.push(div);
+              }
             });
 
-            this.listExistingDocItems.push({
-              StartDate: datrange.StartDate,
-              EndDate: datrange.EndDate,
-              expand: false,
-              Items: aritems,
-            });
+            let itm = new DocumentCountByDateRange();
+            itm.StartDate = datrange.StartDate.clone();
+            itm.EndDate = datrange.EndDate.clone();
+            itm.expand = false;
+            itm.Items = aritems ? aritems : [];
+            this.listExistingDocItems.push(itm);
           });
         }
       });
