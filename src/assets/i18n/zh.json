@@ -194,7 +194,8 @@
     "SubmissionFailed": "提交失败",
     "ResubmissionHint": "请检查以下信息，修正后再次提交。",
     "TitleOfSubmitError": "你提交的内容有如下错误",
-    "SearchCriteria": "搜索条件"
+    "SearchCriteria": "搜索条件",
+    "DefaultValues": "默认值"
   },
   "Sys": {
     "Currency": {
@@ -556,7 +557,8 @@
     "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证",
     "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前",
     "CloseAccountIsNotAllowed": "不能关闭非正常状态下的账户，也不能关闭不允许手动关闭的账户",
-    "CurrencyMustDiff": "货币兑换凭证必须使用两种货币"
+    "CurrencyMustDiff": "货币兑换凭证必须使用两种货币",
+    "ExistingDocuments": "已有凭证"
   },
   "Library": {
     "BookCategories": "图书种类",

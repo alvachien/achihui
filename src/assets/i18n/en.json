@@ -194,7 +194,8 @@
     "SubmissionFailed": "Submission Failed",
     "ResubmissionHint": "Please check and modify the following information before resubmitting.",
     "TitleOfSubmitError": "The content you submitted has the following error",
-    "SearchCriteria": "Search Criteria"
+    "SearchCriteria": "Search Criteria",
+    "DefaultValues": "Default Values"
   },
   "Sys": {
     "Currency": {
@@ -556,7 +557,8 @@
     "NoTmpDocGenerated": "No template docs, you shall generate them first",
     "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation",
     "CloseAccountIsNotAllowed": "It is not allowed to close account which status is not normal or the account cannot be manually closed",
-    "CurrencyMustDiff": "Currency must different for currency exchange document"
+    "CurrencyMustDiff": "Currency must different for currency exchange document",
+    "ExistingDocuments": "Existing Documents"
   },
   "Library": {
     "BookCategories": "Book Categories",

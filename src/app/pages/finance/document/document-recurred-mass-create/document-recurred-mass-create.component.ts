@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -11,8 +11,7 @@ import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUti
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
   momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
-  RepeatFrequencyEnum,
-  RepeatedDatesAPIOutput,
+  RepeatFrequencyEnum, RepeatedDatesAPIOutput, costObjectValidator,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -62,8 +61,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public listExistingDocItems: DocumentCountByDateRange[] = [];
   // Step 2: Default value
   public defaultValueFormGroup: FormGroup;
-  // Step: Confirm
-  public confirmInfo: any = {};
+  // Step 3: Items
+  public itemsFormGroup: FormGroup;
+  // Step 4: Confirm
+  public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
   public docIdCreated?: number = null;
@@ -74,6 +75,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     private uiStatusService: UIStatusService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
+    private fb: FormBuilder,
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -92,12 +94,12 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     });
 
     this.defaultValueFormGroup = new FormGroup({
-      dateControl: new FormControl(new Date(), [Validators.required]),
-      accountControl: new FormControl(undefined, [Validators.required]),
-      tranTypeControl: new FormControl(undefined, [Validators.required]),
-      amountControl: new FormControl(0, [Validators.required]),
+      dayOffsetControl: new FormControl(0),
+      accountControl: new FormControl(undefined),
+      tranTypeControl: new FormControl(undefined),
+      amountControl: new FormControl(0),
       // currControl: ['', Validators.required],
-      despControl: new FormControl('', [Validators.required]),
+      despControl: new FormControl(''),
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     });
@@ -108,6 +110,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
+    this.itemsFormGroup = this.fb.group({
+      items: this.fb.array([]),
+    });
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -169,14 +174,17 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         break;
       }
       case 1: {
-        // this._updateConfirmInfo();
-
         this.currentStep ++;
+        this.prepareDefaultValue();
         break;
       }
       case 2: {
-        this.isDocPosting = true;
-        // this.onSave();
+        this.currentStep ++;
+        this.generateItems();
+        break;
+      }
+      case 3: {
+        this.currentStep ++;
         break;
       }
       default:
@@ -187,8 +195,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     if (this.currentStep === 0) {
       return this.searchFormGroup.valid;
     } else if (this.currentStep === 1) {
-      // return this.itemsForm.valid;
       return true;
+    } else if (this.currentStep === 2) {
+      return true;
+    } else if (this.currentStep === 3) {
+      return this.defaultValueFormGroup.valid;
+    } else if (this.currentStep === 4) {
+      return this.itemsFormGroup.valid;
     } else {
       return true;
     }
@@ -219,6 +232,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
 
+  // Step 1
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
     // Date range
@@ -312,4 +326,85 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         }
       });
   }
+  // Step 2: Default value
+  private prepareDefaultValue(): void {
+    // Fetch data from search
+    // 0. Account
+    if (this.searchFormGroup.get('accountControl').value) {
+      this.defaultValueFormGroup.get('accountControl').setValue(this.searchFormGroup.get('accountControl').value);
+    }
+    // 1. Control center
+    if (this.searchFormGroup.get('ccControl').value) {
+      this.defaultValueFormGroup.get('ccControl').setValue(this.searchFormGroup.get('ccControl').value);
+    }
+    // 2. Order
+    if (this.searchFormGroup.get('orderControl').value) {
+      this.defaultValueFormGroup.get('orderControl').setValue(this.searchFormGroup.get('orderControl').value);
+    }
+    // 3. Tran. type
+    if (this.searchFormGroup.get('tranTypeControl').value) {
+      this.defaultValueFormGroup.get('tranTypeControl').setValue(this.searchFormGroup.get('tranTypeControl').value);
+    }
+  }
+  // Step 3. Items
+  private generateItems(): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const defval = this.defaultValueFormGroup.value;
+    this.listExistingDocItems.forEach(docitems => {
+      if (docitems.ItemsCount === 0) {
+        const newItem: any = this.initItem();
+        newItem.get('dateControl').setValue(docitems.StartDate.toDate());
+        newItem.get('despControl').setValue(docitems.StartDateString);
+
+        newItem.get('accountControl').setValue(defval.accountControl);
+        newItem.get('tranTypeControl').setValue(defval.tranTypeControl);
+        newItem.get('amountControl').setValue(defval.amountControl);
+        newItem.get('ccControl').setValue(defval.ccControl);
+        newItem.get('orderControl').setValue(defval.orderControl);
+
+        control.push(newItem);
+      }
+    });
+  }
+  private initItem(): FormGroup {
+    return this.fb.group({
+      dateControl: [new Date(), Validators.required],
+      accountControl: [undefined, Validators.required],
+      tranTypeControl: [undefined, Validators.required],
+      amountControl: [0, Validators.required],
+      // currControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+      ccControl: [undefined],
+      orderControl: [undefined],
+    }, {
+      validators: [costObjectValidator],
+    });
+  }
+  private createItem(): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const addrCtrl: any = this.initItem();
+
+    control.push(addrCtrl);
+  }
+  private copyItem(i: number): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const newItem: FormGroup = this.initItem();
+    const oldItem = control.value[i];
+    if (oldItem) {
+      newItem.get('dateControl').setValue(oldItem.dateControl);
+      newItem.get('accountControl').setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl').setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl').setValue(oldItem.amountControl);
+      newItem.get('despControl').setValue(oldItem.despControl);
+      newItem.get('ccControl').setValue(oldItem.ccControl);
+      newItem.get('orderControl').setValue(oldItem.orderControl);
+    }
+
+    control.push(newItem);
+  }
+  private removeItem(i: number): void {
+    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    control.removeAt(i);
+  }
+  // Step 4: 
 }

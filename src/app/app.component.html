@@ -105,7 +105,7 @@
           <li>
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuLanguage">
-                <i class="material-icons-outlined app-header-icon">language</i>
+                <i nz-icon nzType="global" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuLanguage="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
@@ -118,14 +118,14 @@
           <li *ngIf="!isLoggedIn">
             <div class="app-header-nav-item">
               <a (click)="onLogon()">
-                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+                <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
               </a>
             </div>
           </li>
           <li *ngIf="isLoggedIn">
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuUser">
-                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+                <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuUser="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
@@ -137,7 +137,7 @@
           <li>
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
-                <i class="material-icons-outlined app-header-icon">domain</i>
+                <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
