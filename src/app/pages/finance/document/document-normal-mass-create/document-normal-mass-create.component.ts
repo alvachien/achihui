@@ -39,8 +39,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public currentStep = 0;
   // Step: Item
   public itemsFormGroup: FormGroup;
-  public arItems: FinanceNormalDocItemMassCreate[] = [];
   // Step: Confirm
+  public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
@@ -143,6 +143,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   onSave(): void {
     // Save it
     if (this.confirmInfo.length <= 0) {
+      this.isDocPosting = false;
       // TBD. error dialog
       return;
     }
@@ -154,33 +155,22 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       }
     });
     if (errorOccur) {
+      this.isDocPosting = false;
       // TBD.
       return;
     }
 
-    const requests: any[] = [];
-    this.confirmInfo.forEach(doc => {
-      requests.push(this.odataService.createDocument(doc));
-    });
-    forkJoin(requests)
-    .pipe(takeUntil(this._destroyed$),
-    finalize(() => {
-      this.isDocPosting = false;
-      this.currentStep = 2;
-    })).subscribe({
-      next: (doc) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
-          ConsoleLogTypeEnum.debug);
-        // this.docIdCreated = doc.Id;
-        this.docPostingFailed = null;
-      },
-      error: (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
-          ConsoleLogTypeEnum.error);
-        // this.docIdCreated = null;
-        this.docPostingFailed = error;
-      },
-    });
+    this.odataService.massCreateNormalDocument(this.confirmInfo)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isDocPosting = false))
+      .subscribe({
+        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+
+        },
+        error: (err) => {
+
+        },
+      });
   }
 
   pre(): void {

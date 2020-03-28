@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError, forkJoin } from 'rxjs';
+import { catchError, map, startWith, switchMap, mergeAll } from 'rxjs/operators';
 import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
@@ -12,7 +12,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
-  GeneralFilterOperatorEnum, GeneralFilterValueType
+  GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1363,6 +1363,41 @@ export class FinanceOdataService {
         return throwError(errmsg);
       }),
     );
+  }
+
+  /**
+   * Mass Create documents
+   * @param docs Normal documents to be created
+   * @returns An observable of documents:
+   *  The succeed one with documentId filled
+   *  The failed one with documentId is null
+   */
+  public massCreateNormalDocument(items: Document[]): Observable<{PostedDocuments: Document[], FailedDocuments: Document[]}> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    
+    let arsent: any[] = [];
+    items.forEach(doc => {
+      arsent.push(this.createDocument(doc));
+    });
+    return forkJoin(arsent).pipe(map((alldocs: any[]) => {
+      const rsts = {
+        PostedDocuments: [],
+        FailedDocuments: [],
+      };
+
+      alldocs.forEach((rtn: any, index: number) => {
+        if (rtn instanceof Document) {
+          rsts.PostedDocuments.push(rtn as Document);
+        } else {
+          rsts.FailedDocuments.push(items[index]);
+        }
+      });
+
+      return rsts;
+    }));
   }
 
   /**

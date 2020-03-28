@@ -133,47 +133,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Mass Create documents
-   * @param objDetail instance of document which to be created
-   */
-  public massCreateNormalDocument(items: FinanceNormalDocItemMassCreate[]): Observable<Document[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-
-    return this._http.post(this.documentMassCreateAPIUrl, items, {
-        headers: headers,
-        params: params,
-      })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, massCreateNormalDocument, map');
-        }
-
-        let rsts: Document[] = [];
-        let rjs: any = <any>response;
-        if (rjs instanceof Array && rjs.length > 0) {
-          for (const si of rjs) {
-            const hd: Document = new Document();
-            hd.onSetData(si);
-            rsts.push(hd);
-          }
-        }
-        return rsts;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService massCreateNormalDocument failed: ${error}`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
    * Update a normal document
    * @param objDetail instance of document which to be created
    */

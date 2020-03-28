@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { takeUntil, finalize, mergeAll, map, catchError } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
 import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
   momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
-  RepeatFrequencyEnum, RepeatedDatesAPIOutput, costObjectValidator,
+  RepeatFrequencyEnum, RepeatedDatesAPIOutput, costObjectValidator, FinanceNormalDocItemMassCreate,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -64,6 +64,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // Step 3: Items
   public itemsFormGroup: FormGroup;
   // Step 4: Confirm
+  public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
@@ -95,14 +96,14 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     this.defaultValueFormGroup = new FormGroup({
       dayOffsetControl: new FormControl(0),
-      accountControl: new FormControl(undefined),
-      tranTypeControl: new FormControl(undefined),
-      amountControl: new FormControl(0),
+      accountControl: new FormControl(undefined, [Validators.required]),
+      tranTypeControl: new FormControl(undefined, [Validators.required]),
+      amountControl: new FormControl(0, [Validators.required]),
       // currControl: ['', Validators.required],
-      despControl: new FormControl(''),
+      despControl: new FormControl('', [Validators.required]),
       ccControl: new FormControl(),
       orderControl: new FormControl(),
-    });
+    }, [costObjectValidator]);
   }
 
   ngOnInit() {
@@ -184,7 +185,14 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         break;
       }
       case 3: {
+        this.generateMassDocumentItems();
+        this.updateConfirmInfo();
         this.currentStep ++;
+        break;
+      }
+      case 4: {
+        this.isDocPosting = true;
+        this.doPosting();
         break;
       }
       default:
@@ -197,11 +205,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     } else if (this.currentStep === 1) {
       return true;
     } else if (this.currentStep === 2) {
-      return true;
-    } else if (this.currentStep === 3) {
       return this.defaultValueFormGroup.valid;
-    } else if (this.currentStep === 4) {
+    } else if (this.currentStep === 3) {
       return this.itemsFormGroup.valid;
+    } else if (this.currentStep === 4) {
+      return true;
     } else {
       return true;
     }
@@ -232,7 +240,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
 
-  // Step 1
+  // Step 1: Existing documents
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
     // Date range
@@ -349,12 +357,19 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // Step 3. Items
   private generateItems(): void {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    control.clear(); // Clear it
+
     const defval = this.defaultValueFormGroup.value;
     this.listExistingDocItems.forEach(docitems => {
       if (docitems.ItemsCount === 0) {
         const newItem: any = this.initItem();
-        newItem.get('dateControl').setValue(docitems.StartDate.toDate());
-        newItem.get('despControl').setValue(docitems.StartDateString);
+        let stdat = docitems.StartDate.clone();
+        if (defval.dayOffsetControl) {
+          stdat = stdat.add(defval.dayOffsetControl, 'days');
+        }
+        newItem.get('dateControl').setValue(stdat.toDate());
+        // Desp
+        newItem.get('despControl').setValue(defval.despControl + ' ' + docitems.StartDateString);
 
         newItem.get('accountControl').setValue(defval.accountControl);
         newItem.get('tranTypeControl').setValue(defval.tranTypeControl);
@@ -406,5 +421,116 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     control.removeAt(i);
   }
-  // Step 4: 
+  // Step 4: Confirm
+  private generateMassDocumentItems(): void {
+    this.arItems = [];
+    const controlArrays: FormArray = this.itemsFormGroup.controls.items as FormArray;
+
+    for(var i = 0; i < controlArrays.length; i ++) {
+      const control = controlArrays.value[i];
+
+      const docitem = new FinanceNormalDocItemMassCreate();
+      if (control.dateControl) {
+        docitem.tranDate = moment(control.dateControl);
+      }
+      if (control.accountControl) {
+        docitem.accountID = control.accountControl;
+      }
+      if (control.tranTypeControl) {
+        docitem.tranType = control.tranTypeControl;
+      }
+      if (control.amountControl) {
+        docitem.tranAmount = control.amountControl;
+      }
+      if (control.despControl) {
+        docitem.desp = control.despControl;
+      }
+      if (control.ccControl) {
+        docitem.controlCenterID = control.ccControl;
+      }
+      if (control.orderControl) {
+        docitem.orderID = control.orderControl;
+      }
+
+      this.arItems.push(docitem);
+    }
+  }
+  private updateConfirmInfo(): void {
+    this.confirmInfo = [];
+
+    this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
+      let docObj = this.confirmInfo.find(val => {
+        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
+      });
+
+      if (docObj !== undefined) {
+        const docitem = new DocumentItem();
+        docitem.ItemId = 1;
+        docitem.AccountId = item.accountID;
+        docitem.TranAmount = item.tranType;
+        docitem.TranType = item.tranType;
+        docitem.Desp = item.desp;
+        docitem.ControlCenterId = item.controlCenterID;
+        docitem.OrderId = item.orderID;
+
+        docObj.Items.forEach(di => {
+          if (docitem.ItemId < di.ItemId) {
+            docitem.ItemId = di.ItemId;
+          }
+        });
+        docitem.ItemId++;
+        docObj.Items.push(docitem);
+      } else {
+        docObj = new Document();
+        docObj.Desp = item.tranDate.format(momentDateFormat);
+        docObj.DocType = financeDocTypeNormal;
+        docObj.HID = this.homeService.ChosedHome.ID;
+        docObj.TranCurr = this.baseCurrency;
+        docObj.TranDate = moment(item.tranDate);
+        const docitem = new DocumentItem();
+        docitem.ItemId = 1;
+        docitem.AccountId = item.accountID;
+        docitem.TranAmount = item.tranType;
+        docitem.TranType = item.tranType;
+        docitem.Desp = item.desp;
+        docitem.ControlCenterId = item.controlCenterID;
+        docitem.OrderId = item.orderID;
+        docObj.Items.push(docitem);
+
+        this.confirmInfo.push(docObj);
+      }
+    });
+  }
+  private doPosting(): void {
+    // Post the documents
+    if (this.confirmInfo.length <= 0) {
+      this.isDocPosting = false;
+      // TBD. error dialog
+      return;
+    }
+
+    let errorOccur = false;
+    this.confirmInfo.forEach(doc => {
+      if (!doc.onVerify()) {
+        errorOccur = true;        
+      }
+    });
+    if (errorOccur) {
+      this.isDocPosting = false;
+      // TBD.
+      return;
+    }
+
+    this.odataService.massCreateNormalDocument(this.confirmInfo)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isDocPosting = false))
+      .subscribe({
+        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+
+        },
+        error: (err) => {
+
+        },
+      });
+  }
 }
