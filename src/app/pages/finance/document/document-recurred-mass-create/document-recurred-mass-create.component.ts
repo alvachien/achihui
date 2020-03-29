@@ -68,8 +68,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated: Document[] = [];
+  public docIdFailed: Document[] = [];
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -467,7 +467,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;
-        docitem.TranAmount = item.tranType;
+        docitem.TranAmount = item.tranAmount;
         docitem.TranType = item.tranType;
         docitem.Desp = item.desp;
         docitem.ControlCenterId = item.controlCenterID;
@@ -490,7 +490,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;
-        docitem.TranAmount = item.tranType;
+        docitem.TranAmount = item.tranAmount;
         docitem.TranType = item.tranType;
         docitem.Desp = item.desp;
         docitem.ControlCenterId = item.controlCenterID;
@@ -511,7 +511,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     let errorOccur = false;
     this.confirmInfo.forEach(doc => {
-      if (!doc.onVerify()) {
+      if (!doc.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranType,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      })) {
         errorOccur = true;        
       }
     });
@@ -521,15 +529,45 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.currentStep = 5; // Result page
+
     this.odataService.massCreateNormalDocument(this.confirmInfo)
       .pipe(takeUntil(this._destroyed$),
       finalize(() => this.isDocPosting = false))
       .subscribe({
         next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent doPosting massCreateNormalDocument...',
+            ConsoleLogTypeEnum.debug);
 
+          this.docIdCreated = rsts.PostedDocuments;
+          this.docIdFailed = rsts.FailedDocuments;
         },
         error: (err) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentRecurredMassCreateComponent doPosting massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+        },
+      });
+  }
+  // Step 5: Result
+  public onBackToListView(): void {
+    this.router.navigate(['/finance/document/list']);
+  }
+  public onResubmitFailedItems(): void {
+    this.isDocPosting = true;
+    this.odataService.massCreateNormalDocument(this.docIdFailed)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isDocPosting = false))
+      .subscribe({
+        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
+            ConsoleLogTypeEnum.debug);
 
+          this.docIdCreated.push(...rsts.PostedDocuments);
+          this.docIdFailed = rsts.FailedDocuments;
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error);
         },
       });
   }

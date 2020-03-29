@@ -74,29 +74,55 @@
 
     <!-- Step 2: Result -->
     <div nz-row [hidden]="currentStep !== 2">
-      <div *ngIf="docIdCreated">
+      <div *ngIf="docIdFailed.length <= 0">
         <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">
-          <div nz-result-extra>
-            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
-            <button nz-button (click)="onReset()">Create another Document</button>
-          </div>
-        </nz-result>
-      </div>
-      <div *ngIf="!docIdCreated">
-        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
           <div nz-result-content>
-            <div class="desc">
-              <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
-              <p nz-paragraph>
-                <i nz-icon nzType="close-circle"></i>
-                {{docPostingFailed}}
-              </p>
+            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
+              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
+                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
+                  {{pdocinfo.TranDateFormatString}}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
+                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id)">{{pdocinfo.Id}}</button>
+                </nz-descriptions-item>
+              </nz-descriptions>
+              <nz-divider *ngIf="!isPostDocLast"></nz-divider>  
             </div>
           </div>
           <div nz-result-extra>
-            <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
+            <button nz-button (click)="onBackToListView()">Back to List View</button>
+          </div>
+        </nz-result>
+      </div>
+      <div *ngIf="docIdFailed.length > 0">
+        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+          <div nz-result-content>
+            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
+              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
+                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
+                  {{pdocinfo.TranDateFormatString}}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
+                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id)">{{pdocinfo.Id}}</button>
+                </nz-descriptions-item>
+              </nz-descriptions>
+              <nz-divider *ngIf="!isPostDocLast"></nz-divider>  
+            </div>
+            <nz-divider></nz-divider>
+            <div *ngFor="let fdocinfo of docIdFailed; last as isFailedDocLast; index as failDocIndex">
+              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + failDocIndex" nzBordered [nzColumn]="4">
+                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
+                  {{fdocinfo.TranDateFormatString}}
+                </nz-descriptions-item>
+              </nz-descriptions>
+              <nz-divider *ngIf="!isFailedDocLast"></nz-divider>  
+            </div>
+          </div>
+          <div nz-result-extra>
+            <button nz-button nzType="primary" (click)="onResubmitFailedItems()">Resent Failed Items</button>
+            <button nz-button (click)="onBackToListView()">Back to List View</button>
           </div>
         </nz-result>
       </div>
@@ -104,11 +130,11 @@
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 2">
       <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
     </button>
     <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled"
-      *ngIf="currentStep < 3">
+      *ngIf="currentStep < 2">
       {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
     </button>
   </div>

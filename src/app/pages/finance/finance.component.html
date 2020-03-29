@@ -1,28 +1,22 @@
 <div>
-  <nz-calendar>
+  <nz-calendar [(ngModel)]="selectedDate" (nzSelectChange)="onSelectChange($event)" (nzPanelChange)="onPanelChange($event)" [nzFullscreen]="false">
     <ul *nzDateCell="let date" class="events">
-      <ng-container [ngSwitch]="date.getDate()">
-        <ng-container *ngSwitchCase="8">
-          <li *ngFor="let item of listDataMap.eight">
-            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-          </li>
-        </ng-container>
-        <ng-container *ngSwitchCase="10">
-          <li *ngFor="let item of listDataMap.ten">
-            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-          </li>
-        </ng-container>
-        <ng-container *ngSwitchCase="11">
-          <li *ngFor="let item of listDataMap.eleven">
-            <nz-badge [nzStatus]="item.type" [nzText]="item.content"></nz-badge>
-          </li>
-        </ng-container>
-      </ng-container>
+      <li *ngFor="let item of getDPDocsByDate(date)">
+        <div>
+          <button nz-button nzType="primary" nzShape="circle" (click)="doPostDPDoc(item)"><i nz-icon nzType="export"></i></button>
+          <span>{{item.Desp}}</span>
+        </div>
+      </li>
+      <li *ngFor="let item of getLoanDocsByDate(date)">
+        <div>
+          <button nz-button nzType="primary" nzShape="circle" (click)="doPostLoanDoc(item)"><i nz-icon nzType="export"></i></button>
+          <span>{{item.Desp}}</span>
+        </div>
+      </li>
     </ul>
     <ng-container *nzMonthCell="let month">
       <div *ngIf="getMonthData(month) as monthData" class="notes-month">
         <section>{{ monthData }}</section>
-        <span>Backlog number</span>
       </div>
     </ng-container>
   </nz-calendar>

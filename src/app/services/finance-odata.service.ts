@@ -12,7 +12,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
-  GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate
+  GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1017,9 +1017,8 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService readPlan, failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readPlan, failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -1080,6 +1079,98 @@ export class FinanceOdataService {
   }
 
   /**
+   * Get ADP tmp docs: for document item overview page
+   */
+  public fetchAllDPTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment): Observable<TemplateDocADP[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const hid = this.homeService.ChosedHome.ID;
+    const dtbgnfmt = dtbgn.format(momentDateFormat);
+    const dtendfmt = dtend.format(momentDateFormat);
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
+
+    return this.http.get(apiurl, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllDPTmpDocs.`,
+          ConsoleLogTypeEnum.debug);
+
+        let docADP: TemplateDocADP[] = [];
+        let rspdata = (response as any).value;
+        if (rspdata instanceof Array && rspdata.length > 0) {
+          rspdata.forEach((val: any) => {
+            let adoc: TemplateDocADP = new TemplateDocADP();
+            adoc.onSetData(val);
+            docADP.push(adoc);
+          });
+        }
+
+        return docADP;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDPTmpDocs failed ${errresp}`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
+  
+  /**
+   * Get Loan tmp docs: for document item overview page
+   */
+  public fetchAllLoanTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment): Observable<TemplateDocLoan[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const hid = this.homeService.ChosedHome.ID;
+    const dtbgnfmt = dtbgn.format(momentDateFormat);
+    const dtendfmt = dtend.format(momentDateFormat);
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
+
+    return this.http.get(apiurl, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllLoanTmpDocs.`,
+          ConsoleLogTypeEnum.debug);
+
+        let docLoan: TemplateDocLoan[] = [];
+        let rspdata = (response as any).value;
+        if (rspdata instanceof Array && rspdata.length > 0) {
+          rspdata.forEach((val: any) => {
+            let ldoc: TemplateDocLoan = new TemplateDocLoan();
+            ldoc.onSetData(val);
+            docLoan.push(ldoc);
+          });
+        }
+
+        return docLoan;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllLoanTmpDocs failed ${errresp}`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
+
+  /**
    * Create a document
    * @param objDetail instance of document which to be created
    */
@@ -1108,6 +1199,45 @@ export class FinanceOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
+
+  /**
+   * Create document from DP template doc
+   * @param tpDoc Template doc
+   */
+  public createDocumentFromDPTemplate(tpDoc: TemplateDocADP): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocument';
+    let params: HttpParams = new HttpParams();
+    params = params.append('HomeID', this.homeService.ChosedHome.ID.toString());
+    params = params.append('AccontID', tpDoc.AccountId.toString());
+    params = params.append('DocumentID', tpDoc.DocId.toString());
+
+    return this.http.post(apiurl, undefined, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocumentFromDPTemplate`,
+          ConsoleLogTypeEnum.debug);
+
+        let ndoc: Document = new Document();
+        ndoc.onSetData(<any>response);
+        return ndoc;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocumentFromDPTemplate failed: ${errresp}`,
+          ConsoleLogTypeEnum.error);
+
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
+  }
+
 
   /**
    * Delete the document

@@ -17,7 +17,7 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../.
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.less'],
 })
-export class ReportComponent implements OnInit {
+export class ReportComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
@@ -92,6 +92,16 @@ export class ReportComponent implements OnInit {
           });
         },
       });
+  }
+
+  ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent OnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   onDrillDownToAccount(event: any) {

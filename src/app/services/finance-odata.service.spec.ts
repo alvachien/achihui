@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Document, DocumentItem, financeDocTypeNormal, RepeatFrequencyEnum, momentDateFormat,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, ControlCenter,
-  Order, Account, Plan, PlanTypeEnum, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
+  Order, Account, Plan, PlanTypeEnum, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, TemplateDocADP,
 } from '../model';
 import { FinanceOdataService, } from './finance-odata.service';
 import { AuthService } from './auth.service';
@@ -1889,6 +1889,58 @@ describe('FinanceOdataService', () => {
     });
   });
 
+  describe('createDocumentFromDPTemplate', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocument';
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.createDocumentFromDPTemplate({ DocId: 100 } as TemplateDocADP).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid') && requrl.params.has('docid');
+      });
+
+      // Respond with the mock data
+      req.flush({ id: 100 });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createDocumentFromDPTemplate({ DocId: 100 } as TemplateDocADP).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid') && requrl.params.has('docid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
   describe('deleteDocument', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
@@ -2009,6 +2061,139 @@ describe('FinanceOdataService', () => {
           && requrl.params.has('$skip')
           && requrl.params.has('$count')
           && requrl.params.has('$expand');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+  
+  describe('fetchAllDPTmpDocs', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.fetchAllDPTmpDocs(moment(), moment().add(1, 'w')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush([
+        {
+          'hid': 1, 'docID': 649, 'refDocID': null, 'accountID': 81, 'tranDate': '2019-02-26',
+          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 13,
+          'orderID': null, 'desp': '安安钢琴课-2019上半年 | 8 / 25', 'createdBy': 'aaa', 'createdAt': '2019-01-08',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 582, 'refDocID': null, 'accountID': 79, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 117.82, 'controlCenterID': 12,
+          'orderID': null, 'desp': '多多2019羽毛球课48节(寒暑假除外) | 8 / 55', 'createdBy': 'aaa', 'createdAt': '2018-12-27',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 493, 'refDocID': null, 'accountID': 66, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 217.53, 'controlCenterID': 13,
+          'orderID': null, 'desp': '安安吉的堡2018.9-2019.8报名 | 24 / 49', 'createdBy': 'aaa', 'createdAt': '2018-10-07',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 552, 'refDocID': null, 'accountID': 76, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 12,
+          'orderID': null, 'desp': '多多钢琴课 | 17 / 25', 'createdBy': 'aaa', 'createdAt': '2018-11-04', 'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 263, 'refDocID': null, 'accountID': 26, 'tranDate': '2019-02-19',
+          'tranType': 59, 'tranAmount': 350.00, 'controlCenterID': 10,
+          'orderID': null, 'desp': '买课 | 71/72', 'createdBy': 'aaa', 'createdAt': '2017-10-10', 'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+      ]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchAllDPTmpDocs(moment(), moment().add(1, 'w')).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllLoanTmpDocs', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.fetchAllLoanTmpDocs(moment(), moment().add(1, 'w')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // Respond with the mock data
+      req.flush(`[{'hid':1, 'docID':397, 'refDocID':null, 'accountID':58, 'tranDate':'2019-02-22', 'tranAmount':3653.63, 'interestAmount':9782.60,
+        'controlCenterID':8, 'orderID':null, 'desp':'201807昌邑路房产商业贷款 | 6 / 360', 'createdBy':'aaa',
+        'createdAt':'2018-09-07', 'updatedBy':null, 'updatedAt':'0001-01-01'}]`);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchAllLoanTmpDocs(moment(), moment().add(1, 'w')).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body

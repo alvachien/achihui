@@ -44,8 +44,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: Document[] = [];
   // Step: Result
   public isDocPosting = false;
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated: Document[] = [];
+  public docIdFailed: Document[] = [];
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -140,39 +140,6 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.removeItem(i);
   }
 
-  onSave(): void {
-    // Save it
-    if (this.confirmInfo.length <= 0) {
-      this.isDocPosting = false;
-      // TBD. error dialog
-      return;
-    }
-
-    let errorOccur = false;
-    this.confirmInfo.forEach(doc => {
-      if (!doc.onVerify()) {
-        errorOccur = true;        
-      }
-    });
-    if (errorOccur) {
-      this.isDocPosting = false;
-      // TBD.
-      return;
-    }
-
-    this.odataService.massCreateNormalDocument(this.confirmInfo)
-      .pipe(takeUntil(this._destroyed$),
-      finalize(() => this.isDocPosting = false))
-      .subscribe({
-        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
-
-        },
-        error: (err) => {
-
-        },
-      });
-  }
-
   pre(): void {
     this.currentStep -= 1;
   }
@@ -187,7 +154,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       }
       case 1: {
         this.isDocPosting = true;
-        this.onSave();
+        this._doPosting();
         break;
       }
       default:
@@ -320,7 +287,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;
-        docitem.TranAmount = item.tranType;
+        docitem.TranAmount = item.tranAmount;
         docitem.TranType = item.tranType;
         docitem.Desp = item.desp;
         docitem.ControlCenterId = item.controlCenterID;
@@ -343,7 +310,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;
-        docitem.TranAmount = item.tranType;
+        docitem.TranAmount = item.tranAmount;
         docitem.TranType = item.tranType;
         docitem.Desp = item.desp;
         docitem.ControlCenterId = item.controlCenterID;
@@ -356,6 +323,72 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   // Step 2: Do posting
   private _doPosting(): void {
+    if (this.confirmInfo.length <= 0) {
+      this.isDocPosting = false;
+      // TBD. error dialog
+      return;
+    }
 
+    let errorOccur = false;
+    this.confirmInfo.forEach(doc => {
+      if (!doc.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranType,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      })) {
+        errorOccur = true;        
+      }
+    });
+    if (errorOccur) {
+      this.isDocPosting = false;
+      // TBD.
+      return;
+    }
+
+    this.currentStep = 2; // Jump to the result page
+
+    this.odataService.massCreateNormalDocument(this.confirmInfo)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isDocPosting = false))
+      .subscribe({
+        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...',
+            ConsoleLogTypeEnum.debug);
+
+          this.docIdCreated = rsts.PostedDocuments;
+          this.docIdFailed = rsts.FailedDocuments;
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+        },
+      });
+  }
+  // Step 3: Result
+  public onBackToListView(): void {
+    this.router.navigate(['/finance/document/list']);
+  }
+  public onResubmitFailedItems(): void {
+    this.isDocPosting = true;
+    this.odataService.massCreateNormalDocument(this.docIdFailed)
+      .pipe(takeUntil(this._destroyed$),
+      finalize(() => this.isDocPosting = false))
+      .subscribe({
+        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
+            ConsoleLogTypeEnum.debug);
+
+          this.docIdCreated.push(...rsts.PostedDocuments);
+          this.docIdFailed = rsts.FailedDocuments;
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+        },
+      });
   }
 }

@@ -82,7 +82,6 @@
               <nz-select [(ngModel)]="data.TranCurr" nzDisabled>
                 <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' ' + cr.Symbol"></nz-option>
               </nz-select>
-
             </td>
             <td>{{data.TranDateFormatString}}</td>
             <td>
