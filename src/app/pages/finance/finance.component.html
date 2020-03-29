@@ -1,5 +1,5 @@
 <div>
-  <nz-calendar [(ngModel)]="selectedDate" (nzSelectChange)="onSelectChange($event)" (nzPanelChange)="onPanelChange($event)" [nzFullscreen]="false">
+  <nz-calendar [(ngModel)]="selectedDate" (nzSelectChange)="onSelectChange($event)" (nzPanelChange)="onPanelChange($event)">
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">
         <div>

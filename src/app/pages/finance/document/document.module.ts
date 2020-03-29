@@ -20,6 +20,7 @@ import { DocumentNormalMassCreateComponent } from './document-normal-mass-create
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create';
 import { DocumentNormalMassCreateItemComponent } from './document-normal-mass-create-item';
 import { AccountModule } from '../account/account.module';
+import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create/document-loan-repay-create.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { AccountModule } from '../account/account.module';
     DocumentNormalMassCreateComponent,
     DocumentRecurredMassCreateComponent,
     DocumentNormalMassCreateItemComponent,
+    DocumentLoanRepayCreateComponent,
   ],
   imports: [
     CommonModule,

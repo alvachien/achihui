@@ -1890,7 +1890,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createDocumentFromDPTemplate', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocument';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
     });

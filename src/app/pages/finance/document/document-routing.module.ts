@@ -11,6 +11,7 @@ import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create';
+import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create';
 
 const routes: Routes = [
   { path: '', component: DocumentListComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'createbrwfrm', component: DocumentLoanCreateComponent },
   { path: 'createlendto', component: DocumentLoanCreateComponent },
   { path: 'createassetvalchg', component: DocumentAssetValueChangeCreateComponent },
+  { path: 'createloanrepay', component: DocumentLoanRepayCreateComponent },
 
   { path: 'edit', component: DocumentDetailComponent },
   { path: 'display', component: DocumentDetailComponent },

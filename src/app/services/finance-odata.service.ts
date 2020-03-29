@@ -1210,15 +1210,15 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocument';
-    let params: HttpParams = new HttpParams();
-    params = params.append('HomeID', this.homeService.ChosedHome.ID.toString());
-    params = params.append('AccontID', tpDoc.AccountId.toString());
-    params = params.append('DocumentID', tpDoc.DocId.toString());
+    let apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument(AccountID=${tpDoc.AccountId},DocumentID=${tpDoc.DocId},HomeID=${this.homeService.ChosedHome.ID})`;
+    // let params: HttpParams = new HttpParams();
+    // params = params.append('HomeID', this.homeService.ChosedHome.ID.toString());
+    // params = params.append('AccontID', tpDoc.AccountId.toString());
+    // params = params.append('DocumentID', tpDoc.DocId.toString());
 
     return this.http.post(apiurl, undefined, {
       headers,
-      params,
+      // params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocumentFromDPTemplate`,
