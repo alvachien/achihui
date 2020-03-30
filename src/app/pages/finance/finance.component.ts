@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, merge, of, ReplaySubject, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
@@ -32,7 +32,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: FinanceOdataService,
-    public modalService: NzModalService) {
+    private modalService: NzModalService,
+    private messageService: NzMessageService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
       ConsoleLogTypeEnum.debug);
 
@@ -170,10 +171,22 @@ export class FinanceComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: val => {
-
+          this.messageService.success('Document posted');
+          // Remove the doc
+          let idx = this.listDate.findIndex(cell => {
+            return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));
+          });
+          if (idx !== -1) {
+            let secidx = this.listDate[idx].DPDocs.findIndex(doc => {
+              return doc.DocId === dpdoc.DocId && doc.AccountId === dpdoc.AccountId && doc.HID === dpdoc.HID;
+            });
+            if (secidx !== -1) {
+              this.listDate[idx].DPDocs.splice(secidx);
+            }
+          }
         },
         error: err => {
-
+          this.messageService.error('Document failed to post');
         }
       });
   }

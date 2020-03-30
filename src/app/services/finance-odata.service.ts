@@ -1092,7 +1092,7 @@ export class FinanceOdataService {
     const dtendfmt = dtend.format(momentDateFormat);
     let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
+    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
 
     return this.http.get(apiurl, {
       headers: headers,
@@ -1138,7 +1138,7 @@ export class FinanceOdataService {
     const dtendfmt = dtend.format(momentDateFormat);
     let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
+    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
 
     return this.http.get(apiurl, {
         headers: headers,
@@ -1202,7 +1202,7 @@ export class FinanceOdataService {
 
   /**
    * Create document from DP template doc
-   * @param tpDoc Template doc
+   * @param tpDoc Template doc of DP
    */
   public createDocumentFromDPTemplate(tpDoc: TemplateDocADP): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
@@ -1210,15 +1210,14 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument(AccountID=${tpDoc.AccountId},DocumentID=${tpDoc.DocId},HomeID=${this.homeService.ChosedHome.ID})`;
-    // let params: HttpParams = new HttpParams();
-    // params = params.append('HomeID', this.homeService.ChosedHome.ID.toString());
-    // params = params.append('AccontID', tpDoc.AccountId.toString());
-    // params = params.append('DocumentID', tpDoc.DocId.toString());
+    let apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument`;
 
-    return this.http.post(apiurl, undefined, {
+    return this.http.post(apiurl, {
+      AccountID: tpDoc.AccountId,
+      DocumentID: tpDoc.DocId,
+      HomeID: this.homeService.ChosedHome.ID,
+    }, {
       headers,
-      // params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocumentFromDPTemplate`,
@@ -1323,7 +1322,9 @@ export class FinanceOdataService {
 
   /**
    * Create Loan document
-   * @param jdata JSON format
+   * @param docObj Instance of document
+   * @param acntObj Instance of Account (with Loan info)
+   * @returns An observable of Document
    */
   public createLoanDocument(docObj: Document, acntObj: Account): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();

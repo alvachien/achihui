@@ -11,7 +11,7 @@ import { translate } from '@ngneat/transloco';
 
 import {
   AccountExtraLoan, UIAccountForSelection, ConsoleLogTypeEnum, ModelUtility, IAccountCategoryFilter,
-  TemplateDocLoan, RepeatDatesWithAmountAndInterestAPIInput, RepaymentMethodEnum,
+  TemplateDocLoan, RepeatDatesWithAmountAndInterestAPIInput, RepaymentMethodEnum, UIDisplayStringUtil,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 
@@ -41,6 +41,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   isLoadingTmpDocs =  false;
   public listTmpDocs: TemplateDocLoan[] = [];
+  public arRepaymentMethods = UIDisplayStringUtil.getRepaymentMethodStrings();
 
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;

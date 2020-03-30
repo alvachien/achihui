@@ -3,13 +3,18 @@
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">
         <div>
-          <button nz-button nzType="primary" nzShape="circle" (click)="doPostDPDoc(item)"><i nz-icon nzType="export"></i></button>
+          <button nz-button nz-popconfirm
+            nzPopconfirmTitle="Are you sure post this document?"
+            (nzOnConfirm)="doPostDPDoc(item)"
+            nzShape="circle"><i nz-icon nzType="export"></i></button>
           <span>{{item.Desp}}</span>
         </div>
       </li>
       <li *ngFor="let item of getLoanDocsByDate(date)">
         <div>
-          <button nz-button nzType="primary" nzShape="circle" (click)="doPostLoanDoc(item)"><i nz-icon nzType="export"></i></button>
+          <button nz-button nz-popconfirm
+            nzPopconfirmTitle="Are you sure post this document?"
+            (nzOnConfirm)="doPostLoanDoc(item)" nzShape="circle"><i nz-icon nzType="export"></i></button>
           <span>{{item.Desp}}</span>
         </div>
       </li>

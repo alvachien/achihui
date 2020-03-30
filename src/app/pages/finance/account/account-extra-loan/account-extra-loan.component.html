@@ -101,7 +101,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepaymentMethod' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
         <nz-select formControlName="repayMethodControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of uiStatusService.RepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(rt.i18nterm)"></nz-option>
+          <nz-option *ngFor="let rt of arRepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(rt.i18nterm)"></nz-option>
         </nz-select>
         <ng-template #repaymethodErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -170,10 +170,10 @@
     [nzData]="listTmpDocs">
     <thead>
       <tr>
-        <th>Date</th>
-        <th>Desp</th>
+        <th>{{'Common.Date' | transloco}}</th>
+        <th>{{'Common.Description' | transloco}}</th>
         <th>{{'Finance.Amount' | transloco}}</th>
-        <th>{{'Finance.Amount' | transloco}}</th>
+        <th>{{'Finance.Interest' | transloco}}</th>
         <th>{{'Finance.Amount' | transloco}}</th>
       </tr>
     </thead>
@@ -181,9 +181,9 @@
       <tr *ngFor="let data of basicTable.data">
         <td>{{data.TranDateFormatString}}</td>
         <td>{{data.Desp}}</td>
-        <td>{{data.TranAmount}}</td>
-        <td>{{data.InterestAmount}}</td>
-        <td>{{data.TranAmount + data.InterestAmount}}</td>
+        <td>{{data.TranAmount | number:'1.2-2'}}</td>
+        <td>{{data.InterestAmount | number:'1.2-2'}}</td>
+        <td>{{data.TranAmount + data.InterestAmount | number:'1.2-2'}}</td>
       </tr>
     </tbody>
   </nz-table>
