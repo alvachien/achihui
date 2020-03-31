@@ -104,51 +104,54 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit, forkJoin`,
-        ConsoleLogTypeEnum.debug);
+    ]).pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (rst: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit, forkJoin`,
+          ConsoleLogTypeEnum.debug);
 
-      this.arDocTypes = rst[1];
-      this.arTranTypes = rst[2];
-      this.arAccounts = rst[3];
-      this.arControlCenters = rst[4];
-      this.arOrders = rst[5];
-      this.arCurrencies = rst[6];
+        this.arDocTypes = rst[1];
+        this.arTranTypes = rst[2];
+        this.arAccounts = rst[3];
+        this.arControlCenters = rst[4];
+        this.arOrders = rst[5];
+        this.arCurrencies = rst[6];
 
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-      this.uiOrderFilter = undefined;
+        // Accounts
+        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+        this.uiAccountStatusFilter = undefined;
+        this.uiAccountCtgyFilter = undefined;
+        // Orders
+        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+        this.uiOrderFilter = undefined;
 
-      this._activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createbrwfrm') {
-            this.curDocType = financeDocTypeBorrowFrom;
-          } else if (x[0].path === 'createlendto') {
-            this.curDocType = financeDocTypeLendTo;
+        this._activateRoute.url.subscribe((x: any) => {
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === 'createbrwfrm') {
+              this.curDocType = financeDocTypeBorrowFrom;
+            } else if (x[0].path === 'createlendto') {
+              this.curDocType = financeDocTypeLendTo;
+            }
+
+            if (this.curDocType === financeDocTypeBorrowFrom) {
+              this.documentTitle = 'Sys.DocTy.BorrowFrom';
+            } else if (this.curDocType === financeDocTypeLendTo) {
+              this.documentTitle = 'Sys.DocTy.LendTo';
+            }
           }
 
-          if (this.curDocType === financeDocTypeBorrowFrom) {
-            this.documentTitle = 'Sys.DocTy.BorrowFrom';
-          } else if (this.curDocType === financeDocTypeLendTo) {
-            this.documentTitle = 'Sys.DocTy.LendTo';
-          }
-        }
+          this._cdr.detectChanges();
+        });
+      }, 
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`,
+          ConsoleLogTypeEnum.error);
 
-        this._cdr.detectChanges();
-      });
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.create({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
-      });
+        this.modalService.create({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      }
     });
   }
 

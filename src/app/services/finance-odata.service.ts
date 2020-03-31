@@ -1127,7 +1127,8 @@ export class FinanceOdataService {
   /**
    * Get Loan tmp docs: for document item overview page
    */
-  public fetchAllLoanTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment): Observable<TemplateDocLoan[]> {
+  public fetchAllLoanTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment,
+    docid?: number, accountid?: number, ccid?: number, orderid?: number): Observable<TemplateDocLoan[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1138,7 +1139,20 @@ export class FinanceOdataService {
     const dtendfmt = dtend.format(momentDateFormat);
     let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
+    let filterstring = `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`;
+    if (docid) {
+      filterstring = filterstring + ` and DocumentID eq ${docid}`;
+    }
+    if (accountid) {
+      filterstring = filterstring + ` and AccountID eq ${accountid}`;
+    }
+    if (ccid) {
+      filterstring = filterstring + ` and ControlCenterID eq ${ccid}`;
+    }
+    if (orderid) {
+      filterstring = filterstring + ` and OrderID eq ${orderid}`;
+    }
+    params = params.append('$filter', filterstring);
 
     return this.http.get(apiurl, {
         headers: headers,
@@ -1236,7 +1250,6 @@ export class FinanceOdataService {
       }),
       );
   }
-
 
   /**
    * Delete the document

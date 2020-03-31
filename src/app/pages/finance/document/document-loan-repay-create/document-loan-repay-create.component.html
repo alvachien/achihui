@@ -14,8 +14,188 @@
 
   <nz-steps [nzCurrent]="currentStep">
     <nz-step [nzTitle]="t('Common.GenericInfo')"></nz-step>
-    <nz-step [nzTitle]="t(documentTitle)"></nz-step>
+    <nz-step [nzTitle]="t('Finance.Items')"></nz-step>
     <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
     <nz-step [nzTitle]="t('Common.Result')"></nz-step>
   </nz-steps>
+
+  <div class="steps-content">
+    <!-- Step 0. Search item -->
+    <div [hidden]="currentStep !== 0">
+      <form nz-form [formGroup]="searchFormGroup" class="ant-advanced-search-form">
+        <div nz-row [nzGutter]="8">
+          <div nz-col [nzSpan]="12">
+            <!-- Document ID -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <input nz-input formControlName="docIDControl">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12">
+            <!-- Date Range -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
+                <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+                <ng-template #dateRangeErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <div nz-row [nzGutter]="8">
+          <div nz-row [nzGutter]="8">
+            <div nz-col [nzSpan]="8">
+              <!-- Account -->
+              <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
+                <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
+                  <nz-select formControlName="accountControl">
+                    <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: acntCategoryFilter" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                  </nz-select>
+                  <ng-template #accountErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="8">
+              <!-- Control center -->
+              <nz-form-item>
+                <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                  <nz-select formControlName="ccControl">
+                    <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col [nzSpan]="8">
+              <!-- Order -->
+              <nz-form-item>
+                <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
+                <nz-form-control [nzSpan]="12" nzHasFeedback>
+                  <nz-select formControlName="orderControl">
+                    <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+
+        <div nz-row>
+          <div nz-col [nzSpan]="24" class="search-button-area">
+            <button nz-button [nzType]="'primary'" [disabled]="!searchFormGroup.valid"
+              (click)="onSearchLoanTmp()">Search</button>
+            <button nz-button (click)="resetSearchForm()">Clear</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="search-result-list">
+        <nz-table #rowLoanTmpDocs nzShowPagination nzShowSizeChanger [nzData]="listOfLoanTmpDoc">
+          <thead>
+            <tr>
+              <th></th>
+              <th>#</th>
+              <th>Date</th>
+              <th>Account</th>
+              <th>Amount</th>
+              <th>Interest</th>
+              <th>Control Center</th>
+              <th>Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tdoc of rowLoanTmpDocs.data">
+              <td nzShowCheckbox (nzCheckedChange)="onTmpLoanDocRowSelectChanged($event, tdoc)"></td>
+              <td>{{ tdoc.DocId }}</td>
+              <td>{{ tdoc.TranDateFormatString }}</td>
+              <td>{{ tdoc.AccountId }}</td>
+              <td>{{ tdoc.TranAmount }}</td>
+              <td>{{ tdoc.InterestAmount }}</td>
+              <td>{{ tdoc.ControlCenterId }}</td>
+              <td>{{ tdoc.OrderId }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+
+    <!-- Step 1. Document items -->
+    <div [hidden]="currentStep !== 1">
+      <nz-descriptions [nzTitle]="'Finance.Amount' | transloco" nzBordered [nzColumn]="4">
+        <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="4">
+          {{ amountOpen | number:'1.2-2' }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+      
+      <div class="item_toolbar">
+        <button nz-button nzType="primary" (click)="onCreateItem()">{{'Finance.CreateItem' | transloco}}</button>
+      </div>
+    
+      <nz-table #itemsTable nzBordered [nzData]="listItems">
+        <thead>
+          <tr>
+            <th nz-width="50">#</th>
+            <th nz-width="200">{{'Finance.Account' | transloco}}</th>
+            <th nz-width="200">{{'Finance.Amount' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of itemsTable.data">
+            <td></td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="accountTpl">
+                  <nz-select [(ngModel)]="data.AccountId">
+                    <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                  </nz-select>
+                  <ng-template #accountTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="amountTpl">
+                  <input nz-input [(ngModel)]="data.TranAmount" (ngModelChange)="onItemAmountChange()">
+                  <ng-template #amountTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+    <!-- Step actions/buttons -->
+    <div class="steps-action">
+      <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+        <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
+      </button>
+      <button nz-button nzType="primary" id="button_next_step" (click)="next()" *ngIf="currentStep < 3" [disabled]="!nextButtonEnabled">
+        {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
+      </button>
+    </div>  
+  </div>
 </div>

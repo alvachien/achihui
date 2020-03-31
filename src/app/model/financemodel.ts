@@ -2535,8 +2535,8 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     if (data && data.TransactionType) {
       this.TranType = +data.TransactionType;
     }
-    if (data && data.TranAmount) {
-      this.TranAmount = +data.TranAmount;
+    if (data && data.TransactionAmount) {
+      this.TranAmount = +data.TransactionAmount;
     }
     if (data && data.ControlCenterID) {
       this.ControlCenterId = +data.ControlCenterID;

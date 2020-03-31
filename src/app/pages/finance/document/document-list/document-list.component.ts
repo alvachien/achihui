@@ -182,7 +182,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/createassetvalchg']);
   }
   public onCreateRepayDocument(): void {
-    this.router.navigate(['/finance/document/createrepayex']);
+    this.router.navigate(['/finance/document/createloanrepay']);
   }
   public onDisplayDocument(doc: Document): void {
     this.router.navigate(['/finance/document/display', doc.Id]);
