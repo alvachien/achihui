@@ -1890,7 +1890,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createDocumentFromDPTemplate', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments/PostDocument';
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
     });
@@ -1912,8 +1912,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl
-          && requrl.params.has('hid') && requrl.params.has('docid');
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // Respond with the mock data
@@ -1932,8 +1931,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === apiurl
-          && requrl.params.has('hid') && requrl.params.has('docid');
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body
@@ -2092,7 +2090,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === apiurl;
       });
 
       // Respond with the mock data
@@ -2172,7 +2170,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === apiurl;
       });
 
       // Respond with the mock data

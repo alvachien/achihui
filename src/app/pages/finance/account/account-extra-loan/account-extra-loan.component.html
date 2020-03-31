@@ -8,25 +8,12 @@
   </div>
   
   <div [formGroup]="loanInfoForm">
-    <!-- Start date -->
+    <!-- Date range -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.StartDate' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startdateErrorTpl">
-        <nz-date-picker formControlName="startDateControl" (ngModelChange)="onChange()"></nz-date-picker>
-        <ng-template #startdateErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <!-- End date -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Common.EndDate' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="enddateErrorTpl">
-        <nz-date-picker formControlName="endDateControl" (ngModelChange)="onChange()"></nz-date-picker>
-        <ng-template #enddateErrorTpl let-control>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
+        <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+        <ng-template #dateRangeErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
           </ng-container>
@@ -141,7 +128,7 @@
 
     <!-- Comment -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Comment' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="commentErrorTpl">
         <input nz-input type="text" formControlName="cmtControl" name="cmt">
         <ng-template #commentErrorTpl let-control>

@@ -1,1 +1,21 @@
-<p>document-loan-repay-create works!</p>
+<div *transloco="let t">
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{ 'Sys.DocTy.Repay' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <nz-steps [nzCurrent]="currentStep">
+    <nz-step [nzTitle]="t('Common.GenericInfo')"></nz-step>
+    <nz-step [nzTitle]="t(documentTitle)"></nz-step>
+    <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
+    <nz-step [nzTitle]="t('Common.Result')"></nz-step>
+  </nz-steps>
+</div>

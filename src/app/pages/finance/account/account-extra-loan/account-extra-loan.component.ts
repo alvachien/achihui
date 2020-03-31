@@ -53,13 +53,10 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   get value(): AccountExtraLoan {
     const objrst = new AccountExtraLoan();
-    let controlVal = this.loanInfoForm.get('startDateControl').value;
+    let controlVal = this.loanInfoForm.get('dateRangeControl').value;
     if (controlVal) {
-      objrst.startDate = moment(controlVal as Date);
-    }
-    controlVal = this.loanInfoForm.get('endDateControl').value;
-    if (controlVal) {
-      objrst.endDate = moment(controlVal as Date);
+      objrst.startDate = moment((controlVal as any[])[0]);
+      objrst.endDate = moment((controlVal as any[])[1]);
     }
     controlVal = this.loanInfoForm.get('totalMonthControl').value;
     if (controlVal) {
@@ -123,7 +120,6 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       return false;
     }
 
-    const val = this.value;
     if (!this.value.isAccountValid) {
       return false;
     }
@@ -170,9 +166,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     this.loanInfoForm = new FormGroup({
-      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new FormControl(moment().add(1, 'y').toDate()),
-      totalMonthControl: new FormControl(12, Validators.required),
+      dateRangeControl: new FormControl([new Date(), new Date()], [Validators.required]),
+      totalMonthControl: new FormControl(12, [Validators.required]),
       repayDayControl: new FormControl(),
       firstRepayDateControl: new FormControl(),
       interestFreeControl: new FormControl(true),
@@ -180,7 +175,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       repayMethodControl: new FormControl(undefined, Validators.required),
       payingAccountControl: new FormControl(),
       partnerControl: new FormControl(''),
-      cmtControl: new FormControl(),
+      cmtControl: new FormControl('', [Validators.required]),
     });
   }
 
@@ -307,16 +302,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     if (val) {
-      if (val.startDate) {
-        this.loanInfoForm.get('startDateControl').setValue(val.startDate.toDate());
-      } else {
-        this.loanInfoForm.get('startDateControl').setValue(undefined);
-      }
-      if (val.endDate) {
-        this.loanInfoForm.get('endDateControl').setValue(val.endDate.toDate());
-      } else {
-        this.loanInfoForm.get('endDateControl').setValue(undefined);
-      }
+      let dtrange = [val.startDate ? val.startDate.toDate() : undefined, val.endDate ? val.endDate.toDate() : undefined ];
+      this.loanInfoForm.get('dateRangeControl').setValue(dtrange);
       this.loanInfoForm.get('totalMonthControl').setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl').setValue(val.RepayDayInMonth);
       if (val.FirstRepayDate) {
