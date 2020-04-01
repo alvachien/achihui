@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
 import { TranslocoService } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, UIStatusEnum, HomeDef, ModelUtility, ConsoleLogTypeEnum } from './model';
@@ -11,7 +12,8 @@ import { AuthService, UIStatusService, HomeDefOdataService } from './services';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+  // tslint:disable:variable-name
   isCollapsed = false;
   searchContent: string;
   public isLoggedIn: boolean;
@@ -22,9 +24,10 @@ export class AppComponent {
   constructor(
     private i18n: NzI18nService,
     private translocoService: TranslocoService,
-    // tslint:disable:variable-name
     private _authService: AuthService,
     public _homeService: HomeDefOdataService,
+    private uiService: UIStatusService,
+    private router: Router,
     private _zone: NgZone) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor',
       ConsoleLogTypeEnum.debug);
@@ -37,7 +40,24 @@ export class AppComponent {
         }
       });
     });
-   }
+  }
+
+  ngOnInit(): void {
+    this._homeService.checkDBVersion().subscribe({
+      next: val => {
+        // Do something?
+        // Nothing need to do
+      }, 
+      error: err => {
+        // Jump to err page?
+        this.uiService.latestError = err;
+        this.router.navigate(['/fatalerror']);
+      },
+    })
+  }
+
+  ngOnDestroy(): void {
+  }
 
   switchLanguage(lang: string) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage',

@@ -323,4 +323,28 @@ export class HomeDefOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
+
+  /**
+   * Check DB versoin
+   */
+  public checkDBVersion(): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json');
+
+    return this._http.post(environment.ApiUrl + '/api/DBVersions', {}, {
+      headers: headers,
+    }).pipe(map((response: HttpResponse<any>) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
+        ConsoleLogTypeEnum.debug);
+
+      return response as any;
+    }),
+    catchError((error: HttpErrorResponse) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, checkDBVersion, Failed ${error}`,
+        ConsoleLogTypeEnum.error);
+
+      return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+    }));
+  }
 }

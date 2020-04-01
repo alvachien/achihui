@@ -13,7 +13,7 @@ import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator, ModelUtility,
-  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo,
+  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, AccountStatusEnum,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -242,6 +242,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     } else {
       acntobj.CategoryId = financeAccountCategoryBorrowFrom;
     }
+    acntobj.Status = AccountStatusEnum.Normal;
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();

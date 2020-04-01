@@ -137,6 +137,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         return this.selectedLoanTmpDoc.length === 1;
 
       case 1: // Input default data
+        return this.amountOpen === 0 && this.listItems.length > 0;
+
+      case 2:
         break;
 
       default:

@@ -157,6 +157,7 @@
     [nzData]="listTmpDocs">
     <thead>
       <tr>
+        <th>#</th>
         <th>{{'Common.Date' | transloco}}</th>
         <th>{{'Common.Description' | transloco}}</th>
         <th>{{'Finance.Amount' | transloco}}</th>
@@ -166,6 +167,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
+        <td>{{data.DocId}}</td>
         <td>{{data.TranDateFormatString}}</td>
         <td>{{data.Desp}}</td>
         <td>{{data.TranAmount | number:'1.2-2'}}</td>

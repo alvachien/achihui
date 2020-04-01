@@ -584,6 +584,7 @@ export class Account extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
+    rstObj.Status = +this.Status;
     rstObj.CategoryID = this.CategoryId;
     rstObj.Name = this.Name;
     rstObj.Comment = this.Comment;
@@ -942,13 +943,15 @@ export class AccountExtraLoanJson extends AccountExtraBaseJson {
   public StartDate: string;
   public AnnualRate?: number;
   public InterestFree?: boolean;
-  public RepaymentMethod?: string;
+  public RepaymentMethod?: number;
   public TotalMonths?: number;
   public RefDocID: number;
   public Others: string;
   public EndDate?: string;
   public PayingAccount?: number;
   public Partner: string;
+
+  public LoanTmpDocs: any[] = [];
 }
 
 /**
@@ -1131,82 +1134,82 @@ export class AccountExtraLoan extends AccountExtra {
     return aobj;
   }
 
-  public writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
-    rstobj.startDate = this._startDate.format(hih.momentDateFormat);
+  public writeJSONObject(): AccountExtraLoanJson {
+    const rstobj: AccountExtraLoanJson = super.writeJSONObject() as AccountExtraLoanJson;
+    rstobj.StartDate = this._startDate.format(hih.momentDateFormat);
     if (this._endDate) {
-      rstobj.endDate = this._endDate.format(hih.momentDateFormat);
+      rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
     }
-    rstobj.annualRate = this.annualRate;
-    rstobj.interestFree = this.InterestFree;
-    rstobj.totalMonths = this.TotalMonths;
-    rstobj.repaymentMethod = +this.RepayMethod;
-    rstobj.refDocID = this.RefDocId;
-    rstobj.others = this.Comment;
-    rstobj.payingAccount = this._payingAccount;
-    rstobj.partner = this._partner;
-    rstobj.loanTmpDocs = [];
+    rstobj.AnnualRate = this.annualRate;
+    rstobj.InterestFree = this.InterestFree;
+    rstobj.TotalMonths = this.TotalMonths;
+    rstobj.RepaymentMethod = +this.RepayMethod;
+    rstobj.RefDocID = this.RefDocId;
+    rstobj.Others = this.Comment;
+    rstobj.PayingAccount = this._payingAccount;
+    rstobj.Partner = this._partner;
+    rstobj.LoanTmpDocs = [];
     for (const tdoc of this.loanTmpDocs) {
       const tdocjson: any = tdoc.writeJSONObject();
-      rstobj.loanTmpDocs.push(tdocjson);
+      rstobj.LoanTmpDocs.push(tdocjson);
     }
-    if (this._firstRepayDate) {
-      rstobj.firstRepayDate = this._firstRepayDate.format(hih.momentDateFormat);
-    }
-    if (this._repayDayInMonth) {
-      rstobj.repayDayInMonth = this._repayDayInMonth;
-    }
+    // if (this._firstRepayDate) {
+    //   rstobj. = this._firstRepayDate.format(hih.momentDateFormat);
+    // }
+    // if (this._repayDayInMonth) {
+    //   rstobj.R = this._repayDayInMonth;
+    // }
 
     return rstobj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: AccountExtraLoanJson): void {
     super.onSetData(data);
 
-    if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.momentDateFormat);
+    if (data && data.StartDate) {
+      this._startDate = moment(data.StartDate, hih.momentDateFormat);
     }
-    if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.momentDateFormat);
+    if (data && data.EndDate) {
+      this._endDate = moment(data.EndDate, hih.momentDateFormat);
     }
-    if (data && data.annualRate) {
-      this.annualRate = +data.annualRate;
+    if (data && data.AnnualRate) {
+      this.annualRate = +data.AnnualRate;
     }
-    if (data && data.interestFree) {
-      this.InterestFree = data.interestFree;
+    if (data && data.InterestFree) {
+      this.InterestFree = data.InterestFree;
     }
-    if (data && data.totalMonths) {
-      this.TotalMonths = +data.totalMonths;
+    if (data && data.TotalMonths) {
+      this.TotalMonths = +data.TotalMonths;
     }
-    if (data && data.repaymentMethod) {
-      this.RepayMethod = +data.repaymentMethod;
+    if (data && data.RepaymentMethod) {
+      this.RepayMethod = +data.RepaymentMethod;
     }
-    if (data && data.refDocID) {
-      this.RefDocId = +data.refDocID;
+    if (data && data.RefDocID) {
+      this.RefDocId = +data.RefDocID;
     }
-    if (data && data.others) {
-      this.Comment = data.others;
+    if (data && data.Others) {
+      this.Comment = data.Others;
     }
-    if (data && data.payingAccount) {
-      this.PayingAccount = data.payingAccount;
+    if (data && data.PayingAccount) {
+      this.PayingAccount = data.PayingAccount;
     }
-    if (data && data.partner) {
-      this.Partner = data.partner;
+    if (data && data.Partner) {
+      this.Partner = data.Partner;
     }
-    if (data && data.loanTmpDocs && data.loanTmpDocs instanceof Array) {
+    if (data && data.LoanTmpDocs && data.LoanTmpDocs instanceof Array) {
       this.loanTmpDocs = [];
-      for (const val of data.loanTmpDocs) {
+      for (const val of data.LoanTmpDocs) {
         const tdoc: TemplateDocLoan = new TemplateDocLoan();
         tdoc.onSetData(val);
         this.loanTmpDocs.push(tdoc);
       }
     }
-    if (data && data.firstRepayDate) {
-      this._firstRepayDate = moment(data.firstRepayDate, hih.momentDateFormat);
-    }
-    if (data && data.repayDayInMonth) {
-      this._repayDayInMonth = data.repayDayInMonth;
-    }
+    // if (data && data.firstRepayDate) {
+    //   this._firstRepayDate = moment(data.firstRepayDate, hih.momentDateFormat);
+    // }
+    // if (data && data.repayDayInMonth) {
+    //   this._repayDayInMonth = data.repayDayInMonth;
+    // }
   }
 }
 
@@ -2502,7 +2505,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.AccountID = this.AccountId;
     rstObj.TransactionDate = this._tranDate.format(hih.momentDateFormat);
     rstObj.TransactionType = this.TranType;
-    rstObj.TranAmount = this.TranAmount;
+    rstObj.TransactionAmount = this.TranAmount;
     if (this.ControlCenterId) {
       rstObj.ControlCenterID = this.ControlCenterId;
     }

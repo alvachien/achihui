@@ -145,7 +145,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           });
         }
         // Loan template doc
-        if (rsts[1] instanceof Array && rsts[1].length > 1) {
+        if (rsts[1] instanceof Array && rsts[1].length > 0) {
           rsts[1].forEach((val: TemplateDocLoan) => {
             let idx = this.listDate.findIndex(cell => {
               return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));

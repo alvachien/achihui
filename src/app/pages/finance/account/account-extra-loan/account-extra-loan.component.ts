@@ -99,7 +99,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
 
     objrst.loanTmpDocs = [];
-    objrst.loanTmpDocs = this.listTmpDocs.slice();
+    objrst.loanTmpDocs = this.listTmpDocs.slice();    
 
     return objrst;
   }
@@ -230,6 +230,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     let amtTotal = 0;
     let amtPaid = 0;
     let monthPaid = 0;
+    let topDocID = 0;
     const arKeepItems: TemplateDocLoan[] = [];
     tmpdocs.forEach((tdl: TemplateDocLoan) => {
       amtTotal += tdl.TranAmount;
@@ -237,6 +238,10 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         amtPaid += tdl.TranAmount;
         monthPaid ++;
         arKeepItems.push(tdl);
+
+        if (topDocID < tdl.DocId) {
+          topDocID = tdl.DocId;
+        }
       }
     });
 
@@ -279,6 +284,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         }
         tmpdoc.Desp = val.Comment + ' | ' + rstidx.toString()
           + ' / ' + x.length.toString();
+
+        tmpdoc.DocId = ++topDocID; // Generate document ID
         arKeepItems.push(tmpdoc);
       }
 
