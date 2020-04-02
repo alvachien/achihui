@@ -14,7 +14,8 @@ import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator, ModelUtility,
   financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, TemplateDocLoan,
-  IAccountCategoryFilterEx,
+  IAccountCategoryFilterEx, financeDocTypeRepay, financeTranTypeRepaymentIn, financeTranTypeRepaymentOut,
+  financeTranTypeInterestOut, financeTranTypeInterestIn,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -56,7 +57,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   selectedLoanTmpDoc: TemplateDocLoan[] = [];
   // Step 1: items
   listItems: PayingAccountItem[] = [];
+  selectedLoanAccount: Account;
   amountOpen: number;
+  // Step 2: Confirm
+  confirmInfo: Document;
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -78,7 +82,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       excludedCategories: [
         // Nothing exclude        
       ]
-    }
+    };
+    this.confirmInfo = new Document();
   }
 
   ngOnInit() {
@@ -154,12 +159,19 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           if (this.selectedLoanTmpDoc[0].InterestAmount) {
             this.amountOpen += this.selectedLoanTmpDoc[0].InterestAmount;
           }
+          this.readLoanAccountInfo();
           this.currentStep ++;
         }
         break;
 
       case 1:
-        this.currentStep ++;
+        if (this.nextButtonEnabled) {
+          this.buildConfirmInfo();
+          this.currentStep ++;
+        }
+        break;
+      
+      case 2:
         break;
 
       default:
@@ -169,6 +181,31 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   pre(): void {
     this.currentStep --;
   }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find(acnt => {
+      return acnt.Id === acntid;
+    });
+    return acntObj ? acntObj.Name : '';
+  }
+  public getControlCenterName(ccid: number): string {
+    const ccObj = this.arControlCenters.find(cc => {
+      return cc.Id === ccid;
+    });
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number): string {
+    const orderObj = this.arOrders.find(ord => {
+      return ord.Id === ordid;
+    });
+    return orderObj ? orderObj.Name : '';
+  }
+  // public getTranTypeName(ttid: number): string {
+  //   const tranTypeObj = this.arTranType.find(tt => {
+  //     return tt.Id === ttid;
+  //   });
+
+  //   return tranTypeObj ? tranTypeObj.Name : '';
+  // }
 
   // Step 0: Serach
   public onSearchLoanTmp() {    
@@ -210,10 +247,24 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   }
 
   // Step 1. Items
-  public onCreateItem() {
-    // Detect current 
+  private readLoanAccountInfo() {
+    if (this.selectedLoanTmpDoc.length === 1) {
+      this.odataService.readAccount(this.selectedLoanTmpDoc[0].AccountId)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe({
+          next: val => {
+            this.selectedLoanAccount = val;
+          },
+          error: err => {
+            // TBD.
+          },
+        });
+    }
+  }
+
+  public onCreateItem() {    
     let nitem = {
-      AccountId: undefined,
+      AccountId: this.selectedLoanAccount ? ( this.selectedLoanAccount.ExtraInfo ? (this.selectedLoanAccount.ExtraInfo as AccountExtraLoan).PayingAccount : undefined ) : undefined,
       TranAmount: 0,
       Comment: '',
     } as PayingAccountItem;
@@ -235,4 +286,91 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     this.amountOpen = parseFloat(this.amountOpen.toFixed(2));
   }
+
+  // Step 2. Review
+  private buildConfirmInfo() {
+    this.confirmInfo = new Document();
+
+    // Header
+    this.confirmInfo.HID = this.homeService.ChosedHome.ID;
+    this.confirmInfo.DocType = financeDocTypeRepay;
+    // this.confirmInfo.TranDate = moment(this.tranDate, momentDateFormat);
+    // this.confirmInfo.TranCurr = this.tranCurrency;
+    this.confirmInfo.Desp = this.selectedLoanTmpDoc[0].Desp;
+
+    // Items
+    // Add two items: repay-in and repay-out
+    let curItemIdx: number = 1;
+    let tranAmount: number = 0;
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = curItemIdx++;
+    if (this.selectedLoanAccount) {
+      di.AccountId = this.selectedLoanTmpDoc[0].AccountId;
+      if (this.selectedLoanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+        di.TranType = financeTranTypeRepaymentIn;
+      } else {
+        di.TranType = financeTranTypeRepaymentOut;
+      }
+    }
+    di.TranAmount = this.selectedLoanTmpDoc[0].TranAmount;
+    tranAmount = di.TranAmount;
+    di.ControlCenterId = this.selectedLoanTmpDoc[0].ControlCenterId;
+    di.OrderId = this.selectedLoanTmpDoc[0].OrderId;
+    di.Desp = this.selectedLoanTmpDoc[0].Desp;
+    this.confirmInfo.Items.push(di);
+
+    if (this.listItems.length > 0) {
+      let nleftAmount: number = 0;
+      for (let idx: number = 0; idx < this.listItems.length; idx++) {
+        di = new DocumentItem();
+        di.ItemId = curItemIdx++;
+        di.AccountId = this.listItems[idx].AccountId;
+        if (this.selectedLoanAccount) {
+          if (tranAmount > 0) {
+            if (this.selectedLoanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+              di.TranType = financeTranTypeRepaymentOut;
+            } else {
+              di.TranType = financeTranTypeRepaymentIn;
+            }
+          } else {
+            if (this.selectedLoanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+              di.TranType = financeTranTypeInterestOut;
+            } else {
+              di.TranType = financeTranTypeInterestIn;
+            }
+          }
+        }
+
+        if (tranAmount > 0) {
+          nleftAmount = +(tranAmount - this.listItems[idx].TranAmount).toFixed(2);
+          if (nleftAmount > 0) {
+            di.TranAmount = this.listItems[idx].TranAmount;
+            tranAmount = nleftAmount;
+            nleftAmount = 0;
+          } else if (nleftAmount < 0) {
+            di.TranAmount = tranAmount;
+            tranAmount = 0;
+            nleftAmount = Math.abs(nleftAmount);
+            idx--; // For this case, reduce the pointer
+          } else {
+            di.TranAmount = tranAmount;
+            nleftAmount = 0;
+            tranAmount = 0;
+          }
+        } else if (nleftAmount > 0) {
+          di.TranAmount = nleftAmount;
+          nleftAmount = 0;
+        } else {
+          di.TranAmount = this.listItems[idx].TranAmount;
+        }
+
+        di.ControlCenterId = this.selectedLoanTmpDoc[0].ControlCenterId;
+        di.OrderId = this.selectedLoanTmpDoc[0].OrderId;
+        di.Desp = this.selectedLoanTmpDoc[0].Desp;
+        this.confirmInfo.Items.push(di);
+      }
+    }
+  }
+
+  // Step 3. 
 }

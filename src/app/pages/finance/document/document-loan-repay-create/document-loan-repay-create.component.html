@@ -155,8 +155,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of itemsTable.data">
-            <td></td>
+          <tr *ngFor="let data of itemsTable.data; index as itemIdx">
+            <td>{{ itemIdx + 1 }}</td>
             <td>
               <nz-form-item>
                 <nz-form-control nzHasFeedback [nzErrorTip]="accountTpl">
@@ -186,6 +186,32 @@
           </tr>
         </tbody>
       </nz-table>
+    </div>
+
+    <!-- Step 2. Confirm -->
+    <div [hidden]="currentStep !== 2">
+      <nz-descriptions [nzTitle]="'Finance.Document' | transloco" nzBordered [nzColumn]="4">
+        <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
+          {{confirmInfo.TranDateFormatString}}
+        </nz-descriptions-item>
+        <div *ngFor="let iteminfo of confirmInfo.Items">
+          <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+            {{getAccountName(iteminfo.AccountId)}} ({{iteminfo.AccountId}})
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+            {{getTranTypeName(iteminfo.TranType)}} ({{iteminfo.TranType}})
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+            {{iteminfo.TranAmount}} <span style="margin-left: 3px;">{{baseCurrency}}</span>
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+            {{getControlCenterName(iteminfo.ControlCenterId)}} ({{iteminfo.ControlCenterId}})
+          </nz-descriptions-item>  
+          <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+            {{getOrderName(iteminfo.OrderId)}} ({{iteminfo.OrderId}})
+          </nz-descriptions-item>  
+        </div>
+      </nz-descriptions>
     </div>
 
     <!-- Step actions/buttons -->
