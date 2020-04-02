@@ -140,7 +140,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         return this.amountOpen === 0 && this.listItems.length > 0;
 
       case 2:
-        break;
+        return true;
 
       default:
         break;
@@ -157,6 +157,11 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           this.currentStep ++;
         }
         break;
+
+      case 1:
+        this.currentStep ++;
+        break;
+
       default:
         break;
     }
@@ -206,6 +211,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
   // Step 1. Items
   public onCreateItem() {
+    // Detect current 
     let nitem = {
       AccountId: undefined,
       TranAmount: 0,
