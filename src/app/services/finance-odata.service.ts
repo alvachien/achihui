@@ -1370,29 +1370,28 @@ export class FinanceOdataService {
       }));
   }
 
-  // Create a repayment document on a loan
-  public createLoanRepayDoc(doc: Document, loanAccountID: number, tmpdocid?: number): Observable<Document> {
+  /**
+   * Create repayment for Loan
+   * @param doc Document information
+   * @param tmpdocid Template Document ID
+   */
+  public createLoanRepayDoc(doc: Document, tmpdocid: number): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.documentAPIUrl + '/PostLoanRepayDocument';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this.homeService.ChosedHome.ID.toString());
-    params = params.append('loanAccountID', loanAccountID.toString());
-    if (tmpdocid) {
-      params = params.append('tmpdocid', tmpdocid.toString());
-    }
+    const apiurl: string = environment.ApiUrl + `/api/FinanceTmpLoanDocuments/PostRepayDocument`;
 
-    const jdata: string = doc.writeJSONString();
-
-    return this.http.post(apiurl, jdata, {
+    return this.http.post(apiurl, {
+      DocumentInfo: doc.writeJSONObject(),
+      LoanTemplateDocumentID: tmpdocid,
+      HomeID: this.homeService.ChosedHome.ID,
+    }, {
         headers,
-        params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceOdataService: ${response}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createLoanRepayDoc`,
           ConsoleLogTypeEnum.debug);
 
         const hd: Document = new Document();
@@ -1401,7 +1400,7 @@ export class FinanceOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc, failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -1826,7 +1825,7 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getRepeatFrequencyDates in FinanceOdataService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService GetRepeatedDates`,
           ConsoleLogTypeEnum.debug);
 
         const results: RepeatedDatesAPIOutput[] = [];
@@ -1845,7 +1844,7 @@ export class FinanceOdataService {
         return results;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getRepeatFrequencyDates in FinanceOdataService: ${error}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService GetRepeatedDates, failed ${error}`,
          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

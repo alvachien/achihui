@@ -20,6 +20,7 @@
   </nz-steps>
 
   <div class="steps-content">
+    <!-- Step 0: Generial info -->
     <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
       <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
         [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
@@ -76,12 +77,14 @@
       </nz-form-item>
     </form>
 
+    <!-- Step 1: Extra info for Loan Account -->
     <form nz-form [formGroup]="extraFormGroup" [hidden]="currentStep !== 1">
       <hih-finance-account-extra-loan formControlName="loanAccountControl" [tranAmount]="tranAmount"
         [controlCenterID]="controlCenterID" [orderID]="orderID" [arUIAccount]="arUIAccount">
       </hih-finance-account-extra-loan>
     </form>
 
+    <!-- Step 2: Confirm -->
     <div [hidden]="currentStep !== 2">
       <div>
         <h3>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
@@ -90,6 +93,7 @@
       </div>
     </div>
 
+    <!-- Step 3: Result -->
     <div [hidden]="currentStep !== 3">
       <div *ngIf="docIdCreated">
         <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"

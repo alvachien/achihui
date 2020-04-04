@@ -2175,7 +2175,7 @@ describe('FinanceOdataService', () => {
 
       // Respond with the mock data
       req.flush(`[{'hid':1, 'docID':397, 'refDocID':null, 'accountID':58, 'tranDate':'2019-02-22', 'tranAmount':3653.63, 'interestAmount':9782.60,
-        'controlCenterID':8, 'orderID':null, 'desp':'201807昌邑路房产商业贷款 | 6 / 360', 'createdBy':'aaa',
+        'controlCenterID':8, 'orderID':null, 'desp':'201807 | 6 / 360', 'createdBy':'aaa',
         'createdAt':'2018-09-07', 'updatedBy':null, 'updatedAt':'0001-01-01'}]`);
     });
 
@@ -2191,7 +2191,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body
@@ -2460,7 +2460,7 @@ describe('FinanceOdataService', () => {
     let apiurl: string;
     beforeEach(() => {
       service = TestBed.get(FinanceOdataService);
-      apiurl = service.documentAPIUrl + '/PostLoanRepayDocument';
+      apiurl = environment.ApiUrl + '/api/FinanceTmpLoanDocuments/PostRepayDocument';
     });
 
     afterEach(() => {
@@ -2469,7 +2469,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return doc for success case', () => {
-      service.createLoanRepayDoc(new Document(), 22, 1).subscribe(
+      service.createLoanRepayDoc(new Document(), 1).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2484,12 +2484,14 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(100);
+      req.flush({
+        ID: 100
+      });
     });
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.createLoanRepayDoc(new Document(), 22, 1).subscribe(
+      service.createLoanRepayDoc(new Document(), 1).subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -3393,7 +3395,9 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(outputData);
+      req.flush({
+        value: outputData
+      });
     });
 
     it('should return error in case error appear', () => {

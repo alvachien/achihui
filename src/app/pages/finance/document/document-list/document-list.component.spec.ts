@@ -30,7 +30,7 @@ describe('DocumentListComponent', () => {
   let fetchAllOrdersSpy: any;
   let fetchAllDocumentsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
+  // const uiServiceStub: Partial<UIStatusService> = {};
   const ardocs: BaseListModel<Document> = {
     totalCount: 0,
     contentList: [],
@@ -85,7 +85,7 @@ describe('DocumentListComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
-        { provide: UIStatusService, useValue: uiServiceStub },
+        UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
       ]
     });
@@ -221,7 +221,7 @@ describe('DocumentListComponent', () => {
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createassetvalchg']);
 
       component.onCreateRepayDocument();
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createrepayex']);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createloanrepay']);
 
       // component.onDisplayDocument(doc: Document): void {
       //   expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display', doc.Id]);

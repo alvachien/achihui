@@ -53,20 +53,26 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 0: Search for loan
   searchFormGroup: FormGroup;
   acntCategoryFilter: IAccountCategoryFilterEx;
+  acntFilterFilter: string;
   listOfLoanTmpDoc: TemplateDocLoan[] = [];
   selectedLoanTmpDoc: TemplateDocLoan[] = [];
   // Step 1: items
+  headerFormGroup: FormGroup;
   listItems: PayingAccountItem[] = [];
   selectedLoanAccount: Account;
   amountOpen: number;
   // Step 2: Confirm
   confirmInfo: Document;
+  public isDocPosting = false;
+  // Step: Result
+  public docIdCreated?: number = null;
+  public docPostingFailed: string;
 
   constructor(
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
   ) {
-    // this.searchFormGroup = new FormGroup
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
     this.searchFormGroup = new FormGroup({
       docIDControl: new FormControl(),
       dateRangeControl: new FormControl([new Date(), new Date()], Validators.required),
@@ -83,6 +89,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         // Nothing exclude        
       ]
     };
+    this.acntFilterFilter = 'Normal';
+    this.headerFormGroup = new FormGroup({
+      dateControl: new FormControl(new Date(), [Validators.required]),
+    });
     this.confirmInfo = new Document();
   }
 
@@ -142,7 +152,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         return this.selectedLoanTmpDoc.length === 1;
 
       case 1: // Input default data
-        return this.amountOpen === 0 && this.listItems.length > 0;
+        return this.amountOpen === 0 && this.listItems.length > 0 && this.headerFormGroup.valid;
 
       case 2:
         return true;
@@ -172,6 +182,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         break;
       
       case 2:
+        this.isDocPosting = true;
+        this.doPosting();
         break;
 
       default:
@@ -199,13 +211,13 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     });
     return orderObj ? orderObj.Name : '';
   }
-  // public getTranTypeName(ttid: number): string {
-  //   const tranTypeObj = this.arTranType.find(tt => {
-  //     return tt.Id === ttid;
-  //   });
+  public getTranTypeName(ttid: number): string {
+    const tranTypeObj = this.arTranTypes.find(tt => {
+      return tt.Id === ttid;
+    });
 
-  //   return tranTypeObj ? tranTypeObj.Name : '';
-  // }
+    return tranTypeObj ? tranTypeObj.Name : '';
+  }
 
   // Step 0: Serach
   public onSearchLoanTmp() {    
@@ -294,7 +306,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     // Header
     this.confirmInfo.HID = this.homeService.ChosedHome.ID;
     this.confirmInfo.DocType = financeDocTypeRepay;
-    // this.confirmInfo.TranDate = moment(this.tranDate, momentDateFormat);
+    this.confirmInfo.TranDate = moment(this.headerFormGroup.get('dateControl').value as Date);
+    this.confirmInfo.TranCurr = this.homeService.ChosedHome.BaseCurrency;
     // this.confirmInfo.TranCurr = this.tranCurrency;
     this.confirmInfo.Desp = this.selectedLoanTmpDoc[0].Desp;
 
@@ -373,4 +386,26 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   }
 
   // Step 3. 
+  private doPosting() {
+    // TBD.    
+    // Now go to the real posting
+    this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId)
+    .pipe(takeUntil(this._destroyed$),
+    finalize(() => {
+      this.isDocPosting = false;
+      this.currentStep = 3; // Result page
+    }))
+    .subscribe({
+      next: val => {
+        // Value
+        this.docIdCreated = val.Id;
+        this.docPostingFailed = undefined;
+      },
+      error: err => {
+        // Error
+        this.docPostingFailed = err;
+        this.docIdCreated = null;
+      }
+    });
+  }
 }

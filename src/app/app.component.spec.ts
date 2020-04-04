@@ -8,7 +8,7 @@ import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { getTranslocoModule } from '../testing';
-import { AuthService, HomeDefOdataService, } from '../app/services';
+import { AuthService, HomeDefOdataService, UIStatusService, } from '../app/services';
 import { UserAuthInfo } from './model';
 import { User } from 'oidc-client';
 
@@ -53,6 +53,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
+        { provide: UIStatusService },
         { provide: NZ_I18N, useValue: en_US },
       ]
     }).compileComponents();

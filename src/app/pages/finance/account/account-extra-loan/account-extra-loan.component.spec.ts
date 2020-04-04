@@ -197,10 +197,13 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    const startdt = moment().add(1, 'M');
-    loan1.startDate = startdt;
+    loan1.startDate = moment().add(1, 'M');
+    loan1.endDate = moment().add(2, 'years');
     loan1.TotalMonths = 24;
-    loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    loan1.RepayMethod = RepaymentMethodEnum.DueRepayment;
+    loan1.InterestFree = true;
+    loan1.RepayDayInMonth = 15;
+    loan1.Comment = 'test';
     expect(loan1.isAccountValid).toBeTruthy();
 
     testcomponent.formGroup.get('extraControl').setValue(loan1);
@@ -251,6 +254,7 @@ describe('AccountExtraLoanComponent', () => {
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
     loan1.InterestFree = false;
     loan1.RepayDayInMonth = 15;
+    loan1.Comment = 'test';
     expect(loan1.isAccountValid).toBeTruthy();
 
     testcomponent.formGroup.get('extraControl').setValue(loan1);

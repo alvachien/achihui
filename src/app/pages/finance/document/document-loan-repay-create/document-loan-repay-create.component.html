@@ -58,7 +58,7 @@
                 <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
                 <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
                   <nz-select formControlName="accountControl">
-                    <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: acntCategoryFilter" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                    <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: acntCategoryFilter | uiAccountStatusFilter: acntFilterFilter" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
                   </nz-select>
                   <ng-template #accountErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
@@ -136,9 +136,24 @@
 
     <!-- Step 1. Document items -->
     <div [hidden]="currentStep !== 1">
+      <form [formGroup]="headerFormGroup">
+        <!-- Date -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateErrorTpl">
+            <nz-date-picker formControlName="dateControl"></nz-date-picker>
+            <ng-template #dateErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{'Common.FieldIsMandatory' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+      <nz-divider></nz-divider>
       <nz-descriptions [nzTitle]="'Finance.Amount' | transloco" nzBordered [nzColumn]="4">
         <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="4">
-          {{ amountOpen | number:'1.2-2' }}
+          {{ amountOpen | number:'1.2-2' }} ({{baseCurrency}})
         </nz-descriptions-item>
       </nz-descriptions>
       
@@ -214,6 +229,35 @@
       </nz-descriptions>
     </div>
 
+    <!-- Step 3. Result -->
+    <div [hidden]="currentStep !== 3">
+      <div *ngIf="docIdCreated">
+        <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+          <div nz-result-extra>
+            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
+            <button nz-button>Create another Document</button>
+          </div>
+        </nz-result>
+      </div>
+      <div *ngIf="!docIdCreated">
+        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+          <div nz-result-content>
+            <div class="desc">
+              <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
+              <p nz-paragraph>
+                <i nz-icon nzType="close-circle"></i>
+                {{docPostingFailed}}
+              </p>
+            </div>
+          </div>
+          <div nz-result-extra>
+            <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
+          </div>
+        </nz-result>
+      </div>
+    </div>
     <!-- Step actions/buttons -->
     <div class="steps-action">
       <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">

@@ -421,6 +421,7 @@ describe('DocumentLoanCreateComponent', () => {
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push(
         {
@@ -482,6 +483,7 @@ describe('DocumentLoanCreateComponent', () => {
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push(
         {
@@ -550,6 +552,7 @@ describe('DocumentLoanCreateComponent', () => {
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push(
         {
@@ -648,6 +651,7 @@ describe('DocumentLoanCreateComponent', () => {
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push(
         {
@@ -725,6 +729,7 @@ describe('DocumentLoanCreateComponent', () => {
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push(
         {

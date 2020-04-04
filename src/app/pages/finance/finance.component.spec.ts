@@ -34,7 +34,8 @@ describe('FinanceComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
-      'createDocument',
+      'fetchAllDPTmpDocs',
+      'fetchAllLoanTmpDocs',
     ]);
 
     TestBed.configureTestingModule({
