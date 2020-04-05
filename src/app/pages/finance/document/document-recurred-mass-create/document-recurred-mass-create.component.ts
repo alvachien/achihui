@@ -11,7 +11,7 @@ import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUti
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
   momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
-  RepeatFrequencyEnum, RepeatedDatesAPIOutput, costObjectValidator, FinanceNormalDocItemMassCreate,
+  RepeatFrequencyEnum, RepeatedDatesAPIOutput, costObjectValidator, FinanceNormalDocItemMassCreate, UIDisplayString,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -41,7 +41,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public arFrequencies: UIDisplayString[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   public arUIOrders: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   public arCurrencies: Currency[] = [];
@@ -85,7 +85,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
 
     this.searchFormGroup = new FormGroup({
-      dateRangeControl: new FormControl(undefined, [Validators.required]),
+      dateRangeControl: new FormControl([new Date(), new Date()], [Validators.required]),
       frqControl: new FormControl(undefined, [Validators.required]),
       accountControl: new FormControl(undefined, [Validators.required]),
       tranTypeControl: new FormControl(),
@@ -306,7 +306,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     forkJoin([
       this.odataService.getRepeatedDates(datinput),
       this.odataService.searchDocItem(filters)
-      ])    
+      ])
       .pipe(takeUntil(this._destroyed$),
       finalize(() => this.isReadingExistingItem = false))
       .subscribe({
@@ -330,6 +330,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             itm.expand = false;
             itm.Items = aritems ? aritems : [];
             this.listExistingDocItems.push(itm);
+          });
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentRecurredMassCreateComponent fetchAllDocItemView, forkJoin, ${err}`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
           });
         }
       });
@@ -395,13 +404,37 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       validators: [costObjectValidator],
     });
   }
-  private createItem(): void {
+  public onCreateNewItem(event: MouseEvent): number {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    return this.createItem();
+  }
+  public onCopyItem(event: MouseEvent, i: number): number {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    return this.copyItem(i);
+  }
+
+  public onRemoveItem(event: MouseEvent, i: number) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    this.removeItem(i);
+  }
+
+  private createItem(): number {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
+    return control.length - 1;
   }
-  private copyItem(i: number): void {
+  private copyItem(i: number): number {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const newItem: FormGroup = this.initItem();
     const oldItem = control.value[i];
@@ -416,6 +449,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     }
 
     control.push(newItem);
+
+    return control.length - 1;
   }
   private removeItem(i: number): void {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
@@ -535,7 +570,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$),
       finalize(() => this.isDocPosting = false))
       .subscribe({
-        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
+        next: (rsts: { PostedDocuments: Document[], FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent doPosting massCreateNormalDocument...',
             ConsoleLogTypeEnum.debug);
 

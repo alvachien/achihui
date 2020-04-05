@@ -122,20 +122,26 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreateNewItem(event: MouseEvent): void {
-    event.stopPropagation();
+  onCreateNewItem(event: MouseEvent): number {
+    if (event) {
+      event.stopPropagation();
+    }
 
-    this.createItem();
+    return this.createItem();
   }
 
-  onCopyItem(event: MouseEvent, i: number): void {
-    event.stopPropagation();
+  onCopyItem(event: MouseEvent, i: number): number {
+    if (event) {
+      event.stopPropagation();
+    }
 
-    this.copyItem(i);
+    return this.copyItem(i);
   }
 
   onRemoveItem(event: MouseEvent, i: number) {
-    event.stopPropagation();
+    if (event) {
+      event.stopPropagation();
+    }
 
     this.removeItem(i);
   }
@@ -215,13 +221,14 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       validators: [costObjectValidator],
     });
   }
-  private createItem(): void {
+  private createItem(): number {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
+    return control.length - 1;
   }
-  private copyItem(i: number): void {
+  private copyItem(i: number): number {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
     const newItem: FormGroup = this.initItem();
     const oldItem = control.value[i];
@@ -236,6 +243,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
 
     control.push(newItem);
+    return control.length - 1;
   }
   private removeItem(i: number): void {
     const control: FormArray = this.itemsFormGroup.controls.items as FormArray;

@@ -30,6 +30,7 @@ const routes: Routes = [
   { path: 'createlendto', component: DocumentLoanCreateComponent },
   { path: 'createassetvalchg', component: DocumentAssetValueChangeCreateComponent },
   { path: 'createloanrepay', component: DocumentLoanRepayCreateComponent },
+  { path: 'createloanrepay/:docid', component: DocumentLoanRepayCreateComponent },
 
   { path: 'edit', component: DocumentDetailComponent },
   { path: 'display', component: DocumentDetailComponent },

@@ -1889,6 +1889,57 @@ describe('FinanceOdataService', () => {
     });
   });
 
+  describe('massCreateNormalDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceOdataService);
+
+      const doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeNormal;
+      doc.Desp = 'Test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      const ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = 1;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      doc.Items = [ditem];
+      fakeData.setFinNormalDocumentForCreate(doc);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should work for normal doc', () => {
+      service.massCreateNormalDocument([fakeData.finNormalDocumentForCreate]).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === documentAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({
+        PostedDocuments: [{
+          Id: 1
+        }],
+        FailedDocuments: [],
+      });
+    });
+  });
+
   describe('createDocumentFromDPTemplate', () => {
     let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments/PostDocument';
     beforeEach(() => {

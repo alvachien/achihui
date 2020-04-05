@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
@@ -6,7 +7,7 @@ import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan } from '../../model';
-import { FinanceOdataService } from '../../services';
+import { FinanceOdataService, UIStatusService } from '../../services';
 
 class DateCellData {
   public CurrentDate: moment.Moment;
@@ -33,6 +34,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
   constructor(
     public odataService: FinanceOdataService,
     private modalService: NzModalService,
+    private uiService: UIStatusService,
+    private router: Router,
     private messageService: NzMessageService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
       ConsoleLogTypeEnum.debug);
@@ -65,9 +68,6 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   getMonthData(date: Date): number | null {
-    if (date.getMonth() === 8) {
-      return 1394;
-    }
     return null;
   }
 
@@ -162,7 +162,14 @@ export class FinanceComponent implements OnInit, OnDestroy {
         }
       },
       error: err => {
-        // TBD.
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceComponent fetchData forkJoin failed ${err}...`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
       }
     });
   }
@@ -171,7 +178,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: val => {
-          this.messageService.success('Document posted');
+          this.messageService.success(translate('Finance.DocumentPosted'));
           // Remove the doc
           let idx = this.listDate.findIndex(cell => {
             return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));
@@ -181,7 +188,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
               return doc.DocId === dpdoc.DocId && doc.AccountId === dpdoc.AccountId && doc.HID === dpdoc.HID;
             });
             if (secidx !== -1) {
-              this.listDate[idx].DPDocs.splice(secidx);
+              this.listDate[idx].DPDocs.splice(secidx, 1);
+            }
+
+            if (this.listDate[idx].DPDocs.length === 0 && this.listDate[idx].LoanDocs.length === 0) {
+              this.listDate.splice(idx, 1);
             }
           }
         },
@@ -191,7 +202,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
       });
   }
   doPostLoanDoc(loandoc: TemplateDocLoan) {
-
+    // It shall just jump to repay page
+    this.uiService.SelectedLoanTmp = loandoc;
+    this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId.toString()]);
   }
 
   private _updateSelectedDate() {

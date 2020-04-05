@@ -23,4 +23,17 @@ describe('UIStatusService', () => {
   it('should be created', inject([UIStatusService], (service: UIStatusService) => {
     expect(service).toBeTruthy();
   }));
+
+  it('properties', inject([UIStatusService], (service: UIStatusService) => {
+    expect(service).toBeTruthy();
+
+    service.latestError = 'error';
+    expect(service.latestError).toBeTruthy();
+
+    service.SelectedLoanTmp = null;
+    expect(service.SelectedLoanTmp).toBeNull();
+
+    service.CurrentLanguage = 'zh';
+    expect(service.CurrentLanguage).toBeTruthy();
+  }));
 });

@@ -2051,7 +2051,7 @@ export class FinanceOdataService {
   /**
    * search document item
    */
-  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number): Observable<any> {
+  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number): Observable<{totalCount: number, contentList: DocumentItemView[]}> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')

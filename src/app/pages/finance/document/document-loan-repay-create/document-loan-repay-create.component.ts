@@ -71,6 +71,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   constructor(
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
+    private activedRoute: ActivatedRoute,
+    private modalService: NzModalService,
   ) {
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
     this.searchFormGroup = new FormGroup({
@@ -129,8 +131,15 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
         this.uiOrderFilter = undefined;
       },
-      error: error => {
-        // TBD.
+      error: err => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.create({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
       }
     });
   }
@@ -220,7 +229,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   }
 
   // Step 0: Serach
-  public onSearchLoanTmp() {    
+  public onSearchLoanTmp() {
     const dtranges: any[] = this.searchFormGroup.get('dateRangeControl').value;
     const acntid = this.searchFormGroup.get('accountControl').value;
     const docid = this.searchFormGroup.get('docIDControl').value;
@@ -236,7 +245,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           this.listOfLoanTmpDoc = tdocs.slice();
         },
         error: err => {
-          // TBD.
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent onSearchLoanTmp, failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
         },
       });
   }
@@ -268,7 +284,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
             this.selectedLoanAccount = val;
           },
           error: err => {
-            // TBD.
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent readLoanAccountInfo, failed: ${err}`,
+              ConsoleLogTypeEnum.error);
+
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
           },
         });
     }

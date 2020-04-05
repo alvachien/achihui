@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
-import { QuestionBankItem, } from '../model';
+
+import { QuestionBankItem, TemplateDocLoan, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
@@ -24,6 +25,14 @@ export class UIStatusService {
   }
   set latestError(le: string) {
     this._latestError = le;
+  }
+
+  private _selectedLoanTmp: TemplateDocLoan = null;
+  get SelectedLoanTmp(): TemplateDocLoan {
+    return this._selectedLoanTmp;
+  }
+  set SelectedLoanTmp(tmpdoc: TemplateDocLoan | null) {
+    this._selectedLoanTmp = tmpdoc;
   }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);

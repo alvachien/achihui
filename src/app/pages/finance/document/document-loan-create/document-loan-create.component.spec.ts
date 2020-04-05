@@ -34,7 +34,6 @@ describe('DocumentLoanCreateComponent', () => {
   let createLoanDocumentSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
   const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
@@ -96,7 +95,7 @@ describe('DocumentLoanCreateComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
-        { provide: UIStatusService, useValue: uiServiceStub },
+        UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
