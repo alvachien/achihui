@@ -22,7 +22,6 @@ describe('ControlCenterHierarchyComponent', () => {
   let storageService: any;
   let fetchAllControlCentersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -57,7 +56,7 @@ describe('ControlCenterHierarchyComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
-        { provide: UIStatusService, useValue: uiServiceStub },
+        UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
       ]
     });
