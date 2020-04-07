@@ -71,6 +71,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   constructor(
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
+    private uiService: UIStatusService,
     private activedRoute: ActivatedRoute,
     private modalService: NzModalService,
   ) {
@@ -103,44 +104,67 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
-    forkJoin([
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllDocTypes(),
-      this.odataService.fetchAllTranTypes(),
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
-      this.odataService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe({
-      next: (rst: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
-          ConsoleLogTypeEnum.debug);
+     // Distinguish current mode
+     let tmpdocid: number = null;
+     this.activedRoute.url.subscribe((x: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
+        ConsoleLogTypeEnum.debug);
 
-        this.arDocTypes = rst[1];
-        this.arTranTypes = rst[2];
-        this.arAccounts = rst[3];
-        this.arControlCenters = rst[4];
-        this.arOrders = rst[5];
-        this.arCurrencies = rst[6];
+      forkJoin([
+        this.odataService.fetchAllAccountCategories(),
+        this.odataService.fetchAllDocTypes(),
+        this.odataService.fetchAllTranTypes(),
+        this.odataService.fetchAllAccounts(),
+        this.odataService.fetchAllControlCenters(),
+        this.odataService.fetchAllOrders(),
+        this.odataService.fetchAllCurrencies(),
+      ]).pipe(takeUntil(this._destroyed$)).subscribe({
+        next: (rst: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
+            ConsoleLogTypeEnum.debug);
+  
+          this.arDocTypes = rst[1];
+          this.arTranTypes = rst[2];
+          this.arAccounts = rst[3];
+          this.arControlCenters = rst[4];
+          this.arOrders = rst[5];
+          this.arCurrencies = rst[6];
+  
+          // Accounts
+          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+          this.uiAccountStatusFilter = undefined;
+          this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.uiOrderFilter = undefined;
 
-        // Accounts
-        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-        this.uiAccountStatusFilter = undefined;
-        this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-        this.uiOrderFilter = undefined;
-      },
-      error: err => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
-          ConsoleLogTypeEnum.error);
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === 'createloanrepay') {
+              if (x.length === 2 && this.uiService.SelectedLoanTmp) {
+                tmpdocid = +x[1].path;
+                this.searchFormGroup.get('docIDControl').setValue(tmpdocid);
+                this.searchFormGroup.get('dateRangeControl').setValue([
+                  this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                ]);
+                this.searchFormGroup.get('accountControl').setValue(this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.AccountId : undefined);
 
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: err,
-          nzClosable: true,
-        });
-      }
+                this.listOfLoanTmpDoc = [this.uiService.SelectedLoanTmp];
+              }
+            }
+          }
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
     });
   }
 
@@ -238,6 +262,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     const dtbgn: moment.Moment = moment(dtranges[0]);
     const dtend: moment.Moment = moment(dtranges[1]);
 
+    this.listOfLoanTmpDoc = [];
+    this.selectedLoanTmpDoc = [];
     this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend, docid, acntid, ccid, orderid)
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
