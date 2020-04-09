@@ -82,6 +82,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
   });
 
   beforeEach(async(() => {
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createloanrepay', {})] as UrlSegment[]);
+
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -617,5 +619,55 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       flush();
     }));
+  });
+
+  describe('Working with data about navigation', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    let loanTmpDoc: TemplateDocLoan;
+
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('createloanrepay', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
+
+      loanTmpDoc = new TemplateDocLoan();
+      loanTmpDoc.HID = fakeData.chosedHome.ID;
+      loanTmpDoc.Desp = 'Loan 1';
+      loanTmpDoc.TranDate = moment();
+      loanTmpDoc.DocId = 3;
+      loanTmpDoc.AccountId = 1;
+      loanTmpDoc.TranAmount = 300;
+      fetchAllLoanTmpDocsSpy = storageService.fetchAllLoanTmpDocs.and.returnValue(asyncData([
+        loanTmpDoc,
+      ]));
+
+      readAccountSpy = storageService.readAccount.and.returnValue(asyncData(fakeData.finAccounts[0]));
+      createLoanRepayDocSpy = storageService.createLoanRepayDoc.and.returnValue(asyncData({
+        Id: 101,
+      }));
+    });
+
+    beforeEach(inject([OverlayContainer, UIStatusService],
+      (oc: OverlayContainer, uisvc: UIStatusService) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+
+      uisvc.SelectedLoanTmp = loanTmpDoc;
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall work as expect', () => {
+
+    });
   });
 });
