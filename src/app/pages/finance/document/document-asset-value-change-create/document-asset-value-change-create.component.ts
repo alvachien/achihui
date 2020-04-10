@@ -47,6 +47,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   private _destroyed$: ReplaySubject<boolean>;
   public detailObject: FinanceAssetValChgDocumentAPI;
   public baseCurrency: string;
+  isLoadingResults = false;
 
   // Step: Generic info
   public firstFormGroup: FormGroup;
@@ -373,5 +374,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     }
 
     return null;
+  }
+
+  public onDisplayCreatedDoc(): void {
+    
   }
 }

@@ -12,7 +12,7 @@ import { Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
   financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, ConsoleLogTypeEnum, AssetCategory,
-  UIAccountForSelection, TranType,
+  UIAccountForSelection, TranType, HomeMember,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 
@@ -29,6 +29,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   arrayStatus: UIDisplayString[] = [];
+  arMembers: HomeMember[] = [];
   arAccountCategories: AccountCategory[] = [];
   arAssetCategories: AssetCategory[] = [];
   // Header forum

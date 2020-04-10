@@ -20,7 +20,7 @@
       <!-- Type -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Type' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="typeTpl">
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="typeControl" (ngModelChange)="onPlanTypeChanged($event)">
             <nz-option *ngFor="let sts of arFinPlanTypes" [nzValue]='sts.value' [nzLabel]="t(sts.i18nterm)"></nz-option>
           </nz-select>
@@ -166,7 +166,7 @@
       <nz-result nzStatus="success" [nzTitle]="'Finance.ActivitySaved' | transloco"
         [nzSubTitle]="'Finance.ActivitySaved' | transloco">
         <div nz-result-extra>
-          <button nz-button (click)="onDisplayOrder()" nzType="primary">{{'Common.Display' | transloco}}</button>
+          <button nz-button (click)="onDisplayPlan()" nzType="primary">{{'Common.Display' | transloco}}</button>
           <button nz-button>Create another Plan</button>
         </div>
       </nz-result>

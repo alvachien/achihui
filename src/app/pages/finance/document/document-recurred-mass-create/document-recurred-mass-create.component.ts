@@ -606,4 +606,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         },
       });
   }
+  public onDisplayCreatedDoc(did: number) {
+    
+  }
 }

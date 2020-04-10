@@ -324,4 +324,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
     return null;
   }
+
+  public onDisplayCreatedDoc(): void {
+    
+  }
 }

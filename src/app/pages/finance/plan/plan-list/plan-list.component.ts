@@ -80,6 +80,10 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/plan/edit/' + rid.toString()]);
   }
 
+  onDelete(rid: number): void {
+    
+  }
+
   public getPlanTypeDisplayString(pt: PlanTypeEnum): string {
     return UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(pt);
   }

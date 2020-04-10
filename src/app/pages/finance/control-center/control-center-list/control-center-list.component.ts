@@ -74,4 +74,8 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/finance/controlcenter/edit/' + rid.toString()]);
   }
+
+  onDelete(rid: number) {
+    
+  }
 }

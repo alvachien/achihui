@@ -305,4 +305,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.controlCenterID = this.firstFormGroup.get('ccControl').value;
     this.confirmInfo.orderID = this.firstFormGroup.get('orderControl').value;
   }
+
+  public onDisplayCreatedDoc(): void {
+    
+  }
 }

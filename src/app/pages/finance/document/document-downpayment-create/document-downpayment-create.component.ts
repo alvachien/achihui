@@ -303,4 +303,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.confirmInfo.tranType = financeTranTypeAdvanceReceiveIn;
     }
   }
+  public onDisplayCreatedDoc(): void {
+    
+  }
 }

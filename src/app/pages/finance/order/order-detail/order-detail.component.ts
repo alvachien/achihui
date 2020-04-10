@@ -175,6 +175,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
+  onChange() {
+    
+  }
 
   public onSubmit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...',

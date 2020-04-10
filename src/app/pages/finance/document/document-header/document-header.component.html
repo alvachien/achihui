@@ -2,7 +2,7 @@
   <!-- Doc type -->
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.DocumentType' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+    <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="doctypeErrorTpl">
       <nz-select id="idDocType" formControlName="docTypeControl">
         <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name)"></nz-option>
       </nz-select>

@@ -49,11 +49,11 @@
       </nz-form-control>
     </nz-form-item>
   </form>
-
+<!-- 
   <div *ngIf="controlError">
     <nz-alert nzType="error" [nzMessage]="t(controlError.value)" [nzDescription]="t(controlError.value)" nzShowIcon>
     </nz-alert>
-  </div>
+  </div> -->
 
   <div class="toolbar_buttons">
     <button nz-button nzType="primary" [disabled]="!isFieldChangable"
@@ -77,9 +77,10 @@
                 <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
               </nz-input-group>
               <ng-template #suffixTemplate>
-                <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed"
-                  (click)="onDeleteMember(data)">{{'Common.Delete' | transloco}}</button>
-              </ng-template>
+                <button nz-button nzType="link" 
+                  >{{'Common.Delete' | transloco}}</button>
+                  <!-- [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(data)" -->
+                </ng-template>
               <ng-template #usrTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
                   {{'Common.FieldIsMandatory' | transloco}}

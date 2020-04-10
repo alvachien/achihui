@@ -5,6 +5,7 @@
 **Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
 
 Key components are:
+
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase).
@@ -39,6 +40,7 @@ Display a posted document
 ### Relevant API/App used
 
 The live demo used the following API/App:
+
 - AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](http://acidserver.azurewebsites.net);
 - AC HIH API [Github Project Link](https://github.com/alvachien/achihapi) : an Web API hosted in [Azure Link (will be obseleted soon)](http://achihapi.azurewebsites.net).
 
@@ -54,9 +56,11 @@ This project is the UI layer of new HIH, and it continues the HIH development si
 This project used tons of new UI technologies, including: Angular 7+, TypeScript 3+, Material 7+, ECharts 4+, etc;
 
 ## Credits
+
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
 
 This project also require the following components:
+
 * [Typescript](http://www.typescriptlang.org)
 * [Angular](https://github.com/angular/angular)
 * [Ant Design](https://ng.ant.design)
@@ -69,10 +73,11 @@ This project also require the following components:
 
 
 ## Contact me
+
 **Alva Chien | 钱红俊**
 
 A programmer, a Photographer, and a father. 
- 
+
 Contact me:
 
 1. Via mail: alvachien@163.com. Or,

@@ -457,4 +457,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       }
     });
   }
+  public onDisplayCreatedDoc() {
+    
+  }
 }

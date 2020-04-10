@@ -9,7 +9,12 @@ export class ObjectDetailComponent implements OnInit {
 
   constructor() { }
 
+  currentMode: string;
+
   ngOnInit() {
+  }
+  onCreate() {
+
   }
 
 }

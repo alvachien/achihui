@@ -77,4 +77,8 @@ export class OrderListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/finance/order/edit/' + rid.toString()]);
   }
+
+  onDelete(rid: number) {
+    
+  }
 }

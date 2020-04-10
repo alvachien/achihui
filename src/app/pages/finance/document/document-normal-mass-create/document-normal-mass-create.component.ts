@@ -399,4 +399,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         },
       });
   }
+  public onDisplayCreatedDoc(docid: number): void {
+    
+  }
 }

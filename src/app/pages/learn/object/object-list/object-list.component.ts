@@ -71,4 +71,17 @@ export class ObjectListComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
+
+  onCreate() {
+
+  }
+  onDelete(id: number) {
+
+  }
+  onEdit(id: number) {
+
+  }
+  onDisplay(id: number) {
+    
+  }
 }

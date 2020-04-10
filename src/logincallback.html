@@ -10,7 +10,7 @@
 <body>
   <h3 id="waiting" style="padding: 20%;text-align:center;">Redirecting to HIH...</h3>
   <div id="error"></div>
-  <script src="/assets/lib/oidc-client.min.js"></script>
+  <script src="hih/assets/lib/oidc-client.min.js"></script>
   <script>
     //Oidc.Log.logger = console;
     new Oidc.UserManager().signinRedirectCallback().then(function (user) {
@@ -19,7 +19,7 @@
         document.getElementById("error").innerText = "No sign-in request pending.";
       }
       else {
-        window.location = "/";
+        window.location = "/hih";
       }
     })
       .catch(function (er) {
