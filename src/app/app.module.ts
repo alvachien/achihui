@@ -55,7 +55,7 @@ registerLocaleData(en);
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         availableLangs: ['en', 'zh'],
-        defaultLang: 'en',
+        defaultLang: environment.DefaultLanguage? environment.DefaultLanguage : 'en',
         reRenderOnLangChange: true,
         prodMode: environment.production,
       })

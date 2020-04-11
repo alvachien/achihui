@@ -163,16 +163,17 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       .subscribe((rsts: RepeatedDatesWithAmountAPIOutput[]) => {
       if (rsts && rsts instanceof Array && rsts.length > 0) {
         const tmpDocs: TemplateDocADP[] = [];
-        for (const rst of rsts) {
+
+        rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
           const item: TemplateDocADP = new TemplateDocADP();
           item.HID = this.homeService.ChosedHome.ID;
-          // item.DocId = i + 1;
+          item.DocId = idx + 1;
           item.TranType = this.tranType;
           item.TranDate = rst.TranDate;
           item.TranAmount = rst.TranAmount;
           item.Desp = rst.Desp;
           tmpDocs.push(item);
-        }
+        });
 
         this.listTmpDocs = tmpDocs.slice();
 
