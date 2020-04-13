@@ -49,7 +49,17 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="'Nav.LearningTrace' | transloco" nzIcon="read">
+      <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="book">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'blog', 'collection']">{{'Blog.Collections' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'blog', 'post']">{{'Blog.Posts' | transloco}}</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu [nzTitle]="'Nav.LearningTrace' | transloco" nzIcon="project">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'learn', 'category']">{{'Learning.LearningCategory' | transloco}}</a>
@@ -129,7 +139,7 @@
               </a>
               <nz-dropdown-menu #menuUser="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>{{'Nav.UserDetail' | transloco}}</li>
+                  <li nz-menu-item (click)="onGoToUserDetail()">{{'Nav.UserDetail' | transloco}}</li>
                 </ul>
               </nz-dropdown-menu>
             </div>

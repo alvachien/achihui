@@ -368,6 +368,7 @@
     "EventTrace": "事务记录系统",
     "FinanceTrace": "财务记录系统",
     "LibraryTrace": "资料记录系统",
+    "Blogs": "博客系统",
     "About": "关于",
     "Acknowledgements": "致谢",
     "Credits": "致谢",
@@ -414,6 +415,12 @@
     "ObjectFetchFailedOrNoObject": "学习对象信息获取失败，或者尚未创建学习对象",
     "InvalidObject": "无效的学习对象",
     "ContentIsMust": "内容不能为空"
+  },
+  "Blog": {
+    "Collection": "集合",
+    "Collections": "集合",
+    "Post": "博文",
+    "Posts": "博文"
   },
   "Finance": {
     "Accounts": "账户",

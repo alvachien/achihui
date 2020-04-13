@@ -96,4 +96,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public onOpenPhotoGallery(): void {
     window.open(environment.AppGallery, '_blank');
   }
+
+  public onGoToUserDetail(): void {
+    this.router.navigate(['/userdetail']);
+  }
 }

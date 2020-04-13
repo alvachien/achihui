@@ -368,6 +368,7 @@
     "FinanceTrace": "Finance Trace",
     "LibraryTrace": "Library Trace",
     "EventTrace": "Event Trace",
+    "Blogs": "Blogs",
     "About": "About",
     "Acknowledgements": "Acknowledgements",
     "Credits": "Credits",
@@ -414,6 +415,12 @@
     "ObjectFetchFailedOrNoObject": "Objects fetch failed or there is no Object in system",
     "InvalidObject": "Invalid Object",
     "ContentIsMust": "Content is a must"
+  },
+  "Blog": {
+    "Collection": "Collection",
+    "Collections": "Collection",
+    "Post": "Post",
+    "Posts": "Posts"
   },
   "Finance": {
     "Accounts": "Accounts",
