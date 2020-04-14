@@ -1,1 +1,35 @@
-<p>post-list works!</p>
+<nz-page-header nzBackIcon>
+  <nz-page-header-title>{{'Blog.Post' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <a nz-button nzType="link" routerLink="/blog/post/create">{{'Common.Create' | transloco}}</a>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet"  
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="listOfDocs"
+    [nzLoading]="isLoadingResults"
+    [nzTotal]="totalPostCount"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="fetchData()"
+    (nzPageSizeChange)="fetchData(true)">
+    <thead>
+      <tr>
+        <th>{{'Common.ID' | transloco}}</th>
+        <th>{{'Common.Name' | transloco}}</th>
+        <th>{{'Common.Comment' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.Id}}</td>
+        <td>{{data.Name}}</td>
+        <td>{{data.Comment}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>

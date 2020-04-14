@@ -34,6 +34,7 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { ReusableComponentsModule } from '../reusable-components/reusable-components.module';
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzPopconfirmModule,
     NzMessageModule,
     NgxEchartsModule,
+    ReusableComponentsModule,
   ],
   exports: [
     FormsModule,
@@ -113,6 +115,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzPopconfirmModule,
     NzMessageModule,
     NgxEchartsModule,
+    ReusableComponentsModule,
   ]
 })
 export class BlogUIModule { }

@@ -1,1 +1,11 @@
-<p>pos-detail works!</p>
+<nz-page-header nzBackIcon>
+  <nz-page-header-title>{{'Blog.Post' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>TBD.</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <!-- <a nz-button nzType="link" routerLink="/blog/collection/create">{{'Common.Create' | transloco}}</a> -->
+  </nz-page-header-extra>
+</nz-page-header>
+<form>
+  <ac-markdown-editor [config]="editorConfig" [(ngModel)]="inputtedContent" name="aceditor" (contentChanged)="onContentChanged($event)">
+  </ac-markdown-editor>
+</form>

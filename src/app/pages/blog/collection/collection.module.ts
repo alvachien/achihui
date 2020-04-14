@@ -4,12 +4,14 @@ import { BlogUIModule } from '../blog-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { CollectionRoutingModule } from './collection-routing.module';
-import { CollectionListComponent } from './collection-list/collection-list.component';
-import { CollectionDetailComponent } from './collection-detail/collection-detail.component';
-
+import { CollectionListComponent } from './collection-list';
+import { CollectionDetailComponent } from './collection-detail';
 
 @NgModule({
-  declarations: [CollectionListComponent, CollectionDetailComponent],
+  declarations: [
+    CollectionListComponent,
+    CollectionDetailComponent,
+  ],
   imports: [
     CommonModule,
     CollectionRoutingModule,

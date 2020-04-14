@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'hih-collection-detail',
+  selector: 'hih-blog-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.less']
 })

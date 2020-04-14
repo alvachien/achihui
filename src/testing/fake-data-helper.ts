@@ -16,6 +16,7 @@ import {
   financeAccountCategoryAdvancePayment, LearnObject, LearnHistory,
   SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
   Location, LocationJson, financeTranTypeInterestOut,
+  BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -60,6 +61,10 @@ export class FakeDataHelper {
   private _tags: Tag[];
   private _tagsFromAPI: TagJson[];
   private _tagsCount: TagCount[];
+  private _blogCollectionAPI: BlogCollectionAPIJson[];
+  private _blogCollection: BlogCollection[];
+  private _blogPostAPI: BlogPostAPIJson[];
+  private _blogPost: BlogPost[];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -287,6 +292,26 @@ export class FakeDataHelper {
   get tagsCount(): TagCount[] {
     if (this._tagsCount) {
       return this._tagsCount;
+    }
+  }
+  get blogCollectionAPI(): BlogCollectionAPIJson[] {
+    if (this._blogCollectionAPI) {
+      return this._blogCollectionAPI;
+    }    
+  }
+  get blogCollection(): BlogCollection[] {
+    if (this._blogCollection) {
+      return this._blogCollection;
+    }
+  }
+  get blogPostAPI(): BlogPostAPIJson[] {
+    if (this._blogPostAPI) {
+      return this._blogPostAPI;
+    }
+  }
+  get blogPost(): BlogPost[] {
+    if (this._blogPost) {
+      return this._blogPost;
     }
   }
 
