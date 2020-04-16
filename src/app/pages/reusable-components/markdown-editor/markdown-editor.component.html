@@ -1,76 +1,43 @@
 <div class="acme" #acme_wrapper>
-  <div class="acme-toolbar" #acme_toolbar>
-    <button title="Bold" *ngIf="isToolbarItemExist('bold')" (click)="onToolbarButtonClick($event, 'bold')"
-      class="acme-toolbar-button" [class.acme-toolbar-button-selected]="isToolbarButtonStatus('bold')">
-      <b>B</b>
-    </button>
-    <button title="Italic" *ngIf="isToolbarItemExist('italic')" (click)="onToolbarButtonClick($event, 'italic')"
-      class="acme-toolbar-button" [class.acme-toolbar-button-selected]="isToolbarButtonStatus('italic')">
-      <i>I</i>
-    </button>
-    <button title="Underline" *ngIf="isToolbarItemExist('underline')"
-      (click)="onToolbarButtonClick($event, 'underline')" class="acme-toolbar-button"
-      [class.acme-toolbar-button-selected]="isToolbarButtonStatus('underline')">
-      <u>U</u>
-    </button>
-    <button title="Strike-through" *ngIf="isToolbarItemExist('strikethrough')"
-      (click)="onToolbarButtonClick($event, 'strikethrough')" class="acme-toolbar-button"
-      [class.acme-toolbar-button-selected]="isToolbarButtonStatus('strikethrough')">
-      <s>S</s>
-    </button>
-    <button title="Heading 1" *ngIf="isToolbarItemExist('heading1')" (click)="onToolbarButtonClick($event, 'heading1')"
-      class="acme-toolbar-button">
-      <b>H<sub>1</sub></b>
-    </button>
-    <button title="Heading 2" *ngIf="isToolbarItemExist('heading2')" (click)="onToolbarButtonClick($event, 'heading2')"
-      class="acme-toolbar-button">
-      <b>H<sub>2</sub></b>
-    </button>
-    <button title="Heading 3" *ngIf="isToolbarItemExist('heading3')" (click)="onToolbarButtonClick($event, 'heading3')"
-      class="acme-toolbar-button">
-      <b>H<sub>3</sub></b>
-    </button>
-    <button title="Paragraph" *ngIf="isToolbarItemExist('paragraph')"
-      (click)="onToolbarButtonClick($event, 'paragraph')" class="acme-toolbar-button">
-      &#182;
-    </button>
-    <button title="Quote" *ngIf="isToolbarItemExist('quote')" (click)="onToolbarButtonClick($event, 'quote')"
-      class="acme-toolbar-button">
-      &#8220; &#8221;
-    </button>
-    <button title="Ordered List" *ngIf="isToolbarItemExist('orderedlist')"
-      (click)="onToolbarButtonClick($event, 'orderedlist')" class="acme-toolbar-button">
-      &#35;
-    </button>
-    <button title="Unordered List" *ngIf="isToolbarItemExist('unorderedlist')"
-      (click)="onToolbarButtonClick($event, 'unorderedlist')" class="acme-toolbar-button">
-      &#8226;
-    </button>
-    <button title="Code" *ngIf="isToolbarItemExist('code')" (click)="onToolbarButtonClick($event, 'code')"
-      class="acme-toolbar-button">
-      &lt;/&gt;
-    </button>
-    <button title="Horizontal Line" *ngIf="isToolbarItemExist('horizontalline')"
-      (click)="onToolbarButtonClick($event, 'horizontalline')" class="acme-toolbar-button">
-      &#8213;
-    </button>
-    <button title="Link" *ngIf="isToolbarItemExist('link')" (click)="onToolbarButtonClick($event, 'link')"
-      class="acme-toolbar-button">
-      &#128279;
-    </button>
-    <button title="Math" *ngIf="isToolbarItemExist('math')" (click)="onToolbarButtonClick($event, 'math')"
-      class="acme-toolbar-button">
-      M
-    </button>
-  </div>
-  <div class="acme-content" #acme_content>
-    <pre class="acme-content-editor" #acme_content_editor contenteditable="true" (keyup)="onContentEditorKeyUp($event)"
-      (keypress)="onContentEditorKeyPress($event)" (mouseup)="onContentEditorMouseUp($event)"
-      (input)="onContentEditorKeyInput($event)" (blur)="onContentEditorBlur($event)"
-      (scroll)="onContentEditorScroll($event)" (drop)="onContentEditorDrop($event)"
-      (paste)="onContentEditorPaste($event)">
-    </pre>
-    <div class="acme-content-preview" #acme_content_preview>
+  <div class="acme-toolbar" style="display: block;">    
+    <div class="acme-toolbar-container">
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="undo" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="redo" nzTheme="outline"></i></button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="bold" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="italic" nzTheme="outline"></i></button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button>H1</button>
+        <button nz-button>H2</button>
+        <button nz-button>H3</button>
+        <button nz-button>H4</button>
+        <button nz-button>H5</button>
+        <button nz-button>H6</button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="link" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="code" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="picture" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="table" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="field-time" nzTheme="outline"></i></button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="clear" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="search" nzTheme="outline"></i></button>
+      </nz-button-group>
+      <nz-button-group>
+        <button nz-button><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="split-cells" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="fullscreen" nzTheme="outline"></i></button>
+      </nz-button-group>
     </div>
   </div>
 </div>

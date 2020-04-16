@@ -29,6 +29,7 @@
     "@angular/router": "^8.2.14",
     "@ngneat/transloco": "^2.14.0",
     "actslib": "^0.4.13",
+    "codemirror": "^5.52.2",
     "echarts": "^4.7.0",
     "highlight.js": "^9.18.1",
     "katex": "^0.11.1",
