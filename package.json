@@ -48,6 +48,7 @@
     "@angular/cli": "^8.3.25",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/language-service": "^8.2.14",
+    "@types/codemirror": "0.0.91",
     "@types/echarts": "^4.4.3",
     "@types/highlight.js": "^9.12.3",
     "@types/jasmine": "^3.5.0",

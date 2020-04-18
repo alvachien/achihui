@@ -1,4 +1,4 @@
-<div class="acme" #acme_wrapper>
+<div class="acme acme-vertical" #acme_wrapper>
   <div class="acme-toolbar" style="display: block;">    
     <div class="acme-toolbar-container">
       <nz-button-group>
@@ -36,7 +36,7 @@
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
-        <button nz-button><i nz-icon nzType="clear" nzTheme="outline"></i></button>
+        <button nz-button><i nz-icon nzType="delete" nzTheme="outline"></i></button>
         <button nz-button><i nz-icon nzType="search" nzTheme="outline"></i></button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
@@ -46,6 +46,15 @@
       </nz-button-group>
     </div>
   </div>
+  <textarea class="acme-markdown-textarea" #acme_textarea>
+
+  </textarea>
+  <textarea class="acme-html-textarea"></textarea>
+  <div class="acme-preview" #acme_preview>
+    <div class="markdown-body acme-preview-container" #acme_preview_container></div>
+  </div>
+  <div class="acme-container-mask" style="display:block;"></div>
+  <div class="acme-mask"></div>
 </div>
 <div class="acme-dialog-math" [class.acme-dialog-open]="isDialogMathOpen" id="acme_math_dialog">
   <div class="acme-dialog-content">
