@@ -38,12 +38,11 @@ export enum EditorToolbarButtonEnum {
 }
 
 // Config for editor
-export interface IACMEditorConfig {
+export interface IACMEditorConfig extends codemirror.EditorConfiguration {
   toolbarItems?: EditorToolbarButtonEnum[];
   height?: number | string;
   width?: number | string;
   maxLength?: number;
-  mode?: string;
   readOnly?: boolean;
   placeHolder?: string;
 }
@@ -78,7 +77,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
   isDialogMathOpen = false;
   mathDialogInput: string;
-  instanceCodeMirror: any = null;
+  instanceCodeMirror: codemirror.EditorFromTextArea = null;
   instanceKatex: any = null;
   instanceMarked: any = null;
 
@@ -278,220 +277,16 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       return text;
     };
 
-    this.instanceMarked.atLink = (text : string) => {
-      // if (/@(\w+)/g.test(text)) { 
-      //   if (settings.atLink) {
-      //     text = text.replace(/(\w+)@(\w+)\.(\w+)\.?(\w+)?/g, ($1: string) => {
-      //       return $1.replace(/@/g, "_#_&#64;_#_");
-      //     });
-
-      //     text = text.replace(/@(\w+)/g, ($1, $2) => {
-      //         return "<a href=\"" + editormd.urls.atLinkBase + "" + $2 + "\" title=\"&#64;" + $2 + "\" class=\"at-link\">" + $1 + "</a>";
-      //     }).replace(/_#_&#64;_#_/g, "@");
-      //   }
-          
-      //   if (settings.emailLink) {
-      //     text = text.replace(/(mailto:)?([\w\.\_]+)@(\w+)\.(\w+)\.?(\w+)?/g, function($1, $2, $3, $4, $5) {
-      //       return (!$2 && $.inArray($5, "jpg|jpeg|png|gif|webp|ico|icon|pdf".split("|")) < 0) ? "<a href=\"mailto:" + $1 + "\">"+$1+"</a>" : $1;
-      //     });
-      //   }
-
-      //   return text;
-      // }
-
-      return text;
-    };
-          
-    this.instanceMarked.link = (href, title, text) => {
-      // if (this.options.sanitize) {
-      //   try {
-      //     var prot = decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase();
-      //   } catch(e) {
-      //     return "";
-      //   }
-
-      //   if (prot.indexOf("javascript:") === 0) {
-      //     return "";
-      //   }
-      // }
-
-      var out = "<a href=\"" + href + "\"";
-      
-      if (/@(\w+)/g.test(title) || /@(\w+)/g.test(text)) {
-        if (title)
-        {
-            out += " title=\"" + title.replace(/@/g, "&#64;");
-        }
-        
-        return out + "\">" + text.replace(/@/g, "&#64;") + "</a>";
-      }
-
-      if (title) {
-        out += " title=\"" + title + "\"";
-      }
-
-      out += ">" + text + "</a>";
-
-      return out;
-    };
-  
-    this.instanceMarked.heading = (text, level, raw) => {
-      var linkText       = text;
-      var hasLinkReg     = /\s*\<a\s*href\=\"(.*)\"\s*([^\>]*)\>(.*)\<\/a\>\s*/;
-      var getLinkTextReg = /\s*\<a\s*([^\>]+)\>([^\>]*)\<\/a\>\s*/g;
-
-      if (hasLinkReg.test(text)) {
-        var tempText = [];
-        text         = text.split(/\<a\s*([^\>]+)\>([^\>]*)\<\/a\>/);
-
-        for (var i = 0, len = text.length; i < len; i++) {
-          tempText.push(text[i].replace(/\s*href\=\"(.*)\"\s*/g, ""));
-        }
-
-        text = tempText.join(" ");
-      }
-      
-      text = trim(text);
-      
-      var escapedText    = text.toLowerCase().replace(/[^\w]+/g, "-");
-      var toc = {
-        text  : text,
-        level : level,
-        slug  : escapedText
-      };
-      
-      var isChinese = /^[\u4e00-\u9fa5]+$/.test(text);
-      var id        = (isChinese) ? escape(text).replace(/\%/g, "") : text.toLowerCase().replace(/[^\w]+/g, "-");
-
-      markdownToC.push(toc);
-      
-      var headingHTML = "<h" + level + " id=\"h"+ level + "-" + this.options.headerPrefix + id +"\">";
-      
-      headingHTML    += "<a name=\"" + text + "\" class=\"reference-link\"></a>";
-      headingHTML    += "<span class=\"header-link octicon octicon-link\"></span>";
-      headingHTML    += (hasLinkReg) ? this.atLink(this.emoji(linkText)) : this.atLink(this.emoji(text));
-      headingHTML    += "</h" + level + ">";
-
-      return headingHTML;
-    };
-  
-    this.instanceMarked.pageBreak = function(text) {
-      if (/^\[[=]{8,}\]$/.test(text) && settings.pageBreak)
-      {
-          text = "<hr style=\"page-break-after:always;\" class=\"page-break editormd-page-break\" />";
-      }
-      
-      return text;
-    };
-
-    this.instanceMarked.paragraph = function(text) {
-      var isTeXInline     = /\$\$(.*)\$\$/g.test(text);
-      var isTeXLine       = /^\$\$(.*)\$\$$/.test(text);
-      var isTeXAddClass   = (isTeXLine)     ? " class=\"" + editormd.classNames.tex + "\"" : "";
-      var isToC           = (settings.tocm) ? /^(\[TOC\]|\[TOCM\])$/.test(text) : /^\[TOC\]$/.test(text);
-      var isToCMenu       = /^\[TOCM\]$/.test(text);
-      
-      if (!isTeXLine && isTeXInline) 
-      {
-          text = text.replace(/(\$\$([^\$]*)\$\$)+/g, function($1, $2) {
-              return "<span class=\"" + editormd.classNames.tex + "\">" + $2.replace(/\$/g, "") + "</span>";
-          });
-      } 
-      else 
-      {
-          text = (isTeXLine) ? text.replace(/\$/g, "") : text;
-      }
-      
-      var tocHTML = "<div class=\"markdown-toc editormd-markdown-toc\">" + text + "</div>";
-      
-      return (isToC) ? ( (isToCMenu) ? "<div class=\"editormd-toc-menu\">" + tocHTML + "</div><br/>" : tocHTML )
-                     : ( (/^\[[=]{8,}\]$/.test(text)) ? this.pageBreak(text) : "<p" + isTeXAddClass + ">" + this.atLink(this.emoji(text)) + "</p>\n" );
-    };
-
-    this.instanceMarked.code = (code: string, lang: string, escaped) => { 
-      if (lang === 'seq' || lang === 'sequence') {
-        return '<div class="sequence-diagram">' + code + '</div>';
-      } else if ( lang === 'flow') {
-        return '<div class="flowchart">' + code + '</div>';
-      } else if ( lang === 'math' || lang === 'latex' || lang === 'katex') {
-        return '<p class="acme-tex">' + code + '</p>';
-      } else {
-        return marked.Renderer.prototype.code.apply(this, arguments);
-      }
-    };
-
-    this.instanceMarked.tablecell = (content, flags) => {
-      var type = (flags.header) ? 'th' : 'td';
-      var tag  = (flags.align)  ? '<' + type + ' style="text-align:' + flags.align + '">' : '<' + type + '>';
-      
-      return tag + this.atLink(this.emoji(content)) + "</" + type + ">\n";
-    };
-
-    this.instanceMarked.listitem = text => {
-      if (/^\s*\[[x\s]\]\s*/.test(text)) {
-        text = text.replace(/^\s*\[\s\]\s*/, '<input type="checkbox" class="task-list-item-checkbox" /> ')
-                   .replace(/^\s*\[x\]\s*/,  '<input type="checkbox" class="task-list-item-checkbox" checked disabled />');
-
-        return '<li style="list-style: none;">' + this.atLink(this.emoji(text)) + '</li>';
-      } else {
-        return '<li>' + this.atLink(this.emoji(text)) + '</li>';
-      }
-    };
+    this.instanceMarked.atLink = this.markedRender_AtLink;          
+    this.instanceMarked.link = this.markedRender_Link;  
+    this.instanceMarked.heading = this.markedRender_Heading;  
+    this.instanceMarked.pageBreak = this.markedRender_PageBreak;
+    this.instanceMarked.paragraph = this.markedRender_Paragraph;
+    this.instanceMarked.code = this.markedRender_Code;
+    this.instanceMarked.tablecell = this.markedRender_Tablecell;
+    this.instanceMarked.listitem = this.markedRender_ListItem;
 
     const markedRender = new marked.Renderer();
-    markedRender.code = (code: any, language: any) => {
-      if (language === 'seq' || language === 'sequence') {
-        return '<div class="sequence-diagram">' + code + '</div>';
-      } else if (language === 'flow') {
-        return '<div class="flowchart">' + code + '</div>';
-      } else if (language === 'math' || language === 'latex' || language === 'katex') {
-        return '<p class="katex">' + code + '</p>';
-      } else {
-        const validLang = !!(language && highlightjs.getLanguage(language));
-        const highlighted = validLang ? highlightjs.highlight(language, code).value : code;
-        return `<pre style="padding: 0; border-radius: 0;"><code class="hljs ${language}">${highlighted}</code></pre>`;
-      }
-    };
-    markedRender.table = (header: string, body: string) => {
-      return `<table class="table table-bordered">\n<thead>\n${header}</thead>\n<tbody>\n${body}</tbody>\n</table>\n`;
-    };
-    // markedRender.listitem = (text: any, task: boolean, checked: boolean) => {
-    //   if (/^\s*\[[x ]\]\s*/.test(text) || text.startsWith('<input')) {
-    //     if (text.startsWith('<input')) {
-    //       text = text
-    //         .replace('<input disabled="" type="checkbox">', '<i class="fa fa-square-o"></i>')
-    //         .replace('<input checked="" disabled="" type="checkbox">', '<i class="fa fa-check-square"></i>');
-    //     } else {
-    //       text = text
-    //         .replace(/^\s*\[ \]\s*/, '<i class="fa fa-square-o"></i> ')
-    //         .replace(/^\s*\[x\]\s*/, '<i class="fa fa-check-square"></i> ');
-    //     }
-    //     return `<li>${text}</li>`;
-    //   } else {
-    //     return `<li>${text}</li>`;
-    //   }
-    // };
-    markedRender.paragraph = (text: any) => {
-      const isTeXInline = /\$\$(.*)\$\$/g.test(text);
-      const isTeXLine = /^\$\$(.*)\$\$$/.test(text);
-      const isTeXAddClass = (isTeXLine) ? ' class="katex"' : '';
-      // var isToC           = (settings.tocm) ? /^(\[TOC\]|\[TOCM\])$/.test(text) : /^\[TOC\]$/.test(text);
-      // var isToCMenu       = /^\[TOCM\]$/.test(text);
-
-      if (!isTeXLine && isTeXInline) {
-        text = text.replace(/(\$\$([^\$]*)\$\$)+/g, ($1, $2) => {
-          return '<span class="katex">' + $2.replace(/\$/g, '') + '</span>';
-        });
-      } else {
-        text = (isTeXLine) ? text.replace(/\$/g, '') : text;
-      }
-
-      return '<p' + isTeXAddClass + '>' + text + '</p>\n';
-      // var tocHTML = "<div class=\"markdown-toc editormd-markdown-toc\">" + text + "</div>";
-      // return (isToC) ? ( (isToCMenu) ? "<div class=\"editormd-toc-menu\">" + tocHTML + "</div><br/>" : tocHTML )
-      // tslint:disable-next-line:max-line-length
-      //                : ( (pageBreakReg.test(text)) ? this.pageBreak(text) : "<p" + isTeXAddClass + ">" + this.atLink(this.emoji(text)) + "</p>\n" );
-    };
     this._markedOpt = {
       renderer: markedRender,
       highlight: (code: any) => highlightjs.highlightAuto(code).value
@@ -516,7 +311,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   // }
 
   writeValue(val: any): void {
-    this.erContentEditor.nativeElement.innerHTML = val as string;
+    // this.erContentEditor.nativeElement.innerHTML = val as string;
   }
   registerOnChange(fn: any): void {
     this._onChange = fn;
@@ -532,78 +327,337 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
 
-  onToolbarButtonClick(event: MouseEvent, btn: string): void {
-    const titem: EditorToolbarButtonEnum = btn as EditorToolbarButtonEnum;
-    switch (titem) {
-      case EditorToolbarButtonEnum.bold:
-        document.execCommand('bold', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-
-      case EditorToolbarButtonEnum.italic:
-        document.execCommand('italic', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-
-      case EditorToolbarButtonEnum.underline:
-        document.execCommand('underline', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-
-      case EditorToolbarButtonEnum.strikethrough:
-        document.execCommand('strikeThrough', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.heading1:
-        document.execCommand(commandFormatBlock, false, '<h1>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.heading2:
-        document.execCommand(commandFormatBlock, false, '<h2>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.heading3:
-        document.execCommand(commandFormatBlock, false, '<h3>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.paragraph:
-        document.execCommand(commandFormatBlock, false, '<p>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.quote:
-        document.execCommand(commandFormatBlock, false, '<blockquote>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.orderedlist:
-        document.execCommand('insertOrderedList', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.unorderedlist:
-        document.execCommand('insertUnorderedList', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.code:
-        document.execCommand(commandFormatBlock, false, '<pre>');
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.horizontalline:
-        document.execCommand('insertHorizontalRule', false);
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.link:
-      case EditorToolbarButtonEnum.image:
-        // TBD.
-        this.erContentEditor.nativeElement.focus();
-        break;
-      case EditorToolbarButtonEnum.math:
-        this.isDialogMathOpen = true;
-        this.erContentEditor.nativeElement.focus();
-        break;
-
-      default:
-        break;
+  ///
+  /// Toolbar events
+  ///
+  onToolbarUndo(): void {
+    if (this.instanceCodeMirror) {
+      this.instanceCodeMirror.undo();
     }
   }
+  onToolbarRedo(): void {
+    if (this.instanceCodeMirror) {
+      this.instanceCodeMirror.redo();
+    }
+  }
+  onToolbarBold(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+  
+      this.instanceCodeMirror.replaceSelection('**' + selection + '**');
+  
+      if(selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
+      } 
+    }
+  }
+  onToolbarStrikethrough(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      this.instanceCodeMirror.replaceSelection('~~' + selection + '~~');
+
+      if(selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
+      }
+    }
+  }
+  onToolbarItalic(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      this.instanceCodeMirror.replaceSelection('*' + selection + '*');
+
+      if(selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
+      }
+    }
+  }
+  onToolbarQuote(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('> ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
+      } else {
+        this.instanceCodeMirror.replaceSelection('> ' + selection);
+      }
+    }
+  }
+  onToolbarUpperCase(): void {
+    if (this.instanceCodeMirror) {
+      let selection = this.instanceCodeMirror.getSelection();
+      let selections = this.instanceCodeMirror.listSelections();
+
+      this.instanceCodeMirror.replaceSelection(selection.toUpperCase());
+      this.instanceCodeMirror.setSelections(selections);
+    }
+  }
+  onToolbarLowerCase(): void {
+    if (this.instanceCodeMirror) {
+      let selection = this.instanceCodeMirror.getSelection();
+      let selections = this.instanceCodeMirror.listSelections();
+
+      this.instanceCodeMirror.replaceSelection(selection.toLowerCase());
+      this.instanceCodeMirror.setSelections(selections);
+    }
+  }
+  onToolbarHr(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      this.instanceCodeMirror.replaceSelection(((cursor.ch !== 0) ? '\n\n' : '\n') + '------------\n\n');
+    }
+  }
+  onToolbarH1(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('# ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
+      } else {
+        this.instanceCodeMirror.replaceSelection('# ' + selection);
+      }
+    }
+  }
+  onToolbarH2(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('## ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 3);
+      } else {
+        this.instanceCodeMirror.replaceSelection('## ' + selection);
+      }
+    }
+  }
+  onToolbarH3(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('### ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 4);
+      } else {
+        this.instanceCodeMirror.replaceSelection('### ' + selection);
+      }
+    }
+  }
+  onToolbarH4(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('#### ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 5);
+      } else {
+        this.instanceCodeMirror.replaceSelection('#### ' + selection);
+      }
+    }    
+  }
+  onToolbarH5(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('##### ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 6);
+      } else {
+        this.instanceCodeMirror.replaceSelection('##### ' + selection);
+      }
+    }    
+  }
+  onToolbarH6(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (cursor.ch !== 0) {
+        this.instanceCodeMirror.setCursor(cursor.line, 0);
+        this.instanceCodeMirror.replaceSelection('###### ' + selection);
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 7);
+      } else {
+        this.instanceCodeMirror.replaceSelection('###### ' + selection);
+      }
+    }    
+  }
+  onToolbarUnorderedList(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+
+      if (selection === '') {
+        this.instanceCodeMirror.replaceSelection('- ' + selection);
+      } else {
+        let selectionText = selection.split('\n');
+
+        for (let i = 0, len = selectionText.length; i < len; i++) {
+          selectionText[i] = (selectionText[i] === '') ? '' : '- ' + selectionText[i];
+        }
+
+        this.instanceCodeMirror.replaceSelection(selectionText.join('\n'));
+      }
+    }
+  }
+  onToolbarOrderedList(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+      if(selection === '') {
+        this.instanceCodeMirror.replaceSelection('1. ' + selection);
+      } else {
+        let selectionText = selection.split('\n');
+
+        for (let i = 0, len = selectionText.length; i < len; i++) {
+          selectionText[i] = (selectionText[i] === '') ? '' : (i+1) + '. ' + selectionText[i];
+        }
+
+        this.instanceCodeMirror.replaceSelection(selectionText.join('\n'));
+      }
+    }
+  }
+  onToolbarCode(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+      this.instanceCodeMirror.replaceSelection('`' + selection + '`');
+
+      if (selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
+      }
+    }
+  }
+  onToolbarCodeBlock(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+      this.instanceCodeMirror.replaceSelection('`' + selection + '`');
+
+      if (selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
+      }
+    }
+  }
+  onToolbarTex(): void {
+    if (this.instanceCodeMirror) {
+      let cursor    = this.instanceCodeMirror.getCursor();
+      let selection = this.instanceCodeMirror.getSelection();
+      this.instanceCodeMirror.replaceSelection('$$' + selection + '$$');
+
+      if (selection === '') {
+        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
+      }
+    }
+  }
+  onToolbarPageBreak(): void {
+    if (this.instanceCodeMirror) {
+      let selection = this.instanceCodeMirror.getSelection();
+      this.instanceCodeMirror.replaceSelection('\r\n[========]\r\n');
+    }
+  }
+  onToolbarDateTime(): void {
+    if (this.instanceCodeMirror) {
+      let selection = this.instanceCodeMirror.getSelection();
+
+      let date      = new Date();
+      let datefmt = date.toLocaleString();
+      // let langName  = this.settings.lang.name;
+      // var datefmt   = editormd.dateFormat() + " " + editormd.dateFormat((langName === "zh-cn" || langName === "zh-tw") ? "cn-week-day" : "week-day");
+
+      this.instanceCodeMirror.replaceSelection(datefmt);
+    }
+  }
+  // onToolbarButtonClick(event: MouseEvent, btn: string): void {
+  //   const titem: EditorToolbarButtonEnum = btn as EditorToolbarButtonEnum;
+  //   switch (titem) {
+  //     case EditorToolbarButtonEnum.bold:
+  //       document.execCommand('bold', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+
+  //     case EditorToolbarButtonEnum.italic:
+  //       document.execCommand('italic', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+
+  //     case EditorToolbarButtonEnum.underline:
+  //       document.execCommand('underline', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+
+  //     case EditorToolbarButtonEnum.strikethrough:
+  //       document.execCommand('strikeThrough', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.heading1:
+  //       document.execCommand(commandFormatBlock, false, '<h1>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.heading2:
+  //       document.execCommand(commandFormatBlock, false, '<h2>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.heading3:
+  //       document.execCommand(commandFormatBlock, false, '<h3>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.paragraph:
+  //       document.execCommand(commandFormatBlock, false, '<p>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.quote:
+  //       document.execCommand(commandFormatBlock, false, '<blockquote>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.orderedlist:
+  //       document.execCommand('insertOrderedList', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.unorderedlist:
+  //       document.execCommand('insertUnorderedList', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.code:
+  //       document.execCommand(commandFormatBlock, false, '<pre>');
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.horizontalline:
+  //       document.execCommand('insertHorizontalRule', false);
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.link:
+  //     case EditorToolbarButtonEnum.image:
+  //       // TBD.
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+  //     case EditorToolbarButtonEnum.math:
+  //       this.isDialogMathOpen = true;
+  //       this.erContentEditor.nativeElement.focus();
+  //       break;
+
+  //     default:
+  //       break;
+  //   }
+  // }
 
   ///
   /// Editor's events
@@ -718,4 +772,231 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // throw new Error("Method not implemented.");
   }
 
+  ///
+  /// marked render methods
+  ///
+  private markedRender_AtLink(text: string): string {
+    const atLinkReg = /@(\w+)/g;
+    const emailReg = /(\w+)@(\w+)\.(\w+)\.?(\w+)?/g;
+    const emailLinkReg = /(mailto:)?([\w\.\_]+)@(\w+)\.(\w+)\.?(\w+)?/g;
+
+    if (atLinkReg.test(text)) { 
+      // if (settings.atLink) {
+      //     text = text.replace(emailReg, function($1, $2, $3, $4) {
+      //         return $1.replace(/@/g, "_#_&#64;_#_");
+      //     });
+
+      //     text = text.replace(atLinkReg, function($1, $2) {
+      //         return "<a href=\"" + editormd.urls.atLinkBase + "" + $2 + "\" title=\"&#64;" + $2 + "\" class=\"at-link\">" + $1 + "</a>";
+      //     }).replace(/_#_&#64;_#_/g, "@");
+      // }
+      
+      // if (settings.emailLink) {
+        text = text.replace(emailLinkReg, ($1, $2, $3, $4, $5) => {
+          return (!$2 && ['jpg', 'jpeg', 'png', 'gif', 'ico', 'icon', 'pdf'].includes($5)) ? '<a href="mailto:' + $1 + '">' + $1 + '</a>' : $1;
+        });
+      // }
+
+      return text;
+    }
+
+    return text;
+  }
+  private markedRender_Link(href: string, title: string, text: string): string {
+    const atLinkReg = /@(\w+)/g;
+
+    // if (this.options.sanitize) {
+    try {
+      var prot = decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase();
+    } catch(e) {
+      return '';
+    }
+
+    if (prot.indexOf('javascript:') === 0) {
+      return '';
+    }
+    // }
+
+    let out = '<a href="' + href + '"';  
+    if (atLinkReg.test(title) || atLinkReg.test(text)) {
+      if (title) {
+        out += ' title="' + title.replace(/@/g, '&#64;');
+      }
+      
+      return out + '">' + text.replace(/@/g, '&#64;') + '</a>';
+    }
+
+    if (title) {
+      out += ' title="' + title + '"';
+    }
+
+    out += '>' + text + '</a>';
+
+    return out;
+  }
+  private markedRender_Heading(text: string, level, raw) {
+    let linkText       = text;
+    let hasLinkReg     = /\s*\<a\s*href\=\"(.*)\"\s*([^\>]*)\>(.*)\<\/a\>\s*/;
+    let getLinkTextReg = /\s*\<a\s*([^\>]+)\>([^\>]*)\<\/a\>\s*/g;
+
+    if (hasLinkReg.test(text)) {
+      let tempText = [];
+      let subtexts = text.split(/\<a\s*([^\>]+)\>([^\>]*)\<\/a\>/);
+
+      for (var i = 0, len = subtexts.length; i < len; i++) {
+        tempText.push(subtexts[i].replace(/\s*href\=\"(.*)\"\s*/g, ''));
+      }
+
+      text = tempText.join(' ');
+    }
+    
+    text = text.trim();
+    
+    var escapedText    = text.toLowerCase().replace(/[^\w]+/g, '-');
+    var toc = {
+        text  : text,
+        level : level,
+        slug  : escapedText
+    };
+    
+    var isChinese = /^[\u4e00-\u9fa5]+$/.test(text);
+    var id        = (isChinese) ? escape(text).replace(/\%/g, '') : text.toLowerCase().replace(/[^\w]+/g, '-');
+
+    // markdownToC.push(toc);
+    
+    //var headingHTML = '<h' + level + ' id="h'+ level + '-' + this.options.headerPrefix + id +'">';
+    var headingHTML = '<h' + level + '>';
+    
+    headingHTML    += '<a name="' + text + '" class="reference-link"></a>';
+    headingHTML    += '<span class="header-link octicon octicon-link"></span>';
+    headingHTML    += (hasLinkReg) ? this.markedRender_AtLink(this.markedRender_Emoji(linkText)) : this.markedRender_AtLink(this.markedRender_Emoji(text));
+    headingHTML    += "</h" + level + ">";
+
+    return headingHTML;
+  }
+  private markedRender_PageBreak(text: string) {
+    const pageBreakReg = /^\[[=]{8,}\]$/;
+    if (pageBreakReg.test(text) ) { // && settings.pageBreak)
+      text = '<hr style="page-break-after:always;" class="page-break editormd-page-break" />';
+    }
+    
+    return text;
+  }
+  private markedRender_Paragraph(text: string) {
+    const pageBreakReg = /^\[[=]{8,}\]$/;
+    let isTeXInline     = /\$\$(.*)\$\$/g.test(text);
+    let isTeXLine       = /^\$\$(.*)\$\$$/.test(text);
+    let isTeXAddClass   = (isTeXLine)     ? ' class="acme-tex"' : '';
+    //let isToC           = (settings.tocm) ? /^(\[TOC\]|\[TOCM\])$/.test(text) : /^\[TOC\]$/.test(text);
+    let isToC           = /^\[TOC\]$/.test(text);
+    let isToCMenu       = /^\[TOCM\]$/.test(text);
+    
+    if (!isTeXLine && isTeXInline) {
+      text = text.replace(/(\$\$([^\$]*)\$\$)+/g, function($1, $2) {
+        return '<span class="acme-tex">' + $2.replace(/\$/g, '') + '</span>';
+      });
+    } else {
+      text = (isTeXLine) ? text.replace(/\$/g, '') : text;
+    }
+    
+    var tocHTML = '<div class="markdown-toc acme-markdown-toc">' + text + '</div>';
+    
+    return (isToC) ? ( (isToCMenu) ? '<div class="acme-toc-menu">' + tocHTML + '</div><br/>' : tocHTML )
+                   : ( (pageBreakReg.test(text)) ? this.markedRender_PageBreak(text) : '<p' + isTeXAddClass + '>' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</p>\n');
+  }
+  private markedRender_Code(code: string, lang: string, escaped) { 
+    if (lang === 'seq' || lang === 'sequence') {
+      return '<div class="sequence-diagram">' + code + '</div>';
+    } else if ( lang === 'flow') {
+      return '<div class="flowchart">' + code + '</div>';
+    } else if ( lang === 'math' || lang === 'latex' || lang === 'katex') {
+      return '<p class="acme-tex">' + code + '</p>';
+    }
+    else {
+      return marked.Renderer.prototype.code.apply(this, arguments);
+    }
+  }
+  private markedRender_Tablecell(content: string, flags): string {
+    let type = (flags.header) ? 'th' : 'td';
+    let tag  = (flags.align)  ? '<' + type + ' style="text-align:' + flags.align + '">' : '<' + type + '>';
+    
+    return tag + this.markedRender_AtLink(this.markedRender_Emoji(content)) + '</' + type + '>\n';
+  }
+  private markedRender_ListItem(text): string {
+    if (/^\s*\[[x\s]\]\s*/.test(text)) { // if (settings.taskList && /^\s*\[[x\s]\]\s*/.test(text)) 
+      text = text.replace(/^\s*\[\s\]\s*/, '<input type="checkbox" class="task-list-item-checkbox" />')
+                 .replace(/^\s*\[x\]\s*/,  '<input type="checkbox" class="task-list-item-checkbox" checked disabled />');
+
+      return '<li style="list-style: none;">' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</li>';
+    } else {
+      return '<li>' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</li>';
+    }
+  }
+  private markedRender_Emoji(text) {
+    const emojidatetimeReg = /(\d{1,2}:\d{1,2}:\d{1,2})/g;
+    const emojiReg = /:([\w\+-]+):/g;
+    text = text.replace(emojidatetimeReg, $1 => {
+      return $1.replace(/:/g, '&#58;');
+    });
+    
+    var matchs = text.match(emojiReg);
+
+    if (!matchs) { // if (!matchs || !settings.emoji) {
+      return text;
+    }
+
+    // for (let i = 0, len = matchs.length; i < len; i++)
+    // {            
+    //     if (matchs[i] === ":+1:") {
+    //         matchs[i] = ":\\+1:";
+    //     }
+
+    //     text = text.replace(new RegExp(matchs[i]), function($1, $2){
+    //         var faMatchs = $1.match(faIconReg);
+    //         var name     = $1.replace(/:/g, "");
+
+    //         if (faMatchs)
+    //         {                        
+    //             for (var fa = 0, len1 = faMatchs.length; fa < len1; fa++)
+    //             {
+    //                 var faName = faMatchs[fa].replace(/:/g, "");
+                    
+    //                 return "<i class=\"fa " + faName + " fa-emoji\" title=\"" + faName.replace("fa-", "") + "\"></i>";
+    //             }
+    //         }
+    //         else
+    //         {
+    //             var emdlogoMathcs = $1.match(editormdLogoReg);
+    //             var twemojiMatchs = $1.match(twemojiReg);
+
+    //             if (emdlogoMathcs)                                        
+    //             {                            
+    //                 for (var x = 0, len2 = emdlogoMathcs.length; x < len2; x++)
+    //                 {
+    //                     var logoName = emdlogoMathcs[x].replace(/:/g, "");
+    //                     return "<i class=\"" + logoName + "\" title=\"Editor.md logo (" + logoName + ")\"></i>";
+    //                 }
+    //             }
+    //             else if (twemojiMatchs) 
+    //             {
+    //                 for (var t = 0, len3 = twemojiMatchs.length; t < len3; t++)
+    //                 {
+    //                     var twe = twemojiMatchs[t].replace(/:/g, "").replace("tw-", "");
+    //                     return "<img src=\"" + editormd.twemoji.path + twe + editormd.twemoji.ext + "\" title=\"twemoji-" + twe + "\" alt=\"twemoji-" + twe + "\" class=\"emoji twemoji\" />";
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 var src = (name === "+1") ? "plus1" : name;
+    //                 src     = (src === "black_large_square") ? "black_square" : src;
+    //                 src     = (src === "moon") ? "waxing_gibbous_moon" : src;
+
+    //                 return "<img src=\"" + editormd.emoji.path + src + editormd.emoji.ext + "\" class=\"emoji\" title=\"&#58;" + name + "&#58;\" alt=\"&#58;" + name + "&#58;\" />";
+    //             }
+    //         }
+    //     });
+    // }
+
+    return text;
+  }
 }

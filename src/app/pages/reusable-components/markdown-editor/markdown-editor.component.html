@@ -2,37 +2,40 @@
   <div class="acme-toolbar" style="display: block;">    
     <div class="acme-toolbar-container">
       <nz-button-group>
-        <button nz-button><i nz-icon nzType="undo" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="redo" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarUndo()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarRedo()"><i nz-icon nzType="redo" nzTheme="outline"></i></button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
-        <button nz-button><i nz-icon nzType="bold" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="italic" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarBold()"><i nz-icon nzType="bold" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarStrikethrough()"><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarItalic()"><i nz-icon nzType="italic" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarQuote()">"</button>
+        <button nz-button (click)="onToolbarUpperCase()">A</button>
+        <button nz-button (click)="onToolbarLowerCase()">a</button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
-        <button nz-button>H1</button>
-        <button nz-button>H2</button>
-        <button nz-button>H3</button>
-        <button nz-button>H4</button>
-        <button nz-button>H5</button>
-        <button nz-button>H6</button>
+        <button nz-button (click)="onToolbarH1()">H1</button>
+        <button nz-button (click)="onToolbarH2()">H2</button>
+        <button nz-button (click)="onToolbarH3()">H3</button>
+        <button nz-button (click)="onToolbarH4()">H4</button>
+        <button nz-button (click)="onToolbarH5()">H5</button>
+        <button nz-button (click)="onToolbarH6()">H6</button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
-        <button nz-button><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarUnorderedList()"><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarOrderedList()"><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
         <button nz-button><i nz-icon nzType="link" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="code" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarCode()"><i nz-icon nzType="code" nzTheme="outline"></i></button>
         <button nz-button><i nz-icon nzType="block" nzTheme="outline"></i></button>
         <button nz-button><i nz-icon nzType="picture" nzTheme="outline"></i></button>
         <button nz-button><i nz-icon nzType="table" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
+        <button nz-button (click)="onToolbarDateTime()"><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
       </nz-button-group>
       <nz-divider nzType="vertical"></nz-divider>
       <nz-button-group>
