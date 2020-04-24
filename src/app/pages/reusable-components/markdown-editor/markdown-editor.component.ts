@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
 } from '@angular/forms';
 import { insertTextIntoElement, scrollToElementCenter, readElementText, } from 'actslib';
 import * as marked from 'marked';
-import * as highlightjs from 'highlight.js';
+// import * as highlightjs from 'highlight.js';
 import * as katex from 'katex';
 import * as codemirror from 'codemirror';
 
@@ -40,11 +40,55 @@ export enum EditorToolbarButtonEnum {
 // Config for editor
 export interface IACMEditorConfig extends codemirror.EditorConfiguration {
   toolbarItems?: EditorToolbarButtonEnum[];
+  name?: string;
   height?: number | string;
   width?: number | string;
+  delay?: number;
+  watch?: boolean;
   maxLength?: number;
   readOnly?: boolean;
   placeHolder?: string;
+  gotoLine?: boolean;
+  autoHeight?: boolean;
+  autoFocus?: boolean;
+  autoCloseTags?: boolean;
+  searchReplace?: boolean;
+  syncScrolling?: boolean;
+  autoCloseBrackets?: boolean;
+  showTrailingSpace?: boolean;
+  matchBrackets?: boolean;
+  styleSelectedText?: boolean;
+  matchWordHighlight?: boolean;
+  styleActiveLine?: boolean;
+  dialogShowMask?: boolean;
+  dialogDraggable?: boolean;
+  dialogMaskBgColor?: any;
+  dialogMaskOpacity?: number;
+  fontSize?: number | string;
+  saveHTMLToTextarea?: boolean;
+  imageUpload?: boolean;
+  imageFormats?: Array<string>;
+  imageUploadURL?: string;
+  crossDomainUpload?: boolean;
+  uploadCallbackURL?: string;
+  toc?: boolean;
+  tocm?: boolean;
+  tocTitle?: string;
+  tocDropdown?: boolean;
+  tocContainer?: string;
+  tocStartLevel?: number;
+  htmlDecode?: boolean;
+  pageBreak?: boolean;
+  atLink?: boolean;
+  emailLink?: boolean;
+  taskList?: boolean;
+  emoji?: boolean;
+  tex?: boolean;
+  flowChart?: boolean;
+  sequenceDiagram?: boolean;
+  previewCodeHighlight?: boolean;
+  toolbar?: boolean;
+  toolbarAutoFixed?: boolean;
 }
 
 @Component({
@@ -72,14 +116,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   @ViewChild('acme_content_editor', { static: true }) erContentEditor: ElementRef;
   // @ViewChild('acme_content_splitter', {static: true}) erContentSplitter: ElementRef;
   @ViewChild('acme_content_preview', { static: true }) erContentPreview: ElementRef;
+  @ViewChild('acme_mark', {static: true}) erMask: ElementRef;
+  @ViewChild('acme_container_mask', {static: true}) erContainermask: ElementRef;
+  @ViewChild('acme_html_textarea', {static: true}) erHtmlTextArea: ElementRef;
   @Input() config: IACMEditorConfig;
   @Output() contentChanged: EventEmitter<string> = new EventEmitter();
+  @Input() editorID: string;
 
   isDialogMathOpen = false;
   mathDialogInput: string;
   instanceCodeMirror: codemirror.EditorFromTextArea = null;
   instanceKatex: any = null;
   instanceMarked: any = null;
+
+  stateWatching = false;
+  stateLoaded   = false;
+  statePreview  = false;
+  stateFullscreen = false;
 
   // tslint:disable-next-line:variable-name
   private _onChange: (val: any) => void;
@@ -112,10 +165,96 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   toolbarItems: EditorToolbarButtonEnum[] = [];
   rangeSelection: Range;
 
-  public get markdownValue(): any {
+  defaultConfig : IACMEditorConfig    = {
+    mode                 : "gfm",          // gfm or markdown
+    // name                 : "",             // Form element name
+    value                : "",             // value for CodeMirror, if mode not gfm/markdown
+    theme                : "",             // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
+    // editorTheme          : "default",      // Editor area, this is CodeMirror theme at v1.5.0
+    // previewTheme         : "",             // Preview area theme, default empty
+    // markdown             : "",             // Markdown source code
+    // appendMarkdown       : "",             // if in init textarea value not empty, append markdown to textarea
+    width                : "100%",
+    height               : "100%",
+    // path                 : "./lib/",       // Dependents module file directory
+    // pluginPath           : "",             // If this empty, default use settings.path + "../plugins/"
+    delay                : 300,            // Delay parse markdown to html, Uint : ms
+    // autoLoadModules      : true,           // Automatic load dependent module files
+    watch                : true,
+    placeHolder          : "Enjoy Markdown! coding now...",
+    gotoLine             : true,
+    // codeFold             : false,
+    autoHeight           : false,
+    autoFocus            : true,
+    autoCloseTags        : true,
+    searchReplace        : true,
+    syncScrolling        : true,           // true | false | "single", default true
+    readOnly             : false,
+    tabSize              : 4,
+    indentUnit           : 4,
+    lineNumbers          : true,
+    lineWrapping         : true,
+    autoCloseBrackets    : true,
+    showTrailingSpace    : true,
+    matchBrackets        : true,
+    indentWithTabs       : true,
+    styleSelectedText    : true,
+    matchWordHighlight   : true,           // options: true, false, "onselected"
+    styleActiveLine      : true,           // Highlight the current line
+    // dialogLockScreen     : true,
+    dialogShowMask       : true,
+    dialogDraggable      : true,
+    dialogMaskBgColor    : "#fff",
+    dialogMaskOpacity    : 0.1,
+    fontSize             : "13px",
+    saveHTMLToTextarea   : false,
+    // disabledKeyMaps      : [],
+    
+    // onload               : function() {},
+    // onresize             : function() {},
+    // onchange             : function() {},
+    // onwatch              : null,
+    // onunwatch            : null,
+    // onpreviewing         : function() {},
+    // onpreviewed          : function() {},
+    // onfullscreen         : function() {},
+    // onfullscreenExit     : function() {},
+    // onscroll             : function() {},
+    // onpreviewscroll      : function() {},
+    
+    imageUpload          : false,
+    imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+    imageUploadURL       : "",
+    crossDomainUpload    : false,
+    uploadCallbackURL    : "",
+    
+    toc                  : true,           // Table of contents
+    tocm                 : false,           // Using [TOCM], auto create ToC dropdown menu
+    tocTitle             : "",             // for ToC dropdown menu btn
+    tocDropdown          : false,
+    tocContainer         : "",
+    tocStartLevel        : 1,              // Said from H1 to create ToC
+    htmlDecode           : false,          // Open the HTML tag identification 
+    pageBreak            : true,           // Enable parse page break [========]
+    atLink               : true,           // for @link
+    emailLink            : true,           // for email address auto link
+    taskList             : false,          // Enable Github Flavored Markdown task lists
+    emoji                : false,          // :emoji: , Support Github emoji, Twitter Emoji (Twemoji);
+                                           // Support FontAwesome icon emoji :fa-xxx: > Using fontAwesome icon web fonts;
+                                           // Support Editor.md logo icon emoji :editormd-logo: :editormd-logo-1x: > 1~8x;
+    tex                  : false,          // TeX(LaTeX), based on KaTeX
+    flowChart            : false,          // flowChart.js only support IE9+
+    sequenceDiagram      : false,          // sequenceDiagram.js only support IE9+
+    previewCodeHighlight : true,
+            
+    toolbar              : true,           // show/hide toolbar
+    toolbarAutoFixed     : true,           // on window scroll auto fixed position
+  };
+
+  public get value(): any {
     return this._markdownValue || '';
   }
-  public set markdownValue(value: any) {
+  public set value(value: any) {
     this._markdownValue = value;
     this._onChange(value);
 
@@ -202,24 +341,34 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   ngOnInit() {
-    // this.toolbarItems = [];
-    // if (this.config && this.config.toolbarItems) {
-    //   this.config.toolbarItems.forEach((value: EditorToolbarButtonEnum) => {
-    //     this.toolbarItems.push(value);
-    //   });
-    // } else {
-    //   this.toolbarItems.push(...this.defaultToolbarItems);
-    // }
+    let settings = { ...this.defaultConfig, ...this.config };
+    let classPrefix = 'acme-';
+    let editor = this.erWrapper.nativeElement;
 
+    let classNames = {
+        textarea : {
+        html     : classPrefix + "html-textarea",
+        markdown : classPrefix + "markdown-textarea"
+      }
+    };
+    this.stateWatching = (settings.watch) ? true : false;
+    
     // Width and height
-    // if (this.config.width) {
-    //   this.erContentEditor.nativeElement.style.width = this.config.width + 'px';
-    //   this.erContentPreview.nativeElement.style.width = this.config.width + 'px';
-    // }
-    // if (this.config.height) {
-    //   this.erContentEditor.nativeElement.style.height = this.config.height + 'px';
-    //   this.erContentPreview.nativeElement.style.height = this.config.height + 'px';
-    // }
+    editor.width = (typeof settings.width  === 'number') ? settings.width  + 'px' : settings.width;
+    editor.height = settings.autoHeight ? 'auto' :  
+      (typeof settings.height === 'number') ? settings.height + 'px' : settings.height;
+
+    let markdownTextarea = this.erTextArea.nativeElement as HTMLTextAreaElement;
+    // markdownTextarea.addClass(classNames.textarea.markdown).attr("placeholder", settings.placeholder);
+    if (!markdownTextarea.name) {
+      markdownTextarea.name = (settings.name !== '') ? settings.name : this.editorID + "-markdown-doc";
+    }
+    let mask          = this.erMask.nativeElement;    
+    let containerMask = this.erContainermask.nativeElement;
+    let htmlTextarea  = this.erHtmlTextArea.nativeElement;
+    let preview       = this.erPreview.nativeElement;
+    let previewContainer = this.erPreviewContainer.nativeElement;
+
 
     let cmOptions: codemirror.EditorConfiguration = {
       mode: 'gfm',
@@ -286,11 +435,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     this.instanceMarked.tablecell = this.markedRender_Tablecell;
     this.instanceMarked.listitem = this.markedRender_ListItem;
 
-    const markedRender = new marked.Renderer();
-    this._markedOpt = {
-      renderer: markedRender,
-      highlight: (code: any) => highlightjs.highlightAuto(code).value
-    };
+    // const markedRender = new marked.Renderer();
+    // this._markedOpt = {
+    //   renderer: markedRender,
+    //   highlight: (code: any) => highlightjs.highlightAuto(code).value
+    // };
     // this._markedOpt = Object.assign({}, markedjsOpt, this.options.markedjsOpt);
   }
 
@@ -674,7 +823,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // }
   }
   onContentEditorKeyInput(event): void {
-    this.refreshControls();
+    // this.refreshControls();
 
     // this.erContentEditor.nativeElement.querySelectorAll('br').forEach((br) => {
     //   if (!br.nextElementSibling) {
@@ -730,7 +879,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     // this.markdownValue = markdownText;
 
-    this.markdownValue = this.erContentEditor.nativeElement.innerText;
+    // this.markdownValue = this.erContentEditor.nativeElement.innerText;
 
     // // clearTimeout(this.mdTimeoutId);
     // const renderStartTime = new Date().getTime();

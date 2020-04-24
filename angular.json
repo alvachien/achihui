@@ -35,9 +35,14 @@
               }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "./node_modules/codemirror/lib/codemirror.css",
+              "./node_modules/codemirror/addon/dialog/dialog.css",
+              "./node_modules/codemirror/addon/search/matchesonscrollbar.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/codemirror/lib/codemirror.js"
+            ]
           },
           "configurations": {
             "production": {

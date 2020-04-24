@@ -49,17 +49,18 @@
       </nz-button-group>
     </div>
   </div>
-  <textarea class="acme-markdown-textarea" #acme_textarea>
 
-  </textarea>
+  <textarea class="acme-markdown-textarea" #acme_textarea></textarea>
+  <textarea class="acme-html-textarea" #acme_html_textarea></textarea>
+  <a href="javascript:;" class="fa fa-close editormd-preview-close-btn"></a>
   <textarea class="acme-html-textarea"></textarea>
   <div class="acme-preview" #acme_preview>
     <div class="markdown-body acme-preview-container" #acme_preview_container></div>
   </div>
-  <div class="acme-container-mask" style="display:block;"></div>
-  <div class="acme-mask"></div>
+  <div class="acme-container-mask" style="display: block;" #acme_container_mask></div>
+  <div class="acme-mask" #acme_mark></div>
 </div>
-<div class="acme-dialog-math" [class.acme-dialog-open]="isDialogMathOpen" id="acme_math_dialog">
+<!-- <div class="acme-dialog-math" [class.acme-dialog-open]="isDialogMathOpen" id="acme_math_dialog">
   <div class="acme-dialog-content">
     <div>
       <label><input name="MathOption" type="radio" value="inline" />Inline</label>
@@ -71,4 +72,4 @@
     <hr>
     <button (click)="onMathDialogClose()">Close</button>
   </div>
-</div>
+</div> -->
