@@ -52,8 +52,8 @@
 
   <textarea class="acme-markdown-textarea" #acme_textarea></textarea>
   <textarea class="acme-html-textarea" #acme_html_textarea></textarea>
-  <a href="javascript:;" class="fa fa-close editormd-preview-close-btn"></a>
-  <textarea class="acme-html-textarea"></textarea>
+  <button *ngIf="IsPreviewCloseButton" nz-button><i nz-icon nzType="close" nzTheme="outline"></i></button>
+  <textarea *ngIf="IsSaveHTMLToMarkdown" class="acme-html-textarea"></textarea>
   <div class="acme-preview" #acme_preview>
     <div class="markdown-body acme-preview-container" #acme_preview_container></div>
   </div>

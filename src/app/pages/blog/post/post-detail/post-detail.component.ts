@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
+import { ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 
 @Component({
   selector: 'hih-blog-post-detail',
@@ -28,9 +29,13 @@ export class PostDetailComponent implements OnInit {
     height: 300,
   };
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
+      ConsoleLogTypeEnum.debug);
   }
 
+  ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
+  }
 }

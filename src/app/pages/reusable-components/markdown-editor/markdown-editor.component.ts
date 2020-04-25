@@ -8,6 +8,8 @@ import * as marked from 'marked';
 import * as katex from 'katex';
 import * as codemirror from 'codemirror';
 
+import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
 const commandParagraphSeparator = 'defaultParagraphSeparator';
@@ -166,22 +168,22 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   rangeSelection: Range;
 
   defaultConfig : IACMEditorConfig    = {
-    mode                 : "gfm",          // gfm or markdown
-    // name                 : "",             // Form element name
-    value                : "",             // value for CodeMirror, if mode not gfm/markdown
-    theme                : "",             // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
-    // editorTheme          : "default",      // Editor area, this is CodeMirror theme at v1.5.0
-    // previewTheme         : "",             // Preview area theme, default empty
-    // markdown             : "",             // Markdown source code
-    // appendMarkdown       : "",             // if in init textarea value not empty, append markdown to textarea
-    width                : "100%",
-    height               : "100%",
+    mode                 : 'gfm',          // gfm or markdown
+    // name              : '',             // Form element name
+    value                : '',             // value for CodeMirror, if mode not gfm/markdown
+    theme                : '',             // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
+    // editorTheme          : 'default',      // Editor area, this is CodeMirror theme at v1.5.0
+    // previewTheme         : '',             // Preview area theme, default empty
+    // markdown             : '',             // Markdown source code
+    // appendMarkdown       : '',             // if in init textarea value not empty, append markdown to textarea
+    width                : '100%',
+    height               : '100%',
     // path                 : "./lib/",       // Dependents module file directory
     // pluginPath           : "",             // If this empty, default use settings.path + "../plugins/"
     delay                : 300,            // Delay parse markdown to html, Uint : ms
     // autoLoadModules      : true,           // Automatic load dependent module files
     watch                : true,
-    placeHolder          : "Enjoy Markdown! coding now...",
+    placeHolder          : 'Enjoy Markdown! coding now...',
     gotoLine             : true,
     // codeFold             : false,
     autoHeight           : false,
@@ -204,9 +206,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // dialogLockScreen     : true,
     dialogShowMask       : true,
     dialogDraggable      : true,
-    dialogMaskBgColor    : "#fff",
+    dialogMaskBgColor    : '#fff',
     dialogMaskOpacity    : 0.1,
-    fontSize             : "13px",
+    fontSize             : '13px',
     saveHTMLToTextarea   : false,
     // disabledKeyMaps      : [],
     
@@ -223,16 +225,16 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // onpreviewscroll      : function() {},
     
     imageUpload          : false,
-    imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-    imageUploadURL       : "",
+    imageFormats         : ['jpg', 'jpeg', 'gif', 'png', 'bmp', "webp"],
+    imageUploadURL       : '',
     crossDomainUpload    : false,
-    uploadCallbackURL    : "",
+    uploadCallbackURL    : '',
     
     toc                  : true,           // Table of contents
-    tocm                 : false,           // Using [TOCM], auto create ToC dropdown menu
-    tocTitle             : "",             // for ToC dropdown menu btn
+    tocm                 : false,          // Using [TOCM], auto create ToC dropdown menu
+    tocTitle             : '',             // for ToC dropdown menu btn
     tocDropdown          : false,
-    tocContainer         : "",
+    tocContainer         : '',
     tocStartLevel        : 1,              // Said from H1 to create ToC
     htmlDecode           : false,          // Open the HTML tag identification 
     pageBreak            : true,           // Enable parse page break [========]
@@ -252,41 +254,45 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   };
 
   public get value(): any {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
+      ConsoleLogTypeEnum.debug);
     return this._markdownValue || '';
   }
   public set value(value: any) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value setter...',
+      ConsoleLogTypeEnum.debug);
     this._markdownValue = value;
     this._onChange(value);
 
     // if (this.preRender && this.preRender instanceof Function) {
     //   value = this.preRender(value);
     // }
-    if (value !== null && value !== undefined) {
-      if (this._renderMarkTimeout) {
-        clearTimeout(this._renderMarkTimeout);
-      }
+    // if (value !== null && value !== undefined) {
+    //   if (this._renderMarkTimeout) {
+    //     clearTimeout(this._renderMarkTimeout);
+    //   }
 
-      this._renderMarkTimeout = setTimeout(() => {
-        const html = marked(value || '', this._markedOpt);
-        // let previewHtml = this._domSanitizer.bypassSecurityTrustHtml(html);
-        if (this.erContentPreview) {
-          this.erContentPreview.nativeElement.innerHTML = html;
-          const chlds = this.erContentPreview.nativeElement.getElementsByClassName('katex');
-          const orgcount = chlds.length;
-          const chldelems: any[] = [];
-          for (let i = 0; i < orgcount; i++) {
-            chldelems.push(chlds.item(i));
-            // chdelem.setAttribute('font-size', '1.6em');
-            // css("font-size", "1.6em");
-          }
-          chldelems.forEach((cel: any) => {
-            katex.render(cel.textContent, cel, {
-              throwOnError: false
-            });
-          });
-        }
-      }, 100);
-    }
+    //   this._renderMarkTimeout = setTimeout(() => {
+    //     const html = marked(value || '', this._markedOpt);
+    //     // let previewHtml = this._domSanitizer.bypassSecurityTrustHtml(html);
+    //     if (this.erContentPreview) {
+    //       this.erContentPreview.nativeElement.innerHTML = html;
+    //       const chlds = this.erContentPreview.nativeElement.getElementsByClassName('katex');
+    //       const orgcount = chlds.length;
+    //       const chldelems: any[] = [];
+    //       for (let i = 0; i < orgcount; i++) {
+    //         chldelems.push(chlds.item(i));
+    //         // chdelem.setAttribute('font-size', '1.6em');
+    //         // css("font-size", "1.6em");
+    //       }
+    //       chldelems.forEach((cel: any) => {
+    //         katex.render(cel.textContent, cel, {
+    //           throwOnError: false
+    //         });
+    //       });
+    //     }
+    //   }, 100);
+    // }
   }
   // tslint:disable-next-line:variable-name
   private _markdownValue: any;
@@ -294,17 +300,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   private _renderMarkTimeout: any;
   // tslint:disable-next-line:variable-name
   private _markedOpt: any;
-
-  // @HostListener('change') onChange(): void {
-  //   if (this._onChange) {
-  //     this._onChange(this.erContent.nativeElement.innerHTML);
-  //   }
-  // }
-  // @HostListener('blur') onTouched(): void {
-  //   if (this._onTouched) {
-  //     this._onTouched();
-  //   }
-  // }
 
   public isToolbarItemExist(item: string): boolean {
     return this.toolbarItems.some((searchElement: EditorToolbarButtonEnum) => {
@@ -335,22 +330,26 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     return rst;
   }
+  get IsPreviewCloseButton(): boolean {
+    return this.config.readOnly;
+  }
+  get IsSaveHTMLToMarkdown(): boolean {
+    return this.config.saveHTMLToTextarea;
+  }
 
   constructor() {
-    // Empty
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
+      ConsoleLogTypeEnum.debug);
   }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
+
     let settings = { ...this.defaultConfig, ...this.config };
     let classPrefix = 'acme-';
     let editor = this.erWrapper.nativeElement;
 
-    let classNames = {
-        textarea : {
-        html     : classPrefix + "html-textarea",
-        markdown : classPrefix + "markdown-textarea"
-      }
-    };
     this.stateWatching = (settings.watch) ? true : false;
     
     // Width and height
@@ -361,7 +360,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     let markdownTextarea = this.erTextArea.nativeElement as HTMLTextAreaElement;
     // markdownTextarea.addClass(classNames.textarea.markdown).attr("placeholder", settings.placeholder);
     if (!markdownTextarea.name) {
-      markdownTextarea.name = (settings.name !== '') ? settings.name : this.editorID + "-markdown-doc";
+      markdownTextarea.name = (settings.name !== '') ? settings.name : this.editorID + '-markdown-doc';
     }
     let mask          = this.erMask.nativeElement;    
     let containerMask = this.erContainermask.nativeElement;
@@ -369,13 +368,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     let preview       = this.erPreview.nativeElement;
     let previewContainer = this.erPreviewContainer.nativeElement;
 
-
-    let cmOptions: codemirror.EditorConfiguration = {
-      mode: 'gfm',
-      autofocus: true,
-      readOnly: this.config.readOnly,
-    };
-    this.instanceCodeMirror = codemirror.fromTextArea(this.erTextArea.nativeElement as HTMLTextAreaElement, cmOptions);
+    this.setCodeMirror();
 
     let markedOption: marked.MarkedOptions = {
 
@@ -444,6 +437,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
     this.toolbarItems = [];
   }
 
@@ -460,15 +455,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   // }
 
   writeValue(val: any): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
+      ConsoleLogTypeEnum.debug);
     // this.erContentEditor.nativeElement.innerHTML = val as string;
   }
   registerOnChange(fn: any): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnChange...',
+      ConsoleLogTypeEnum.debug);
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnTouched...',
+      ConsoleLogTypeEnum.debug);
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent setDisabledState...',
+      ConsoleLogTypeEnum.debug);
     if (isDisabled) {
       this.erWrapper.nativeElement.disable = true;
     } else {
@@ -480,16 +483,22 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   /// Toolbar events
   ///
   onToolbarUndo(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUndo...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       this.instanceCodeMirror.undo();
     }
   }
   onToolbarRedo(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarRedo...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       this.instanceCodeMirror.redo();
     }
   }
   onToolbarBold(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarBold...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -502,6 +511,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarStrikethrough(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarStrikethrough...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -514,6 +525,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarItalic(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarItalic...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -526,6 +539,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarQuote(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarQuote...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -540,6 +555,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarUpperCase(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUpperCase...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let selection = this.instanceCodeMirror.getSelection();
       let selections = this.instanceCodeMirror.listSelections();
@@ -549,6 +566,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarLowerCase(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarLowercase...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let selection = this.instanceCodeMirror.getSelection();
       let selections = this.instanceCodeMirror.listSelections();
@@ -558,6 +577,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarHr(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarHr...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -566,6 +587,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarH1(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH1...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -580,6 +603,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarH2(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH2...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -594,6 +619,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarH3(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH3...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -608,6 +635,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarH4(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH4...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -622,6 +651,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }    
   }
   onToolbarH5(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH5...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -636,6 +667,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }    
   }
   onToolbarH6(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH6...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -650,6 +683,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }    
   }
   onToolbarUnorderedList(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -668,6 +703,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarOrderedList(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarOrderedList...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -685,6 +722,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarCode(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCode...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -696,6 +735,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarCodeBlock(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCodeBlock...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -707,6 +748,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarTex(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarTex...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let cursor    = this.instanceCodeMirror.getCursor();
       let selection = this.instanceCodeMirror.getSelection();
@@ -718,12 +761,16 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarPageBreak(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let selection = this.instanceCodeMirror.getSelection();
       this.instanceCodeMirror.replaceSelection('\r\n[========]\r\n');
     }
   }
   onToolbarDateTime(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
+      ConsoleLogTypeEnum.debug);
     if (this.instanceCodeMirror) {
       let selection = this.instanceCodeMirror.getSelection();
 
@@ -1147,5 +1194,60 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // }
 
     return text;
+  }
+
+  setCodeMirror() {
+    let codeMirrorConfig: codemirror.EditorConfiguration = {
+        mode                      : this.config.mode,
+        theme                     : '',
+        tabSize                   : this.config.tabSize,
+        dragDrop                  : false,
+        autofocus                 : this.config.autoFocus,
+        autoCloseTags             : this.config.autoCloseTags ? true : false,
+        readOnly                  : (this.config.readOnly) ? 'nocursor' : false,
+        indentUnit                : this.config.indentUnit,
+        lineNumbers               : this.config.lineNumbers,
+        lineWrapping              : this.config.lineWrapping,
+        // extraKeys                 : {
+        //                                 "Ctrl-Q": function(cm) { 
+        //                                     cm.foldCode(cm.getCursor()); 
+        //                                 }
+        //                             },
+        // foldGutter                : this.config.codeFold,
+        gutters                   : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        // matchBrackets             : this.config.matchBrackets,
+        indentWithTabs            : this.config.indentWithTabs,
+        // styleActiveLine           : this.config.styleActiveLine,
+        // styleSelectedText         : this.config.styleSelectedText,
+        // autoCloseBrackets         : this.config.autoCloseBrackets,
+        // showTrailingSpace         : this.config.showTrailingSpace,
+        // highlightSelectionMatches : ( (!this.config.matchWordHighlight) ? false : { showToken: (this.config.matchWordHighlight === 'onselected') ? false : /\w/ } )
+    };
+    
+    this.instanceCodeMirror = codemirror.fromTextArea(this.erTextArea.nativeElement as HTMLTextAreaElement, codeMirrorConfig);
+    // this.codeMirror = this.cmElement = editor.children(".CodeMirror");
+    
+    // if (settings.value !== "")
+    // {
+    //     this.cm.setValue(settings.value);
+    // }
+
+    // this.codeMirror.css({
+    //     fontSize : settings.fontSize,
+    //     width    : (!settings.watch) ? "100%" : "50%"
+    // });
+    
+    // if (settings.autoHeight)
+    // {
+    //     this.codeMirror.css("height", "auto");
+    //     this.cm.setOption("viewportMargin", Infinity);
+    // }
+    
+    // if (!settings.lineNumbers)
+    // {
+    //     this.codeMirror.find(".CodeMirror-gutters").css("border-right", "none");
+    // }
+
+    return this;
   }
 }
