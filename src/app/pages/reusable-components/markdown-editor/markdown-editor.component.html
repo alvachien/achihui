@@ -50,15 +50,21 @@
     </div>
   </div>
 
-  <textarea class="acme-markdown-textarea" #acme_textarea></textarea>
-  <textarea class="acme-html-textarea" #acme_html_textarea></textarea>
-  <button *ngIf="IsPreviewCloseButton" nz-button><i nz-icon nzType="close" nzTheme="outline"></i></button>
-  <textarea *ngIf="IsSaveHTMLToMarkdown" class="acme-html-textarea"></textarea>
-  <div class="acme-preview" #acme_preview>
-    <div class="markdown-body acme-preview-container" #acme_preview_container></div>
-  </div>
-  <div class="acme-container-mask" style="display: block;" #acme_container_mask></div>
-  <div class="acme-mask" #acme_mark></div>
+  <div nz-row *transloco="let t">
+    <div class="col" nz-col nz-resizable (nzResize)="onResize($event)" [nzMinColumn]="3" [nzMaxColumn]="20"
+      [nzGridColumnCount]="24" [nzSpan]="col">
+      <nz-resize-handle nzDirection="right">
+        <div class="right-wrap">
+          <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
+        </div>
+      </nz-resize-handle>
+      <div>
+        <nz-code-editor class="editor" [ngModel]="content" (nzEditorInitialized)="onEditorInit($event)"
+          [nzEditorOption]="{ language: 'markdown' }"></nz-code-editor>
+      </div>
+    </div>
+    <div class="col right" nz-col [nzSpan]="24 - col">Content changed after the selection.</div>
+  </div> 
 </div>
 <!-- <div class="acme-dialog-math" [class.acme-dialog-open]="isDialogMathOpen" id="acme_math_dialog">
   <div class="acme-dialog-content">

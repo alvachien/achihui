@@ -32,16 +32,17 @@
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/monaco-editor/min/vs",
+                "output": "/assets/vs/"
               }
             ],
             "styles": [
-              "src/styles.less",
-              "./node_modules/codemirror/lib/codemirror.css",
-              "./node_modules/codemirror/addon/dialog/dialog.css",
-              "./node_modules/codemirror/addon/search/matchesonscrollbar.css"
+              "src/styles.less"
             ],
             "scripts": [
-              "./node_modules/codemirror/lib/codemirror.js"
             ]
           },
           "configurations": {

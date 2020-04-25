@@ -2,13 +2,14 @@ import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef,
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
-import { insertTextIntoElement, scrollToElementCenter, readElementText, } from 'actslib';
 import * as marked from 'marked';
 // import * as highlightjs from 'highlight.js';
 import * as katex from 'katex';
-import * as codemirror from 'codemirror';
+// tslint:disable-next-line no-any
+declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+import { editor } from 'monaco-editor';
 
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
@@ -40,7 +41,7 @@ export enum EditorToolbarButtonEnum {
 }
 
 // Config for editor
-export interface IACMEditorConfig extends codemirror.EditorConfiguration {
+export interface IACMEditorConfig {
   toolbarItems?: EditorToolbarButtonEnum[];
   name?: string;
   height?: number | string;
@@ -127,9 +128,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
   isDialogMathOpen = false;
   mathDialogInput: string;
-  instanceCodeMirror: codemirror.EditorFromTextArea = null;
   instanceKatex: any = null;
   instanceMarked: any = null;
+  editor: editor.ICodeEditor;
+  content: string;
 
   stateWatching = false;
   stateLoaded   = false;
@@ -167,92 +169,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   toolbarItems: EditorToolbarButtonEnum[] = [];
   rangeSelection: Range;
 
-  defaultConfig : IACMEditorConfig    = {
-    mode                 : 'gfm',          // gfm or markdown
-    // name              : '',             // Form element name
-    value                : '',             // value for CodeMirror, if mode not gfm/markdown
-    theme                : '',             // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
-    // editorTheme          : 'default',      // Editor area, this is CodeMirror theme at v1.5.0
-    // previewTheme         : '',             // Preview area theme, default empty
-    // markdown             : '',             // Markdown source code
-    // appendMarkdown       : '',             // if in init textarea value not empty, append markdown to textarea
-    width                : '100%',
-    height               : '100%',
-    // path                 : "./lib/",       // Dependents module file directory
-    // pluginPath           : "",             // If this empty, default use settings.path + "../plugins/"
-    delay                : 300,            // Delay parse markdown to html, Uint : ms
-    // autoLoadModules      : true,           // Automatic load dependent module files
-    watch                : true,
-    placeHolder          : 'Enjoy Markdown! coding now...',
-    gotoLine             : true,
-    // codeFold             : false,
-    autoHeight           : false,
-    autoFocus            : true,
-    autoCloseTags        : true,
-    searchReplace        : true,
-    syncScrolling        : true,           // true | false | "single", default true
-    readOnly             : false,
-    tabSize              : 4,
-    indentUnit           : 4,
-    lineNumbers          : true,
-    lineWrapping         : true,
-    autoCloseBrackets    : true,
-    showTrailingSpace    : true,
-    matchBrackets        : true,
-    indentWithTabs       : true,
-    styleSelectedText    : true,
-    matchWordHighlight   : true,           // options: true, false, "onselected"
-    styleActiveLine      : true,           // Highlight the current line
-    // dialogLockScreen     : true,
-    dialogShowMask       : true,
-    dialogDraggable      : true,
-    dialogMaskBgColor    : '#fff',
-    dialogMaskOpacity    : 0.1,
-    fontSize             : '13px',
-    saveHTMLToTextarea   : false,
-    // disabledKeyMaps      : [],
-    
-    // onload               : function() {},
-    // onresize             : function() {},
-    // onchange             : function() {},
-    // onwatch              : null,
-    // onunwatch            : null,
-    // onpreviewing         : function() {},
-    // onpreviewed          : function() {},
-    // onfullscreen         : function() {},
-    // onfullscreenExit     : function() {},
-    // onscroll             : function() {},
-    // onpreviewscroll      : function() {},
-    
-    imageUpload          : false,
-    imageFormats         : ['jpg', 'jpeg', 'gif', 'png', 'bmp', "webp"],
-    imageUploadURL       : '',
-    crossDomainUpload    : false,
-    uploadCallbackURL    : '',
-    
-    toc                  : true,           // Table of contents
-    tocm                 : false,          // Using [TOCM], auto create ToC dropdown menu
-    tocTitle             : '',             // for ToC dropdown menu btn
-    tocDropdown          : false,
-    tocContainer         : '',
-    tocStartLevel        : 1,              // Said from H1 to create ToC
-    htmlDecode           : false,          // Open the HTML tag identification 
-    pageBreak            : true,           // Enable parse page break [========]
-    atLink               : true,           // for @link
-    emailLink            : true,           // for email address auto link
-    taskList             : false,          // Enable Github Flavored Markdown task lists
-    emoji                : false,          // :emoji: , Support Github emoji, Twitter Emoji (Twemoji);
-                                           // Support FontAwesome icon emoji :fa-xxx: > Using fontAwesome icon web fonts;
-                                           // Support Editor.md logo icon emoji :editormd-logo: :editormd-logo-1x: > 1~8x;
-    tex                  : false,          // TeX(LaTeX), based on KaTeX
-    flowChart            : false,          // flowChart.js only support IE9+
-    sequenceDiagram      : false,          // sequenceDiagram.js only support IE9+
-    previewCodeHighlight : true,
-            
-    toolbar              : true,           // show/hide toolbar
-    toolbarAutoFixed     : true,           // on window scroll auto fixed position
-  };
-
   public get value(): any {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
       ConsoleLogTypeEnum.debug);
@@ -263,36 +179,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
     this._markdownValue = value;
     this._onChange(value);
-
-    // if (this.preRender && this.preRender instanceof Function) {
-    //   value = this.preRender(value);
-    // }
-    // if (value !== null && value !== undefined) {
-    //   if (this._renderMarkTimeout) {
-    //     clearTimeout(this._renderMarkTimeout);
-    //   }
-
-    //   this._renderMarkTimeout = setTimeout(() => {
-    //     const html = marked(value || '', this._markedOpt);
-    //     // let previewHtml = this._domSanitizer.bypassSecurityTrustHtml(html);
-    //     if (this.erContentPreview) {
-    //       this.erContentPreview.nativeElement.innerHTML = html;
-    //       const chlds = this.erContentPreview.nativeElement.getElementsByClassName('katex');
-    //       const orgcount = chlds.length;
-    //       const chldelems: any[] = [];
-    //       for (let i = 0; i < orgcount; i++) {
-    //         chldelems.push(chlds.item(i));
-    //         // chdelem.setAttribute('font-size', '1.6em');
-    //         // css("font-size", "1.6em");
-    //       }
-    //       chldelems.forEach((cel: any) => {
-    //         katex.render(cel.textContent, cel, {
-    //           throwOnError: false
-    //         });
-    //       });
-    //     }
-    //   }, 100);
-    // }
   }
   // tslint:disable-next-line:variable-name
   private _markdownValue: any;
@@ -340,100 +226,15 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   constructor() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    this.content = `# Test
+      ## Test 2
+      `;
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
-
-    let settings = { ...this.defaultConfig, ...this.config };
-    let classPrefix = 'acme-';
-    let editor = this.erWrapper.nativeElement;
-
-    this.stateWatching = (settings.watch) ? true : false;
-    
-    // Width and height
-    editor.width = (typeof settings.width  === 'number') ? settings.width  + 'px' : settings.width;
-    editor.height = settings.autoHeight ? 'auto' :  
-      (typeof settings.height === 'number') ? settings.height + 'px' : settings.height;
-
-    let markdownTextarea = this.erTextArea.nativeElement as HTMLTextAreaElement;
-    // markdownTextarea.addClass(classNames.textarea.markdown).attr("placeholder", settings.placeholder);
-    if (!markdownTextarea.name) {
-      markdownTextarea.name = (settings.name !== '') ? settings.name : this.editorID + '-markdown-doc';
-    }
-    let mask          = this.erMask.nativeElement;    
-    let containerMask = this.erContainermask.nativeElement;
-    let htmlTextarea  = this.erHtmlTextArea.nativeElement;
-    let preview       = this.erPreview.nativeElement;
-    let previewContainer = this.erPreviewContainer.nativeElement;
-
-    this.setCodeMirror();
-
-    let markedOption: marked.MarkedOptions = {
-
-    };
-    this.instanceMarked = new marked.Renderer();
-    this.instanceMarked.emoji = (text: string) => {
-      text = text.replace(/(\d{1,2}:\d{1,2}:\d{1,2})/g, $1 => {
-        return $1.replace(/:/g, "&#58;");
-      });
-      
-      var matchs = text.match(/:([\w\+-]+):/g);
-      if (!matchs) {
-        return text;
-      }
-
-      for (let i = 0, len = matchs.length; i < len; i++) {
-        if (matchs[i] === ":+1:") {
-          matchs[i] = ":\\+1:";
-        }
-
-        text = text.replace(new RegExp(matchs[i]), ($1 : string) => {
-          var faMatchs = $1.match(/:(fa-([\w]+)(-(\w+)){0,}):/g);
-          var name     = $1.replace(/:/g, "");
-
-          if (faMatchs) {
-            for (let fa = 0, len1 = faMatchs.length; fa < len1; fa++) {
-              let faName = faMatchs[fa].replace(/:/g, "");
-              return "<i class=\"fa " + faName + " fa-emoji\" title=\"" + faName.replace("fa-", "") + "\"></i>";
-            }
-          } else {
-            // var twemojiMatchs = $1.match(/:(tw-([\w]+)-?(\w+)?):/g);
-            // if (twemojiMatchs) {
-            //   for (let t = 0, len3 = twemojiMatchs.length; t < len3; t++) {
-            //     let twe = twemojiMatchs[t].replace(/:/g, "").replace("tw-", "");
-            //     return "<img src=\"" + editormd.twemoji.path + twe + editormd.twemoji.ext + "\" title=\"twemoji-" + twe + "\" alt=\"twemoji-" + twe + "\" class=\"emoji twemoji\" />";
-            //   }
-            // } else {
-            //   var src = (name === "+1") ? "plus1" : name;
-            //   src     = (src === "black_large_square") ? "black_square" : src;
-            //   src     = (src === "moon") ? "waxing_gibbous_moon" : src;
-
-            //   return "<img src=\"" + editormd.emoji.path + src + editormd.emoji.ext + "\" class=\"emoji\" title=\"&#58;" + name + "&#58;\" alt=\"&#58;" + name + "&#58;\" />";
-            // }
-          }
-        });
-      }
-
-      return text;
-    };
-
-    this.instanceMarked.atLink = this.markedRender_AtLink;          
-    this.instanceMarked.link = this.markedRender_Link;  
-    this.instanceMarked.heading = this.markedRender_Heading;  
-    this.instanceMarked.pageBreak = this.markedRender_PageBreak;
-    this.instanceMarked.paragraph = this.markedRender_Paragraph;
-    this.instanceMarked.code = this.markedRender_Code;
-    this.instanceMarked.tablecell = this.markedRender_Tablecell;
-    this.instanceMarked.listitem = this.markedRender_ListItem;
-
-    // const markedRender = new marked.Renderer();
-    // this._markedOpt = {
-    //   renderer: markedRender,
-    //   highlight: (code: any) => highlightjs.highlightAuto(code).value
-    // };
-    // this._markedOpt = Object.assign({}, markedjsOpt, this.options.markedjsOpt);
   }
 
   ngOnDestroy() {
@@ -442,17 +243,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     this.toolbarItems = [];
   }
 
-  // onSplitterMouseDown(event) {
-  //   this.erContentSplitter.nativeElement.eraddEventListener('mousemove', this.onSplitterDrag);
-  // }
-  // onSplitterMouseUp(event) {
-  //   this.erContentSplitter.nativeElement.removeEventListener('mousemove', this.onSplitterDrag);
-  // }
+  onEditorInit(e: editor.ICodeEditor): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit...',
+      ConsoleLogTypeEnum.debug);
 
-  // onSplitterDrag(e: MouseEvent) {
-  //   window.getSelection().removeAllRanges();
-  //   this.erContentEditor.nativeElement.style.width = (e.pageX - this.erContentSplitter.nativeElement.offsetWidth / 2) + 'px';
-  // }
+    this.editor = e;
+    // this.editor.setModel(monaco.editor.createModel("console.log('Hello ng-zorro-antd')", 'typescript'));
+  }
 
   writeValue(val: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
@@ -485,302 +282,90 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUndo(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUndo...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      this.instanceCodeMirror.undo();
-    }
   }
   onToolbarRedo(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarRedo...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      this.instanceCodeMirror.redo();
-    }
   }
   onToolbarBold(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarBold...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-  
-      this.instanceCodeMirror.replaceSelection('**' + selection + '**');
-  
-      if(selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
-      } 
-    }
   }
   onToolbarStrikethrough(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarStrikethrough...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      this.instanceCodeMirror.replaceSelection('~~' + selection + '~~');
-
-      if(selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
-      }
-    }
   }
   onToolbarItalic(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarItalic...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      this.instanceCodeMirror.replaceSelection('*' + selection + '*');
-
-      if(selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
-      }
-    }
   }
   onToolbarQuote(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarQuote...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('> ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
-      } else {
-        this.instanceCodeMirror.replaceSelection('> ' + selection);
-      }
-    }
   }
   onToolbarUpperCase(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUpperCase...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let selection = this.instanceCodeMirror.getSelection();
-      let selections = this.instanceCodeMirror.listSelections();
-
-      this.instanceCodeMirror.replaceSelection(selection.toUpperCase());
-      this.instanceCodeMirror.setSelections(selections);
-    }
   }
   onToolbarLowerCase(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarLowercase...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let selection = this.instanceCodeMirror.getSelection();
-      let selections = this.instanceCodeMirror.listSelections();
-
-      this.instanceCodeMirror.replaceSelection(selection.toLowerCase());
-      this.instanceCodeMirror.setSelections(selections);
-    }
   }
   onToolbarHr(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarHr...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      this.instanceCodeMirror.replaceSelection(((cursor.ch !== 0) ? '\n\n' : '\n') + '------------\n\n');
-    }
   }
   onToolbarH1(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH1...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('# ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
-      } else {
-        this.instanceCodeMirror.replaceSelection('# ' + selection);
-      }
-    }
   }
   onToolbarH2(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH2...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('## ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 3);
-      } else {
-        this.instanceCodeMirror.replaceSelection('## ' + selection);
-      }
-    }
   }
   onToolbarH3(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH3...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('### ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 4);
-      } else {
-        this.instanceCodeMirror.replaceSelection('### ' + selection);
-      }
-    }
   }
   onToolbarH4(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH4...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('#### ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 5);
-      } else {
-        this.instanceCodeMirror.replaceSelection('#### ' + selection);
-      }
-    }    
   }
   onToolbarH5(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH5...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('##### ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 6);
-      } else {
-        this.instanceCodeMirror.replaceSelection('##### ' + selection);
-      }
-    }    
   }
   onToolbarH6(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH6...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (cursor.ch !== 0) {
-        this.instanceCodeMirror.setCursor(cursor.line, 0);
-        this.instanceCodeMirror.replaceSelection('###### ' + selection);
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 7);
-      } else {
-        this.instanceCodeMirror.replaceSelection('###### ' + selection);
-      }
-    }    
   }
   onToolbarUnorderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-
-      if (selection === '') {
-        this.instanceCodeMirror.replaceSelection('- ' + selection);
-      } else {
-        let selectionText = selection.split('\n');
-
-        for (let i = 0, len = selectionText.length; i < len; i++) {
-          selectionText[i] = (selectionText[i] === '') ? '' : '- ' + selectionText[i];
-        }
-
-        this.instanceCodeMirror.replaceSelection(selectionText.join('\n'));
-      }
-    }
   }
   onToolbarOrderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarOrderedList...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-      if(selection === '') {
-        this.instanceCodeMirror.replaceSelection('1. ' + selection);
-      } else {
-        let selectionText = selection.split('\n');
-
-        for (let i = 0, len = selectionText.length; i < len; i++) {
-          selectionText[i] = (selectionText[i] === '') ? '' : (i+1) + '. ' + selectionText[i];
-        }
-
-        this.instanceCodeMirror.replaceSelection(selectionText.join('\n'));
-      }
-    }
   }
   onToolbarCode(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCode...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-      this.instanceCodeMirror.replaceSelection('`' + selection + '`');
-
-      if (selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
-      }
-    }
   }
   onToolbarCodeBlock(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCodeBlock...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-      this.instanceCodeMirror.replaceSelection('`' + selection + '`');
-
-      if (selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 1);
-      }
-    }
   }
   onToolbarTex(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarTex...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let cursor    = this.instanceCodeMirror.getCursor();
-      let selection = this.instanceCodeMirror.getSelection();
-      this.instanceCodeMirror.replaceSelection('$$' + selection + '$$');
-
-      if (selection === '') {
-        this.instanceCodeMirror.setCursor(cursor.line, cursor.ch + 2);
-      }
-    }
   }
   onToolbarPageBreak(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let selection = this.instanceCodeMirror.getSelection();
-      this.instanceCodeMirror.replaceSelection('\r\n[========]\r\n');
-    }
   }
   onToolbarDateTime(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
-    if (this.instanceCodeMirror) {
-      let selection = this.instanceCodeMirror.getSelection();
-
-      let date      = new Date();
-      let datefmt = date.toLocaleString();
-      // let langName  = this.settings.lang.name;
-      // var datefmt   = editormd.dateFormat() + " " + editormd.dateFormat((langName === "zh-cn" || langName === "zh-tw") ? "cn-week-day" : "week-day");
-
-      this.instanceCodeMirror.replaceSelection(datefmt);
-    }
   }
   // onToolbarButtonClick(event: MouseEvent, btn: string): void {
   //   const titem: EditorToolbarButtonEnum = btn as EditorToolbarButtonEnum;
@@ -1194,60 +779,5 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // }
 
     return text;
-  }
-
-  setCodeMirror() {
-    let codeMirrorConfig: codemirror.EditorConfiguration = {
-        mode                      : this.config.mode,
-        theme                     : '',
-        tabSize                   : this.config.tabSize,
-        dragDrop                  : false,
-        autofocus                 : this.config.autoFocus,
-        autoCloseTags             : this.config.autoCloseTags ? true : false,
-        readOnly                  : (this.config.readOnly) ? 'nocursor' : false,
-        indentUnit                : this.config.indentUnit,
-        lineNumbers               : this.config.lineNumbers,
-        lineWrapping              : this.config.lineWrapping,
-        // extraKeys                 : {
-        //                                 "Ctrl-Q": function(cm) { 
-        //                                     cm.foldCode(cm.getCursor()); 
-        //                                 }
-        //                             },
-        // foldGutter                : this.config.codeFold,
-        gutters                   : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        // matchBrackets             : this.config.matchBrackets,
-        indentWithTabs            : this.config.indentWithTabs,
-        // styleActiveLine           : this.config.styleActiveLine,
-        // styleSelectedText         : this.config.styleSelectedText,
-        // autoCloseBrackets         : this.config.autoCloseBrackets,
-        // showTrailingSpace         : this.config.showTrailingSpace,
-        // highlightSelectionMatches : ( (!this.config.matchWordHighlight) ? false : { showToken: (this.config.matchWordHighlight === 'onselected') ? false : /\w/ } )
-    };
-    
-    this.instanceCodeMirror = codemirror.fromTextArea(this.erTextArea.nativeElement as HTMLTextAreaElement, codeMirrorConfig);
-    // this.codeMirror = this.cmElement = editor.children(".CodeMirror");
-    
-    // if (settings.value !== "")
-    // {
-    //     this.cm.setValue(settings.value);
-    // }
-
-    // this.codeMirror.css({
-    //     fontSize : settings.fontSize,
-    //     width    : (!settings.watch) ? "100%" : "50%"
-    // });
-    
-    // if (settings.autoHeight)
-    // {
-    //     this.codeMirror.css("height", "auto");
-    //     this.cm.setOption("viewportMargin", Infinity);
-    // }
-    
-    // if (!settings.lineNumbers)
-    // {
-    //     this.codeMirror.find(".CodeMirror-gutters").css("border-right", "none");
-    // }
-
-    return this;
   }
 }

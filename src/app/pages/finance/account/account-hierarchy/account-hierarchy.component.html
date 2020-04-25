@@ -12,25 +12,17 @@
 </nz-page-header>
 
 <div nz-row *transloco="let t">
-  <div
-    class="col"
-    nz-col
-    nz-resizable
-    (nzResize)="onResize($event)"
-    [nzMinColumn]="3"
-    [nzMaxColumn]="20"
-    [nzGridColumnCount]="24"
-    [nzSpan]="col"
-  >
-  <nz-resize-handle nzDirection="right">
-    <div class="right-wrap">
-      <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
-    </div>
-  </nz-resize-handle>
+  <div class="col" nz-col nz-resizable (nzResize)="onResize($event)" [nzMinColumn]="3" [nzMaxColumn]="20"
+    [nzGridColumnCount]="24" [nzSpan]="col">
+    <nz-resize-handle nzDirection="right">
+      <div class="right-wrap">
+        <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
+      </div>
+    </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="nodeClick($event)">            
-        </nz-tree>  
+        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
+        </nz-tree>
       </nz-spin>
     </div>
   </div>
