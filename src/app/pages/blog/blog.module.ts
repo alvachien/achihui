@@ -11,7 +11,9 @@ import { BlogUIModule } from './blog-ui.module';
     CommonModule,
     BlogUIModule,
     TranslocoModule,
-    BlogRoutingModule
+    BlogRoutingModule,
+  ],
+  providers: [
   ]
 })
 export class BlogModule { }

@@ -10,6 +10,7 @@ declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { editor } from 'monaco-editor';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
@@ -111,17 +112,17 @@ export interface IACMEditorConfig {
   ],  
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @ViewChild('acme_wrapper', { static: true }) erWrapper: ElementRef;
-  @ViewChild('acme_toolbar', { static: true }) erToolbar: ElementRef;
-  @ViewChild('acme_textarea', { static: true }) erTextArea: ElementRef;
-  @ViewChild('acme_preview', { static: true }) erPreview: ElementRef;
-  @ViewChild('acme_preview_container', { static: true }) erPreviewContainer: ElementRef;
-  @ViewChild('acme_content_editor', { static: true }) erContentEditor: ElementRef;
+  // @ViewChild('acme_wrapper', { static: true }) erWrapper: ElementRef;
+  // @ViewChild('acme_toolbar', { static: true }) erToolbar: ElementRef;
+  // @ViewChild('acme_textarea', { static: true }) erTextArea: ElementRef;
+  // @ViewChild('acme_preview', { static: true }) erPreview: ElementRef;
+  // @ViewChild('acme_preview_container', { static: true }) erPreviewContainer: ElementRef;
+  // @ViewChild('acme_content_editor', { static: true }) erContentEditor: ElementRef;
   // @ViewChild('acme_content_splitter', {static: true}) erContentSplitter: ElementRef;
-  @ViewChild('acme_content_preview', { static: true }) erContentPreview: ElementRef;
-  @ViewChild('acme_mark', {static: true}) erMask: ElementRef;
-  @ViewChild('acme_container_mask', {static: true}) erContainermask: ElementRef;
-  @ViewChild('acme_html_textarea', {static: true}) erHtmlTextArea: ElementRef;
+  // @ViewChild('acme_content_preview', { static: true }) erContentPreview: ElementRef;
+  // @ViewChild('acme_mark', {static: true}) erMask: ElementRef;
+  // @ViewChild('acme_container_mask', {static: true}) erContainermask: ElementRef;
+  // @ViewChild('acme_html_textarea', {static: true}) erHtmlTextArea: ElementRef;
   @Input() config: IACMEditorConfig;
   @Output() contentChanged: EventEmitter<string> = new EventEmitter();
   @Input() editorID: string;
@@ -226,15 +227,16 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   constructor() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this.content = `# Test
-      ## Test 2
-      `;
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
+
+    this.content = `
+    # Test
+    ## Test 2
+    `;
   }
 
   ngOnDestroy() {
@@ -269,11 +271,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent setDisabledState...',
       ConsoleLogTypeEnum.debug);
-    if (isDisabled) {
-      this.erWrapper.nativeElement.disable = true;
-    } else {
-      this.erWrapper.nativeElement.disable = true;
-    }
+    // if (isDisabled) {
+    //   this.erWrapper.nativeElement.disable = true;
+    // } else {
+    //   this.erWrapper.nativeElement.disable = true;
+    // }
   }
 
   ///
@@ -475,18 +477,18 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   //   // this.contentChanged.emit(this.erContentEditor.nativeElement.innerText);
   // }
   onContentEditorScroll(event): void {
-    const textScrollTop = this.erContentEditor.nativeElement.scrollTop;
-    const textHeight = this.erContentEditor.nativeElement.clientHeight;
-    const textScrollHeight = this.erContentEditor.nativeElement.scrollHeight
-      - (this.erContentEditor.nativeElement.style.paddingBottom ? parseFloat(this.erContentEditor.nativeElement.style.paddingBottom) : 0);
+    // const textScrollTop = this.erContentEditor.nativeElement.scrollTop;
+    // const textHeight = this.erContentEditor.nativeElement.clientHeight;
+    // const textScrollHeight = this.erContentEditor.nativeElement.scrollHeight
+    //   - (this.erContentEditor.nativeElement.style.paddingBottom ? parseFloat(this.erContentEditor.nativeElement.style.paddingBottom) : 0);
 
-    if ((textScrollTop / textHeight > 0.5)) {
-      this.erContentPreview.nativeElement.scrollTop = (textScrollTop + textHeight) *
-        this.erContentPreview.nativeElement.scrollHeight / textScrollHeight - textHeight;
-    } else {
-      this.erContentPreview.nativeElement.scrollTop = textScrollTop *
-        this.erContentPreview.nativeElement.scrollHeight / textScrollHeight;
-    }
+    // if ((textScrollTop / textHeight > 0.5)) {
+    //   this.erContentPreview.nativeElement.scrollTop = (textScrollTop + textHeight) *
+    //     this.erContentPreview.nativeElement.scrollHeight / textScrollHeight - textHeight;
+    // } else {
+    //   this.erContentPreview.nativeElement.scrollTop = textScrollTop *
+    //     this.erContentPreview.nativeElement.scrollHeight / textScrollHeight;
+    // }
   }
   onContentEditorBlur(event): void {
     // TBD.
@@ -536,15 +538,15 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onMathDialogClose(): void {
-    const dialogelem: HTMLElement = document.getElementById('acme_math_dialog');
-    const inputelem = dialogelem.getElementsByClassName('acme_math_input')[0] as HTMLDivElement;
-    if (inputelem.innerText) {
-      const newelem: HTMLElement = document.createElement('div');
-      katex.render(inputelem.innerText, newelem);
-      this.erContentEditor.nativeElement.appendChild(newelem);
-    }
+    // const dialogelem: HTMLElement = document.getElementById('acme_math_dialog');
+    // const inputelem = dialogelem.getElementsByClassName('acme_math_input')[0] as HTMLDivElement;
+    // if (inputelem.innerText) {
+    //   const newelem: HTMLElement = document.createElement('div');
+    //   katex.render(inputelem.innerText, newelem);
+    //   this.erContentEditor.nativeElement.appendChild(newelem);
+    // }
 
-    this.isDialogMathOpen = false;
+    // this.isDialogMathOpen = false;
   }
   validate(control: AbstractControl): ValidationErrors | null {
     return null;

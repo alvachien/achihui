@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, NzModalService, NzModalConfirmContainerComponent, NzModalModule, } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,6 +8,13 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import zh from '@angular/common/locales/zh';
 import { TranslocoModule, translocoConfig, TRANSLOCO_CONFIG } from '@ngneat/transloco';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,12 +40,19 @@ registerLocaleData(en);
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
-    NgZorroAntdModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     HttpClientModule,
     TranslocoModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzIconModule,
+    NzInputModule,
+    NzDropDownModule,
+    NzTableModule,
+    NzModalModule,
+    MarkdownModule.forRoot(),
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
@@ -51,6 +65,7 @@ registerLocaleData(en);
     HomeDefOdataService,
     LearnOdataService,
     FinanceOdataService,
+    NzModalService,
     BlogOdataService,
     {
       provide: TRANSLOCO_CONFIG,
@@ -64,6 +79,7 @@ registerLocaleData(en);
     translocoLoader,
   ],
   entryComponents: [
+    NzModalConfirmContainerComponent,
     MessageDialogComponent,
   ],
   bootstrap: [AppComponent],

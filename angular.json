@@ -40,9 +40,12 @@
               }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "node_modules/katex/dist/katex.min.css"
             ],
             "scripts": [
+              "node_modules/marked/lib/marked.js",
+              "node_modules/katex/dist/katex.min.js"
             ]
           },
           "configurations": {

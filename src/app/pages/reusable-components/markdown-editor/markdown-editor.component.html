@@ -1,71 +1,65 @@
-<div class="acme acme-vertical" #acme_wrapper>
-  <div class="acme-toolbar" style="display: block;">    
-    <div class="acme-toolbar-container">
-      <nz-button-group>
-        <button nz-button (click)="onToolbarUndo()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarRedo()"><i nz-icon nzType="redo" nzTheme="outline"></i></button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button (click)="onToolbarBold()"><i nz-icon nzType="bold" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarStrikethrough()"><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarItalic()"><i nz-icon nzType="italic" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarQuote()">"</button>
-        <button nz-button (click)="onToolbarUpperCase()">A</button>
-        <button nz-button (click)="onToolbarLowerCase()">a</button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button (click)="onToolbarH1()">H1</button>
-        <button nz-button (click)="onToolbarH2()">H2</button>
-        <button nz-button (click)="onToolbarH3()">H3</button>
-        <button nz-button (click)="onToolbarH4()">H4</button>
-        <button nz-button (click)="onToolbarH5()">H5</button>
-        <button nz-button (click)="onToolbarH6()">H6</button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button (click)="onToolbarUnorderedList()"><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarOrderedList()"><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button><i nz-icon nzType="link" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarCode()"><i nz-icon nzType="code" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="block" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="picture" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="table" nzTheme="outline"></i></button>
-        <button nz-button (click)="onToolbarDateTime()"><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button><i nz-icon nzType="delete" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="search" nzTheme="outline"></i></button>
-      </nz-button-group>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-button-group>
-        <button nz-button><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></button>
-        <button nz-button><i nz-icon nzType="fullscreen" nzTheme="outline"></i></button>
-      </nz-button-group>
-    </div>
+<div class="acme" #acme_wrapper style="height: 500px;">
+  <div nz-row class="acme-toolbar">
+    <nz-button-group>
+      <button nz-button (click)="onToolbarUndo()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarRedo()"><i nz-icon nzType="redo" nzTheme="outline"></i></button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button (click)="onToolbarBold()"><i nz-icon nzType="bold" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarStrikethrough()"><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarItalic()"><i nz-icon nzType="italic" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarQuote()">"</button>
+      <button nz-button (click)="onToolbarUpperCase()">A</button>
+      <button nz-button (click)="onToolbarLowerCase()">a</button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button (click)="onToolbarH1()">H1</button>
+      <button nz-button (click)="onToolbarH2()">H2</button>
+      <button nz-button (click)="onToolbarH3()">H3</button>
+      <button nz-button (click)="onToolbarH4()">H4</button>
+      <button nz-button (click)="onToolbarH5()">H5</button>
+      <button nz-button (click)="onToolbarH6()">H6</button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button (click)="onToolbarUnorderedList()"><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarOrderedList()"><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button><i nz-icon nzType="link" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarCode()"><i nz-icon nzType="code" nzTheme="outline"></i></button>
+      <button nz-button><i nz-icon nzType="block" nzTheme="outline"></i></button>
+      <button nz-button><i nz-icon nzType="picture" nzTheme="outline"></i></button>
+      <button nz-button><i nz-icon nzType="table" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarDateTime()"><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button><i nz-icon nzType="delete" nzTheme="outline"></i></button>
+      <button nz-button><i nz-icon nzType="search" nzTheme="outline"></i></button>
+    </nz-button-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-button-group>
+      <button nz-button><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></button>
+      <button nz-button><i nz-icon nzType="fullscreen" nzTheme="outline"></i></button>
+    </nz-button-group>
   </div>
 
-  <div nz-row *transloco="let t">
-    <div class="col" nz-col nz-resizable (nzResize)="onResize($event)" [nzMinColumn]="3" [nzMaxColumn]="20"
-      [nzGridColumnCount]="24" [nzSpan]="col">
-      <nz-resize-handle nzDirection="right">
-        <div class="right-wrap">
-          <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
-        </div>
-      </nz-resize-handle>
-      <div>
-        <nz-code-editor class="editor" [ngModel]="content" (nzEditorInitialized)="onEditorInit($event)"
-          [nzEditorOption]="{ language: 'markdown' }"></nz-code-editor>
-      </div>
+  <div nz-row style="height: 100%; width: 100%;">
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <nz-code-editor class="editor" [(ngModel)]="content"
+        [nzEditorOption]="{ language: 'markdown' }">
+      </nz-code-editor>
     </div>
-    <div class="col right" nz-col [nzSpan]="24 - col">Content changed after the selection.</div>
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <markdown [data]="content" katex></markdown>
+    </div>
   </div> 
 </div>
+
 <!-- <div class="acme-dialog-math" [class.acme-dialog-open]="isDialogMathOpen" id="acme_math_dialog">
   <div class="acme-dialog-content">
     <div>

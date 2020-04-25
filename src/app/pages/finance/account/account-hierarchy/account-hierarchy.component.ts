@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
+import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
