@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { createKeyboardEvent, dispatchFakeEvent, dispatchKeyboardEvent, MockNgZone, typeInElement } from 'ng-zorro-antd/core';
+import { createKeyboardEvent, dispatchFakeEvent, dispatchKeyboardEvent, MockNgZone, typeInElement } from 'ng-zorro-antd';
 
 import { DocumentItemsComponent } from './document-items.component';
 import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
@@ -315,7 +315,7 @@ describe('DocumentItemsComponent', () => {
           expect(inpNumber).toBeTruthy();
           let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
-          inpNumberComponent.setValue(20, true);
+          inpNumberComponent.setValue(20);
           fixture.detectChanges();
 
           expect(component.listItems[0].TranAmount).toEqual(20);
@@ -423,7 +423,7 @@ describe('DocumentItemsComponent', () => {
           expect(inpNumber).toBeTruthy();
           let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
-          inpNumberComponent.setValue(20, true);
+          inpNumberComponent.setValue(20);
           fixture.detectChanges();
 
           expect(component.listItems[0].TranAmount).toEqual(20);
