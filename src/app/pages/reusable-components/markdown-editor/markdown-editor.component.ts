@@ -1,16 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
-import * as marked from 'marked';
-// import * as highlightjs from 'highlight.js';
-import * as katex from 'katex';
+import { KatexOptions } from 'ngx-markdown';
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { editor } from 'monaco-editor';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
@@ -75,12 +72,6 @@ export interface IACMEditorConfig {
   imageUploadURL?: string;
   crossDomainUpload?: boolean;
   uploadCallbackURL?: string;
-  toc?: boolean;
-  tocm?: boolean;
-  tocTitle?: string;
-  tocDropdown?: boolean;
-  tocContainer?: string;
-  tocStartLevel?: number;
   htmlDecode?: boolean;
   pageBreak?: boolean;
   atLink?: boolean;
@@ -112,25 +103,12 @@ export interface IACMEditorConfig {
   ],  
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  // @ViewChild('acme_wrapper', { static: true }) erWrapper: ElementRef;
-  // @ViewChild('acme_toolbar', { static: true }) erToolbar: ElementRef;
-  // @ViewChild('acme_textarea', { static: true }) erTextArea: ElementRef;
-  // @ViewChild('acme_preview', { static: true }) erPreview: ElementRef;
-  // @ViewChild('acme_preview_container', { static: true }) erPreviewContainer: ElementRef;
-  // @ViewChild('acme_content_editor', { static: true }) erContentEditor: ElementRef;
-  // @ViewChild('acme_content_splitter', {static: true}) erContentSplitter: ElementRef;
-  // @ViewChild('acme_content_preview', { static: true }) erContentPreview: ElementRef;
-  // @ViewChild('acme_mark', {static: true}) erMask: ElementRef;
-  // @ViewChild('acme_container_mask', {static: true}) erContainermask: ElementRef;
-  // @ViewChild('acme_html_textarea', {static: true}) erHtmlTextArea: ElementRef;
   @Input() config: IACMEditorConfig;
   @Output() contentChanged: EventEmitter<string> = new EventEmitter();
   @Input() editorID: string;
 
   isDialogMathOpen = false;
   mathDialogInput: string;
-  instanceKatex: any = null;
-  instanceMarked: any = null;
   editor: editor.ICodeEditor;
   content: string;
 
@@ -138,6 +116,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   stateLoaded   = false;
   statePreview  = false;
   stateFullscreen = false;
+  public options: KatexOptions = {
+    displayMode: true,
+    throwOnError: false,
+    errorColor: '#cc0000',
+  };
 
   // tslint:disable-next-line:variable-name
   private _onChange: (val: any) => void;
@@ -168,7 +151,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     EditorToolbarButtonEnum.math,
   ];
   toolbarItems: EditorToolbarButtonEnum[] = [];
-  rangeSelection: Range;
 
   public get value(): any {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
@@ -183,10 +165,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
   // tslint:disable-next-line:variable-name
   private _markdownValue: any;
-  // tslint:disable-next-line:variable-name
-  private _renderMarkTimeout: any;
-  // tslint:disable-next-line:variable-name
-  private _markedOpt: any;
 
   public isToolbarItemExist(item: string): boolean {
     return this.toolbarItems.some((searchElement: EditorToolbarButtonEnum) => {
@@ -217,14 +195,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     return rst;
   }
-  get IsPreviewCloseButton(): boolean {
-    return this.config.readOnly;
-  }
-  get IsSaveHTMLToMarkdown(): boolean {
-    return this.config.saveHTMLToTextarea;
-  }
 
-  constructor() {
+  constructor(private changeDetect: ChangeDetectorRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
@@ -232,11 +204,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
-
-    this.content = `
-    # Test
-    ## Test 2
-    `;
   }
 
   ngOnDestroy() {
@@ -250,7 +217,38 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     this.editor = e;
-    // this.editor.setModel(monaco.editor.createModel("console.log('Hello ng-zorro-antd')", 'typescript'));
+    this.editor.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
+
+    this.editor.onDidChangeModelContent(e => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeModelContent...',
+        ConsoleLogTypeEnum.debug);
+
+      this.content = this.editor.getValue();
+      this.changeDetect.detectChanges();
+    });
+    // this.editor.onDidChangeCursorPosition(e => {
+    //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeCursorPosition...',
+    //     ConsoleLogTypeEnum.debug);
+
+    //   let npos = this.editor.getPosition();
+    //   // this.editor.getnpos.lineNumber
+    //   console.log(npos);
+    // });
+    // this.editor.onDidChangeCursorSelection(e => {
+    //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeCursorSelection...',
+    //     ConsoleLogTypeEnum.debug);
+
+    //   let nsel = this.editor.getSelection();
+    //   console.log(nsel);
+    // });
+    this.editor.onDidScrollChange(e => {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidScrollChange...',
+        ConsoleLogTypeEnum.debug);
+
+        // Rework for the scroll
+        // TBD.
+        // console.log(e.scrollHeight);
+    });
   }
 
   writeValue(val: any): void {
@@ -284,26 +282,80 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUndo(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUndo...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+    }
   }
   onToolbarRedo(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarRedo...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {      
+    }
   }
   onToolbarBold(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarBold...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '**' + curmodel.getValueInRange(sel) + '**',
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarStrikethrough(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarStrikethrough...',
       ConsoleLogTypeEnum.debug);
+
   }
   onToolbarItalic(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarItalic...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '*' + curmodel.getValueInRange(sel) + '*',
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarQuote(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarQuote...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '> ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarUpperCase(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUpperCase...',
@@ -320,26 +372,128 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH1(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH1...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '# ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }  
   }
   onToolbarH2(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH2...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '## ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }  
   }
   onToolbarH3(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH3...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '### ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }  
   }
   onToolbarH4(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH4...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '#### ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarH5(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH5...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '##### ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }  
   }
   onToolbarH6(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH6...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '###### ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }  
   }
   onToolbarUnorderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
@@ -444,84 +598,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
   ///
   /// Editor's events
-  onContentEditorKeyUp(event: KeyboardEvent): void {
-    this.rangeSelection = window.getSelection().getRangeAt(0).cloneRange();
-  }
-  onContentEditorKeyPress(event: KeyboardEvent): void {
-    // if (!event.metaKey && !event.ctrlKey && event.key === 'Enter') {
-    //   insertTextIntoElement(this.erContentEditor.nativeElement, '\n', '');
-    //   // TBD: Add to undo
-
-    //   scrollToElementCenter(this.erContentEditor.nativeElement);
-    //   event.preventDefault();
-    // }
-  }
-  onContentEditorKeyInput(event): void {
-    // this.refreshControls();
-
-    // this.erContentEditor.nativeElement.querySelectorAll('br').forEach((br) => {
-    //   if (!br.nextElementSibling) {
-    //     br.insertAdjacentHTML('afterend', '<span style="display: none">\n</span>');
-    //   }
-    // });
-  }
-  // onContentEditorChange(event): void {
-  //   this.markdownValue = this.erContentEditor.nativeElement.value;
-  //   // const targetElement: HTMLDivElement = event.target as HTMLDivElement;
-  //   // if (targetElement && targetElement.firstChild && targetElement.firstChild.nodeType === 3) {
-  //   //   document.execCommand(commandFormatBlock, false, `${this.paragraphSeparator}`);
-  //   // } else if (this.erContentEditor.nativeElement.innerHTML === '<br>') {
-  //   //   this.erContentEditor.nativeElement.innerHTML = '';
-  //   // }
-
-  //   // this.contentChanged.emit(this.erContentEditor.nativeElement.innerText);
-  // }
-  onContentEditorScroll(event): void {
-    // const textScrollTop = this.erContentEditor.nativeElement.scrollTop;
-    // const textHeight = this.erContentEditor.nativeElement.clientHeight;
-    // const textScrollHeight = this.erContentEditor.nativeElement.scrollHeight
-    //   - (this.erContentEditor.nativeElement.style.paddingBottom ? parseFloat(this.erContentEditor.nativeElement.style.paddingBottom) : 0);
-
-    // if ((textScrollTop / textHeight > 0.5)) {
-    //   this.erContentPreview.nativeElement.scrollTop = (textScrollTop + textHeight) *
-    //     this.erContentPreview.nativeElement.scrollHeight / textScrollHeight - textHeight;
-    // } else {
-    //   this.erContentPreview.nativeElement.scrollTop = textScrollTop *
-    //     this.erContentPreview.nativeElement.scrollHeight / textScrollHeight;
-    // }
-  }
-  onContentEditorBlur(event): void {
-    // TBD.
-  }
-  onContentEditorMouseUp(event): void {
-    // TBD.
-  }
-  onContentEditorDrop(event): void {
-    // TBD
-  }
-  onContentEditorPaste(event): void {
-    // TBD.
-  }
-
-  refreshControls() {
-    // Update preview
-    // const markdownText: string = readElementText(this.erContentEditor.nativeElement);
-    // if (markdownText.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') === '') {
-    //   this.erContentEditor.nativeElement.children[0].innerHTML = '';
-    //   return;
-    // }
-
-    // this.markdownValue = markdownText;
-
-    // this.markdownValue = this.erContentEditor.nativeElement.innerText;
-
-    // // clearTimeout(this.mdTimeoutId);
-    // const renderStartTime = new Date().getTime();
-    // // const markdownText = getText(vditor.editor.element);
-    // const html = await md2htmlByVditor(markdownText, vditor);
-    // this.element.children[0].innerHTML = html;
-    // this.afterRender(vditor, renderStartTime);
-  }
 
   // Math dialog
   onMathDialogInput(event): void {
@@ -533,7 +609,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       if (inputelem.innerText) {
         // const orginput = '$$' + inputelem.innerText + '$$';
         const orginput = inputelem.innerText;
-        katex.render(orginput, previewelem);
+        // katex.render(orginput, previewelem);
       }
     }
   }
@@ -553,233 +629,5 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
   registerOnValidatorChange?(fn: () => void): void {
     // throw new Error("Method not implemented.");
-  }
-
-  ///
-  /// marked render methods
-  ///
-  private markedRender_AtLink(text: string): string {
-    const atLinkReg = /@(\w+)/g;
-    const emailReg = /(\w+)@(\w+)\.(\w+)\.?(\w+)?/g;
-    const emailLinkReg = /(mailto:)?([\w\.\_]+)@(\w+)\.(\w+)\.?(\w+)?/g;
-
-    if (atLinkReg.test(text)) { 
-      // if (settings.atLink) {
-      //     text = text.replace(emailReg, function($1, $2, $3, $4) {
-      //         return $1.replace(/@/g, "_#_&#64;_#_");
-      //     });
-
-      //     text = text.replace(atLinkReg, function($1, $2) {
-      //         return "<a href=\"" + editormd.urls.atLinkBase + "" + $2 + "\" title=\"&#64;" + $2 + "\" class=\"at-link\">" + $1 + "</a>";
-      //     }).replace(/_#_&#64;_#_/g, "@");
-      // }
-      
-      // if (settings.emailLink) {
-        text = text.replace(emailLinkReg, ($1, $2, $3, $4, $5) => {
-          return (!$2 && ['jpg', 'jpeg', 'png', 'gif', 'ico', 'icon', 'pdf'].includes($5)) ? '<a href="mailto:' + $1 + '">' + $1 + '</a>' : $1;
-        });
-      // }
-
-      return text;
-    }
-
-    return text;
-  }
-  private markedRender_Link(href: string, title: string, text: string): string {
-    const atLinkReg = /@(\w+)/g;
-
-    // if (this.options.sanitize) {
-    try {
-      var prot = decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase();
-    } catch(e) {
-      return '';
-    }
-
-    if (prot.indexOf('javascript:') === 0) {
-      return '';
-    }
-    // }
-
-    let out = '<a href="' + href + '"';  
-    if (atLinkReg.test(title) || atLinkReg.test(text)) {
-      if (title) {
-        out += ' title="' + title.replace(/@/g, '&#64;');
-      }
-      
-      return out + '">' + text.replace(/@/g, '&#64;') + '</a>';
-    }
-
-    if (title) {
-      out += ' title="' + title + '"';
-    }
-
-    out += '>' + text + '</a>';
-
-    return out;
-  }
-  private markedRender_Heading(text: string, level, raw) {
-    let linkText       = text;
-    let hasLinkReg     = /\s*\<a\s*href\=\"(.*)\"\s*([^\>]*)\>(.*)\<\/a\>\s*/;
-    let getLinkTextReg = /\s*\<a\s*([^\>]+)\>([^\>]*)\<\/a\>\s*/g;
-
-    if (hasLinkReg.test(text)) {
-      let tempText = [];
-      let subtexts = text.split(/\<a\s*([^\>]+)\>([^\>]*)\<\/a\>/);
-
-      for (var i = 0, len = subtexts.length; i < len; i++) {
-        tempText.push(subtexts[i].replace(/\s*href\=\"(.*)\"\s*/g, ''));
-      }
-
-      text = tempText.join(' ');
-    }
-    
-    text = text.trim();
-    
-    var escapedText    = text.toLowerCase().replace(/[^\w]+/g, '-');
-    var toc = {
-        text  : text,
-        level : level,
-        slug  : escapedText
-    };
-    
-    var isChinese = /^[\u4e00-\u9fa5]+$/.test(text);
-    var id        = (isChinese) ? escape(text).replace(/\%/g, '') : text.toLowerCase().replace(/[^\w]+/g, '-');
-
-    // markdownToC.push(toc);
-    
-    //var headingHTML = '<h' + level + ' id="h'+ level + '-' + this.options.headerPrefix + id +'">';
-    var headingHTML = '<h' + level + '>';
-    
-    headingHTML    += '<a name="' + text + '" class="reference-link"></a>';
-    headingHTML    += '<span class="header-link octicon octicon-link"></span>';
-    headingHTML    += (hasLinkReg) ? this.markedRender_AtLink(this.markedRender_Emoji(linkText)) : this.markedRender_AtLink(this.markedRender_Emoji(text));
-    headingHTML    += "</h" + level + ">";
-
-    return headingHTML;
-  }
-  private markedRender_PageBreak(text: string) {
-    const pageBreakReg = /^\[[=]{8,}\]$/;
-    if (pageBreakReg.test(text) ) { // && settings.pageBreak)
-      text = '<hr style="page-break-after:always;" class="page-break editormd-page-break" />';
-    }
-    
-    return text;
-  }
-  private markedRender_Paragraph(text: string) {
-    const pageBreakReg = /^\[[=]{8,}\]$/;
-    let isTeXInline     = /\$\$(.*)\$\$/g.test(text);
-    let isTeXLine       = /^\$\$(.*)\$\$$/.test(text);
-    let isTeXAddClass   = (isTeXLine)     ? ' class="acme-tex"' : '';
-    //let isToC           = (settings.tocm) ? /^(\[TOC\]|\[TOCM\])$/.test(text) : /^\[TOC\]$/.test(text);
-    let isToC           = /^\[TOC\]$/.test(text);
-    let isToCMenu       = /^\[TOCM\]$/.test(text);
-    
-    if (!isTeXLine && isTeXInline) {
-      text = text.replace(/(\$\$([^\$]*)\$\$)+/g, function($1, $2) {
-        return '<span class="acme-tex">' + $2.replace(/\$/g, '') + '</span>';
-      });
-    } else {
-      text = (isTeXLine) ? text.replace(/\$/g, '') : text;
-    }
-    
-    var tocHTML = '<div class="markdown-toc acme-markdown-toc">' + text + '</div>';
-    
-    return (isToC) ? ( (isToCMenu) ? '<div class="acme-toc-menu">' + tocHTML + '</div><br/>' : tocHTML )
-                   : ( (pageBreakReg.test(text)) ? this.markedRender_PageBreak(text) : '<p' + isTeXAddClass + '>' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</p>\n');
-  }
-  private markedRender_Code(code: string, lang: string, escaped) { 
-    if (lang === 'seq' || lang === 'sequence') {
-      return '<div class="sequence-diagram">' + code + '</div>';
-    } else if ( lang === 'flow') {
-      return '<div class="flowchart">' + code + '</div>';
-    } else if ( lang === 'math' || lang === 'latex' || lang === 'katex') {
-      return '<p class="acme-tex">' + code + '</p>';
-    }
-    else {
-      return marked.Renderer.prototype.code.apply(this, arguments);
-    }
-  }
-  private markedRender_Tablecell(content: string, flags): string {
-    let type = (flags.header) ? 'th' : 'td';
-    let tag  = (flags.align)  ? '<' + type + ' style="text-align:' + flags.align + '">' : '<' + type + '>';
-    
-    return tag + this.markedRender_AtLink(this.markedRender_Emoji(content)) + '</' + type + '>\n';
-  }
-  private markedRender_ListItem(text): string {
-    if (/^\s*\[[x\s]\]\s*/.test(text)) { // if (settings.taskList && /^\s*\[[x\s]\]\s*/.test(text)) 
-      text = text.replace(/^\s*\[\s\]\s*/, '<input type="checkbox" class="task-list-item-checkbox" />')
-                 .replace(/^\s*\[x\]\s*/,  '<input type="checkbox" class="task-list-item-checkbox" checked disabled />');
-
-      return '<li style="list-style: none;">' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</li>';
-    } else {
-      return '<li>' + this.markedRender_AtLink(this.markedRender_Emoji(text)) + '</li>';
-    }
-  }
-  private markedRender_Emoji(text) {
-    const emojidatetimeReg = /(\d{1,2}:\d{1,2}:\d{1,2})/g;
-    const emojiReg = /:([\w\+-]+):/g;
-    text = text.replace(emojidatetimeReg, $1 => {
-      return $1.replace(/:/g, '&#58;');
-    });
-    
-    var matchs = text.match(emojiReg);
-
-    if (!matchs) { // if (!matchs || !settings.emoji) {
-      return text;
-    }
-
-    // for (let i = 0, len = matchs.length; i < len; i++)
-    // {            
-    //     if (matchs[i] === ":+1:") {
-    //         matchs[i] = ":\\+1:";
-    //     }
-
-    //     text = text.replace(new RegExp(matchs[i]), function($1, $2){
-    //         var faMatchs = $1.match(faIconReg);
-    //         var name     = $1.replace(/:/g, "");
-
-    //         if (faMatchs)
-    //         {                        
-    //             for (var fa = 0, len1 = faMatchs.length; fa < len1; fa++)
-    //             {
-    //                 var faName = faMatchs[fa].replace(/:/g, "");
-                    
-    //                 return "<i class=\"fa " + faName + " fa-emoji\" title=\"" + faName.replace("fa-", "") + "\"></i>";
-    //             }
-    //         }
-    //         else
-    //         {
-    //             var emdlogoMathcs = $1.match(editormdLogoReg);
-    //             var twemojiMatchs = $1.match(twemojiReg);
-
-    //             if (emdlogoMathcs)                                        
-    //             {                            
-    //                 for (var x = 0, len2 = emdlogoMathcs.length; x < len2; x++)
-    //                 {
-    //                     var logoName = emdlogoMathcs[x].replace(/:/g, "");
-    //                     return "<i class=\"" + logoName + "\" title=\"Editor.md logo (" + logoName + ")\"></i>";
-    //                 }
-    //             }
-    //             else if (twemojiMatchs) 
-    //             {
-    //                 for (var t = 0, len3 = twemojiMatchs.length; t < len3; t++)
-    //                 {
-    //                     var twe = twemojiMatchs[t].replace(/:/g, "").replace("tw-", "");
-    //                     return "<img src=\"" + editormd.twemoji.path + twe + editormd.twemoji.ext + "\" title=\"twemoji-" + twe + "\" alt=\"twemoji-" + twe + "\" class=\"emoji twemoji\" />";
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 var src = (name === "+1") ? "plus1" : name;
-    //                 src     = (src === "black_large_square") ? "black_square" : src;
-    //                 src     = (src === "moon") ? "waxing_gibbous_moon" : src;
-
-    //                 return "<img src=\"" + editormd.emoji.path + src + editormd.emoji.ext + "\" class=\"emoji\" title=\"&#58;" + name + "&#58;\" alt=\"&#58;" + name + "&#58;\" />";
-    //             }
-    //         }
-    //     });
-    // }
-
-    return text;
   }
 }

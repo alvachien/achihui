@@ -48,14 +48,13 @@
     </nz-button-group>
   </div>
 
-  <div nz-row style="height: 100%; width: 100%;">
+  <div nz-row style="height: 100%; width: 100%;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-code-editor class="editor" [(ngModel)]="content"
-        [nzEditorOption]="{ language: 'markdown' }">
+      <nz-code-editor class="editor" [nzFullControl]="true" (nzEditorInitialized)="onEditorInit($event)">
       </nz-code-editor>
     </div>
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <markdown [data]="content" katex></markdown>
+      <markdown [data]="content" katex [katexOptions]="katexOptions"></markdown>
     </div>
   </div> 
 </div>
