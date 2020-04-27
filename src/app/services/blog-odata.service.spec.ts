@@ -4,7 +4,7 @@ import { HttpTestingController, HttpClientTestingModule } from '@angular/common/
 import { BehaviorSubject } from 'rxjs';
 
 import { BlogOdataService } from './blog-odata.service';
-import { FinanceOdataService, AuthService, HomeDefOdataService } from '.';
+import { AuthService, HomeDefOdataService } from '.';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
 
@@ -18,6 +18,8 @@ describe('BlogOdataService', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
+    fakeData.buildBlogCollectionAPI();
+    fakeData.buildBlogPostAPI();
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
@@ -27,7 +29,7 @@ describe('BlogOdataService', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        FinanceOdataService,
+        BlogOdataService,
         { provide: AuthService, useValue: authServiceStub },
       ],
     });
@@ -46,7 +48,7 @@ describe('BlogOdataService', () => {
     const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
     
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.get(BlogOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.

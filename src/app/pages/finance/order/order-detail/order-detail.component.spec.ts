@@ -71,7 +71,6 @@ describe('OrderDetailComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        RouterTestingModule,
         getTranslocoModule(),
       ],
       declarations: [

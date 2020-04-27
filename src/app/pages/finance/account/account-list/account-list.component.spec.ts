@@ -110,6 +110,7 @@ describe('AccountListComponent', () => {
       expect(component.dataSet.length).toEqual(fakeData.finAccounts.length);
 
       flush();
+      tick();
     }));
 
     it('shall navigate to display account', fakeAsync(() => {
@@ -124,10 +125,10 @@ describe('AccountListComponent', () => {
 
       // Display
       component.onDisplay(fakeData.finAccounts[0].Id);
-
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/display/' + fakeData.finAccounts[0].Id.toString()]);
 
       flush();
+      tick();
     }));
 
     it('shall navigate to edit account', fakeAsync(() => {
@@ -145,6 +146,7 @@ describe('AccountListComponent', () => {
 
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/edit/' + fakeData.finAccounts[0].Id.toString()]);
 
+      tick();
       flush();
     }));
 
@@ -166,6 +168,7 @@ describe('AccountListComponent', () => {
         return val.CategoryId === financeAccountCategoryCash;
       }).length);
 
+      tick();
       flush();
     }));
 
@@ -187,6 +190,7 @@ describe('AccountListComponent', () => {
         return val.Status === AccountStatusEnum.Normal;
       }).length);
 
+      tick();
       flush();
     }));
   });

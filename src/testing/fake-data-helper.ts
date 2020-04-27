@@ -1574,4 +1574,44 @@ export class FakeDataHelper {
       }
     });
   }
+  public buildBlogCollectionAPI() {
+    this._blogCollectionAPI = [];
+    this._blogCollectionAPI.push({
+      ID: 1,
+      Owner: this.userID1,
+      Name: 'test1',
+      Comment: 'test1'    
+    } as BlogCollectionAPIJson);
+  }
+  public buildBlogCollection() {
+    this._blogCollection = [];
+    this._blogCollection.push({
+      id: 1,
+      owner: this.userID1,
+      name: 'test1',
+      comment: 'test1'    
+    } as BlogCollection);
+  }
+  public buildBlogPostAPI() {
+    this._blogPostAPI = [];
+    this._blogPostAPI.push({
+      ID: 1,
+      Owner: this.userID1,
+      Format: 1,
+      Title: 'test1',
+      Content: 'test1',
+      Status: 1,
+    } as BlogPostAPIJson);
+  }
+  public buildBlogPost() {
+    this._blogPost = [];
+    this._blogPost.push({
+      id: 1,
+      owner: this.userID1,
+      format: 1,
+      title: 'test1',
+      content: 'test1',
+      status: 1,
+    } as BlogPost);
+  }
 }

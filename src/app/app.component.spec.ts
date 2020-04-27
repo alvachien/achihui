@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
@@ -77,6 +77,9 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     expect(component.isLoggedIn).toBeTruthy();
+
+    tick();
+    flush();
   }));
 
   it('doLogon shall work', fakeAsync(() => {
@@ -92,6 +95,9 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogin).toHaveBeenCalledTimes(1);
     // }
+
+    tick();
+    flush();
   }));
 
   it('doLogout shall work', fakeAsync(() => {
@@ -106,6 +112,9 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogout).toHaveBeenCalledTimes(1);
     // }
+
+    tick();
+    flush();
   }));
 
   it('switch language shall work', fakeAsync(() => {
@@ -117,5 +126,8 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
     component.switchLanguage('en_US');
     expect(component).toBeTruthy();
+
+    tick();
+    flush();
   }));
 });

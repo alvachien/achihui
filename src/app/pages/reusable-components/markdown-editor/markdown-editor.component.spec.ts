@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
+import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 
 describe('MarkdownEditorComponent', () => {
@@ -8,7 +10,13 @@ describe('MarkdownEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MarkdownEditorComponent ]
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
+      declarations: [
+        MarkdownEditorComponent,
+      ],
     })
     .compileComponents();
   }));
@@ -16,7 +24,7 @@ describe('MarkdownEditorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MarkdownEditorComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
