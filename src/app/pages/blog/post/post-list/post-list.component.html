@@ -20,14 +20,13 @@
     <thead>
       <tr>
         <th>{{'Common.ID' | transloco}}</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Common.Comment' | transloco}}</th>
+        <th>{{'Common.Title' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.Id}}</td>
-        <td>{{data.Name}}</td>
+        <td>{{data.id}}</td>
+        <td>{{data.title}}</td>
         <td>{{data.Comment}}</td>
       </tr>
     </tbody>

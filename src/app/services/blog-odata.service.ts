@@ -126,4 +126,31 @@ export class BlogOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
+  public createPost(post: BlogPost): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
+    post.owner = this.authService.authSubject.getValue().getUserId();
+    const jdata = post.writeAPIJson();
+    return this.http.post(apiUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService createPost`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: BlogPost = new BlogPost();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService createPost failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
 }

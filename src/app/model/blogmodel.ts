@@ -45,16 +45,46 @@ export class BlogCollection {
 export interface BlogPostAPIJson {
   ID: number;
   Owner: string;
+  Format: number;
+  Title: string;
+  Content: string;
+  Status: number;
+  CreatedAt?: any;
+  UpdatedAt?: any;
 }
 
 export class BlogPost {
   public id: number;
   public owner: string;
+  public format: number;
+  public title: string;
+  public content: string;
+  public status: number;
+  public createdAt?: moment.Moment;
+  public updatedAt?: moment.Moment;
 
   public onSetData(data: BlogPostAPIJson) {
     if (data) {
       this.id = +data.ID;
       this.owner = data.Owner;
+      this.format = data.Format;
+      this.title = data.Title;
+      this.content = data.Content;
+      this.status = data.Status;
+      if (data.CreatedAt) {        
+      }
+      if (data.UpdatedAt) {
+      }
     }
+  }
+  public writeAPIJson(): BlogPostAPIJson {
+    return {
+      ID: this.id,
+      Owner: this.owner,
+      Format: this.format,
+      Title: this.title,
+      Content: this.content,
+      Status: this.status
+    } as BlogPostAPIJson;
   }
 }

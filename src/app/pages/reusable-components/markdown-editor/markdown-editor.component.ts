@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output, 
+  EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
@@ -152,19 +153,27 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ];
   toolbarItems: EditorToolbarButtonEnum[] = [];
 
-  public get value(): any {
+  get value(): string {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
       ConsoleLogTypeEnum.debug);
-    return this._markdownValue || '';
+    if (this.editor) {
+      this.content = this.editor.getValue();
+    }
+
+    return this.content || '';
   }
-  public set value(value: any) {
+  set value(value: string) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value setter...',
       ConsoleLogTypeEnum.debug);
-    this._markdownValue = value;
-    this._onChange(value);
+    this.content = value;
+    if (this.editor) {
+      this.editor.setValue(this.content);
+    }
+
+    if (this._onChange) {
+      this._onChange(value);
+    }
   }
-  // tslint:disable-next-line:variable-name
-  private _markdownValue: any;
 
   public isToolbarItemExist(item: string): boolean {
     return this.toolbarItems.some((searchElement: EditorToolbarButtonEnum) => {
@@ -196,6 +205,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     return rst;
   }
 
+  @HostListener('change') onChange(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onChange...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._onChange) {
+      this._onChange(this.value);
+    }
+  }
+  @HostListener('blur') onTouched(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onTouched...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._onTouched) {
+      this._onTouched();
+    }
+  }
+
   constructor(private changeDetect: ChangeDetectorRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -220,11 +246,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     this.editor.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
 
     this.editor.onDidChangeModelContent(e => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeModelContent...',
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
         ConsoleLogTypeEnum.debug);
 
       this.content = this.editor.getValue();
       this.changeDetect.detectChanges();
+
+      this.onChange();
     });
     // this.editor.onDidChangeCursorPosition(e => {
     //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeCursorPosition...',
@@ -242,7 +270,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     //   console.log(nsel);
     // });
     this.editor.onDidScrollChange(e => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidScrollChange...',
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
         ConsoleLogTypeEnum.debug);
 
         // Rework for the scroll
@@ -254,7 +282,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   writeValue(val: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
       ConsoleLogTypeEnum.debug);
-    // this.erContentEditor.nativeElement.innerHTML = val as string;
+    
+    this.value = val;
   }
   registerOnChange(fn: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnChange...',
@@ -523,83 +552,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
   }
-  // onToolbarButtonClick(event: MouseEvent, btn: string): void {
-  //   const titem: EditorToolbarButtonEnum = btn as EditorToolbarButtonEnum;
-  //   switch (titem) {
-  //     case EditorToolbarButtonEnum.bold:
-  //       document.execCommand('bold', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-
-  //     case EditorToolbarButtonEnum.italic:
-  //       document.execCommand('italic', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-
-  //     case EditorToolbarButtonEnum.underline:
-  //       document.execCommand('underline', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-
-  //     case EditorToolbarButtonEnum.strikethrough:
-  //       document.execCommand('strikeThrough', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.heading1:
-  //       document.execCommand(commandFormatBlock, false, '<h1>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.heading2:
-  //       document.execCommand(commandFormatBlock, false, '<h2>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.heading3:
-  //       document.execCommand(commandFormatBlock, false, '<h3>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.paragraph:
-  //       document.execCommand(commandFormatBlock, false, '<p>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.quote:
-  //       document.execCommand(commandFormatBlock, false, '<blockquote>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.orderedlist:
-  //       document.execCommand('insertOrderedList', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.unorderedlist:
-  //       document.execCommand('insertUnorderedList', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.code:
-  //       document.execCommand(commandFormatBlock, false, '<pre>');
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.horizontalline:
-  //       document.execCommand('insertHorizontalRule', false);
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.link:
-  //     case EditorToolbarButtonEnum.image:
-  //       // TBD.
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-  //     case EditorToolbarButtonEnum.math:
-  //       this.isDialogMathOpen = true;
-  //       this.erContentEditor.nativeElement.focus();
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // }
-
-  ///
-  /// Editor's events
-
-  // Math dialog
   onMathDialogInput(event): void {
     // Math dialog
     if (event) {
@@ -625,9 +577,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // this.isDialogMathOpen = false;
   }
   validate(control: AbstractControl): ValidationErrors | null {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent validate...',
+      ConsoleLogTypeEnum.debug);
     return null;
   }
   registerOnValidatorChange?(fn: () => void): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnValidatorChange...',
+      ConsoleLogTypeEnum.debug);
     // throw new Error("Method not implemented.");
   }
 }
