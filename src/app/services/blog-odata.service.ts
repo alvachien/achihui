@@ -30,7 +30,7 @@ export class BlogOdataService {
   }
 
   /**
-   * fetch all currencies, and save it to buffer
+   * fetch all collections
    * @param forceReload set to true to enforce reload all currencies
    */
   public fetchAllCollections(forceReload?: boolean): Observable<BlogCollection[]> {
@@ -81,6 +81,86 @@ export class BlogOdataService {
     }
   }
 
+  /**
+   * Create new collection
+   * @param coll Collection to be created
+   */
+  public createCollection(coll: BlogCollection): Observable<BlogCollection> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
+    coll.owner = this.authService.authSubject.getValue().getUserId();
+    const jdata = coll.writeAPIJson();
+    return this.http.post(apiUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService createCollection`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: BlogCollection = new BlogCollection();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService createCollection failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  public readCollection(id: number): Observable<BlogCollection> {
+    const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
+    return this.http.get(apiUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readCollection`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: BlogCollection = new BlogCollection();
+        const repdata = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
+          hd.onSetData(repdata.value[0]);
+
+          // Update the buffer if necessary
+          const idx: number = this.listCollection.findIndex((val: BlogCollection) => {
+            return val.id === hd.id;
+          });
+          if (idx !== -1) {
+            this.listCollection.splice(idx, 1, hd);
+          } else {
+            this.listCollection.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readCollection failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * fetch all posts
+   * @param forceReload set to true to enforce reload all currencies
+   */
   public fetchAllPosts(top: number, skip: number): Observable<{totalCount: number, contentList: BlogPost[]}> {
     const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
 
@@ -91,7 +171,7 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
     params = params.append('$select', 'ID,Owner,Title');
-    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`)
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
 
@@ -126,7 +206,12 @@ export class BlogOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
-  public createPost(post: BlogPost): Observable<any> {
+
+  /**
+   * Create new post
+   * @param post Post to be created
+   */
+  public createPost(post: BlogPost): Observable<BlogPost> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -148,6 +233,40 @@ export class BlogOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService createPost failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  public readPost(id: number): Observable<BlogPost> {
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
+    return this.http.get(apiUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readPost`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: BlogPost = new BlogPost();
+        const repdata = response as any;
+        if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
+          hd.onSetData(repdata.value[0]);
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readPost failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

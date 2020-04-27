@@ -37,6 +37,14 @@ export class BlogCollection {
       }
     }
   }
+  public writeAPIJson(): BlogCollectionAPIJson {
+    return {
+      ID: this.id,
+      Owner: this.owner,
+      Name: this.name,
+      Comment: this.comment
+    } as BlogCollectionAPIJson;
+  }
 }
 
 /**

@@ -7,7 +7,7 @@ import { KatexOptions } from 'ngx-markdown';
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
-import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
 import { editor } from 'monaco-editor';
 
 // Constants for commands
@@ -105,13 +105,13 @@ export interface IACMEditorConfig {
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() config: IACMEditorConfig;
-  @Output() contentChanged: EventEmitter<string> = new EventEmitter();
   @Input() editorID: string;
 
   isDialogMathOpen = false;
   mathDialogInput: string;
   editor: editor.ICodeEditor;
   content: string;
+  readOnly: boolean = false;
 
   stateWatching = false;
   stateLoaded   = false;
@@ -244,6 +244,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     this.editor = e;
     this.editor.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
+    this.setEditorReadOnly();
+    if (this.content) {
+      this.editor.setValue(this.content);
+    }
 
     this.editor.onDidChangeModelContent(e => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
@@ -298,11 +302,19 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent setDisabledState...',
       ConsoleLogTypeEnum.debug);
-    // if (isDisabled) {
-    //   this.erWrapper.nativeElement.disable = true;
-    // } else {
-    //   this.erWrapper.nativeElement.disable = true;
-    // }
+    if (isDisabled) {
+      this.readOnly = true;
+    } else {
+      this.readOnly = false;
+    }
+    this.setEditorReadOnly();
+  }
+  setEditorReadOnly(): void {
+    if (this.editor) {
+      let opt = this.editor.getRawOptions();
+      opt.readOnly = this.readOnly;
+      this.editor.updateOptions(opt);
+    }
   }
 
   ///

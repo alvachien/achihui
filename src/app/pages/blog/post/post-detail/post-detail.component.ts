@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
-import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic } from '../../../../model';
+import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
+  getUIModeString } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -15,6 +17,10 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 export class PostDetailComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: variable-name
   private _destroyed$: ReplaySubject<boolean>;
+  isLoadingResults: boolean;
+  public routerID = -1; // Current object ID in routing
+  public currentMode: string;
+  public uiMode: UIMode = UIMode.Create;
   
   instancePost: BlogPost;
   inputtedContent: string;
@@ -40,12 +46,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     height: 300,
   };
 
-  constructor(private odataService: BlogOdataService) {
+  constructor(private odataService: BlogOdataService,
+    private activateRoute: ActivatedRoute,
+    private router: Router,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.detailFormGroup = new FormGroup({
-      idControl: new FormControl(),
+      idControl: new FormControl({value: undefined, disabled: true}),
       titleControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       contentControl: new FormControl('', [Validators.required]),
     });
@@ -56,6 +64,62 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.activateRoute.url.subscribe((x: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug);
+
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode = UIMode.Create;
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Display;
+        }
+
+        this.currentMode = getUIModeString(this.uiMode);
+      }
+      switch(this.uiMode) {
+        case UIMode.Change:
+        case UIMode.Display: {
+          this.isLoadingResults = true;
+          this.odataService.readPost(this.routerID)
+          .pipe(
+            takeUntil(this._destroyed$),
+            finalize(() => this.isLoadingResults = false)
+            )
+          .subscribe({
+            next: e => {
+              this.detailFormGroup.get('idControl').setValue(e.id);
+              this.detailFormGroup.get('titleControl').setValue(e.title);
+              this.detailFormGroup.get('contentControl').setValue(e.content);
+
+              if (this.uiMode === UIMode.Display) {
+                this.detailFormGroup.disable();
+              } else if(this.uiMode === UIMode.Change) {
+                this.detailFormGroup.enable();
+                this.detailFormGroup.get('idControl').disable();
+              }
+            },
+            error: err => {
+            }
+          });
+        }
+        break;
+
+        case UIMode.Create:
+        default: {
+          // Do nothing
+          this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+        }
+        break;
+      }
+    });
   }
   ngOnDestroy() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent OnDestroy...',
@@ -84,11 +148,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: e => {
             // Succeed.
+            this.router.navigate(['/blog/post/display/' + e.id.toString()]);
           },
           error: err => {
-
           }
-        })
+        });
     }
   }
 }

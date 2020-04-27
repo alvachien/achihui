@@ -25,8 +25,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   dataSet: BlogPost[] = [];
 
   constructor(
-    public odataService: BlogOdataService,
-    public modalService: NzModalService) {
+    private odataService: BlogOdataService,
+    private modalService: NzModalService,
+    private router: Router,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -76,7 +77,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostListComponent ngOnInit, fetchAllCollections failed ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostListComponent ngOnInit, fetchAllPosts failed ${error}`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({
@@ -86,5 +87,17 @@ export class PostListComponent implements OnInit, OnDestroy {
           });
         },
       });
+  }
+  onCreate(rid: number): void {
+    this.router.navigate(['/blog/post/create']);
+  }
+  onDisplay(rid: number): void {
+    this.router.navigate(['/blog/post/display/' + rid.toString()]);
+  }
+  onEdit(rid: number): void {
+    this.router.navigate(['/blog/post/edit/' + rid.toString()]);
+  }
+  onDelete(rid: number) {
+    // TBD.
   }
 }

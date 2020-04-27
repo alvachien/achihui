@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
@@ -73,7 +73,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this.listMemRel = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
 
     this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: -1, disable: true }),
+      idControl: new FormControl({value: undefined, disabled: true }),
       nameControl: new FormControl('', Validators.required),
       baseCurrControl: new FormControl('', Validators.required),
       hostControl: new FormControl({value: this.authService.authSubject.getValue().getUserId(), disable: true }, Validators.required),
@@ -112,7 +112,11 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           forkJoin([
             this.finService.fetchAllCurrencies(),
             this.storageService.readHomeDef(this.routerID)
-          ]).subscribe((rsts: any[]) => {
+          ])
+          .pipe(takeUntil(this._destroyed$),
+            finalize(() => this.isLoadingResults = false))
+          .subscribe({
+            next: (rsts: any[]) => {
             this.arCurrencies = rsts[0];
 
             this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
@@ -126,19 +130,20 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.disable();
             } else if (this.uiMode === UIMode.Change) {
               this.detailFormGroup.enable();
+              this.detailFormGroup.get('idControl').disable();
             }
 
             this.listMembers = rsts[1].Members.slice();
-          }, (error: any) => {
+          }, 
+          error: (error: any) => {
             // Show error dialog
             this.modalService.create({
               nzTitle: translate('Common.Error'),
               nzContent: error,
               nzClosable: true,
             });
-          }, () => {
-            this.isLoadingResults = false;
-          });
+          }
+        });
         }
         break;
 
@@ -146,19 +151,21 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         default: {
           this.isLoadingResults = true;
           this.finService.fetchAllCurrencies()
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe((curries: Currency[]) => {
-              this.arCurrencies = curries;
-            }, (error: any) => {
-              // Show error dialog
-              this.modalService.create({
-                nzTitle: translate('Common.Error'),
-                nzContent: error,
-                nzClosable: true,
-              });
-            }, () => {
-              this.isLoadingResults = false;
-            });  
+            .pipe(takeUntil(this._destroyed$),
+            finalize(() => this.isLoadingResults = false))
+            .subscribe({
+              next: (curries: Currency[]) => {
+                this.arCurrencies = curries;
+              }, 
+              error: (error: any) => {
+                // Show error dialog
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: error,
+                  nzClosable: true,
+                });
+              }
+            });
         }
         break;
       }
@@ -175,7 +182,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onChange() {    
+  onChange() {
   }
 
   onSave() {

@@ -22,8 +22,9 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   dataSet: BlogCollection[] = [];
 
   constructor(
-    public odataService: BlogOdataService,
-    public modalService: NzModalService) {
+    private odataService: BlogOdataService,
+    private modalService: NzModalService,
+    private router: Router,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -65,5 +66,18 @@ export class CollectionListComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onCreate(rid: number): void {
+    this.router.navigate(['/blog/collection/create']);
+  }
+  onDisplay(rid: number): void {
+    this.router.navigate(['/blog/collection/display/' + rid.toString()]);
+  }
+  onEdit(rid: number): void {
+    this.router.navigate(['/blog/collection/edit/' + rid.toString()]);
+  }
+  onDelete(rid: number) {
+    // TBD.
   }
 }
