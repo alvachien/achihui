@@ -7,6 +7,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
@@ -49,6 +52,9 @@ describe('PostDetailComponent', () => {
         NoopAnimationsModule,
         RouterTestingModule,
         BrowserDynamicTestingModule,
+        NzResizableModule,
+        NzCodeEditorModule,
+        MarkdownModule.forRoot(),
       ],
       declarations: [
         MarkdownEditorComponent,

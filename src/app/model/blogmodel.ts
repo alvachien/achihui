@@ -47,6 +47,11 @@ export class BlogCollection {
   }
 }
 
+export class BlogPostCollection {
+  public PostID: number;
+  public CollectionID: number;
+}
+
 /**
  * Blog Post
  */
@@ -70,6 +75,11 @@ export class BlogPost {
   public status: number;
   public createdAt?: moment.Moment;
   public updatedAt?: moment.Moment;
+  public BlogPostCollections: BlogPostCollection[];
+
+  constructor() {
+    this.BlogPostCollections = [];
+  }
 
   public onSetData(data: BlogPostAPIJson) {
     if (data) {
@@ -92,7 +102,8 @@ export class BlogPost {
       Format: this.format,
       Title: this.title,
       Content: this.content,
-      Status: this.status
+      Status: this.status,
+      BlogPostCollections: this.BlogPostCollections,
     } as BlogPostAPIJson;
   }
 }

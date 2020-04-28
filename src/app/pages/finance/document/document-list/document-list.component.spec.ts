@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -182,7 +182,8 @@ describe('DocumentListComponent', () => {
 
       expect(component.listOfDocs.length).toBeGreaterThan(0);
       // expect(component.listOfDocs.length).toEqual(ardocs.totalCount);
-
+      discardPeriodicTasks();
+      
       flush();
     }));
 

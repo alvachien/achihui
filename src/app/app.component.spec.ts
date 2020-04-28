@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
@@ -75,10 +75,11 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
+    
+    discardPeriodicTasks();
 
     expect(component.isLoggedIn).toBeTruthy();
 
-    tick();
     flush();
   }));
 
@@ -96,7 +97,7 @@ describe('AppComponent', () => {
     //   expect(authServiceStub.doLogin).toHaveBeenCalledTimes(1);
     // }
 
-    tick();
+    discardPeriodicTasks();
     flush();
   }));
 
@@ -113,7 +114,7 @@ describe('AppComponent', () => {
     //   expect(authServiceStub.doLogout).toHaveBeenCalledTimes(1);
     // }
 
-    tick();
+    discardPeriodicTasks();
     flush();
   }));
 
@@ -127,7 +128,7 @@ describe('AppComponent', () => {
     component.switchLanguage('en_US');
     expect(component).toBeTruthy();
 
-    tick();
+    discardPeriodicTasks();
     flush();
   }));
 });

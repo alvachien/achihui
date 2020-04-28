@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, tick, fakeAsync, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -534,6 +534,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBeTruthy();
 
+      discardPeriodicTasks();
       flush();
     }));
 

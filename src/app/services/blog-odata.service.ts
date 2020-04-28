@@ -249,6 +249,8 @@ export class BlogOdataService {
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
+    params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
+
     return this.http.get(apiUrl, {
       headers,
       params,

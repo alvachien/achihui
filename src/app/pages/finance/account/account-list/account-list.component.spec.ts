@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
@@ -109,8 +109,8 @@ describe('AccountListComponent', () => {
       expect(component.dataSet.length).toBeGreaterThan(0);
       expect(component.dataSet.length).toEqual(fakeData.finAccounts.length);
 
+      discardPeriodicTasks();
       flush();
-      tick();
     }));
 
     it('shall navigate to display account', fakeAsync(() => {
@@ -127,8 +127,8 @@ describe('AccountListComponent', () => {
       component.onDisplay(fakeData.finAccounts[0].Id);
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/display/' + fakeData.finAccounts[0].Id.toString()]);
 
+      discardPeriodicTasks();
       flush();
-      tick();
     }));
 
     it('shall navigate to edit account', fakeAsync(() => {
@@ -146,7 +146,7 @@ describe('AccountListComponent', () => {
 
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/edit/' + fakeData.finAccounts[0].Id.toString()]);
 
-      tick();
+      discardPeriodicTasks();
       flush();
     }));
 
@@ -168,7 +168,7 @@ describe('AccountListComponent', () => {
         return val.CategoryId === financeAccountCategoryCash;
       }).length);
 
-      tick();
+      discardPeriodicTasks();
       flush();
     }));
 
@@ -190,7 +190,7 @@ describe('AccountListComponent', () => {
         return val.Status === AccountStatusEnum.Normal;
       }).length);
 
-      tick();
+      discardPeriodicTasks();
       flush();
     }));
   });

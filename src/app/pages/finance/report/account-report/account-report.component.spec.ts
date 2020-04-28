@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
@@ -130,6 +130,7 @@ describe('AccountReportComponent', () => {
       expect(component.arReportByAccount.length).toEqual(arRptData.length);
       expect(component.dataSet.length).toBeGreaterThan(0);
 
+      discardPeriodicTasks();
       flush();
     }));
 
@@ -164,6 +165,7 @@ describe('AccountReportComponent', () => {
       });
       expect(component.dataSet.length).toEqual(expamt);
 
+      discardPeriodicTasks();
       flush();
     }));
   });

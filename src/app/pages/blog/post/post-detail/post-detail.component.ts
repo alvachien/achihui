@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
-  getUIModeString } from '../../../../model';
+  getUIModeString, 
+  BlogCollection} from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -26,6 +27,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   inputtedContent: string;
   contentFromChangedEvent: string;
   detailFormGroup: FormGroup;
+  listOfCollection: BlogCollection[] = [];
 
   editorConfig: IACMEditorConfig = {
     toolbarItems: [
@@ -56,6 +58,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       idControl: new FormControl({value: undefined, disabled: true}),
       titleControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       contentControl: new FormControl('', [Validators.required]),
+      collectionControl: new FormControl(null),
+      tagControl: new FormControl(null),
     });
   }
 
@@ -84,20 +88,26 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
         this.currentMode = getUIModeString(this.uiMode);
       }
+
       switch(this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
-          this.odataService.readPost(this.routerID)
+          forkJoin([
+            this.odataService.fetchAllCollections(),
+            this.odataService.readPost(this.routerID)
+          ])          
           .pipe(
             takeUntil(this._destroyed$),
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
-            next: e => {
-              this.detailFormGroup.get('idControl').setValue(e.id);
-              this.detailFormGroup.get('titleControl').setValue(e.title);
-              this.detailFormGroup.get('contentControl').setValue(e.content);
+            next: rtns => {
+              this.listOfCollection = rtns[0];
+
+              this.detailFormGroup.get('idControl').setValue(rtns[1].id);
+              this.detailFormGroup.get('titleControl').setValue(rtns[1].title);
+              this.detailFormGroup.get('contentControl').setValue(rtns[1].content);
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -107,6 +117,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               }
             },
             error: err => {
+              // TBD.
             }
           });
         }
@@ -114,8 +125,21 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          // Do nothing
-          this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+          this.isLoadingResults = true;
+          this.odataService.fetchAllCollections()
+            .pipe(takeUntil(this._destroyed$),
+              finalize(() => this.isLoadingResults = false)
+            )
+            .subscribe({
+              next: val => {
+                // Do nothing
+                this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+                this.listOfCollection = val;
+              },
+              error: err => {
+                // TBD.
+              }
+            });
         }
         break;
       }
