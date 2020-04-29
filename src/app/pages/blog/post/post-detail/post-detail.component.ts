@@ -95,7 +95,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
           forkJoin([
             this.odataService.fetchAllCollections(),
-            this.odataService.readPost(this.routerID)
+            this.odataService.readPost(this.routerID),
+            this.odataService.fetchAllPostTags(10, 0),
           ])          
           .pipe(
             takeUntil(this._destroyed$),

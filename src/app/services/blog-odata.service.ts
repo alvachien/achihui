@@ -4,7 +4,8 @@ import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxj
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-import { LogLevel, ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost, } from '../model';
+import { LogLevel, ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost,
+  BlogPostTag, } from '../model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -113,6 +114,10 @@ export class BlogOdataService {
       }));
   }
 
+  /**
+   * read collection by specified id
+   * @param id ID of the Collection to be read
+   */
   public readCollection(id: number): Observable<BlogCollection> {
     const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
 
@@ -159,7 +164,8 @@ export class BlogOdataService {
 
   /**
    * fetch all posts
-   * @param forceReload set to true to enforce reload all currencies
+   * @param top The maximum amount of returned entries
+   * @param skip The offset position
    */
   public fetchAllPosts(top: number, skip: number): Observable<{totalCount: number, contentList: BlogPost[]}> {
     const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
@@ -208,7 +214,7 @@ export class BlogOdataService {
   }
 
   /**
-   * Create new post
+   * create new post
    * @param post Post to be created
    */
   public createPost(post: BlogPost): Observable<BlogPost> {
@@ -239,6 +245,10 @@ export class BlogOdataService {
       }));
   }
 
+  /**
+   * read post by specified id
+   * @param id ID of the Post to be read
+   */
   public readPost(id: number): Observable<BlogPost> {
     const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
 
@@ -249,7 +259,7 @@ export class BlogOdataService {
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
-    params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
+    params = params.append('$expand', 'BlogPostCollections');
 
     return this.http.get(apiUrl, {
       headers,
@@ -269,6 +279,56 @@ export class BlogOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readPost failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * fetch all post tags
+   * @param top The maximum amount of returned entries
+   * @param skip The offset position
+   */
+  public fetchAllPostTags(top: number, skip: number): Observable<{totalCount: number, contentList: BlogPostTag[]}> {
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPostTags';
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    let params: HttpParams = new HttpParams();
+    params = params.append('$count', 'true');
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+    params = params.append('$top', `${top}`);
+    params = params.append('$skip', `${skip}`);
+
+    return this.http.get(apiUrl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPostTags`,
+          ConsoleLogTypeEnum.debug);
+
+        const arsts: BlogPostTag[] = [];
+        const rjs: any = response;
+        const amt = rjs['@odata.count'];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: BlogPostTag = new BlogPostTag();
+            rst.onSetData(si);
+            arsts.push(rst);
+          }
+        }
+
+        return {
+          totalCount: amt,
+          contentList: arsts,
+        };
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService fetchAllPostTags failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

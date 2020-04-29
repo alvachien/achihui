@@ -107,3 +107,29 @@ export class BlogPost {
     } as BlogPostAPIJson;
   }
 }
+
+/**
+ * Blog post tag
+ */
+export class BlogPostTagAPIJson {
+  PostID: number;
+  Tag: string;
+}
+
+export class BlogPostTag {
+  postID: number;
+  tag: string;
+
+  public onSetData(data: BlogPostTagAPIJson) {
+    if (data) {
+      this.postID = +data.PostID;
+      this.tag = data.Tag;
+    }
+  }
+  public writeAPIJson(): BlogPostTagAPIJson {
+    return {
+      PostID: this.postID,
+      Tag: this.tag,
+    } as BlogPostTagAPIJson;
+  }
+}
