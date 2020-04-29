@@ -32,7 +32,13 @@
       <button nz-button><i nz-icon nzType="link" nzTheme="outline"></i></button>
       <button nz-button (click)="onToolbarCode()"><i nz-icon nzType="code" nzTheme="outline"></i></button>
       <button nz-button><i nz-icon nzType="block" nzTheme="outline"></i></button>
-      <button nz-button><i nz-icon nzType="picture" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarPictureUpload()"><i nz-icon nzType="upload" nzTheme="outline"></i></button>
+      <nz-upload [nzAction]="uploadAPI"
+        [nzHeaders]="{ authorization: 'authorization-text' }"
+        (nzChange)="onToolbarPictureUpload($event)">
+        <button nz-button><i nz-icon nzType="upload"></i></button>
+      </nz-upload>
+      <button nz-button (click)="onToolbarPicture()"><i nz-icon nzType="picture" nzTheme="outline"></i></button>
       <button nz-button><i nz-icon nzType="table" nzTheme="outline"></i></button>
       <button nz-button (click)="onToolbarDateTime()"><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
     </nz-button-group>

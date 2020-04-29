@@ -90,6 +90,8 @@ export class BlogPost {
       this.title = data.Title;
       this.content = data.Content;
       this.status = data.Status;
+      this.BlogPostCollections = data.BlogPostCollections;
+
       if (data.CreatedAt) {        
       }
       if (data.UpdatedAt) {

@@ -9,6 +9,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
 
 import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.component';
 
@@ -25,6 +26,7 @@ import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.compo
     NzResizableModule,
     NzCodeEditorModule,
     NzGridModule,
+    NzUploadModule,
     MarkdownModule.forChild(),
   ],
   exports: [

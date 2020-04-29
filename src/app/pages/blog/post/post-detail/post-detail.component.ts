@@ -7,7 +7,8 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
   getUIModeString, 
-  BlogCollection} from '../../../../model';
+  BlogCollection,
+  BlogPostCollection} from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -58,7 +59,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       idControl: new FormControl({value: undefined, disabled: true}),
       titleControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       contentControl: new FormControl('', [Validators.required]),
-      collectionControl: new FormControl(null),
+      collectionControl: new FormControl([]),
       tagControl: new FormControl(null),
     });
   }
@@ -96,7 +97,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           forkJoin([
             this.odataService.fetchAllCollections(),
             this.odataService.readPost(this.routerID),
-            this.odataService.fetchAllPostTags(10, 0),
+            // this.odataService.fetchAllPostTags(10, 0),
           ])          
           .pipe(
             takeUntil(this._destroyed$),
@@ -109,6 +110,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.get('idControl').setValue(rtns[1].id);
               this.detailFormGroup.get('titleControl').setValue(rtns[1].title);
               this.detailFormGroup.get('contentControl').setValue(rtns[1].content);
+              this.detailFormGroup.get('collectionControl').setValue(rtns[1].BlogPostCollections.map(val => { return val.CollectionID; }));
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -167,6 +169,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       this.instancePost.content = frmvalue.contentControl;
       this.instancePost.format = 1;
       this.instancePost.status = BlogPostStatus_PublishAsPublic;
+      let arcoll = frmvalue.collectionControl as any[];
+      arcoll.forEach(element => {
+        this.instancePost.BlogPostCollections.push({
+          CollectionID: element,
+        } as BlogPostCollection);
+      });
       
       this.odataService.createPost(this.instancePost)
         .pipe(takeUntil(this._destroyed$))
@@ -176,6 +184,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             this.router.navigate(['/blog/post/display/' + e.id.toString()]);
           },
           error: err => {
+            // TBD.
           }
         });
     }

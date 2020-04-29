@@ -4,6 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
+import { UploadChangeParam } from 'ng-zorro-antd/upload';
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
@@ -112,6 +113,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   editor: editor.ICodeEditor;
   content: string;
   readOnly: boolean = false;
+  uploadAPI: string;
 
   stateWatching = false;
   stateLoaded   = false;
@@ -559,6 +561,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarPageBreak(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
+  }
+  onToolbarPicture(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
+      ConsoleLogTypeEnum.debug);
+    // Upload
+  }
+  onToolbarPictureUpload(info: UploadChangeParam): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
+      ConsoleLogTypeEnum.debug);
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      // this.msg.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      // this.msg.error(`${info.file.name} file upload failed.`);
+    }
   }
   onToolbarDateTime(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
