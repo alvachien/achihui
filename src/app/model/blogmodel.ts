@@ -64,6 +64,7 @@ export interface BlogPostAPIJson {
   Status: number;
   CreatedAt?: any;
   UpdatedAt?: any;
+  BlogPostCollections: BlogPostCollection[];
 }
 
 export class BlogPost {

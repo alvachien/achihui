@@ -299,7 +299,7 @@ export class BlogOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
-    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+    // params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
 
