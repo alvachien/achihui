@@ -11,6 +11,8 @@ declare const monaco: any;
 import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
 import { editor } from 'monaco-editor';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from 'src/app/services';
+import { Observable, Observer } from 'rxjs';
 
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
@@ -126,6 +128,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     errorColor: '#cc0000',
   };
 
+  get uploadHeader(): any {
+    return {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + this.authService.authSubject.getValue().getAccessToken()
+    }
+  }
+
   // tslint:disable-next-line:variable-name
   private _onChange: (val: any) => void;
   // tslint:disable-next-line:variable-name
@@ -225,7 +234,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
 
-  constructor(private changeDetect: ChangeDetectorRef) {
+  constructor(private changeDetect: ChangeDetectorRef,
+    private authService: AuthService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -539,7 +549,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       }
 
       this.editor.focus();
-    }  
+    }
   }
   onToolbarUnorderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
@@ -565,20 +575,73 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
   }
-  onToolbarPicture(): void {
+  onToolbarPicture(filename?: string): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
+
     // Upload
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        if (filename) {
+          cursels.forEach(sel => {
+            arrst.push({
+              range: sel,
+              text: '![](' + environment.ApiUrl + '/' + filename + ')',
+            });
+          });
+          curmodel.pushEditOperations(cursels, arrst, undefined);
+        } else {
+          cursels.forEach(sel => {
+            arrst.push({
+              range: sel,
+              text: '![]()',
+            });
+          });
+          curmodel.pushEditOperations(cursels, arrst, undefined);    
+        }
+      }
+
+      this.editor.focus();
+    }
+  }
+  beforeUpload(file: File) {
+    return new Observable((observer: Observer<boolean>) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        // TBD
+        // this.msg.error('You can only upload JPG file!');
+        observer.complete();
+        return;
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        // TBD.
+        // this.msg.error('Image must smaller than 2MB!');
+        observer.complete();
+        return;
+      }
+      observer.next(isJpgOrPng && isLt2M);
+      observer.complete();
+    });
   }
   onToolbarPictureUpload(info: UploadChangeParam): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
+    // if (info.file.status !== 'uploading') {
+    //   console.log(info.file, info.fileList);
+    // }
     if (info.file.status === 'done') {
+      console.log(info.file);
       // this.msg.success(`${info.file.name} file uploaded successfully`);
+      if (info.file.response) {
+        this.onToolbarPicture(info.file.response[0].url);
+      }
     } else if (info.file.status === 'error') {
+      console.error(info.file);
+      // TBD.
       // this.msg.error(`${info.file.name} file upload failed.`);
     }
   }

@@ -35,7 +35,7 @@
 
     <!-- Collection -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Blog.Collection' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{'Blog.Collection' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
         <nz-select nzMode="multiple" nzPlaceHolder="Collections" formControlName="collectionControl">
           <nz-option *ngFor="let coll of listOfCollection" [nzLabel]="coll.name" [nzValue]="coll.id"></nz-option>
@@ -63,7 +63,7 @@
 
     <!-- Tag -->
     <!-- <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Tags' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{'Common.Tags' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
         <nz-select nzMode="tags" nzPlaceHolder="Tags" formControlName="tagControl">
           <nz-option *ngFor="let tag of listOfTags" [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>

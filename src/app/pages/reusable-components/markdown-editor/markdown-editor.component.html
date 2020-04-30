@@ -31,6 +31,8 @@
     <nz-upload [nzAction]="uploadAPI"
       [nzHeaders]="uploadHeader"
       [nzWithCredentials]="true"
+      [nzBeforeUpload]="beforeUpload"
+      [nzShowUploadList]="false"
       (nzChange)="onToolbarPictureUpload($event)">
       <button nz-button><i nz-icon nzType="upload"></i></button>
     </nz-upload>
