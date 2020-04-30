@@ -10,6 +10,7 @@ declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
 import { editor } from 'monaco-editor';
+import { environment } from '../../../../environments/environment';
 
 // Constants for commands
 const commandFormatBlock = 'formatBlock';
@@ -227,6 +228,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   constructor(private changeDetect: ChangeDetectorRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    this.uploadAPI = environment.ApiUrl + '/api/PhotoFile';
   }
 
   ngOnInit() {
