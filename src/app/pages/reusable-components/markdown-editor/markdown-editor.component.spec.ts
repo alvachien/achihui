@@ -7,13 +7,22 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MarkdownModule } from 'ngx-markdown';
+import { BehaviorSubject } from 'rxjs';
 
 import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
+import { AuthService } from '../../../services';
+import { UserAuthInfo } from '../../../../app/model';
 
 describe('MarkdownEditorComponent', () => {
   let component: MarkdownEditorComponent;
   let fixture: ComponentFixture<MarkdownEditorComponent>;
+  let authServiceStub: Partial<AuthService>;
+
+  beforeAll(() => {
+    authServiceStub = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,6 +40,9 @@ describe('MarkdownEditorComponent', () => {
       declarations: [
         MarkdownEditorComponent,
       ],
+      providers: [
+        { provide: AuthService, useValue: authServiceStub },
+      ]
     })
     .compileComponents();
   }));

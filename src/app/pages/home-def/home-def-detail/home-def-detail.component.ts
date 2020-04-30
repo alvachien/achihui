@@ -40,6 +40,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+  get isDeleteItemAllowed(): boolean {
+    if (this.isFieldChangable) {
+      return true;
+    }
+    return false;
+  }
   get isItemsValid(): boolean {
     if (this.listMembers.length > 0) {
       let bvalid = true;
@@ -59,6 +65,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       return bvalid;
     }
     return false;
+  }
+  get currentHomeDefObject(): HomeDef {
+    let hdobj = new HomeDef();
+    hdobj.Name = this.detailFormGroup.get('nameControl').value;
+    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;    
+    this.listMembers.forEach(val => {
+      hdobj.Members.push(val);
+    });
+
+    return hdobj;
   }
 
   constructor(
@@ -156,6 +172,14 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             .subscribe({
               next: (curries: Currency[]) => {
                 this.arCurrencies = curries;
+
+                // Insert one home member by default
+                this.listMembers = [];
+                let nm = new HomeMember();
+                nm.User = this.authService.authSubject.getValue().getUserId();
+                nm.Relation = HomeMemberRelationEnum.Self;
+                nm.DisplayAs = nm.User;
+                this.listMembers.push(nm);
               }, 
               error: (error: any) => {
                 // Show error dialog
@@ -187,8 +211,21 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   onSave() {
     // Save the data
+    if (this.uiMode === UIMode.Create) {
+      // Create mode
+      let hdobj = new HomeDef();
+      hdobj.Name = this.detailFormGroup.get('nameControl').value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
+    } else if(this.uiMode === UIMode.Change) {
+      // Chagne mode
+    }
   }
 
   onCreateMember() {
+    let nmem = new HomeMember();
+    this.listMembers.push(nmem);
+  }
+  onDeleteMember(idx: number) {
+    this.listMembers = this.listMembers.splice(idx, 1);
   }
 }

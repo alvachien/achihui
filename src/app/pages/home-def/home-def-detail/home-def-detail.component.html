@@ -40,7 +40,9 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
-        <input nz-input formControlName="baseCurrControl" maxlength="30" required />
+        <nz-select formControlName="baseCurrControl" (ngModelChange)="onCurrencyChange($event)">
+          <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
+        </nz-select>
         <ng-template #currTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
@@ -66,7 +68,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
+      <tr *ngFor="let data of basicTable.data; let idx = index">
         <td>
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
@@ -74,10 +76,9 @@
                 <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
               </nz-input-group>
               <ng-template #suffixTemplate>
-                <button nz-button nzType="link" 
-                  >{{'Common.Delete' | transloco}}</button>
-                  <!-- [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(data)" -->
-                </ng-template>
+                <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed"
+                  (click)="onDeleteMember(idx)">{{'Common.Delete' | transloco}}</button>
+              </ng-template>
               <ng-template #usrTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
                   {{'Common.FieldIsMandatory' | transloco}}
