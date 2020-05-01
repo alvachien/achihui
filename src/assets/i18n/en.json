@@ -195,7 +195,15 @@
     "ResubmissionHint": "Please check and modify the following information before resubmitting.",
     "TitleOfSubmitError": "The content you submitted has the following error",
     "SearchCriteria": "Search Criteria",
-    "DefaultValues": "Default Values"
+    "DefaultValues": "Default Values",
+    "SaveAsDraft": "Save as Draft",
+    "PublishAsPublic": "Publish as Public",
+    "PublishAsPrivate": "Publish as Private",
+    "Abstract": "Abstract",
+    "CreatedAt": "Crated at",
+    "CreatedBy": "Created by",
+    "LastChangedAt": "Last chagned at",
+    "LastChangedBy": "Last chagned by"
   },
   "Sys": {
     "Currency": {

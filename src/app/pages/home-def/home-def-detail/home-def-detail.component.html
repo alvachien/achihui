@@ -6,7 +6,7 @@
     <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="link" [disabled]="!isSaveAllowed"
+      <button nz-button nzType="primary" [disabled]="!isSaveAllowed"
         (click)="onSave()">{{'Common.Save' | transloco}}</button>
     </nz-page-header-extra>
   </nz-page-header>
@@ -36,14 +36,43 @@
       </nz-form-control>
     </nz-form-item>
 
+    <!-- Detail -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.Detail' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="detailTpl">
+        <input nz-input formControlName="detailControl" maxlength="50" required />
+        <ng-template #detailTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
     <!-- Base Currency -->
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
-        <nz-select formControlName="baseCurrControl" (ngModelChange)="onCurrencyChange($event)">
+        <nz-select formControlName="baseCurrControl">
           <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
         </nz-select>
         <ng-template #currTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Host -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Host' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="hostTpl">
+        <input nz-input formControlName="hostControl" maxlength="50" required />
+        <ng-template #hostTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
           </ng-container>

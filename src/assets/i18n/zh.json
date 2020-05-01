@@ -195,7 +195,15 @@
     "ResubmissionHint": "请检查以下信息，修正后再次提交。",
     "TitleOfSubmitError": "你提交的内容有如下错误",
     "SearchCriteria": "搜索条件",
-    "DefaultValues": "默认值"
+    "DefaultValues": "默认值",
+    "SaveAsDraft": "保存草稿",
+    "PublishAsPublic": "公开发布",
+    "PublishAsPrivate": "私人发布",
+    "Abstract": "简要",
+    "CreatedAt": "创建于",
+    "CreatedBy": "创建者",
+    "LastChangedAt": "最后修改于",
+    "LastChangedBy": "最后修改者"
   },
   "Sys": {
     "Currency": {

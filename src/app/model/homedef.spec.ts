@@ -57,7 +57,7 @@ describe('HomeDef', () => {
     expect(hdobj.isValid).toBeFalsy();
 
     hdobj.BaseCurrency = 'ABC';
-    expect(hdobj.isValid).toBeTruthy();
+    expect(hdobj.isValid).toBeFalsy();
   });
 
   it('Generate and Parse JSON', () => {

@@ -91,9 +91,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true }),
       nameControl: new FormControl('', Validators.required),
+      detailControl: new FormControl(),
       baseCurrControl: new FormControl('', Validators.required),
-      hostControl: new FormControl({value: this.authService.authSubject.getValue().getUserId(), disable: true }, Validators.required),
-      detailControl: new FormControl(''),
+      hostControl: new FormControl({value: this.authService.authSubject.getValue().getUserId(), disabled: true }, Validators.required),
     });
     this.isLoadingResults = false;
   }
@@ -216,6 +216,25 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       let hdobj = new HomeDef();
       hdobj.Name = this.detailFormGroup.get('nameControl').value;
       hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
+      hdobj.Host = this.detailFormGroup.get('hostControl').value;
+      hdobj.Details = this.detailFormGroup.get('detailControl').value;
+
+      this.listMembers.forEach(val => hdobj.Members.push(val));
+      if (!hdobj.isValid) {
+        // TBD.
+        return;
+      }
+
+      this.storageService.createHomeDef(hdobj)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe({
+        next: val => {
+          // Shall create successfully.
+        },
+        error: err => {
+
+        }
+      });
     } else if(this.uiMode === UIMode.Change) {
       // Chagne mode
     }

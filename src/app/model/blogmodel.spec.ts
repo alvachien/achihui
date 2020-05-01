@@ -51,6 +51,7 @@ describe('BlogPost', () => {
     instance.format = 1;
     instance.owner = 'a';
     instance.title = 'b';
+    instance.brief = 'd';
     instance.content = 'c';
 
     let apidata: BlogPostAPIJson = instance.writeAPIJson();
@@ -58,6 +59,7 @@ describe('BlogPost', () => {
     expect(apidata.ID).toEqual(instance.id);
     expect(apidata.Format).toEqual(instance.format);
     expect(apidata.Owner).toEqual(instance.owner);
+    expect(apidata.Brief).toEqual(instance.brief);
     expect(apidata.Title).toEqual(instance.title);
     expect(apidata.Content).toEqual(instance.content);
 
@@ -67,6 +69,7 @@ describe('BlogPost', () => {
     expect(instance.format).toEqual(instance2.format);
     expect(instance.owner).toEqual(instance2.owner);
     expect(instance.title).toEqual(instance2.title);
+    expect(instance.brief).toEqual(instance2.brief);
     expect(instance.content).toEqual(instance2.content);
   });
 });

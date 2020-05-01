@@ -5,6 +5,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import * as moment from 'moment';
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
@@ -66,18 +67,6 @@ export interface IACMEditorConfig {
   styleSelectedText?: boolean;
   matchWordHighlight?: boolean;
   styleActiveLine?: boolean;
-  dialogShowMask?: boolean;
-  dialogDraggable?: boolean;
-  dialogMaskBgColor?: any;
-  dialogMaskOpacity?: number;
-  fontSize?: number | string;
-  saveHTMLToTextarea?: boolean;
-  imageUpload?: boolean;
-  imageFormats?: Array<string>;
-  imageUploadURL?: string;
-  crossDomainUpload?: boolean;
-  uploadCallbackURL?: string;
-  htmlDecode?: boolean;
   pageBreak?: boolean;
   atLink?: boolean;
   emailLink?: boolean;
@@ -110,6 +99,7 @@ export interface IACMEditorConfig {
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() config: IACMEditorConfig;
   @Input() editorID: string;
+  @ViewChild('previewElement') previewElement: ElementRef;
 
   isDialogMathOpen = false;
   mathDialogInput: string;
@@ -293,8 +283,15 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         ConsoleLogTypeEnum.debug);
 
         // Rework for the scroll
-        // TBD.
-        // console.log(e.scrollHeight);
+        if (e.scrollTop === 0) {
+          if (this.previewElement) {
+            this.previewElement.nativeElement.scrollTop = 0;
+          }
+        } else {
+          let percent = e.scrollTop / e.scrollHeight;
+
+          this.previewElement.nativeElement.scrollTop = percent * this.previewElement.nativeElement.scrollHeight;
+        }
     });
   }
 
@@ -371,6 +368,22 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarStrikethrough...',
       ConsoleLogTypeEnum.debug);
 
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '~~' + curmodel.getValueInRange(sel) + '~~',
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarItalic(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarItalic...',
@@ -554,18 +567,83 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUnorderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '- \n' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarOrderedList(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarOrderedList...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '1. ' + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarCode(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCode...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '` ' + curmodel.getValueInRange(sel) + ' `',
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarCodeBlock(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCodeBlock...',
       ConsoleLogTypeEnum.debug);
+
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: '``` \n' + curmodel.getValueInRange(sel) + '\n ```',
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarTex(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarTex...',
@@ -574,6 +652,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarPageBreak(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: `--- 
+              ` + curmodel.getValueInRange(sel),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onToolbarPicture(filename?: string): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
@@ -589,7 +684,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
           cursels.forEach(sel => {
             arrst.push({
               range: sel,
-              text: '![](' + environment.ApiUrl + '/' + filename + ')',
+              text: '![Image](' + environment.ApiUrl + filename + ')',
             });
           });
           curmodel.pushEditOperations(cursels, arrst, undefined);
@@ -597,12 +692,21 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
           cursels.forEach(sel => {
             arrst.push({
               range: sel,
-              text: '![]()',
+              text: '![Image]()',
             });
           });
           curmodel.pushEditOperations(cursels, arrst, undefined);    
         }
       }
+
+      this.editor.focus();
+    }
+  }
+  onToolbarClear() : void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarClear...',
+      ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      this.editor.setValue('');
 
       this.editor.focus();
     }
@@ -616,6 +720,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         observer.complete();
         return;
       }
+
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
         // TBD.
@@ -623,6 +728,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         observer.complete();
         return;
       }
+
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
     });
@@ -630,17 +736,15 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarPictureUpload(info: UploadChangeParam): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
-    // if (info.file.status !== 'uploading') {
-    //   console.log(info.file, info.fileList);
-    // }
     if (info.file.status === 'done') {
-      console.log(info.file);
-      // this.msg.success(`${info.file.name} file uploaded successfully`);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPictureUpload, succeed`,
+        ConsoleLogTypeEnum.debug);
       if (info.file.response) {
         this.onToolbarPicture(info.file.response[0].url);
       }
     } else if (info.file.status === 'error') {
-      console.error(info.file);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering MarkdownEditorComponent onToolbarPictureUpload, failed: ${info.file.response}`,
+        ConsoleLogTypeEnum.error);
       // TBD.
       // this.msg.error(`${info.file.name} file upload failed.`);
     }
@@ -648,6 +752,22 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarDateTime(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
+    if (this.editor) {
+      let curmodel = this.editor.getModel();
+      let cursels = this.editor.getSelections();
+      if (curmodel) {
+        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        cursels.forEach(sel => {
+          arrst.push({
+            range: sel,
+            text: curmodel.getValueInRange(sel) + moment().toString(),
+          });
+        });
+        curmodel.pushEditOperations(cursels, arrst, undefined);
+      }
+
+      this.editor.focus();
+    }
   }
   onMathDialogInput(event): void {
     // Math dialog

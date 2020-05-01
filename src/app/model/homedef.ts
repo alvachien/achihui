@@ -20,7 +20,7 @@ export interface IHomeMemberJson {
   HomeID: number;
   User: string;
   DisplayAs: string;
-  Relation: HomeMemberRelationEnum;
+  Relation: any;
 }
 
 /**
@@ -91,7 +91,7 @@ export class HomeMember {
       HomeID: this._hid,
       User: this._user,
       DisplayAs: this._displayas,
-      Relation: this._relation,
+      Relation: HomeMemberRelationEnum[this._relation],
     };
     return jdata;
   }
@@ -186,6 +186,27 @@ export class HomeDef extends hih.BaseModel {
     if (!this.BaseCurrency) {
       return false;
     }
+    if (this.Members.length === 0) {
+      return false;
+    }
+    let selfcnt = 0;
+    let invalidmem = 0;
+    this.Members.forEach(mem => {
+      if (!mem.isValid) {
+        invalidmem ++;
+      }
+
+      if (mem.Relation === HomeMemberRelationEnum.Self) {
+        selfcnt ++;
+      }
+    });
+    if (invalidmem > 0) {
+      return false;
+    }
+    if (selfcnt !== 1) {
+      return false;
+    }
+    
 
     return true;
   }

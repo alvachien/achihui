@@ -21,6 +21,9 @@
       <tr>
         <th>{{'Common.ID' | transloco}}</th>
         <th>{{'Common.Title' | transloco}}</th>
+        <th>{{'Common.Status' | transloco}}</th>
+        <th>{{'Common.Abstract' | transloco}}</th>
+        <th>{{'Common.CreatedAt' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
@@ -33,7 +36,9 @@
           <button nz-button nzType="link" (click)="onDelete(data.id)">{{'Common.Delete' | transloco}}</button>
         </td>
         <td>{{data.title}}</td>
-        <td>{{data.Comment}}</td>
+        <td>{{getStatusDisplayString(data.status) | transloco}}</td>
+        <td>{{data.brief}}</td>
+        <td>{{data.createdAtString}}</td>
       </tr>
     </tbody>
   </nz-table>

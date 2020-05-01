@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { momentDateFormat } from './common';
 
 export const BlogPostStatus_Draft: number = 1;
 export const BlogPostStatus_PublishAsPublic: number = 2;
@@ -60,6 +61,7 @@ export interface BlogPostAPIJson {
   Owner: string;
   Format: number;
   Title: string;
+  Brief: string;
   Content: string;
   Status: number;
   CreatedAt?: any;
@@ -72,6 +74,7 @@ export class BlogPost {
   public owner: string;
   public format: number;
   public title: string;
+  public brief: string;
   public content: string;
   public status: number;
   public createdAt?: moment.Moment;
@@ -82,12 +85,19 @@ export class BlogPost {
     this.BlogPostCollections = [];
   }
 
+  get createdAtString(): string {
+    if (this.createdAt) {
+      return this.createdAt.format(momentDateFormat);
+    }
+  }
+
   public onSetData(data: BlogPostAPIJson) {
     if (data) {
       this.id = +data.ID;
       this.owner = data.Owner;
       this.format = data.Format;
       this.title = data.Title;
+      this.brief = data.Brief;
       this.content = data.Content;
       this.status = data.Status;
       this.BlogPostCollections = data.BlogPostCollections;
@@ -104,6 +114,7 @@ export class BlogPost {
       Owner: this.owner,
       Format: this.format,
       Title: this.title,
+      Brief: this.brief,
       Content: this.content,
       Status: this.status,
       BlogPostCollections: this.BlogPostCollections,

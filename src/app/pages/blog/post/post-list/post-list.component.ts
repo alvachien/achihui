@@ -7,7 +7,7 @@ import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  BlogPost, momentDateFormat, } from '../../../../model';
+  BlogPost, momentDateFormat, BlogPostStatus_Draft, BlogPostStatus_PublishAsPublic, BlogPostStatus_PublishAsPrivate, } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -49,6 +49,15 @@ export class PostListComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+  }
+  getStatusDisplayString(status: number): string {
+    if (status === BlogPostStatus_PublishAsPublic) {
+      return 'Common.PublishAsPublic';
+    } else if (status === BlogPostStatus_PublishAsPrivate) {
+      return 'Common.PublishAsPrivate';
+    } else {
+      return 'Common.SaveAsDraft';
     }
   }
 

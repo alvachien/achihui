@@ -32,7 +32,7 @@
       [nzHeaders]="uploadHeader"
       [nzWithCredentials]="true"
       [nzBeforeUpload]="beforeUpload"
-      [nzShowUploadList]="false"
+      [nzShowUploadList]="true"
       (nzChange)="onToolbarPictureUpload($event)">
       <button nz-button><i nz-icon nzType="upload"></i></button>
     </nz-upload>
@@ -47,7 +47,7 @@
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button><i nz-icon nzType="delete" nzTheme="outline"></i></button>
+      <button nz-button (click)="onToolbarClear()"><i nz-icon nzType="delete" nzTheme="outline"></i></button>
       <button nz-button><i nz-icon nzType="search" nzTheme="outline"></i></button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
@@ -58,12 +58,13 @@
   </div>
 
   <div nz-row style="height: 100%; width: 100%;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-code-editor class="editor" [nzFullControl]="true" (nzEditorInitialized)="onEditorInit($event)">
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" class="editor">
+      <nz-code-editor [nzFullControl]="true" (nzEditorInitialized)="onEditorInit($event)">
       </nz-code-editor>
     </div>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <markdown [data]="content" katex [katexOptions]="katexOptions"></markdown>
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" class="editor-preview" #previewElement>
+      <markdown [data]="content" katex [katexOptions]="katexOptions">
+      </markdown>
     </div>
   </div> 
 </div>

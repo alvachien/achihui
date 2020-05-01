@@ -9,44 +9,75 @@
 
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <form nz-form [formGroup]="detailFormGroup">
-    <!-- ID -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12">
-        <input nz-input formControlName="idControl" />
-      </nz-form-control>
-    </nz-form-item>
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzSpan]="12">
+        <!-- ID -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12">
+            <input nz-input formControlName="idControl" />
+          </nz-form-control>
+        </nz-form-item>
 
-    <!-- Title -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Title' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
-        <input nz-input formControlName="titleControl" maxlength="30" required />
-        <ng-template #titleTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{'Common.FieldMaxLength' | transloco}}
-          </ng-container>
-          <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
+        <!-- Title -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Title' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
+            <input nz-input formControlName="titleControl" maxlength="30" required />
+            <ng-template #titleTpl let-control>
+              <ng-container *ngIf="control.hasError('maxlength')">
+                {{'Common.FieldMaxLength' | transloco}}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('required')">
+                {{'Common.FieldIsMandatory' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
 
-    <!-- Collection -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Blog.Collection' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
-        <nz-select nzMode="multiple" nzPlaceHolder="Collections" formControlName="collectionControl">
-          <nz-option *ngFor="let coll of listOfCollection" [nzLabel]="coll.name" [nzValue]="coll.id"></nz-option>
-        </nz-select>
-        <ng-template #titleTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{'Common.FieldMaxLength' | transloco}}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
+        <!-- Collection -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7">{{'Blog.Collection' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="collTpl">
+            <nz-select nzMode="multiple" nzPlaceHolder="Collections" formControlName="collectionControl">
+              <nz-option *ngFor="let coll of listOfCollection" [nzLabel]="coll.name" [nzValue]="coll.id"></nz-option>
+            </nz-select>
+            <ng-template #collTpl let-control>
+              <ng-container *ngIf="control.hasError('maxlength')">
+                {{'Common.FieldMaxLength' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Release -->
+        <nz-form-item>
+          <nz-form-label [nzSpan]="7">{{'Common.Status' | transloco}}</nz-form-label>
+          <nz-form-control [nzSpan]="12">
+            <nz-radio-group formControlName="statusControl">
+              <label nz-radio-button [nzValue]="'Draft'">{{'Common.SaveAsDraft' | transloco}}</label>
+              <label nz-radio-button [nzValue]="'PublicPublish'">{{'Common.PublishAsPublic' | transloco}}</label>
+              <label nz-radio-button [nzValue]="'PrivatePublish'">{{'Common.PublishAsPrivate' | transloco}}</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <!-- Brief -->
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Abstract' | transloco}}</nz-form-label>
+        <nz-form-item>
+          <nz-form-control [nzSpan]="24" nzHasFeedback [nzErrorTip]="briefTpl">
+            <textarea rows="8" nz-input formControlName="briefControl"></textarea>
+            <ng-template #briefTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{'Common.FieldIsMandatory' | transloco}}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
 
     <!-- Content -->
     <nz-form-item>

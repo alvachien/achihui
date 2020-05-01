@@ -8,7 +8,9 @@ import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-com
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
   getUIModeString, 
   BlogCollection,
-  BlogPostCollection} from '../../../../model';
+  BlogPostCollection,
+  BlogPostStatus_PublishAsPrivate,
+  BlogPostStatus_Draft} from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -58,9 +60,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true}),
       titleControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      statusControl: new FormControl('Draft', [Validators.required]),
       contentControl: new FormControl('', [Validators.required]),
       collectionControl: new FormControl([]),
       tagControl: new FormControl(null),
+      briefControl: new FormControl(''),
     });
   }
 
@@ -109,8 +113,21 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
               this.detailFormGroup.get('idControl').setValue(rtns[1].id);
               this.detailFormGroup.get('titleControl').setValue(rtns[1].title);
+              this.detailFormGroup.get('briefControl').setValue(rtns[1].brief);
               this.detailFormGroup.get('contentControl').setValue(rtns[1].content);
               this.detailFormGroup.get('collectionControl').setValue(rtns[1].BlogPostCollections.map(val => { return val.CollectionID; }));
+              switch (rtns[1].status) {
+                case BlogPostStatus_PublishAsPublic:
+                  this.detailFormGroup.get('statusControl').setValue('PublicPublish');
+                  break;
+                case BlogPostStatus_PublishAsPrivate:
+                  this.detailFormGroup.get('statusControl').setValue('PrivatePublish');
+                  break;
+                case BlogPostStatus_Draft:
+                  default:
+                  this.detailFormGroup.get('statusControl').setValue('Draft');
+                  break;
+              }
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -141,6 +158,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               },
               error: err => {
                 // TBD.
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent fetchAllCollections failed: ${err}`,
+                  ConsoleLogTypeEnum.error);
               }
             });
         }
@@ -166,9 +185,16 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       let frmvalue = this.detailFormGroup.value;
       this.instancePost = new BlogPost();
       this.instancePost.title = frmvalue.titleControl;
+      this.instancePost.brief = frmvalue.briefControl;
       this.instancePost.content = frmvalue.contentControl;
       this.instancePost.format = 1;
-      this.instancePost.status = BlogPostStatus_PublishAsPublic;
+      if (frmvalue.statusControl === 'PublicPublish') {
+        this.instancePost.status = BlogPostStatus_PublishAsPublic;
+      } else if (frmvalue.statusControl === 'PrivatePublish') {
+        this.instancePost.status = BlogPostStatus_PublishAsPrivate;
+      } else {
+        this.instancePost.status = BlogPostStatus_Draft;
+      }
       let arcoll = frmvalue.collectionControl as any[];
       arcoll.forEach(element => {
         this.instancePost.BlogPostCollections.push({
@@ -184,7 +210,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             this.router.navigate(['/blog/post/display/' + e.id.toString()]);
           },
           error: err => {
-            // TBD.
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave failed: ${err}`,
+              ConsoleLogTypeEnum.error);
           }
         });
     }
