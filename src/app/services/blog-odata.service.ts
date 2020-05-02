@@ -244,6 +244,38 @@ export class BlogOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
+  
+  /**
+   * Change existing post
+   * @param post Post to be created
+   */
+  public changePost(post: BlogPost): Observable<BlogPost> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts/' + post.id.toString();
+    post.owner = this.authService.authSubject.getValue().getUserId();
+    const jdata = post.writeAPIJson();
+    return this.http.put(apiUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService changePost`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: BlogPost = new BlogPost();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService changePost failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
 
   /**
    * read post by specified id

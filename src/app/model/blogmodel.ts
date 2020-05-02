@@ -102,9 +102,11 @@ export class BlogPost {
       this.status = data.Status;
       this.BlogPostCollections = data.BlogPostCollections;
 
-      if (data.CreatedAt) {        
+      if (data.CreatedAt) {
+        this.createdAt = moment(data.CreatedAt);
       }
       if (data.UpdatedAt) {
+        this.updatedAt = moment(data.UpdatedAt);
       }
     }
   }
@@ -118,6 +120,8 @@ export class BlogPost {
       Content: this.content,
       Status: this.status,
       BlogPostCollections: this.BlogPostCollections,
+      CreatedAt: this.createdAt ? this.createdAt.format(momentDateFormat) : '',
+      UpdatedAt: this.updatedAt ? this.updatedAt.format(momentDateFormat) : '',
     } as BlogPostAPIJson;
   }
 }

@@ -111,12 +111,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             next: rtns => {
               this.listOfCollection = rtns[0];
 
-              this.detailFormGroup.get('idControl').setValue(rtns[1].id);
-              this.detailFormGroup.get('titleControl').setValue(rtns[1].title);
-              this.detailFormGroup.get('briefControl').setValue(rtns[1].brief);
-              this.detailFormGroup.get('contentControl').setValue(rtns[1].content);
-              this.detailFormGroup.get('collectionControl').setValue(rtns[1].BlogPostCollections.map(val => { return val.CollectionID; }));
-              switch (rtns[1].status) {
+              this.instancePost = rtns[1] as BlogPost;
+              this.detailFormGroup.get('idControl').setValue(this.instancePost.id);
+              this.detailFormGroup.get('titleControl').setValue(this.instancePost.title);
+              this.detailFormGroup.get('briefControl').setValue(this.instancePost.brief);
+              this.detailFormGroup.get('contentControl').setValue(this.instancePost.content);
+              this.detailFormGroup.get('collectionControl').setValue(this.instancePost.BlogPostCollections.map(val => { return val.CollectionID; }));
+              switch (this.instancePost.status) {
                 case BlogPostStatus_PublishAsPublic:
                   this.detailFormGroup.get('statusControl').setValue('PublicPublish');
                   break;
@@ -183,7 +184,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     
     if (this.detailFormGroup.valid) {
       let frmvalue = this.detailFormGroup.value;
-      this.instancePost = new BlogPost();
+      if (this.uiMode === UIMode.Create) {
+        this.instancePost = new BlogPost();
+      }
       this.instancePost.title = frmvalue.titleControl;
       this.instancePost.brief = frmvalue.briefControl;
       this.instancePost.content = frmvalue.contentControl;
@@ -202,7 +205,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         } as BlogPostCollection);
       });
       
-      this.odataService.createPost(this.instancePost)
+      if (this.uiMode === UIMode.Create) {
+        this.odataService.createPost(this.instancePost)
         .pipe(takeUntil(this._destroyed$))
         .subscribe({
           next: e => {
@@ -210,10 +214,25 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             this.router.navigate(['/blog/post/display/' + e.id.toString()]);
           },
           error: err => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave failed: ${err}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave createPost failed: ${err}`,
               ConsoleLogTypeEnum.error);
           }
         });
+      } else if (this.uiMode === UIMode.Change) {
+        this.instancePost.id = this.routerID;
+        this.odataService.changePost(this.instancePost)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe({
+          next: e => {
+            // Succeed.
+            this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+          },
+          error: err => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave changePost failed: ${err}`,
+              ConsoleLogTypeEnum.error);
+          }
+        });        
+      }
     }
   }
 }

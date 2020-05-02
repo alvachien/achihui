@@ -112,7 +112,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   stateLoaded   = false;
   statePreview  = false;
   stateFullscreen = false;
-  public options: KatexOptions = {
+  public katexOptions: KatexOptions = {
     displayMode: true,
     throwOnError: false,
     errorColor: '#cc0000',

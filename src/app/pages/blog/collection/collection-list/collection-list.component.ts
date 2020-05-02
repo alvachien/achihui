@@ -68,7 +68,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreate(rid: number): void {
+  onCreate(): void {
     this.router.navigate(['/blog/collection/create']);
   }
   onDisplay(rid: number): void {
