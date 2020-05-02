@@ -13,7 +13,7 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 @Component({
   selector: 'hih-blog-post-list',
   templateUrl: './post-list.component.html',
-  styleUrls: ['./post-list.component.less']
+  styleUrls: ['./post-list.component.less'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: variable-name
@@ -97,7 +97,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         },
       });
   }
-  onCreate(rid: number): void {
+  onCreate(): void {
     this.router.navigate(['/blog/post/create']);
   }
   onDisplay(rid: number): void {

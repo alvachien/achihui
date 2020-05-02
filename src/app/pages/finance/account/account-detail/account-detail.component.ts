@@ -163,7 +163,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error);
 
             this.uiMode = UIMode.Invalid;
-            this.modalService.create({
+            this.modalService.error({
               nzTitle: translate('Common.Error'),
               nzContent: error,
               nzClosable: true,

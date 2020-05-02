@@ -111,7 +111,7 @@ export class BlogPost {
     }
   }
   public writeAPIJson(): BlogPostAPIJson {
-    return {
+    let rtnjson: BlogPostAPIJson = {
       ID: this.id,
       Owner: this.owner,
       Format: this.format,
@@ -120,9 +120,15 @@ export class BlogPost {
       Content: this.content,
       Status: this.status,
       BlogPostCollections: this.BlogPostCollections,
-      CreatedAt: this.createdAt ? this.createdAt.format(momentDateFormat) : '',
-      UpdatedAt: this.updatedAt ? this.updatedAt.format(momentDateFormat) : '',
-    } as BlogPostAPIJson;
+    };
+    if (this.createdAt) {
+      rtnjson.CreatedAt = this.createdAt ? this.createdAt.format(momentDateFormat) : '';
+    }
+    if (this.updatedAt) {
+      rtnjson.UpdatedAt = this.updatedAt ? this.updatedAt.format(momentDateFormat) : '';
+    }
+
+    return rtnjson;
   }
 }
 

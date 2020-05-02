@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, Validatio
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
 
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
@@ -53,7 +55,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   constructor(private odataService: BlogOdataService,
     private activateRoute: ActivatedRoute,
-    private router: Router,) {
+    private router: Router,
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -138,7 +141,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               }
             },
             error: err => {
-              // TBD.
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent ngOnInit forkJoin failed: ${err}`,
+                ConsoleLogTypeEnum.error);
+
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
             }
           });
         }
@@ -158,9 +168,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                 this.listOfCollection = val;
               },
               error: err => {
-                // TBD.
                 ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent fetchAllCollections failed: ${err}`,
                   ConsoleLogTypeEnum.error);
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err,
+                  nzClosable: true,
+                });
               }
             });
         }
@@ -216,6 +230,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           error: err => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave createPost failed: ${err}`,
               ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
           }
         });
       } else if (this.uiMode === UIMode.Change) {
@@ -230,6 +249,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           error: err => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave changePost failed: ${err}`,
               ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
           }
         });        
       }

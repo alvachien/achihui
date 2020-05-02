@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, Validatio
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalService } from 'ng-zorro-antd';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   BlogCollection, momentDateFormat, UIMode, getUIModeString, } from '../../../../model';
@@ -25,6 +27,7 @@ export class CollectionDetailComponent implements OnInit {
   constructor(private odataService: BlogOdataService,
     private activateRoute: ActivatedRoute,
     private router: Router,
+    private modalService: NzModalService,
     ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -84,6 +87,13 @@ export class CollectionDetailComponent implements OnInit {
               }
             },
             error: err => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
+                ConsoleLogTypeEnum.error);
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
             }
           });
         }
@@ -117,15 +127,24 @@ export class CollectionDetailComponent implements OnInit {
     objColl.name = this.detailFormGroup.get('nameControl').value;
     objColl.comment = this.detailFormGroup.get('commentControl').value;
 
-    this.odataService.createCollection(objColl)
-    .pipe(takeUntil(this._destroyed$))
-    .subscribe({
-      next: e => {
-        // Succeed.
-        this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
-      },
-      error: err => {
-      }
-    });
+    if (this.uiMode === UIMode.Create) {
+      this.odataService.createCollection(objColl)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: e => {
+          // Succeed.
+          this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });  
+    }
   }
 }
