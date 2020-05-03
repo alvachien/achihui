@@ -7,7 +7,8 @@ import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  BlogPost, momentDateFormat, BlogPostStatus_Draft, BlogPostStatus_PublishAsPublic, BlogPostStatus_PublishAsPrivate, } from '../../../../model';
+  BlogPost, momentDateFormat, BlogPostStatus_Draft, BlogPostStatus_PublishAsPublic,
+  BlogPostStatus_PublishAsPrivate, } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -108,5 +109,45 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
   onDelete(rid: number) {
     // TBD.
+  }
+  onDeploy(rid: number) {
+    this.odataService.deployPost(rid).subscribe({
+      next: val => {
+        const modalRef =this.modalService.success({
+          nzTitle: 'Deploy completed without error',
+          nzContent: 'Closed in 1 second'
+        });
+        setTimeout(() => {
+          modalRef.close();
+        }, 1000);
+      },
+      error: err => {
+        this.modalService.error({
+          nzTitle: 'Error',
+          nzContent: err,
+          nzClosable: true,
+        });
+      }
+    })
+  }
+  onRevokeDeploy(rid: number) {
+    this.odataService.revokeDeployPost(rid).subscribe({
+      next: val => {
+        const modalRef = this.modalService.success({
+          nzTitle: 'Deploy revoked completed without error',
+          nzContent: 'Closed in 1 second'
+        });
+        setTimeout(() => {
+          modalRef.close();
+        }, 1000);
+      },
+      error: err => {
+        this.modalService.error({
+          nzTitle: 'Error',
+          nzContent: err,
+          nzClosable: true,
+        });
+      }
+    })
   }
 }

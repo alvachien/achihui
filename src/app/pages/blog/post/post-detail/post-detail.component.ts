@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, Validatio
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
@@ -69,6 +69,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       tagControl: new FormControl(null),
       briefControl: new FormControl(''),
     });
+  }
+
+  get isDeployButtonEnabled(): boolean {
+    if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+      return this.detailFormGroup.valid;
+    }
+    return false;
   }
 
   ngOnInit() {
@@ -225,7 +232,45 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: e => {
             // Succeed.
-            this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+            if (this.instancePost.status === BlogPostStatus_PublishAsPublic) {
+              this.modalService.confirm({
+                nzTitle: 'Confirm',
+                nzContent: 'Deploy the content now?',
+                nzOkText: 'OK',
+                nzCancelText: 'Cancel',
+                nzOnOk: okrst => {
+                  this.odataService.deployPost(e.id).subscribe({
+                    next: rst => {
+                      // Show success dialog
+                      const ref: NzModalRef = this.modalService.success({
+                        nzTitle: 'Deploy completed without any error',
+                        nzContent: 'Closed in 1 sec',
+                      });
+                      ref.afterClose.subscribe({
+                        next: next => {
+                          this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                        }
+                      });
+                      setTimeout(() => {
+                        ref.close();
+                      }, 1000);
+                    },
+                    error: derr => {
+                      // Popup another dialog
+                      this.modalService.error({
+                        nzTitle: 'Error',
+                        nzContent: derr,
+                      })
+                    }
+                  });                  
+                },
+                nzOnCancel: cancrst => {
+                  this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                }
+              });
+            } else {
+              this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+            }
           },
           error: err => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave createPost failed: ${err}`,
@@ -244,7 +289,45 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: e => {
             // Succeed.
-            this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+            if (this.instancePost.status === BlogPostStatus_PublishAsPublic) {
+              this.modalService.confirm({
+                nzTitle: 'Confirm',
+                nzContent: 'Deploy the content now?',
+                nzOkText: 'OK',
+                nzCancelText: 'Cancel',
+                nzOnOk: okrst => {
+                  this.odataService.deployPost(e.id).subscribe({
+                    next: rst => {
+                      // Show success dialog
+                      const ref: NzModalRef = this.modalService.success({
+                        nzTitle: 'Deploy completed without any error',
+                        nzContent: 'Closed in 1 sec',
+                      });
+                      ref.afterClose.subscribe({
+                        next: next => {
+                          this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                        }
+                      });
+                      setTimeout(() => {
+                        ref.close();
+                      }, 1000);
+                    },
+                    error: derr => {
+                      // Popup another dialog
+                      this.modalService.error({
+                        nzTitle: 'Error',
+                        nzContent: derr,
+                      })
+                    }
+                  });                  
+                },
+                nzOnCancel: cancrst => {
+                  this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                }
+              });
+            } else {
+              this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+            }
           },
           error: err => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PostDetailComponent onSave changePost failed: ${err}`,

@@ -199,6 +199,8 @@
     "SaveAsDraft": "Save as Draft",
     "PublishAsPublic": "Publish as Public",
     "PublishAsPrivate": "Publish as Private",
+    "Deploy": "Deploy",
+    "RevokeDeploy": "Revoke Deploy",
     "Abstract": "Abstract",
     "CreatedAt": "Crated at",
     "CreatedBy": "Created by",

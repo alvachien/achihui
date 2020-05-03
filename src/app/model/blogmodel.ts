@@ -7,6 +7,41 @@ export const BlogPostStatus_PublishAsPrivate: number = 3;
 export const BlogPostStatus_Deleted: number = 4;
 
 /**
+ * User Setting
+ */
+export class BlogUserSettingAPIJson {
+  Owner: string;
+  Name: string;
+  Comment: string;
+  AllowComment?: boolean;
+  DeployFolder: string;
+}
+export class BlogUserSetting {
+  owner: string;
+  title: string;
+  footer: string;
+  deploy: string;
+
+  public onSetData(data: BlogUserSettingAPIJson): void {
+    if (data) {
+      this.owner = data.Owner;
+      this.title = data.Name;
+      this.footer = data.Comment;
+      this.deploy = data.DeployFolder;
+    }
+  }
+  public writeAPIJson(): BlogUserSettingAPIJson {
+    let jdata: BlogUserSettingAPIJson = new BlogUserSettingAPIJson();
+    jdata.Owner = this.owner;
+    jdata.Name = this.title;
+    jdata.Comment = this.footer;
+    // jdata.AllowComment = undefined;
+    jdata.DeployFolder = this.deploy;
+    return jdata;
+  }
+}
+
+/**
  * Blog Collection
  */
 export class BlogCollectionAPIJson {

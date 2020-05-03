@@ -1,1 +1,43 @@
-<p>user-setting works!</p>
+<nz-page-header nzBackIcon>
+  <nz-page-header-title>{{'Nav.Blog' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.Setting' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" [disabled]="!isSaveButtonEnabled" (click)="onSave()">{{'Common.Save' | transloco}}</button>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <form nz-form [formGroup]="detailFormGroup">
+    <!-- User -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.User' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="userControl" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Deploy Folder -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">Deploy Folder (on Server)</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="deployControl" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Title Folder -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.Title' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="titleControl" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Footer -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">Footer</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="footerControl" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-spin>

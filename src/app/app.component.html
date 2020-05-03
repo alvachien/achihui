@@ -52,6 +52,9 @@
       <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="book">
         <ul>
           <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'blog', 'setting']">{{'Common.Setting' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'blog', 'collection']">{{'Blog.Collections' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>

@@ -5,7 +5,7 @@ import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { LogLevel, ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost,
-  BlogPostTag, } from '../model';
+  BlogPostTag, BlogUserSetting, BlogUserSettingAPIJson, } from '../model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -14,6 +14,8 @@ import { AuthService } from './auth.service';
 export class BlogOdataService {
   private isCollectionlistLoaded: boolean;
   private listCollection: BlogCollection[];
+  private isSettingLoaded: boolean;
+  private setting: BlogUserSetting;
 
   constructor(
     private http: HttpClient,
@@ -23,13 +25,117 @@ export class BlogOdataService {
 
     this.isCollectionlistLoaded = false; // Performance improvement
     this.listCollection = [];
+    this.isSettingLoaded = false;
+    this.setting = null;
   }
 
   // Buffer in current page.
   get Collections(): BlogCollection[] {
     return this.listCollection;
   }
+  get Setting(): BlogUserSetting {
+    return this.setting;
+  }
 
+  /**
+   * Read setting
+   */
+  public readUserSetting(): Observable<BlogUserSetting> {
+    if (!this.isSettingLoaded) {
+      const apiUrl: string = environment.ApiUrl + '/api/BlogUserSettings';
+
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      let params: HttpParams = new HttpParams();
+      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`)
+
+      return this.http.get(apiUrl, {
+        headers,
+        params,
+      })
+        .pipe(map((response: HttpResponse<any>) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readUserSetting`,
+            ConsoleLogTypeEnum.debug);
+
+          const rjs: any = response;
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            this.setting = new BlogUserSetting();
+            this.setting.onSetData(rjs.value[0]);
+          }
+          this.isSettingLoaded = true;
+          return this.setting;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readUserSetting failed: ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          this.isSettingLoaded = false;
+          this.setting = null;
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+    } else {
+      return of(this.setting);
+    }
+  }
+  public updateUserSetting(newset: BlogUserSetting): Observable<BlogUserSetting> {
+    const apiUrl: string = environment.ApiUrl + `/api/BlogUserSettings('${newset.owner}')`;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let jdata = newset.writeAPIJson();
+    return this.http.put(apiUrl, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService updateUserSetting`,
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        this.setting = new BlogUserSetting();
+        this.setting.onSetData(rjs);
+        this.isSettingLoaded = true;
+
+        return this.setting;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService updateUserSetting failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        this.isSettingLoaded = false;
+        this.setting = null;
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+  public deploySetting(owner: string): Observable<string> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + `/api/BlogUserSettings('${owner}')/deploy`;
+    return this.http.get(apiUrl, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService deploySetting`,
+          ConsoleLogTypeEnum.debug);
+
+        return ''; // Empty means success
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService deploySetting failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
   /**
    * fetch all collections
    * @param forceReload set to true to enforce reload all currencies
@@ -271,6 +377,52 @@ export class BlogOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService changePost failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+  public deployPost(postid: number): Observable<string> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts(' + postid.toString() + ')/Deploy';
+    return this.http.get(apiUrl, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService deployPost`,
+          ConsoleLogTypeEnum.debug);
+
+        return ''; // Empty means success
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService deployPost failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+  public revokeDeployPost(postid: number): Observable<string> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts(' + postid.toString() + ')/ClearDeploy';
+    return this.http.get(apiUrl, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService revokeDeployPost`,
+          ConsoleLogTypeEnum.debug);
+
+        return ''; // Empty means success
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService revokeDeployPost failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

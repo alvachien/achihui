@@ -34,6 +34,9 @@
           <button nz-button nzType="link" (click)="onDisplay(data.id)">{{'Common.Display' | transloco}}</button>
           <button nz-button nzType="link" (click)="onEdit(data.id)">{{'Common.Edit' | transloco}}</button>
           <button nz-button nzType="link" (click)="onDelete(data.id)">{{'Common.Delete' | transloco}}</button>
+          <nz-divider nzType="vertical"></nz-divider>
+          <button nz-button nzType="link" (click)="onDeploy(data.id)">{{'Common.Deploy' | transloco}}</button>
+          <button nz-button nzType="link" (click)="onRevokeDeploy(data.id)">{{'Common.RevokeDeploy' | transloco}}</button>
         </td>
         <td>{{data.title}}</td>
         <td>{{getStatusDisplayString(data.status) | transloco}}</td>
