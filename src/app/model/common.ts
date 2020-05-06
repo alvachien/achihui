@@ -697,3 +697,11 @@ export interface RepeatDatesWithAmountAndInterestAPIOutput {
   TranAmount: number;
   InterestAmount: number;
 }
+
+/**
+ * Check version result
+ */
+export interface CheckVersionResult {
+  StorageVersion: string;
+  APIVersion: string;
+}

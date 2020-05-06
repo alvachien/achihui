@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 
-import { QuestionBankItem, TemplateDocLoan, } from '../model';
+import { QuestionBankItem, TemplateDocLoan, CheckVersionResult, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
@@ -25,6 +25,14 @@ export class UIStatusService {
   }
   set latestError(le: string) {
     this._latestError = le;
+  }
+
+  private _versionInfo: CheckVersionResult;
+  get versionResult(): CheckVersionResult {
+    return this._versionInfo;
+  }
+  set versionResult(rst: CheckVersionResult) {
+    this._versionInfo = rst;
   }
 
   private _selectedLoanTmp: TemplateDocLoan = null;

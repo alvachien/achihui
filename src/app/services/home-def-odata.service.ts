@@ -5,7 +5,7 @@ import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure,
-  ModelUtility, ConsoleLogTypeEnum, } from '../model';
+  ModelUtility, ConsoleLogTypeEnum, CheckVersionResult, } from '../model';
 import { AuthService } from './auth.service';
 
 // tslint:disable:variable-name
@@ -327,7 +327,7 @@ export class HomeDefOdataService {
   /**
    * Check DB versoin
    */
-  public checkDBVersion(): Observable<any> {
+  public checkDBVersion(): Observable<CheckVersionResult> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json');
@@ -338,7 +338,7 @@ export class HomeDefOdataService {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
         ConsoleLogTypeEnum.debug);
 
-      return response as any;
+      return (response as any) as CheckVersionResult;
     }),
     catchError((error: HttpErrorResponse) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, checkDBVersion, Failed ${error}`,
