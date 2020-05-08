@@ -29,10 +29,10 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   }
 
   constructor(private odataService: BlogOdataService,
-    private modalService: NzModalService) {
+              private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...',
       ConsoleLogTypeEnum.debug);
-  
+
     this.detailFormGroup = new FormGroup({
       userControl: new FormControl({value: undefined, disabled: true}, [Validators.required]),
       deployControl: new FormControl({value: undefined, disable: true}, [Validators.required]),
@@ -101,7 +101,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let settings = new BlogUserSetting();
+    const settings = new BlogUserSetting();
     settings.owner = this.detailFormGroup.get('userControl').value;
     settings.deploy = this.detailFormGroup.get('deployControl').value;
     settings.title = this.detailFormGroup.get('titleControl').value;
@@ -136,9 +136,9 @@ export class UserSettingComponent implements OnInit, OnDestroy {
                   this.modalService.error({
                     nzTitle: 'Error',
                     nzContent: derr,
-                  })
+                  });
                 }
-              });                  
+              });
             },
             nzOnCancel: cancrst => {
             }
@@ -154,6 +154,6 @@ export class UserSettingComponent implements OnInit, OnDestroy {
             nzClosable: true,
           });
         }
-      })
+      });
   }
 }

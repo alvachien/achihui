@@ -46,13 +46,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this._homeService.checkDBVersion().subscribe({
       next: val => {
         this.uiService.versionResult = val;
-      }, 
+      },
       error: err => {
         // Jump to err page?
         this.uiService.latestError = err;
         this.router.navigate(['/fatalerror']);
       },
-    })
+    });
   }
 
   ngOnDestroy(): void {

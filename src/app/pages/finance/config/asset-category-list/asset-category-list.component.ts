@@ -44,13 +44,13 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
         next: (x: AssetCategory[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AssetTypeListComponent fetchAllAssetCategories...',
             ConsoleLogTypeEnum.debug);
-    
+
           this.dataSet = x;
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AssetTypeListComponent fetchAllAssetCategories failed ${error}`,
             ConsoleLogTypeEnum.error);
-    
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,

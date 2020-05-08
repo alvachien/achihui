@@ -15,7 +15,7 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.less']
 })
-export class CollectionDetailComponent implements OnInit {
+export class CollectionDetailComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
@@ -25,9 +25,9 @@ export class CollectionDetailComponent implements OnInit {
   detailFormGroup: FormGroup;
 
   constructor(private odataService: BlogOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService,
+              private activateRoute: ActivatedRoute,
+              private router: Router,
+              private modalService: NzModalService,
     ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -64,7 +64,7 @@ export class CollectionDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
       }
 
-      switch(this.uiMode) {
+      switch (this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
@@ -81,7 +81,7 @@ export class CollectionDetailComponent implements OnInit {
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
-              } else if(this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Change) {
                 this.detailFormGroup.enable();
                 this.detailFormGroup.get('idControl').disable();
               }
@@ -96,15 +96,15 @@ export class CollectionDetailComponent implements OnInit {
               });
             }
           });
+          break;
         }
-        break;
 
         case UIMode.Create:
         default: {
           // Do nothing
           this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+          break;
         }
-        break;
       }
     });
   }
@@ -123,7 +123,7 @@ export class CollectionDetailComponent implements OnInit {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
 
-    let objColl = new BlogCollection();
+    const objColl = new BlogCollection();
     objColl.name = this.detailFormGroup.get('nameControl').value;
     objColl.comment = this.detailFormGroup.get('commentControl').value;
 
@@ -144,7 +144,7 @@ export class CollectionDetailComponent implements OnInit {
             nzClosable: true,
           });
         }
-      });  
+      });
     }
   }
 }

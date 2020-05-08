@@ -19,10 +19,10 @@ describe('Location', () => {
     objloc.Name = 'test1';
     objloc.IsDevice = false;
     objloc.Desp = 'desp';
-    let jdata = objloc.writeJSONObject();
+    const jdata = objloc.writeJSONObject();
     expect(jdata).toBeTruthy();
 
-    let objloc2: Location = new Location();
+    const objloc2: Location = new Location();
     objloc2.onSetData(jdata);
     expect(objloc2).toBeTruthy();
   });
@@ -47,10 +47,10 @@ describe('BookCategory', () => {
   it('writeJSONobject and onSetdata', () => {
     bkctgy.Name = 'test1';
     bkctgy.Others = 'others';
-    let jdata = bkctgy.writeJSONObject();
+    const jdata = bkctgy.writeJSONObject();
     expect(jdata).toBeTruthy();
 
-    let bkctgy2: BookCategory = new BookCategory();
+    const bkctgy2: BookCategory = new BookCategory();
     bkctgy2.onSetData(jdata);
     expect(bkctgy2).toBeTruthy();
   });
@@ -74,10 +74,10 @@ describe('MovieGenre', () => {
   it('writeJSONobject and onSetdata', () => {
     mvgen.Name = 'test1';
     mvgen.Others = 'others';
-    let jdata = mvgen.writeJSONObject();
+    const jdata = mvgen.writeJSONObject();
     expect(jdata).toBeTruthy();
 
-    let mvgen2: MovieGenre = new MovieGenre();
+    const mvgen2: MovieGenre = new MovieGenre();
     mvgen2.onSetData(jdata);
     expect(mvgen2).toBeTruthy();
   });

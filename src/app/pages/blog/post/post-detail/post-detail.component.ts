@@ -25,7 +25,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
-  
+
   instancePost: BlogPost;
   inputtedContent: string;
   contentFromChangedEvent: string;
@@ -52,9 +52,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   };
 
   constructor(private odataService: BlogOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService) {
+              private activateRoute: ActivatedRoute,
+              private router: Router,
+              private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -102,7 +102,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
       }
 
-      switch(this.uiMode) {
+      switch (this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
@@ -110,7 +110,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllCollections(),
             this.odataService.readPost(this.routerID),
             // this.odataService.fetchAllPostTags(10, 0),
-          ])          
+          ])
           .pipe(
             takeUntil(this._destroyed$),
             finalize(() => this.isLoadingResults = false)
@@ -124,7 +124,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.get('titleControl').setValue(this.instancePost.title);
               this.detailFormGroup.get('briefControl').setValue(this.instancePost.brief);
               this.detailFormGroup.get('contentControl').setValue(this.instancePost.content);
-              this.detailFormGroup.get('collectionControl').setValue(this.instancePost.BlogPostCollections.map(val => { return val.CollectionID; }));
+              this.detailFormGroup.get('collectionControl').setValue(
+                this.instancePost.BlogPostCollections.map(val => val.CollectionID));
               switch (this.instancePost.status) {
                 case BlogPostStatus_PublishAsPublic:
                   this.detailFormGroup.get('statusControl').setValue('PublicPublish');
@@ -140,7 +141,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
-              } else if(this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Change) {
                 this.detailFormGroup.enable();
                 this.detailFormGroup.get('idControl').disable();
               }
@@ -157,7 +158,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             }
           });
         }
-        break;
+                             break;
 
         case UIMode.Create:
         default: {
@@ -183,7 +184,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               }
             });
         }
-        break;
+                 break;
       }
     });
   }
@@ -200,9 +201,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   onSave() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
-    
+
     if (this.detailFormGroup.valid) {
-      let frmvalue = this.detailFormGroup.value;
+      const frmvalue = this.detailFormGroup.value;
       if (this.uiMode === UIMode.Create) {
         this.instancePost = new BlogPost();
       }
@@ -217,13 +218,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       } else {
         this.instancePost.status = BlogPostStatus_Draft;
       }
-      let arcoll = frmvalue.collectionControl as any[];
+      const arcoll = frmvalue.collectionControl as any[];
       arcoll.forEach(element => {
         this.instancePost.BlogPostCollections.push({
           CollectionID: element,
         } as BlogPostCollection);
       });
-      
+
       if (this.uiMode === UIMode.Create) {
         this.odataService.createPost(this.instancePost)
         .pipe(takeUntil(this._destroyed$))
@@ -258,9 +259,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       this.modalService.error({
                         nzTitle: 'Error',
                         nzContent: derr,
-                      })
+                      });
                     }
-                  });                  
+                  });
                 },
                 nzOnCancel: cancrst => {
                   this.router.navigate(['/blog/post/display/' + e.id.toString()]);
@@ -315,9 +316,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       this.modalService.error({
                         nzTitle: 'Error',
                         nzContent: derr,
-                      })
+                      });
                     }
-                  });                  
+                  });
                 },
                 nzOnCancel: cancrst => {
                   this.router.navigate(['/blog/post/display/' + e.id.toString()]);
@@ -336,7 +337,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               nzClosable: true,
             });
           }
-        });        
+        });
       }
     }
   }

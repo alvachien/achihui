@@ -13,7 +13,8 @@ import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, asyncError, ElementClass_DialogContent,
+  ElementClass_DialogCloseButton, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, Account, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -176,7 +177,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -199,7 +200,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -222,7 +223,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -245,7 +246,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -268,7 +269,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -291,7 +292,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -314,7 +315,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -496,7 +497,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Step 1. Items
       expect(component.currentStep).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -542,7 +543,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Step 1. Items
       expect(component.currentStep).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -558,7 +559,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      
+
       // Step 2.
       expect(component.currentStep).toEqual(2);
 
@@ -594,7 +595,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Step 1. Items
       expect(component.currentStep).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -608,7 +609,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      
+
       // Step 2. Confirm
       expect(component.currentStep).toEqual(2);
       expect(component.nextButtonEnabled).toBeTruthy();

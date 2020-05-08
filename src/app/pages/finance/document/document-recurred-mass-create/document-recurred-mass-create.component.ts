@@ -19,11 +19,11 @@ import { popupDialog } from '../../../message-dialog';
 class DocumentCountByDateRange {
   StartDate: moment.Moment;
   get StartDateString(): string {
-    return this.StartDate? this.StartDate.format(momentDateFormat) : '';
+    return this.StartDate ? this.StartDate.format(momentDateFormat) : '';
   }
   EndDate: moment.Moment;
   get EndDateString(): string {
-    return this.EndDate? this.EndDate.format(momentDateFormat): '';
+    return this.EndDate ? this.EndDate.format(momentDateFormat): '';
   }
   expand: boolean;
   Items: DocumentItemView[] = [];

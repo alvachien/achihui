@@ -24,7 +24,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: BlogOdataService,
     private modalService: NzModalService,
-    private router: Router,) {
+    private router: Router, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 

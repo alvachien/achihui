@@ -132,14 +132,14 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
       }
 
-      switch(this.uiMode) {
+      switch (this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           forkJoin([
             this.odataService.fetchAllAccountCategories(),
             this.odataService.fetchAllAssetCategories(),
             this.odataService.fetchAllTranTypes(),
-            this.odataService.readAccount(this.routerID)  
+            this.odataService.readAccount(this.routerID)
           ])
           .pipe(takeUntil(this._destroyed$))
           .subscribe((rst: any[]) => {
@@ -169,8 +169,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               nzClosable: true,
             });
           });
+          break;
         }
-        break;
 
         case UIMode.Create:
         default: {
@@ -181,15 +181,15 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
           }, (error: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`,
               ConsoleLogTypeEnum.error);
-            
+
             this.modalService.error({
               nzTitle: translate('Common.Error'),
               nzContent: error,
               nzClosable: true,
             });
           });
+          break;
         }
-        break;
       }
     });
   }
@@ -271,7 +271,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     return acntObj;
   }
-  private _categoryValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  private categoryValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
     const ctgy: any = group.get('ctgyControl').value;
     if (ctgy && this.isFieldChangable) {
       if (this.isCategoryDisabled(ctgy)) {

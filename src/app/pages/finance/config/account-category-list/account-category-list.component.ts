@@ -43,13 +43,12 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
         next: (x: AccountCategory[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit fetchAllAccountCategories...',
             ConsoleLogTypeEnum.debug);
-    
+
           this.dataSet = x;
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountCategoryListComponent fetchAllAccountCategories failed ${error}`,
             ConsoleLogTypeEnum.error);
-    
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,

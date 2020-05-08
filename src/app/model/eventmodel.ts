@@ -5,6 +5,7 @@ import * as moment from 'moment';
  * General event
  */
 export class GeneralEvent extends hih.BaseModel {
+  // tslint:disable: variable-name
   private _id: number;
   private _hid: number;
   private _assignee: string;
@@ -126,7 +127,7 @@ export class GeneralEvent extends hih.BaseModel {
   }
 
   writeJSONObject(): any {
-    let robj: any = super.writeJSONObject();
+    const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;
@@ -269,7 +270,7 @@ export class RecurEvent extends hih.BaseModel {
   }
 
   writeJSONObject(): any {
-    let robj: any = super.writeJSONObject();
+    const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;
@@ -325,20 +326,20 @@ export class EventHabit extends hih.BaseModel {
   get StartDate(): moment.Moment {
     return this._startDate;
   }
-  get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
-  }
   set StartDate(sd: moment.Moment) {
     this._startDate = sd;
+  }
+  get StartDateFormatString(): string {
+    return this._startDate.format(hih.momentDateFormat);
   }
   get EndDate(): moment.Moment {
     return this._endDate;
   }
-  get EndDateFormatString(): string {
-    return this._endDate.format(hih.momentDateFormat);
-  }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
+  }
+  get EndDateFormatString(): string {
+    return this._endDate.format(hih.momentDateFormat);
   }
   get CheckInLogsCount(): number {
     return this.checkInLogs.length;
@@ -389,8 +390,8 @@ export class EventHabit extends hih.BaseModel {
 
     if (data && data.details && data.details instanceof Array && data.details.length > 0) {
       this.details = [];
-      for (let dtl of data.details) {
-        let detail: EventHabitDetail = new EventHabitDetail();
+      for (const dtl of data.details) {
+        const detail: EventHabitDetail = new EventHabitDetail();
         detail.onSetData(dtl);
         if (!detail.Name) {
           detail.Name = this.Name;
@@ -400,8 +401,8 @@ export class EventHabit extends hih.BaseModel {
     }
     if (data && data.checkInLogs && data.checkInLogs instanceof Array && data.checkInLogs.length > 0) {
       this.checkInLogs = [];
-      for (let ckinlog of data.checkInLogs) {
-        let chkinlog: EventHabitCheckin = new EventHabitCheckin();
+      for (const ckinlog of data.checkInLogs) {
+        const chkinlog: EventHabitCheckin = new EventHabitCheckin();
         chkinlog.onSetData(ckinlog);
         this.checkInLogs.push(chkinlog);
       }
@@ -409,7 +410,7 @@ export class EventHabit extends hih.BaseModel {
   }
 
   writeJSONObject(): any {
-    let robj: any = super.writeJSONObject();
+    const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;
@@ -452,20 +453,20 @@ export class EventHabitDetail {
   get StartDate(): moment.Moment {
     return this._startDate;
   }
-  get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
-  }
   set StartDate(sd: moment.Moment) {
     this._startDate = sd;
+  }
+  get StartDateFormatString(): string {
+    return this._startDate.format(hih.momentDateFormat);
   }
   get EndDate(): moment.Moment {
     return this._endDate;
   }
-  get EndDateFormatString(): string {
-    return this._endDate.format(hih.momentDateFormat);
-  }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
+  }
+  get EndDateFormatString(): string {
+    return this._endDate.format(hih.momentDateFormat);
   }
   get Name(): string {
     return this._name;
@@ -529,7 +530,7 @@ export class EventHabitCheckin {
   }
 
   writeJSONObject(): any {
-    let robj: any = {};
+    const robj: any = {};
     if (this.id) {
       robj.id = this.id;
     }

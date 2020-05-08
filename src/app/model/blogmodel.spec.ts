@@ -21,13 +21,13 @@ describe('BlogCollection', () => {
     instance.comment = 'b';
     instance.owner = 'c';
 
-    let apijson: BlogCollectionAPIJson = instance.writeAPIJson();
+    const apijson: BlogCollectionAPIJson = instance.writeAPIJson();
     expect(apijson.ID).toEqual(instance.id);
     expect(apijson.Name).toEqual(instance.name);
     expect(apijson.Comment).toEqual(instance.comment);
     expect(apijson.Owner).toEqual(instance.owner);
 
-    let instance2: BlogCollection = new BlogCollection();
+    const instance2: BlogCollection = new BlogCollection();
     instance2.onSetData(apijson);
     expect(instance2.comment).toEqual(instance.comment);
     expect(instance2.id).toEqual(instance.id);
@@ -54,7 +54,7 @@ describe('BlogPost', () => {
     instance.brief = 'd';
     instance.content = 'c';
 
-    let apidata: BlogPostAPIJson = instance.writeAPIJson();
+    const apidata: BlogPostAPIJson = instance.writeAPIJson();
     expect(apidata).toBeTruthy();
     expect(apidata.ID).toEqual(instance.id);
     expect(apidata.Format).toEqual(instance.format);
@@ -63,7 +63,7 @@ describe('BlogPost', () => {
     expect(apidata.Title).toEqual(instance.title);
     expect(apidata.Content).toEqual(instance.content);
 
-    let instance2: BlogPost = new BlogPost();
+    const instance2: BlogPost = new BlogPost();
     instance2.onSetData(apidata);
     expect(instance.id).toEqual(instance2.id);
     expect(instance.format).toEqual(instance2.format);
@@ -88,11 +88,11 @@ describe('BlogPostTag', () => {
     instance.postID = 1;
     instance.tag = 'a';
 
-    let apijson: BlogPostTagAPIJson = instance.writeAPIJson();
+    const apijson: BlogPostTagAPIJson = instance.writeAPIJson();
     expect(apijson.PostID).toEqual(instance.postID);
     expect(apijson.Tag).toEqual(instance.tag);
 
-    let instance2: BlogPostTag = new BlogPostTag();
+    const instance2: BlogPostTag = new BlogPostTag();
     instance2.onSetData(apijson);
     expect(instance2.postID).toEqual(instance.postID);
     expect(instance2.tag).toEqual(instance.tag);

@@ -106,14 +106,14 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       next: (rst: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
           ConsoleLogTypeEnum.debug);
-  
+
         this.arDocTypes = rst[2];
         this.arTranTypes = rst[3];
         this.arAccounts = rst[4];
         this.arControlCenters = rst[5];
         this.arOrders = rst[6];
         this.arCurrencies = rst[7];
-  
+
         // Accounts
         this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
         this.uiAccountStatusFilter = undefined;
@@ -132,7 +132,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
           ConsoleLogTypeEnum.error);
-  
+
         this.modalService.create({
           nzTitle: translate('Common.Error'),
           nzContent: error,
@@ -207,7 +207,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     // Generate the doc, and verify it
-    let docobj: Document = this._generateDoc();
+    const docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
       ControlCenters: this.arControlCenters,
       Orders: this.arOrders,
@@ -263,7 +263,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _updateConfirmInfo',
       ConsoleLogTypeEnum.debug);
 
-    let doc: Document = this.firstFormGroup.get('headerControl').value;
+    const doc: Document = this.firstFormGroup.get('headerControl').value;
     this._docDate = doc.TranDate;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
@@ -276,7 +276,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
+    const ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this.homeService.ChosedHome.ID;
     ndoc.DocType = this.curDocType;
 
@@ -290,7 +290,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _headerAmountValidator',
       ConsoleLogTypeEnum.debug);
 
-    let amt: any = group.get('amountControl').value;
+    const amt: any = group.get('amountControl').value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }
@@ -301,13 +301,13 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _itemAmountValidator',
       ConsoleLogTypeEnum.debug);
 
-    let amt: any = this.firstFormGroup.get('amountControl').value;
-    let items: DocumentItem[] = group.get('itemControl').value;
+    const amt: any = this.firstFormGroup.get('amountControl').value;
+    const items: DocumentItem[] = group.get('itemControl').value;
 
-    let totalAmt: number = 0;
+    let totalAmt = 0;
     if (items) {
-      for (let item of items) {
-        let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
+      for (const item of items) {
+        const bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
           return valtt.Id === item.TranType;
         }).Expense;
         if (bExpense) {
@@ -326,6 +326,6 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   }
 
   public onDisplayCreatedDoc(): void {
-    
+
   }
 }

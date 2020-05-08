@@ -49,7 +49,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${error}...`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,

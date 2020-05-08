@@ -51,29 +51,29 @@ export class TagsService {
     }
 
     return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
+      headers,
+      params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
         }
 
-        let listCountRst: TagCount[] = [];
-        let listRst: Tag[] = [];
-        const rjs: any = <any>response;
-        let mapIDs: Map<string, string> = new Map<string, string>();
+        const listCountRst: TagCount[] = [];
+        const listRst: Tag[] = [];
+        const rjs: any = response as any;
+        const mapIDs: Map<string, string> = new Map<string, string>();
 
         for (const si of rjs) {
           if (reqamt) {
-            let tc: TagCount = new TagCount();
+            const tc: TagCount = new TagCount();
             tc.onSetData(si);
             listCountRst.push(tc);
           } else {
-            let tag: Tag = new Tag();
+            const tag: Tag = new Tag();
             tag.onSetData(si);
 
-            let rids: string = (<number>tag.TagType).toString() + '_' + tag.TagID.toString();
+            const rids: string = (<number> tag.TagType).toString() + '_' + tag.TagID.toString();
             if (mapIDs.has(rids)) {
               continue;
             } else {

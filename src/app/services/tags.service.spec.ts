@@ -40,9 +40,9 @@ describe('TagsService', () => {
         { provide: HomeDefOdataService, useValue: homeService },
       ],
     });
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(TagsService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(TagsService);
   });
   afterEach(() => {
     // After every test, assert that there are no more pending requests.
@@ -56,7 +56,7 @@ describe('TagsService', () => {
   /// TagsService method tests begin ///
   describe('2. fetchAllTags', () => {
     beforeEach(() => {
-      service = TestBed.get(TagsService);
+      service = TestBed.inject(TagsService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.

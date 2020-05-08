@@ -596,16 +596,16 @@ export class GeneralFilterItem {
  * @param group Instance of the form group
  */
 export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  let strdt = group.get('startDateControl').value as Date;
+  const strdt = group.get('startDateControl').value as Date;
   if (!strdt) {
     return { invalidStartDate: true };
   }
-  let enddt = group.get('endDateControl').value as Date;
+  const enddt = group.get('endDateControl').value as Date;
   if (!enddt) {
     return { invalidEndDate: true };
   }
-  let startDate: moment.Moment = moment(strdt).startOf('day');
-  let endDate: moment.Moment = moment(enddt).startOf('day');
+  const startDate: moment.Moment = moment(strdt).startOf('day');
+  const endDate: moment.Moment = moment(enddt).startOf('day');
   if (!endDate.isSameOrAfter(startDate)) {
     return  { invalidDateRange: true };
   }
@@ -618,8 +618,8 @@ export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErr
  * @param group Instance of the form group
  */
 export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  let cc: any = group.get('ccControl').value;
-  let order: any = group.get('orderControl').value;
+  const cc: any = group.get('ccControl').value;
+  const order: any = group.get('orderControl').value;
   if (cc) {
     if (order) {
       return { costobjectoverassign: true };

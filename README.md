@@ -4,7 +4,7 @@
 
 **Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
 
-Key components are:
+Key features are:
 
 - Finance system. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This feature enables record down the learning aspect for each family member. Learning is a habit of self growth, no matter the ages of the family members.

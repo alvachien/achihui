@@ -73,7 +73,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           this.uiMode = UIMode.Display;
         }
         this.currentMode = getUIModeString(this.uiMode);
-        switch(this.uiMode) {
+        switch (this.uiMode) {
           case UIMode.Change:
           case UIMode.Display: {
             this.isLoadingResults = true;
@@ -89,7 +89,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             .subscribe({
               next: (rsts: any[]) => {
                 this.existedCC = rsts[0];
-  
+
                 this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
                 this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
                 this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
@@ -105,7 +105,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               error: (error: any) => {
                 ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`,
                   ConsoleLogTypeEnum.error);
-  
+
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
                   nzContent: error,
@@ -114,8 +114,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               },
             });
           }
-          break;
-          
+                               break;
+
           case UIMode.Create:
           default: {
             this.isLoadingResults = true;
@@ -128,14 +128,14 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 next: (cclist: ControlCenter[]) => {
                   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
                     ConsoleLogTypeEnum.debug);
-          
+
                   // Load all control centers.
                   this.existedCC = cclist;
                 },
                 error: (error: any) => {
                   ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${error}`,
                     ConsoleLogTypeEnum.error);
-                  
+
                   this.modalService.create({
                     nzTitle: translate('Common.Error'),
                     nzContent: error,
@@ -144,7 +144,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 },
               });
           }
-          break;
+                   break;
         }
       }
     });
@@ -227,7 +227,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     //   .pipe(takeUntil(this._destroyed$))
     //   .subscribe((x: any) => {
     //     if (environment.LoggingLevel >= LogLevel.Debug) {
-    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
+    //       ModelUtility.writeConsoleLog(
+    //        `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
     //     }
 
     //     // Show the snackbar

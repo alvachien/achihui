@@ -21,10 +21,10 @@ describe('EnWordExplain', () => {
     instance.LangKey = 2;
     instance.Detail = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: EnWordExplain = new EnWordExplain();
+    const instance2: EnWordExplain = new EnWordExplain();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -41,10 +41,10 @@ describe('EnWord', () => {
     instance.WordString = 'test';
     expect(instance.Explains.length).toEqual(0);
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: EnWord = new EnWord();
+    const instance2: EnWord = new EnWord();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -61,10 +61,10 @@ describe('EnSentenceExplain', () => {
     instance.LangKey = 2;
     instance.Detail = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: EnSentenceExplain = new EnSentenceExplain();
+    const instance2: EnSentenceExplain = new EnSentenceExplain();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -81,10 +81,10 @@ describe('EnSentence', () => {
     instance.SentenceString = 'test';
     expect(instance.Explains.length).toEqual(0);
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: EnSentence = new EnSentence();
+    const instance2: EnSentence = new EnSentence();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -100,10 +100,10 @@ describe('LearnCategory', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: LearnCategory = new LearnCategory();
+    const instance2: LearnCategory = new LearnCategory();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -119,10 +119,10 @@ describe('LearnObject', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: LearnObject = new LearnObject();
+    const instance2: LearnObject = new LearnObject();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -132,7 +132,7 @@ describe('LearnObject', () => {
     instance.Name = 'test';
     instance.Content = 'test';
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.HIDIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -143,7 +143,7 @@ describe('LearnObject', () => {
     instance.Name = 'test';
     instance.Content = 'test';
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.CategoryIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -154,7 +154,7 @@ describe('LearnObject', () => {
     // instance.Name = 'test';
     instance.Content = 'test';
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.NameIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -165,7 +165,7 @@ describe('LearnObject', () => {
     instance.Name = 'test';
     // instance.Content = 'test';
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Learning.ContentIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -193,10 +193,10 @@ describe('LearnHistory', () => {
   it('writeJsonObject and onSetData', () => {
     instance.UserId = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: LearnHistory = new LearnHistory();
+    const instance2: LearnHistory = new LearnHistory();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
@@ -206,7 +206,7 @@ describe('LearnHistory', () => {
     instance.ObjectId = 11;
     instance.LearnDate = moment();
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.HIDIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -217,7 +217,7 @@ describe('LearnHistory', () => {
     instance.ObjectId = 11;
     instance.LearnDate = moment();
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.UserIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -228,7 +228,7 @@ describe('LearnHistory', () => {
     // instance.ObjectId = 11;
     instance.LearnDate = moment();
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Learning.ObjectIsMust';
     });
     expect(idx).not.toEqual(-1);
@@ -239,7 +239,7 @@ describe('LearnHistory', () => {
     instance.ObjectId = 11;
     instance.LearnDate = undefined;
     expect(instance.onVerify()).toBeFalsy();
-    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.InvalidDate';
     });
     expect(idx).not.toEqual(-1);
@@ -256,10 +256,10 @@ describe('QuestionBankItem', () => {
   it('writeJsonObject and onSetData', () => {
     instance.Question = 'test';
 
-    let jsondata: any = instance.writeJSONObject();
+    const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
-    let instance2: QuestionBankItem = new QuestionBankItem();
+    const instance2: QuestionBankItem = new QuestionBankItem();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });

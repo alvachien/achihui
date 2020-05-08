@@ -22,7 +22,7 @@ export class UserDetail {
   }
 
   public onGetData(): any {
-    let data: any = {};
+    const data: any = {};
     data.userID = this.UserId;
     data.displayAs = this.DisplayAs;
     data.email = this.Email;

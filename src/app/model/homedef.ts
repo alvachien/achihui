@@ -206,7 +206,6 @@ export class HomeDef extends hih.BaseModel {
     if (selfcnt !== 1) {
       return false;
     }
-    
 
     return true;
   }

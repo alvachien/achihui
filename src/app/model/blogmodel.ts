@@ -1,10 +1,11 @@
 import * as moment from 'moment';
 import { momentDateFormat } from './common';
 
-export const BlogPostStatus_Draft: number = 1;
-export const BlogPostStatus_PublishAsPublic: number = 2;
-export const BlogPostStatus_PublishAsPrivate: number = 3;
-export const BlogPostStatus_Deleted: number = 4;
+// tslint:disable: variable-name
+export const BlogPostStatus_Draft = 1;
+export const BlogPostStatus_PublishAsPublic = 2;
+export const BlogPostStatus_PublishAsPrivate = 3;
+export const BlogPostStatus_Deleted = 4;
 
 /**
  * User Setting
@@ -40,7 +41,7 @@ export class BlogUserSetting {
     }
   }
   public writeAPIJson(): BlogUserSettingAPIJson {
-    let jdata: BlogUserSettingAPIJson = new BlogUserSettingAPIJson();
+    const jdata: BlogUserSettingAPIJson = new BlogUserSettingAPIJson();
     jdata.Owner = this.owner;
     jdata.Name = this.title;
     jdata.Comment = this.footer;
@@ -73,7 +74,7 @@ export class BlogCollection {
     this.comment = null;
   }
 
-  public onSetData(data: BlogCollectionAPIJson): void {    
+  public onSetData(data: BlogCollectionAPIJson): void {
     if (data) {
       this.id = +data.ID;
       this.owner = data.Owner;
@@ -158,7 +159,7 @@ export class BlogPost {
     }
   }
   public writeAPIJson(): BlogPostAPIJson {
-    let rtnjson: BlogPostAPIJson = {
+    const rtnjson: BlogPostAPIJson = {
       ID: this.id,
       Owner: this.owner,
       Format: this.format,

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ObjectHierarchyComponent } from'./object-hierarchy';
+import { ObjectHierarchyComponent } from './object-hierarchy';
 import { ObjectListComponent } from './object-list';
 import { ObjectDetailComponent } from './object-detail';
 

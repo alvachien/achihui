@@ -505,7 +505,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(2);
-  
+
       flush();
     }));
 
@@ -520,7 +520,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -538,9 +538,9 @@ describe('DocumentLoanCreateComponent', () => {
       // Order - empty
       tick();
       fixture.detectChanges();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -619,7 +619,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -637,9 +637,9 @@ describe('DocumentLoanCreateComponent', () => {
       // Order - empty
       tick();
       fixture.detectChanges();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -697,7 +697,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -715,9 +715,9 @@ describe('DocumentLoanCreateComponent', () => {
       // Order - empty
       tick();
       fixture.detectChanges();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -765,7 +765,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       flush();
     }));
-  });  
+  });
 
   describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
@@ -778,7 +778,7 @@ describe('DocumentLoanCreateComponent', () => {
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer],

@@ -244,8 +244,8 @@ export class LibraryStorageService {
             console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService`);
           }
 
-          const rjs: any = <any>response;
-          let listRst: Book[] = [];
+          const rjs: any = response as any;
+          const listRst: Book[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {

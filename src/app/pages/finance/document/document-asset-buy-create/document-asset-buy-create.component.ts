@@ -114,7 +114,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       next: (rst: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
           ConsoleLogTypeEnum.debug);
-  
+
         this.arAssetCategories = rst[1];
         this.arDocTypes = rst[2];
         this.arTranTypes = rst[3];
@@ -133,7 +133,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${error}`,
           ConsoleLogTypeEnum.error);
-  
+
         this.modalService.error({
           nzTitle: translate('Common.Error'),
           nzContent: error,
@@ -219,7 +219,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ConsoleLogTypeEnum.debug);
 
       // Generate the doc, and verify it
-    let docobj: Document = this._generateDoc();
+    const docobj: Document = this._generateDoc();
     if (!this.IsLegacyAsset) {
       if (!docobj.onVerify({
         ControlCenters: this.arControlCenters,
@@ -232,14 +232,14 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       })) {
         popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
         this.isDocPosting = false;
-  
+
         return;
       }
     }
 
     this.isDocPosting = true;
     // Do the real submit.
-    let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
+    const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this.homeService.ChosedHome.ID;
     apidetail.tranDate = docobj.TranDateFormatString;
     apidetail.tranCurr = docobj.TranCurr;
@@ -266,14 +266,14 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
             ConsoleLogTypeEnum.debug);
-    
+
           this.docIdCreated = nid;
           this.docPostingFailed = null;
         },
         error: (err: string) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
             ConsoleLogTypeEnum.error);
-    
+
           // Handle the error
           this.docIdCreated = null;
           this.docPostingFailed = err;
@@ -283,7 +283,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
 
   private _updateConfirmInfo(): void {
     // Update the confirm info.
-    let doc: Document = this.firstFormGroup.get('headerControl').value;
+    const doc: Document = this.firstFormGroup.get('headerControl').value;
     this._docDate = doc.TranDate;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
@@ -293,7 +293,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
+    const ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this.homeService.ChosedHome.ID;
     ndoc.DocType = financeDocTypeAssetBuyIn;
     ndoc.Items = [];
@@ -309,7 +309,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     if (this.IsLegacyAsset) {
-      let datBuy: any = group.get('headerControl').value.TranDate;
+      const datBuy: any = group.get('headerControl').value.TranDate;
       if (!datBuy) {
         return { dateisinvalid: true};
       }
@@ -325,7 +325,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     if (!this.IsLegacyAsset) {
-      let amt: any = group.get('amountControl').value;
+      const amt: any = group.get('amountControl').value;
       if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
         return { amountisinvalid: true };
       }
@@ -344,7 +344,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
         if (aritems) {
           aritems.forEach((val: DocumentItem) => {
             if (val.TranType) {
-              let ttobj = this.arTranTypes.find((t: TranType) => {
+              const ttobj = this.arTranTypes.find((t: TranType) => {
                 return t.Id === val.TranType;
               });
               if (ttobj) {
@@ -355,7 +355,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
                 }
               }
             }
-          });  
+          });
         }
 
         if (amtInItems !== this.tranAmount) {

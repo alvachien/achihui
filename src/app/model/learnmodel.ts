@@ -1,7 +1,9 @@
-import { environment } from '../../environments/environment';
 import * as moment from 'moment';
+
 import * as hih from './common';
 import { QuestionBankTypeEnum } from './common';
+
+  // tslint:disable: variable-name
 
 /**
  * English Part of Speech
@@ -35,7 +37,7 @@ export class EnWordExplain {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = {
+    const rstObj: any = {
     };
     rstObj.expID = this.ExplainId;
     rstObj.posAbb = this.PosAbb;
@@ -89,12 +91,12 @@ export class EnWord extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
     rstObj.word = this.WordString;
     rstObj.explains = [];
-    for (let exp of this.Explains) {
+    for (const exp of this.Explains) {
       rstObj.explains.push(exp.writeJSONObject());
     }
 
@@ -118,8 +120,8 @@ export class EnWord extends hih.BaseModel {
     if (data && data.explains
       && data.explains instanceof Array
       && data.explains.length > 0) {
-      for (let exp of data.explains) {
-        let expObj: EnWordExplain = new EnWordExplain();
+      for (const exp of data.explains) {
+        const expObj: EnWordExplain = new EnWordExplain();
         expObj.onSetData(exp);
         this.Explains.push(expObj);
       }
@@ -140,7 +142,7 @@ export class EnSentenceExplain {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = {};
+    const rstObj: any = {};
     rstObj.expID = this.ExplainId;
     rstObj.languageKey = this.LangKey;
     rstObj.detail = this.Detail;
@@ -190,16 +192,16 @@ export class EnSentence extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
     rstObj.sentence = this.SentenceString;
     rstObj.explains = [];
-    for (let exp of this.Explains) {
+    for (const exp of this.Explains) {
       rstObj.explains.push(exp.writeJSONObject());
     }
     rstObj.relatedWordIDs = [];
-    for (let wid of this.RelatedWords) {
+    for (const wid of this.RelatedWords) {
       rstObj.relatedWordIDs.push(wid);
     }
 
@@ -222,8 +224,8 @@ export class EnSentence extends hih.BaseModel {
     if (data && data.explains
       && data.explains instanceof Array
       && data.explains.length > 0) {
-      for (let exp of data.explains) {
-        let expObj: EnSentenceExplain = new EnSentenceExplain();
+      for (const exp of data.explains) {
+        const expObj: EnSentenceExplain = new EnSentenceExplain();
         expObj.onSetData(exp);
         this.Explains.push(expObj);
       }
@@ -232,7 +234,7 @@ export class EnSentence extends hih.BaseModel {
     if (data && data.relatedWordIDs
       && data.relatedWordIDs instanceof Array
       && data.relatedWordIDs.length > 0) {
-      for (let wid of data.relatedWordIDs) {
+      for (const wid of data.relatedWordIDs) {
         this.RelatedWords.push(wid);
       }
     }
@@ -289,7 +291,7 @@ export class LearnCategory extends hih.BaseModel {
   }
 
   public writeJSONObject(): LearnCategoryJson {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.ParentID = this.ParentId;
     rstObj.Name = this.Name;
@@ -359,7 +361,7 @@ export class LearnObject extends hih.BaseModel {
       return false;
     }
 
-    let chkrst: boolean = true;
+    let chkrst = true;
 
     // HID
     if (!this.HID) {
@@ -386,7 +388,7 @@ export class LearnObject extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.HomeID = this.HID;
     rstObj.ID = this.Id;
     rstObj.CategoryId = this.CategoryId;
@@ -467,7 +469,7 @@ export class LearnHistory extends hih.BaseModel {
       return false;
     }
 
-    let chkrst: boolean = true;
+    let chkrst = true;
 
     // HID
     if (!this.HID) {
@@ -481,8 +483,8 @@ export class LearnHistory extends hih.BaseModel {
       chkrst = false;
     } else {
       if (context && context.arObjects && context.arObjects.length > 0) {
-        let bObj: boolean = false;
-        for (let obj of context.arObjects) {
+        let bObj = false;
+        for (const obj of context.arObjects) {
           if (+obj.Id === +this.ObjectId) {
             bObj = true;
             break;
@@ -502,8 +504,8 @@ export class LearnHistory extends hih.BaseModel {
     // User ID
     if (this.UserId) {
       if (context && context.arUsers && context.arUsers.length > 0) {
-        let bFound: boolean = false;
-        for (let usr of context.arUsers) {
+        let bFound = false;
+        for (const usr of context.arUsers) {
           if (usr.User === this.UserId) {
             bFound = true;
             break;
@@ -531,7 +533,7 @@ export class LearnHistory extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     rstObj.hid = this.HID;
     rstObj.userID = this.UserId;
     rstObj.objectID = this.ObjectId;
@@ -588,7 +590,7 @@ export class LearnAward extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj: any = super.writeJSONObject();
+    const rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
@@ -679,13 +681,13 @@ export class QuestionBankItem extends hih.BaseModel {
     }
 
     if (data && data.tagTerms && data.tagTerms.length > 0) {
-      for (let tt of data.tagTerms) {
+      for (const tt of data.tagTerms) {
         this.Tags.push(tt);
       }
     }
     if (data && data.subItemList && data.subItemList.length > 0) {
-      for (let si of data.subItemList) {
-        let nsi: QuestionBankSubItem = new QuestionBankSubItem();
+      for (const si of data.subItemList) {
+        const nsi: QuestionBankSubItem = new QuestionBankSubItem();
         nsi.onSetData(si);
         this.SubItems.push(nsi);
       }
@@ -693,10 +695,10 @@ export class QuestionBankItem extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rst: any = super.writeJSONObject();
+    const rst: any = super.writeJSONObject();
 
     rst.hid = this.HID;
-    rst.questionType = <number>this.QBType;
+    rst.questionType = +this.QBType;
     rst.question = this.Question;
     rst.briefAnswer = this.BriefAnswer;
     rst.id = this.ID;
@@ -704,8 +706,8 @@ export class QuestionBankItem extends hih.BaseModel {
     if (this.SubItems.length > 0) {
       rst.subItemList = [];
 
-      for (let si of this.SubItems) {
-        let siobj: any = si.writeJSONObject();
+      for (const si of this.SubItems) {
+        const siobj: any = si.writeJSONObject();
         rst.subItemList.push(siobj);
       }
     }
@@ -713,7 +715,7 @@ export class QuestionBankItem extends hih.BaseModel {
     if (this.Tags.length > 0) {
       rst.tagTerms = [];
 
-      for (let term of this.Tags) {
+      for (const term of this.Tags) {
         rst.tagTerms.push(term);
       }
     }
@@ -745,7 +747,7 @@ export class QuestionBankSubItem {
   }
 
   public writeJSONObject(): any {
-    let rst: any = {};
+    const rst: any = {};
     rst.subItem = this.SubItem;
     rst.detail = this.Detail;
     rst.others = this.Others;

@@ -75,7 +75,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
-    
+
     discardPeriodicTasks();
 
     expect(component.isLoggedIn).toBeTruthy();

@@ -108,14 +108,14 @@ describe('HomeMsg', () => {
     hmsg.UserFrom = 'def';
     hmsg.UserToDisplayAs = 'ABC';
     hmsg.UserFrom = 'DEF';
-    let sentdatestring = hmsg.SendDateFormatString;
+    const sentdatestring = hmsg.SendDateFormatString;
     expect(sentdatestring).toBeTruthy();
     hmsg.Title = 'test';
     hmsg.Content = 'test';
-    let gobj = hmsg.writeJSONObject();
+    const gobj = hmsg.writeJSONObject();
     expect(gobj).toBeTruthy();
 
-    let hmsg2 = new HomeMsg();
+    const hmsg2 = new HomeMsg();
     hmsg2.onSetData(gobj);
     expect(hmsg2).toBeTruthy();
     expect(hmsg2.UserTo).toEqual('abc');

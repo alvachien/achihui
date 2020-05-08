@@ -89,7 +89,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         financeAccountCategoryLendTo,
       ],
       excludedCategories: [
-        // Nothing exclude        
+        // Nothing exclude
       ]
     };
     this.acntFilterFilter = 'Normal';
@@ -104,9 +104,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
-     // Distinguish current mode
-     let tmpdocid: number = null;
-     this.activedRoute.url.subscribe((x: any) => {
+    // Distinguish current mode
+    let tmpdocid: number = null;
+    this.activedRoute.url.subscribe((x: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug);
 
@@ -122,14 +122,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         next: (rst: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
             ConsoleLogTypeEnum.debug);
-  
+
           this.arDocTypes = rst[1];
           this.arTranTypes = rst[2];
           this.arAccounts = rst[3];
           this.arControlCenters = rst[4];
           this.arOrders = rst[5];
           this.arCurrencies = rst[6];
-  
+
           // Accounts
           this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
           this.uiAccountStatusFilter = undefined;
@@ -144,10 +144,11 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
                 tmpdocid = +x[1].path;
                 this.searchFormGroup.get('docIDControl').setValue(tmpdocid);
                 this.searchFormGroup.get('dateRangeControl').setValue([
-                  this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
-                  this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
                 ]);
-                this.searchFormGroup.get('accountControl').setValue(this.uiService.SelectedLoanTmp? this.uiService.SelectedLoanTmp.AccountId : undefined);
+                this.searchFormGroup.get('accountControl').setValue(this.uiService.SelectedLoanTmp
+                  ? this.uiService.SelectedLoanTmp.AccountId : undefined);
 
                 this.listOfLoanTmpDoc = [this.uiService.SelectedLoanTmp];
               }

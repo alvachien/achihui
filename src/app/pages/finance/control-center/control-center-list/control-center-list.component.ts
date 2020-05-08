@@ -42,13 +42,13 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
         next: (value: ControlCenter[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
             ConsoleLogTypeEnum.debug);
-  
+
           this.dataSet = value;
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,
@@ -76,6 +76,5 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(rid: number) {
-    
   }
 }

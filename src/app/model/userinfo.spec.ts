@@ -18,10 +18,10 @@ describe('UserDetail', () => {
     urdtl.Others = 'others';
     urdtl.DisplayAs = 'Abc';
 
-    let data = urdtl.onGetData();
+    const data = urdtl.onGetData();
     expect(data).toBeTruthy();
 
-    let urdtl2 = new UserDetail();
+    const urdtl2 = new UserDetail();
     urdtl2.onSetData(data);
     expect(urdtl2.UserId).toEqual(urdtl.UserId);
     expect(urdtl2.Email).toEqual(urdtl.Email);

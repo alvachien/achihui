@@ -60,7 +60,7 @@ describe('Tag', () => {
 
   beforeEach(() => {
     objTag = new Tag();
-  })
+  });
 
   it('init', () => {
     expect(objTag).toBeTruthy();
@@ -86,11 +86,11 @@ describe('TagCount', () => {
 
   beforeEach(() => {
     tcount = new TagCount();
-  })
+  });
 
   it('init', () => {
     expect(tcount).toBeTruthy();
-  })
+  });
 
   it('onSetData', () => {
     tcount.onSetData({
@@ -130,5 +130,5 @@ describe('getOverviewScopeRange', () => {
   it('CurrentWeek', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentWeek);
     expect(rst.BeginDate).toBeTruthy();
-  })
+  });
 });

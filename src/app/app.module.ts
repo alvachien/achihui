@@ -62,7 +62,7 @@ registerLocaleData(en);
           smartLists: true,
           smartypants: false,
         },
-      },      
+      },
     }),
   ],
   providers: [
@@ -82,7 +82,7 @@ registerLocaleData(en);
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
         availableLangs: ['en', 'zh'],
-        defaultLang: environment.DefaultLanguage? environment.DefaultLanguage : 'en',
+        defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
         reRenderOnLangChange: true,
         prodMode: environment.production,
       })

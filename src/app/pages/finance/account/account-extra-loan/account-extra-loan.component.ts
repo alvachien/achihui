@@ -99,7 +99,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
 
     objrst.loanTmpDocs = [];
-    objrst.loanTmpDocs = this.listTmpDocs.slice();    
+    objrst.loanTmpDocs = this.listTmpDocs.slice();
 
     return objrst;
   }
@@ -309,7 +309,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     if (val) {
-      let dtrange = [val.startDate ? val.startDate.toDate() : undefined, val.endDate ? val.endDate.toDate() : undefined ];
+      const dtrange = [val.startDate ? val.startDate.toDate() : undefined, val.endDate ? val.endDate.toDate() : undefined ];
       this.loanInfoForm.get('dateRangeControl').setValue(dtrange);
       this.loanInfoForm.get('totalMonthControl').setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl').setValue(val.RepayDayInMonth);

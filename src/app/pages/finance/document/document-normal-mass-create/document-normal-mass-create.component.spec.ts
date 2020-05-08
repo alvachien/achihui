@@ -149,7 +149,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -172,7 +172,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -195,7 +195,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -218,7 +218,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -241,7 +241,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -264,7 +264,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -287,7 +287,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -315,10 +315,10 @@ describe('DocumentNormalMassCreateComponent', () => {
       expect(component.currentStep).toEqual(0);
 
       // Ensure create work
-      let nidx = component.onCreateNewItem(null);
+      const nidx = component.onCreateNewItem(null);
       expect(nidx).toBeGreaterThan(0);
       if (nidx > 0) {
-        let nidx2 = component.onCopyItem(null, nidx);
+        const nidx2 = component.onCopyItem(null, nidx);
         if (nidx2 > 0) {
           component.onRemoveItem(null, nidx2);
         }
@@ -344,11 +344,11 @@ describe('DocumentNormalMassCreateComponent', () => {
       newItem.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
       expect(control.valid).toBeTrue();
-      
+
       expect(component.nextButtonEnabled).toBeTrue();
       component.next();
       fixture.detectChanges();
-      
+
       expect(component.currentStep).toEqual(1);
       expect(component.confirmInfo.length).toBeGreaterThan(0);
 
@@ -373,7 +373,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       newItem.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
       expect(control.valid).toBeTrue();
-      
+
       expect(component.nextButtonEnabled).toBeTrue();
       component.next();
       fixture.detectChanges();

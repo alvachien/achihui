@@ -28,7 +28,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: BlogOdataService,
     private modalService: NzModalService,
-    private router: Router,) {
+    private router: Router, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -113,7 +113,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   onDeploy(rid: number) {
     this.odataService.deployPost(rid).subscribe({
       next: val => {
-        const modalRef =this.modalService.success({
+        const modalRef = this.modalService.success({
           nzTitle: 'Deploy completed without error',
           nzContent: 'Closed in 1 second'
         });
@@ -128,7 +128,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           nzClosable: true,
         });
       }
-    })
+    });
   }
   onRevokeDeploy(rid: number) {
     this.odataService.revokeDeployPost(rid).subscribe({
@@ -148,6 +148,6 @@ export class PostListComponent implements OnInit, OnDestroy {
           nzClosable: true,
         });
       }
-    })
+    });
   }
 }

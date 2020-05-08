@@ -297,7 +297,7 @@ export class FakeDataHelper {
   get blogCollectionAPI(): BlogCollectionAPIJson[] {
     if (this._blogCollectionAPI) {
       return this._blogCollectionAPI;
-    }    
+    }
   }
   get blogCollection(): BlogCollection[] {
     if (this._blogCollection) {
@@ -1580,7 +1580,7 @@ export class FakeDataHelper {
       ID: 1,
       Owner: this.userID1,
       Name: 'test1',
-      Comment: 'test1'    
+      Comment: 'test1',
     } as BlogCollectionAPIJson);
   }
   public buildBlogCollection() {
@@ -1589,7 +1589,7 @@ export class FakeDataHelper {
       id: 1,
       owner: this.userID1,
       name: 'test1',
-      comment: 'test1'    
+      comment: 'test1',
     } as BlogCollection);
   }
   public buildBlogPostAPI() {

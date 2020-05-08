@@ -1,6 +1,7 @@
-import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 import * as hih from './common';
+
+// tslint:disable: variable-name
 
 /**
  * Gender
@@ -77,7 +78,7 @@ export class Location extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstobj: any = super.writeJSONObject();
+    const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
     rstobj.name = this.Name;
@@ -156,7 +157,7 @@ export class BookCategory extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstobj: any = super.writeJSONObject();
+    const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
     rstobj.name = this.Name;
@@ -244,7 +245,7 @@ export class MovieGenre extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstobj: any = super.writeJSONObject();
+    const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
     rstobj.name = this.Name;

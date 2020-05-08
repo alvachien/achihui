@@ -53,7 +53,7 @@ export class UIStatusService {
    * @param questions Questions
    */
   public generateLearnQuestionFormGroup(questions: QuestionBankItem[]): FormGroup {
-    let group: any = {};
+    const group: any = {};
 
     questions.forEach((question: any) => {
       group[question.ID] = question ? new FormControl(question.Question || '', Validators.required)

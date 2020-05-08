@@ -23,34 +23,34 @@ describe('Unit test for ModelUtility in Model', () => {
   });
 
   it('#2. Utility.String2Date()', () => {
-    let ndate: Date = ModelUtility.String2Date('2018-02-14');
+    const ndate: Date = ModelUtility.String2Date('2018-02-14');
     expect(ndate.getFullYear()).toBe(2018);
     expect(ndate.getMonth()).toBe(1);
     expect(ndate.getDate()).toBe(14);
   });
 
   it('#3. Utility.getYearMonthDisplayString()', () => {
-    let strResult: string = ModelUtility.getYearMonthDisplayString(2018, 8);
+    const strResult: string = ModelUtility.getYearMonthDisplayString(2018, 8);
     expect(strResult).toBe('2018-08');
-    let strResult2: string = ModelUtility.getYearMonthDisplayString(2018, 11);
+    const strResult2: string = ModelUtility.getYearMonthDisplayString(2018, 11);
     expect(strResult2).toBe('2018-11');
   });
 
   it('#4. Utility.DaysBetween', () => {
-    let bgndate: Date = new Date(2019, 2, 4);
-    let enddate: Date = new Date(2019, 2, 5);
-    let ndays = ModelUtility.DaysBetween(bgndate, enddate);
+    const bgndate: Date = new Date(2019, 2, 4);
+    const enddate: Date = new Date(2019, 2, 5);
+    const ndays = ModelUtility.DaysBetween(bgndate, enddate);
     expect(ndays).toBeTruthy();
   });
 
   it('#5. CheckMail', () => {
-    let str: string = 'aaa@cccc.com';
-    let nrst: boolean = ModelUtility.CheckMail(str);
+    const str = 'aaa@cccc.com';
+    const nrst: boolean = ModelUtility.CheckMail(str);
     expect(nrst).toBeTruthy();
   });
 
   it('#6. GetPasswordStrengthLevel', () => {
-    let str: string = 'ABCdab_123';
+    const str = 'ABCdab_123';
     let nrst: number = ModelUtility.GetPasswordStrengthLevel(str);
     expect(nrst).toBeTruthy();
 
@@ -59,7 +59,7 @@ describe('Unit test for ModelUtility in Model', () => {
   });
 
   it('#7. CheckStringLength', () => {
-    let str: string = 'adsaf';
+    const str = 'adsaf';
 
     expect(ModelUtility.CheckStringLength(str, 3, 15)).toBeTrue();
     expect(ModelUtility.CheckStringLength(str, 1, 3)).toBeFalse();

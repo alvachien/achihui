@@ -3,7 +3,6 @@ import { Translation, TRANSLOCO_LOADER, TranslocoLoader } from '@ngneat/transloc
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {
   constructor(private http: HttpClient) {}
@@ -14,4 +13,3 @@ export class TranslocoHttpLoader implements TranslocoLoader {
 }
 
 export const translocoLoader = { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader };
-
