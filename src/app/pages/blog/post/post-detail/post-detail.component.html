@@ -40,15 +40,10 @@
         <!-- Collection -->
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{'Blog.Collection' | transloco}}</nz-form-label>
-          <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="collTpl">
-            <nz-select nzMode="multiple" nzPlaceHolder="Collections" formControlName="collectionControl">
+          <nz-form-control [nzSpan]="12">
+            <nz-select nzMode="multiple"  formControlName="collectionControl">
               <nz-option *ngFor="let coll of listOfCollection" [nzLabel]="coll.name" [nzValue]="coll.id"></nz-option>
             </nz-select>
-            <ng-template #collTpl let-control>
-              <ng-container *ngIf="control.hasError('maxlength')">
-                {{'Common.FieldMaxLength' | transloco}}
-              </ng-container>
-            </ng-template>
           </nz-form-control>
         </nz-form-item>
 

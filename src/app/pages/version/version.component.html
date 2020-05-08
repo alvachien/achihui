@@ -1,43 +1,48 @@
 <nz-back-top></nz-back-top>
 
 <nz-timeline nzMode="alternate">
-  <nz-timeline-item nzColor="green">
+  <nz-timeline-item [nzDot]="dotTemplate">
     <article nz-typography>
-      <h1 nz-title>Version 0.1.2</h1>
-      <h2 nz-title>Released at: 2017.10.10</h2>
+      <h1 nz-title>Version 1.2.0</h1>
+      <h2 nz-title>Released at: 2020.10.31</h2>
       <p nz-text><strong>Bugs fixing and Feature list</strong></p>
       <ul>
-        <li>Including the functionality of Learn part and Finance part;</li>
-        <li>Concept of 'Home' now available;</li>
-        <li>Create/Display/Change Learn object;</li>
-        <li>Create/Display/Delete Learn History;</li>
-        <li>Create/Display Finance Account</li>
-        <li>Create/Delete Finance Document - Normal</li>
-        <li>Create/Delete Finance Document - Transfer</li>
-        <li>Create/Delete Finance Document - Advanced payment</li>
-        <li>Create/Delete Finance Document - Asset</li>
-        <li>Create/Delete Finance Document - Currency exchange;</li>
-        <li>Report of Finance: Balance, Account, Control Center and Order;</li>
-        <li>Finance Overview page;</li>
-        <li>Overview page: Learn trace and Finance part;</li>
-        <li>Redefined the whole structure - Sidenav, routing, etc;</li>
+        <li>UI: Upgrade to Angular 9.0+;</li>
+        <li>API Refactoring: Using OData based API;</li>
+        <li>API: Upgrade to .Net Core 3.1 +;</li>
+        <li>UI: Use Ant Design replaces Material library;</li>
+        <li>UI: Redesign the themes;</li>
+        <li>Finance: Add Insurance Account;</li>
+        <li>API: Enrich the unit tests on API sides;</li>
+        <li>UI Refactoring: unit tests on UI sides</li>
       </ul>
     </article>
   </nz-timeline-item>
   <nz-timeline-item nzColor="green">
     <article nz-typography>
-      <h1 nz-title>Version 0.2.2</h1>
-      <h2 nz-title>Released at: 2017.11.3</h2>
+      <h1 nz-title>Version 0.7.7</h1>
+      <h2 nz-title>Released at: 2018.12.31</h2>
       <p nz-text><strong>Bugs fixing and Feature list</strong></p>
       <ul>
-        <li>Add Routing to Library;</li>
-        <li>Add Routing to Event;</li>
-        <li>Add Question Bank in Learn part;</li>
-        <li>Tags support to Question Bank;</li>
-        <li>Tags support to Finance Document Item;</li>
-        <li>Refine the Exchange Rate definition;</li>
-        <li>Create/Delete Finance Document - Loan;</li>
-        <li>Finance Report for Order: Status control;</li>
+        <li>Removed jQuery and Bootstrap;</li>
+        <li>Replace ngx-charts with ngx-echarts;</li>
+        <li>Home dashboard page layout redesign;</li>
+        <li>Redesign the theme switching logic;</li>
+        <li>Finance: dashboard layout redesign;</li>
+        <li>Finance: Split loan document to Borrow Froma and Lend to;</li>
+        <li>Finance: Split Advance payment document to Advance payment and Advance Received;</li>
+        <li>Finance: now template docs (loan/adp) is part of Accounts;</li>
+        <li>Finance: Loan docs now supports change attributes and will regenerate template docs;</li>
+        <li>Finance: Report on accounts - Assets and Liabilities;</li>
+        <li>Finance: Asset buyin document created with legacy asset option;</li>
+        <li>Finance: Asset buyin document - refactored by using Reactive Form;;</li>
+        <li>Finance: Asset soldout document - refactored by using Reactive Form;</li>
+        <li>Finance: Asset Account Extra component - refactored by using Reactive Form;</li>
+        <li>Finance: Normal document - refactored by using Reactive Form;</li>
+        <li>Finance: Transfer document - refactored by using Reactive Form;</li>
+        <li>Finance: Create re-estimated value upon Asset Account;</li>
+        <li>Finance: new color set enabled;</li>
+        <li>Event: Default sorting provided;</li>
       </ul>
     </article>
   </nz-timeline-item>
@@ -74,69 +79,41 @@
   </nz-timeline-item>
   <nz-timeline-item nzColor="green">
     <article nz-typography>
-      <h1 nz-title>Version 0.7.7</h1>
-      <h2 nz-title>Released at: 2018.12.31</h2>
+      <h1 nz-title>Version 0.2.2</h1>
+      <h2 nz-title>Released at: 2017.11.3</h2>
       <p nz-text><strong>Bugs fixing and Feature list</strong></p>
       <ul>
-        <li>Removed jQuery and Bootstrap;</li>
-        <li>Replace ngx-charts with ngx-echarts;</li>
-        <li>Home dashboard page layout redesign;</li>
-        <li>Redesign the theme switching logic;</li>
-        <li>Finance: dashboard layout redesign;</li>
-        <li>Finance: Split loan document to Borrow Froma and Lend to;</li>
-        <li>Finance: Split Advance payment document to Advance payment and Advance Received;</li>
-        <li>Finance: now template docs (loan/adp) is part of Accounts;</li>
-        <li>Finance: Loan docs now supports change attributes and will regenerate template docs;</li>
-        <li>Finance: Report on accounts - Assets and Liabilities;</li>
-        <li>Finance: Asset buyin document created with legacy asset option;</li>
-        <li>Finance: Asset buyin document - refactored by using Reactive Form;;</li>
-        <li>Finance: Asset soldout document - refactored by using Reactive Form;</li>
-        <li>Finance: Asset Account Extra component - refactored by using Reactive Form;</li>
-        <li>Finance: Normal document - refactored by using Reactive Form;</li>
-        <li>Finance: Transfer document - refactored by using Reactive Form;</li>
-        <li>Finance: Create re-estimated value upon Asset Account;</li>
-        <li>Finance: new color set enabled;</li>
-        <li>Event: Default sorting provided;</li>
+        <li>Add Routing to Library;</li>
+        <li>Add Routing to Event;</li>
+        <li>Add Question Bank in Learn part;</li>
+        <li>Tags support to Question Bank;</li>
+        <li>Tags support to Finance Document Item;</li>
+        <li>Refine the Exchange Rate definition;</li>
+        <li>Create/Delete Finance Document - Loan;</li>
+        <li>Finance Report for Order: Status control;</li>
       </ul>
     </article>
   </nz-timeline-item>
   <nz-timeline-item nzColor="green">
     <article nz-typography>
-      <h1 nz-title>Version 0.8.12</h1>
-      <h2 nz-title>Released at: 2019.07.31</h2>
+      <h1 nz-title>Version 0.1.2</h1>
+      <h2 nz-title>Released at: 2017.10.10</h2>
       <p nz-text><strong>Bugs fixing and Feature list</strong></p>
       <ul>
-        <li>More than 900 unit tests added, more than 80% code coverage;</li>
-        <li>More themees available;</li>
-        <li>Animation: List page to Detail page</li>
-        <li>Animation: Detail page to List Page</li>
-        <li>Refine the Sidenav;</li>
-        <li>Finance: Quick Access;</li>
-        <li>Finance: Document Header now refactored as reusable component;</li>
-        <li>Finance: Document Items now refactored as reusable component;</li>
-        <li>Finance: Update Normal Document now supported;</li>
-        <li>Finance: Update Transfer Document now supported;</li>
-        <li>Finance: All documents now support description and Tag editing;</li>
-        <li>Finance: Plan;</li>
-        <li>Use ACTSLib instead of default array or other data structures;</li>
-        <li>Finance: Update Normal Document now supported;</li>
-      </ul>
-    </article>
-  </nz-timeline-item>
-  <nz-timeline-item [nzDot]="dotTemplate">
-    <article nz-typography>
-      <h1 nz-title>Version 1.0.1</h1>
-      <h2 nz-title>Released at: 2020.10.31</h2>
-      <p nz-text><strong>Bugs fixing and Feature list</strong></p>
-      <ul>
-        <li>UI: Upgrade to Angular 8.0+;</li>
-        <li>API Refactoring: Using OData based API;</li>
-        <li>API: Upgrade to .Net Core 3.1 +;</li>
-        <li>UI: Use Ant Design replaces Material library;</li>
-        <li>UI: Redesign the themes;</li>
-        <li>Finance: Add Insurance Account;</li>
-        <li>API: Enrich the unit tests on API sides;</li>
-        <li>UI Refactoring: unit tests on UI sides</li>
+        <li>Including the functionality of Learn part and Finance part;</li>
+        <li>Concept of 'Home' now available;</li>
+        <li>Create/Display/Change Learn object;</li>
+        <li>Create/Display/Delete Learn History;</li>
+        <li>Create/Display Finance Account</li>
+        <li>Create/Delete Finance Document - Normal</li>
+        <li>Create/Delete Finance Document - Transfer</li>
+        <li>Create/Delete Finance Document - Advanced payment</li>
+        <li>Create/Delete Finance Document - Asset</li>
+        <li>Create/Delete Finance Document - Currency exchange;</li>
+        <li>Report of Finance: Balance, Account, Control Center and Order;</li>
+        <li>Finance Overview page;</li>
+        <li>Overview page: Learn trace and Finance part;</li>
+        <li>Redefined the whole structure - Sidenav, routing, etc;</li>
       </ul>
     </article>
   </nz-timeline-item>

@@ -6,8 +6,9 @@
 
 Key components are:
 
-- Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
-- Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
+- Finance system. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
+- Learning trace. This feature enables record down the learning aspect for each family member. Learning is a habit of self growth, no matter the ages of the family members.
+- Blog system. This feature provide the possiblity to write blog. 
 - Libraries (Under design phrase).
 - Events (Under design phrase).
 
@@ -67,7 +68,6 @@ This project also require the following components:
 * [Transloco](https://github.com/ngneat/transloco)
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
 * [Moment.js](https://momentjs.com/)
-* [FullCalendar](https://fullcalendar.io/)
 * [ECharts](http://echarts.baidu.com/)
 * [ngx-echarts](https://github.com/xieziyu/ngx-echarts/)
 

@@ -15,12 +15,18 @@ export class BlogUserSettingAPIJson {
   Comment: string;
   AllowComment?: boolean;
   DeployFolder: string;
+  Author: string;
+  AuthorDesp: string;
+  AuthorImage: string;
 }
 export class BlogUserSetting {
   owner: string;
   title: string;
   footer: string;
   deploy: string;
+  author: string;
+  authordesp: string;
+  authorimage: string;
 
   public onSetData(data: BlogUserSettingAPIJson): void {
     if (data) {
@@ -28,6 +34,9 @@ export class BlogUserSetting {
       this.title = data.Name;
       this.footer = data.Comment;
       this.deploy = data.DeployFolder;
+      this.author = data.Author;
+      this.authordesp = data.AuthorDesp;
+      this.authorimage = data.AuthorImage;
     }
   }
   public writeAPIJson(): BlogUserSettingAPIJson {
@@ -37,6 +46,9 @@ export class BlogUserSetting {
     jdata.Comment = this.footer;
     // jdata.AllowComment = undefined;
     jdata.DeployFolder = this.deploy;
+    jdata.Author = this.authorimage;
+    jdata.AuthorDesp = this.authordesp;
+    jdata.AuthorImage = this.authorimage;
     return jdata;
   }
 }

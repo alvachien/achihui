@@ -38,6 +38,9 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       deployControl: new FormControl({value: undefined, disable: true}, [Validators.required]),
       titleControl: new FormControl('', [Validators.required]),
       footerControl: new FormControl('', [Validators.required]),
+      authorControl: new FormControl(),
+      authorDespControl: new FormControl(),
+      authorImageControl: new FormControl(),
     });
   }
 
@@ -56,6 +59,9 @@ export class UserSettingComponent implements OnInit, OnDestroy {
             this.detailFormGroup.get('deployControl').setValue(next.deploy);
             this.detailFormGroup.get('titleControl').setValue(next.title);
             this.detailFormGroup.get('footerControl').setValue(next.footer);
+            this.detailFormGroup.get('authorControl').setValue(next.author);
+            this.detailFormGroup.get('authorDespControl').setValue(next.authordesp);
+            this.detailFormGroup.get('authorImageControl').setValue(next.authorimage);
             this.detailFormGroup.enable();
             this.detailFormGroup.get('userControl').disable();
             this.detailFormGroup.get('deployControl').disable();
@@ -100,6 +106,9 @@ export class UserSettingComponent implements OnInit, OnDestroy {
     settings.deploy = this.detailFormGroup.get('deployControl').value;
     settings.title = this.detailFormGroup.get('titleControl').value;
     settings.footer = this.detailFormGroup.get('footerControl').value;
+    settings.author = this.detailFormGroup.get('authorControl').value;
+    settings.authordesp = this.detailFormGroup.get('authorDespControl').value;
+    settings.authorimage = this.detailFormGroup.get('authorImageControl').value;
 
     this.odataService.updateUserSetting(settings)
       .pipe(takeUntil(this._destroyed$))

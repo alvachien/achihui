@@ -5,9 +5,10 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { UserDetailRoutingModule } from './user-detail-routing.module';
 import { UserDetailComponent } from './user-detail';
 
-
 @NgModule({
-  declarations: [UserDetailComponent],
+  declarations: [
+    UserDetailComponent,
+  ],
   imports: [
     CommonModule,
     UserDetailRoutingModule,

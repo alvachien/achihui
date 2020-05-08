@@ -8,11 +8,9 @@ import { translate } from '@ngneat/transloco';
 
 import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
-  getUIModeString, 
-  BlogCollection,
-  BlogPostCollection,
-  BlogPostStatus_PublishAsPrivate,
-  BlogPostStatus_Draft} from '../../../../model';
+  getUIModeString, BlogCollection, BlogPostCollection, BlogPostStatus_PublishAsPrivate,
+  BlogPostStatus_Draft,
+} from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({

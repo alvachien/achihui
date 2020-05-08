@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@ngneat/transloco';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { AboutRoutingModule } from './about-routing.module';
 import { AboutComponent } from './about.component';
@@ -10,7 +11,8 @@ import { AboutComponent } from './about.component';
   imports: [
     CommonModule,
     TranslocoModule,
-    AboutRoutingModule
+    AboutRoutingModule,
+    NzDividerModule,
   ]
 })
 export class AboutModule { }
