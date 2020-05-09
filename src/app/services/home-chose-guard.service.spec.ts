@@ -48,7 +48,7 @@ describe('HomeChoseGuardService', () => {
     authServiceStub.authSubject = new BehaviorSubject(urInfo);
 
     const isLogin = service.checkLogin();
-    expect(isLogin).toBeFalsy();
+    expect(isLogin).toBeTruthy();
   }));
 
   it('checkLogin with login', inject([HomeChoseGuardService], (service: HomeChoseGuardService) => {

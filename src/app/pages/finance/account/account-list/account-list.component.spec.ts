@@ -120,7 +120,7 @@ describe('AccountListComponent', () => {
       tick();
       fixture.detectChanges();
 
-      const routerstub = TestBed.get(Router);
+      const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
 
       // Display
@@ -138,7 +138,7 @@ describe('AccountListComponent', () => {
       tick();
       fixture.detectChanges();
 
-      const routerstub = TestBed.get(Router);
+      const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
 
       // Display

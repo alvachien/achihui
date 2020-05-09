@@ -47,7 +47,7 @@ export class BlogUserSetting {
     jdata.Comment = this.footer;
     // jdata.AllowComment = undefined;
     jdata.DeployFolder = this.deploy;
-    jdata.Author = this.authorimage;
+    jdata.Author = this.author;
     jdata.AuthorDesp = this.authordesp;
     jdata.AuthorImage = this.authorimage;
     return jdata;

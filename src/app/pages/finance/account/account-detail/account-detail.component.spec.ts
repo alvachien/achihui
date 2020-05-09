@@ -185,7 +185,7 @@ describe('AccountDetailComponent', () => {
   });
 
   describe('3. display mode', () => {
-    beforeEach(() => {      
+    beforeEach(() => {
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));

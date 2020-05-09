@@ -3,7 +3,48 @@
 //
 
 import { BlogPost, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson,
-  BlogPostTag, BlogPostTagAPIJson, } from './blogmodel';
+  BlogPostTag, BlogPostTagAPIJson, BlogUserSetting, } from './blogmodel';
+
+describe('BlogUserSetting', () => {
+  let instance: BlogUserSetting;
+
+  beforeEach(() => {
+    instance = new BlogUserSetting();
+  });
+
+  it('shall work', () => {
+    expect(instance).toBeTruthy();
+  });
+
+  it('writeAPIJson and onSetData', () => {
+    instance.title = 'a';
+    instance.owner = 'b';
+    instance.footer = 'c';
+    instance.deploy = 'd';
+    instance.author = 'e';
+    instance.authordesp = 'f';
+    instance.authorimage = 'g';
+
+    const apijson = instance.writeAPIJson();
+    expect(apijson.Author).toEqual(instance.author);
+    expect(apijson.AuthorDesp).toEqual(instance.authordesp);
+    expect(apijson.AuthorImage).toEqual(instance.authorimage);
+    expect(apijson.Comment).toEqual(instance.footer);
+    expect(apijson.DeployFolder).toEqual(instance.deploy);
+    expect(apijson.Name).toEqual(instance.title);
+    expect(apijson.Owner).toEqual(instance.owner);
+
+    const instance2 = new BlogUserSetting();
+    instance2.onSetData(apijson);
+    expect(instance2.author).toEqual(instance.author);
+    expect(instance2.authordesp).toEqual(instance.authordesp);
+    expect(instance2.authorimage).toEqual(instance.authorimage);
+    expect(instance2.deploy).toEqual(instance.deploy);
+    expect(instance2.title).toEqual(instance.title);
+    expect(instance2.owner).toEqual(instance.owner);
+    expect(instance2.footer).toEqual(instance.footer);
+  });
+});
 
 describe('BlogCollection', () => {
   let instance: BlogCollection;
@@ -15,7 +56,7 @@ describe('BlogCollection', () => {
   it('shall work', () => {
     expect(instance).toBeTruthy();
   });
-  it('writeAPIJwson and onSetData', () => {
+  it('writeAPIJson and onSetData', () => {
     instance.id = 1;
     instance.name = 'a';
     instance.comment = 'b';

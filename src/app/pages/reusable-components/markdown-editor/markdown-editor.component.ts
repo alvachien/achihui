@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output, 
+import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy, forwardRef, HostListener, Output,
   EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors
@@ -94,7 +94,7 @@ export interface IACMEditorConfig {
       useExisting: forwardRef(() => MarkdownEditorComponent),
       multi: true,
     },
-  ],  
+  ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() config: IACMEditorConfig;
@@ -105,7 +105,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   mathDialogInput: string;
   editor: editor.ICodeEditor;
   content: string;
-  readOnly: boolean = false;
+  readOnly = false;
   uploadAPI: string;
 
   stateWatching = false;
@@ -122,7 +122,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     return {
       Accept: 'application/json',
       Authorization: 'Bearer ' + this.authService.authSubject.getValue().getAccessToken()
-    }
+    };
   }
 
   // tslint:disable-next-line:variable-name
@@ -225,7 +225,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   constructor(private changeDetect: ChangeDetectorRef,
-    private authService: AuthService,) {
+              private authService: AuthService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -254,7 +254,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       this.editor.setValue(this.content);
     }
 
-    this.editor.onDidChangeModelContent(e => {
+    this.editor.onDidChangeModelContent(ec => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
         ConsoleLogTypeEnum.debug);
 
@@ -278,17 +278,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     //   let nsel = this.editor.getSelection();
     //   console.log(nsel);
     // });
-    this.editor.onDidScrollChange(e => {
+    this.editor.onDidScrollChange(ec => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
         ConsoleLogTypeEnum.debug);
 
-        // Rework for the scroll
-        if (e.scrollTop === 0) {
+      // Rework for the scroll
+      if (ec.scrollTop === 0) {
           if (this.previewElement) {
             this.previewElement.nativeElement.scrollTop = 0;
           }
         } else {
-          let percent = e.scrollTop / e.scrollHeight;
+          const percent = ec.scrollTop / ec.scrollHeight;
 
           this.previewElement.nativeElement.scrollTop = percent * this.previewElement.nativeElement.scrollHeight;
         }
@@ -298,7 +298,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   writeValue(val: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
       ConsoleLogTypeEnum.debug);
-    
+
     this.value = val;
   }
   registerOnChange(fn: any): void {
@@ -323,7 +323,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
   setEditorReadOnly(): void {
     if (this.editor) {
-      let opt = this.editor.getRawOptions();
+      const opt = this.editor.getRawOptions();
       opt.readOnly = this.readOnly;
       this.editor.updateOptions(opt);
     }
@@ -341,17 +341,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarRedo(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarRedo...',
       ConsoleLogTypeEnum.debug);
-    if (this.editor) {      
+    if (this.editor) {
     }
   }
   onToolbarBold(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarBold...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -369,10 +369,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -390,10 +390,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -410,10 +410,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarQuote...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -443,10 +443,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -457,17 +457,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       }
 
       this.editor.focus();
-    }  
+    }
   }
   onToolbarH2(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH2...',
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -478,17 +478,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       }
 
       this.editor.focus();
-    }  
+    }
   }
   onToolbarH3(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH3...',
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -499,17 +499,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       }
 
       this.editor.focus();
-    }  
+    }
   }
   onToolbarH4(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH4...',
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -527,10 +527,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -541,17 +541,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       }
 
       this.editor.focus();
-    }  
+    }
   }
   onToolbarH6(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH6...',
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -568,10 +568,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -588,10 +588,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarOrderedList...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -608,10 +608,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCode...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -629,10 +629,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
@@ -653,14 +653,14 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,
-            text: `--- 
+            text: `---
               ` + curmodel.getValueInRange(sel),
           });
         });
@@ -676,10 +676,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     // Upload
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         if (filename) {
           cursels.forEach(sel => {
             arrst.push({
@@ -695,14 +695,14 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
               text: '![Image]()',
             });
           });
-          curmodel.pushEditOperations(cursels, arrst, undefined);    
+          curmodel.pushEditOperations(cursels, arrst, undefined);
         }
       }
 
       this.editor.focus();
     }
   }
-  onToolbarClear() : void {
+  onToolbarClear(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarClear...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
@@ -753,10 +753,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
     if (this.editor) {
-      let curmodel = this.editor.getModel();
-      let cursels = this.editor.getSelections();
+      const curmodel = this.editor.getModel();
+      const cursels = this.editor.getSelections();
       if (curmodel) {
-        let arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         cursels.forEach(sel => {
           arrst.push({
             range: sel,

@@ -157,8 +157,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               });
             }
           });
+          break;
         }
-                             break;
 
         case UIMode.Create:
         default: {
@@ -183,8 +183,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                 });
               }
             });
+          break;
         }
-                 break;
       }
     });
   }
