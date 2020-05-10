@@ -583,6 +583,9 @@ export enum GeneralFilterValueType {
   boolean = 4,
 }
 
+/**
+ * General Filter Item
+ */
 export class GeneralFilterItem {
   fieldName: string;
   operator: GeneralFilterOperatorEnum;
@@ -649,3 +652,209 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
 
 //   return null;
 // };
+
+export function getFilterString(filters: GeneralFilterItem[]): string {
+  const arfields: string[] = [];
+  filters.forEach((val) => {
+    if (arfields.indexOf(val.fieldName) === -1) {
+      arfields.push(val.fieldName);
+    }
+  });
+  let filterstr = '';
+  arfields.forEach(fieldname => {
+    const subfilters: string[] = [];
+    filters.forEach(val => {
+      if (val.fieldName === fieldname) {
+        const subflt = getSingleFilterString(val);
+        if (subflt.length > 0) {
+          subfilters.push(subflt);
+        }
+      }
+    });
+
+    if (subfilters.length > 0) {
+      let subfltstr = '';
+      if (subfilters.length === 1) {
+        subfltstr = subfilters[0];
+      } else {
+        // More than one item
+        subfilters.forEach(sf => {
+          subfltstr = subfltstr.length === 0 ?  `(${sf}` : `${subfltstr} or ${sf}`;
+        });
+        subfltstr = `${subfltstr})`;
+      }
+
+      filterstr = filterstr.length === 0 ? `${subfltstr}` : `${filterstr} and ${subfltstr}`;
+    }
+  });
+  return filterstr;
+}
+
+/**
+ * Get Filters for OData API
+ * @param flt Single Filter
+ */
+export function getSingleFilterString(flt: GeneralFilterItem): string {
+  let subfilter = '';
+  switch (flt.operator) {
+    case GeneralFilterOperatorEnum.Equal: {
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} eq '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.Between: {
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} ge '${flt.lowValue}' and ${flt.fieldName} le '${flt.highValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.LargerEqual: {
+      // ge
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} ge '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} ge ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} ge ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.LargerThan: {
+      // gt
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} gt '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} gt ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} gt ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.LessEqual: {
+      // le
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} le '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} le ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.LessThan: {
+      // lt
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} lt '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.Like: {
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `contains(${flt.fieldName}, '${flt.lowValue}')`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          break;
+        case GeneralFilterValueType.number:
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    case GeneralFilterOperatorEnum.NotEqual: {
+      // ne
+      switch (flt.valueType) {
+        case GeneralFilterValueType.string:
+          subfilter = `${flt.fieldName} ne '${flt.lowValue}'`;
+          break;
+        case GeneralFilterValueType.boolean:
+          break;
+        case GeneralFilterValueType.date:
+          subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
+          break;
+        case GeneralFilterValueType.number:
+          subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
+          break;
+        default:
+          break;
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return subfilter;
+}

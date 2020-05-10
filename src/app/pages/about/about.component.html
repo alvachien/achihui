@@ -15,22 +15,15 @@
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
-    <strong>{{'Nav.Version' | transloco}}:</strong>
+    <strong>UI {{'Nav.Version' | transloco}}:</strong>
     <span nz-text>
-      <strong id="curversion">{{version}}
-      </strong>
+      <strong id="curversion">{{version}}</strong>
+      ({{relDate}})
     </span>.
-  </p>
-  <p nz-paragraph>
-    Released At:
-    <span nz-text>
-      <strong>{{relDate}}
-      </strong>
-    </span>
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
-    API Version:
+    API (Built with Odata) Version:
     <span nz-text>
       <strong>{{resultVersion.APIVersion}}
       </strong>

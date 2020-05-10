@@ -61,9 +61,9 @@ describe('FinanceOdataService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(FinanceOdataService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(FinanceOdataService);
   });
 
   it('should be created without data', () => {
@@ -73,7 +73,7 @@ describe('FinanceOdataService', () => {
   /// FinanceOdataService method tests begin ///
   describe('fetchAllCurrencies', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -202,7 +202,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllAccountCategories', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -331,7 +331,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllAssetCategories', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -469,7 +469,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllDocTypes', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -607,7 +607,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllTranTypes', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -745,7 +745,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllAccounts', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -883,7 +883,7 @@ describe('FinanceOdataService', () => {
 
   describe('readAccount', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -935,7 +935,7 @@ describe('FinanceOdataService', () => {
 
   describe('createAccount', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1022,7 +1022,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllControlCenters', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1160,7 +1160,7 @@ describe('FinanceOdataService', () => {
 
   describe('readControlCenter', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1211,7 +1211,7 @@ describe('FinanceOdataService', () => {
 
   describe('createControlCenter', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1263,7 +1263,7 @@ describe('FinanceOdataService', () => {
   describe('changeControlCenter', () => {
     let cc: ControlCenter;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       cc = new ControlCenter();
       cc.Id = 11;
     });
@@ -1316,7 +1316,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllOrders', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1454,7 +1454,7 @@ describe('FinanceOdataService', () => {
 
   describe('readOrder', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1505,7 +1505,7 @@ describe('FinanceOdataService', () => {
 
   describe('createOrder', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1557,7 +1557,7 @@ describe('FinanceOdataService', () => {
   describe('changeOrder', () => {
     let ord: Order;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       ord = new Order();
       ord.Id = 11;
     });
@@ -1610,7 +1610,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllPlans', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1707,7 +1707,7 @@ describe('FinanceOdataService', () => {
 
   describe('readPlan', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1777,7 +1777,7 @@ describe('FinanceOdataService', () => {
       planData.TargetBalance = 20;
       planData.TranCurrency = 'CNY';
       planData.ID = 21;
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1826,7 +1826,7 @@ describe('FinanceOdataService', () => {
 
   describe('createDocument', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
 
       const doc: Document = new Document();
       doc.Id = 100;
@@ -1891,7 +1891,7 @@ describe('FinanceOdataService', () => {
 
   describe('massCreateNormalDocument', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
 
       const doc: Document = new Document();
       doc.Id = 100;
@@ -1941,9 +1941,9 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createDocumentFromDPTemplate', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments/PostDocument';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments/PostDocument';
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -1971,7 +1971,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createDocumentFromDPTemplate({ DocId: 100 } as TemplateDocADP).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -1992,7 +1992,7 @@ describe('FinanceOdataService', () => {
 
   describe('deleteDocument', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2044,7 +2044,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllDocuments', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2116,12 +2116,12 @@ describe('FinanceOdataService', () => {
       req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
-  
+
   describe('fetchAllDPTmpDocs', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2147,38 +2147,38 @@ describe('FinanceOdataService', () => {
       // Respond with the mock data
       req.flush([
         {
-          'hid': 1, 'docID': 649, 'refDocID': null, 'accountID': 81, 'tranDate': '2019-02-26',
-          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 13,
-          'orderID': null, 'desp': '安安钢琴课-2019上半年 | 8 / 25', 'createdBy': 'aaa', 'createdAt': '2019-01-08',
-          'updatedBy': null, 'updatedAt': '0001-01-01'
+          hid: 1, docID: 649, refDocID: null, accountID: 81, tranDate: '2019-02-26',
+          tranType: 59, tranAmount: 240.00, controlCenterID: 13,
+          orderID: null, desp: '安安钢琴课-2019上半年 | 8 / 25', createdBy: 'aaa', createdAt: '2019-01-08',
+          updatedBy: null, updatedAt: '0001-01-01'
         },
         {
-          'hid': 1, 'docID': 582, 'refDocID': null, 'accountID': 79, 'tranDate': '2019-02-23',
-          'tranType': 59, 'tranAmount': 117.82, 'controlCenterID': 12,
-          'orderID': null, 'desp': '多多2019羽毛球课48节(寒暑假除外) | 8 / 55', 'createdBy': 'aaa', 'createdAt': '2018-12-27',
-          'updatedBy': null, 'updatedAt': '0001-01-01'
+          hid: 1, docID: 582, refDocID: null, accountID: 79, tranDate: '2019-02-23',
+          tranType: 59, tranAmount: 117.82, controlCenterID: 12,
+          orderID: null, desp: '多多2019羽毛球课48节(寒暑假除外) | 8 / 55', createdBy: 'aaa', createdAt: '2018-12-27',
+          updatedBy: null, updatedAt: '0001-01-01'
         },
         {
-          'hid': 1, 'docID': 493, 'refDocID': null, 'accountID': 66, 'tranDate': '2019-02-23',
-          'tranType': 59, 'tranAmount': 217.53, 'controlCenterID': 13,
-          'orderID': null, 'desp': '安安吉的堡2018.9-2019.8报名 | 24 / 49', 'createdBy': 'aaa', 'createdAt': '2018-10-07',
-          'updatedBy': null, 'updatedAt': '0001-01-01'
+          hid: 1, docID: 493, refDocID: null, accountID: 66, tranDate: '2019-02-23',
+          tranType: 59, tranAmount: 217.53, controlCenterID: 13,
+          orderID: null, desp: '安安吉的堡2018.9-2019.8报名 | 24 / 49', createdBy: 'aaa', createdAt: '2018-10-07',
+          updatedBy: null, updatedAt: '0001-01-01'
         },
         {
-          'hid': 1, 'docID': 552, 'refDocID': null, 'accountID': 76, 'tranDate': '2019-02-23',
-          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 12,
-          'orderID': null, 'desp': '多多钢琴课 | 17 / 25', 'createdBy': 'aaa', 'createdAt': '2018-11-04', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          hid: 1, docID: 552, refDocID: null, accountID: 76, tranDate: '2019-02-23',
+          tranType: 59, tranAmount: 240.00, controlCenterID: 12,
+          orderID: null, desp: '多多钢琴课 | 17 / 25', createdBy: 'aaa', createdAt: '2018-11-04', updatedBy: null, updatedAt: '0001-01-01'
         },
         {
-          'hid': 1, 'docID': 263, 'refDocID': null, 'accountID': 26, 'tranDate': '2019-02-19',
-          'tranType': 59, 'tranAmount': 350.00, 'controlCenterID': 10,
-          'orderID': null, 'desp': '买课 | 71/72', 'createdBy': 'aaa', 'createdAt': '2017-10-10', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          hid: 1, docID: 263, refDocID: null, accountID: 26, tranDate: '2019-02-19',
+          tranType: 59, tranAmount: 350.00, controlCenterID: 10,
+          orderID: null, desp: '买课 | 71/72', createdBy: 'aaa', createdAt: '2017-10-10', updatedBy: null, updatedAt: '0001-01-01'
         },
       ]);
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllDPTmpDocs(moment(), moment().add(1, 'w')).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -2198,10 +2198,10 @@ describe('FinanceOdataService', () => {
   });
 
   describe('fetchAllLoanTmpDocs', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2231,7 +2231,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllLoanTmpDocs(moment(), moment().add(1, 'w')).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -2252,7 +2252,7 @@ describe('FinanceOdataService', () => {
 
   describe('createADPDocument', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
 
       fakeData.buildFinADPDocumentForCreate();
       fakeData.buildFinAccountExtraAdvancePayment();
@@ -2306,7 +2306,7 @@ describe('FinanceOdataService', () => {
     let apiurl: string;
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       apiurl = service.documentAPIUrl + '/PostAssetBuyDocument';
     });
 
@@ -2357,7 +2357,7 @@ describe('FinanceOdataService', () => {
   describe('createAssetSoldoutDocument', () => {
     let apiurl: string;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       apiurl = service.documentAPIUrl + '/PostAssetSellDocument';
     });
 
@@ -2408,7 +2408,7 @@ describe('FinanceOdataService', () => {
   describe('createAssetValChgDocument', () => {
     let apiurl: string;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       apiurl = service.documentAPIUrl + '/PostAssetValueChangeDocument';
     });
 
@@ -2459,7 +2459,7 @@ describe('FinanceOdataService', () => {
   describe('createLoanDocument', () => {
     let apiurl: string;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       apiurl = service.documentAPIUrl + '/PostLoanDocument';
     });
 
@@ -2510,7 +2510,7 @@ describe('FinanceOdataService', () => {
   describe('createLoanRepayDoc', () => {
     let apiurl: string;
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       apiurl = environment.ApiUrl + '/api/FinanceTmpLoanDocuments/PostRepayDocument';
     });
 
@@ -2562,7 +2562,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllReportsByAccount', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2655,7 +2655,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllReportsByControlCenter', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2748,7 +2748,7 @@ describe('FinanceOdataService', () => {
 
   describe('fetchAllReportsByOrder', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -2845,7 +2845,7 @@ describe('FinanceOdataService', () => {
     let outputData: RepeatedDatesWithAmountAPIOutput[];
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
       inputData = {
         TotalAmount: 200,
         StartDate: moment(),
@@ -2914,7 +2914,7 @@ describe('FinanceOdataService', () => {
     let outputData: RepeatDatesWithAmountAndInterestAPIOutput[];
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
 
       inputData = {
         TotalAmount: 10000,
@@ -2984,7 +2984,7 @@ describe('FinanceOdataService', () => {
 
   describe('getDocumentItemByAccount', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -3040,7 +3040,7 @@ describe('FinanceOdataService', () => {
 
   describe('getDocumentItemByControlCenter', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -3095,7 +3095,7 @@ describe('FinanceOdataService', () => {
 
   describe('getDocumentItemByOrder', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -3166,7 +3166,7 @@ describe('FinanceOdataService', () => {
     });
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
     });
 
     afterEach(() => {
@@ -3408,7 +3408,7 @@ describe('FinanceOdataService', () => {
     let outputData: RepeatedDatesAPIOutput[];
 
     beforeEach(() => {
-      service = TestBed.get(FinanceOdataService);
+      service = TestBed.inject(FinanceOdataService);
 
       inputData = {
         StartDate: moment(),

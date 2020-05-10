@@ -6,7 +6,6 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
-import { IACMEditorConfig, EditorToolbarButtonEnum } from '../../../reusable-components/markdown-editor';
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
   getUIModeString, BlogCollection, BlogPostCollection, BlogPostStatus_PublishAsPrivate,
   BlogPostStatus_Draft,
@@ -32,24 +31,24 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   detailFormGroup: FormGroup;
   listOfCollection: BlogCollection[] = [];
 
-  editorConfig: IACMEditorConfig = {
-    toolbarItems: [
-      EditorToolbarButtonEnum.bold,
-      EditorToolbarButtonEnum.italic,
-      EditorToolbarButtonEnum.underline,
-      EditorToolbarButtonEnum.strikethrough,
-      EditorToolbarButtonEnum.heading1,
-      EditorToolbarButtonEnum.heading2,
-      EditorToolbarButtonEnum.heading3,
-      EditorToolbarButtonEnum.paragraph,
-      EditorToolbarButtonEnum.quote,
-      // EditorToolbarButtonEnum.orderedlist,
-      // EditorToolbarButtonEnum.unorderedlist,
-      EditorToolbarButtonEnum.code,
-      EditorToolbarButtonEnum.math,
-    ],
-    height: 300,
-  };
+  // editorConfig: IACMEditorConfig = {
+  //   toolbarItems: [
+  //     EditorToolbarButtonEnum.bold,
+  //     EditorToolbarButtonEnum.italic,
+  //     EditorToolbarButtonEnum.underline,
+  //     EditorToolbarButtonEnum.strikethrough,
+  //     EditorToolbarButtonEnum.heading1,
+  //     EditorToolbarButtonEnum.heading2,
+  //     EditorToolbarButtonEnum.heading3,
+  //     EditorToolbarButtonEnum.paragraph,
+  //     EditorToolbarButtonEnum.quote,
+  //     // EditorToolbarButtonEnum.orderedlist,
+  //     // EditorToolbarButtonEnum.unorderedlist,
+  //     EditorToolbarButtonEnum.code,
+  //     EditorToolbarButtonEnum.math,
+  //   ],
+  //   height: 300,
+  // };
 
   constructor(private odataService: BlogOdataService,
               private activateRoute: ActivatedRoute,

@@ -79,7 +79,7 @@
     <!-- Content -->
     <nz-form-item>
       <nz-form-control nzHasFeedback [nzErrorTip]="contentTpl">
-        <ac-markdown-editor class="post_acme_editor" [config]="editorConfig" formControlName="contentControl">
+        <ac-markdown-editor class="post_acme_editor" formControlName="contentControl">
         </ac-markdown-editor>
       </nz-form-control>
       <ng-template #contentTpl let-control>

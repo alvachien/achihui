@@ -312,19 +312,19 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: any[]) => {
           this.listDates = x[0];
-          let arallitems = x[1].contentList;
+          const arallitems = x[1].contentList;
           this.listExistingDocItems = [];
 
           // For dates
           this.listDates.forEach(datrange => {
-            let aritems: DocumentItemView[] = [];
+            const aritems: DocumentItemView[] = [];
             arallitems.forEach(div => {
               if (moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate)) {
                 aritems.push(div);
               }
             });
 
-            let itm = new DocumentCountByDateRange();
+            const itm = new DocumentCountByDateRange();
             itm.StartDate = datrange.StartDate.clone();
             itm.EndDate = datrange.EndDate.clone();
             itm.expand = false;

@@ -1,10 +1,66 @@
 <div nz-row nzType="flex">
   <nz-carousel nzDotPosition="right">
     <div nz-carousel-content *ngFor="let index of array">
-      <div style="height: 400px;">
-        <h1 class="display-2">{{'Common.WelcomeToHIH' | transloco}}</h1>
-        <h2>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
-        <h2>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
+      <div [ngSwitch]="index">
+        <div class="carousel_content" *ngSwitchCase="1">
+          <article nz-typography>
+            <h1 nz-typography>{{'Common.WelcomeToHIH' | transloco}}</h1>
+            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
+            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
+            <article nz-typography>
+              <ul>
+                <li>
+                  <a href="/hih.finance/overview">Finance System</a>
+                </li>
+                <li>
+                  <a href="/hih/learn">Learning Trace</a>
+                </li>
+              </ul>
+            </article>            
+          </article>
+        </div>
+        <div class="carousel_content" *ngSwitchCase="2">
+          <article nz-typography>
+            <h1 nz-typography>Finance System</h1>
+            <p nz-typography>
+              Finance System is record the activities which happened with finance influences.
+              Finance System embedded in H.I.H., is target to make the finance activities transparent to whole family.
+            </p>
+            <p nz-typography>
+              With respect to the H.I.H. focuses only on family level, it doesn't follow <mark>Accounting Principles</mark> by any means.              
+            </p>
+            <article nz-typography>
+              <ul>
+                <li>
+                  <a href="/hih/finance/account">Accounts</a>
+                </li>
+                <li>
+                  <a href="/hih/finance/controlcenter">Control Centers</a>
+                </li>
+                <li>
+                  <a href="/hih/finance/order">Activities</a>
+                </li>
+                <li>
+                  <a href="/hih/finance/order">Documents</a>
+                </li>
+                <li>
+                  <a href="/hih/finance/report">Reports</a>
+                </li>
+              </ul>
+            </article>
+          </article>
+        </div>
+
+        <div class="carousel_content" *ngSwitchCase="3">
+          <article nz-typography>
+            <h1 nz-typography>Learning Systems</h1>
+            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
+            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
+          </article>
+        </div>
+
+        <div class="carousel_content" *ngSwitchCase="4">          
+        </div>
       </div>
     </div>
   </nz-carousel>

@@ -124,14 +124,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       next: (rst: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
           ConsoleLogTypeEnum.debug);
-  
+
         this.arDocTypes = rst[2];
         this.arTranTypes = rst[3];
         this.arAccounts = rst[4];
         this.arControlCenters = rst[5];
         this.arOrders = rst[6];
         this.arCurrencies = rst[7];
-  
+
         // Accounts
         this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
         this.uiAccountStatusFilter = undefined;
@@ -150,7 +150,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
           ConsoleLogTypeEnum.error);
-        
+
         this.modalService.create({
           nzTitle: translate('Common.Error'),
           nzContent: error,
@@ -197,17 +197,17 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       case 0: {
         this._updateConfirmInfo();
         this.currentStep ++;
+        break;
       }
-      break;
 
       case 1: {
         // Review
         this.isDocPosting = true;
         this.onSubmit();
+        break;
       }
-      break;
 
-      default: 
+      default:
       break;
     }
   }
@@ -256,14 +256,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
           // New doc created with ID returned
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
             ConsoleLogTypeEnum.debug);
-    
+
           this.docIdCreated = nid;
           this.docPostingFailed = null;
         },
         error: (err: string) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
             ConsoleLogTypeEnum.error);
-    
+
           this.docIdCreated = null;
           this.docPostingFailed = err;
         },
@@ -299,7 +299,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         });
         let curbal2 = 0;
         for (const ditem of docitems) {
-          let dbal: DocItemWithBlance = new DocItemWithBlance();
+          const dbal: DocItemWithBlance = new DocItemWithBlance();
           dbal.docId = ditem.DocumentID;
           dbal.tranDate = ditem.TransactionDate.format(momentDateFormat);
           dbal.tranAmount = ditem.Amount;
@@ -310,21 +310,21 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
           this.existingDocItems.push(dbal);
         }
 
-        let fakebalance: DocItemWithBlance = new DocItemWithBlance();
+        const fakebalance: DocItemWithBlance = new DocItemWithBlance();
         fakebalance.docId = 0;
         fakebalance.tranDate = this.confirmInfo.tranDateString;
         fakebalance.tranAmount = 0;
         fakebalance.balance = 0;
         fakebalance.newBalance = this.NewEstimatedAmount;
         this.existingDocItems.push(fakebalance);
-  
+
         // Sorting
         this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
           return a.tranDate.localeCompare(b.tranDate);
         });
-  
+
         let curbal = 0;
-        for (let idx: number = 0; idx < this.existingDocItems.length; idx++) {
+        for (let idx = 0; idx < this.existingDocItems.length; idx++) {
           curbal += this.existingDocItems[idx].tranAmount;
           if (this.existingDocItems[idx].docId) {
             this.existingDocItems[idx].newBalance = curbal;
@@ -332,25 +332,25 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
             this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
             this.tranAmount = this.existingDocItems[idx].tranAmount;
           }
-        }  
+        }
       }
     });
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
+    const ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homeService.ChosedHome.ID;
     ndoc.DocType = this.curDocType;
     ndoc.Items = [];
 
     // Add items
-    let ndocitem: DocumentItem = new DocumentItem();
+    const ndocitem: DocumentItem = new DocumentItem();
     ndocitem.ItemId = 1;
     ndocitem.AccountId = this.firstFormGroup.get('accountControl').value;
     ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
     ndocitem.OrderId = this.firstFormGroup.get('orderControl').value;
     ndocitem.Desp = ndoc.Desp;
-    let gitem = this.existingDocItems.find((val: DocItemWithBlance) => {
+    const gitem = this.existingDocItems.find((val: DocItemWithBlance) => {
       return val.docId === 0;
     });
     if (gitem.tranAmount > 0) {
@@ -368,7 +368,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
-    let amt: any = group.get('amountControl').value;
+    const amt: any = group.get('amountControl').value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }
@@ -377,6 +377,6 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   }
 
   public onDisplayCreatedDoc(): void {
-    
+
   }
 }

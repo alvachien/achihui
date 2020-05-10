@@ -12,7 +12,8 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   RepeatDatesWithAmountAndInterestAPIOutput, AccountExtraAdvancePayment, FinanceAssetBuyinDocumentAPI,
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
-  GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan, AccountExtraLoan
+  GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
+  getFilterString,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1090,23 +1091,23 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
 
     return this.http.get(apiurl, {
-      headers: headers,
-      params: params,
+      headers,
+      params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllDPTmpDocs.`,
           ConsoleLogTypeEnum.debug);
 
-        let docADP: TemplateDocADP[] = [];
-        let rspdata = (response as any).value;
+        const docADP: TemplateDocADP[] = [];
+        const rspdata = (response as any).value;
         if (rspdata instanceof Array && rspdata.length > 0) {
           rspdata.forEach((val: any) => {
-            let adoc: TemplateDocADP = new TemplateDocADP();
+            const adoc: TemplateDocADP = new TemplateDocADP();
             adoc.onSetData(val);
             docADP.push(adoc);
           });
@@ -1123,12 +1124,12 @@ export class FinanceOdataService {
       }),
       );
   }
-  
+
   /**
    * Get Loan tmp docs: for document item overview page
    */
   public fetchAllLoanTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment,
-    docid?: number, accountid?: number, ccid?: number, orderid?: number): Observable<TemplateDocLoan[]> {
+                             docid?: number, accountid?: number, ccid?: number, orderid?: number): Observable<TemplateDocLoan[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1137,7 +1138,7 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    let apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
     let params: HttpParams = new HttpParams();
     let filterstring = `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`;
     if (docid) {
@@ -1155,18 +1156,18 @@ export class FinanceOdataService {
     params = params.append('$filter', filterstring);
 
     return this.http.get(apiurl, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllLoanTmpDocs.`,
           ConsoleLogTypeEnum.debug);
 
-        let docLoan: TemplateDocLoan[] = [];
-        let rspdata = (response as any).value;
+        const docLoan: TemplateDocLoan[] = [];
+        const rspdata = (response as any).value;
         if (rspdata instanceof Array && rspdata.length > 0) {
           rspdata.forEach((val: any) => {
-            let ldoc: TemplateDocLoan = new TemplateDocLoan();
+            const ldoc: TemplateDocLoan = new TemplateDocLoan();
             ldoc.onSetData(val);
             docLoan.push(ldoc);
           });
@@ -1224,7 +1225,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument`;
+    const apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument`;
 
     return this.http.post(apiurl, {
       AccountID: tpDoc.AccountId,
@@ -1237,8 +1238,8 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocumentFromDPTemplate`,
           ConsoleLogTypeEnum.debug);
 
-        let ndoc: Document = new Document();
-        ndoc.onSetData(<any>response);
+        const ndoc: Document = new Document();
+        ndoc.onSetData(response as any);
         return ndoc;
       }),
       catchError((errresp: HttpErrorResponse) => {
@@ -1520,8 +1521,8 @@ export class FinanceOdataService {
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-    
-    let arsent: any[] = [];
+
+    const arsent: any[] = [];
     items.forEach(doc => {
       arsent.push(this.createDocument(doc));
     });
@@ -1863,57 +1864,40 @@ export class FinanceOdataService {
   public getDocumentItemByAccount(
     acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
     dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
-    let headers: HttpHeaders = new HttpHeaders();
-    const hid = this.homeService.ChosedHome.ID;
-    const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
-    const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-    let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
-    params = params.append(
-      '$filter',
-      `HomeID eq ${hid} and AccountID eq ${acntid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt}`);
-    params = params.append('$count', `true`);
-    if (top) {
-      params = params.append('$top', `${top}`);
+    const filters: GeneralFilterItem[] = [];
+    filters.push({
+      fieldName: 'AccountID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: acntid,
+      valueType: GeneralFilterValueType.number,
+      highValue: 0,
+    });
+    if (dtbgn && dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
+    } else if (dtbgn && !dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LargerEqual,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: ''
+      });
+    } else if (dtend && !dtbgn) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LessEqual,
+        lowValue: '',
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
     }
-    if (skip) {
-      params = params.append('$skip', `${skip}`);
-    }
-
-    return this.http.get(this.docItemViewAPIUrl, {
-      headers,
-      params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceOdataService.`,
-          ConsoleLogTypeEnum.debug);
-
-        const data: any = response as any;
-        const ardi: DocumentItemView[] = [];
-        if (data && data.value && data.value instanceof Array && data.value.length > 0) {
-          for (const di of data.value) {
-            const div: DocumentItemView = di as DocumentItemView;
-            div.TransactionDate = moment(di.TransactionDate, momentDateFormat);
-            ardi.push(div);
-          }
-        }
-        return {
-          totalCount: data['@odata.count'],
-          contentList: ardi,
-        };
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByAccount in FinanceOdataService: ${errresp}`,
-         ConsoleLogTypeEnum.error);
-
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
+    return this.searchDocItem(filters, top, skip);
   }
 
   /**
@@ -1931,56 +1915,41 @@ export class FinanceOdataService {
     skip?: number,
     dtbgn?: moment.Moment,
     dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
-      let headers: HttpHeaders = new HttpHeaders();
-      const hid = this.homeService.ChosedHome.ID;
-      const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
-      const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
-      params = params.append(
-        '$filter',
-        `HomeID eq ${hid} and ControlCenterID eq ${ccid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
-      params = params.append('$count', `true`);
-      if (top) {
-        params = params.append('$top', `${top}`);
-      }
-      if (skip) {
-        params = params.append('$skip', `${skip}`);
-      }
-
-      return this.http.get(this.docItemViewAPIUrl, {
-        headers,
-        params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceOdataService.`,
-            ConsoleLogTypeEnum.debug);
-
-          const data: any = response as any;
-          const ardi: DocumentItemView[] = [];
-          if (data && data.value && data.value instanceof Array && data.value.length > 0) {
-            for (const di of data.value) {
-              ardi.push(di as DocumentItemView);
-            }
-          }
-          return {
-            totalCount: data.totalCount,
-            contentList: ardi,
-          };
-        }),
-        catchError((errresp: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByControlCenter in FinanceOdataService: ${errresp}`,
-           ConsoleLogTypeEnum.error);
-
-          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-          return throwError(errmsg);
-        }),
-        );
+    const filters: GeneralFilterItem[] = [];
+    filters.push({
+      fieldName: 'ControlCenterID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      valueType: GeneralFilterValueType.number,
+      highValue: 0,
+    });
+    if (dtbgn && dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
+    } else if (dtbgn && !dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LargerEqual,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: ''
+      });
+    } else if (dtend && !dtbgn) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LessEqual,
+        lowValue: '',
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
     }
+    return this.searchDocItem(filters, top, skip);
+  }
 
   /**
    * Get document items by order
@@ -1997,61 +1966,48 @@ export class FinanceOdataService {
     skip?: number,
     dtbgn?: moment.Moment,
     dtend?: moment.Moment): Observable<BaseListModel<DocumentItemView>> {
-    let headers: HttpHeaders = new HttpHeaders();
-    const hid = this.homeService.ChosedHome.ID;
-    const dtbgnfmt = dtbgn ? dtbgn.format(momentDateFormat) : '0001-01-01';
-    const dtendfmt = dtend ? dtend.format(momentDateFormat) : '9999-12-31';
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-    let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TranType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
-    params = params.append(
-      '$filter',
-      `HomeID eq ${hid} and OrderID eq ${ordid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
-    params = params.append('$count', `true`);
-    if (top) {
-      params = params.append('$top', `${top}`);
+    const filters: GeneralFilterItem[] = [];
+    filters.push({
+      fieldName: 'OrderID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ordid,
+      valueType: GeneralFilterValueType.number,
+      highValue: 0,
+    });
+    if (dtbgn && dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
+    } else if (dtbgn && !dtend) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LargerEqual,
+        lowValue: dtbgn.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+        highValue: ''
+      });
+    } else if (dtend && !dtbgn) {
+      filters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.LessEqual,
+        lowValue: '',
+        valueType: GeneralFilterValueType.date,
+        highValue: dtend.format(momentDateFormat),
+      });
     }
-    if (skip) {
-      params = params.append('$skip', `${skip}`);
-    }
 
-    return this.http.get(this.docItemViewAPIUrl, {
-      headers,
-      params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceOdataService.`,
-          ConsoleLogTypeEnum.debug);
-
-        const data: any = response as any;
-        const ardi: DocumentItemView[] = [];
-        if (data && data.value && data.value instanceof Array && data.value.length > 0) {
-          for (const di of data.value) {
-            ardi.push(di as DocumentItemView);
-          }
-        }
-        return {
-          totalCount: data.totalCount,
-          contentList: ardi,
-        };
-      }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByOrder in FinanceOdataService: ${errresp}`,
-         ConsoleLogTypeEnum.error);
-
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-      );
+    return this.searchDocItem(filters, top, skip);
   }
 
   /**
    * search document item
    */
-  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number): Observable<{totalCount: number, contentList: DocumentItemView[]}> {
+  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number)
+    : Observable<{totalCount: number, contentList: DocumentItemView[]}> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2060,166 +2016,10 @@ export class FinanceOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
     let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
-    filters.forEach((flt: GeneralFilterItem) => {
-      let subfilter = '';
-      switch (flt.operator) {
-        case GeneralFilterOperatorEnum.Equal: {
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              subfilter = `${flt.fieldName} eq '${flt.lowValue}'`;
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.Between: {
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} ge ${flt.lowValue} and ${flt.fieldName} le ${flt.highValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.LargerEqual: {
-          // ge
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.LargerThan: {
-          // gt
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.LessEqual: {
-          // le
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} le ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.LessThan: {
-          // lt
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} lt ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.Like: {
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              subfilter = `contains(${flt.fieldName}, '${flt.lowValue}')`;
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              break;
-            case GeneralFilterValueType.number:
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        case GeneralFilterOperatorEnum.NotEqual: {
-          // ne
-          switch (flt.valueType) {
-            case GeneralFilterValueType.string:
-              break;
-            case GeneralFilterValueType.boolean:
-              break;
-            case GeneralFilterValueType.date:
-              subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
-              break;
-            case GeneralFilterValueType.number:
-              subfilter = `${flt.fieldName} ne ${flt.lowValue}`;
-              break;
-            default:
-              break;
-          }
-          break;
-        }
-
-        default:
-          break;
-      }
-
-      if (subfilter) {
-        filterstr += ` and ${subfilter}`;
-      }
-    });
+    const subfilter = getFilterString(filters);
+    if (subfilter) {
+      filterstr += ` and ${subfilter}`;
+    }
     params = params.append('$filter', filterstr );
     params = params.append('$count', `true`);
     if (top) {
@@ -2233,10 +2033,11 @@ export class FinanceOdataService {
       headers,
       params,
     }).pipe(map((response: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceOdataService.`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering searchDocItem in FinanceOdataService.`,
         ConsoleLogTypeEnum.debug);
 
       const data: any = response as any;
+      const amt = data['@odata.count'];
       const ardi: DocumentItemView[] = [];
       if (data && data.value && data.value instanceof Array && data.value.length > 0) {
         for (const di of data.value) {
@@ -2244,12 +2045,12 @@ export class FinanceOdataService {
         }
       }
       return {
-        totalCount: data.totalCount,
+        totalCount: amt,
         contentList: ardi,
       };
     }),
     catchError((errresp: HttpErrorResponse) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in getDocumentItemByOrder in FinanceOdataService: ${errresp}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in searchDocItem in FinanceOdataService: ${errresp}`,
         ConsoleLogTypeEnum.error);
 
       const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

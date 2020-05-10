@@ -21,10 +21,51 @@
     </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
+        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="onNodeClick($event)">
         </nz-tree>
       </nz-spin>
     </div>
   </div>
-  <div class="col right" nz-col [nzSpan]="24 - col">Content changed after the selection.</div>
+  <div nz-col [nzSpan]="24 - col">
+    <div style="margin-left: 8px;">
+      <nz-table #innerTable 
+        nzShowSizeChanger
+        nzSize="middle"
+        [nzData]="listDocItem"
+        [nzLoading]="isLoadingResults"
+        [nzFrontPagination]="false"
+        [nzTotal]="totalDocumentItemCount"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="fetchDocItems()"
+        (nzPageSizeChange)="fetchDocItems(true)">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item ID</th>
+            <th>{{'Common.Description' | transloco}}</th>
+            <th>{{'Common.Date' | transloco}}</th>
+            <th>{{'Finance.TransactionType' | transloco}}</th>
+            <th>{{'Finance.Amount' | transloco}}</th>
+            <th>{{'Finance.Account' | transloco}}</th>
+            <th>{{'Finance.ControlCenter' | transloco}}</th>
+            <th>{{'Finance.Activity' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of innerTable.data">
+            <td>{{ data.DocumentID }}</td>
+            <td>{{ data.ItemID }}</td>
+            <td>{{ data.DocumentDesp}} </td>
+            <td>{{ data.TransactionDate }}</td>
+            <td>{{ getTranTypeName(data.TransactionType) }}<small>({{data.TransactionType}})</small></td>
+            <td>{{ data.Amount }} <small>{{data.Currency}}</small></td>
+            <td>{{ getAccountName(data.AccountID) }} <small>({{data.AccountID}})</small></td>
+            <td>{{ getControlCenterName(data.ControlCenterID) }}<small>({{data.ControlCenterID}})</small></td>
+            <td>{{ getOrderName(data.OrderID) }} <small>({{data.OrderID}})</small></td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
 </div>

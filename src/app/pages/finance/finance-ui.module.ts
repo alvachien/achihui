@@ -33,6 +33,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
 
@@ -77,6 +78,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzCollapseModule,
     NzPopconfirmModule,
     NzMessageModule,
+    NzDrawerModule,
     NgxEchartsModule,
   ],
   exports: [
@@ -115,6 +117,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from './pipes';
     NzCollapseModule,
     NzPopconfirmModule,
     NzMessageModule,
+    NzDrawerModule,
     NgxEchartsModule,
 
     UIAccountCtgyFilterExPipe,

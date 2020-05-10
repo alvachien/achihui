@@ -6,13 +6,14 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 import { OrderRoutingModule } from './order-routing.module';
 import { OrderComponent } from './order.component';
-import { OrderListComponent } from './order-list/order-list.component';
+import { OrderListComponent, OrderListDocumentItemComponent, } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 
 @NgModule({
   declarations: [
     OrderComponent,
     OrderListComponent,
+    OrderListDocumentItemComponent,
     OrderDetailComponent,
   ],
   imports: [

@@ -6,8 +6,7 @@ import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import {
-  Account, Document, ControlCenter, AccountCategory, TranType,
+import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
@@ -25,7 +24,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listOfDocs: Document[] = [];
   selectedDocScope: OverviewScopeEnum;
   isReload = false;
-  pageIndex = 0;
+  pageIndex = 1;
   pageSize = 10;
   totalDocumentCount = 1;
   mapOfExpandData: { [key: string]: boolean } = {};
@@ -116,11 +115,11 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   fetchData(reset: boolean = false): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...', ConsoleLogTypeEnum.debug);
     if (reset) {
-      this.pageIndex = 0;
+      this.pageIndex = 1;
     }
     this.isLoadingResults = true;
     const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
-    this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
+    this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
@@ -194,6 +193,5 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/masscreaterecurred']);
   }
   public onDelete(docid: number): void {
-    
   }
 }

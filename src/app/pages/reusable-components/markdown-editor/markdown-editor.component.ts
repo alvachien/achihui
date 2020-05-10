@@ -15,70 +15,66 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from 'src/app/services';
 import { Observable, Observer } from 'rxjs';
 
-// Constants for commands
-const commandFormatBlock = 'formatBlock';
-const commandParagraphSeparator = 'defaultParagraphSeparator';
-
 // Enum for toolbar buttons
-export enum EditorToolbarButtonEnum {
-  bold = 'bold',
-  italic = 'italic',
-  underline = 'underline',
-  strikethrough = 'strikethrough',
-  heading1 = 'heading1',
-  heading2 = 'heading2',
-  heading3 = 'heading3',
-  heading4 = 'heading4',
-  heading5 = 'heading5',
-  heading6 = 'heading6',
-  paragraph = 'paragraph',
-  quote = 'quote',
-  orderedlist = 'orderedlist',
-  unorderedlist = 'unorderedlist',
-  code = 'code',
-  horizontalline = 'horizontalline',
-  link = 'link',
-  image = 'image',
-  undo = 'undo',
-  redo = 'redo',
-  math = 'math'
-}
+// export enum EditorToolbarButtonEnum {
+//   bold = 'bold',
+//   italic = 'italic',
+//   underline = 'underline',
+//   strikethrough = 'strikethrough',
+//   heading1 = 'heading1',
+//   heading2 = 'heading2',
+//   heading3 = 'heading3',
+//   heading4 = 'heading4',
+//   heading5 = 'heading5',
+//   heading6 = 'heading6',
+//   paragraph = 'paragraph',
+//   quote = 'quote',
+//   orderedlist = 'orderedlist',
+//   unorderedlist = 'unorderedlist',
+//   code = 'code',
+//   horizontalline = 'horizontalline',
+//   link = 'link',
+//   image = 'image',
+//   undo = 'undo',
+//   redo = 'redo',
+//   math = 'math'
+// }
 
-// Config for editor
-export interface IACMEditorConfig {
-  toolbarItems?: EditorToolbarButtonEnum[];
-  name?: string;
-  height?: number | string;
-  width?: number | string;
-  delay?: number;
-  watch?: boolean;
-  maxLength?: number;
-  readOnly?: boolean;
-  placeHolder?: string;
-  gotoLine?: boolean;
-  autoHeight?: boolean;
-  autoFocus?: boolean;
-  autoCloseTags?: boolean;
-  searchReplace?: boolean;
-  syncScrolling?: boolean;
-  autoCloseBrackets?: boolean;
-  showTrailingSpace?: boolean;
-  matchBrackets?: boolean;
-  styleSelectedText?: boolean;
-  matchWordHighlight?: boolean;
-  styleActiveLine?: boolean;
-  pageBreak?: boolean;
-  atLink?: boolean;
-  emailLink?: boolean;
-  taskList?: boolean;
-  emoji?: boolean;
-  tex?: boolean;
-  flowChart?: boolean;
-  sequenceDiagram?: boolean;
-  previewCodeHighlight?: boolean;
-  toolbar?: boolean;
-  toolbarAutoFixed?: boolean;
-}
+// // Config for editor
+// export interface IACMEditorConfig {
+//   // toolbarItems?: EditorToolbarButtonEnum[];
+//   name?: string;
+//   height?: number | string;
+//   width?: number | string;
+//   delay?: number;
+//   watch?: boolean;
+//   maxLength?: number;
+//   readOnly?: boolean;
+//   placeHolder?: string;
+//   gotoLine?: boolean;
+//   autoHeight?: boolean;
+//   autoFocus?: boolean;
+//   autoCloseTags?: boolean;
+//   searchReplace?: boolean;
+//   syncScrolling?: boolean;
+//   autoCloseBrackets?: boolean;
+//   showTrailingSpace?: boolean;
+//   matchBrackets?: boolean;
+//   styleSelectedText?: boolean;
+//   matchWordHighlight?: boolean;
+//   styleActiveLine?: boolean;
+//   pageBreak?: boolean;
+//   atLink?: boolean;
+//   emailLink?: boolean;
+//   taskList?: boolean;
+//   emoji?: boolean;
+//   tex?: boolean;
+//   flowChart?: boolean;
+//   sequenceDiagram?: boolean;
+//   previewCodeHighlight?: boolean;
+//   toolbar?: boolean;
+//   toolbarAutoFixed?: boolean;
+// }
 
 @Component({
   selector: 'ac-markdown-editor',
@@ -97,7 +93,7 @@ export interface IACMEditorConfig {
   ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @Input() config: IACMEditorConfig;
+  // @Input() config: IACMEditorConfig;
   @Input() editorID: string;
   @ViewChild('previewElement') previewElement: ElementRef;
 
@@ -130,30 +126,30 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   // tslint:disable-next-line:variable-name
   private _onTouched: () => void;
 
-  defaultToolbarItems: EditorToolbarButtonEnum[] = [
-    EditorToolbarButtonEnum.bold,
-    EditorToolbarButtonEnum.italic,
-    EditorToolbarButtonEnum.underline,
-    EditorToolbarButtonEnum.strikethrough,
-    EditorToolbarButtonEnum.heading1,
-    EditorToolbarButtonEnum.heading2,
-    EditorToolbarButtonEnum.heading3,
-    EditorToolbarButtonEnum.heading4,
-    EditorToolbarButtonEnum.heading5,
-    EditorToolbarButtonEnum.heading6,
-    EditorToolbarButtonEnum.paragraph,
-    EditorToolbarButtonEnum.quote,
-    EditorToolbarButtonEnum.orderedlist,
-    EditorToolbarButtonEnum.unorderedlist,
-    EditorToolbarButtonEnum.code,
-    EditorToolbarButtonEnum.horizontalline,
-    EditorToolbarButtonEnum.link,
-    EditorToolbarButtonEnum.image,
-    EditorToolbarButtonEnum.undo,
-    EditorToolbarButtonEnum.redo,
-    EditorToolbarButtonEnum.math,
-  ];
-  toolbarItems: EditorToolbarButtonEnum[] = [];
+  // defaultToolbarItems: EditorToolbarButtonEnum[] = [
+  //   EditorToolbarButtonEnum.bold,
+  //   EditorToolbarButtonEnum.italic,
+  //   EditorToolbarButtonEnum.underline,
+  //   EditorToolbarButtonEnum.strikethrough,
+  //   EditorToolbarButtonEnum.heading1,
+  //   EditorToolbarButtonEnum.heading2,
+  //   EditorToolbarButtonEnum.heading3,
+  //   EditorToolbarButtonEnum.heading4,
+  //   EditorToolbarButtonEnum.heading5,
+  //   EditorToolbarButtonEnum.heading6,
+  //   EditorToolbarButtonEnum.paragraph,
+  //   EditorToolbarButtonEnum.quote,
+  //   EditorToolbarButtonEnum.orderedlist,
+  //   EditorToolbarButtonEnum.unorderedlist,
+  //   EditorToolbarButtonEnum.code,
+  //   EditorToolbarButtonEnum.horizontalline,
+  //   EditorToolbarButtonEnum.link,
+  //   EditorToolbarButtonEnum.image,
+  //   EditorToolbarButtonEnum.undo,
+  //   EditorToolbarButtonEnum.redo,
+  //   EditorToolbarButtonEnum.math,
+  // ];
+  // toolbarItems: EditorToolbarButtonEnum[] = [];
 
   get value(): string {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
@@ -175,36 +171,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     if (this._onChange) {
       this._onChange(value);
     }
-  }
-
-  public isToolbarItemExist(item: string): boolean {
-    return this.toolbarItems.some((searchElement: EditorToolbarButtonEnum) => {
-      return searchElement === (item as EditorToolbarButtonEnum);
-    });
-  }
-
-  public isToolbarButtonStatus(item: string): boolean {
-    const btn = item as EditorToolbarButtonEnum;
-    let rst = false;
-    switch (btn) {
-      case EditorToolbarButtonEnum.bold:
-        rst = document.queryCommandState('bold');
-        break;
-      case EditorToolbarButtonEnum.italic:
-        rst = document.queryCommandState('italic');
-        break;
-      case EditorToolbarButtonEnum.underline:
-        rst = document.queryCommandState('underline');
-        break;
-      case EditorToolbarButtonEnum.strikethrough:
-        rst = document.queryCommandState('strikeThrough');
-        break;
-
-      default:
-        break;
-    }
-
-    return rst;
   }
 
   @HostListener('change') onChange(): void {
@@ -240,7 +206,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ngOnDestroy() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
-    this.toolbarItems = [];
+    // this.toolbarItems = [];
   }
 
   onEditorInit(e: editor.ICodeEditor): void {
