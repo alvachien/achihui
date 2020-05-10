@@ -154,15 +154,25 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
     this.isLoadingResults = true;
     // const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
-    this.odataService.searchDocItem(this.filterDocItem, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
+    forkJoin([
+      this.odataService.searchDocItem(this.filterDocItem, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0),
+      this.odataService.fetchAllTranTypes(),
+      this.odataService.fetchAllControlCenters(),
+      this.odataService.fetchAllOrders(),
+    ])
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (revdata: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems succeed.`,
             ConsoleLogTypeEnum.debug);
+
+          this.arTranType = revdata[1];
+          this.arControlCenters = revdata[2];
+          this.arOrders = revdata[3];
+
           this.listDocItem = [];
-          if (revdata) {
+          if (revdata[0]) {
             if (revdata.totalCount) {
               this.totalDocumentItemCount = +revdata.totalCount;
             } else {
@@ -198,9 +208,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts(isReload),
-      this.odataService.fetchAllTranTypes(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
     ])
       .pipe(
         takeUntil(this._destroyed$),
@@ -215,9 +222,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             // Parse the data
             this.availableCategories = data[0];
             this.availableAccounts = this._filterAccountsByStatus(data[1] as Account[]);
-            this.arTranType = data[2];
-            this.arControlCenters = data[3];
-            this.arOrders = data[4];
 
             this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
           }

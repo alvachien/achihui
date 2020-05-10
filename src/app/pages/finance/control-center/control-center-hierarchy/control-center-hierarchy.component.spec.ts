@@ -21,6 +21,10 @@ describe('ControlCenterHierarchyComponent', () => {
   let fakeData: FakeDataHelper;
   let storageService: any;
   let fetchAllControlCentersSpy: any;
+  let fetchAllAccountsSpy: any;
+  let fetchAllTranTypesSpy: any;
+  let fetchAllOrdersSpy: any;
+  let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
 
   beforeAll(() => {
@@ -33,8 +37,16 @@ describe('ControlCenterHierarchyComponent', () => {
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllControlCenters',
+      'fetchAllAccounts',
+      'fetchAllTranTypes',
+      'fetchAllOrders',
+      'searchDocItem'
     ]);
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    searchDocItemSpy = storageService.searchDocItem.and.returnValue(of({}));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -83,6 +95,10 @@ describe('ControlCenterHierarchyComponent', () => {
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     it('should not show data before OnInit', () => {
@@ -106,6 +122,10 @@ describe('ControlCenterHierarchyComponent', () => {
 
     beforeEach(() => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     beforeEach(inject([OverlayContainer],

@@ -22,6 +22,10 @@ describe('AccountHierarchyComponent', () => {
   let storageService: any;
   let fetchAllAccountCategoriesSpy: any;
   let fetchAllAccountsSpy: any;
+  let fetchAllTranTypesSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let fetchAllOrdersSpy: any;
+  let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -36,9 +40,17 @@ describe('AccountHierarchyComponent', () => {
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllAccounts',
+      'fetchAllTranTypes',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
+      'searchDocItem'
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    searchDocItemSpy = storageService.searchDocItem.and.returnValue(of({}));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -88,6 +100,10 @@ describe('AccountHierarchyComponent', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     it('should not show data before OnInit', () => {
@@ -119,6 +135,10 @@ describe('AccountHierarchyComponent', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     beforeEach(inject([OverlayContainer],

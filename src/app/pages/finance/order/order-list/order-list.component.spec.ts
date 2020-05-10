@@ -21,6 +21,10 @@ describe('OrderListComponent', () => {
   let fakeData: FakeDataHelper;
   let storageService: any;
   let fetchAllOrdersSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let fetchAllAccountsSpy: any;
+  let fetchAllTranTypesSpy: any;
+  let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -35,8 +39,17 @@ describe('OrderListComponent', () => {
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllOrders',
+      'fetchAllControlCenters',
+      'fetchAllAccounts',
+      'fetchAllTranTypes',
+      'searchDocItem'
     ]);
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    searchDocItemSpy = storageService.searchDocItem.and.returnValue(of({}));
+
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -85,6 +98,10 @@ describe('OrderListComponent', () => {
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     it('should not show data before OnInit', () => {
@@ -108,6 +125,10 @@ describe('OrderListComponent', () => {
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 

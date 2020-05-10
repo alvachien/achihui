@@ -88,7 +88,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   }
 
   onDisplayDocItem(rid: number, rname: string) {
-    const drawerRef = this.drawerService.create<OrderListDocumentItemComponent, { 
+    const drawerRef = this.drawerService.create<OrderListDocumentItemComponent, {
       orderId: number,
       orderName: string,
     }, string>({
@@ -245,10 +245,12 @@ export class OrderListDocumentItemComponent implements OnInit, OnDestroy {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
   fetchDocItems(reset: boolean = false): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListDocumentItemComponent fetchDocItems...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListDocumentItemComponent fetchDocItems...',
+      ConsoleLogTypeEnum.debug);
     if (reset) {
       this.pageIndex = 1;
     }
+
     this.isLoadingResults = true;
     this.odataService.searchDocItem(this.filterDocItem, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
       .pipe(takeUntil(this._destroyed$),

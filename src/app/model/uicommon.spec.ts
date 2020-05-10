@@ -308,7 +308,7 @@ describe('getFilterString', () => {
     arfilters.push(flt);
 
     const fltstr = getFilterString(arfilters);
-    expect(fltstr).toEqual(`((fieldName eq 1) or (fieldName eq 2)) and (fieldName2 eq 3)`);
+    expect(fltstr).toEqual(`(fieldName eq 1 or fieldName eq 2) and fieldName2 eq 3`);
   });
   it('#2. Three filters without same', () => {
     const arfilters: GeneralFilterItem[] = [];
