@@ -7,6 +7,8 @@
     <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
+      <a nz-button nzType="link" (click)="onRefresh()">{{'Common.Refresh' | transloco}}</a>
+      <nz-divider nzType="vertical"></nz-divider>
       <a nz-button nzType="link" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
     </nz-page-header-extra>

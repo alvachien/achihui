@@ -138,6 +138,9 @@ export class AccountListComponent implements OnInit, OnDestroy {
       });
   }
 
+  onRefresh(): void {
+  }
+
   onDisplay(rid: number): void {
     this.router.navigate(['/finance/account/display/' + rid.toString()]);
   }

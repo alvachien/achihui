@@ -25,6 +25,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
+  selectedAccountStatus = undefined;
   arrayStatus: UIDisplayString[];
   selectedStatus: AccountStatusEnum;
   selectedAccounts: number[];

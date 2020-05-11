@@ -4,6 +4,7 @@ import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
@@ -22,7 +23,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   listOfDocs: Document[] = [];
-  selectedDocScope: OverviewScopeEnum;
+  // selectedDocScope: OverviewScopeEnum;
   isReload = false;
   pageIndex = 1;
   pageSize = 10;
@@ -54,7 +55,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-    this.selectedDocScope = OverviewScopeEnum.All;
+    // this.selectedDocScope = OverviewScopeEnum.All;
+    this.selectedRange = [moment().startOf('month').toDate(), moment().endOf('month').toDate()];
 
     this.isLoadingResults = true;
     const arseqs = [
@@ -118,7 +120,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.pageIndex = 1;
     }
     this.isLoadingResults = true;
-    const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
+    // const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
+    const bgn = this.selectedRange.length > 0 ?  moment(this.selectedRange[0] as Date) : moment();
+    const end = this.selectedRange.length > 1 ?  moment(this.selectedRange[1] as Date) : moment();
+
     this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
@@ -150,6 +155,9 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       });
   }
 
+  public onRangeChange(event): void {
+    this.fetchData(true);
+  }
   public onCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/createnormal']);
   }

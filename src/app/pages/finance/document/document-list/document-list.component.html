@@ -44,7 +44,7 @@
       <!-- <nz-select [ngModel]="selectedDocScope">
         <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
       </nz-select> -->
-      <nz-range-picker [(ngModel)]="selectedRange"></nz-range-picker>
+      <nz-range-picker [(ngModel)]="selectedRange" (ngModelChange)="onRangeChange($event)"></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
@@ -93,7 +93,7 @@
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
             <td></td>
-            <td colspan="4">
+            <td colspan="6">
               <nz-table #itemTable [nzData]="data.Items">
                 <thead>
                   <tr>
