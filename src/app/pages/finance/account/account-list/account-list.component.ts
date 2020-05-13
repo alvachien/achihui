@@ -4,6 +4,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import { NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { ITableFilterValues, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil,
