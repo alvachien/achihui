@@ -11,6 +11,14 @@ import { ITableFilterValues, Account, AccountStatusEnum, UIDisplayString, UIDisp
   ModelUtility, ConsoleLogTypeEnum, AccountCategory,
 } from '../../../../model';
 
+export interface UITableColumnItem {
+  name: string;
+  sortOrder?: NzTableSortOrder;
+  sortFn?: NzTableSortFn;
+  listOfFilter?: NzTableFilterList;
+  filterFn?: NzTableFilterFn;
+}
+
 @Component({
   selector: 'hih-fin-account-list',
   templateUrl: './account-list.component.html',
