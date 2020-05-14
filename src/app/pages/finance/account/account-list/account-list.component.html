@@ -22,6 +22,7 @@
           *ngFor="let column of listOfColumns"
           [nzSortOrder]="column.sortOrder"
           [nzSortFn]="column.sortFn"
+          [nzShowSort]="column.showSort"
           [nzSortDirections]="column.sortDirections"
           [nzFilterMultiple]="column.filterMultiple"
           [nzFilters]="column.listOfFilter"

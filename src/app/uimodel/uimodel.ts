@@ -1,6 +1,6 @@
 /***
  * UI Model
- * 
+ *
  * UI Models with UI Framework dependent
  */
 
@@ -49,7 +49,7 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
 
   return null;
 };
-  
+
 /**
  * Validator for doc items
  * @param group Instance of the form group
@@ -72,10 +72,15 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
  */
 export interface UITableColumnItem {
   name: string;
+
+  // Sort
   sortOrder?: NzTableSortOrder;
   sortFn?: NzTableSortFn;
+  showSort?: boolean;
+  sortDirections?: NzTableSortOrder[];
+
+  // Filter
   listOfFilter?: NzTableFilterList;
   filterFn?: NzTableFilterFn;
   filterMultiple?: boolean;
-  sortDirections?: NzTableSortOrder[];
 }

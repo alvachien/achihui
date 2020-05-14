@@ -41,26 +41,35 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.isReload = false;
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.arrayStatus.forEach(val => {
+      this.listStatusFilter.push({
+        text: translate(val.i18nterm),
+        value: val.value,
+      });
+    });
 
     // Columns: ID, Name, Category, Status, Comment
     this.columnItems = [{
       name: 'Common.ID',
     }, {
       name: 'Common.Name',
-      sortOrder: null,
       sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+      showSort: true,
     }, {
       name: 'Common.Category',
       sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+      sortFn: (a: Account, b: Account) => a.CategoryName.localeCompare(b.CategoryName),
+      listOfFilter: this.listCategoryFilter,
     }, {
       name: 'Common.Status',
       sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+      showSort: true,
+      sortFn: (a: Account, b: Account) => a.Status === b.Status ? 0 : (a. Status > b.Status ? 1 : -1),
+      listOfFilter: this.listStatusFilter
     }, {
       name: 'Common.Comment',
-      sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+      showSort: true,
+      sortFn: (a: Account, b: Account) => a.Comment.localeCompare(b.Comment),
     }];
   }
 
