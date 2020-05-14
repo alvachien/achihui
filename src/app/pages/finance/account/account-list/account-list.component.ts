@@ -4,20 +4,12 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
-import { NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { ITableFilterValues, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil,
   ModelUtility, ConsoleLogTypeEnum, AccountCategory,
 } from '../../../../model';
-
-export interface UITableColumnItem {
-  name: string;
-  sortOrder?: NzTableSortOrder;
-  sortFn?: NzTableSortFn;
-  listOfFilter?: NzTableFilterList;
-  filterFn?: NzTableFilterFn;
-}
+import { UITableColumnItem } from '../../../../uimodel';
 
 @Component({
   selector: 'hih-fin-account-list',
@@ -36,6 +28,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   listStatusFilter: ITableFilterValues[] = [];
   selectedCategoryFilter: number[] = [];
   selectedStatusFilter: AccountStatusEnum[] = [];
+  columnItems: UITableColumnItem[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
@@ -48,6 +41,27 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.isReload = false;
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+
+    // Columns: ID, Name, Category, Status, Comment
+    this.columnItems = [{
+      name: 'Common.ID',
+    }, {
+      name: 'Common.Name',
+      sortOrder: null,
+      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+    }, {
+      name: 'Common.Category',
+      sortOrder: null,
+      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+    }, {
+      name: 'Common.Status',
+      sortOrder: null,
+      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+    }, {
+      name: 'Common.Comment',
+      sortOrder: null,
+      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+    }];
   }
 
   ngOnInit() {

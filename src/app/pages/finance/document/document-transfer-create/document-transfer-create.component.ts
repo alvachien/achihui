@@ -9,8 +9,9 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import {
   financeDocTypeTransfer, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, costObjectValidator, financeTranTypeTransferOut, financeTranTypeTransferIn,
+  BuildupAccountForSelection, BuildupOrderForSelection, financeTranTypeTransferOut, financeTranTypeTransferIn,
 } from '../../../../model';
+import { costObjectValidator, } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 

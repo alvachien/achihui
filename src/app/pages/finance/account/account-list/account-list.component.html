@@ -18,6 +18,17 @@
       [nzLoading]="isLoadingResults"
       [nzData]="dataSet">
       <thead>
+        <th
+          *ngFor="let column of listOfColumns"
+          [nzSortOrder]="column.sortOrder"
+          [nzSortFn]="column.sortFn"
+          [nzSortDirections]="column.sortDirections"
+          [nzFilterMultiple]="column.filterMultiple"
+          [nzFilters]="column.listOfFilter"
+          [nzFilterFn]="column.filterFn"
+          >
+          {{ column.name | transloco }}
+        </th>
         <tr>
           <th>ID</th>
           <th>{{'Common.Name' | transloco}}</th>

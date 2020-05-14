@@ -37,7 +37,7 @@
     "marked": "^0.8.2",
     "moment": "^2.24.0",
     "monaco-editor": "^0.20.0",
-    "ng-zorro-antd": "^9.1.1",
+    "ng-zorro-antd": "^9.1.2",
     "ngx-echarts": "^4.2.2",
     "ngx-markdown": "^9.0.0",
     "oidc-client": "^1.10.1",

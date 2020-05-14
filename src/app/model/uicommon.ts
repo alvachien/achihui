@@ -1,8 +1,11 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
-import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, PlanTypeEnum, } from './financemodel';
+import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, PlanTypeEnum,
+  Account, AccountCategory, Order, financeAccountCategoryBorrowFrom, financeAccountCategoryAsset,
+  financeAccountCategoryAdvancePayment,
+  IAccountCategoryFilter,
+  financeAccountCategoryLendTo, } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
 import { EnPOSEnum } from './learnmodel';
-import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
 
 /**
@@ -594,64 +597,6 @@ export class GeneralFilterItem {
   valueType: GeneralFilterValueType;
 }
 
-/**
- * Validator for date range
- * @param group Instance of the form group
- */
-export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  const strdt = group.get('startDateControl').value as Date;
-  if (!strdt) {
-    return { invalidStartDate: true };
-  }
-  const enddt = group.get('endDateControl').value as Date;
-  if (!enddt) {
-    return { invalidEndDate: true };
-  }
-  const startDate: moment.Moment = moment(strdt).startOf('day');
-  const endDate: moment.Moment = moment(enddt).startOf('day');
-  if (!endDate.isSameOrAfter(startDate)) {
-    return  { invalidDateRange: true };
-  }
-
-  return null;
-};
-
-/**
- * Validator for cost object
- * @param group Instance of the form group
- */
-export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  const cc: any = group.get('ccControl').value;
-  const order: any = group.get('orderControl').value;
-  if (cc) {
-    if (order) {
-      return { costobjectoverassign: true };
-    }
-  } else {
-    if (!order) {
-      return { nocostobject: true };
-    }
-  }
-
-  return null;
-};
-
-/**
- * Validator for doc items
- * @param group Instance of the form group
- */
-// export const itemExistenceValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-//   let items: any = group.get('itemControl').value;
-//   if (items instanceof Array) {
-//     if (items.length === 0) {
-//       return { noitem: true };
-//     }
-//   } else {
-//     return { invaliditems: true };
-//   }
-
-//   return null;
-// };
 
 export function getFilterString(filters: GeneralFilterItem[]): string {
   const arfields: string[] = [];
@@ -857,4 +802,112 @@ export function getSingleFilterString(flt: GeneralFilterItem): string {
   }
 
   return subfilter;
+}
+
+/**
+ * Account for selection
+ */
+export class UIAccountForSelection {
+  public Id: number;
+  public CategoryId: number;
+  public Name: string;
+  public CategoryName: string;
+  public AssetFlag: boolean;
+  public Status: AccountStatusEnum;
+}
+
+/**
+ * Buildup accounts for select
+ * @param acnts Accounts
+ * @param acntctg Account categories
+ * @param skipadp Skip ADP accounts
+ * @param skiploan Skip Loan accounts
+ * @param skipasset Skip Asset accounts
+ */
+export function BuildupAccountForSelection(
+  acnts: Account[],
+  acntctg: AccountCategory[],
+  ctgyFilter?: IAccountCategoryFilter): UIAccountForSelection[] {
+  const arrst: UIAccountForSelection[] = [];
+
+  if (acnts && acnts.length > 0) {
+    for (const acnt of acnts) {
+      const rst: UIAccountForSelection = new UIAccountForSelection();
+      rst.CategoryId = acnt.CategoryId;
+      rst.Id = acnt.Id;
+      rst.Name = acnt.Name;
+      rst.Status = acnt.Status;
+
+      // Skip some categories
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipADP === true
+        && acnt.CategoryId === financeAccountCategoryAdvancePayment) {
+        continue;
+      }
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipLoan === true
+        && (acnt.CategoryId === financeAccountCategoryBorrowFrom
+        || acnt.CategoryId === financeAccountCategoryLendTo)) {
+        continue;
+      }
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipAsset === true
+        && acnt.CategoryId === financeAccountCategoryAsset) {
+        continue;
+      }
+
+      if (acntctg && acntctg.length > 0) {
+        for (const ctgy of acntctg) {
+          if (ctgy.ID === rst.CategoryId) {
+            rst.CategoryName = ctgy.Name;
+            rst.AssetFlag = ctgy.AssetFlag;
+          }
+        }
+      }
+
+      arrst.push(rst);
+    }
+  }
+
+  return arrst;
+}
+
+/**
+ * Order for selection
+ */
+export class UIOrderForSelection {
+  public Id: number;
+  public Name: string;
+  public _validFrom: moment.Moment;
+  public _validTo: moment.Moment;
+}
+
+/**
+ * Buildup accounts for select
+ * @param orders Orders
+ * @param skipinv Skip invalid orders
+ */
+export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UIOrderForSelection[] {
+  const arrst: UIOrderForSelection[] = [];
+
+  if (orders && orders.length > 0) {
+    for (const ord of orders) {
+      const rst: UIOrderForSelection = new UIOrderForSelection();
+      rst.Id = ord.Id;
+      rst.Name = ord.Name;
+      rst._validFrom = ord.ValidFrom.clone();
+      rst._validTo = ord.ValidTo.clone();
+
+      // Skip some categories
+      if (skipinv) {
+        if (rst._validFrom > moment() || rst._validTo < moment()) {
+          continue;
+        }
+      }
+
+      arrst.push(rst);
+    }
+  }
+
+  return arrst;
 }

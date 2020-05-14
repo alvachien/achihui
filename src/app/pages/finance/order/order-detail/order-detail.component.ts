@@ -9,7 +9,8 @@ import * as moment from 'moment';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
-  SettlementRule, dateRangeValidator, } from '../../../../model';
+  SettlementRule, } from '../../../../model';
+import { dateRangeValidator, } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
 
 @Component({
