@@ -6,7 +6,7 @@
   <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.HierarchyView' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-select [(ngModel)]="selectedAccountStatus" nzAllowClear [nzPlaceHolder]="'Common.Status' | transloco">
+    <nz-select [(ngModel)]="listSelectedAccountStatus" nzMode="multiple" nzAllowClear [nzPlaceHolder]="'Common.Status' | transloco">
       <nz-option *ngFor="let option of arrayStatus" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
     </nz-select>
     <nz-divider nzType="vertical"></nz-divider>
@@ -34,15 +34,13 @@
     <div style="margin-left: 8px;">
       <nz-table #innerTable 
         nzShowSizeChanger
-        nzSize="middle"
         [nzData]="listDocItem"
-        [nzLoading]="isLoadingResults"
         [nzFrontPagination]="false"
+        [nzLoading]="isLoadingResults"
         [nzTotal]="totalDocumentItemCount"
         [(nzPageIndex)]="pageIndex"
         [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="fetchDocItems()"
-        (nzPageSizeChange)="fetchDocItems(true)">
+        (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
           <tr>
             <th>#</th>

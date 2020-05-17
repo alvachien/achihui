@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzTableQueryParams } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
@@ -25,7 +25,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
-  selectedAccountStatus = undefined;
+  listSelectedAccountStatus: any[] = [];
   arrayStatus: UIDisplayString[];
   selectedStatus: AccountStatusEnum;
   selectedAccounts: number[];
@@ -147,6 +147,16 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this.id = requestAnimationFrame(() => {
       this.col = col!;
     });
+  }
+  onQueryParamsChange(params: NzTableQueryParams) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onQueryParamsChange...',
+      ConsoleLogTypeEnum.debug);
+
+    const { pageSize, pageIndex, sort, filter } = params;
+    const currentSort = sort.find(item => item.value !== null);
+    const sortField = (currentSort && currentSort.key) || null;
+    const sortOrder = (currentSort && currentSort.value) || null;
+    
   }
   fetchDocItems(reset: boolean = false): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems...', ConsoleLogTypeEnum.debug);

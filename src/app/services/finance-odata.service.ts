@@ -2006,7 +2006,7 @@ export class FinanceOdataService {
   /**
    * search document item
    */
-  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number)
+  public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number, orderby?: { field: string, order: string })
     : Observable<{totalCount: number, contentList: DocumentItemView[]}> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -2027,6 +2027,9 @@ export class FinanceOdataService {
     }
     if (skip) {
       params = params.append('$skip', `${skip}`);
+    }
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
 
     return this.http.get(this.docItemViewAPIUrl, {
