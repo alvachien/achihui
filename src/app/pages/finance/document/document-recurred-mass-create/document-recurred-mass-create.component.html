@@ -283,7 +283,7 @@
 
     <!-- Step 3: Items -->
     <div nz-row [hidden]="currentStep !== 3">
-      <form nz-form [formGroup]="itemsFormGroup">
+      <form nz-form [formGroup]="itemsFormGroup" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
             <nz-collapse-panel *ngFor="let item of itemsFormGroup?.get('items')['controls']; index as i; first as isFirst; last as isLast" 

@@ -21,14 +21,11 @@ export class AccountListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   dataSet: Account[] = [];
-  isReload: boolean;
   arCategories: AccountCategory[] = [];
   arrayStatus: UIDisplayString[] = [];
   listCategoryFilter: ITableFilterValues[] = [];
   listStatusFilter: ITableFilterValues[] = [];
-  selectedCategoryFilter: number[] = [];
-  selectedStatusFilter: AccountStatusEnum[] = [];
-  columnItems: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
@@ -39,7 +36,6 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.isReload = false;
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.arrayStatus.forEach(val => {
       this.listStatusFilter.push({
@@ -49,7 +45,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     });
 
     // Columns: ID, Name, Category, Status, Comment
-    this.columnItems = [{
+    this.listOfColumns = [{
       name: 'Common.ID',
     }, {
       name: 'Common.Name',
@@ -58,19 +54,39 @@ export class AccountListComponent implements OnInit, OnDestroy {
     }, {
       name: 'Common.Category',
       sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.CategoryName.localeCompare(b.CategoryName),
+      showSort: false,
+      sortFn: null,
       listOfFilter: this.listCategoryFilter,
+      filterMultiple: true,
+      filterFn: (selectedCategories: number[], item: Account) =>
+        selectedCategories ? selectedCategories.some(ctgyid => item.CategoryId === ctgyid) : false
     }, {
       name: 'Common.Status',
       sortOrder: null,
-      showSort: true,
-      sortFn: (a: Account, b: Account) => a.Status === b.Status ? 0 : (a. Status > b.Status ? 1 : -1),
-      listOfFilter: this.listStatusFilter
+      showSort: false,
+      // sortFn: (a: Account, b: Account) => a.Status === b.Status ? 0 : (a. Status > b.Status ? 1 : -1),
+      listOfFilter: this.listStatusFilter,
+      filterMultiple: true,
+      filterFn: (selectedStatus: AccountStatusEnum[], item: Account) =>
+        selectedStatus ? selectedStatus.some(sts => item.Status === sts) : false
     }, {
       name: 'Common.Comment',
       showSort: true,
+      sortOrder: null,
       sortFn: (a: Account, b: Account) => a.Comment.localeCompare(b.Comment),
     }];
+  }
+  public getCategoryName(ctgyid: number): string {
+    const ctgyobj = this.arCategories.find(val => {
+      return val.ID === ctgyid;
+    });
+    return ctgyobj ? ctgyobj.Name : '';
+  }
+  public getStatusString(sts): string {
+    const stsobj = this.arrayStatus.find(val => {
+      return val.value === sts;
+    });
+    return stsobj ? stsobj.i18nterm : '';
   }
 
   ngOnInit() {
@@ -78,10 +94,23 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
+    this.onRefresh();
+  }
+
+  ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
+  }
+
+  onRefresh(isreload?: boolean): void {
     this.isLoadingResults = true;
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(this.isReload),
+      this.odataService.fetchAllAccounts(isreload),
     ])
       .pipe(
         takeUntil(this._destroyed$),
@@ -89,8 +118,12 @@ export class AccountListComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data: any) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit, forkJoin...',
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh, forkJoin...',
             ConsoleLogTypeEnum.debug);
+
+          this.arCategories = [];
+          this.dataSet = [];
+          this.listCategoryFilter = [];
 
           if (data instanceof Array && data.length > 0) {
             // Parse the data
@@ -106,7 +139,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit, forkJoin, failed ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent onRefresh, forkJoin, failed ${error}`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({
@@ -118,66 +151,15 @@ export class AccountListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
-  doFilter(seledCategory: number[], seledStatus: any[]): void {
-    this.selectedCategoryFilter = seledCategory;
-    this.selectedStatusFilter = seledStatus;
-
-    this.isLoadingResults = true;
-    this.odataService.fetchAllAccounts()
-    .pipe(takeUntil(this._destroyed$))
-    .subscribe((data: Account[]) => {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent doFilter fetchAllAccounts...',
-        ConsoleLogTypeEnum.debug);
-
-      // Do the filters
-      this.dataSet = [];
-      data.forEach((val: Account) => {
-        let binclude = true;
-        if (this.selectedCategoryFilter.length > 0 && this.selectedCategoryFilter.indexOf(val.CategoryId) === -1) {
-          binclude = false;
-        }
-
-        if (binclude) {
-          if (this.selectedStatusFilter.length > 0 && this.selectedStatusFilter.indexOf(val.Status) === -1) {
-            binclude = false;
-          }
-        }
-
-        if (binclude) {
-          this.dataSet.push(val);
-        }
-      });
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent doFilter fetchAllAccounts failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
-      });
-  }
-
-  onRefresh(): void {
-  }
-
   onDisplay(rid: number): void {
     this.router.navigate(['/finance/account/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {
     this.router.navigate(['/finance/account/edit/' + rid.toString()]);
+  }
+
+  onDelete(rid: number): void {
+    // TBD.
   }
 }

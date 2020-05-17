@@ -6,7 +6,8 @@
   <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.HierarchyView' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-select [(ngModel)]="listSelectedAccountStatus" nzMode="multiple" nzAllowClear [nzPlaceHolder]="'Common.Status' | transloco">
+    <nz-select [(ngModel)]="listSelectedAccountStatus" nzMode="multiple" nzAllowClear [nzPlaceHolder]="'Common.Status' | transloco"
+      (ngModelChange)="onAccountStatusFilterChanged($event)">
       <nz-option *ngFor="let option of arrayStatus" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
     </nz-select>
     <nz-divider nzType="vertical"></nz-divider>
@@ -36,7 +37,7 @@
         nzShowSizeChanger
         [nzData]="listDocItem"
         [nzFrontPagination]="false"
-        [nzLoading]="isLoadingResults"
+        [nzLoading]="isLoadingDocItems"
         [nzTotal]="totalDocumentItemCount"
         [(nzPageIndex)]="pageIndex"
         [(nzPageSize)]="pageSize"
@@ -45,13 +46,13 @@
           <tr>
             <th>#</th>
             <th>Item ID</th>
-            <th>{{'Common.Description' | transloco}}</th>
-            <th>{{'Common.Date' | transloco}}</th>
-            <th>{{'Finance.TransactionType' | transloco}}</th>
-            <th>{{'Finance.Amount' | transloco}}</th>
-            <th>{{'Finance.Account' | transloco}}</th>
-            <th>{{'Finance.ControlCenter' | transloco}}</th>
-            <th>{{'Finance.Activity' | transloco}}</th>
+            <th nzColumnKey="desp" [nzSortFn]="true">{{'Common.Description' | transloco}}</th>
+            <th nzColumnKey="date" [nzSortFn]="true">{{'Common.Date' | transloco}}</th>
+            <th nzColumnKey="trantype" [nzSortFn]="true">{{'Finance.TransactionType' | transloco}}</th>
+            <th nzColumnKey="amount" [nzSortFn]="true">{{'Finance.Amount' | transloco}}</th>
+            <th nzColumnKey="account" [nzSortFn]="true">{{'Finance.Account' | transloco}}</th>
+            <th nzColumnKey="controlcenter" [nzSortFn]="true">{{'Finance.ControlCenter' | transloco}}</th>
+            <th nzColumnKey="order" [nzSortFn]="true">{{'Finance.Activity' | transloco}}</th>
           </tr>
         </thead>
         <tbody>

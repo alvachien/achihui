@@ -7,7 +7,7 @@
     <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" (click)="onRefresh()">{{'Common.Refresh' | transloco}}</a>
+      <a nz-button nzType="link" (click)="onRefresh(true)">{{'Common.Refresh' | transloco}}</a>
       <nz-divider nzType="vertical"></nz-divider>
       <a nz-button nzType="link" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
@@ -16,34 +16,21 @@
   <div nz-row>
     <nz-table #basicTable
       [nzLoading]="isLoadingResults"
-      [nzData]="dataSet">
+      [nzData]="dataSet"
+      nzTableLayout="fixed">
       <thead>
-        <th
-          *ngFor="let column of listOfColumns"
-          [nzSortOrder]="column.sortOrder"
-          [nzSortFn]="column.sortFn"
-          [nzShowSort]="column.showSort"
-          [nzSortDirections]="column.sortDirections"
-          [nzFilterMultiple]="column.filterMultiple"
-          [nzFilters]="column.listOfFilter"
-          [nzFilterFn]="column.filterFn"
-          >
-          {{ column.name | transloco }}
-        </th>
         <tr>
-          <th>ID</th>
-          <th>{{'Common.Name' | transloco}}</th>
-          <th nzShowFilter
-            [nzFilters]="listCategoryFilter"
-            (nzFilterChange)="doFilter($event, selectedStatusFilter)">
-            {{'Common.Category' | transloco}}
+          <th
+            *ngFor="let column of listOfColumns"
+            [nzSortOrder]="column.sortOrder"
+            [nzSortFn]="column.sortFn"
+            [nzShowSort]="column.showSort"
+            [nzSortDirections]="column.sortDirections"
+            [nzFilterMultiple]="column.filterMultiple"
+            [nzFilters]="column.listOfFilter"
+            [nzFilterFn]="column.filterFn">
+            {{ column.name | transloco }}
           </th>
-          <th nzShowFilter
-            [nzFilters]="listStatusFilter"
-            (nzFilterChange)="doFilter(selectedCategoryFilter, $event)">
-            {{'Common.Status' | transloco}}
-          </th>
-          <th>{{'Common.Comment' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
@@ -53,19 +40,11 @@
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
             <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
-            <button nz-button nzType="link">{{'Common.Delete' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
           </td>
           <td>{{data.Name}}</td>
-          <td>
-            <nz-select [ngModel]="data.CategoryId" nzDisabled>
-              <nz-option *ngFor="let ctgy of arCategories" [nzValue]='ctgy.ID' [nzLabel]="t(ctgy.Name)"></nz-option>
-            </nz-select>
-          </td>
-          <td>
-            <nz-select [ngModel]="data.Status" nzDisabled>
-              <nz-option *ngFor="let sts of arrayStatus" [nzValue]='sts.value' [nzLabel]="t(sts.i18nterm)"></nz-option>
-            </nz-select>
-          </td>
+          <td>{{getCategoryName(data.CategoryId) | transloco}}</td>
+          <td>{{getStatusString(data.Status) | transloco}}</td>
           <td>{{data.Comment}}</td>
         </tr>
       </tbody>

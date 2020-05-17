@@ -9,7 +9,7 @@ import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
+  ModelUtility, ConsoleLogTypeEnum,
   GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, DocumentItemView,
   TranType, ControlCenter, UIAccountForSelection, Order,
 } from '../../../../model';
@@ -25,14 +25,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
-  listSelectedAccountStatus: any[] = [];
+  isLoadingDocItems = false;
+  // Filter
+  listSelectedAccountStatus: AccountStatusEnum[] = [];
   arrayStatus: UIDisplayString[];
-  selectedStatus: AccountStatusEnum;
-  selectedAccounts: number[];
-  selectedAccountCtgyScope: OverviewScopeEnum;
-  selectedAccountScope: OverviewScopeEnum;
   availableCategories: AccountCategory[];
   availableAccounts: Account[];
+  // Hierarchy
   accountTreeNodes: NzTreeNodeOptions[] = [];
   col = 8;
   id = -1;
@@ -54,12 +53,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false; // Default value
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
-    this.selectedStatus = AccountStatusEnum.Normal;
-    this.selectedAccounts = [];
     this.availableCategories = [];
     this.availableAccounts = [];
-    this.selectedAccountScope = OverviewScopeEnum.CurrentMonth;
-    this.selectedAccountCtgyScope = OverviewScopeEnum.CurrentMonth;
   }
 
   ngOnInit(): void {
@@ -125,7 +120,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             });
           }
         });
-        this.fetchDocItems(true);
+        this.pageIndex = 1;
+        this.fetchDocItems();
       } else if (evtkey.startsWith('a')) {
         this.filterDocItem = [];
 
@@ -137,7 +133,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           highValue: 0,
           valueType: GeneralFilterValueType.number,
         });
-        this.fetchDocItems(true);
+        this.pageIndex = 1;
+        this.fetchDocItems();
       }
     }
   }
@@ -148,31 +145,59 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this.col = col!;
     });
   }
+
+  onAccountStatusFilterChanged(selectedStatus: any[]): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
+      ConsoleLogTypeEnum.debug);
+    this._refreshTreeCore();
+  }
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onQueryParamsChange...',
       ConsoleLogTypeEnum.debug);
 
-    const { pageSize, pageIndex, sort, filter } = params;
-    const currentSort = sort.find(item => item.value !== null);
-    const sortField = (currentSort && currentSort.key) || null;
-    const sortOrder = (currentSort && currentSort.value) || null;
-    
-  }
-  fetchDocItems(reset: boolean = false): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems...', ConsoleLogTypeEnum.debug);
-    if (reset) {
-      this.pageIndex = 1;
+    if (this.filterDocItem.length > 0) {
+      const { pageSize, pageIndex, sort, filter } = params;
+      const currentSort = sort.find(item => item.value !== null);
+      const sortField = (currentSort && currentSort.key) || null;
+      const sortOrder = (currentSort && currentSort.value) || null;
+      let fieldName = '';
+      switch (sortField) {
+        case 'desp': fieldName = 'ItemDesp'; break;
+        case 'date': fieldName = 'TransactionDate'; break;
+        case 'trantype': fieldName = 'TransactionType'; break;
+        case 'amount': fieldName = 'Amount'; break;
+        case 'account': fieldName = 'AccountID'; break;
+        case 'controlcenter': fieldName = 'ControlCenterID'; break;
+        case 'order': fieldName = 'OrderID'; break;
+        default: break;
+      }
+      let fieldOrder = '';
+      switch (sortOrder) {
+        case 'ascend': fieldOrder = 'asc'; break;
+        case 'descend': fieldOrder = 'desc'; break;
+        default: break;
+      }
+      this.fetchDocItems((fieldName && fieldOrder) ? {
+        field: fieldName,
+        order: fieldOrder,
+      } : undefined);
     }
-    this.isLoadingResults = true;
-    // const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
+  }
+  fetchDocItems(orderby?: { field: string, order: string }): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems...', ConsoleLogTypeEnum.debug);
+    this.isLoadingDocItems = true;
+
     forkJoin([
-      this.odataService.searchDocItem(this.filterDocItem, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0),
+      this.odataService.searchDocItem(this.filterDocItem,
+        this.pageSize,
+        this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
+        orderby),
       this.odataService.fetchAllTranTypes(),
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
     ])
       .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
+        finalize(() => this.isLoadingDocItems = false))
       .subscribe({
         next: (revdata: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems succeed.`,
@@ -184,13 +209,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
           this.listDocItem = [];
           if (revdata[0]) {
-            if (revdata.totalCount) {
-              this.totalDocumentItemCount = +revdata.totalCount;
+            if (revdata[0].totalCount) {
+              this.totalDocumentItemCount = +revdata[0].totalCount;
             } else {
               this.totalDocumentItemCount = 0;
             }
 
-            this.listDocItem = revdata.contentList;
+            this.listDocItem = revdata[0].contentList;
           } else {
             this.totalDocumentItemCount = 0;
             this.listDocItem = [];
@@ -229,13 +254,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
             ConsoleLogTypeEnum.debug);
 
-          if (data instanceof Array && data.length > 0) {
-            // Parse the data
-            this.availableCategories = data[0];
-            this.availableAccounts = this._filterAccountsByStatus(data[1] as Account[]);
-
-            this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
-          }
+          this._refreshTreeCore();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
@@ -251,12 +270,14 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   private _filterAccountsByStatus(allAccounts: Account[]): Account[] {
     return allAccounts.filter((value: Account) => {
-      if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
-        return false;
-      }
-
-      return true;
+      return this.listSelectedAccountStatus.length > 0 ?
+        this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
     });
+  }
+  private _refreshTreeCore(): void {
+    this.availableCategories = this.odataService.AccountCategories.slice();
+    this.availableAccounts = this._filterAccountsByStatus(this.odataService.Accounts);
+    this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
   }
   private _buildAccountTree(arctgy: AccountCategory[], aracnt: Account[], level: number, ctgyid?: number): NzTreeNodeOptions[] {
     const data: NzTreeNodeOptions[] = [];
