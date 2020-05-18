@@ -11,6 +11,7 @@ import { AccountHierarchyComponent } from './account-hierarchy';
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment/account-extra-downpayment.component';
 import { AccountExtraAssetComponent } from './account-extra-asset/account-extra-asset.component';
 import { AccountExtraLoanComponent } from './account-extra-loan/account-extra-loan.component';
+import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { AccountExtraLoanComponent } from './account-extra-loan/account-extra-lo
     FinanceUIModule,
     AccountRoutingModule,
     TranslocoModule,
+    DocumentItemViewModule,
   ],
   exports: [
     AccountExtraDownpaymentComponent,

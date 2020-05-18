@@ -72,6 +72,7 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
  */
 export interface UITableColumnItem {
   name: string;
+  columnKey?: string;
 
   // Sort
   sortOrder?: NzTableSortOrder;

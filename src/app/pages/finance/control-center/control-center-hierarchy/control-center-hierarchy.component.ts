@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzTableQueryParams } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
@@ -19,21 +19,14 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, TranType, Order,
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private filterDocItem: GeneralFilterItem[] = [];
+  filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
+  // Hierarchy
+  arControlCenters: ControlCenter[] = [];
   ccTreeNodes: NzTreeNodeOptions[] = [];
   col = 8;
   id = -1;
-  // Document Item View Table
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arOrders: Order[] = [];
-  public arAccounts: Account[] = [];
-  pageIndex = 1;
-  pageSize = 10;
-  listDocItem: DocumentItemView[] = [];
-  totalDocumentItemCount = 0;
 
   constructor(
     public odataService: FinanceOdataService,
@@ -52,11 +45,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllOrders(),
-    ])
+    this.odataService.fetchAllControlCenters()
       .pipe(
         takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false)
@@ -66,9 +55,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters.',
             ConsoleLogTypeEnum.debug);
 
-          this.arControlCenters = value[0];
-          this.arAccounts = value[1];
-          this.arOrders = value[2];
+          this.arControlCenters = value;
 
           if (this.arControlCenters) {
             this.ccTreeNodes = this._buildControlCenterTree(this.arControlCenters, 1);
@@ -95,71 +82,6 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
-  public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find(acnt => {
-      return acnt.Id === acntid;
-    });
-    return acntObj ? acntObj.Name : '';
-  }
-  public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find(cc => {
-      return cc.Id === ccid;
-    });
-    return ccObj ? ccObj.Name : '';
-  }
-  public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find(ord => {
-      return ord.Id === ordid;
-    });
-    return orderObj ? orderObj.Name : '';
-  }
-  public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find(tt => {
-      return tt.Id === ttid;
-    });
-
-    return tranTypeObj ? tranTypeObj.Name : '';
-  }
-  fetchDocItems(reset: boolean = false): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent fetchDocItems...', ConsoleLogTypeEnum.debug);
-    if (reset) {
-      this.pageIndex = 1;
-    }
-    this.isLoadingResults = true;
-    // const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
-    this.odataService.searchDocItem(this.filterDocItem, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
-      .subscribe({
-        next: (revdata: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent fetchDocItems succeed.`,
-            ConsoleLogTypeEnum.debug);
-          this.listDocItem = [];
-          if (revdata) {
-            if (revdata.totalCount) {
-              this.totalDocumentItemCount = +revdata.totalCount;
-            } else {
-              this.totalDocumentItemCount = 0;
-            }
-
-            this.listDocItem = revdata.contentList;
-          } else {
-            this.totalDocumentItemCount = 0;
-            this.listDocItem = [];
-          }
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterHierarchyComponent fetchData, fetchAllDocuments failed ${error}...`,
-            ConsoleLogTypeEnum.error);
-
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error,
-            nzClosable: true,
-          });
-        },
-      });
-  }
 
   onResize({ col }: NzResizeEvent): void {
     cancelAnimationFrame(this.id);
@@ -173,16 +95,17 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
 
     if (event.keys.length > 0) {
       const evtkey = +event.keys[0];
-      this.filterDocItem = [];
+      const arflt = [];
 
-      this.filterDocItem.push({
+      arflt.push({
         fieldName: 'ControlCenterID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: evtkey,
         highValue: 0,
         valueType: GeneralFilterValueType.number,
       });
-      this.fetchDocItems(true);
+
+      this.filterDocItem = arflt;
     }
   }
 

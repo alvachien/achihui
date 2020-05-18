@@ -10,8 +10,7 @@ import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, DocumentItemView,
-  TranType, ControlCenter, UIAccountForSelection, Order,
+  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../../../../model';
 
 @Component({
@@ -22,7 +21,7 @@ import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplay
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private filterDocItem: GeneralFilterItem[] = [];
+  filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
   isLoadingDocItems = false;
@@ -35,14 +34,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   accountTreeNodes: NzTreeNodeOptions[] = [];
   col = 8;
   id = -1;
-  // Document Item View Table
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arOrders: Order[] = [];
-  pageIndex = 1;
-  pageSize = 10;
-  listDocItem: DocumentItemView[] = [];
-  totalDocumentItemCount = 0;
 
   constructor(
     private odataService: FinanceOdataService,
@@ -73,31 +64,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
-  public getAccountName(acntid: number): string {
-    const acntObj = this.availableAccounts.find(acnt => {
-      return acnt.Id === acntid;
-    });
-    return acntObj ? acntObj.Name : '';
-  }
-  public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find(cc => {
-      return cc.Id === ccid;
-    });
-    return ccObj ? ccObj.Name : '';
-  }
-  public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find(ord => {
-      return ord.Id === ordid;
-    });
-    return orderObj ? orderObj.Name : '';
-  }
-  public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find(tt => {
-      return tt.Id === ttid;
-    });
-
-    return tranTypeObj ? tranTypeObj.Name : '';
-  }
 
   onNodeClick(event: NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
@@ -107,11 +73,11 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       const evtkey = event.keys[0];
       if (evtkey.startsWith('c')) {
         const ctgyid = +evtkey.substr(1);
-        this.filterDocItem = [];
+        let arFilters = [];
 
         this.availableAccounts.forEach(acnt => {
           if (acnt.CategoryId === ctgyid) {
-            this.filterDocItem.push({
+            arFilters.push({
               fieldName: 'AccountID',
               operator: GeneralFilterOperatorEnum.Equal,
               lowValue: acnt.Id,
@@ -120,21 +86,21 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             });
           }
         });
-        this.pageIndex = 1;
-        this.fetchDocItems();
+
+        this.filterDocItem = arFilters;
       } else if (evtkey.startsWith('a')) {
-        this.filterDocItem = [];
+        let arFilters = [];
 
         const acntid = +evtkey.substr(1);
-        this.filterDocItem.push({
+        arFilters.push({
           fieldName: 'AccountID',
           operator: GeneralFilterOperatorEnum.Equal,
           lowValue: acntid,
           highValue: 0,
           valueType: GeneralFilterValueType.number,
         });
-        this.pageIndex = 1;
-        this.fetchDocItems();
+
+        this.filterDocItem = arFilters;
       }
     }
   }
@@ -150,88 +116,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
       ConsoleLogTypeEnum.debug);
     this._refreshTreeCore();
-  }
-  onQueryParamsChange(params: NzTableQueryParams) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onQueryParamsChange...',
-      ConsoleLogTypeEnum.debug);
-
-    if (this.filterDocItem.length > 0) {
-      const { pageSize, pageIndex, sort, filter } = params;
-      const currentSort = sort.find(item => item.value !== null);
-      const sortField = (currentSort && currentSort.key) || null;
-      const sortOrder = (currentSort && currentSort.value) || null;
-      let fieldName = '';
-      switch (sortField) {
-        case 'desp': fieldName = 'ItemDesp'; break;
-        case 'date': fieldName = 'TransactionDate'; break;
-        case 'trantype': fieldName = 'TransactionType'; break;
-        case 'amount': fieldName = 'Amount'; break;
-        case 'account': fieldName = 'AccountID'; break;
-        case 'controlcenter': fieldName = 'ControlCenterID'; break;
-        case 'order': fieldName = 'OrderID'; break;
-        default: break;
-      }
-      let fieldOrder = '';
-      switch (sortOrder) {
-        case 'ascend': fieldOrder = 'asc'; break;
-        case 'descend': fieldOrder = 'desc'; break;
-        default: break;
-      }
-      this.fetchDocItems((fieldName && fieldOrder) ? {
-        field: fieldName,
-        order: fieldOrder,
-      } : undefined);
-    }
-  }
-  fetchDocItems(orderby?: { field: string, order: string }): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems...', ConsoleLogTypeEnum.debug);
-    this.isLoadingDocItems = true;
-
-    forkJoin([
-      this.odataService.searchDocItem(this.filterDocItem,
-        this.pageSize,
-        this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
-        orderby),
-      this.odataService.fetchAllTranTypes(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
-    ])
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingDocItems = false))
-      .subscribe({
-        next: (revdata: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems succeed.`,
-            ConsoleLogTypeEnum.debug);
-
-          this.arTranType = revdata[1];
-          this.arControlCenters = revdata[2];
-          this.arOrders = revdata[3];
-
-          this.listDocItem = [];
-          if (revdata[0]) {
-            if (revdata[0].totalCount) {
-              this.totalDocumentItemCount = +revdata[0].totalCount;
-            } else {
-              this.totalDocumentItemCount = 0;
-            }
-
-            this.listDocItem = revdata[0].contentList;
-          } else {
-            this.totalDocumentItemCount = 0;
-            this.listDocItem = [];
-          }
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountHierarchyComponent fetchData, fetchAllDocuments failed ${error}...`,
-            ConsoleLogTypeEnum.error);
-
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error,
-            nzClosable: true,
-          });
-        },
-      });
   }
 
   private _refreshTree(isReload?: boolean): void {

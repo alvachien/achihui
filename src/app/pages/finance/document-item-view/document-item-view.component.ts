@@ -1,0 +1,235 @@
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { NzModalService, NzTableQueryParams } from 'ng-zorro-antd';
+import { translate } from '@ngneat/transloco';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+
+import { FinanceOdataService, UIStatusService } from '../../../services';
+import { Account, ModelUtility, ConsoleLogTypeEnum,
+  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, DocumentItemView,
+  TranType, ControlCenter, UIAccountForSelection, Order,
+} from '../../../model';
+import { UITableColumnItem } from '../../../uimodel';
+import * as moment from 'moment';
+
+@Component({
+  selector: 'hih-fin-document-item-view',
+  templateUrl: './document-item-view.component.html',
+  styleUrls: ['./document-item-view.component.less'],
+})
+export class DocumentItemViewComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
+  private _filterDocItem: GeneralFilterItem[] = [];
+
+  @Input()
+  set filterDocItem(flters: GeneralFilterItem[]) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemViewComponent filterDocItem setter: ${flters ? 'NOT NULL and length is ' + flters.length : 'NULL'}`,
+      ConsoleLogTypeEnum.debug);
+    if (flters && flters.length > 0) {
+      this._filterDocItem = flters;
+
+      this.pageIndex = 1;
+      this.fetchDocItems();
+    } else {
+      this._filterDocItem = [];
+    }
+  }
+  get filterDocItem(): GeneralFilterItem[] {
+    return this._filterDocItem;
+  }
+
+  isLoadingDocItems = false;
+  public arTranType: TranType[] = [];
+  public arControlCenters: ControlCenter[] = [];
+  public arOrders: Order[] = [];
+  public arAccounts: Account[];
+  pageIndex = 1;
+  pageSize = 10;
+  listDocItem: DocumentItemView[] = [];
+  totalDocumentItemCount = 0;
+  listOfColumns: UITableColumnItem[] = [];
+
+  constructor(private odataService: FinanceOdataService,
+    private modalService: NzModalService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.listOfColumns = [{
+      name: 'Common.ID',
+      columnKey: 'docid'
+    }, {
+      name: 'Common.ID',
+      columnKey: 'itemid'
+    }, {
+      name: 'Common.Description',
+      columnKey: 'desp',
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
+      showSort: true,
+    }, {
+      name: 'Common.Date',
+      columnKey: 'date',
+      sortOrder: null,
+      showSort: true,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+        a.TransactionDate.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate.format(moment.HTML5_FMT.DATE)),
+    }, {
+      name: 'Finance.TransactionType',
+      columnKey: 'trantype',
+      sortOrder: null,
+      showSort: true,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType - b.TransactionType
+    }, {
+      name: 'Finance.Amount',
+      columnKey: 'amount',
+      showSort: true,
+      sortOrder: null,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
+    }, {
+      name: 'Finance.Account',
+      columnKey: 'account',
+      showSort: true,
+      sortOrder: null,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID).localeCompare(this.getAccountName(b.AccountID))
+    }, {
+      name: 'Finance.ControlCenter',
+      columnKey: 'controlcenter',
+      showSort: true,
+      sortOrder: null,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
+    }, {
+      name: 'Finance.Activity',
+      columnKey: 'order',
+      showSort: true,
+      sortOrder: null,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID).localeCompare(this.getOrderName(b.OrderID))
+    }];
+  }
+
+  ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
+
+    this._destroyed$ = new ReplaySubject(1);
+  }
+
+  ngOnDestroy(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
+  }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find(acnt => {
+      return acnt.Id === acntid;
+    });
+    return acntObj ? acntObj.Name : '';
+  }
+  public getControlCenterName(ccid: number): string {
+    const ccObj = this.arControlCenters.find(cc => {
+      return cc.Id === ccid;
+    });
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number): string {
+    const orderObj = this.arOrders.find(ord => {
+      return ord.Id === ordid;
+    });
+    return orderObj ? orderObj.Name : '';
+  }
+  public getTranTypeName(ttid: number): string {
+    const tranTypeObj = this.arTranType.find(tt => {
+      return tt.Id === ttid;
+    });
+
+    return tranTypeObj ? tranTypeObj.Name : '';
+  }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this.filterDocItem.length > 0) {
+      const { pageSize, pageIndex, sort, filter } = params;
+      const currentSort = sort.find(item => item.value !== null);
+      const sortField = (currentSort && currentSort.key) || null;
+      const sortOrder = (currentSort && currentSort.value) || null;
+      let fieldName = '';
+      switch (sortField) {
+        case 'desp': fieldName = 'ItemDesp'; break;
+        case 'date': fieldName = 'TransactionDate'; break;
+        case 'trantype': fieldName = 'TransactionType'; break;
+        case 'amount': fieldName = 'Amount'; break;
+        case 'account': fieldName = 'AccountID'; break;
+        case 'controlcenter': fieldName = 'ControlCenterID'; break;
+        case 'order': fieldName = 'OrderID'; break;
+        default: break;
+      }
+      let fieldOrder = '';
+      switch (sortOrder) {
+        case 'ascend': fieldOrder = 'asc'; break;
+        case 'descend': fieldOrder = 'desc'; break;
+        default: break;
+      }
+      this.fetchDocItems((fieldName && fieldOrder) ? {
+        field: fieldName,
+        order: fieldOrder,
+      } : undefined);
+    }
+  }
+  fetchDocItems(orderby?: { field: string, order: string }): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
+      ConsoleLogTypeEnum.debug);
+    this.isLoadingDocItems = true;
+
+    forkJoin([
+      this.odataService.searchDocItem(this.filterDocItem,
+        this.pageSize,
+        this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
+        orderby),
+      this.odataService.fetchAllAccounts(),
+      this.odataService.fetchAllTranTypes(),
+      this.odataService.fetchAllControlCenters(),
+      this.odataService.fetchAllOrders(),
+    ])
+      .pipe(takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingDocItems = false))
+      .subscribe({
+        next: (revdata: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems succeed.`,
+            ConsoleLogTypeEnum.debug);
+
+          this.arAccounts = revdata[1];
+          this.arTranType = revdata[2];
+          this.arControlCenters = revdata[3];
+          this.arOrders = revdata[4];
+
+          this.listDocItem = [];
+          if (revdata[0]) {
+            if (revdata[0].totalCount) {
+              this.totalDocumentItemCount = +revdata[0].totalCount;
+            } else {
+              this.totalDocumentItemCount = 0;
+            }
+
+            this.listDocItem = revdata[0].contentList;
+          } else {
+            this.totalDocumentItemCount = 0;
+            this.listDocItem = [];
+          }
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountHierarchyComponent fetchData, fetchAllDocuments failed ${error}...`,
+            ConsoleLogTypeEnum.error);
+
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
+      });
+  }
+}

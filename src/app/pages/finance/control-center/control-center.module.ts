@@ -9,6 +9,7 @@ import { ControlCenterComponent } from './control-center.component';
 import { ControlCenterListComponent } from './control-center-list';
 import { ControlCenterDetailComponent } from './control-center-detail';
 import { ControlCenterHierarchyComponent } from './control-center-hierarchy';
+import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ControlCenterHierarchyComponent } from './control-center-hierarchy';
     FinanceUIModule,
     ControlCenterRoutingModule,
     TranslocoModule,
+    DocumentItemViewModule,
   ]
 })
 export class ControlCenterModule { }

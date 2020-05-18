@@ -1,0 +1,35 @@
+<nz-table #innerTable 
+  nzShowSizeChanger
+  [nzData]="listDocItem"
+  [nzFrontPagination]="false"
+  [nzLoading]="isLoadingDocItems"
+  [nzTotal]="totalDocumentItemCount"
+  [(nzPageIndex)]="pageIndex"
+  [(nzPageSize)]="pageSize"
+  (nzQueryParams)="onQueryParamsChange($event)">
+  <thead>
+    <tr>
+      <th *ngFor="let clmn of listOfColumns"
+        [nzColumnKey]="clmn.columnKey"
+        [nzShowSort]="clmn.showSort"
+        [nzSortFn]="clmn.sortFn"
+        [nzSortOrder]="clmn.sortOrder"
+        >
+        {{clmn.name | transloco}}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of innerTable.data">
+      <td>{{ data.DocumentID }}</td>
+      <td>{{ data.ItemID }}</td>
+      <td>{{ data.DocumentDesp}} </td>
+      <td>{{ data.TransactionDate }}</td>
+      <td>{{ getTranTypeName(data.TransactionType) }}<small>({{data.TransactionType}})</small></td>
+      <td>{{ data.Amount }} <small>{{data.Currency}}</small></td>
+      <td>{{ getAccountName(data.AccountID) }} <small>({{data.AccountID}})</small></td>
+      <td>{{ getControlCenterName(data.ControlCenterID) }}<small>({{data.ControlCenterID}})</small></td>
+      <td>{{ getOrderName(data.OrderID) }} <small>({{data.OrderID}})</small></td>
+    </tr>
+  </tbody>
+</nz-table>
