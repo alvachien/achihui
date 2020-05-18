@@ -6,7 +6,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 import { OrderRoutingModule } from './order-routing.module';
 import { OrderComponent } from './order.component';
-import { OrderListComponent, OrderListDocumentItemComponent, } from './order-list/order-list.component';
+import { OrderListComponent, } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
 
@@ -14,7 +14,6 @@ import { DocumentItemViewModule } from '../document-item-view/document-item-view
   declarations: [
     OrderComponent,
     OrderListComponent,
-    OrderListDocumentItemComponent,
     OrderDetailComponent,
   ],
   imports: [

@@ -36,6 +36,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   chartAccountOption: EChartOption;
   // Card: Control center
   chartControlCenterOption: EChartOption;
+  // Card: Order
+  chartOrderOption: EChartOption;
 
   constructor(
     public router: Router,
@@ -204,6 +206,39 @@ export class ReportComponent implements OnInit, OnDestroy {
       },
       series: [{
         data: ccval,
+        type: 'bar'
+      }]
+    };
+
+    // Order
+    const ordname: string[] = [];
+    const ordval: number[] = [];
+    this.arOrders.forEach((val: Order) => {
+      const bal = this.dataReportByOrder.find((val3: FinanceReportByOrder) => {
+        return val.Id === val3.OrderId;
+      });
+
+      ordname.push(val.Name);
+      ordval.push(bal ? bal.Balance : 0);
+    });
+    this.chartOrderOption = {
+      xAxis: {
+        type: 'category',
+        data: ordname
+      },
+      yAxis: {
+        type: 'value'
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          dataView: {show: true, readOnly: true},
+          restore: {show: true},
+          saveAsImage: {show: true},
+        }
+      },
+      series: [{
+        data: ordval,
         type: 'bar'
       }]
     };

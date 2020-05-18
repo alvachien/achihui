@@ -9,13 +9,14 @@
   (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
-      <th *ngFor="let clmn of listOfColumns"
-        [nzColumnKey]="clmn.columnKey"
-        [nzShowSort]="clmn.showSort"
-        [nzSortFn]="clmn.sortFn"
-        [nzSortOrder]="clmn.sortOrder"
+      <th *ngFor="let column of listOfColumns; trackBy: trackByName"
+        [nzColumnKey]="column.columnKey"
+        [nzShowSort]="column.showSort"
+        [nzSortFn]="column.sortFn"
+        [(nzSortOrder)]="column.sortOrder"
+        [nzSortFn]="column.sortFn"
         >
-        {{clmn.name | transloco}}
+        {{column.name | transloco}}
       </th>
     </tr>
   </thead>

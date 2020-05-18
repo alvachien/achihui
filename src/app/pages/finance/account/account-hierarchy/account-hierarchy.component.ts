@@ -71,9 +71,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     if (event.keys.length > 0) {
       const evtkey = event.keys[0];
+      const arFilters = [];
       if (evtkey.startsWith('c')) {
         const ctgyid = +evtkey.substr(1);
-        let arFilters = [];
 
         this.availableAccounts.forEach(acnt => {
           if (acnt.CategoryId === ctgyid) {
@@ -86,11 +86,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             });
           }
         });
-
-        this.filterDocItem = arFilters;
       } else if (evtkey.startsWith('a')) {
-        let arFilters = [];
-
         const acntid = +evtkey.substr(1);
         arFilters.push({
           fieldName: 'AccountID',
@@ -99,9 +95,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           highValue: 0,
           valueType: GeneralFilterValueType.number,
         });
-
-        this.filterDocItem = arFilters;
       }
+      this.filterDocItem = arFilters;
     }
   }
 

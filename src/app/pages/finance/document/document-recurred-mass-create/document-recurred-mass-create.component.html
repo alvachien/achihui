@@ -22,8 +22,8 @@
   <div class="steps-content">
     <!-- Step 0: Search Criteria -->
     <form nz-form [formGroup]="searchFormGroup" [hidden]="currentStep !== 0">
-      <div nz-row [nzGutter]="8">
-        <div nz-row [nzGutter]="8">
+      <div nz-row [nzGutter]="8" style="width: 100%;">
+        <div nz-row [nzGutter]="8" style="width: 100%;">
           <div nz-col [nzSpan]="12">
             <!-- Date Range -->
             <nz-form-item>
@@ -58,7 +58,7 @@
           </div>
         </div>
 
-        <div nz-row [nzGutter]="8">
+        <div nz-row [nzGutter]="8" style="width: 100%;">
           <div nz-col [nzSpan]="24">
             <!-- Account -->
             <nz-form-item>
@@ -77,7 +77,7 @@
           </div>
         </div>
 
-        <div nz-row [nzGutter]="8">
+        <div nz-row [nzGutter]="8" style="width: 100%;">
           <div nz-col [nzSpan]="12">
             <!-- Transaction type -->
             <nz-form-item>
@@ -104,7 +104,7 @@
           </div>
         </div>
 
-        <div nz-row [nzGutter]="8">
+        <div nz-row [nzGutter]="8" style="width: 100%;">
           <div nz-col [nzSpan]="12">
             <!-- Control center -->
             <nz-form-item>
@@ -133,7 +133,7 @@
     </form>
 
     <!-- Step 1: Existing documents -->
-    <div nz-row [hidden]="currentStep !== 1">
+    <div nz-row [hidden]="currentStep !== 1" style="width: 100%;">
       <nz-table #basicTable
         [nzLoading]="isReadingExistingItem"
         [nzData]="listExistingDocItems">
@@ -282,7 +282,7 @@
     </form>
 
     <!-- Step 3: Items -->
-    <div nz-row [hidden]="currentStep !== 3">
+    <div nz-row [hidden]="currentStep !== 3" style="width: 100%;">
       <form nz-form [formGroup]="itemsFormGroup" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
@@ -308,7 +308,7 @@
     </div>
 
     <!-- Step 4: Confirm -->
-    <div nz-row [hidden]="currentStep !== 4">
+    <div nz-row [hidden]="currentStep !== 4" style="width: 100%;">
       <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex">
         <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
           <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
@@ -337,7 +337,7 @@
     </div>
 
     <!-- Step 5: Result -->
-    <div nz-row [hidden]="currentStep !== 5">
+    <div nz-row [hidden]="currentStep !== 5" style="width: 100%;">
       <div *ngIf="docIdFailed.length <= 0">
         <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">

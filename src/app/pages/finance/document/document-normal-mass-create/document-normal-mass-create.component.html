@@ -45,7 +45,7 @@
 
     <!-- Step 1: Confirm -->
     <div nz-row [hidden]="currentStep !== 1">
-      <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex">
+      <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex" style="width: 100%;">
         <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
           <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
             {{docinfo.TranDateFormatString}}

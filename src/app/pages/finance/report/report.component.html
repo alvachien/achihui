@@ -46,7 +46,10 @@
 
       <div nz-col [nzSpan]="24">
         <nz-card [nzTitle]="'Finance.Orders' | transloco" [nzActions]="[actionOrderDrilldown]">
-          <p>Orders</p>
+          <div nz-col [nzSpan]="24">
+            <div echarts [options]="chartOrderOption" style="height: 320px;"
+              (chartClick)="onDrillDownToOrder($event)"></div>
+          </div>
         </nz-card>
       </div>
     </div>

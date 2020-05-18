@@ -18,6 +18,7 @@ import * as moment from 'moment';
   styleUrls: ['./document-item-view.component.less'],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
+  // tslint:disable: variable-name
   private _destroyed$: ReplaySubject<boolean>;
   private _filterDocItem: GeneralFilterItem[] = [];
 
@@ -29,6 +30,9 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this._filterDocItem = flters;
 
       this.pageIndex = 1;
+      this.listOfColumns.forEach(item => {
+        item.sortOrder = null;
+      });
       this.fetchDocItems();
     } else {
       this._filterDocItem = [];
@@ -49,10 +53,13 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem[] = [];
 
-  constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService,) {
+  constructor(
+    private odataService: FinanceOdataService,
+    private modalService: NzModalService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this.listOfColumns = [{
       name: 'Common.ID',
@@ -95,7 +102,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       columnKey: 'controlcenter',
       showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
+      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+        this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
     }, {
       name: 'Finance.Activity',
       columnKey: 'order',
@@ -109,7 +117,9 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    this._destroyed$ = new ReplaySubject(1);
+    if (this._destroyed$ === undefined) {
+      this._destroyed$ = new ReplaySubject(1);
+    }
   }
 
   ngOnDestroy(): void {
@@ -119,6 +129,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = undefined;
     }
   }
   public getAccountName(acntid: number): string {
@@ -145,6 +156,9 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     });
 
     return tranTypeObj ? tranTypeObj.Name : '';
+  }
+  trackByName(_: number, item: UITableColumnItem): string {
+    return item.name;
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
