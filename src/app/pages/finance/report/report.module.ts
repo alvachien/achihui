@@ -8,6 +8,7 @@ import { ControlCenterReportComponent } from './control-center-report/control-ce
 import { OrderReportComponent } from './order-report/order-report.component';
 import { AccountReportComponent } from './account-report/account-report.component';
 import { ReportComponent } from './report.component';
+import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ReportComponent } from './report.component';
     FinanceUIModule,
     ReportRoutingModule,
     TranslocoModule,
+    DocumentItemViewModule,
   ]
 })
 export class ReportModule { }

@@ -1,14 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzDrawerService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import { EChartOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, ITableFilterValues
+  momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem, GeneralFilterOperatorEnum
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-finance-report-account',
@@ -32,7 +34,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
-    private modalService: NzModalService) {
+    private modalService: NzModalService,
+    private router: Router,
+    private drawerService: NzDrawerService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -93,6 +97,123 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onDisplayMasterData(acntid: number) {
+    this.router.navigate(['/finance/account/display/' + acntid.toString()]);
+  }
+  onDisplayDebitData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'AccountID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    fltrs.push({
+      fieldName: 'Amount',
+      operator: GeneralFilterOperatorEnum.LargerThan,
+      lowValue: 0,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
+  }
+  onDisplayCreditData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'AccountID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    fltrs.push({
+      fieldName: 'Amount',
+      operator: GeneralFilterOperatorEnum.LessThan,
+      lowValue: 0,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
+  }
+  onDisplayBalanceData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'AccountID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
   }
 
   onAssetsClicked(event: any) {

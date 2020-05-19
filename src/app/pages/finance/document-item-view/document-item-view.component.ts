@@ -33,7 +33,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.listOfColumns.forEach(item => {
         item.sortOrder = null;
       });
-      this.fetchDocItems();
+      // this.fetchDocItems();
     } else {
       this._filterDocItem = [];
     }
@@ -212,7 +212,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
         finalize(() => this.isLoadingDocItems = false))
       .subscribe({
         next: (revdata: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountHierarchyComponent fetchDocItems succeed.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems succeed.`,
             ConsoleLogTypeEnum.debug);
 
           this.arAccounts = revdata[1];
@@ -235,7 +235,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountHierarchyComponent fetchData, fetchAllDocuments failed ${error}...`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchData, fetchAllDocuments failed ${error}...`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({

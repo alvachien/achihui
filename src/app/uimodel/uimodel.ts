@@ -76,12 +76,12 @@ export interface UITableColumnItem {
 
   // Sort
   sortOrder?: NzTableSortOrder;
-  sortFn?: NzTableSortFn;
+  sortFn?: NzTableSortFn | boolean;
   showSort?: boolean;
   sortDirections?: NzTableSortOrder[];
 
   // Filter
   listOfFilter?: NzTableFilterList;
-  filterFn?: NzTableFilterFn;
+  filterFn?: NzTableFilterFn | true;
   filterMultiple?: boolean;
 }

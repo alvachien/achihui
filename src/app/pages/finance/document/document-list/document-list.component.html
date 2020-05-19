@@ -41,9 +41,6 @@
         </ul>
       </nz-dropdown-menu>
       <nz-divider nzType="vertical"></nz-divider>
-      <!-- <nz-select [ngModel]="selectedDocScope">
-        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
-      </nz-select> -->
       <nz-range-picker [(ngModel)]="selectedRange" (ngModelChange)="onRangeChange($event)"></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
@@ -57,16 +54,21 @@
       [nzTotal]="totalDocumentCount"
       [(nzPageIndex)]="pageIndex"
       [(nzPageSize)]="pageSize"
-      (nzPageIndexChange)="fetchData()"
-      (nzPageSizeChange)="fetchData(true)">
+      (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
           <th nzShowExpand></th>
-          <th>ID</th>
-          <th>{{'Finance.Currency' | transloco}}</th>
-          <th>{{'Common.Date' | transloco}}</th>
-          <th>{{'Finance.DocumentType' | transloco}}</th>
-          <th>{{'Common.Description' | transloco}}</th>
+          <th *ngFor="let column of listOfColumns; trackBy: trackByName"
+            [nzColumnKey]="column.columnKey"
+            [nzShowSort]="column.showSort"
+            [nzSortFn]="column.sortFn"
+            [(nzSortOrder)]="column.sortOrder"
+            [nzSortFn]="column.sortFn"
+            [nzFilterMultiple]="column.filterMultiple"
+            [nzFilters]="column.listOfFilter"
+            [nzFilterFn]="column.filterFn">
+            {{column.name | transloco}}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -74,27 +76,19 @@
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id]"></td>
             <td>
-              {{data.Id}}
+              {{ data.Id }}
               <nz-divider nzType="vertical"></nz-divider>
               <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
             </td>
-            <td>
-              <nz-select [(ngModel)]="data.TranCurr" nzDisabled>
-                <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' ' + cr.Symbol"></nz-option>
-              </nz-select>
-            </td>
-            <td>{{data.TranDateFormatString}}</td>
-            <td>
-              <nz-select [(ngModel)]="data.DocType" nzDisabled>
-                <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name)"></nz-option>
-              </nz-select>
-            </td>
-            <td>{{data.Desp}}</td>
+            <td>{{ getCurrencyName(data.TranCurr) }}</td>
+            <td>{{ data.TranDateFormatString }}</td>
+            <td>{{ getDocTypeName(data.DocType) | transloco }} </td>
+            <td>{{ data.Desp }}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
             <td></td>
-            <td colspan="6">
-              <nz-table #itemTable [nzData]="data.Items">
+            <td colspan="5" style="width: 100%;">
+              <nz-table #itemTable [nzData]="data.Items" nzSize="middle" [nzShowPagination]="false" style="width: 100%;">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -107,17 +101,9 @@
                 <tbody>
                   <tr *ngFor="let itemdata of itemTable.data">
                     <td>{{ itemdata.ItemId }}</td>
-                    <td>
-                      <nz-select [(ngModel)]="itemdata.AccountId" nzDisabled>
-                        <nz-option *ngFor="let acnt of arAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
-                      </nz-select>
-                    </td>
-                    <td>
-                      <nz-select [(ngModel)]="itemdata.TranType" nzDisabled>
-                        <nz-option *ngFor="let tt of arTranTypes" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
-                      </nz-select>
-                    </td>
-                    <td>{{ itemdata.TranAmount }}</td>
+                    <td>{{ getAccountName(itemdata.AccountID) }} </td>
+                    <td>{{ getTranTypeName(itemdata.TranType) }} </td>
+                    <td>{{ itemdata.TranAmount | number: '1.0-2' }} <small>{{ getCurrencyName(data.TranCurr) }}</small></td>
                     <td>{{ itemdata.Desp }}</td>
                   </tr>
                 </tbody>

@@ -32,8 +32,8 @@ const routes: Routes = [
   { path: 'createloanrepay', component: DocumentLoanRepayCreateComponent },
   { path: 'createloanrepay/:docid', component: DocumentLoanRepayCreateComponent },
 
-  { path: 'edit', component: DocumentDetailComponent },
-  { path: 'display', component: DocumentDetailComponent },
+  { path: 'edit/:id', component: DocumentDetailComponent },
+  { path: 'display/:id', component: DocumentDetailComponent },
 ];
 
 @NgModule({

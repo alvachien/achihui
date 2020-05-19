@@ -221,6 +221,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       arcoll.forEach(element => {
         this.instancePost.BlogPostCollections.push({
           CollectionID: element,
+          PostID: this.instancePost.id,
         } as BlogPostCollection);
       });
 

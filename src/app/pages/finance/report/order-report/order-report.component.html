@@ -7,7 +7,6 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.Activity' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <!-- <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button> -->
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -15,7 +14,8 @@
   <nz-table #basicTable [nzData]="dataSet">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>#</th>
+        <th>{{'Common.Name' | transloco}}</th>
         <th>{{'Finance.Debit' | transloco}}</th>
         <th>{{'Finance.Credit' | transloco}}</th>
         <th>{{'Finance.Balance' | transloco}}</th>
@@ -25,10 +25,25 @@
       <tr *ngFor="let data of basicTable.data">
         <td>
           {{data.OrderId}}
+          <nz-divider nzType="vertical"></nz-divider>
+          <button nz-button nzType="link" (click)="onDisplayMasterData(data.OrderId)">{{'Common.Display' | transloco}}</button>
         </td>
-        <td>{{data.DebitBalance}}</td>
-        <td>{{data.CreditBalance}}</td>
-        <td>{{data.Balance}}</td>
+        <td>{{data.OrderName}}</td>
+        <td>
+          <button nz-button nzType="link" (click)="onDisplayDebitData(data.OrderId)">
+            {{data.DebitBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+          </button>
+        </td>
+        <td>
+          <button nz-button nzType="link" (click)="onDisplayCreditData(data.OrderId)">
+            {{data.CreditBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+          </button>
+        </td>
+        <td>
+          <button nz-button nzType="link" (click)="onDisplayBalanceData(data.OrderId)">
+            {{data.Balance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+          </button>
+        </td>
       </tr>
     </tbody>
   </nz-table>

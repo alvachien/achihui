@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzMessageService, NzTableQueryParams } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
@@ -11,7 +11,9 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
+  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat,
 } from '../../../../model';
+import { UITableColumnItem } from '../../../../uimodel';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -19,15 +21,12 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   styleUrls: ['./document-list.component.less'],
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
+  private _filterDocItem: GeneralFilterItem[] = [];
+  private _isInitialized = false;
   isLoadingResults: boolean;
-  listOfDocs: Document[] = [];
-  // selectedDocScope: OverviewScopeEnum;
-  isReload = false;
-  pageIndex = 1;
-  pageSize = 10;
-  totalDocumentCount = 1;
+
   mapOfExpandData: { [key: string]: boolean } = {};
   public arCurrencies: Currency[] = [];
   public arDocTypes: DocumentType[] = [];
@@ -39,15 +38,58 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arUIOrders: UIOrderForSelection[] = [];
   public arTranTypes: TranType[] = [];
   public selectedRange: any[] = [];
+  // Table
+  listOfColumns: UITableColumnItem[] = [];
+  pageIndex = 1;
+  pageSize = 10;
+  listOfDocs: Document[] = [];
+  totalDocumentCount = 1;
+  listCurrencyFilters: ITableFilterValues[] = [];
+  listDocTypeFilters: ITableFilterValues[] = [];
 
   constructor(
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     private router: Router,
-    public modalService: NzModalService) {
+    private modalService: NzModalService,
+    private msgService: NzMessageService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
     this.isLoadingResults = false;
+    this.listOfColumns = [{
+      name: 'Common.ID',
+      columnKey: 'docid'
+    }, {
+      name: 'Finance.Currency',
+      columnKey: 'curr',
+      sortOrder: null,
+      sortFn: true,
+      showSort: true,
+      listOfFilter: this.listCurrencyFilters,
+      filterMultiple: true,
+      filterFn: true
+    }, {
+      name: 'Common.Date',
+      columnKey: 'date',
+      sortOrder: 'descend',
+      showSort: true,
+      sortFn: true
+    }, {
+      name: 'Finance.DocumentType',
+      columnKey: 'doctype',
+      sortOrder: null,
+      showSort: true,
+      sortFn: true,
+      listOfFilter: this.listDocTypeFilters,
+      filterMultiple: true,
+      filterFn: true
+    }, {
+      name: 'Common.Description',
+      columnKey: 'desp',
+      sortFn: true,
+      showSort: true,
+    }];
   }
 
   ngOnInit() {
@@ -55,7 +97,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-    // this.selectedDocScope = OverviewScopeEnum.All;
+    this._isInitialized = true;
+
     this.selectedRange = [moment().startOf('month').toDate(), moment().endOf('month').toDate()];
 
     this.isLoadingResults = true;
@@ -88,7 +131,23 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
           this.arUIOrders = BuildupOrderForSelection(this.arOrders);
 
-          this.fetchData();
+          let arfilters = [];
+          this.arCurrencies.forEach(cur => {
+            arfilters.push({
+              value: cur.Currency,
+              text: translate(cur.Name),
+            });
+          });
+          this.listCurrencyFilters = arfilters.slice();
+
+          arfilters = [];
+          this.arDocTypes.forEach(dt => {
+            arfilters.push({
+              value: dt.Id,
+              text: translate(dt.Name),
+            });
+          });
+          this.listDocTypeFilters = arfilters.slice();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
@@ -108,23 +167,106 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
 
+    this._isInitialized = false;
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
   }
 
-  fetchData(reset: boolean = false): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...', ConsoleLogTypeEnum.debug);
-    if (reset) {
-      this.pageIndex = 1;
+  public getCurrencyName(curr: string): string {
+    const curobj = this.arCurrencies.find(c => {
+      return c.Currency === curr;
+    });
+    return curobj ? translate(curobj.Name) + `(${curr})`  : curr;
+  }
+  public getDocTypeName(dtid: number) {
+    const dtobj = this.arDocTypes.find(dt => {
+      return dt.Id === dtid;
+    });
+    return dtobj ? dtobj.Name : dtid.toString();
+  }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find(acnt => {
+      return acnt.Id === acntid;
+    });
+    return acntObj ? acntObj.Name : '';
+  }
+  public getControlCenterName(ccid: number): string {
+    const ccObj = this.arControlCenters.find(cc => {
+      return cc.Id === ccid;
+    });
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number): string {
+    const orderObj = this.arOrders.find(ord => {
+      return ord.Id === ordid;
+    });
+    return orderObj ? orderObj.Name : '';
+  }
+  public getTranTypeName(ttid: number): string {
+    const tranTypeObj = this.arTranTypes.find(tt => {
+      return tt.Id === ttid;
+    });
+
+    return tranTypeObj ? tranTypeObj.Name : '';
+  }
+  trackByName(_: number, item: UITableColumnItem): string {
+    return item.name;
+  }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent onQueryParamsChange...',
+      ConsoleLogTypeEnum.debug);
+
+    const { pageSize, pageIndex, sort, filter } = params;
+    const currentSort = sort.find(item => item.value !== null);
+    const sortField = (currentSort && currentSort.key) || null;
+    const sortOrder = (currentSort && currentSort.value) || null;
+    let fieldName = '';
+    switch (sortField) {
+      case 'curr': fieldName = 'Desp'; break;
+      case 'date': fieldName = 'TranDate'; break;
+      case 'doctype': fieldName = 'DocType'; break;
+      case 'desp': fieldName = 'Desp'; break;
+      default: break;
     }
+    let fieldOrder = '';
+    switch (sortOrder) {
+      case 'ascend': fieldOrder = 'asc'; break;
+      case 'descend': fieldOrder = 'desc'; break;
+      default: break;
+    }
+
+    if (this._isInitialized) {
+      this.fetchData((fieldName && fieldOrder) ? {
+        field: fieldName,
+        order: fieldOrder,
+      } : undefined);
+    }
+  }
+
+  fetchData(orderby?: { field: string, order: string }): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...',
+      ConsoleLogTypeEnum.debug);
+
     this.isLoadingResults = true;
-    // const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedDocScope);
     const bgn = this.selectedRange.length > 0 ?  moment(this.selectedRange[0] as Date) : moment();
     const end = this.selectedRange.length > 1 ?  moment(this.selectedRange[1] as Date) : moment();
 
-    this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0)
+    this._filterDocItem = [];
+    this._filterDocItem.push({
+      fieldName: 'TranDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: bgn.format(momentDateFormat),
+      highValue: end.format(momentDateFormat),
+      valueType: GeneralFilterValueType.number
+    });
+    this.odataService.fetchAllDocuments(
+      this._filterDocItem,
+      this.pageSize,
+      this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
+      orderby)
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
@@ -156,7 +298,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
 
   public onRangeChange(event): void {
-    this.fetchData(true);
+    this.fetchData();
   }
   public onCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/createnormal']);
@@ -201,5 +343,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/masscreaterecurred']);
   }
   public onDelete(docid: number): void {
+    this.msgService.error('This functionality is still under construction', { nzDuration: 2500 });
   }
 }

@@ -5,11 +5,9 @@ import { Router } from '@angular/router';
 import { NzModalService, NzDrawerRef, NzDrawerService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
-import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, DocumentItemView, ControlCenter,
-  TranType,
-  GeneralFilterItem,
-  GeneralFilterOperatorEnum,
-  GeneralFilterValueType, } from '../../../../model';
+import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,
+  GeneralFilterOperatorEnum, GeneralFilterValueType,
+} from '../../../../model';
 import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
@@ -111,7 +109,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
     });
 
     drawerRef.afterOpen.subscribe(() => {
-      console.log('Drawer(Component) open');
+      // console.log('Drawer(Component) open');
     });
 
     drawerRef.afterClose.subscribe(data => {

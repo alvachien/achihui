@@ -319,7 +319,7 @@ export class FinanceOdataService {
         params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceOdataService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllTranTypes`,
             ConsoleLogTypeEnum.debug);
 
           this.listTranType = [];
@@ -361,7 +361,7 @@ export class FinanceOdataService {
           return this.listTranType;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceOdataService: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAllTranTypes failed ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.isTranTypeListLoaded = false;
@@ -1032,19 +1032,25 @@ export class FinanceOdataService {
    * @param top The maximum returned amount
    * @param skip Skip the amount
    */
-  public fetchAllDocuments(dtbgn: moment.Moment, dtend: moment.Moment, top: number, skip: number): Observable<BaseListModel<Document>> {
+  public fetchAllDocuments(filters: GeneralFilterItem[], top?: number, skip?: number, orderby?: { field: string, order: string })
+    : Observable<BaseListModel<Document>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
     const hid = this.homeService.ChosedHome.ID;
-    const dtbgnfmt = dtbgn.format(momentDateFormat);
-    const dtendfmt = dtend.format(momentDateFormat);
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
+    const subfilter = getFilterString(filters);
+    if (subfilter) {
+      filterstr += ` and ${subfilter}`;
+    }
 
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'ID,HomeID,TranDate,DocType,TranCurr,Desp');
-    params = params.append('$filter', `HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`);
-    params = params.append('$orderby', `TranDate desc`);
+    params = params.append('$filter', filterstr);
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
     params = params.append('$count', `true`);
@@ -2036,7 +2042,7 @@ export class FinanceOdataService {
       headers,
       params,
     }).pipe(map((response: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering searchDocItem in FinanceOdataService.`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService searchDocItem.`,
         ConsoleLogTypeEnum.debug);
 
       const data: any = response as any;
@@ -2053,7 +2059,7 @@ export class FinanceOdataService {
       };
     }),
     catchError((errresp: HttpErrorResponse) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in searchDocItem in FinanceOdataService: ${errresp}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService searchDocItem failed ${errresp}`,
         ConsoleLogTypeEnum.error);
 
       const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

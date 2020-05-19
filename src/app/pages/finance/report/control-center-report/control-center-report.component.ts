@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService, NzDrawerService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 
 import { LogLevel, FinanceReportByControlCenter, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, ControlCenter, } from '../../../../model';
+  momentDateFormat, Account, AccountCategory, ControlCenter, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-finance-report-controlcenter',
@@ -25,12 +27,15 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   constructor(
     public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
-    private modalService: NzModalService) {
+    private modalService: NzModalService,
+    private drawerService: NzDrawerService,
+    private router: Router,
+    ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
   }
 
   ngOnInit() {
@@ -75,6 +80,124 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onDisplayMasterData(ccid: number) {
+    this.router.navigate(['/finance/controlcenter/display/' + ccid.toString()]);
+  }
+
+  onDisplayDebitData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'ControlCenterID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    fltrs.push({
+      fieldName: 'Amount',
+      operator: GeneralFilterOperatorEnum.LargerThan,
+      lowValue: 0,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
+  }
+  onDisplayCreditData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'ControlCenterID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    fltrs.push({
+      fieldName: 'Amount',
+      operator: GeneralFilterOperatorEnum.LessThan,
+      lowValue: 0,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
+  }
+  onDisplayBalanceData(ccid: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'ControlCenterID',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ccid,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
   }
 
   private buildReportList(): void {
