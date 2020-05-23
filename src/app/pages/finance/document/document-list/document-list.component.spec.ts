@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, disca
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { BehaviorSubject, of, } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -86,6 +86,7 @@ describe('DocumentListComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
       ]
     });

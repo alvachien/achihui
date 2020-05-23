@@ -2053,7 +2053,16 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllDocuments(moment(), moment().add(1, 'M'), 100, 10).subscribe(
+      const filterDocItem = [];
+      filterDocItem.push({
+        fieldName: 'TranDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().format(momentDateFormat),
+        highValue: moment().add(1, 'M').format(momentDateFormat),
+        valueType: GeneralFilterValueType.number
+      });
+
+      service.fetchAllDocuments(filterDocItem, 100, 10).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2068,7 +2077,7 @@ describe('FinanceOdataService', () => {
           && requrl.url === service.documentAPIUrl
           && requrl.params.has('$select')
           && requrl.params.has('$filter')
-          && requrl.params.has('$orderby')
+//          && requrl.params.has('$orderby')
           && requrl.params.has('$top')
           && requrl.params.has('$skip')
           && requrl.params.has('$count')
@@ -2091,7 +2100,15 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllDocuments(moment(), moment().add(1, 'M'), 10, 0).subscribe(
+      const filterDocItem = [];
+      filterDocItem.push({
+        fieldName: 'TranDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().format(momentDateFormat),
+        highValue: moment().add(1, 'M').format(momentDateFormat),
+        valueType: GeneralFilterValueType.number
+      });
+      service.fetchAllDocuments(filterDocItem, 10, 0).subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2105,7 +2122,7 @@ describe('FinanceOdataService', () => {
           && requrl.url === service.documentAPIUrl
           && requrl.params.has('$select')
           && requrl.params.has('$filter')
-          && requrl.params.has('$orderby')
+//          && requrl.params.has('$orderby')
           && requrl.params.has('$top')
           && requrl.params.has('$skip')
           && requrl.params.has('$count')

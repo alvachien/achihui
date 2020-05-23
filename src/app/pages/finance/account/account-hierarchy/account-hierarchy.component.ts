@@ -119,7 +119,6 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
 
-    const reqs = [this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)];
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts(isReload),

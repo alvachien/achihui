@@ -149,50 +149,6 @@ describe('AccountListComponent', () => {
       discardPeriodicTasks();
       flush();
     }));
-
-    it('filter by category Cash shall work', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      component.selectedCategoryFilter.push(financeAccountCategoryCash);
-
-      // Display
-      component.doFilter(component.selectedCategoryFilter, component.selectedStatusFilter);
-      tick();
-      fixture.detectChanges();
-
-      expect(component.dataSet.length).toEqual(fakeData.finAccounts.filter((val: Account) => {
-        return val.CategoryId === financeAccountCategoryCash;
-      }).length);
-
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('filter by status Normal shall work', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      component.selectedStatusFilter.push(AccountStatusEnum.Normal);
-
-      // Display
-      component.doFilter(component.selectedCategoryFilter, component.selectedStatusFilter);
-      tick();
-      fixture.detectChanges();
-
-      expect(component.dataSet.length).toEqual(fakeData.finAccounts.filter((val: Account) => {
-        return val.Status === AccountStatusEnum.Normal;
-      }).length);
-
-      discardPeriodicTasks();
-      flush();
-    }));
   });
 
   describe('3. shall display error dialog for exception', () => {

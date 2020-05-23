@@ -51,6 +51,8 @@ describe('AccountHierarchyComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of({}));
+    storageService.AccountCategories = [];
+    storageService.Accounts = [];
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -104,6 +106,8 @@ describe('AccountHierarchyComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       searchDocItemSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
+      storageService.AccountCategories = fakeData.finAccountCategories;
+      storageService.Accounts = fakeData.finAccounts;
     });
 
     it('should not show data before OnInit', () => {

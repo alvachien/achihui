@@ -11,7 +11,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
   ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, FinanceReportByOrder, Order, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { OrderReportComponent } from './order-report.component';
@@ -25,6 +25,7 @@ describe('OrderReportComponent', () => {
   let fetchAllOrdersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  const homeServiceStub: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -33,6 +34,7 @@ describe('OrderReportComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+    homeServiceStub.ChosedHome = fakeData.chosedHome;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllReportsByOrder',
@@ -62,6 +64,7 @@ describe('OrderReportComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeServiceStub },
       ]
     });
 
