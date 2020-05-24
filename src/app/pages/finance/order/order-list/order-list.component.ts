@@ -20,6 +20,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
+  validOrderOnly = false;
   dataSet: Order[] = [];
 
   constructor(
@@ -69,6 +70,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onOrderValidityChanged(): void {
+    // Valid order
   }
 
   onCreate(): void {

@@ -12,12 +12,12 @@ import { CheckVersionResult } from '../../../app/model';
 export class AboutComponent {
 
   version: string;
-  relDate: string;
+  // relDate: string;
   resultVersion: CheckVersionResult;
 
   constructor(private uiStatus: UIStatusService) {
     this.version = environment.CurrentVersion;
-    this.relDate = environment.ReleasedDate;
+    // this.relDate = environment.ReleasedDate;
 
     this.resultVersion = this.uiStatus.versionResult;
   }

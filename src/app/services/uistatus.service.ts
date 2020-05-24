@@ -19,6 +19,7 @@ export class UIStatusService {
     }
   }
 
+  // Last error set
   private _latestError: string;
   get latestError(): string {
     return this._latestError;
@@ -27,6 +28,7 @@ export class UIStatusService {
     this._latestError = le;
   }
 
+  // Version info.
   private _versionInfo: CheckVersionResult;
   get versionResult(): CheckVersionResult {
     return this._versionInfo;
@@ -35,12 +37,22 @@ export class UIStatusService {
     this._versionInfo = rst;
   }
 
+  // Selected loan template
   private _selectedLoanTmp: TemplateDocLoan = null;
   get SelectedLoanTmp(): TemplateDocLoan {
     return this._selectedLoanTmp;
   }
   set SelectedLoanTmp(tmpdoc: TemplateDocLoan | null) {
     this._selectedLoanTmp = tmpdoc;
+  }
+
+  // Fatal error
+  private _fatalError = false;
+  get fatalError(): boolean {
+    return this._fatalError;
+  }
+  set fatalError(err: boolean) {
+    this._fatalError = err;
   }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);

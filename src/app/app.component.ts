@@ -43,19 +43,24 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit',
+      ConsoleLogTypeEnum.log);
     this._homeService.checkDBVersion().subscribe({
       next: val => {
         this.uiService.versionResult = val;
       },
       error: err => {
-        // Jump to err page?
+        // Jump to error page
         this.uiService.latestError = err;
+        this.uiService.fatalError = true;
         this.router.navigate(['/fatalerror']);
       },
     });
   }
 
   ngOnDestroy(): void {
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnDestroy',
+      ConsoleLogTypeEnum.log);
   }
 
   switchLanguage(lang: string) {
@@ -98,5 +103,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public onGoToUserDetail(): void {
     this.router.navigate(['/userdetail']);
+  }
+  public onGoToSelectedHome(): void {
+    // Go to selected home
   }
 }
