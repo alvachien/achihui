@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, NzTableQueryParams } from 'ng-zorro-antd';
+import { NzModalService, NzTableQueryParams, NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
@@ -38,7 +38,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: FinanceOdataService,
     private uiStatusService: UIStatusService,
-    public modalService: NzModalService) {
+    private modalService: NzModalService,
+    private nzContextMenuService: NzContextMenuService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.isLoadingResults = false; // Default value
@@ -98,6 +99,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       }
       this.filterDocItem = arFilters;
     }
+  }
+  onNodeContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create($event, menu);
   }
 
   onResize({ col }: NzResizeEvent): void {

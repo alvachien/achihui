@@ -12,7 +12,7 @@ declare const monaco: any;
 import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
 import { editor } from 'monaco-editor';
 import { environment } from '../../../../environments/environment';
-import { AuthService } from 'src/app/services';
+import { AuthService } from '../../../services';
 import { Observable, Observer } from 'rxjs';
 
 // Enum for toolbar buttons

@@ -30,7 +30,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   constructor(
     private homeService: HomeDefOdataService,
     private router: Router,
-    public modalService: NzModalService) {
+    private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 

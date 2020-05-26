@@ -28,7 +28,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
-  arrayStatus: UIDisplayString[] = [];
+  arStatusDisplayStrings: UIDisplayString[] = [];
   arMembers: HomeMember[] = [];
   arAccountCategories: AccountCategory[] = [];
   arAssetCategories: AssetCategory[] = [];
@@ -88,7 +88,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
-    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.arStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
+    this.arMembers = this.homeSevice.ChosedHome.Members;
 
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
@@ -159,7 +160,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               this.extraLoanFormGroup.disable();
             }
           }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.uiMode = UIMode.Invalid;
@@ -239,6 +240,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     if (objAcnt.Comment) {
       this.headerFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
+    this.headerFormGroup.get('statusControl').setValue(objAcnt.Status);
     // Step 1.
     if (this.isADPAccount) {
       this.extraADPFormGroup.get('extADPControl').setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);

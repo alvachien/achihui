@@ -189,6 +189,39 @@ export class HomeDefOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
+  /**
+   * Change a home def
+   * @param objhd Home def to be created
+   */
+  public changeHomeDef(objhd: HomeDef): Observable<HomeDef> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                     .append('Accept', 'application/json')
+                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const data: HomeDefJson = objhd.generateJSONData(true);
+    const apipath = `${this.apiUrl}(${objhd.ID})`;
+    const jdata: any = JSON && JSON.stringify(data);
+    return this._http.put(apipath, jdata, {
+        headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`, ConsoleLogTypeEnum.debug);
+
+        const hd: HomeDef = new HomeDef();
+        hd.parseJSONData(response as any);
+
+        this._listHomeDefList.push(hd);
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService changeHomeDef failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
 
   /**
    * Get messages of current user
