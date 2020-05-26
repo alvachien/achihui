@@ -34,11 +34,15 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    public odataService: FinanceOdataService,
+    private odataService: FinanceOdataService,
     private activateRoute: ActivatedRoute,
-    public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService) {
+    private homeService: HomeDefOdataService,
+    private uiStatusService: UIStatusService,
+    private modalService: NzModalService,
+    private router: Router,
+    ) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...',
+      ConsoleLogTypeEnum.debug);
     this.isLoadingResults = false;
     this.arMembers = this.homeService.ChosedHome.Members.slice();
 
@@ -52,13 +56,14 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug);
 
       if (x instanceof Array && x.length > 0) {
@@ -113,8 +118,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 });
               },
             });
+            break;
           }
-                               break;
 
           case UIMode.Create:
           default: {
@@ -143,15 +148,16 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                   });
                 },
               });
+            break;
           }
-                   break;
         }
       }
     });
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -214,11 +220,16 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           ConsoleLogTypeEnum.debug);
 
         // Show the result dialog
+        this.router.navigate(['/finance/controlcenter/display/', x.Id]);
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`,
           ConsoleLogTypeEnum.error);
         // Show error message
-        // this._popupErrorDialog(error.toString());
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
       });
   }
 
