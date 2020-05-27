@@ -115,6 +115,7 @@ export interface BlogPostAPIJson {
   CreatedAt?: any;
   UpdatedAt?: any;
   BlogPostCollections: BlogPostCollection[];
+  BlogPostTags: BlogPostTag[];
 }
 
 export class BlogPost {
@@ -128,9 +129,11 @@ export class BlogPost {
   public createdAt?: moment.Moment;
   public updatedAt?: moment.Moment;
   public BlogPostCollections: BlogPostCollection[];
+  public BlogPostTags: BlogPostTag[];
 
   constructor() {
     this.BlogPostCollections = [];
+    this.BlogPostTags = [];
   }
 
   get createdAtString(): string {
@@ -149,6 +152,7 @@ export class BlogPost {
       this.content = data.Content;
       this.status = data.Status;
       this.BlogPostCollections = data.BlogPostCollections;
+      this.BlogPostTags = data.BlogPostTags;
 
       if (data.CreatedAt) {
         this.createdAt = moment(data.CreatedAt);
@@ -168,6 +172,7 @@ export class BlogPost {
       Content: this.content,
       Status: this.status,
       BlogPostCollections: this.BlogPostCollections,
+      BlogPostTags: this.BlogPostTags,
     };
     if (this.createdAt) {
       rtnjson.CreatedAt = this.createdAt ? this.createdAt.format(momentDateFormat) : '';
@@ -183,25 +188,7 @@ export class BlogPost {
 /**
  * Blog post tag
  */
-export class BlogPostTagAPIJson {
+export class BlogPostTag {
   PostID: number;
   Tag: string;
-}
-
-export class BlogPostTag {
-  postID: number;
-  tag: string;
-
-  public onSetData(data: BlogPostTagAPIJson) {
-    if (data) {
-      this.postID = +data.PostID;
-      this.tag = data.Tag;
-    }
-  }
-  public writeAPIJson(): BlogPostTagAPIJson {
-    return {
-      PostID: this.postID,
-      Tag: this.tag,
-    } as BlogPostTagAPIJson;
-  }
 }

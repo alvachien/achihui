@@ -7,6 +7,7 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.Activity' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
+    <nz-switch [(ngModel)]="validOrderOnly" nzCheckedChildren="Only Valid" nzUnCheckedChildren="All" (ngModelChange)="onOrderValidityChanged()"></nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
 

@@ -49,7 +49,7 @@ export class BlogOdataService {
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
-      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`)
+      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
 
       return this.http.get(apiUrl, {
         headers,
@@ -88,7 +88,7 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    let jdata = newset.writeAPIJson();
+    const jdata = newset.writeAPIJson();
     return this.http.put(apiUrl, jdata, {
       headers,
     })
@@ -150,7 +150,7 @@ export class BlogOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`)
+      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
 
       return this.http.get(apiUrl, {
         headers,
@@ -233,7 +233,7 @@ export class BlogOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`);
     return this.http.get(apiUrl, {
       headers,
       params,
@@ -350,7 +350,7 @@ export class BlogOdataService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
-  
+
   /**
    * Change existing post
    * @param post Post to be created
@@ -442,8 +442,8 @@ export class BlogOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`)
-    params = params.append('$expand', 'BlogPostCollections');
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`);
+    params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
 
     return this.http.get(apiUrl, {
       headers,
@@ -500,8 +500,7 @@ export class BlogOdataService {
         const amt = rjs['@odata.count'];
         if (rjs.value instanceof Array && rjs.value.length > 0) {
           for (const si of rjs.value) {
-            const rst: BlogPostTag = new BlogPostTag();
-            rst.onSetData(si);
+            const rst = si as BlogPostTag;
             arsts.push(rst);
           }
         }

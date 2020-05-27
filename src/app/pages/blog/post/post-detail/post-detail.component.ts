@@ -8,7 +8,7 @@ import { translate } from '@ngneat/transloco';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
   getUIModeString, BlogCollection, BlogPostCollection, BlogPostStatus_PublishAsPrivate,
-  BlogPostStatus_Draft,
+  BlogPostStatus_Draft, BlogPostTag,
 } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
@@ -30,6 +30,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   contentFromChangedEvent: string;
   detailFormGroup: FormGroup;
   listOfCollection: BlogCollection[] = [];
+  listOfTags: BlogPostTag[] = [];
 
   // editorConfig: IACMEditorConfig = {
   //   toolbarItems: [
@@ -125,6 +126,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.get('contentControl').setValue(this.instancePost.content);
               this.detailFormGroup.get('collectionControl').setValue(
                 this.instancePost.BlogPostCollections.map(val => val.CollectionID));
+              this.detailFormGroup.get('tagControl').setValue(
+                this.instancePost.BlogPostTags.map(val => val.Tag));
               switch (this.instancePost.status) {
                 case BlogPostStatus_PublishAsPublic:
                   this.detailFormGroup.get('statusControl').setValue('PublicPublish');
@@ -217,12 +220,21 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       } else {
         this.instancePost.status = BlogPostStatus_Draft;
       }
+      // Collection
       const arcoll = frmvalue.collectionControl as any[];
       arcoll.forEach(element => {
         this.instancePost.BlogPostCollections.push({
           CollectionID: element,
           PostID: this.instancePost.id,
         } as BlogPostCollection);
+      });
+      // Tags
+      const artags = frmvalue.tagControl as any[];
+      artags.forEach(tag => {
+        this.instancePost.BlogPostTags.push({
+          Tag: tag,
+          PostID: this.instancePost.id,
+        } as BlogPostTag);
       });
 
       if (this.uiMode === UIMode.Create) {

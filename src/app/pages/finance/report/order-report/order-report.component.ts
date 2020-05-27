@@ -3,13 +3,14 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzDrawerService } from 'ng-zorro-antd';
 import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import { LogLevel, FinanceReportByOrder, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
   Order, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'hih-finance-report-order',
@@ -24,6 +25,8 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   arReportByOrder: FinanceReportByOrder[] = [];
   arOrder: Order[] = [];
   baseCurrency: string;
+  // Filters
+  validOrderOnly = false;
 
   constructor(
     public odataService: FinanceOdataService,
@@ -81,6 +84,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onOrderValidityChanged(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderReportComponent onOrderValidityChanged...',
+      ConsoleLogTypeEnum.debug);
+
+    // Valid order
+    this.buildReportList();
   }
 
   onDisplayMasterData(ccid: number) {
@@ -200,12 +211,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       // }
     });
   }
-
-
   private buildReportList(): void {
     this.dataSet = [];
+    const dt = moment();
+    const ords = this.arOrder.filter(value => {
+      return this.validOrderOnly ? ( value.ValidFrom.isBefore(dt) && value.ValidTo.isAfter(dt) ) : true;
+    });
     this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {
-      const ordobj = this.arOrder.find((cc: Order) => {
+      const ordobj = ords.find((cc: Order) => {
         return cc.Id === bal.OrderId;
       });
       if (ordobj) {

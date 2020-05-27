@@ -7,7 +7,8 @@ import { translate } from '@ngneat/transloco';
 import { EChartOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem, GeneralFilterOperatorEnum
+  momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem,
+  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -30,6 +31,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   chartLiabilitiesOption: EChartOption;
   listCategoryFilter: ITableFilterValues[] = [];
   selectedCategoryFilter: number[] = [];
+  // Filters
+  listSelectedAccountStatus: AccountStatusEnum[] = [];
+  arAccountStatusDisplayStrings: UIDisplayString[];
 
   constructor(
     private odataService: FinanceOdataService,
@@ -41,6 +45,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
+    this.arAccountStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
     this.baseCurrency = homeService.ChosedHome.BaseCurrency;
   }
 
@@ -98,6 +103,15 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
+
+  onAccountStatusFilterChanged(event: any) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountReportComponent OnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    this.buildReportList();
+    this.buildAssetChart();
+    this.buildLiabilityChart();
+}
 
   onDisplayMasterData(acntid: number) {
     this.router.navigate(['/finance/account/display/' + acntid.toString()]);
@@ -242,7 +256,11 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         names.push(ctgyName);
 
         let ctgyAmt = 0;
-        this.arAccounts.forEach((acnt: Account) => {
+        const acnts = this.arAccounts.filter(value => {
+          return this.listSelectedAccountStatus.length > 0 ?
+            this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
+        });
+        acnts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
@@ -296,7 +314,11 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         names.push(ctgyName);
 
         let ctgyAmt = 0;
-        this.arAccounts.forEach((acnt: Account) => {
+        const acnts = this.arAccounts.filter(value => {
+          return this.listSelectedAccountStatus.length > 0 ?
+            this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
+        });
+        acnts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
@@ -341,15 +363,17 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       }],
     };
   }
-
   private buildReportList() {
     this.dataSet = [];
 
+    const acnts = this.arAccounts.filter(value => {
+      return this.listSelectedAccountStatus.length > 0 ?
+        this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
+    });
     this.arReportByAccount.forEach((baldata: FinanceReportByAccount) => {
-      const acntobj: Account = this.arAccounts.find((acnt: Account) => {
+      const acntobj: Account = acnts.find((acnt: Account) => {
         return acnt.Id === baldata.AccountId;
       });
-
       if (acntobj !== undefined) {
         const ctgyobj: AccountCategory = this.arAccountCategories.find((ctg: AccountCategory) => {
           return ctg.ID === acntobj.CategoryId;
