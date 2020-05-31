@@ -540,16 +540,81 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount succeed',
           ConsoleLogTypeEnum.debug);
 
         const hd: Account = new Account();
-        hd.onSetData((response as any).value);
+        hd.onSetData(response as any);
         this.listAccount.push(hd);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change an account
+   * @param objAcnt Account to create
+   */
+  public changeAccount(objAcnt: Account): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objAcnt.writeJSONString();
+    return this.http.put(this.accountAPIUrl + `(${objAcnt.Id})`, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        hd.onSetData(response as any);
+        this.listAccount.push(hd);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Delete an account
+   * @param accoundId Id of account
+   */
+  public deleteAccount(accountId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.accountAPIUrl + `(${accountId})`, {
+      headers
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const extidx = this.listAccount.findIndex(val => {
+          return val.Id === accountId;
+        });
+        if (extidx !== -1) {
+          this.listAccount.splice(extidx, 1);
+        }
+
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteAccount failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -733,6 +798,39 @@ export class FinanceOdataService {
   }
 
   /**
+   * Delete a control center
+   * @param objectId ID of control center to delete
+   */
+  public deleteControlCenter(objectId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.controlCenterAPIUrl + `${objectId}`, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteControlCenter',
+          ConsoleLogTypeEnum.debug);
+
+        const extidx = this.listControlCenter.findIndex(cc => {
+          return cc.Id === objectId;
+        });
+        if (extidx !== -1) {
+          this.listControlCenter.splice(extidx, 1);
+        }
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteControlCenter failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * fetch all orders, and save it to buffer
    * @param forceReload set to true to enforce reload all data
    */
@@ -900,6 +998,41 @@ export class FinanceOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`, ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Delete an order
+   * @param orderId Order ID to delete
+   */
+  public deleteOrder(orderId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.orderAPIUrl + `(${orderId})`, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteOrder succeed.',
+          ConsoleLogTypeEnum.debug);
+
+        // Buffer it
+        const existidx = this.listOrder.findIndex(hd => {
+          return hd.Id === orderId;
+        });
+        if (existidx !== -1) {
+          this.listOrder.splice(existidx, 1);
+        }
+
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteOrder failed ${error}.`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));

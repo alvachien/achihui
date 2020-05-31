@@ -94,7 +94,39 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
-    this.onRefresh();
+    this.isLoadingResults = true;
+    this.arCategories = [];
+    this.listCategoryFilter = [];
+    this.odataService.fetchAllAccountCategories()
+      .pipe(takeUntil(this._destroyed$),
+        finalize(() => this.isLoadingResults = false))
+        .subscribe({
+          next: val => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
+              ConsoleLogTypeEnum.debug);
+            this.arCategories = val;
+            this.arCategories.forEach((val2: AccountCategory) => {
+              this.listCategoryFilter.push({
+                text: translate(val2.Name),
+                value: val2.ID
+              });
+            });
+          },
+          error: err => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
+              ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          },
+          complete: () => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
+              ConsoleLogTypeEnum.debug);
+            this.onRefresh();
+          }
+        });
   }
 
   ngOnDestroy() {
@@ -108,38 +140,20 @@ export class AccountListComponent implements OnInit, OnDestroy {
 
   onRefresh(isreload?: boolean): void {
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(isreload),
-    ])
+    this.dataSet = [];
+    this.odataService.fetchAllAccounts(isreload)
       .pipe(
         takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
-        next: (data: any) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh, forkJoin...',
+        next: (data: Account[]) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh fetchAllAccounts succeed',
             ConsoleLogTypeEnum.debug);
-
-          this.arCategories = [];
-          this.dataSet = [];
-          this.listCategoryFilter = [];
-
-          if (data instanceof Array && data.length > 0) {
-            // Parse the data
-            this.arCategories = data[0];
-            this.dataSet = data[1];
-
-            this.arCategories.forEach((val: AccountCategory) => {
-              this.listCategoryFilter.push({
-                text: translate(val.Name),
-                value: val.ID
-              });
-            });
-          }
+          this.dataSet = data.slice();
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent onRefresh, forkJoin, failed ${error}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent onRefresh fetchAllAccounts failed ${error}`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({
@@ -160,6 +174,32 @@ export class AccountListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(rid: number): void {
-    // TBD.
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountListComponent onDelete, ${rid}`,
+      ConsoleLogTypeEnum.debug);
+    // After the pop confirm
+    this.odataService.deleteAccount(rid)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: val => {
+          // Just remove the item
+          const acnts = this.dataSet.slice();
+          const extidx = acnts.findIndex(val2 => {
+            return val2.Id === rid;
+          });
+
+          if (extidx !== -1) {
+            acnts.splice(extidx, 1);
+            this.dataSet = [];
+            this.dataSet = acnts;
+          }
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
   }
 }

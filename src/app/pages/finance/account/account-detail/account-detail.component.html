@@ -5,7 +5,7 @@
     <nz-page-header-tags>
     </nz-page-header-tags>
     <nz-page-header-extra>
-      <button nz-button nzType="primary" [disabled]="!isFieldChangable">{{'Common.Save' | transloco}}</button>
+      <button nz-button nzType="primary" (click)="onSave()" [disabled]="!isFieldChangable">{{'Common.Save' | transloco}}</button>
     </nz-page-header-extra>
   </nz-page-header>
   <div>
@@ -101,10 +101,12 @@
         [allTranTypes]="arTranTypes">
       </hih-finance-account-extra-downpayment>
     </form>
+
     <form nz-form [formGroup]="extraAssetFormGroup" *ngIf="isAssetAccount">
       <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">        
       </hih-finance-account-extra-asset>
     </form>
+
     <form nz-form [formGroup]="extraLoanFormGroup" *ngIf="isLoanAccount">
       <hih-finance-account-extra-loan formControlName="extLoanControl"
         [tranAmount]="tranAmount"
