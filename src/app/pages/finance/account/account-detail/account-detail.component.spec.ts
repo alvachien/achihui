@@ -14,7 +14,7 @@ import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlS
 import { AccountExtraAssetComponent } from '../account-extra-asset';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, AccountStatusEnum, financeAccountCategoryCash } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -28,6 +28,7 @@ describe('AccountDetailComponent', () => {
   let fetchAllAssetCategoriesSpy: any;
   let fetchAllTranTypesSpy: any;
   let activatedRouteStub: any;
+  const homeServiceStub: Partial<HomeDefOdataService> = {};
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -51,6 +52,7 @@ describe('AccountDetailComponent', () => {
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
   beforeEach(async(() => {
@@ -78,6 +80,7 @@ describe('AccountDetailComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },

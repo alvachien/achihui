@@ -134,7 +134,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 And in the testing methods:
 ```typescript
-  const routerstub = TestBed.get(Router);
+  const routerstub = TestBed.inject(Router);
   spyOn(routerstub, 'navigate');
 
   expect(routerstub.navigate).toHaveBeenCalled();

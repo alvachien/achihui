@@ -7,7 +7,7 @@ describe('OrderValidityFilterPipe', () => {
   let pipe: OrderValidityFilterPipe;
   const arorders: Order[] = [];
 
-  beforeEach(() => {
+  beforeAll(() => {
     pipe = new OrderValidityFilterPipe();
     for (let i = 1; i <= 3; i++) {
       const ofs: Order = new Order();

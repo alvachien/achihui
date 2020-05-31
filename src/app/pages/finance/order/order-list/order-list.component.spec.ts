@@ -9,6 +9,7 @@ import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
+import { OrderValidityFilterPipe, } from '../../pipes';
 import { OrderListComponent } from './order-list.component';
 import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
@@ -56,6 +57,7 @@ describe('OrderListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        OrderValidityFilterPipe,
         MessageDialogComponent,
         OrderListComponent,
       ],
