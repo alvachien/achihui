@@ -588,6 +588,37 @@ export class FinanceOdataService {
   }
 
   /**
+   * Change an account by patch
+   * @param accountId Account ID
+   * @param listOfChanges list of changes to be patched
+   */
+  public changeAccountByPatch(accountId: number, listOfChanges: any): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.patch(this.accountAPIUrl + `(${accountId})`, listOfChanges, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccountByPatch succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        hd.onSetData(response as any);
+        this.listAccount.push(hd);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccountByPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * Delete an account
    * @param accoundId Id of account
    */
