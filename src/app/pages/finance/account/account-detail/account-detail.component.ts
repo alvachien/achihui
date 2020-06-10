@@ -275,8 +275,31 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Check the dirty control
+    const arcontent: any = {};
+    // ctgyControl: new FormControl(undefined, [
+    //   Validators.required,
+    //   // this.categoryValidator,
+    // ]),
+    // cmtControl: new FormControl('', Validators.maxLength(45)),
+    // statusControl: new FormControl(),
+    // ownerControl: new FormControl(),
+
+    if (this.headerFormGroup.get('nameControl').dirty) {
+      arcontent.Name = acntobj.Name;
+    }
+    if (this.headerFormGroup.get('cmtControl').dirty) {
+      arcontent.Comment = acntobj.Comment;
+    }
+    if (this.headerFormGroup.get('statusControl').dirty) {
+      arcontent.Status = AccountStatusEnum[acntobj.Status];
+    }
+    if (this.headerFormGroup.get('ownerControl').dirty) {
+      arcontent.OwnerId = acntobj.OwnerId;
+    }
+
     // Save it
-    this.odataService.changeAccount(acntobj)
+    this.odataService.changeAccountByPatch(acntobj.Id, arcontent)
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: val => {
