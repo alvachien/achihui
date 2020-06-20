@@ -193,7 +193,27 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this._createControlCenter(detailObject);
     } else if (this.uiMode === UIMode.Change) {
-      this._updateControlCenter(detailObject);
+      // Check the dirty control
+      const arcontent: any = {};
+      // nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      // cmtControl: new FormControl('', Validators.maxLength(45)),
+      // parentControl: new FormControl(),
+      // ownerControl: new FormControl(),
+
+      if (this.detailFormGroup.get('nameControl').dirty) {
+        arcontent.Name = detailObject.Name;
+      }
+      if (this.detailFormGroup.get('cmtControl').dirty) {
+        arcontent.Comment = detailObject.Comment;
+      }
+      if (this.detailFormGroup.get('parentControl').dirty) {
+        arcontent.ParentId = detailObject.ParentId;
+      }
+      if (this.detailFormGroup.get('ownerControl').dirty) {
+        arcontent.Owner = detailObject.Owner;
+      }
+
+      this._updateControlCenter(arcontent);
     }
   }
 
@@ -216,13 +236,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((x: ControlCenter) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _createControlCenter`,
           ConsoleLogTypeEnum.debug);
 
         // Show the result dialog
         this.router.navigate(['/finance/controlcenter/display/', x.Id]);
       }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _createControlCenter failed: ${error}`,
           ConsoleLogTypeEnum.error);
         // Show error message
         this.modalService.error({
@@ -233,28 +253,24 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _updateControlCenter(detailObject: ControlCenter): void {
-    // this._storageService.changeControlCenter(detailObject)
-    //   .pipe(takeUntil(this._destroyed$))
-    //   .subscribe((x: any) => {
-    //     if (environment.LoggingLevel >= LogLevel.Debug) {
-    //       ModelUtility.writeConsoleLog(
-    //        `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
-    //     }
+  private _updateControlCenter(changedContent: any): void {
+    this.odataService.changeControlCenterByPatch(this.routerID, changedContent)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _updateControlCenter`,
+          ConsoleLogTypeEnum.error);
 
-    //     // Show the snackbar
-    //     let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-    //       'OK', {
-    //         duration: 3000,
-    //       });
-
-    //     snackbarRef.afterDismissed().subscribe(() => {
-    //       // Navigate to display
-    //       this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
-    //     });
-    //   }, (error: any) => {
-    //     // Show error message
-    //     this._popupErrorDialog(error.toString());
-    //   });
+        // Show the result dialog
+        this.router.navigate(['/finance/controlcenter/display/', x.Id]);
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _updateControlCenter`,
+          ConsoleLogTypeEnum.error);
+        // Show error message
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      });
   }
 }

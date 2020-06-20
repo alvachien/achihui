@@ -29,6 +29,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   // Form: detail
   public detailFormGroup: FormGroup;
   public listRules: SettlementRule[] = [];
+  private ruleChanged = false;
   // Submitting
   isOrderSubmitting = false;
   isOrderSubmitted = false;
@@ -95,6 +96,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         }
         this.currentMode = getUIModeString(this.uiMode);
       }
+
+      this.ruleChanged = false; // Clear the flag
 
       switch (this.uiMode) {
         case UIMode.Change:
@@ -177,7 +180,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
-  onChange() {
+  onRuleContentChange() {
+    this.ruleChanged = true;
   }
 
   public onSubmit(): void {
@@ -198,6 +202,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     srule.RuleId = this.getNextRuleID();
     srules.push(srule);
     this.listRules = srules;
+
+    this.ruleChanged = true;
   }
 
   private onCreateOrder(): void {
@@ -256,26 +262,64 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.odataService.changeOrder(ordObj)
-      .pipe(finalize(() => {
-        this.isOrderSubmitting = false;
-        this.isOrderSubmitted =  true;
-      }))
-      .subscribe({
-        next: (x: Order) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
-            ConsoleLogTypeEnum.debug);
+    // Check the dirty control
+    if (this.ruleChanged) {
+      this.odataService.changeOrder(ordObj)
+        .pipe(finalize(() => {
+          this.isOrderSubmitting = false;
+          this.isOrderSubmitted =  true;
+        }))
+        .subscribe({
+          next: (x: Order) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
+              ConsoleLogTypeEnum.debug);
 
-          this.orderSavedFailed = null;
-        },
-        error: (error: any) => {
-          // Show error message
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
-            ConsoleLogTypeEnum.error);
+            this.orderSavedFailed = null;
+          },
+          error: (error: any) => {
+            // Show error message
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              ConsoleLogTypeEnum.error);
 
-          this.orderSavedFailed = error;
-        }
-      });
+            this.orderSavedFailed = error;
+          }
+        });
+    } else {
+      const arcontent: any = {};
+      if (this.detailFormGroup.get('nameControl').dirty) {
+        arcontent.Name = ordObj.Name;
+      }
+      if (this.detailFormGroup.get('startDateControl').dirty) {
+        arcontent.ValidFrom = ordObj.ValidFromFormatString;
+      }
+      if (this.detailFormGroup.get('endDateControl').dirty) {
+        arcontent.ValidTo = ordObj.ValidToFormatString;
+      }
+      if (this.detailFormGroup.get('cmtControl').dirty) {
+        arcontent.Comment = ordObj.Comment;
+      }
+
+      this.odataService.changeOrderByPatch(this.routerID, arcontent)
+        .pipe(finalize(() => {
+          this.isOrderSubmitting = false;
+          this.isOrderSubmitted =  true;
+        }))
+        .subscribe({
+          next: (x: Order) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
+              ConsoleLogTypeEnum.debug);
+
+            this.orderSavedFailed = null;
+          },
+          error: (error: any) => {
+            // Show error message
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            this.orderSavedFailed = error;
+          }
+        });
+    }
   }
 
   public goBack(): void {
@@ -295,6 +339,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (idx !== -1) {
       srules.splice(idx);
       this.listRules = srules;
+
+      this.ruleChanged = true;
     }
   }
 

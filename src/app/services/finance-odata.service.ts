@@ -564,6 +564,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const jdata: string = objAcnt.writeJSONString();
@@ -576,7 +577,19 @@ export class FinanceOdataService {
 
         const hd: Account = new Account();
         hd.onSetData(response as any);
-        this.listAccount.push(hd);
+
+        if (hd && hd.Id) {
+          // Update the existing item
+          const acntidx = this.listAccount.findIndex(acnt => {
+            return acnt.Id === objAcnt.Id;
+          });
+          if (acntidx !== -1) {
+            this.listAccount.splice(acntidx, 1, hd);
+          } else {
+            this.listAccount.push(hd);
+          }
+        }
+
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
@@ -596,6 +609,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     return this.http.patch(this.accountAPIUrl + `/${accountId}`, listOfChanges, {
@@ -607,7 +621,19 @@ export class FinanceOdataService {
 
         const hd: Account = new Account();
         hd.onSetData(response as any);
-        this.listAccount.push(hd);
+
+        // Update the existing item
+        if (hd && hd.Id) {
+          const acntidx = this.listAccount.findIndex(acnt => {
+            return acnt.Id === accountId;
+          });
+          if (acntidx !== -1) {
+            this.listAccount.splice(acntidx, 1, hd);
+          } else {
+            this.listAccount.push(hd);
+          }
+        }
+
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
@@ -791,6 +817,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.controlCenterAPIUrl + '(' + objDetail.Id.toString() + ')';
@@ -809,13 +836,15 @@ export class FinanceOdataService {
         const hd: ControlCenter = new ControlCenter();
         hd.onSetData(response as any);
 
-        const idx: number = this.listControlCenter.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listControlCenter.splice(idx, 1, hd);
-        } else {
-          this.listControlCenter.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listControlCenter.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listControlCenter.splice(idx, 1, hd);
+          } else {
+            this.listControlCenter.push(hd);
+          }
         }
 
         return hd;
@@ -837,6 +866,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.controlCenterAPIUrl + '/' + controlCenterID.toString();
@@ -851,13 +881,15 @@ export class FinanceOdataService {
         const hd: ControlCenter = new ControlCenter();
         hd.onSetData(response as any);
 
-        const idx: number = this.listControlCenter.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listControlCenter.splice(idx, 1, hd);
-        } else {
-          this.listControlCenter.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listControlCenter.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listControlCenter.splice(idx, 1, hd);
+          } else {
+            this.listControlCenter.push(hd);
+          }
         }
 
         return hd;
@@ -1041,6 +1073,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
@@ -1055,13 +1088,15 @@ export class FinanceOdataService {
         const hd: Order = new Order();
         hd.onSetData(response as any);
 
-        const idx: number = this.listOrder.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listOrder.splice(idx, 1, hd);
-        } else {
-          this.listOrder.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listOrder.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listOrder.splice(idx, 1, hd);
+          } else {
+            this.listOrder.push(hd);
+          }
         }
 
         return hd;
@@ -1083,6 +1118,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.orderAPIUrl + '/' + orderID.toString();
@@ -1096,13 +1132,15 @@ export class FinanceOdataService {
         const hd: Order = new Order();
         hd.onSetData(response as any);
 
-        const idx: number = this.listOrder.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listOrder.splice(idx, 1, hd);
-        } else {
-          this.listOrder.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listOrder.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listOrder.splice(idx, 1, hd);
+          } else {
+            this.listOrder.push(hd);
+          }
         }
 
         return hd;

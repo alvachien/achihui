@@ -107,10 +107,10 @@
           </ng-template>
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.Precent" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+          <input nz-input [(ngModel)]="data.Precent" (ngModelChange)="onRuleContentChange()" [disabled]="!isFieldChangable" />
         </td>
         <td>
-          <input nz-input [(ngModel)]="data.Comment" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+          <input nz-input [(ngModel)]="data.Comment" (ngModelChange)="onRuleContentChange()" [disabled]="!isFieldChangable" />
         </td>
       </tr>
     </tbody>
