@@ -10,7 +10,7 @@ import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
+  getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum, UIMode,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 
@@ -20,6 +20,12 @@ import { UITableColumnItem } from '../../../../uimodel';
   styleUrls: ['./document-detail.component.less'],
 })
 export class DocumentDetailComponent implements OnInit {
+  // tslint:disable-next-line:variable-name
+  private _destroyed$: ReplaySubject<boolean>;
+  isLoadingResults: boolean;
+  public routerID = -1; // Current object ID in routing
+  public currentMode: string;
+  public uiMode: UIMode = UIMode.Create;
 
   constructor() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',

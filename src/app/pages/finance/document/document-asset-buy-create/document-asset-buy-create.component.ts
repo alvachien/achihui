@@ -350,9 +350,9 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
               });
               if (ttobj) {
                 if (ttobj.Expense) {
-                  amtInItems -= val.TranAmount;
-                } else {
                   amtInItems += val.TranAmount;
+                } else {
+                  amtInItems -= val.TranAmount;
                 }
               }
             }

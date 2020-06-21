@@ -78,6 +78,7 @@
             <td>
               {{ data.Id }}
               <nz-divider nzType="vertical"></nz-divider>
+              <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
               <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
             </td>
             <td>{{ getCurrencyName(data.TranCurr) }}</td>
@@ -86,16 +87,15 @@
             <td>{{ data.Desp }}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
-            <td></td>
-            <td colspan="5" style="width: 100%;">
-              <nz-table #itemTable [nzData]="data.Items" nzSize="middle" [nzShowPagination]="false" style="width: 100%;">
+            <td colspan="6">
+              <nz-table #itemTable [nzData]="data.Items" [nzShowPagination]="false">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>{{'Finance.Account' | transloco}}</th>
-                    <th>{{'Finance.TransactionType' | transloco}}</th>
-                    <th>{{'Finance.Amount' | transloco}}</th>
-                    <th>{{'Common.Description' | transloco}}</th>
+                    <th [nzWidth]="50">#</th>
+                    <th [nzWidth]="150">{{'Finance.Account' | transloco}}</th>
+                    <th [nzWidth]="200">{{'Finance.TransactionType' | transloco}}</th>
+                    <th [nzWidth]="150">{{'Finance.Amount' | transloco}}</th>
+                    <th [nzWidth]="200">{{'Common.Description' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>
