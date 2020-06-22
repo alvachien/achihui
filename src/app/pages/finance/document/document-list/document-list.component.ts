@@ -343,7 +343,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/masscreaterecurred']);
   }
   public onEdit(docid: number): void {
-    this.msgService.error('This functionality is still under construction', { nzDuration: 2500 });
+    this.router.navigate(['/finance/document/edit/', docid]);
   }
   public onDelete(docid: number): void {
     this.msgService.error('This functionality is still under construction', { nzDuration: 2500 });

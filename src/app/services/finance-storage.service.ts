@@ -38,53 +38,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Update an account's status
-   */
-  public updateAccountStatus(acntid: number, nstatus: AccountStatusEnum): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = this.accountAPIUrl + '/' + acntid.toString();
-    let jdata: any[] = [{
-        'op': 'replace',
-        'path': '/status',
-        'value': (<number>nstatus).toString(),
-      },
-    ];
-
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.patch(apiurl, jdata, {
-        headers: headers,
-        params: params,
-      }).pipe(map((response: HttpResponse<any>) => {
-        let hd: Account = new Account();
-        hd.onSetData(<any>response);
-
-        // Update the buffer
-        let idx: number = this._listAccount.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this._listAccount.splice(idx, 1, hd);
-        } else {
-          this._listAccount.push(hd);
-        }
-
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in changeAccount in FinanceStorageService.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
-
-  /**
    * Update a normal document
    * @param objDetail instance of document which to be created
    */

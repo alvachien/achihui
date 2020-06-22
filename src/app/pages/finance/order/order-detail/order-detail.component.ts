@@ -103,6 +103,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
+
           forkJoin([
             this.odataService.fetchAllControlCenters(),
             this.odataService.readOrder(this.routerID)

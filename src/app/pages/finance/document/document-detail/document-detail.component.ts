@@ -66,6 +66,20 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
         this.currentMode = getUIModeString(this.uiMode);
       }
+
+      switch (this.uiMode) {
+        case UIMode.Change:
+        case UIMode.Display: {
+          this.isLoadingResults = true;
+
+          // Read the document
+          break;
+        }
+
+        case UIMode.Create:
+        default:
+          break;
+      }
     });
   }
 
