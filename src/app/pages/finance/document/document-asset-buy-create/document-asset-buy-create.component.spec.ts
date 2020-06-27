@@ -174,7 +174,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
@@ -182,7 +182,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add the desp back
@@ -204,12 +204,12 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -254,12 +254,12 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -304,12 +304,12 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -354,12 +354,12 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -409,11 +409,11 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -445,7 +445,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -467,9 +467,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -497,7 +497,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -536,9 +536,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -566,7 +566,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -601,9 +601,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -631,7 +631,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -669,9 +669,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -699,7 +699,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -764,9 +764,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -794,7 +794,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -842,9 +842,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -872,7 +872,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -919,11 +919,11 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
 
       // Update a valid document header
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment().subtract(1, 'y');
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -955,7 +955,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -983,7 +983,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer],

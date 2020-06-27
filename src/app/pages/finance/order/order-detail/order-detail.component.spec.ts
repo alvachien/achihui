@@ -26,6 +26,7 @@ describe('OrderDetailComponent', () => {
   let readOrderSpy: any;
   let createOrderSpy: any;
   let changeOrderSpy: any;
+  let changeOrderByPatchSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -46,11 +47,13 @@ describe('OrderDetailComponent', () => {
       'readOrder',
       'createOrder',
       'changeOrder',
+      'changeOrderByPatch',
     ]);
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     readOrderSpy = storageService.readOrder.and.returnValue(of({}));
     createOrderSpy = storageService.createOrder.and.returnValue(of({}));
     changeOrderSpy = storageService.changeOrder.and.returnValue(of({}));
+    changeOrderByPatchSpy = storageService.changeOrderByPatch.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -499,6 +502,7 @@ describe('OrderDetailComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
       changeOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+      changeOrderByPatchSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
     beforeEach(inject([OverlayContainer],
       (oc: OverlayContainer) => {
@@ -543,7 +547,7 @@ describe('OrderDetailComponent', () => {
       // Do the save
       component.onSubmit();
       expect(component.isOrderSubmitting).toBeTrue();
-      expect(changeOrderSpy).toHaveBeenCalled();
+      expect(changeOrderByPatchSpy).toHaveBeenCalled();
 
       tick();
       fixture.detectChanges();
@@ -577,7 +581,7 @@ describe('OrderDetailComponent', () => {
       // Do the save
       component.onSubmit();
       expect(component.isOrderSubmitting).toBeTrue();
-      expect(changeOrderSpy).toHaveBeenCalled();
+      expect(changeOrderByPatchSpy).toHaveBeenCalled();
 
       tick();
       fixture.detectChanges();

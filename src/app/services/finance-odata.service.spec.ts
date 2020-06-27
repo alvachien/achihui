@@ -1327,7 +1327,7 @@ describe('FinanceOdataService', () => {
       httpTestingController.verify();
     });
 
-    it('should return order in success case', () => {
+    it('should return control center in success case', () => {
       expect(service.ControlCenters.length).toEqual(0);
       service.changeControlCenter(cc).subscribe(
         (data: any) => {
@@ -1345,7 +1345,7 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(fakeData.finOrdersFromAPI[0]);
+      req.flush(fakeData.finControlCentersFromAPI[0]);
     });
 
     it('should return error in case error appear', () => {
@@ -1361,6 +1361,64 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '(11)';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('changeControlCenterByPatch', () => {
+    let cc: ControlCenter;
+    beforeEach(() => {
+      service = TestBed.inject(FinanceOdataService);
+      cc = new ControlCenter();
+      cc.Id = 11;
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return control center in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.changeControlCenterByPatch(11, {
+        Comment: 'Test'
+      }).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to PUT from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === service.controlCenterAPIUrl + '/11';
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finControlCentersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.changeControlCenterByPatch(11, {
+        Comment: 'Test'
+      }).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === service.controlCenterAPIUrl + '/11';
       });
 
       // respond with a 500 and the error message in the body
@@ -1635,7 +1693,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to PUT from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11' && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11';
       });
 
       // Respond with the mock data
@@ -1654,7 +1712,65 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11' && requrl.params.has('hid');
+        return requrl.method === 'PUT' && requrl.url === service.orderAPIUrl + '/11';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('changeOrderByPatch', () => {
+    let ord: Order;
+    beforeEach(() => {
+      service = TestBed.inject(FinanceOdataService);
+      ord = new Order();
+      ord.Id = 11;
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return order in success case', () => {
+      expect(service.Orders.length).toEqual(0);
+      service.changeOrderByPatch(11, {
+        Comment: 'Tezt'
+      }).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.Orders.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to PUT from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === service.orderAPIUrl + '/11';
+      });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.changeOrderByPatch(11, {
+        Comment: 'Tezt'
+      }).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === service.orderAPIUrl + '/11';
       });
 
       // respond with a 500 and the error message in the body
