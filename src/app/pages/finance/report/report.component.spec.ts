@@ -7,6 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 import { FinanceUIModule } from '../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
@@ -65,6 +67,7 @@ describe('ReportComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        NgxEchartsModule.forRoot({ echarts }),
         FinanceUIModule,
         NgZorroAntdModule,
         RouterTestingModule,

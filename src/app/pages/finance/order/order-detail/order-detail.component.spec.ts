@@ -562,8 +562,8 @@ describe('OrderDetailComponent', () => {
       flush();
     }));
 
-    it('shall show failed result', fakeAsync(() => {
-      changeOrderSpy.and.returnValue(asyncError('failed in creation'));
+    it('shall show failed result without rule change', fakeAsync(() => {
+      changeOrderByPatchSpy.and.returnValue(asyncError('failed in creation'));
 
       fixture.detectChanges();
       tick();

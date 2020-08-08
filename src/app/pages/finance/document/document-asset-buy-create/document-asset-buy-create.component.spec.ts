@@ -515,11 +515,14 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 100.2;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
       component.itemFormGroup.get('itemControl').markAsDirty();
+      component.itemFormGroup.updateValueAndValidity();
       tick();
       fixture.detectChanges();
 
@@ -580,7 +583,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
@@ -642,7 +647,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 100.2;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
@@ -710,7 +717,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 100.2;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
@@ -805,7 +814,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 100.20;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
@@ -883,7 +894,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritem.AccountId = fakeData.finAccounts[0].Id;
       aritem.Desp = 'Test 1';
       aritem.TranAmount = 100.20;
-      aritem.TranType = fakeData.finTranTypes[0].Id;
+      aritem.TranType = fakeData.finTranTypes.find(val => {
+        return val.Expense === true;
+      }).Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl').setValue(aritems);
