@@ -8,7 +8,7 @@
     <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!isFieldChangable || !detailFormGroup.valid">{{'Common.Save' | transloco}}</button>
-      <button nz-button (click)="onCheck()" [disabled]="!isFieldChangable">{{'Common.Check' | transloco}}</button>
+      <!-- <button nz-button (click)="onCheck()" [disabled]="!isFieldChangable">{{'Common.Check' | transloco}}</button> -->
     </nz-page-header-extra>
   </nz-page-header>
 

@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: 'version', loadChildren: () => import('./pages/version/version.module').then(m => m.VersionModule) },
   { path: 'credits', loadChildren: () => import('./pages/credits/credits.module').then(m => m.CreditsModule) },
   { path: 'languages', loadChildren: () => import('./pages/language/language.module').then(m => m.LanguageModule) },
-  { path: 'userdetail', loadChildren: () => import('./pages/user-detail/user-detail.module').then(m => m.UserDetailModule) },  
+  { path: 'userdetail', loadChildren: () => import('./pages/user-detail/user-detail.module').then(m => m.UserDetailModule) },
 
   {
     path: 'homedef',

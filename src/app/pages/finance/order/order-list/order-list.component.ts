@@ -20,6 +20,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
+  validOrderOnly = false;
   dataSet: Order[] = [];
 
   constructor(
@@ -46,7 +47,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: Order[]) => {
-          this.dataSet = x;
+          this.dataSet = x.slice();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
@@ -71,19 +72,52 @@ export class OrderListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onOrderValidityChanged(): void {
+    // Valid order
+  }
+
   onCreate(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onCreate...',
+      ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/order/create']);
   }
 
   onDisplay(rid: number): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onDisplay...',
+      ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/order/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onEdit...',
+      ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/order/edit/' + rid.toString()]);
   }
 
   onDelete(rid: number) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onDelete...',
+      ConsoleLogTypeEnum.debug);
+    this.odataService.deleteOrder(rid)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: val => {
+          // Delete item from list
+          const exts = this.dataSet.slice();
+          const extidx = exts.findIndex(ext => {
+            return ext.Id === rid;
+          });
+          if (extidx !== -1) {
+            this.dataSet = exts.splice(extidx, 1);
+          }
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
   }
 
   onDisplayDocItem(rid: number, rname: string) {

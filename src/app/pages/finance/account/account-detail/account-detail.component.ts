@@ -15,6 +15,7 @@ import { Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   UIAccountForSelection, TranType, HomeMember,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -28,7 +29,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
-  arrayStatus: UIDisplayString[] = [];
+  arStatusDisplayStrings: UIDisplayString[] = [];
   arMembers: HomeMember[] = [];
   arAccountCategories: AccountCategory[] = [];
   arAssetCategories: AssetCategory[] = [];
@@ -80,20 +81,25 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    public odataService: FinanceOdataService,
-    public activateRoute: ActivatedRoute,
-    public homeSevice: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService) {
+    private odataService: FinanceOdataService,
+    private activateRoute: ActivatedRoute,
+    private homeSevice: HomeDefOdataService,
+    private uiStatusService: UIStatusService,
+    private modalService: NzModalService,
+    private router: Router) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
-    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.arStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
+    this.arMembers = this.homeSevice.ChosedHome.Members;
 
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      ctgyControl: new FormControl(undefined, [Validators.required]),
+      ctgyControl: new FormControl(undefined, [
+        Validators.required,
+        // this.categoryValidator,
+      ]),
       cmtControl: new FormControl('', Validators.maxLength(45)),
       statusControl: new FormControl(),
       ownerControl: new FormControl(),
@@ -159,7 +165,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               this.extraLoanFormGroup.disable();
             }
           }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.uiMode = UIMode.Invalid;
@@ -206,25 +212,108 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
   public isCategoryDisabled(ctgyid: number): boolean {
     if (this.uiMode === UIMode.Create && (ctgyid === financeAccountCategoryAsset
-        || ctgyid === financeAccountCategoryBorrowFrom
-        || ctgyid === financeAccountCategoryLendTo
-        || ctgyid === financeAccountCategoryAdvancePayment
-        || ctgyid === financeAccountCategoryAdvanceReceived
-        || ctgyid === financeAccountCategoryInsurance) ) {
+      || ctgyid === financeAccountCategoryBorrowFrom
+      || ctgyid === financeAccountCategoryLendTo
+      || ctgyid === financeAccountCategoryAdvancePayment
+      || ctgyid === financeAccountCategoryAdvanceReceived
+      || ctgyid === financeAccountCategoryInsurance) ) {
       return true;
     }
 
     return false;
   }
 
-  public onSubmit(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSubmit`,
+  public onSave(): void {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`,
       ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Create) {
-      // this.onCreateImpl();
+      this.onCreateImpl();
     } else if (this.uiMode === UIMode.Change) {
-      // this.onUpdateImpl();
+      this.onUpdateImpl();
     }
+  }
+  private onCreateImpl() {
+    const acntobj = this._generateAccount();
+    if (!acntobj) {
+      return;
+    }
+
+    if (!acntobj.onVerify({
+      Categories: this.arAccountCategories
+    })) {
+      popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
+      return;
+    }
+
+    // Save it
+    this.odataService.createAccount(acntobj)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: val => {
+          // Navigate to display mode
+          this.router.navigate(['/finance/account/display', val.Id]);
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true
+          });
+        }
+      });
+  }
+  private onUpdateImpl() {
+    const acntobj = this._generateAccount();
+    if (!acntobj) {
+      return;
+    }
+
+    if (!acntobj.onVerify({
+      Categories: this.arAccountCategories
+    })) {
+      popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
+      return;
+    }
+
+    // Check the dirty control
+    const arcontent: any = {};
+    // ctgyControl: new FormControl(undefined, [
+    //   Validators.required,
+    //   // this.categoryValidator,
+    // ]),
+    // cmtControl: new FormControl('', Validators.maxLength(45)),
+    // statusControl: new FormControl(),
+    // ownerControl: new FormControl(),
+
+    if (this.headerFormGroup.get('nameControl').dirty) {
+      arcontent.Name = acntobj.Name;
+    }
+    if (this.headerFormGroup.get('cmtControl').dirty) {
+      arcontent.Comment = acntobj.Comment;
+    }
+    if (this.headerFormGroup.get('statusControl').dirty) {
+      arcontent.Status = AccountStatusEnum[acntobj.Status];
+    }
+    if (this.headerFormGroup.get('ownerControl').dirty) {
+      arcontent.OwnerId = acntobj.OwnerId;
+    }
+
+    // Save it
+    this.odataService.changeAccountByPatch(acntobj.Id, arcontent)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: val => {
+          // Navigate to display mode
+          this.router.navigate(['/finance/account/display', val.Id]);
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true
+          });
+        }
+      });
   }
 
   private _displayAccountContent(objAcnt: Account): void {
@@ -239,6 +328,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     if (objAcnt.Comment) {
       this.headerFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
+    this.headerFormGroup.get('statusControl').setValue(objAcnt.Status);
     // Step 1.
     if (this.isADPAccount) {
       this.extraADPFormGroup.get('extADPControl').setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);
@@ -252,11 +342,16 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   private _generateAccount(): Account {
     const acntObj: Account = new Account();
     acntObj.HID = this.homeSevice.ChosedHome.ID;
+    if (this.uiMode === UIMode.Change) {
+      acntObj.Id = this.routerID;
+    }
 
     acntObj.Name = this.headerFormGroup.get('nameControl').value;
     acntObj.CategoryId = this.currentCategory;
     acntObj.OwnerId = this.headerFormGroup.get('ownerControl').value;
     acntObj.Comment = this.headerFormGroup.get('cmtControl').value;
+    acntObj.Status = this.headerFormGroup.get('statusControl').value;
+
     if (this.isADPAccount) {
       // ADP
       acntObj.ExtraInfo = this.extraADPFormGroup.get('extADPControl').value;
@@ -267,14 +362,13 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       // Loan
       acntObj.ExtraInfo = this.extraLoanFormGroup.get('extLoanControl').value;
     }
-    // acntObj.Status = this.statusFormGroup.get('statusControl').value;
 
     return acntObj;
   }
   private categoryValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-    const ctgy: any = group.get('ctgyControl').value;
+    const ctgy: any = group.get('ctgyControl');
     if (ctgy && this.isFieldChangable) {
-      if (this.isCategoryDisabled(ctgy)) {
+      if (this.isCategoryDisabled(ctgy.value)) {
         return { invalidcategory: true };
       }
     } else {

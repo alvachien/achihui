@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
+import { UIStatusService } from './uistatus.service';
 
 @Injectable()
 export class HomeChoseGuardService {
@@ -11,6 +12,7 @@ export class HomeChoseGuardService {
   constructor(
     private authService: AuthService,
     private homeService: HomeDefOdataService,
+    private uiService: UIStatusService,
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeChoseGuardService canActivate',
       ConsoleLogTypeEnum.debug);
@@ -18,6 +20,10 @@ export class HomeChoseGuardService {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url: string = state.url;
+
+    if (this.uiService.fatalError) {
+      return false;
+    }
 
     if (!environment.LoginRequired) {
       return true;

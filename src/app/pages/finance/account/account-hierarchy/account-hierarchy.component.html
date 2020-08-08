@@ -26,8 +26,27 @@
     </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="onNodeClick($event)">
+        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="onNodeClick($event)" (nzContextMenu)="onNodeContextMenu($event, treeMenu)">
         </nz-tree>
+        <nz-dropdown-menu #treeMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item>1st menu item</li>
+            <li nz-menu-item>2nd menu item</li>
+            <li nz-menu-item nzDisabled>disabled menu item</li>
+            <li nz-submenu nzTitle="sub menu">
+              <ul>
+                <li nz-menu-item>3rd menu item</li>
+                <li nz-menu-item>4th menu item</li>
+              </ul>
+            </li>
+            <li nz-submenu nzDisabled nzTitle="disabled sub menu">
+              <ul>
+                <li nz-menu-item>3rd menu item</li>
+                <li nz-menu-item>4th menu item</li>
+              </ul>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </nz-spin>
     </div>
   </div>

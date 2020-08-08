@@ -540,16 +540,138 @@ export class FinanceOdataService {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount succeed',
           ConsoleLogTypeEnum.debug);
 
         const hd: Account = new Account();
-        hd.onSetData((response as any).value);
+        hd.onSetData(response as any);
         this.listAccount.push(hd);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change an account
+   * @param objAcnt Account to create
+   */
+  public changeAccount(objAcnt: Account): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: string = objAcnt.writeJSONString();
+    return this.http.put(this.accountAPIUrl + `(${objAcnt.Id})`, jdata, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        hd.onSetData(response as any);
+
+        if (hd && hd.Id) {
+          // Update the existing item
+          const acntidx = this.listAccount.findIndex(acnt => {
+            return acnt.Id === objAcnt.Id;
+          });
+          if (acntidx !== -1) {
+            this.listAccount.splice(acntidx, 1, hd);
+          } else {
+            this.listAccount.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change an account by PATCH
+   * @param accountId Account ID
+   * @param listOfChanges list of changes to be patched
+   */
+  public changeAccountByPatch(accountId: number, listOfChanges: any): Observable<Account> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.patch(this.accountAPIUrl + `/${accountId}`, listOfChanges, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccountByPatch succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Account = new Account();
+        hd.onSetData(response as any);
+
+        // Update the existing item
+        if (hd && hd.Id) {
+          const acntidx = this.listAccount.findIndex(acnt => {
+            return acnt.Id === accountId;
+          });
+          if (acntidx !== -1) {
+            this.listAccount.splice(acntidx, 1, hd);
+          } else {
+            this.listAccount.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccountByPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Delete an account
+   * @param accoundId Id of account
+   */
+  public deleteAccount(accountId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.accountAPIUrl + `(${accountId})`, {
+      headers
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const extidx = this.listAccount.findIndex(val => {
+          return val.Id === accountId;
+        });
+        if (extidx !== -1) {
+          this.listAccount.splice(extidx, 1);
+        }
+
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteAccount failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -695,6 +817,7 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.controlCenterAPIUrl + '(' + objDetail.Id.toString() + ')';
@@ -713,19 +836,99 @@ export class FinanceOdataService {
         const hd: ControlCenter = new ControlCenter();
         hd.onSetData(response as any);
 
-        const idx: number = this.listControlCenter.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listControlCenter.splice(idx, 1, hd);
-        } else {
-          this.listControlCenter.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listControlCenter.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listControlCenter.splice(idx, 1, hd);
+          } else {
+            this.listControlCenter.push(hd);
+          }
         }
 
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenter failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change a control center by PATCH
+   * @param controlCenterID ID of control cetner
+   * @param listOfChanges list of changes to be patched
+   */
+  public changeControlCenterByPatch(controlCenterID: number, listOfChanges: any): Observable<ControlCenter> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.controlCenterAPIUrl + '/' + controlCenterID.toString();
+
+    return this.http.patch(apiurl, listOfChanges, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeControlCenterByPatch',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response as any);
+
+        if (hd && hd.Id) {
+          const idx: number = this.listControlCenter.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listControlCenter.splice(idx, 1, hd);
+          } else {
+            this.listControlCenter.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenterByPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Delete a control center
+   * @param objectId ID of control center to delete
+   */
+  public deleteControlCenter(objectId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.controlCenterAPIUrl + `${objectId}`, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteControlCenter',
+          ConsoleLogTypeEnum.debug);
+
+        const extidx = this.listControlCenter.findIndex(cc => {
+          return cc.Id === objectId;
+        });
+        if (extidx !== -1) {
+          this.listControlCenter.splice(extidx, 1);
+        }
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteControlCenter failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -870,36 +1073,116 @@ export class FinanceOdataService {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
     const jdata: string = objDetail.writeJSONString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this.homeService.ChosedHome.ID.toString());
     return this.http.put(apiurl, jdata, {
       headers,
-      params,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering Map of changeOrder in FinanceStorageService: ${response}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService changeOrder`,
           ConsoleLogTypeEnum.debug);
 
         const hd: Order = new Order();
         hd.onSetData(response as any);
 
-        const idx: number = this.listOrder.findIndex((val: any) => {
-          return val.Id === hd.Id;
-        });
-        if (idx !== -1) {
-          this.listOrder.splice(idx, 1, hd);
-        } else {
-          this.listOrder.push(hd);
+        if (hd && hd.Id) {
+          const idx: number = this.listOrder.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listOrder.splice(idx, 1, hd);
+          } else {
+            this.listOrder.push(hd);
+          }
         }
 
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`, ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrder failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change an order by PATCH
+   * @param orderID ID of Order
+   * @param listOfChanges list of changes
+   */
+  public changeOrderByPatch(orderID: number, listOfChanges: any): Observable<Order> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.orderAPIUrl + '/' + orderID.toString();
+    return this.http.patch(apiurl, listOfChanges, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService changeOrderByPatch`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Order = new Order();
+        hd.onSetData(response as any);
+
+        if (hd && hd.Id) {
+          const idx: number = this.listOrder.findIndex((val: any) => {
+            return val.Id === hd.Id;
+          });
+          if (idx !== -1) {
+            this.listOrder.splice(idx, 1, hd);
+          } else {
+            this.listOrder.push(hd);
+          }
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrderByPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Delete an order
+   * @param orderId Order ID to delete
+   */
+  public deleteOrder(orderId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    return this.http.delete(this.orderAPIUrl + `(${orderId})`, {
+      headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteOrder succeed.',
+          ConsoleLogTypeEnum.debug);
+
+        // Buffer it
+        const existidx = this.listOrder.findIndex(hd => {
+          return hd.Id === orderId;
+        });
+        if (existidx !== -1) {
+          this.listOrder.splice(existidx, 1);
+        }
+
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteOrder failed ${error}.`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));

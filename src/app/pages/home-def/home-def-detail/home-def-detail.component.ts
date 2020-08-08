@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd';
@@ -67,9 +67,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     return false;
   }
   get currentHomeDefObject(): HomeDef {
-    let hdobj = new HomeDef();
+    const hdobj = new HomeDef();
     hdobj.Name = this.detailFormGroup.get('nameControl').value;
-    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;    
+    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
     this.listMembers.forEach(val => {
       hdobj.Members.push(val);
     });
@@ -81,6 +81,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     public finService: FinanceOdataService,
     public storageService: HomeDefOdataService,
+    private router: Router,
     private activateRoute: ActivatedRoute,
     private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',
@@ -121,7 +122,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
       }
 
-      switch(this.uiMode) {
+      switch (this.uiMode) {
         case UIMode.Change:
         case UIMode.Display: {
           this.isLoadingResults = true;
@@ -150,7 +151,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             }
 
             this.listMembers = rsts[1].Members.slice();
-          }, 
+          },
           error: (error: any) => {
             // Show error dialog
             this.modalService.create({
@@ -159,9 +160,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               nzClosable: true,
             });
           }
-        });
+          });
+          break;
         }
-        break;
 
         case UIMode.Create:
         default: {
@@ -175,12 +176,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
                 // Insert one home member by default
                 this.listMembers = [];
-                let nm = new HomeMember();
+                const nm = new HomeMember();
                 nm.User = this.authService.authSubject.getValue().getUserId();
                 nm.Relation = HomeMemberRelationEnum.Self;
                 nm.DisplayAs = nm.User;
                 this.listMembers.push(nm);
-              }, 
+              },
               error: (error: any) => {
                 // Show error dialog
                 this.modalService.create({
@@ -190,8 +191,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                 });
               }
             });
+          break;
         }
-        break;
       }
     });
   }
@@ -213,7 +214,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     // Save the data
     if (this.uiMode === UIMode.Create) {
       // Create mode
-      let hdobj = new HomeDef();
+      const hdobj = new HomeDef();
       hdobj.Name = this.detailFormGroup.get('nameControl').value;
       hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
       hdobj.Host = this.detailFormGroup.get('hostControl').value;
@@ -221,7 +222,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       this.listMembers.forEach(val => hdobj.Members.push(val));
       if (!hdobj.isValid) {
-        // TBD.
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: 'Errors',
+          nzClosable: true,
+        });
+
         return;
       }
 
@@ -230,21 +236,64 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         .subscribe({
         next: val => {
           // Shall create successfully.
+          this.router.navigate(['/homedef/display/' + val.ID.toString()]);
         },
         error: err => {
-
+          // Show error
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
         }
       });
-    } else if(this.uiMode === UIMode.Change) {
-      // Chagne mode
+    } else if (this.uiMode === UIMode.Change) {
+      // Change mode
+      const hdobj = new HomeDef();
+      hdobj.ID = +this.routerID;
+      hdobj.Name = this.detailFormGroup.get('nameControl').value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
+      hdobj.Host = this.detailFormGroup.get('hostControl').value;
+      hdobj.Details = this.detailFormGroup.get('detailControl').value;
+
+      this.listMembers.forEach(val => hdobj.Members.push(val));
+      if (!hdobj.isValid) {
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: 'Errors',
+          nzClosable: true,
+        });
+
+        return;
+      }
+
+      this.storageService.changeHomeDef(hdobj)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe({
+        next: val => {
+          // Shall create successfully.
+          this.router.navigate(['/homedef/display/' + val.ID.toString()]);
+        },
+        error: err => {
+          // Show error
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
     }
   }
 
   onCreateMember() {
-    let nmem = new HomeMember();
-    this.listMembers.push(nmem);
+    const nmem = new HomeMember();
+    const memes = this.listMembers.slice();
+    memes.push(nmem);
+    this.listMembers = memes;
   }
   onDeleteMember(idx: number) {
-    this.listMembers = this.listMembers.splice(idx, 1);
+    const memes = this.listMembers.splice(idx, 1);
+    this.listMembers = memes;
   }
 }

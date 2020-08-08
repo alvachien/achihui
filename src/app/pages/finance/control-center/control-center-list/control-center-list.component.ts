@@ -43,7 +43,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
             ConsoleLogTypeEnum.debug);
 
-          this.dataSet = value;
+          this.dataSet = value.slice();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
@@ -59,7 +59,8 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -68,13 +69,40 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   }
 
   onDisplay(rid: number): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDisplay...',
+      ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/controlcenter/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent onEdit...',
+      ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/controlcenter/edit/' + rid.toString()]);
   }
 
   onDelete(rid: number) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDelete...',
+      ConsoleLogTypeEnum.debug);
+
+    this.odataService.deleteControlCenter(rid)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: val => {
+          const extccs = this.dataSet.slice();
+          const extidx = extccs.findIndex(val2 => {
+            return val2.Id === rid;
+          });
+          if (extidx !== -1) {
+            this.dataSet = extccs.splice(extidx, 1);
+          }
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
   }
 }

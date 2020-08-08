@@ -154,7 +154,7 @@
                   <li nz-menu-item>
                     <a routerLink="/homedef">{{'Nav.HomeList' | transloco}}</a>
                   </li>
-                  <li nz-menu-item>{{'Nav.HomeDetail' | transloco}}</li>
+                  <li nz-menu-item (click)="onGoToSelectedHome()">{{'Nav.HomeDetail' | transloco}}</li>
                 </ul>
               </nz-dropdown-menu>
             </div>

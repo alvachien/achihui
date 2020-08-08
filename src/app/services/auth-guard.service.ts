@@ -4,10 +4,13 @@ import { environment } from '../../environments/environment';
 
 import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
+import { UIStatusService } from './uistatus.service';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-  constructor(private authService: AuthService) {
+  constructor(
+    private uiService: UIStatusService,
+    private authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering constructor of AuthGuardService', ConsoleLogTypeEnum.debug);
     }
@@ -15,6 +18,11 @@ export class AuthGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url: string = state.url;
+
+    // Fatal error
+    if (this.uiService.fatalError) {
+      return false;
+    }
 
     if (!environment.LoginRequired) {
       return true;

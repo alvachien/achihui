@@ -3,48 +3,48 @@ import * as moment from 'moment';
 
 // tslint:disable:variable-name
 
-export const financeAccountCategoryCash: number = 1;
-export const financeAccountCategoryDeposit: number = 2;
-export const financeAccountCategoryCreditCard: number = 3;
-export const financeAccountCategoryAsset: number = 7;
-export const financeAccountCategoryAdvancePayment: number = 8; // Advance payment
-export const financeAccountCategoryBorrowFrom: number = 9;
-export const financeAccountCategoryLendTo: number = 10;
-export const financeAccountCategoryAdvanceReceived: number = 11;
-export const financeAccountCategoryInsurance: number = 12;
+export const financeAccountCategoryCash = 1;
+export const financeAccountCategoryDeposit = 2;
+export const financeAccountCategoryCreditCard = 3;
+export const financeAccountCategoryAsset = 7;
+export const financeAccountCategoryAdvancePayment = 8; // Advance payment
+export const financeAccountCategoryBorrowFrom = 9;
+export const financeAccountCategoryLendTo = 10;
+export const financeAccountCategoryAdvanceReceived = 11;
+export const financeAccountCategoryInsurance = 12;
 
-export const financeDocTypeNormal: number = 1;
-export const financeDocTypeTransfer: number = 2; // Transfer doc
-export const financeDocTypeCurrencyExchange: number = 3; // Currency exchange
-export const financeDocTypeAdvancePayment: number = 5;
+export const financeDocTypeNormal = 1;
+export const financeDocTypeTransfer = 2; // Transfer doc
+export const financeDocTypeCurrencyExchange = 3; // Currency exchange
+export const financeDocTypeAdvancePayment = 5;
 // export const FinanceDocType_CreditcardRepay: number = 6;
-export const financeDocTypeAssetBuyIn: number = 7;
-export const financeDocTypeAssetSoldOut: number = 8;
-export const financeDocTypeBorrowFrom: number = 9;
-export const financeDocTypeLendTo: number = 10;
-export const financeDocTypeRepay: number = 11;
-export const financeDocTypeAdvanceReceived: number = 12;
-export const financeDocTypeAssetValChg: number = 13;
-export const financeDocTypeInsurance: number = 14;
+export const financeDocTypeAssetBuyIn = 7;
+export const financeDocTypeAssetSoldOut = 8;
+export const financeDocTypeBorrowFrom = 9;
+export const financeDocTypeLendTo = 10;
+export const financeDocTypeRepay = 11;
+export const financeDocTypeAdvanceReceived = 12;
+export const financeDocTypeAssetValChg = 13;
+export const financeDocTypeInsurance = 14;
 
-export const financeTranTypeOpeningAsset: number = 1;
-export const financeTranTypeOpeningLiability: number = 82;
-export const financeTranTypeTransferIn: number = 37;
-export const financeTranTypeTransferOut: number = 60;
-export const financeTranTypeBorrowFrom: number = 80;
-export const financeTranTypeLendTo: number = 81;
-export const financeTranTypeRepaymentOut: number = 86;
-export const financeTranTypeRepaymentIn: number = 87;
-export const financeTranTypeAdvancePaymentOut: number = 88; // Advance payment - out
-export const financeTranTypeAdvanceReceiveIn: number = 91; // Advance receive - in
-export const financeTranTypeInterestOut: number = 55;
-export const financeTranTypeInterestIn: number = 8;
-export const financeTranTypeAssetValueDecrease: number = 89;
-export const financeTranTypeAssetValueIncrease: number = 90;
-export const financeTranTypeAssetSoldout: number = 92;
-export const financeTranTypeAssetSoldoutIncome: number = 93;
-export const financeTranTypeInsuranceReturn: number = 36;
-export const financeTranTypeInsurancePay: number = 34;
+export const financeTranTypeOpeningAsset = 1;
+export const financeTranTypeOpeningLiability = 82;
+export const financeTranTypeTransferIn = 37;
+export const financeTranTypeTransferOut = 60;
+export const financeTranTypeBorrowFrom = 80;
+export const financeTranTypeLendTo = 81;
+export const financeTranTypeRepaymentOut = 86;
+export const financeTranTypeRepaymentIn = 87;
+export const financeTranTypeAdvancePaymentOut = 88; // Advance payment - out
+export const financeTranTypeAdvanceReceiveIn = 91; // Advance receive - in
+export const financeTranTypeInterestOut = 55;
+export const financeTranTypeInterestIn = 8;
+export const financeTranTypeAssetValueDecrease = 89;
+export const financeTranTypeAssetValueIncrease = 90;
+export const financeTranTypeAssetSoldout = 92;
+export const financeTranTypeAssetSoldoutIncome = 93;
+export const financeTranTypeInsuranceReturn = 36;
+export const financeTranTypeInsurancePay = 34;
 
 /**
  * Finance quick access type
@@ -466,7 +466,7 @@ export interface AccountJson extends hih.BaseModelJson {
   CategoryID: number;
   Comment?: string;
   Owner?: string;
-  Status?: any;
+  Status?: string;
 
   // Extra. info
   ExtraDP?: any;
@@ -584,7 +584,7 @@ export class Account extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
-    rstObj.Status = +this.Status;
+    rstObj.Status = AccountStatusEnum[this.Status];
     rstObj.CategoryID = this.CategoryId;
     rstObj.Name = this.Name;
     rstObj.Comment = this.Comment;
@@ -1485,7 +1485,7 @@ export class Order extends hih.BaseModel {
 
       let ntotal = 0;
       for (const srobj of this.SRules) {
-        ntotal += srobj.Precent;
+        ntotal += +srobj.Precent;
 
         srobj.onVerify(context);
         for (const msg2 of srobj.VerifiedMsgs) {

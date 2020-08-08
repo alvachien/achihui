@@ -14,14 +14,14 @@
   <nz-table #basicTable nzBordered [nzData]="listItems">
     <thead>
       <tr>
-        <th nz-width="50">#</th>
-        <th nz-width="150">{{'Finance.Account' | transloco}}</th>
-        <th nz-width="200">{{'Finance.TransactionType' | transloco}}</th>
-        <th nz-width="100">{{'Finance.Amount' | transloco}}</th>
-        <th nz-width="50">{{'Finance.Currency' | transloco}}</th>
-        <th nz-width="250">{{'Common.Comment' | transloco}}</th>
-        <th nz-width="150">{{'Finance.ControlCenter' | transloco}}</th>
-        <th nz-width="150">{{'Finance.Activity' | transloco}}</th>
+        <th [nzWidth]="50">#</th>
+        <th [nzWidth]="150">{{'Finance.Account' | transloco}}</th>
+        <th [nzWidth]="200">{{'Finance.TransactionType' | transloco}}</th>
+        <th [nzWidth]="100">{{'Finance.Amount' | transloco}}</th>
+        <th [nzWidth]="50">{{'Finance.Currency' | transloco}}</th>
+        <th [nzWidth]="250">{{'Common.Comment' | transloco}}</th>
+        <th [nzWidth]="150">{{'Finance.ControlCenter' | transloco}}</th>
+        <th [nzWidth]="150">{{'Finance.Activity' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
@@ -35,7 +35,7 @@
         <td>
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="accountTpl">
-              <nz-select [nzDisabled]="!isAccountIDEditable" [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
+              <nz-select style="width: 100%" [nzDisabled]="!isAccountIDEditable" [(ngModel)]="data.AccountId" (ngModelChange)="onChange()">
                 <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
               </nz-select>
               <ng-template #accountTpl let-control>
@@ -49,7 +49,7 @@
         <td>
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="trantypeTpl">
-              <nz-select [nzDisabled]="!isTranTypeEditable" [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
+              <nz-select style="width: 100%" [nzDisabled]="!isTranTypeEditable" [(ngModel)]="data.TranType" (ngModelChange)="onChange()">
                 <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
               </nz-select>
               <ng-template #trantypeTpl let-control>
@@ -91,12 +91,12 @@
           </nz-form-item>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select style="width: 100%" [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select style="width: 100%" [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>

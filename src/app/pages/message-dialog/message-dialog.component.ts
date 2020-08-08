@@ -36,10 +36,10 @@ export class MessageDialogComponent {
   }
 
   handleOk(): void {
-    this.modal.destroy({ data: 'this is result data of OK' });
+    this.modal.destroy();
   }
   handleCancel() {
-    this.modal.destroy({ data: 'this is result data of Cancel' });
+    this.modal.destroy();
   }
 }
 
@@ -87,10 +87,14 @@ export function popupDialog(
     nzFooter: footer,
   });
 
-  modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+  modal.afterOpen.subscribe(() => {
+    // console.log('[afterOpen] emitted!');
+  });
 
   // Return a result when closed
-  modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+  modal.afterClose.subscribe(result => {
+    // console.log('[afterClose] The result is:', result);
+  });
 
   // // delay until modal instance created
   // setTimeout(() => {

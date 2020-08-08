@@ -276,17 +276,17 @@ describe('DocumentItemsComponent', () => {
       tick();
       fixture.detectChanges();
 
-      let tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
+      const tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
       expect(tablebody.length).toEqual(1);
-      let tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
+      const tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
       expect(tablerows.length).toEqual(1);
       for (let i = 0; i < tablerows[0].childNodes.length; i++) {
         if (i === 1) {
           // Account ID
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
@@ -301,10 +301,10 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
         } else if (i === 2) {
           // Tran type
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
@@ -319,10 +319,10 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
         } else if (i === 3) {
           // Amount
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
           expect(inpNumber).toBeTruthy();
-          let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
+          const inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
           inpNumberComponent.setValue(20);
           fixture.detectChanges();
@@ -334,8 +334,8 @@ describe('DocumentItemsComponent', () => {
           // Currencies
         } else if (i === 5) {
           // Desp
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let inpElem = dbgelem.query(By.directive(NzInputDirective));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const inpElem = dbgelem.query(By.directive(NzInputDirective));
           expect(inpElem).toBeTruthy();
 
           typeInElement('Test', inpElem.nativeElement);
@@ -346,10 +346,10 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
         } else if (i === 6) {
           // Control center
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
@@ -394,17 +394,17 @@ describe('DocumentItemsComponent', () => {
       tick();
       fixture.detectChanges();
 
-      let tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
+      const tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
       expect(tablebody.length).toEqual(1);
-      let tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
+      const tablerows = tablebody[0].queryAll(By.css('.ant-table-row'));
       expect(tablerows.length).toEqual(1);
       for (let i = 0; i < tablerows[0].childNodes.length; i++) {
         if (i === 1) {
           // Account ID
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
@@ -420,10 +420,10 @@ describe('DocumentItemsComponent', () => {
           expect(component.onChange).toHaveBeenCalledTimes(2);
         } else if (i === 2) {
           // Tran type
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
@@ -439,10 +439,10 @@ describe('DocumentItemsComponent', () => {
           expect(component.onChange).toHaveBeenCalledTimes(3);
         } else if (i === 3) {
           // Amount
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const inpNumber = dbgelem.query(By.directive(NzInputNumberComponent));
           expect(inpNumber).toBeTruthy();
-          let inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
+          const inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
           inpNumberComponent.setValue(20);
           fixture.detectChanges();
@@ -455,8 +455,8 @@ describe('DocumentItemsComponent', () => {
           // Currencies
         } else if (i === 5) {
           // Desp
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let inpElem = dbgelem.query(By.directive(NzInputDirective));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const inpElem = dbgelem.query(By.directive(NzInputDirective));
           expect(inpElem).toBeTruthy();
 
           typeInElement('Test', inpElem.nativeElement);
@@ -468,10 +468,10 @@ describe('DocumentItemsComponent', () => {
           expect(component.onChange).toHaveBeenCalledTimes(5);
         } else if (i === 6) {
           // Control center
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           flush();
@@ -486,10 +486,10 @@ describe('DocumentItemsComponent', () => {
           expect(component.onChange).toHaveBeenCalledTimes(6);
         } else if (i === 7) {
           // Order
-          let dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          let select = dbgelem.query(By.directive(NzSelectComponent));
+          const dbgelem = tablerows[0].childNodes[i] as DebugElement;
+          const select = dbgelem.query(By.directive(NzSelectComponent));
           expect(select).toBeTruthy();
-          let selectComponent = select.injector.get(NzSelectComponent);
+          const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();

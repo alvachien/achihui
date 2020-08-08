@@ -131,13 +131,17 @@ describe('ControlCenterDetailComponent', () => {
       component.detailFormGroup.markAsDirty();
 
       expect(component.detailFormGroup.valid).toBeTrue();
-      
+
       // Submit
       component.onSubmit();
+
+      const routerstub = TestBed.inject(Router);
+      spyOn(routerstub, 'navigate');
 
       tick();
       fixture.detectChanges();
 
+      expect(routerstub.navigate).toHaveBeenCalled();
       expect(createControlCenterSpy).toHaveBeenCalled();
 
       flush();
