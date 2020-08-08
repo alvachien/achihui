@@ -584,7 +584,8 @@ export class Account extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
-    rstObj.Status = AccountStatusEnum[this.Status];
+    // rstObj.Status = AccountStatusEnum[this.Status];
+    rstObj.Status = +this.Status;
     rstObj.CategoryID = this.CategoryId;
     rstObj.Name = this.Name;
     rstObj.Comment = this.Comment;
@@ -2506,6 +2507,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.TransactionDate = this._tranDate.format(hih.momentDateFormat);
     rstObj.TransactionType = this.TranType;
     rstObj.TransactionAmount = this.TranAmount;
+    rstObj.TranAmount = this.TranAmount;
     if (this.ControlCenterId) {
       rstObj.ControlCenterID = this.ControlCenterId;
     }

@@ -248,7 +248,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         next: (ndoc: Document) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
             ConsoleLogTypeEnum.debug);
-    
+
           this.docIdCreated = ndoc.Id;
           this.docPostingFailed = null;
         },
@@ -256,7 +256,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
           // Show error message
           this.docIdCreated = null;
           this.docPostingFailed = error;
-        } 
+        }
       });
   }
 
@@ -305,6 +305,11 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     }
   }
   public onDisplayCreatedDoc(): void {
-    
+    if (this.docIdCreated) {
+      this._router.navigate(['/finance/document/display', this.docIdCreated]);
+    }
+  }
+  public onCreateNewDoc(): void {
+    this._router.navigate(['/finance/document/create']);
   }
 }
