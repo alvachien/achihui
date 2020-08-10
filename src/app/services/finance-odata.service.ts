@@ -1369,6 +1369,40 @@ export class FinanceOdataService {
   }
 
   /**
+   * Read one document
+   * @param docid ID of document
+   */
+  public readDocument(docid: number): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${docid}`);
+    params = params.append('$expand', `Items`);
+    return this.http.get(this.documentAPIUrl, { headers, params })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readDocument`,
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response as any;
+        const rst: Document = new Document();
+        if (rjs.value instanceof Array && rjs.value.length === 1) {
+          rst.onSetData(rjs.value[0]);
+        }
+
+        return rst;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readDocument, failed: ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * Get ADP tmp docs: for document item overview page
    */
   public fetchAllDPTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment): Observable<TemplateDocADP[]> {

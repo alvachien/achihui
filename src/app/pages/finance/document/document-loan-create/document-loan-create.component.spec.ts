@@ -121,7 +121,7 @@ describe('DocumentLoanCreateComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
+
   describe('working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
