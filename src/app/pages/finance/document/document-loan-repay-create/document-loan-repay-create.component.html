@@ -51,49 +51,47 @@
         </div>
 
         <div nz-row [nzGutter]="8">
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="8">
-              <!-- Account -->
-              <nz-form-item>
-                <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
-                <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
-                  <nz-select formControlName="accountControl">
-                    <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: acntCategoryFilter | uiAccountStatusFilter: acntFilterFilter" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
-                  </nz-select>
-                  <ng-template #accountErrorTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                      {{'Common.FieldIsMandatory' | transloco}}
-                    </ng-container>
-                  </ng-template>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-
-            <div nz-col [nzSpan]="8">
-              <!-- Control center -->
-              <nz-form-item>
-                <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
-                <nz-form-control [nzSpan]="12">
-                  <nz-select formControlName="ccControl">
-                    <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
-
-            <div nz-col [nzSpan]="8">
-              <!-- Order -->
-              <nz-form-item>
-                <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
-                <nz-form-control [nzSpan]="12" nzHasFeedback>
-                  <nz-select formControlName="orderControl">
-                    <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-            </div>
+          <div nz-col [nzSpan]="8">
+            <!-- Account -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
+                <nz-select formControlName="accountControl">
+                  <nz-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilterEx: acntCategoryFilter | uiAccountStatusFilter: acntFilterFilter" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                </nz-select>
+                <ng-template #accountErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
           </div>
-        </div>
+
+          <div nz-col [nzSpan]="8">
+            <!-- Control center -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12">
+                <nz-select formControlName="ccControl">
+                  <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <!-- Order -->
+            <nz-form-item>
+              <nz-form-label [nzSpan]="7">{{'Finance.Activity' | transloco}}</nz-form-label>
+              <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <nz-select formControlName="orderControl">
+                  <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+      </div>
 
         <div nz-row>
           <div nz-col [nzSpan]="24" class="search-button-area">

@@ -15,6 +15,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -52,6 +54,9 @@ registerLocaleData(en);
     NzDropDownModule,
     NzTableModule,
     NzModalModule,
+    NgxEchartsModule.forRoot({
+      echarts,
+    }),
     MarkdownModule.forRoot({
       markedOptions: {
         provide: MarkedOptions,
