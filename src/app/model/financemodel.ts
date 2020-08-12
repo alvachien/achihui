@@ -26,6 +26,7 @@ export const financeDocTypeRepay = 11;
 export const financeDocTypeAdvanceReceived = 12;
 export const financeDocTypeAssetValChg = 13;
 export const financeDocTypeInsurance = 14;
+export const financeDocTypeLoanPrepayment = 15; // Prepayment to loan
 
 export const financeTranTypeOpeningAsset = 1;
 export const financeTranTypeOpeningLiability = 82;

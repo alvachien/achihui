@@ -2,6 +2,56 @@
   <nz-page-header-title>{{'Learning.LearningObject' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
+    <button nz-button nzType="primary" [disabled]="!isSaveAllowed" (click)="onSave()">{{'Common.Save' | transloco}}</button>
   </nz-page-header-extra>
 </nz-page-header>
+
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input formControlName="idControl" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Name -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+        <input nz-input formControlName="nameControl" maxlength="30" required />
+        <ng-template #nameTpl let-control>
+          <ng-container *ngIf="control.hasError('maxlength')">
+            {{'Common.FieldMaxLength' | transloco}}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Category -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <nz-select formControlName="categoryControl">
+          <nz-option *ngFor="let coll of listOfCategories" [nzLabel]="coll.Name" [nzValue]="coll.Id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzHasFeedback [nzErrorTip]="contentTpl">
+        <ac-markdown-editor class="post_acme_editor" formControlName="contentControl">
+        </ac-markdown-editor>
+      </nz-form-control>
+      <ng-template #contentTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{'Common.FieldIsMandatory' | transloco}}
+        </ng-container>
+      </ng-template>
+    </nz-form-item>
+  </form>
+</nz-spin>

@@ -24,7 +24,8 @@ export class ObjectListComponent implements OnInit, OnDestroy {
 
   constructor(
     public odataService: LearnOdataService,
-    public modalService: NzModalService) {
+    public modalService: NzModalService,
+    private router: Router,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ObjectListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -73,15 +74,14 @@ export class ObjectListComponent implements OnInit, OnDestroy {
   }
 
   onCreate() {
-
+    this.router.navigate(['/learn/object/create']);
   }
   onDelete(id: number) {
-
   }
   onEdit(id: number) {
-
+    this.router.navigate(['/learn/object/edit', id.toString()]);
   }
   onDisplay(id: number) {
-    
+    this.router.navigate(['/learn/object/display', id.toString()]);
   }
 }

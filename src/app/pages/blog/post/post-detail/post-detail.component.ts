@@ -32,25 +32,6 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   listOfCollection: BlogCollection[] = [];
   listOfTags: BlogPostTag[] = [];
 
-  // editorConfig: IACMEditorConfig = {
-  //   toolbarItems: [
-  //     EditorToolbarButtonEnum.bold,
-  //     EditorToolbarButtonEnum.italic,
-  //     EditorToolbarButtonEnum.underline,
-  //     EditorToolbarButtonEnum.strikethrough,
-  //     EditorToolbarButtonEnum.heading1,
-  //     EditorToolbarButtonEnum.heading2,
-  //     EditorToolbarButtonEnum.heading3,
-  //     EditorToolbarButtonEnum.paragraph,
-  //     EditorToolbarButtonEnum.quote,
-  //     // EditorToolbarButtonEnum.orderedlist,
-  //     // EditorToolbarButtonEnum.unorderedlist,
-  //     EditorToolbarButtonEnum.code,
-  //     EditorToolbarButtonEnum.math,
-  //   ],
-  //   height: 300,
-  // };
-
   constructor(private odataService: BlogOdataService,
               private activateRoute: ActivatedRoute,
               private router: Router,
@@ -222,20 +203,24 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       }
       // Collection
       const arcoll = frmvalue.collectionControl as any[];
-      arcoll.forEach(element => {
-        this.instancePost.BlogPostCollections.push({
-          CollectionID: element,
-          PostID: this.instancePost.id,
-        } as BlogPostCollection);
-      });
+      if (arcoll) {
+        arcoll.forEach(element => {
+          this.instancePost.BlogPostCollections.push({
+            CollectionID: element,
+            PostID: this.instancePost.id,
+          } as BlogPostCollection);
+        });
+      }
       // Tags
       const artags = frmvalue.tagControl as any[];
-      artags.forEach(tag => {
-        this.instancePost.BlogPostTags.push({
-          Tag: tag,
-          PostID: this.instancePost.id,
-        } as BlogPostTag);
-      });
+      if (artags) {
+        artags.forEach(tag => {
+          this.instancePost.BlogPostTags.push({
+            Tag: tag,
+            PostID: this.instancePost.id,
+          } as BlogPostTag);
+        });
+      }
 
       if (this.uiMode === UIMode.Create) {
         this.odataService.createPost(this.instancePost)

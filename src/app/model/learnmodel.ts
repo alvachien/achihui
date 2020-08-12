@@ -391,7 +391,7 @@ export class LearnObject extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
     rstObj.HomeID = this.HID;
     rstObj.ID = this.Id;
-    rstObj.CategoryId = this.CategoryId;
+    rstObj.CategoryID = this.CategoryId;
     rstObj.Name = this.Name;
     rstObj.Content = this.Content;
     return rstObj;
