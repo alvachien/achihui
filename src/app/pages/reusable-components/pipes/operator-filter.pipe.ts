@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../model';
+import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../../../model';
 
 @Pipe({
   name: 'operatorFilter',

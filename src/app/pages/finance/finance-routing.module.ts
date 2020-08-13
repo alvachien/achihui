@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'config', loadChildren: () => import('./config/config.module').then(m => m.ConfigModule)},
   { path: 'controlcenter', loadChildren: () => import('./control-center/control-center.module').then(m => m.ControlCenterModule)},
   { path: 'order', loadChildren: () => import('./order/order.module').then(m => m.OrderModule)},
+  { path: 'search', loadChildren: () => import('./document-item-search/document-item-search.module').then(m => m.DocumentItemSearchModule)},
   { path: 'report', loadChildren: () => import('./report/report.module').then(m => m.ReportModule)},
   { path: 'plan', loadChildren: () => import('./plan/plan.module').then(m => m.PlanModule)},
 ];

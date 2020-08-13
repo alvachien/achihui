@@ -1,5 +1,5 @@
 import { OperatorFilterPipe } from './operator-filter.pipe';
-import { UIDisplayString, GeneralFilterValueType, GeneralFilterOperatorEnum, } from 'app/model';
+import { UIDisplayString, GeneralFilterValueType, GeneralFilterOperatorEnum, } from '../../../model';
 
 describe('OperatorFilterPipe', () => {
   const pipe: OperatorFilterPipe = new OperatorFilterPipe();
