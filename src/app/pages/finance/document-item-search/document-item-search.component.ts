@@ -164,7 +164,12 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   ///
   /// Filter
   ///
-  onFieldSelectionChanged(event) {
+  onFieldSelectionChanged(filter: GeneralFilterItem) {
+    this.allFields.forEach((value: any) => {
+      if (value.value === filter.fieldName) {
+        filter.valueType = value.valueType;
+      }
+    });
   }
   public onAddFilter(): void {
     this.filters.push(new GeneralFilterItem());
@@ -176,5 +181,72 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     }
   }
   onSearch(): void {
+    // Do the translate first
+    const arRealFilter: GeneralFilterItem[] = [];
+    this.filters.forEach((value: GeneralFilterItem) => {
+      if (!value.valueType || !value.fieldName) {
+        return;
+      }
+      const val: GeneralFilterItem = new GeneralFilterItem();
+      val.valueType = +value.valueType;
+      switch (value.valueType) {
+        case GeneralFilterValueType.boolean: {
+          val.fieldName = value.fieldName;
+          val.operator = +value.operator;
+          if (value.lowValue) {
+            val.lowValue = 'true';
+          } else {
+            val.lowValue = 'false';
+          }
+          val.highValue = '';
+          break;
+        }
+
+        case GeneralFilterValueType.date: {
+          val.fieldName = value.fieldName;
+          val.operator = +value.operator;
+          val.lowValue = moment(value.lowValue).format('YYYYMMDD');
+          if (value.operator === GeneralFilterOperatorEnum.Between) {
+            val.highValue = moment(value.highValue).format('YYYYMMDD');
+          } else {
+            val.highValue = '';
+          }
+          break;
+        }
+
+        case GeneralFilterValueType.number: {
+          val.fieldName = value.fieldName;
+          val.operator = +value.operator;
+          val.lowValue = +value.lowValue;
+          if (value.operator === GeneralFilterOperatorEnum.Between) {
+            val.highValue = +value.highValue;
+          } else {
+            val.highValue = '';
+          }
+          break;
+        }
+
+        case GeneralFilterValueType.string: {
+          val.fieldName = value.fieldName;
+          val.operator = +value.operator;
+          val.lowValue = value.lowValue;
+          if (value.operator === GeneralFilterOperatorEnum.Between) {
+            val.highValue = value.highValue;
+          } else {
+            val.highValue = '';
+          }
+          break;
+        }
+
+        default:
+          break;
+      }
+      arRealFilter.push(val);
+    });
+
+    this.filters = arRealFilter;
+
+    // Do the real search
+    // this.subjFilters.next(arRealFilter);
   }
 }
