@@ -42,31 +42,31 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [{
       displayas: 'Finance.TransactionType',
-      value: 'TRANTYPE',
+      value: 'TransactionType',
       valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.IsExpense',
-      value: 'TRANTYPE_EXP',
+      value: 'IsExpense',
       valueType: GeneralFilterValueType.boolean, // 4
     }, {
       displayas: 'Finance.Currency',
-      value: 'TRANCURR',
+      value: 'Currency',
       valueType: GeneralFilterValueType.string, // 2
     }, {
       displayas: 'Finance.Account',
-      value: 'ACCOUNTID',
+      value: 'AccountID',
       valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.ControlCenter',
-      value: 'CONTROLCENTERID',
+      value: 'ControlCenterID',
       valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.Activity',
-      value: 'ORDERID',
+      value: 'OrderID',
       valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.TransactionDate',
-      value: 'TRANDATE',
+      value: 'TransactionDate',
       valueType: GeneralFilterValueType.date, // 3
     },
     ];
