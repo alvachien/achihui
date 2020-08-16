@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import * as moment from 'moment';
 // tslint:disable-next-line no-any
 declare const monaco: any;
@@ -16,6 +16,7 @@ import { AuthService } from '../../../services';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
+  // tslint:disable-next-line: component-selector
   selector: 'ac-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrls: ['./markdown-editor.component.less'],
@@ -36,19 +37,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   @Input() editorID: string;
   @ViewChild('previewElement') previewElement: ElementRef;
 
-  isDialogMathOpen = false;
-  mathDialogInput: string;
   editor: editor.ICodeEditor;
   content: string;
   readOnly = false;
   uploadAPI: string;
 
-  stateWatching = false;
-  stateLoaded   = false;
-  statePreview  = false;
-  stateFullscreen = false;
+  // stateWatching = false;
+  // stateLoaded   = false;
+  // statePreview  = false;
+  // stateFullscreen = false;
   public katexOptions: KatexOptions = {
-    displayMode: true,
+    // displayMode: true,
     throwOnError: false,
     errorColor: '#cc0000',
   };
@@ -599,7 +598,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       observer.complete();
     });
   }
-  onToolbarPictureUpload(info: UploadChangeParam): void {
+  onToolbarPictureUpload(info: NzUploadChangeParam): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
     if (info.file.status === 'done') {
