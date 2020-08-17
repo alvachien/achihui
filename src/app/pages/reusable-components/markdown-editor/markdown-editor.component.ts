@@ -6,14 +6,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
 import { KatexOptions } from 'ngx-markdown';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import * as moment from 'moment';
+import { Observable, Observer } from 'rxjs';
+import { editor } from 'monaco-editor';
+
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
-import { editor } from 'monaco-editor';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
-import { Observable, Observer } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -33,9 +34,8 @@ import { Observable, Observer } from 'rxjs';
   ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  // @Input() config: IACMEditorConfig;
   @Input() editorID: string;
-  @ViewChild('previewElement') previewElement: ElementRef;
+  @ViewChild('previewElement', {static: true}) previewElement: ElementRef;
 
   editor: editor.ICodeEditor; // | editor.IEditor;
   content: string;
@@ -115,10 +115,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ngOnDestroy() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
-    // this.toolbarItems = [];
   }
 
-  onEditorInit(e: editor.ICodeEditor): void {
+  onEditorInit(e: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit...',
       ConsoleLogTypeEnum.debug);
 
