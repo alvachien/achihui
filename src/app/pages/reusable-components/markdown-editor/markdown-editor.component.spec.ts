@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
@@ -53,6 +53,7 @@ describe('MarkdownEditorComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
+        BrowserDynamicTestingModule,
         NzResizableModule,
         NzCodeEditorModule,
         MarkdownModule.forRoot(),
@@ -87,13 +88,18 @@ describe('MarkdownEditorComponent', () => {
       expect(tesingComponent).toBeTruthy();
     }));
 
-    xit('edit mode with value change', fakeAsync(() => {
+    it('edit mode with value change', fakeAsync(() => {
       fixture.detectChanges();
       tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      flush();
       fixture.detectChanges();
 
       expect(tesingComponent).toBeTruthy();
       expect(tesingComponent.editorComponent).toBeTruthy();
+      expect(tesingComponent.editorComponent.editor).toBeTruthy();
 
       let curval = tesingComponent.editorComponent.value;
       // expect(curval).toBeTruthy();

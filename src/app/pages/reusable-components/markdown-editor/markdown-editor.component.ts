@@ -37,15 +37,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   @Input() editorID: string;
   @ViewChild('previewElement') previewElement: ElementRef;
 
-  editor: editor.ICodeEditor;
+  editor: editor.ICodeEditor; // | editor.IEditor;
   content: string;
   readOnly = false;
   uploadAPI: string;
 
-  // stateWatching = false;
-  // stateLoaded   = false;
-  // statePreview  = false;
-  // stateFullscreen = false;
   public katexOptions: KatexOptions = {
     // displayMode: true,
     throwOnError: false,
