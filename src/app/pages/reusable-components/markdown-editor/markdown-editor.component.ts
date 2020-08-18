@@ -629,21 +629,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       this.editor.focus();
     }
   }
-  onMathDialogInput(event): void {
-    // Math dialog
-    if (event) {
-      const dialogelem: HTMLElement = document.getElementById('acme_math_dialog');
-      const inputelem = dialogelem.getElementsByClassName('acme_math_input')[0] as HTMLDivElement;
-      const previewelem = dialogelem.getElementsByClassName('acme_math_preview')[0] as HTMLDivElement;
-      if (inputelem.innerText) {
-        // const orginput = '$$' + inputelem.innerText + '$$';
-        const orginput = inputelem.innerText;
-        // katex.render(orginput, previewelem);
-      }
-    }
-  }
-  onMathDialogClose(): void {
-  }
   validate(control: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent validate...',
       ConsoleLogTypeEnum.debug);
