@@ -133,7 +133,7 @@ describe('MarkdownEditorComponent', () => {
       testingComponent.editorComponent.onTouched();
 
       // Value getter
-      let ctent = testingComponent.editorComponent.value;
+      const ctent = testingComponent.editorComponent.value;
       // Value setter
       testingComponent.editorComponent.value = ctent;
     }));
