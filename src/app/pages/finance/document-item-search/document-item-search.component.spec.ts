@@ -99,4 +99,25 @@ describe('DocumentItemSearchComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('working with data', () => {
+    beforeEach(() => {
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
+    });
+
+    it('1. shall initialize the data', fakeAsync(() => {
+      fixture.detectChanges(); // ngOninit
+      tick();
+      fixture.detectChanges();
+
+      expect(component.filters.length).toBe(1); // Default 1
+    }));
+  });
 });
