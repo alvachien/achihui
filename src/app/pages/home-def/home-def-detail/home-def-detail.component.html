@@ -1,7 +1,7 @@
 <div *transloco="let t">
   <nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')">
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/homelist">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/homedef">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
@@ -84,8 +84,7 @@
   <nz-divider></nz-divider>
 
   <div class="toolbar_buttons">
-    <button nz-button nzType="primary" [disabled]="!isFieldChangable"
-      (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
+    <button nz-button nzType="primary" [disabled]="!isFieldChangable" (click)="onCreateMember()">{{'Finance.CreateItem' | transloco}}</button>
   </div>
 
   <nz-table #basicTable nzBordered [nzData]="listMembers">
@@ -94,6 +93,7 @@
         <th nz-width="150">{{'Login.User' | transloco}}</th>
         <th nz-width="200">{{'Login.DisplayAs' | transloco}}</th>
         <th nz-width="100">{{'Common.Relationship' | transloco}}</th>
+        <th nz-width="100">{{'Sys.MemRel.Children' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
@@ -142,6 +142,9 @@
               </ng-template>
             </nz-form-control>
           </nz-form-item>
+        </td>
+        <td>
+          <label nz-checkbox [nzDisabled]="!isFieldChangable" [(ngModel)]="data.IsChild" (ngModelChange)="onChange()"></label>
         </td>
       </tr>
     </tbody>

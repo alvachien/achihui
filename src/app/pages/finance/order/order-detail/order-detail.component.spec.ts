@@ -191,7 +191,7 @@ describe('OrderDetailComponent', () => {
 
       component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
       fixture.detectChanges();
-      expect(component.detailFormGroup.valid).toBeTruthy();      
+      expect(component.detailFormGroup.valid).toBeTruthy();
 
       flush();
     }));
@@ -605,7 +605,7 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
       expect(component.listRules.length).toBeGreaterThan(0);
 
-      let nidx = component.listRules.length;
+      const nidx = component.listRules.length;
       component.onCreateRule();
       component.listRules[nidx].ControlCenterId = fakeData.finControlCenters[0].Id;
       component.listRules[nidx].Precent = 50;

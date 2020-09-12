@@ -55,14 +55,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onCreateHome(): void {
-    this.router.navigate(['/homedef/create']);
-  }
-
-  public onDisplayHome(row: HomeDef): void {
-    this.router.navigate(['/homedef/display/' + row.ID.toString()]);
-  }
-
   public onChooseHome(row: HomeDef): void {
     this.homeService.ChosedHome = row;
 
@@ -75,18 +67,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     }
   }
-
-  // public onHomeDefRowSelect(row: HomeDef): void {
-  //   if (!this.IsCurrentHomeChosed) {
-  //     this.onChooseHome(row);
-  //   } else {
-  //     this.onDisplayHome(row);
-  //   }
-  // }
-
-  // public onRefresh(): void {
-  //   this._fetchData(true);
-  // }
 
   private _fetchData(forceLoad?: boolean): void {
     this.isLoadingResults = true;

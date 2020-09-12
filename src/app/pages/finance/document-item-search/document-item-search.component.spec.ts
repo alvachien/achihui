@@ -16,6 +16,7 @@ import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListMod
 import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
 import { DocumentItemSearchComponent } from './document-item-search.component';
+import { ReusableComponentsModule } from '../../reusable-components/reusable-components.module';
 
 describe('DocumentItemSearchComponent', () => {
   let component: DocumentItemSearchComponent;
@@ -30,6 +31,7 @@ describe('DocumentItemSearchComponent', () => {
   let fetchAllControlCentersSpy: any;
   let fetchAllOrdersSpy: any;
   let fetchAllDocumentsSpy: any;
+  let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
 
   beforeAll(() => {
@@ -51,6 +53,7 @@ describe('DocumentItemSearchComponent', () => {
       'fetchAllControlCenters',
       'fetchAllOrders',
       'fetchAllDocuments',
+      'searchDocItem',
     ]);
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
@@ -60,6 +63,7 @@ describe('DocumentItemSearchComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
+    searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -73,6 +77,7 @@ describe('DocumentItemSearchComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
+        ReusableComponentsModule,
         getTranslocoModule(),
       ],
       declarations: [
