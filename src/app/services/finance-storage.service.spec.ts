@@ -59,9 +59,9 @@ describe('FinanceStorageService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(FinanceStorageService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(FinanceStorageService);
   });
 
   it('should be created without data', () => {
@@ -70,15 +70,15 @@ describe('FinanceStorageService', () => {
 
   describe('updateNormalDocument', () => {
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
 
-      let doc: Document = new Document();
+      const doc: Document = new Document();
       doc.Id = 100;
       doc.DocType = financeDocTypeNormal;
       doc.Desp = 'Test';
       doc.TranCurr = fakeData.chosedHome.BaseCurrency;
       doc.TranDate = moment();
-      let ditem: DocumentItem = new DocumentItem();
+      const ditem: DocumentItem = new DocumentItem();
       ditem.ItemId = 1;
       ditem.AccountId = 11;
       ditem.ControlCenterId = 1;
@@ -134,9 +134,9 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('updatePreviousDocWithPlanExgRate', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
     });
 
     afterEach(() => {
@@ -184,10 +184,10 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('fetchReportTrendData', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
     });
 
     afterEach(() => {
@@ -297,10 +297,10 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('fetchDocPostedFrequencyPerUser', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
     });
 
     afterEach(() => {
@@ -355,10 +355,10 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('getReportTranType', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
     });
 
     afterEach(() => {
@@ -438,10 +438,10 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('getReportMonthOnMonth', () => {
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
 
     beforeEach(() => {
-      service = TestBed.get(FinanceStorageService);
+      service = TestBed.inject(FinanceStorageService);
     });
 
     afterEach(() => {

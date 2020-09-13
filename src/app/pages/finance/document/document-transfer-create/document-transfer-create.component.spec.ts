@@ -389,7 +389,7 @@ describe('DocumentTransferCreateComponent', () => {
       // Click the next button
       expect(component.nextButtonEnabled).toBeFalse();
 
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -406,7 +406,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       expect(component.currentStep).toEqual(0); // At first page
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       component.headerFormGroup.get('headerControl').setValue(curdoc);
@@ -417,7 +417,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -435,7 +435,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       expect(component.currentStep).toEqual(0); // At first page
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = 'USD';
       curdoc.ExgRate = 653.33;
       curdoc.Desp = 'test';
@@ -447,7 +447,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -462,7 +462,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       component.headerFormGroup.get('headerControl').setValue(curdoc);
@@ -476,7 +476,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -502,7 +502,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -514,7 +514,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -539,7 +539,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -551,7 +551,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -578,7 +578,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -590,7 +590,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -620,7 +620,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -633,7 +633,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -669,7 +669,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -681,7 +681,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -713,7 +713,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -725,7 +725,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -759,7 +759,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -771,7 +771,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -803,7 +803,7 @@ describe('DocumentTransferCreateComponent', () => {
       // You can also one step back
       component.pre();
       fixture.detectChanges();
-      expect(component.currentStep).toBe(2);      
+      expect(component.currentStep).toBe(2);
 
       flush();
     }));
@@ -814,7 +814,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       component.headerFormGroup.get('headerControl').setValue(curdoc);
@@ -825,7 +825,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -891,7 +891,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -903,7 +903,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -951,12 +951,12 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.docIdCreated).toBeTruthy();
 
       tick();
-      
+
       // Navigation shall work
-      const routerstub = TestBed.get(Router);
+      const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
-  
-      component.onDisplayCreatedDoc();;
+
+      component.onDisplayCreatedDoc();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/1']);
 
       flush();
@@ -970,7 +970,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let curdoc: Document = new Document();
+      const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
@@ -982,7 +982,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -1025,7 +1025,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(createDocumentSpy).toHaveBeenCalled();
       tick();
       fixture.detectChanges();
-      
+
       expect(component.currentStep).toBe(4);
       expect(component.isDocPosting).toBeFalsy('expect variable isDocPosting is false');
       expect(component.docIdCreated).toBeNull('expect variable docIdCreated is null');

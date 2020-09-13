@@ -42,8 +42,8 @@ describe('LearnOdataService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
   afterEach(() => {
     // After every test, assert that there are no more pending requests.
@@ -51,14 +51,14 @@ describe('LearnOdataService', () => {
   });
 
   it('1. should be created', () => {
-    service = TestBed.get(LearnOdataService);
+    service = TestBed.inject(LearnOdataService);
     expect(service).toBeTruthy();
   });
 
   /// LearnOdataService method tests begin ///
   describe('fetchAllCategories', () => {
     beforeEach(() => {
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {
@@ -186,7 +186,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {
@@ -244,7 +244,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {
@@ -302,7 +302,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {
@@ -360,7 +360,7 @@ describe('LearnOdataService', () => {
       item.CategoryId = fakeData.learnCategories[0].Id;
       item.Content = 'test';
 
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {
@@ -412,7 +412,7 @@ describe('LearnOdataService', () => {
 
   describe('fetchAllObjects', () => {
     beforeEach(() => {
-      service = TestBed.get(LearnOdataService);
+      service = TestBed.inject(LearnOdataService);
     });
 
     afterEach(() => {

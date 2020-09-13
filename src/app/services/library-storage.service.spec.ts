@@ -44,8 +44,8 @@ describe('LibraryStorageService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -54,14 +54,14 @@ describe('LibraryStorageService', () => {
   });
 
   it('should be created', () => {
-    service = TestBed.get(LibraryStorageService);
+    service = TestBed.inject(LibraryStorageService);
     expect(service).toBeTruthy();
   });
 
   /// LibraryStorageService method tests begin ///
   describe('fetchAllBookCategories', () => {
     beforeEach(() => {
-      service = TestBed.get(LibraryStorageService);
+      service = TestBed.inject(LibraryStorageService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -172,7 +172,7 @@ describe('LibraryStorageService', () => {
 
   describe('fetchAllMovieGenres', () => {
     beforeEach(() => {
-      service = TestBed.get(LibraryStorageService);
+      service = TestBed.inject(LibraryStorageService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
@@ -283,7 +283,7 @@ describe('LibraryStorageService', () => {
 
   describe('fetchAllLocations', () => {
     beforeEach(() => {
-      service = TestBed.get(LibraryStorageService);
+      service = TestBed.inject(LibraryStorageService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.

@@ -178,9 +178,9 @@ describe('AccountExtraLoanComponent', () => {
   }));
 
   it('shall work with data 5: interest free case', fakeAsync(() => {
-    let tmpdocs: TemplateDocLoan[] = [];
-    for (let i: number = 0; i < 12; i++) {
-      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+    const tmpdocs: TemplateDocLoan[] = [];
+    for (let i = 0; i < 12; i++) {
+      const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.Desp = `test${i + 1}`;
@@ -228,9 +228,9 @@ describe('AccountExtraLoanComponent', () => {
   }));
 
   it('shall work with data 6: interest case', fakeAsync(() => {
-    let tmpdocs: TemplateDocLoan[] = [];
-    for (let i: number = 0; i < 12; i++) {
-      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+    const tmpdocs: TemplateDocLoan[] = [];
+    for (let i = 0; i < 12; i++) {
+      const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.InterestAmount = 362.50;
@@ -300,7 +300,7 @@ describe('AccountExtraLoanComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       const loan1: AccountExtraLoan = new AccountExtraLoan();
       loan1.startDate = moment().add(1, 'M');
       loan1.endDate = moment().add(2, 'years');
@@ -309,17 +309,17 @@ describe('AccountExtraLoanComponent', () => {
       loan1.InterestFree = false;
       loan1.RepayDayInMonth = 15;
       expect(loan1.isAccountValid).toBeTruthy();
-  
+
       testcomponent.formGroup.get('extraControl').setValue(loan1);
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
       expect(testcomponent.formGroup.valid).toBeFalse();
-  
+
       expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
-  
+
       testcomponent.extraComponent.onGenerateTmpDocs();
       flush();
       tick();
@@ -355,7 +355,7 @@ describe('AccountExtraLoanComponent', () => {
   }));
 
   it('shall work with reference doc.', fakeAsync(() => {
-    const routerstub = TestBed.get(Router);
+    const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
     testcomponent.extraComponent.onRefDocClick(123);

@@ -6,7 +6,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { translate } from '@ngneat/transloco';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
-import { HomeDefOdataService, } from '../../../services';
+import { AuthService, HomeDefOdataService, } from '../../../services';
 
 @Component({
   selector: 'hih-home-def-list',
@@ -28,6 +28,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private authService: AuthService,
     private homeService: HomeDefOdataService,
     private router: Router,
     private modalService: NzModalService) {
@@ -57,6 +58,12 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
   public onChooseHome(row: HomeDef): void {
     this.homeService.ChosedHome = row;
+    // Set current home member
+    this.homeService.ChosedHome.Members.forEach(mem => {
+      if (mem.User === this.authService.authSubject.value.getUserId()) {
+        this.homeService.CurrentMemberInChosedHome = mem;
+      }
+    });
 
     if (this.homeService.RedirectURL) {
       const url: string = this.homeService.RedirectURL;

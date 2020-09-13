@@ -40,7 +40,21 @@ export class HomeDefOdataService {
     }
   }
 
-  // Subject for the home meber of selected HomeDef
+  // Subject for current home member
+  curHomeMember: BehaviorSubject<HomeMember | undefined> = new BehaviorSubject<HomeMember>(undefined);
+  get CurrentMemberInChosedHome(): HomeMember {
+    return this.curHomeMember.value;
+  }
+  set CurrentMemberInChosedHome(hm: HomeMember) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService CurrentMemberInChosedHome setter: ${hm}`,
+      ConsoleLogTypeEnum.debug);
+
+    if (hm) {
+      this.curHomeMember.next(hm);
+    }
+  }
+
+  // Members in selected HomeDef
   get MembersInChosedHome(): HomeMember[] {
     return this.ChosedHome.Members;
   }
@@ -277,9 +291,9 @@ export class HomeDefOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
     const jdata: any[] = [{
-        'op': 'replace',
-        'path': '/readFlag',
-        'value': true,
+        op: 'replace',
+        path: '/readFlag',
+        value: true,
       },
     ];
 
@@ -308,9 +322,9 @@ export class HomeDefOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
     const jdata: any[] = [{
-        'op': 'replace',
-        'path': senderdel ? '/senderDeletion' : '/receiverDeletion',
-        'value': true,
+        op: 'replace',
+        path: senderdel ? '/senderDeletion' : '/receiverDeletion',
+        value: true,
       },
     ];
 
@@ -366,7 +380,7 @@ export class HomeDefOdataService {
       .append('Accept', 'application/json');
 
     return this._http.post(environment.ApiUrl + '/api/DBVersions', {}, {
-      headers: headers,
+      headers,
     }).pipe(map((response: HttpResponse<any>) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
         ConsoleLogTypeEnum.debug);

@@ -184,12 +184,12 @@ describe('DocumentListComponent', () => {
       expect(component.listOfDocs.length).toBeGreaterThan(0);
       // expect(component.listOfDocs.length).toEqual(ardocs.totalCount);
       discardPeriodicTasks();
-      
+
       flush();
     }));
 
     it('shall trigger navigation on menus for document creating', () => {
-      const routerstub = TestBed.get(Router);
+      const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
 
       component.onCreateNormalDocument();;

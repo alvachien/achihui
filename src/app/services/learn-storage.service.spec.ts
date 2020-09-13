@@ -43,8 +43,8 @@ describe('LearnStorageService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
   afterEach(() => {
     // After every test, assert that there are no more pending requests.
@@ -52,17 +52,17 @@ describe('LearnStorageService', () => {
   });
 
   it('1. should be created', () => {
-    service = TestBed.get(LearnStorageService);
+    service = TestBed.inject(LearnStorageService);
     expect(service).toBeTruthy();
   });
 
   /// LearnStorageService method tests begin ///
 
   describe('getHistoryReportByUser', () => {
-    let apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
+    const apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
 
     beforeEach(() => {
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -115,10 +115,10 @@ describe('LearnStorageService', () => {
   });
 
   describe('getHistoryReportByCategory', () => {
-    let apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
+    const apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
 
     beforeEach(() => {
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -179,7 +179,7 @@ describe('LearnStorageService', () => {
       item.Question = 'question 1';
       item.BriefAnswer = 'brief 1';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -237,7 +237,7 @@ describe('LearnStorageService', () => {
       item.Question = 'question 1';
       item.BriefAnswer = 'brief 1';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -295,7 +295,7 @@ describe('LearnStorageService', () => {
       item.Question = 'question 1';
       item.BriefAnswer = 'brief 1';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -353,7 +353,7 @@ describe('LearnStorageService', () => {
       item.Question = 'question 1';
       item.BriefAnswer = 'brief 1';
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -403,7 +403,7 @@ describe('LearnStorageService', () => {
 
   describe('fetchAllQuestionBankItem', () => {
     beforeEach(() => {
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -471,7 +471,7 @@ describe('LearnStorageService', () => {
 
   describe('fetchAllHistories', () => {
     beforeEach(() => {
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -542,7 +542,7 @@ describe('LearnStorageService', () => {
       hist1.UserId = 'user1';
       hist1.LearnDate = moment();
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {
@@ -601,7 +601,7 @@ describe('LearnStorageService', () => {
       hist1.UserId = 'user1';
       hist1.LearnDate = moment();
 
-      service = TestBed.get(LearnStorageService);
+      service = TestBed.inject(LearnStorageService);
     });
 
     afterEach(() => {

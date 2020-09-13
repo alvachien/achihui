@@ -83,7 +83,7 @@ describe('HomeDefListComponent', () => {
     let routerstub: Router;
 
     beforeEach(() => {
-      routerstub = TestBed.get(Router);
+      routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
 
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
