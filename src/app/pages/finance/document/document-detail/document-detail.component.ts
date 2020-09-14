@@ -14,6 +14,7 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   UIMode, getUIModeString,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'hih-fin-document-detail',
@@ -27,6 +28,18 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
+  public currentDocument: Document;
+  // Attributes
+  baseCurrency: string;
+  arControlCenters: ControlCenter[] = [];
+  arAccountCategories: AccountCategory[] = [];
+  arDocTypes: DocumentType[] = [];
+  arTranType: TranType[] = [];
+  arUIAccounts: UIAccountForSelection[] = [];
+  arUIOrders: UIOrderForSelection[] = [];
+  arCurrencies: Currency[] = [];
+  // Form group
+  docFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -40,6 +53,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
+
+    this.currentDocument = new Document();
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.docFormGroup = new FormGroup({
+      headerControl: new FormControl(this.currentDocument, Validators.required),
+      itemsControl: new FormControl()
+    });
   }
 
   ngOnInit() {
@@ -48,7 +68,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug);
 
       if (x instanceof Array && x.length > 0) {
@@ -73,6 +93,54 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
 
           // Read the document
+          forkJoin([
+            this.odataService.fetchAllCurrencies(),
+            this.odataService.fetchAllDocTypes(),
+            this.odataService.fetchAllTranTypes(),
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllAccounts(),
+            this.odataService.fetchAllControlCenters(),
+            this.odataService.fetchAllOrders(),
+            this.odataService.readDocument(this.routerID),
+          ])
+          .pipe(takeUntil(this._destroyed$),
+            finalize(() => {
+              this.isLoadingResults = false;
+            }))
+            .subscribe({
+              next: rsts => {
+                this.arCurrencies = rsts[0] as Currency[];
+                this.arDocTypes = rsts[1] as DocumentType[];
+                this.arTranType = rsts[2] as TranType[];
+                this.arAccountCategories = rsts[3] as AccountCategory[];
+                this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
+                this.arControlCenters = rsts[5] as ControlCenter[];
+                const arorders = rsts[6] as Order[];
+                this.arUIOrders = BuildupOrderForSelection(arorders, true);
+
+                this.currentDocument = rsts[7] as Document;
+
+                this.docFormGroup.get('headerControl').setValue(this.currentDocument);
+                this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
+
+                if (this.uiMode === UIMode.Display) {
+                  this.docFormGroup.disable();
+                } else {
+                  this.docFormGroup.enable();
+                }
+              },
+              error: err => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
+                  ConsoleLogTypeEnum.error);
+
+                this.uiMode = UIMode.Invalid;
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err,
+                  nzClosable: true,
+                });
+              }
+            });
           break;
         }
 

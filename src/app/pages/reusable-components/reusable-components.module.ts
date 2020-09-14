@@ -12,10 +12,12 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
 import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.component';
+import { OperatorFilterPipe } from './pipes';
 
 @NgModule({
   declarations: [
-    MarkdownEditorComponent
+    MarkdownEditorComponent,
+    OperatorFilterPipe,
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,7 @@ import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.compo
   ],
   exports: [
     MarkdownEditorComponent,
+    OperatorFilterPipe,
     MarkdownModule,
   ]
 })

@@ -33,7 +33,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.listOfColumns.forEach(item => {
         item.sortOrder = null;
       });
-      // this.fetchDocItems();
+      this.fetchDocItems();
     } else {
       this._filterDocItem = [];
     }
@@ -65,7 +65,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       name: 'Common.ID',
       columnKey: 'docid'
     }, {
-      name: 'Common.ID',
+      name: 'Finance.Items',
       columnKey: 'itemid'
     }, {
       name: 'Common.Description',

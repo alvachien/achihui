@@ -24,7 +24,7 @@ describe('LanguageOdataService', () => {
       ],
     });
 
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('1. service should be created', inject([LanguageOdataService], (service: LanguageOdataService) => {
@@ -35,7 +35,7 @@ describe('LanguageOdataService', () => {
     let service: LanguageOdataService;
 
     beforeEach(() => {
-      service = TestBed.get(LanguageOdataService);
+      service = TestBed.inject(LanguageOdataService);
     });
 
     afterEach(() => {

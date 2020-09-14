@@ -27,7 +27,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/logincallback.html",
-              "src/silentrenewcallback.html",              
+              "src/silentrenewcallback.html",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -111,12 +111,18 @@
               "src/assets",
               {
                 "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
                 "input": "./node_modules/monaco-editor/min/vs",
                 "output": "/assets/vs/"
               }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "node_modules/katex/dist/katex.min.css"
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",

@@ -1,5 +1,5 @@
 import { OperatorFilterPipe } from './operator-filter.pipe';
-import { UIDisplayString, GeneralFilterValueType, GeneralFilterOperatorEnum, } from 'app/model';
+import { UIDisplayString, GeneralFilterValueType, GeneralFilterOperatorEnum, } from '../../../model';
 
 describe('OperatorFilterPipe', () => {
   const pipe: OperatorFilterPipe = new OperatorFilterPipe();
@@ -66,48 +66,48 @@ describe('OperatorFilterPipe', () => {
   });
 
   it('3. Test string', () => {
-    let arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.string);
+    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.string);
     expect(arrst.length).toBeGreaterThan(0);
 
     // For string: like, equal
-    let likeidx: number = arrst.findIndex((val: UIDisplayString) => {
+    const likeidx: number = arrst.findIndex((val: UIDisplayString) => {
       return val.value === GeneralFilterOperatorEnum.Like;
     });
     expect(likeidx).not.toEqual(-1);
-    let equalidx: number = arrst.findIndex((val: UIDisplayString) => {
+    const equalidx: number = arrst.findIndex((val: UIDisplayString) => {
       return val.value === GeneralFilterOperatorEnum.Equal;
     });
     expect(equalidx).not.toEqual(-1);
   });
 
   it('4. Test boolean', () => {
-    let arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.boolean);
+    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.boolean);
     expect(arrst.length).toBeGreaterThan(0);
 
     // For boolean: equal
-    let equalidx: number = arrst.findIndex((val: UIDisplayString) => {
+    const equalidx: number = arrst.findIndex((val: UIDisplayString) => {
       return val.value === GeneralFilterOperatorEnum.Equal;
     });
     expect(equalidx).not.toEqual(-1);
   });
 
   it('5. Test number', () => {
-    let arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.number);
+    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.number);
     expect(arrst.length).toBeGreaterThan(0);
 
     // For number: like is NOT supported
-    let likeidx: number = arrst.findIndex((val: UIDisplayString) => {
+    const likeidx: number = arrst.findIndex((val: UIDisplayString) => {
       return val.value === GeneralFilterOperatorEnum.Like;
     });
     expect(likeidx).toEqual(-1);
   });
 
   it('5. Test date', () => {
-    let arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.date);
+    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.date);
     expect(arrst.length).toBeGreaterThan(0);
 
     // For number: like is NOT supported
-    let likeidx: number = arrst.findIndex((val: UIDisplayString) => {
+    const likeidx: number = arrst.findIndex((val: UIDisplayString) => {
       return val.value === GeneralFilterOperatorEnum.Like;
     });
     expect(likeidx).toEqual(-1);

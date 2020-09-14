@@ -31,6 +31,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { ReusableComponentsModule } from '../reusable-components/reusable-components.module';
 
 @NgModule({
   imports: [
@@ -68,6 +69,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzRadioModule,
     NzResizableModule,
     NgxEchartsModule,
+    ReusableComponentsModule,
   ],
   exports: [
     FormsModule,
@@ -104,6 +106,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzRadioModule,
     NzResizableModule,
     NgxEchartsModule,
+    ReusableComponentsModule,
   ]
 })
 export class LearnUIModule { }

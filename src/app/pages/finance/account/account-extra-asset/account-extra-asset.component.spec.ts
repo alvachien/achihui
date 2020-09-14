@@ -161,7 +161,7 @@ describe('AccountExtraAssetComponent', () => {
   it('shall work with reference doc.', fakeAsync(() => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
-    const routerstub = TestBed.get(Router);
+    const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
     testingComponent.assetComponent.onRefDocClick(123);

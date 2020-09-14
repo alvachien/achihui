@@ -4,79 +4,20 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import * as moment from 'moment';
+import { Observable, Observer } from 'rxjs';
+import { editor } from 'monaco-editor';
+
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
-import { editor } from 'monaco-editor';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
-import { Observable, Observer } from 'rxjs';
-
-// Enum for toolbar buttons
-// export enum EditorToolbarButtonEnum {
-//   bold = 'bold',
-//   italic = 'italic',
-//   underline = 'underline',
-//   strikethrough = 'strikethrough',
-//   heading1 = 'heading1',
-//   heading2 = 'heading2',
-//   heading3 = 'heading3',
-//   heading4 = 'heading4',
-//   heading5 = 'heading5',
-//   heading6 = 'heading6',
-//   paragraph = 'paragraph',
-//   quote = 'quote',
-//   orderedlist = 'orderedlist',
-//   unorderedlist = 'unorderedlist',
-//   code = 'code',
-//   horizontalline = 'horizontalline',
-//   link = 'link',
-//   image = 'image',
-//   undo = 'undo',
-//   redo = 'redo',
-//   math = 'math'
-// }
-
-// // Config for editor
-// export interface IACMEditorConfig {
-//   // toolbarItems?: EditorToolbarButtonEnum[];
-//   name?: string;
-//   height?: number | string;
-//   width?: number | string;
-//   delay?: number;
-//   watch?: boolean;
-//   maxLength?: number;
-//   readOnly?: boolean;
-//   placeHolder?: string;
-//   gotoLine?: boolean;
-//   autoHeight?: boolean;
-//   autoFocus?: boolean;
-//   autoCloseTags?: boolean;
-//   searchReplace?: boolean;
-//   syncScrolling?: boolean;
-//   autoCloseBrackets?: boolean;
-//   showTrailingSpace?: boolean;
-//   matchBrackets?: boolean;
-//   styleSelectedText?: boolean;
-//   matchWordHighlight?: boolean;
-//   styleActiveLine?: boolean;
-//   pageBreak?: boolean;
-//   atLink?: boolean;
-//   emailLink?: boolean;
-//   taskList?: boolean;
-//   emoji?: boolean;
-//   tex?: boolean;
-//   flowChart?: boolean;
-//   sequenceDiagram?: boolean;
-//   previewCodeHighlight?: boolean;
-//   toolbar?: boolean;
-//   toolbarAutoFixed?: boolean;
-// }
 
 @Component({
+  // tslint:disable-next-line: component-selector
   selector: 'ac-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrls: ['./markdown-editor.component.less'],
@@ -93,23 +34,16 @@ import { Observable, Observer } from 'rxjs';
   ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  // @Input() config: IACMEditorConfig;
   @Input() editorID: string;
-  @ViewChild('previewElement') previewElement: ElementRef;
+  @ViewChild('previewElement', {static: true}) previewElement: ElementRef;
 
-  isDialogMathOpen = false;
-  mathDialogInput: string;
-  editor: editor.ICodeEditor;
+  editor: editor.ICodeEditor; // | editor.IEditor;
   content: string;
   readOnly = false;
   uploadAPI: string;
 
-  stateWatching = false;
-  stateLoaded   = false;
-  statePreview  = false;
-  stateFullscreen = false;
   public katexOptions: KatexOptions = {
-    displayMode: true,
+    // displayMode: true,
     throwOnError: false,
     errorColor: '#cc0000',
   };
@@ -125,31 +59,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   private _onChange: (val: any) => void;
   // tslint:disable-next-line:variable-name
   private _onTouched: () => void;
-
-  // defaultToolbarItems: EditorToolbarButtonEnum[] = [
-  //   EditorToolbarButtonEnum.bold,
-  //   EditorToolbarButtonEnum.italic,
-  //   EditorToolbarButtonEnum.underline,
-  //   EditorToolbarButtonEnum.strikethrough,
-  //   EditorToolbarButtonEnum.heading1,
-  //   EditorToolbarButtonEnum.heading2,
-  //   EditorToolbarButtonEnum.heading3,
-  //   EditorToolbarButtonEnum.heading4,
-  //   EditorToolbarButtonEnum.heading5,
-  //   EditorToolbarButtonEnum.heading6,
-  //   EditorToolbarButtonEnum.paragraph,
-  //   EditorToolbarButtonEnum.quote,
-  //   EditorToolbarButtonEnum.orderedlist,
-  //   EditorToolbarButtonEnum.unorderedlist,
-  //   EditorToolbarButtonEnum.code,
-  //   EditorToolbarButtonEnum.horizontalline,
-  //   EditorToolbarButtonEnum.link,
-  //   EditorToolbarButtonEnum.image,
-  //   EditorToolbarButtonEnum.undo,
-  //   EditorToolbarButtonEnum.redo,
-  //   EditorToolbarButtonEnum.math,
-  // ];
-  // toolbarItems: EditorToolbarButtonEnum[] = [];
 
   get value(): string {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
@@ -206,10 +115,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ngOnDestroy() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
-    // this.toolbarItems = [];
   }
 
-  onEditorInit(e: editor.ICodeEditor): void {
+  onEditorInit(e: any): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit...',
       ConsoleLogTypeEnum.debug);
 
@@ -229,21 +137,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
       this.onChange();
     });
-    // this.editor.onDidChangeCursorPosition(e => {
-    //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeCursorPosition...',
-    //     ConsoleLogTypeEnum.debug);
 
-    //   let npos = this.editor.getPosition();
-    //   // this.editor.getnpos.lineNumber
-    //   console.log(npos);
-    // });
-    // this.editor.onDidChangeCursorSelection(e => {
-    //   ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit, onDidChangeCursorSelection...',
-    //     ConsoleLogTypeEnum.debug);
-
-    //   let nsel = this.editor.getSelection();
-    //   console.log(nsel);
-    // });
     this.editor.onDidScrollChange(ec => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
         ConsoleLogTypeEnum.debug);
@@ -699,7 +593,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       observer.complete();
     });
   }
-  onToolbarPictureUpload(info: UploadChangeParam): void {
+  onToolbarPictureUpload(info: NzUploadChangeParam): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
       ConsoleLogTypeEnum.debug);
     if (info.file.status === 'done') {
@@ -734,30 +628,6 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
       this.editor.focus();
     }
-  }
-  onMathDialogInput(event): void {
-    // Math dialog
-    if (event) {
-      const dialogelem: HTMLElement = document.getElementById('acme_math_dialog');
-      const inputelem = dialogelem.getElementsByClassName('acme_math_input')[0] as HTMLDivElement;
-      const previewelem = dialogelem.getElementsByClassName('acme_math_preview')[0] as HTMLDivElement;
-      if (inputelem.innerText) {
-        // const orginput = '$$' + inputelem.innerText + '$$';
-        const orginput = inputelem.innerText;
-        // katex.render(orginput, previewelem);
-      }
-    }
-  }
-  onMathDialogClose(): void {
-    // const dialogelem: HTMLElement = document.getElementById('acme_math_dialog');
-    // const inputelem = dialogelem.getElementsByClassName('acme_math_input')[0] as HTMLDivElement;
-    // if (inputelem.innerText) {
-    //   const newelem: HTMLElement = document.createElement('div');
-    //   katex.render(inputelem.innerText, newelem);
-    //   this.erContentEditor.nativeElement.appendChild(newelem);
-    // }
-
-    // this.isDialogMathOpen = false;
   }
   validate(control: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent validate...',

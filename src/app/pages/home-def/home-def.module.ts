@@ -12,6 +12,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { TranslocoModule, } from '@ngneat/transloco';
 
 import { HomeDefRoutingModule } from './home-def-routing.module';
@@ -41,6 +42,7 @@ import { HomeDefDetailComponent } from './home-def-detail';
     NzSelectModule,
     NzResultModule,
     NzAlertModule,
+    NzCheckboxModule,
     TranslocoModule,
   ]
 })

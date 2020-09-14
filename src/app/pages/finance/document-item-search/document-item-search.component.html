@@ -1,0 +1,87 @@
+<nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+        <nz-breadcrumb-item>{{'Common.Search' | transloco}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.Search' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+</nz-page-header>
+
+<div class="control-full-width">
+    <div nz-row *ngFor="let filter of filters; let idxfilter = index" class="control-full-width">
+        <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both;">
+            <div nz-col [nzSpan]="6">
+                <nz-select nzPlaceHolder="{{'Common.Field' | transloco}}" [(ngModel)]="filter.fieldName"
+                    (ngModelChange)="onFieldSelectionChanged(filter)">
+                    <nz-option *ngFor="let field of allFields" [nzLabel]="field.displayas | transloco" [nzValue]="field.value">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col [nzSpan]="6">
+                <nz-select nzPlaceHolder="{{'Common.Operator' | transloco}}" [(ngModel)]="filter.operator">
+                    <nz-option *ngFor="let opr of allOperators | operatorFilter: filter.valueType" [nzLabel]="opr.i18nterm | transloco" [nzValue]="opr.value">
+                    </nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col [nzSpan]="6">
+                <div nz-row [nzGutter]="8" *ngIf="filter.valueType === 1">
+                    <div nz-col nzSpan="12">
+                        <input nz-input type="number" placeholder="{{'Common.Value' | transloco}}"
+                            name="lvalue_1" [(ngModel)]="filter.lowValue">
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <input nz-input type="number" placeholder="{{'Common.Value' | transloco}}"
+                            name="hvalue_1" [(ngModel)]="filter.highValue">
+                    </div>
+                </div>
+                <div nz-row [nzGutter]="8" *ngIf="filter.valueType === 2">
+                    <div nz-col nzSpan="12">
+                        <input nz-input type="text" placeholder="{{'Common.Value' | transloco}}"
+                            name="lvalue_2" [(ngModel)]="filter.lowValue">
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <input nz-input type="text" placeholder="{{'Common.Value' | transloco}}"
+                            name="hvalue_2" [(ngModel)]="filter.highValue">
+                    </div>
+                </div>
+                <div nz-row [nzGutter]="8" *ngIf="filter.valueType === 3">
+                    <div nz-col nzSpan="12">
+                        <nz-date-picker [(ngModel)]="filter.lowValue"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-date-picker [(ngModel)]="filter.highValue"></nz-date-picker>
+                    </div>
+                </div>
+                <div *ngIf="filter.valueType === 4">
+                    <label nz-checkbox [(ngModel)]="filter.lowValue"></label>
+                </div>
+            </div>
+
+            <div nz-col>
+                <div nz-row [nzGutter]="6">
+                    <div nz-col nzSpan="12">
+                        <button nz-button nzType="default" nzShape="circle" (click)="onAddFilter()">
+                            <i nz-icon nzType="plus"></i>
+                        </button>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <button nz-button nzType="default" nzShape="circle" (click)="onRemoveFilter(idxfilter)">
+                            <i nz-icon nzType="delete"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div nz-row style="margin: 8px;">
+        <button nz-button nzType="primary" (click)="onSearch()"><i nz-icon nzType="search"></i>{{'Common.Search' | transloco}}</button>
+    </div>
+</div>
+
+<div class="control-full-width">
+  <hih-fin-document-item-view [filterDocItem]="filters"></hih-fin-document-item-view>
+</div>

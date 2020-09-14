@@ -8,7 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
-import { DocumentHeaderComponent } from '../document-header/document-header.component';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
@@ -66,6 +67,8 @@ describe('DocumentDetailComponent', () => {
         getTranslocoModule(),
       ],
       declarations: [
+        DocumentHeaderComponent,
+        DocumentItemsComponent,
         DocumentDetailComponent,
       ],
       providers: [

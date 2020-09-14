@@ -14,22 +14,23 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
-import { DocumentItemViewComponent } from './document-item-view.component';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
+import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
+import { DocumentItemSearchComponent } from './document-item-search.component';
+import { ReusableComponentsModule } from '../../reusable-components/reusable-components.module';
 
-describe('DocumentItemViewComponent', () => {
-  let component: DocumentItemViewComponent;
-  let fixture: ComponentFixture<DocumentItemViewComponent>;
+describe('DocumentItemSearchComponent', () => {
+  let component: DocumentItemSearchComponent;
+  let fixture: ComponentFixture<DocumentItemSearchComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
   let fetchAllDocTypesSpy: any;
   let fetchAllCurrenciesSpy: any;
-  // let fetchAllAccountCategoriesSpy: any;
+  let fetchAllAccountCategoriesSpy: any;
   let fetchAllTranTypesSpy: any;
   let fetchAllAccountsSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllOrdersSpy: any;
-  // let fetchAllDocumentsSpy: any;
+  let fetchAllDocumentsSpy: any;
   let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
 
@@ -46,22 +47,22 @@ describe('DocumentItemViewComponent', () => {
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllDocTypes',
       'fetchAllCurrencies',
-      // 'fetchAllAccountCategories',
+      'fetchAllAccountCategories',
       'fetchAllTranTypes',
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
-      // 'fetchAllDocuments',
+      'fetchAllDocuments',
       'searchDocItem',
     ]);
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
-    // fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
-    // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
+    fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -76,31 +77,26 @@ describe('DocumentItemViewComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
+        ReusableComponentsModule,
         getTranslocoModule(),
       ],
       declarations: [
         MessageDialogComponent,
         DocumentItemViewComponent,
+        DocumentItemSearchComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
-      ]
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [
-          MessageDialogComponent,
-        ],
-      },
-    }).compileComponents();
+      ],
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocumentItemViewComponent);
+    fixture = TestBed.createComponent(DocumentItemSearchComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
   });
@@ -110,66 +106,23 @@ describe('DocumentItemViewComponent', () => {
   });
 
   describe('working with data', () => {
-    let overlayContainer: OverlayContainer;
-    let overlayContainerElement: HTMLElement;
-
     beforeEach(() => {
-      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
-      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      // fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
-      // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
-      searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
-    });
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
-
-    afterEach(() => {
-      overlayContainer.ngOnDestroy();
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
     });
 
-    it('data fetch okay', fakeAsync(() => {
-      fixture.detectChanges();
+    it('1. shall initialize the data', fakeAsync(() => {
+      fixture.detectChanges(); // ngOninit
       tick();
       fixture.detectChanges();
 
-      expect(component.listDocItem.length).toEqual(0);
-    }));
-
-    it('should display error when Service fails on Account', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-
-      component.fetchDocItems();
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
-
-      flush();
+      expect(component.filters.length).toBe(1); // Default 1
     }));
   });
 });

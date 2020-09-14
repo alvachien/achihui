@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: '', component: HomeDefListComponent },
   { path: 'create', component: HomeDefDetailComponent },
   { path: 'display/:id', component: HomeDefDetailComponent },
+  { path: 'edit/:id', component: HomeDefDetailComponent },
 ];
 
 @NgModule({

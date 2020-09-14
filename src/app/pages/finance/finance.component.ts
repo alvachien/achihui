@@ -26,7 +26,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   private _selectedYear: number;
   private _selectedMonth?: number;
 
-  public selectedDate: Date;  
+  public selectedDate: Date;
   isLoadingResults: boolean;
 
   listDate: DateCellData[] = [];

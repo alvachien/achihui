@@ -21,6 +21,7 @@ export interface IHomeMemberJson {
   User: string;
   DisplayAs: string;
   Relation: any;
+  IsChild?: boolean;
 }
 
 /**
@@ -31,6 +32,7 @@ export class HomeMember {
   private _user: string;
   private _displayas: string;
   private _relation: HomeMemberRelationEnum;
+  private _ischild?: boolean;
 
   get HomeID(): number {
     return this._hid;
@@ -55,6 +57,12 @@ export class HomeMember {
   }
   set Relation(rel: HomeMemberRelationEnum) {
     this._relation = rel;
+  }
+  get IsChild(): boolean {
+    return this._ischild;
+  }
+  set IsChild(cld: boolean) {
+    this._ischild = cld;
   }
 
   get isValid(): boolean {
@@ -85,6 +93,9 @@ export class HomeMember {
     } else {
       this._relation = null;
     }
+    if (data.IsChild) {
+      this._ischild = data.IsChild;
+    }
   }
   public generateJSONData(): IHomeMemberJson {
     const jdata: IHomeMemberJson = {
@@ -92,6 +103,7 @@ export class HomeMember {
       User: this._user,
       DisplayAs: this._displayas,
       Relation: HomeMemberRelationEnum[this._relation],
+      IsChild: this._ischild,
     };
     return jdata;
   }

@@ -6,7 +6,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { translate } from '@ngneat/transloco';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
-import { HomeDefOdataService, } from '../../../services';
+import { AuthService, HomeDefOdataService, } from '../../../services';
 
 @Component({
   selector: 'hih-home-def-list',
@@ -28,6 +28,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private authService: AuthService,
     private homeService: HomeDefOdataService,
     private router: Router,
     private modalService: NzModalService) {
@@ -55,16 +56,14 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onCreateHome(): void {
-    this.router.navigate(['/homedef/create']);
-  }
-
-  public onDisplayHome(row: HomeDef): void {
-    this.router.navigate(['/homedef/display/' + row.ID.toString()]);
-  }
-
   public onChooseHome(row: HomeDef): void {
     this.homeService.ChosedHome = row;
+    // Set current home member
+    this.homeService.ChosedHome.Members.forEach(mem => {
+      if (mem.User === this.authService.authSubject.value.getUserId()) {
+        this.homeService.CurrentMemberInChosedHome = mem;
+      }
+    });
 
     if (this.homeService.RedirectURL) {
       const url: string = this.homeService.RedirectURL;
@@ -75,18 +74,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     }
   }
-
-  // public onHomeDefRowSelect(row: HomeDef): void {
-  //   if (!this.IsCurrentHomeChosed) {
-  //     this.onChooseHome(row);
-  //   } else {
-  //     this.onDisplayHome(row);
-  //   }
-  // }
-
-  // public onRefresh(): void {
-  //   this._fetchData(true);
-  // }
 
   private _fetchData(forceLoad?: boolean): void {
     this.isLoadingResults = true;

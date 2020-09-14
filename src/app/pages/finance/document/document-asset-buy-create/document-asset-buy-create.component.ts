@@ -212,7 +212,9 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   }
 
   public onDisplayCreatedDoc(): void {
-    this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    if (this.docIdCreated) {
+      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
   }
 
   public onSubmit(): void {

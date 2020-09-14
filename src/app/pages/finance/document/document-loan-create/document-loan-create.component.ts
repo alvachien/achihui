@@ -71,6 +71,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
+    private _router: Router,
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService) {
@@ -308,5 +309,10 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   public onDisplayCreatedDoc(): void {
+    if (this.docIdCreated) {
+      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
+  }
+  public onCreateAnotherDoc(): void {
   }
 }

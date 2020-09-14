@@ -74,6 +74,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     private odataService: FinanceOdataService,
     private uiService: UIStatusService,
     private activedRoute: ActivatedRoute,
+    private router: Router,
     private modalService: NzModalService,
   ) {
     this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
@@ -159,7 +160,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         error: err => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
             ConsoleLogTypeEnum.error);
-  
+
           this.modalService.create({
             nzTitle: translate('Common.Error'),
             nzContent: err,
@@ -215,7 +216,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           this.currentStep ++;
         }
         break;
-      
+
       case 2:
         this.isDocPosting = true;
         this.doPosting();
@@ -289,11 +290,11 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   }
 
   public onTmpLoanDocRowSelectChanged(event: any, tmpdoc: TemplateDocLoan) {
-    let bval = event as boolean;
+    const bval = event as boolean;
     if (bval) {
       this.selectedLoanTmpDoc.push(tmpdoc);
     } else {
-      let tidx = this.selectedLoanTmpDoc.findIndex(tdoc => {
+      const tidx = this.selectedLoanTmpDoc.findIndex(tdoc => {
         return tdoc.DocId === tmpdoc.DocId;
       });
       if (tidx !== -1) {
@@ -325,9 +326,11 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onCreateItem() {    
-    let nitem = {
-      AccountId: this.selectedLoanAccount ? ( this.selectedLoanAccount.ExtraInfo ? (this.selectedLoanAccount.ExtraInfo as AccountExtraLoan).PayingAccount : undefined ) : undefined,
+  public onCreateItem() {
+    const nitem = {
+      AccountId: this.selectedLoanAccount ?
+        ( this.selectedLoanAccount.ExtraInfo ?
+        (this.selectedLoanAccount.ExtraInfo as AccountExtraLoan).PayingAccount : undefined ) : undefined,
       TranAmount: 0,
       Comment: '',
     } as PayingAccountItem;
@@ -364,8 +367,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     // Items
     // Add two items: repay-in and repay-out
-    let curItemIdx: number = 1;
-    let tranAmount: number = 0;
+    let curItemIdx = 1;
+    let tranAmount = 0;
     let di: DocumentItem = new DocumentItem();
     di.ItemId = curItemIdx++;
     if (this.selectedLoanAccount) {
@@ -384,8 +387,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.Items.push(di);
 
     if (this.listItems.length > 0) {
-      let nleftAmount: number = 0;
-      for (let idx: number = 0; idx < this.listItems.length; idx++) {
+      let nleftAmount = 0;
+      for (let idx = 0; idx < this.listItems.length; idx++) {
         di = new DocumentItem();
         di.ItemId = curItemIdx++;
         di.AccountId = this.listItems[idx].AccountId;
@@ -436,9 +439,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Step 3. 
+  // Step 3.
   private doPosting() {
-    // TBD.    
     // Now go to the real posting
     this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId)
     .pipe(takeUntil(this._destroyed$),
@@ -460,6 +462,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     });
   }
   public onDisplayCreatedDoc() {
-    
+    if (this.docIdCreated) {
+      this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
   }
 }

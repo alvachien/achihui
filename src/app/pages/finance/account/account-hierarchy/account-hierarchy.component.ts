@@ -100,8 +100,20 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this.filterDocItem = arFilters;
     }
   }
-  onNodeContextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
-    this.nzContextMenuService.create($event, menu);
+
+  ///
+  /// Context menu
+  onNodeContextMenu(event: any, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create({
+      x: event.event.clientX,
+      y: event.event.clientY,
+    }, menu);
+  }
+  onDisplayAccount(): void {
+  }
+  onEditAccount(): void {
+  }
+  onCloseAccount(): void {
   }
 
   onResize({ col }: NzResizeEvent): void {
@@ -169,7 +181,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // Root nodes!
         const node: NzTreeNodeOptions = {
           key: `c${val.ID}`,
-          title: translate(val.Name) + `(${val.ID})`,
+          // title: translate(val.Name) + `(${val.ID})`,
+          title: translate(val.Name),
           isLeaf: false,
           icon: 'cluster'
         };
@@ -188,7 +201,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `a${val.Id}`,
-            title: val.Name + `(${val.Id})`,
+            // title: val.Name + `(${val.Id})`,
+            title: val.Name,
             isLeaf: true,
             icon: 'account-book',
           };

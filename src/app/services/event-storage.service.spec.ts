@@ -38,8 +38,8 @@ describe('EventStorageService', () => {
       ],
     });
 
-    httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(EventStorageService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(EventStorageService);
   }));
 
   it('1. should be created without data', () => {
@@ -49,7 +49,7 @@ describe('EventStorageService', () => {
   /// EventStorageService method tests begin ///
   describe('fetchAllGeneralEvents', () => {
     beforeEach(() => {
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -110,7 +110,7 @@ describe('EventStorageService', () => {
 
   describe('fetchAllRecurEvents', () => {
     beforeEach(() => {
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -165,7 +165,7 @@ describe('EventStorageService', () => {
 
   describe('fetchAllHabitEvents', () => {
     beforeEach(() => {
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -215,7 +215,7 @@ describe('EventStorageService', () => {
 
   describe('readHabitEvent', () => {
     beforeEach(() => {
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -275,7 +275,7 @@ describe('EventStorageService', () => {
       hevnt.StartDate = moment();
       hevnt.EndDate = moment().add(1, 'y');
       hevnt.content = 'test';
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -343,7 +343,7 @@ describe('EventStorageService', () => {
       hevnt.StartDate = moment();
       hevnt.EndDate = moment().add(1, 'y');
       hevnt.content = 'test';
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {
@@ -404,7 +404,7 @@ describe('EventStorageService', () => {
       hevnt.EndDate = moment().add(1, 'y');
       hevnt.content = 'test';
       hevnt.ID = 11;
-      service = TestBed.get(EventStorageService);
+      service = TestBed.inject(EventStorageService);
     });
 
     afterEach(() => {

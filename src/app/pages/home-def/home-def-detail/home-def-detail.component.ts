@@ -289,6 +289,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   onCreateMember() {
     const nmem = new HomeMember();
     const memes = this.listMembers.slice();
+    nmem.HomeID = this.currentHomeDefObject.ID;
     memes.push(nmem);
     this.listMembers = memes;
   }

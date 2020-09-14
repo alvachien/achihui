@@ -34,9 +34,9 @@ describe('BlogOdataService', () => {
       ],
     });
 
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(BlogOdataService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(BlogOdataService);
   });
 
   it('should be created', () => {
@@ -46,9 +46,9 @@ describe('BlogOdataService', () => {
   /// BlogOdataService method tests begin ///
   describe('fetchAllCollections', () => {
     const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
-    
+
     beforeEach(() => {
-      service = TestBed.get(BlogOdataService);
+      service = TestBed.inject(BlogOdataService);
     });
     afterEach(() => {
       // After every test, assert that there are no more pending requests.

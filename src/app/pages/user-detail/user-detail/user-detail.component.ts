@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AuthService } from 'src/app/services';
+import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
   selector: 'hih-user-detail',
@@ -11,7 +11,14 @@ export class UserDetailComponent implements OnInit {
   userID: string;
   userName: string;
   userMail: string;
-  constructor(private authService: AuthService) { }
+
+  currentHomeName: string;
+  currentHomeMemDisplayAs: string;
+  currentHomeMemIsChild: boolean;
+
+  constructor(
+    private authService: AuthService,
+    private homeService: HomeDefOdataService) { }
 
   ngOnInit() {
     this.authService.authContent.subscribe({
@@ -21,5 +28,11 @@ export class UserDetailComponent implements OnInit {
         this.userMail = val.getUserMailbox();
       }
     });
+
+    if (this.homeService && this.homeService.ChosedHome) {
+      this.currentHomeName = this.homeService.ChosedHome.Name;
+      this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome.DisplayAs;
+      this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome.IsChild;
+    }
   }
 }

@@ -6,9 +6,18 @@
     <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
 </nz-page-header>
 
-<div>
+<form nz-form [formGroup]="docFormGroup">
+  <!-- Header -->
+  <hih-fin-document-header formControlName="headerControl" [docType]="currentDocument.DocType" [currentUIMode]="uiMode"
+    [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
+  </hih-fin-document-header>
 
-</div>
+  <!-- Items -->
+  <hih-fin-document-items formControlName="itemsControl" [currentUIMode]="uiMode" [docDate]="currentDocument.TranDate"
+    [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
+    [arTranType]="arTranType" [arUIOrders]="arUIOrders" [docType]="currentDocument.DocType">
+  </hih-fin-document-items>
+</form>

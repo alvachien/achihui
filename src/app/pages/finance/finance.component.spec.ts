@@ -114,11 +114,11 @@ describe('FinanceComponent', () => {
     }));
 
     it('Should work for DP and Loan docs', fakeAsync(() => {
-      let dat1 = moment().startOf('month');
-      let dat2 = moment().endOf('month');
+      const dat1 = moment().startOf('month');
+      const dat2 = moment().endOf('month');
       arLoanTmpDoc = [];
       arDPTmpDoc = [];
-      let dp1: TemplateDocADP = new TemplateDocADP();
+      const dp1: TemplateDocADP = new TemplateDocADP();
       dp1.DocId = 1;
       dp1.HID = fakeData.chosedHome.ID;
       dp1.TranAmount = 100;
@@ -126,7 +126,7 @@ describe('FinanceComponent', () => {
       dp1.AccountId = 1;
       dp1.Desp = 'test1';
       arDPTmpDoc.push(dp1);
-      let dp2 = new TemplateDocADP();
+      const dp2 = new TemplateDocADP();
       dp2.HID = fakeData.chosedHome.ID;
       dp2.DocId = 2;
       dp2.TranAmount = 200;
@@ -134,7 +134,7 @@ describe('FinanceComponent', () => {
       dp2.AccountId = 1;
       dp2.Desp = 'test2';
       arDPTmpDoc.push(dp2);
-      let loan1: TemplateDocLoan = new TemplateDocLoan();
+      const loan1: TemplateDocLoan = new TemplateDocLoan();
       loan1.HID = fakeData.chosedHome.ID;
       loan1.Desp = 'Loan 1';
       loan1.TranDate = dat2.clone();
@@ -164,12 +164,12 @@ describe('FinanceComponent', () => {
       expect(component.listDate[0].CurrentDate.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
 
       // Post the Loan doc
-      const routerstub = TestBed.get(Router);
+      const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
       component.doPostLoanDoc(loan1);
-    
+
       expect(routerstub.navigate).toHaveBeenCalled();
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createloanrepay/3']);    
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createloanrepay/3']);
 
       flush();
     }));
@@ -180,7 +180,7 @@ describe('FinanceComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
@@ -203,7 +203,7 @@ describe('FinanceComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();

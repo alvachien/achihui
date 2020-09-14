@@ -220,7 +220,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
+    // ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
 
     // Check 1: Have items
     if (this.listItems.length <= 0) {

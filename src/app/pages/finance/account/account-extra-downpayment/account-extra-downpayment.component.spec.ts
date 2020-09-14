@@ -244,11 +244,11 @@ describe('AccountExtraDownpaymentComponent', () => {
   it('shall work with data 6: input start date, repeat type, comment, calcTmpDocs (with return)', fakeAsync(() => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
-    let aroutput: RepeatedDatesWithAmountAPIOutput[] = [];
+    const aroutput: RepeatedDatesWithAmountAPIOutput[] = [];
     aroutput.push({
       TranDate: moment(),
       TranAmount: 10,
-      Desp: '1'    
+      Desp: '1'
     } as RepeatedDatesWithAmountAPIOutput);
     aroutput.push({
       TranDate: moment().add(1, 'M'),
@@ -305,7 +305,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
-    const routerstub = TestBed.get(Router);
+    const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
     testcomponent.extraComponent.onRefDocClick(123);
@@ -334,11 +334,11 @@ describe('AccountExtraDownpaymentComponent', () => {
     it('shall display error dialog', fakeAsync(() => {
       testcomponent.tranAmount = 100;
       testcomponent.arTranTypes = fakeData.finTranTypes;
-  
+
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       const startdt = moment().add(1, 'M');
       dp1.StartDate = startdt;
@@ -348,11 +348,11 @@ describe('AccountExtraDownpaymentComponent', () => {
       flush();
       tick();
       fixture.detectChanges();
-  
+
       expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
       expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
       expect(testcomponent.formGroup.valid).toBeFalse();
-  
+
       testcomponent.extraComponent.onGenerateTmpDocs();
       flush();
       tick();

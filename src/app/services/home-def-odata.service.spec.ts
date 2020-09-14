@@ -32,18 +32,18 @@ describe('HomeDefOdataService', () => {
       ],
     });
 
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('1. should be created', () => {
-    service = TestBed.get(HomeDefOdataService);
+    service = TestBed.inject(HomeDefOdataService);
     expect(service).toBeTruthy();
   });
 
   /// HomeDefOdataService method tests begin ///
   describe('fetchAllHomeDef', () => {
     beforeEach(() => {
-      service = TestBed.get(HomeDefOdataService);
+      service = TestBed.inject(HomeDefOdataService);
     });
 
     afterEach(() => {
@@ -136,7 +136,7 @@ describe('HomeDefOdataService', () => {
 
   describe('readHomeDef', () => {
     beforeEach(() => {
-      service = TestBed.get(HomeDefOdataService);
+      service = TestBed.inject(HomeDefOdataService);
     });
 
     afterEach(() => {
@@ -186,7 +186,7 @@ describe('HomeDefOdataService', () => {
 
   describe('createHomeDef', () => {
     beforeEach(() => {
-      service = TestBed.get(HomeDefOdataService);
+      service = TestBed.inject(HomeDefOdataService);
     });
 
     afterEach(() => {
@@ -235,9 +235,9 @@ describe('HomeDefOdataService', () => {
   });
 
   describe('getHomeKeyFigure', () => {
-    let apiurl: string = environment.ApiUrl + '/api/HomeKeyFigure';
+    const apiurl: string = environment.ApiUrl + '/api/HomeKeyFigure';
     beforeEach(() => {
-      service = TestBed.get(HomeDefOdataService);
+      service = TestBed.inject(HomeDefOdataService);
       service.ChosedHome = fakeData.chosedHome;
     });
 
