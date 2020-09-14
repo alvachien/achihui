@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+import { UIDisplayStringUtil } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
@@ -15,6 +16,7 @@ export class UserDetailComponent implements OnInit {
   currentHomeName: string;
   currentHomeMemDisplayAs: string;
   currentHomeMemIsChild: boolean;
+  currentHomeMemRelI18n: string;
 
   constructor(
     private authService: AuthService,
@@ -33,6 +35,13 @@ export class UserDetailComponent implements OnInit {
       this.currentHomeName = this.homeService.ChosedHome.Name;
       this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome.DisplayAs;
       this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome.IsChild;
+
+      const arrels = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
+      arrels.forEach(val => {
+        if (val.value === this.homeService.CurrentMemberInChosedHome.Relation) {
+          this.currentHomeMemRelI18n = val.i18nterm;
+        }
+      });
     }
   }
 }

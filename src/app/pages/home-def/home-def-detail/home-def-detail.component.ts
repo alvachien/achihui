@@ -208,6 +208,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
 
   onChange() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...',
+      ConsoleLogTypeEnum.debug);
   }
 
   onSave() {
