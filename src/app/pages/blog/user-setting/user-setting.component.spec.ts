@@ -4,7 +4,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { BlogUIModule } from '../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { UserSettingComponent } from './user-setting.component';
 import { AuthService, UIStatusService, BlogOdataService, } from '../../../services';
@@ -37,6 +39,7 @@ describe('UserSettingComponent', () => {
         HttpClientTestingModule,
         getTranslocoModule(),
         FormsModule,
+        BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
@@ -46,6 +49,7 @@ describe('UserSettingComponent', () => {
       ],
       providers: [
         { provide: BlogOdataService, useValue: storageService },
+        NzModalService,
       ],
     })
     .compileComponents();

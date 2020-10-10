@@ -1,5 +1,5 @@
 /**
  * Spec for uimodel.ts
- * 
+ *
  */
 

@@ -1,4 +1,4 @@
-import { TestBed, inject, async, fakeAsync, } from '@angular/core/testing';
+import { TestBed, inject, waitForAsync, fakeAsync, } from '@angular/core/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
@@ -16,7 +16,7 @@ describe('EventStorageService', () => {
   let fakeData: FakeDataHelper;
   let service: EventStorageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -83,7 +83,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllGeneralEvents(100, 0).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -141,7 +141,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllRecurEvents(100, 0).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -193,7 +193,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.fetchAllHabitEvents(100, 0).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -245,7 +245,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.readHabitEvent(1).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -301,9 +301,9 @@ describe('EventStorageService', () => {
        });
 
       // Respond with the mock data
-      let arDetail: EventHabitDetail[] = [];
-      for (let idx: number = 0; idx < 3; idx ++) {
-        let detail: EventHabitDetail = new EventHabitDetail();
+      const arDetail: EventHabitDetail[] = [];
+      for (let idx = 0; idx < 3; idx ++) {
+        const detail: EventHabitDetail = new EventHabitDetail();
         detail.StartDate = moment().add(idx + 1, 'M');
         detail.EndDate = moment().add(idx + 2, 'M');
         detail.Name = 'test';
@@ -313,7 +313,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.generateHabitEvent(hevnt).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -373,7 +373,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.createHabitEvent(hevnt).subscribe(
         (data: any) => {
           fail('expected to fail');
@@ -434,7 +434,7 @@ describe('EventStorageService', () => {
     });
 
     it('should return error in case error appear', () => {
-      const msg: string = 'server failed';
+      const msg = 'server failed';
       service.updateHabitEvent(hevnt).subscribe(
         (data: any) => {
           fail('expected to fail');

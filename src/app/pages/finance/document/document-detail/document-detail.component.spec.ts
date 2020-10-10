@@ -7,7 +7,9 @@ import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
@@ -61,6 +63,7 @@ describe('DocumentDetailComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
@@ -78,6 +81,7 @@ describe('DocumentDetailComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     })
     .compileComponents();

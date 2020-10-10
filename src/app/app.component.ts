@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
+import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 
@@ -106,5 +106,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   public onGoToSelectedHome(): void {
     // Go to selected home
+    if (this._homeService.ChosedHome) {
+      this.router.navigate(['/homedef/', this._homeService.ChosedHome.ID]);
+    }
   }
 }

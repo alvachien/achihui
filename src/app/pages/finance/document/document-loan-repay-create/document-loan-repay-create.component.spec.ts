@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
@@ -10,7 +10,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 import { By } from '@angular/platform-browser';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData, asyncError, ElementClass_DialogContent,
@@ -82,13 +84,14 @@ describe('DocumentLoanRepayCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createloanrepay', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
         NoopAnimationsModule,
@@ -107,6 +110,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     });
 

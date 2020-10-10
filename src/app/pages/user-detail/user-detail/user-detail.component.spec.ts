@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -27,7 +27,7 @@ describe('UserDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
       declarations: [

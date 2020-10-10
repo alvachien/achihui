@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
@@ -27,13 +27,12 @@ describe('LanguageComponent', () => {
     fetchAllLanguagesSpy = langService.fetchAllLanguages.and.returnValue(of([]));
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -45,6 +44,7 @@ describe('LanguageComponent', () => {
       ],
       providers: [
         { provide: LanguageOdataService, useValue: langService },
+        NzModalService,
       ],
     });
 

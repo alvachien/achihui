@@ -1,15 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { LearnUIModule } from './learn-ui.module';
 import { LearnComponent } from './learn.component';
 
 describe('LearnComponent', () => {
   let component: LearnComponent;
   let fixture: ComponentFixture<LearnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ NgZorroAntdModule ],
+      imports: [
+        LearnUIModule,
+      ],
       declarations: [ LearnComponent ]
     })
     .compileComponents();

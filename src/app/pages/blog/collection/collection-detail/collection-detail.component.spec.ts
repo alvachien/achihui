@@ -4,9 +4,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService, } from '../../../../services';
@@ -45,6 +47,7 @@ describe('CollectionDetailComponent', () => {
         HttpClientTestingModule,
         getTranslocoModule(),
         FormsModule,
+        BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
@@ -58,6 +61,7 @@ describe('CollectionDetailComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         UIStatusService,
         { provide: BlogOdataService, useValue: storageService },
+        NzModalService,
       ],
     })
     .compileComponents();

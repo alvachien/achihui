@@ -2,6 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -11,6 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 import { By } from '@angular/platform-browser';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
@@ -87,6 +89,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
@@ -106,6 +109,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     });
 

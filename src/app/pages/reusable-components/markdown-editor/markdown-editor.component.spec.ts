@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-import { NgZorroAntdModule, NzConfigService, } from 'ng-zorro-antd';
+// import { NzConfigService, } from 'ng-zorro-antd';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -16,6 +16,7 @@ import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { AuthService } from '../../../services';
 import { UserAuthInfo } from '../../../../app/model';
+import { NzConfigService } from 'ng-zorro-antd/core/config';
 
 @Component({
   template: `
@@ -48,11 +49,10 @@ describe('MarkdownEditorComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
