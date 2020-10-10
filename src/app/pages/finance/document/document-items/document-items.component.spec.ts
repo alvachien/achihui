@@ -2,8 +2,10 @@ import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from
 import { DebugElement } from '@angular/core';
 import { HttpClientTestingModule, } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
+import { NzInputDirective } from 'ng-zorro-antd/input';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, NzSelectComponent, NzInputNumberComponent, NzInputDirective, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -54,7 +56,6 @@ describe('DocumentItemsComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [

@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, discardPeriodicTasks, flush, inject } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,7 +37,6 @@ describe('CollectionListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
         NoopAnimationsModule,
         RouterTestingModule,

@@ -1,9 +1,16 @@
 import { TestBed, async, ComponentFixture, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -44,7 +51,13 @@ describe('AppComponent', () => {
       imports: [
         HttpClientTestingModule,
         RouterTestingModule,
-        NgZorroAntdModule,
+        NzLayoutModule,
+        NzMenuModule,
+        NzIconModule,
+        NzInputModule,
+        NzDropDownModule,
+        NzTableModule,
+        NzModalModule,
         NoopAnimationsModule,
         getTranslocoModule()
       ],

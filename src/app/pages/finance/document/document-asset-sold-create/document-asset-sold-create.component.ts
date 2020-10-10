@@ -5,7 +5,7 @@ import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,

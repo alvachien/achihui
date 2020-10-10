@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService, NzDrawerRef, NzDrawerService } from 'ng-zorro-antd';
+import { NzModalService, } from 'ng-zorro-antd/modal';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 
 import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,

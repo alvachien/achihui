@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/co
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService, NzMessageService, NzTableQueryParams } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 

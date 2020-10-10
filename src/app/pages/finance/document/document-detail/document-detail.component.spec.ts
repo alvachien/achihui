@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd';
+import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -53,7 +53,7 @@ describe('DocumentDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
@@ -63,7 +63,6 @@ describe('DocumentDetailComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [

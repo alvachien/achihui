@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd';
+import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -38,7 +38,6 @@ describe('DocumentHeaderComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [ DocumentHeaderComponent ],

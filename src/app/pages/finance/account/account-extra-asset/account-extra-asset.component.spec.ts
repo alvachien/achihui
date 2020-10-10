@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from
 import { Component, DebugElement, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -34,7 +33,6 @@ describe('AccountExtraAssetComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,
