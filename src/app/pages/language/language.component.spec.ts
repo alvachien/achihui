@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -44,6 +44,7 @@ describe('LanguageComponent', () => {
       ],
       providers: [
         { provide: LanguageOdataService, useValue: langService },
+        Overlay,
         NzModalService,
       ],
     });

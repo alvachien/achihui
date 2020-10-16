@@ -6,7 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -58,6 +58,7 @@ describe('HomeDefListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
+        Overlay,
         NzModalService,
       ],
     });

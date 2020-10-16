@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { MarkdownService, SECURITY_CONTEXT } from 'ngx-markdown';
 
 import { LearnUIModule } from '../../learn-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
@@ -63,6 +64,8 @@ describe('ObjectDetailComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LearnOdataService, useValue: storageService },
         NzModalService,
+        SECURITY_CONTEXT,
+        MarkdownService,
       ]
     });
 

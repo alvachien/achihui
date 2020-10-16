@@ -66,7 +66,6 @@ describe('AccountDetailComponent', () => {
         FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
-        RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,

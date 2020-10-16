@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
@@ -52,7 +52,6 @@ describe('HomeDefDetailComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
@@ -67,6 +66,7 @@ describe('HomeDefDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: finService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        Overlay,
         NzModalService,
       ],
     });
@@ -136,7 +136,7 @@ describe('HomeDefDetailComponent', () => {
   });
 
   describe('3. display mode', () => {
-    beforeEach(() => {      
+    beforeEach(() => {
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
