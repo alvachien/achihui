@@ -13,6 +13,7 @@ import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } 
 import { AuthService, HomeDefOdataService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
@@ -66,6 +67,7 @@ describe('HomeDefDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: finService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        NzModalService,
       ],
     });
 

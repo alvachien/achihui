@@ -16,6 +16,7 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
@@ -87,6 +88,7 @@ describe('DocumentListComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        NzModalService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
       ]
