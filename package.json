@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --ssl true -o --sslKey ssl/server.key --sslCert ssl/server.crt",
     "build": "ng build",
     "build-ali": "ng build --prod --base-href=/hih/",
     "test": "ng test",
