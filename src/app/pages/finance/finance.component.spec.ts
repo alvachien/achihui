@@ -33,7 +33,11 @@ describe('FinanceComponent', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const homeService: Partial<HomeDefOdataService> = {};
+    const homeService: Partial<HomeDefOdataService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
 
     const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllDPTmpDocs',

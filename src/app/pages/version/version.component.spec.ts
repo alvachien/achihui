@@ -1,4 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 
 import { getTranslocoModule } from '../../../testing';
 import { VersionComponent } from './version.component';
@@ -10,6 +12,8 @@ describe('VersionComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        NzTimelineModule,
+        NzBackTopModule,
         getTranslocoModule(),
       ],
       declarations: [

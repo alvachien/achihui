@@ -12,7 +12,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountListComponent } from './account-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -25,6 +25,7 @@ describe('AccountListComponent', () => {
   let fetchAllAccountsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -40,6 +41,11 @@ describe('AccountListComponent', () => {
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -64,6 +70,7 @@ describe('AccountListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
     });

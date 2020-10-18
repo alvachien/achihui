@@ -1,4 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzListModule } from 'ng-zorro-antd/list';
 
 import { getTranslocoModule } from '../../../testing';
 import { CreditsComponent } from './credits.component';
@@ -10,6 +11,7 @@ describe('CreditsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        NzListModule,
         getTranslocoModule(),
       ],
       declarations: [

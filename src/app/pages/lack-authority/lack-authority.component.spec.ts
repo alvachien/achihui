@@ -1,4 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { LackAuthorityComponent } from './lack-authority.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
@@ -10,6 +12,8 @@ describe('LackAuthorityComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        NzResultModule,
+        NzButtonModule,
         getTranslocoModule(),
       ],
       declarations: [

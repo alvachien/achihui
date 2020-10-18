@@ -9,6 +9,13 @@
   </nz-page-header-extra>
 </nz-page-header>
 
+<div *ngIf="isChildMode">
+  <article nz-typography>
+    <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
+    <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
+  </article>
+</div>
+<div *ngIf="!isChildMode">
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <div style="background: #ECECEC;padding:30px;">
     <div nz-row [nzGutter]="8">
@@ -64,3 +71,4 @@
     </ng-template>
   </div>
 </nz-spin>
+</div>

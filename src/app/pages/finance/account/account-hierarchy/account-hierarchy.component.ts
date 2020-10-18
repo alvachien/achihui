@@ -7,7 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
   ModelUtility, ConsoleLogTypeEnum,
   GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
@@ -36,10 +36,15 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   col = 8;
   id = -1;
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     private odataService: FinanceOdataService,
     private uiStatusService: UIStatusService,
     private modalService: NzModalService,
+    private homeService: HomeDefOdataService,
     private nzContextMenuService: NzContextMenuService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);

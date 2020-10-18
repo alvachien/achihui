@@ -1,4 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { getTranslocoModule } from '../../../testing';
 import { environment } from '../../../environments/environment';
@@ -12,6 +13,7 @@ describe('AboutComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        NzDividerModule,
         getTranslocoModule(),
       ],
       declarations: [

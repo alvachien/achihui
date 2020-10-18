@@ -11,7 +11,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { ControlCenterListComponent } from './control-center-list.component';
 import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -23,6 +23,7 @@ describe('ControlCenterListComponent', () => {
   let fetchAllControlCentersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -37,6 +38,12 @@ describe('ControlCenterListComponent', () => {
     ]);
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
   });
 
   beforeEach(waitForAsync(() => {
@@ -59,6 +66,7 @@ describe('ControlCenterListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ]
     });

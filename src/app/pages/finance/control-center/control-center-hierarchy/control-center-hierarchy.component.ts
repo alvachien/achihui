@@ -6,7 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, TranType, Order,
   DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
   Account, } from '../../../../model';
@@ -28,9 +28,14 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   col = 8;
   id = -1;
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);

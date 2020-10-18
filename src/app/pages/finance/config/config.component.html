@@ -4,6 +4,13 @@
     <nz-breadcrumb-item>{{'Finance.ConfigObjects' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-content>
+    <div *ngIf="isChildMode">
+      <article nz-typography>
+        <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
+        <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
+      </article>
+    </div>
+    <div *ngIf="!isChildMode">
     <nz-tabset>
       <nz-tab [nzTitle]="t('Finance.AccountCategories')">
         <ng-template nz-tab>
@@ -31,5 +38,6 @@
         </ng-template>
       </nz-tab>
     </nz-tabset>
+    </div>
   </nz-page-header-content>
 </nz-page-header>

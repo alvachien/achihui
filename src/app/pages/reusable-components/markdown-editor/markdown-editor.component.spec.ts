@@ -3,6 +3,14 @@ import { Component, ViewChild } from '@angular/core';
 // import { NzConfigService, } from 'ng-zorro-antd';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -60,6 +68,14 @@ describe('MarkdownEditorComponent', () => {
         BrowserDynamicTestingModule,
         NzResizableModule,
         NzCodeEditorModule,
+        NzButtonModule,
+        NzIconModule,
+        NzFormModule,
+        NzDividerModule,
+        NzInputModule,
+        NzSwitchModule,
+        NzLayoutModule,
+        NzUploadModule,
         MarkdownModule.forRoot(),
       ],
       declarations: [

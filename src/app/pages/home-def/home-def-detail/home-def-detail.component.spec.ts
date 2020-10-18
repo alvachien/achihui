@@ -7,6 +7,17 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
@@ -55,6 +66,17 @@ describe('HomeDefDetailComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
+        NzPageHeaderModule,
+        NzTableModule,
+        NzResultModule,
+        NzSpinModule,
+        NzInputModule,
+        NzFormModule,
+        NzSelectModule,
+        NzBreadCrumbModule,
+        NzDividerModule,
+        NzCheckboxModule,
+        NzButtonModule,
         getTranslocoModule(),
       ],
       declarations: [

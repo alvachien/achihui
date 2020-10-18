@@ -1,4 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { getTranslocoModule } from '../../../testing';
 import { WelcomeComponent } from './welcome.component';
@@ -10,6 +12,8 @@ describe('WelcomeComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        NzCarouselModule,
+        NzTypographyModule,
         getTranslocoModule(),
       ],
       declarations: [

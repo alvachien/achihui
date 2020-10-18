@@ -202,6 +202,8 @@
     "Deploy": "发布",
     "RevokeDeploy": "取消发布",
     "Abstract": "简要",
+    "ChildMode": "儿童模式",
+    "ChildModeDetail": "当前用户在本家庭中设置为儿童，当前为儿童模式！",
     "CreatedAt": "创建于",
     "CreatedBy": "创建者",
     "LastChangedAt": "最后修改于",

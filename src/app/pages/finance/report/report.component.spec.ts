@@ -32,7 +32,7 @@ describe('ReportComponent', () => {
   let fetchAllOrdersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
-  const homeServiceStub: Partial<HomeDefOdataService> = {};
+  let homeServiceStub: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -60,7 +60,11 @@ describe('ReportComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    homeServiceStub.ChosedHome = fakeData.chosedHome;
+    homeServiceStub = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
   });
 
   beforeEach(waitForAsync(() => {

@@ -8,7 +8,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
@@ -49,11 +49,16 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listCurrencyFilters: ITableFilterValues[] = [];
   listDocTypeFilters: ITableFilterValues[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     private router: Router,
     private modalService: NzModalService,
+    private homeService: HomeDefOdataService,
     private msgService: NzMessageService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
       ConsoleLogTypeEnum.debug);

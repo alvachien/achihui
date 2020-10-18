@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 
 @Component({
@@ -19,9 +19,14 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: ControlCenter[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public router: Router,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService) {
     this.isLoadingResults = false;
   }

@@ -1,11 +1,23 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{'Finance.Plan' | transloco}}</nz-page-header-title>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Common.Plan' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Common.Plan' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
+    <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
   </nz-page-header-extra>
 </nz-page-header>
 
+<div *ngIf="isChildMode">
+  <article nz-typography>
+    <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
+    <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
+  </article>
+</div>
+
+<div *ngIf="!isChildMode">
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <nz-table #basicTable [nzData]="dataSet">
     <thead>
@@ -34,3 +46,4 @@
     </tbody>
   </nz-table>
 </nz-spin>
+</div>

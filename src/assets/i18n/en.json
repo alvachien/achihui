@@ -202,6 +202,8 @@
     "Deploy": "Deploy",
     "RevokeDeploy": "Revoke Deploy",
     "Abstract": "Abstract",
+    "ChildMode": "Child Mode",
+    "ChildModeDetail": "Current user is set as Child in current home",
     "CreatedAt": "Crated at",
     "CreatedBy": "Created by",
     "LastChangedAt": "Last chagned at",

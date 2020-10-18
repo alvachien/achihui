@@ -7,6 +7,11 @@ import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
 import { LanguageComponent } from './language.component';
@@ -36,6 +41,11 @@ describe('LanguageComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
+        NzSpinModule,
+        NzTableModule,
+        NzBreadCrumbModule,
+        NzPageHeaderModule,
+        NzSwitchModule,
         getTranslocoModule(),
       ],
       declarations: [

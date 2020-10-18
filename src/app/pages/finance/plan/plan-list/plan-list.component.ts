@@ -8,7 +8,7 @@ import * as moment from 'moment';
 
 import { LogLevel, Plan, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   PlanTypeEnum, momentDateFormat, } from '../../../../model';
-import { FinanceOdataService, UIStatusService, } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
   selector: 'hih-plan-list',
@@ -21,9 +21,14 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   dataSet: Plan[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public router: Router,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -81,7 +86,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(rid: number): void {
-    
   }
 
   public getPlanTypeDisplayString(pt: PlanTypeEnum): string {

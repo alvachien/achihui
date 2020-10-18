@@ -9,7 +9,7 @@ import { translate } from '@ngneat/transloco';
 import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../../../../model';
-import { FinanceOdataService, UIStatusService, } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
@@ -24,9 +24,14 @@ export class OrderListComponent implements OnInit, OnDestroy {
   validOrderOnly = false;
   dataSet: Order[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public router: Router,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService,
     public drawerService: NzDrawerService,
     ) {

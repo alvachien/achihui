@@ -9,6 +9,17 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefListComponent } from './home-def-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
@@ -47,6 +58,17 @@ describe('HomeDefListComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
+        NzPageHeaderModule,
+        NzTableModule,
+        NzResultModule,
+        NzSpinModule,
+        NzInputModule,
+        NzFormModule,
+        NzSelectModule,
+        NzBreadCrumbModule,
+        NzDividerModule,
+        NzCheckboxModule,
+        NzButtonModule,
         getTranslocoModule(),
       ],
       declarations: [

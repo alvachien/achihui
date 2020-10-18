@@ -8,11 +8,26 @@ import { DocTypeListComponent } from './doc-type-list';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
 import { TranTypeListComponent } from './tran-type-list';
 import { ConfigComponent } from './config.component';
-import { getTranslocoModule } from '../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../testing';
+import { HomeDefOdataService } from '../../../services';
 
 describe('ConfigComponent', () => {
   let component: ConfigComponent;
   let fixture: ComponentFixture<ConfigComponent>;
+  let fakeData: FakeDataHelper;
+  let homeService: Partial<HomeDefOdataService> = {};
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrencies();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
+  });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -30,6 +45,9 @@ describe('ConfigComponent', () => {
         TranTypeListComponent,
         ConfigComponent,
       ],
+      providers: [
+        { provide: HomeDefOdataService, useValue: homeService },
+      ]
     })
     .compileComponents();
   }));

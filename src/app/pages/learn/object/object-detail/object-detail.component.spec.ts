@@ -64,7 +64,8 @@ describe('ObjectDetailComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LearnOdataService, useValue: storageService },
         NzModalService,
-        SECURITY_CONTEXT,
+        { provide: SECURITY_CONTEXT, useValue: 1},
+        // SECURITY_CONTEXT,
         MarkdownService,
       ]
     });

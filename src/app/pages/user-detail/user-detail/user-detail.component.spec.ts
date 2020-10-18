@@ -6,6 +6,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 
 import { UserDetailComponent } from './user-detail.component';
 import { AuthService } from '../../../services';
@@ -40,6 +41,7 @@ describe('UserDetailComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
+        NzPageHeaderModule,
         getTranslocoModule(),
       ],
       providers: [

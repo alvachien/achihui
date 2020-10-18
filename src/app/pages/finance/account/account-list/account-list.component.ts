@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { ITableFilterValues, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil,
   ModelUtility, ConsoleLogTypeEnum, AccountCategory,
 } from '../../../../model';
@@ -27,10 +27,15 @@ export class AccountListComponent implements OnInit, OnDestroy {
   listStatusFilter: ITableFilterValues[] = [];
   listOfColumns: UITableColumnItem[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     public router: Router,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',
       ConsoleLogTypeEnum.debug);

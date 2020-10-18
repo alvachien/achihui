@@ -13,7 +13,7 @@ import { FinanceUIModule } from '../../finance-ui.module';
 import { OrderValidityFilterPipe, } from '../../pipes';
 import { OrderListComponent } from './order-list.component';
 import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -29,6 +29,7 @@ describe('OrderListComponent', () => {
   let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -38,6 +39,11 @@ describe('OrderListComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllOrders',
@@ -76,6 +82,7 @@ describe('OrderListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ]
     });

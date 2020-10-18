@@ -39,6 +39,10 @@ export class ReportComponent implements OnInit, OnDestroy {
   // Card: Order
   chartOrderOption: EChartOption;
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public router: Router,
     public odataService: FinanceOdataService,

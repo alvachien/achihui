@@ -1,4 +1,11 @@
-<div>
+<div *ngIf="isChildMode">
+  <article nz-typography>
+    <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
+    <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
+  </article>
+</div>
+
+<div *ngIf="!isChildMode">
   <nz-calendar [(ngModel)]="selectedDate" (nzSelectChange)="onSelectChange($event)" (nzPanelChange)="onPanelChange($event)">
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">
