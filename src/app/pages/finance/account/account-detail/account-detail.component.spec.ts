@@ -1,14 +1,16 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountDetailComponent } from './account-detail.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub, asyncData, asyncError } from '../../../../../testing';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
@@ -55,16 +57,15 @@ describe('AccountDetailComponent', () => {
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
-        RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
@@ -84,6 +85,7 @@ describe('AccountDetailComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     });
 

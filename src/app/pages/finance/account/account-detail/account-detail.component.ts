@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, Validatio
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
 import { Account, UIMode, getUIModeString, financeAccountCategoryAsset,

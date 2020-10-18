@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { MessageDialogComponent } from './message-dialog.component';
 import { getTranslocoModule } from '../../../testing';
@@ -10,11 +10,11 @@ describe('MessageDialogComponent', () => {
   let component: MessageDialogComponent;
   let fixture: ComponentFixture<MessageDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgZorroAntdModule,
         NzModalModule,
+        NzTableModule,
         getTranslocoModule(),
       ],
       declarations: [

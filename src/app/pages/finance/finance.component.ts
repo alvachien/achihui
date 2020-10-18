@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
+import { NzModalService, } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan } from '../../model';
-import { FinanceOdataService, UIStatusService } from '../../services';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
   public CurrentDate: moment.Moment;
@@ -30,11 +31,15 @@ export class FinanceComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
 
   listDate: DateCellData[] = [];
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
 
   constructor(
     public odataService: FinanceOdataService,
     private modalService: NzModalService,
     private uiService: UIStatusService,
+    private homeService: HomeDefOdataService,
     private router: Router,
     private messageService: NzMessageService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
@@ -49,12 +54,16 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    // Selected date
-    this.selectedDate = new Date();
-    this._updateSelectedDate();
+    if (this.isChildMode) {
+      // Child mode, do nothing.
+    } else {
+      // Selected date
+      this.selectedDate = new Date();
+      this._updateSelectedDate();
 
-    // Fetch docs
-    this.fetchData();
+      // Fetch docs
+      this.fetchData();
+    }
   }
 
   ngOnDestroy() {
@@ -74,7 +83,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   getDPDocsByDate(date: Date): TemplateDocADP[] {
     const dpdocs: TemplateDocADP[] = [];
 
-    let mcell = moment(date);
+    const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
       if (cell.CurrentDate.isSame(mcell)) {
         dpdocs.push(...cell.DPDocs);
@@ -86,7 +95,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   getLoanDocsByDate(date: Date): TemplateDocLoan[] {
     const dpdocs: TemplateDocLoan[] = [];
 
-    let mcell = moment(date);
+    const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
       if (cell.CurrentDate.isSame(mcell)) {
         dpdocs.push(...cell.LoanDocs);
@@ -97,7 +106,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   onSelectChange(event: any) {
-    // Check 
+    // Check
     const prvyear = this._selectedYear;
     const prvmonth = this._selectedMonth;
 

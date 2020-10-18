@@ -1,14 +1,14 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject, of, } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
@@ -38,13 +38,13 @@ describe('TranTypeHierarchyComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -58,6 +58,7 @@ describe('TranTypeHierarchyComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
+        NzModalService,
       ]
     });
 

@@ -1,17 +1,17 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountHierarchyComponent } from './account-hierarchy.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -28,6 +28,7 @@ describe('AccountHierarchyComponent', () => {
   let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -53,16 +54,20 @@ describe('AccountHierarchyComponent', () => {
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of({}));
     storageService.AccountCategories = [];
     storageService.Accounts = [];
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FinanceUIModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -76,6 +81,8 @@ describe('AccountHierarchyComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
+        NzModalService,
       ]
     });
 

@@ -1,5 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzListModule } from 'ng-zorro-antd/list';
 
 import { getTranslocoModule } from '../../../testing';
 import { CreditsComponent } from './credits.component';
@@ -8,10 +8,10 @@ describe('CreditsComponent', () => {
   let component: CreditsComponent;
   let fixture: ComponentFixture<CreditsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgZorroAntdModule,
+        NzListModule,
         getTranslocoModule(),
       ],
       declarations: [

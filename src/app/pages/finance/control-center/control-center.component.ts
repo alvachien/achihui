@@ -11,5 +11,4 @@ export class ControlCenterComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

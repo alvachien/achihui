@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject, of, } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -15,6 +14,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService,
 import { UserAuthInfo, FinanceReportByControlCenter, ControlCenter } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { ControlCenterReportComponent } from './control-center-report.component';
+import { NzModalCloseComponent, NzModalService } from 'ng-zorro-antd/modal';
 
 describe('ControlCenterReportComponent', () => {
   let component: ControlCenterReportComponent;
@@ -44,12 +44,11 @@ describe('ControlCenterReportComponent', () => {
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FinanceUIModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -64,6 +63,7 @@ describe('ControlCenterReportComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        NzModalService,
       ]
     });
 

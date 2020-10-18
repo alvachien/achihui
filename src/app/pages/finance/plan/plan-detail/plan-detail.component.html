@@ -1,5 +1,9 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{'Finance.Plan' | transloco}}</nz-page-header-title>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Common.Plan' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Common.Plan' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button nzType="primary" [disabled]="!saveButtonEnabled" (click)="onSubmit()">{{'Common.Save' | transloco}}</button>

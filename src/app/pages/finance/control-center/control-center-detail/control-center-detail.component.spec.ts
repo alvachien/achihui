@@ -1,14 +1,15 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { ControlCenterDetailComponent } from './control-center-detail.component';
 import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
@@ -53,14 +54,14 @@ describe('ControlCenterDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
@@ -76,6 +77,7 @@ describe('ControlCenterDetailComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: storageService },
+        NzModalService,
       ]
     });
 

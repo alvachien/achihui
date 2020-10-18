@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Component, DebugElement, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -10,6 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraAssetComponent } from './account-extra-asset.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AssetCategory, AccountExtraAsset } from '../../../../model';
@@ -28,13 +28,13 @@ describe('AccountExtraAssetComponent', () => {
     fakeData.buildFinAccounts();
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,

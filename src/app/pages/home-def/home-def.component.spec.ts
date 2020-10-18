@@ -1,5 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { HomeDefComponent } from './home-def.component';
@@ -8,10 +7,9 @@ describe('HomeDefComponent', () => {
   let component: HomeDefComponent;
   let fixture: ComponentFixture<HomeDefComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgZorroAntdModule,
         RouterTestingModule,
       ],
       declarations: [ HomeDefComponent ]

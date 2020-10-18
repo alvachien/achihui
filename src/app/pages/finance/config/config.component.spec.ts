@@ -1,5 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -9,19 +8,33 @@ import { DocTypeListComponent } from './doc-type-list';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
 import { TranTypeListComponent } from './tran-type-list';
 import { ConfigComponent } from './config.component';
-import { getTranslocoModule } from '../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../testing';
+import { HomeDefOdataService } from '../../../services';
 
 describe('ConfigComponent', () => {
   let component: ConfigComponent;
   let fixture: ComponentFixture<ConfigComponent>;
+  let fakeData: FakeDataHelper;
+  let homeService: Partial<HomeDefOdataService> = {};
 
-  beforeEach(async(() => {
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrencies();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
+  });
+
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -32,6 +45,9 @@ describe('ConfigComponent', () => {
         TranTypeListComponent,
         ConfigComponent,
       ],
+      providers: [
+        { provide: HomeDefOdataService, useValue: homeService },
+      ]
     })
     .compileComponents();
   }));

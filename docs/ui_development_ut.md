@@ -109,7 +109,7 @@ And in test module:
 
 ```typescript
 describe('AppComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [getTranslocoModule()],
       declarations: [AppComponent]

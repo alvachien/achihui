@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of, } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -10,11 +10,13 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentListComponent } from './document-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogCloseButton, ElementClass_DialogContent } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
@@ -35,6 +37,7 @@ describe('DocumentListComponent', () => {
     totalCount: 0,
     contentList: [],
   };
+  let homeServiceStub: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -65,15 +68,20 @@ describe('DocumentListComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    homeServiceStub = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -86,8 +94,10 @@ describe('DocumentListComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        NzModalService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeServiceStub },
       ]
     });
 
@@ -192,7 +202,7 @@ describe('DocumentListComponent', () => {
       const routerstub = TestBed.inject(Router);
       spyOn(routerstub, 'navigate');
 
-      component.onCreateNormalDocument();;
+      component.onCreateNormalDocument();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);
 
       component.onCreateTransferDocument();

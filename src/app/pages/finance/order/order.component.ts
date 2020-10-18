@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-fin-order',
   templateUrl: './order.component.html',
-  styleUrls: ['./order.component.less']
+  styleUrls: ['./order.component.less'],
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 }

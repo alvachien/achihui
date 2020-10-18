@@ -1,7 +1,8 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -11,6 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 import { By } from '@angular/platform-browser';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
@@ -82,12 +84,12 @@ describe('DocumentAssetSoldCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
@@ -107,6 +109,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     });
 

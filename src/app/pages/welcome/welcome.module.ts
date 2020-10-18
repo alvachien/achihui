@@ -15,7 +15,11 @@ import { WelcomeComponent } from './welcome.component';
     TranslocoModule,
     WelcomeRoutingModule,
   ],
-  declarations: [WelcomeComponent],
-  exports: [WelcomeComponent]
+  declarations: [
+    WelcomeComponent,
+  ],
+  exports: [
+    WelcomeComponent,
+  ],
 })
 export class WelcomeModule { }

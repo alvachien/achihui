@@ -1,14 +1,16 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { OrderDetailComponent } from './order-detail.component';
 import { getTranslocoModule, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError,
   ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
@@ -62,15 +64,15 @@ describe('OrderDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -87,6 +89,7 @@ describe('OrderDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     });
 

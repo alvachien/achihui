@@ -10,7 +10,7 @@ import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDispla
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import { FinanceOdataService, UIStatusService } from '../../../services';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'hih-document-item-search',

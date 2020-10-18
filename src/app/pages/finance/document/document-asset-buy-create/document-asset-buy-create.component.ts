@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, Validatio
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize, } from 'rxjs/operators';
 import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
 import { Document, DocumentItem, UIMode, getUIModeString, Account,

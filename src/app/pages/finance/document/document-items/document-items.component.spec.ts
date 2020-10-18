@@ -1,9 +1,11 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { HttpClientTestingModule, } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
+import { NzInputDirective } from 'ng-zorro-antd/input';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, NzSelectComponent, NzInputNumberComponent, NzInputDirective, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -11,7 +13,9 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { createKeyboardEvent, dispatchFakeEvent, dispatchKeyboardEvent,
   dispatchMouseEvent, MockNgZone, typeInElement } from 'ng-zorro-antd/core/testing';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentItemsComponent } from './document-items.component';
 import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
@@ -41,7 +45,7 @@ describe('DocumentItemsComponent', () => {
     arUIOrders = BuildupOrderForSelection(fakeData.finOrders);
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
@@ -53,8 +57,8 @@ describe('DocumentItemsComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -64,6 +68,7 @@ describe('DocumentItemsComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
+        NzModalService,
       ]
     })
     .compileComponents();

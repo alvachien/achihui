@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService, NzDrawerRef, NzDrawerService } from 'ng-zorro-antd';
+import { NzModalService, } from 'ng-zorro-antd/modal';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 
 import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../../../../model';
-import { FinanceOdataService, UIStatusService, } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
@@ -23,9 +24,14 @@ export class OrderListComponent implements OnInit, OnDestroy {
   validOrderOnly = false;
   dataSet: Order[] = [];
 
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
+
   constructor(
     public odataService: FinanceOdataService,
     public router: Router,
+    private homeService: HomeDefOdataService,
     public modalService: NzModalService,
     public drawerService: NzDrawerService,
     ) {

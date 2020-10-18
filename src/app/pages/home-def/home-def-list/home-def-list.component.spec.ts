@@ -1,13 +1,25 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgZorroAntdModule, NzModalService, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefListComponent } from './home-def-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
@@ -38,15 +50,25 @@ describe('HomeDefListComponent', () => {
     homeService.ChosedHome = fakeData.chosedHome;
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
         HttpClientTestingModule,
-        NgZorroAntdModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
+        NzPageHeaderModule,
+        NzTableModule,
+        NzResultModule,
+        NzSpinModule,
+        NzInputModule,
+        NzFormModule,
+        NzSelectModule,
+        NzBreadCrumbModule,
+        NzDividerModule,
+        NzCheckboxModule,
+        NzButtonModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -58,6 +80,8 @@ describe('HomeDefListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
+        Overlay,
+        NzModalService,
       ],
     });
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -6,6 +6,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 
 import { UserDetailComponent } from './user-detail.component';
 import { AuthService } from '../../../services';
@@ -27,7 +28,7 @@ describe('UserDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
       declarations: [
@@ -40,6 +41,7 @@ describe('UserDetailComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
+        NzPageHeaderModule,
         getTranslocoModule(),
       ],
       providers: [

@@ -9,7 +9,7 @@ export class CreditsComponent {
 
   creditApp: any[] = [
     {
-      name: 'Angular 9+',
+      name: 'Angular',
       url: 'https://angular.io',
       desp: 'One framework. Mobile & desktop. Angular is a development platform for building mobile and desktop web applications using TypeScript/JavaScript and other languages.'
     }, {

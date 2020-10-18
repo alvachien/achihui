@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Account, UIMode, getUIModeString,
@@ -102,13 +102,19 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.get('categoryControl').setValue(this.currentObject.CategoryId);
                 this.detailFormGroup.get('contentControl').setValue(this.currentObject.Content);
                 this.detailFormGroup.get('idControl').disable();
+
+                if (this.uiMode === UIMode.Display) {
+                  this.detailFormGroup.disable();
+                } else {
+                  this.detailFormGroup.enable();
+                }
               },
               error: err => {
                 // Show error dialog
               }
             });
+          break;
         }
-        break;
 
         case UIMode.Create: {
           this.isLoadingResults = true;
@@ -126,13 +132,15 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             });
           this.detailFormGroup.get('idControl').disable();
           this.currentObject = new LearnObject();
+          break;
         }
-        break;
+
         default:
           break;
-      };
+      }
     });
   }
+
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnDestroy`,
       ConsoleLogTypeEnum.debug);

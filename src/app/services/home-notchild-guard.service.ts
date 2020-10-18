@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
@@ -7,14 +8,14 @@ import { HomeDefOdataService } from './home-def-odata.service';
 import { UIStatusService } from './uistatus.service';
 
 @Injectable()
-export class HomeChoseGuardService implements CanActivate {
+export class HomeNotChildGuardService implements CanActivate {
 
   constructor(
     private authService: AuthService,
     private homeService: HomeDefOdataService,
     private uiService: UIStatusService,
     private router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeChoseGuardService constructor',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService constructor',
       ConsoleLogTypeEnum.debug);
   }
 
@@ -29,7 +30,7 @@ export class HomeChoseGuardService implements CanActivate {
       return true;
     }
 
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeChoseGuardService canActivate',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService canActivate',
       ConsoleLogTypeEnum.debug);
 
     if (!this.checkLogin()) {
@@ -50,14 +51,14 @@ export class HomeChoseGuardService implements CanActivate {
 
   checkLogin(): boolean {
     if (this.authService.authSubject.getValue().isAuthorized) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: TRUE',
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: TRUE',
         ConsoleLogTypeEnum.debug);
 
       return true;
     }
 
     // Navigate to the login page with extras
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: FALSE, redirecting',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: FALSE, redirecting',
       ConsoleLogTypeEnum.debug);
 
     this.authService.doLogin();

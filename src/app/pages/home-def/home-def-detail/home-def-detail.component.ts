@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
 import { HomeDef, Currency, UIMode, getUIModeString, HomeMember,
@@ -136,6 +136,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             next: (rsts: any[]) => {
             this.arCurrencies = rsts[0];
 
+            this.detailFormGroup.get('idControl').setValue(rsts[1].ID);
             this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
             this.detailFormGroup.get('baseCurrControl').setValue(rsts[1].BaseCurrency);
             this.detailFormGroup.get('hostControl').setValue(rsts[1].Host);
@@ -208,6 +209,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
 
   onChange() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...',
+      ConsoleLogTypeEnum.debug);
   }
 
   onSave() {
@@ -289,7 +292,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   onCreateMember() {
     const nmem = new HomeMember();
     const memes = this.listMembers.slice();
-    nmem.HomeID = this.currentHomeDefObject.ID;
+    if (this.routerID) {
+      nmem.HomeID = +this.routerID;
+    }
     memes.push(nmem);
     this.listMembers = memes;
   }

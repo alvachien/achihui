@@ -6,7 +6,7 @@
 
 import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
-import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd';
+import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd/table';
 
 /**
  * Validator for date range

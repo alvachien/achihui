@@ -12,7 +12,8 @@ export class AuthGuardService implements CanActivate {
     private uiService: UIStatusService,
     private authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering constructor of AuthGuardService', ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuardService constructor',
+        ConsoleLogTypeEnum.debug);
     }
   }
 
@@ -29,7 +30,7 @@ export class AuthGuardService implements CanActivate {
     }
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering can Activate of AuthGuard', ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard canActivate', ConsoleLogTypeEnum.debug);
     }
 
     return this.checkLogin(url);
@@ -39,7 +40,7 @@ export class AuthGuardService implements CanActivate {
 
     if (this.authService.authSubject.getValue().isAuthorized) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with TRUE', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard checkLogin with TRUE', ConsoleLogTypeEnum.debug);
       }
       return true;
     }
@@ -50,7 +51,7 @@ export class AuthGuardService implements CanActivate {
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with FALSE, therefore redirecting...',
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard checkLogin with FALSE, therefore redirecting...',
         ConsoleLogTypeEnum.debug);
     }
     this.authService.doLogin();

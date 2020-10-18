@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -10,7 +10,9 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { ViewChild, Component } from '@angular/core';
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
@@ -45,14 +47,14 @@ describe('AccountExtraDownpaymentComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -68,6 +70,7 @@ describe('AccountExtraDownpaymentComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
+        NzModalService,
       ]
     })
     .compileComponents();

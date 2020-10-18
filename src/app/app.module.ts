@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NZ_I18N, en_US, NzModalService, NzModalConfirmContainerComponent, NzModalModule, } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,6 +13,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';

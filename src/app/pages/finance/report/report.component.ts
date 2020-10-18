@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, } from 'ng-zorro-antd';
+import { NzModalService, } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 import { EChartOption } from 'echarts';
@@ -38,6 +38,10 @@ export class ReportComponent implements OnInit, OnDestroy {
   chartControlCenterOption: EChartOption;
   // Card: Order
   chartOrderOption: EChartOption;
+
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome.IsChild;
+  }
 
   constructor(
     public router: Router,

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
+import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 
@@ -19,7 +19,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public isLoggedIn: boolean;
   public titleLogin: string;
   public userDisplayAs: string;
-  public curChosenHome: HomeDef;
 
   constructor(
     private i18n: NzI18nService,
@@ -45,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit',
       ConsoleLogTypeEnum.log);
+
     this._homeService.checkDBVersion().subscribe({
       next: val => {
         this.uiService.versionResult = val;
@@ -106,5 +106,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   public onGoToSelectedHome(): void {
     // Go to selected home
+    if (this._homeService.ChosedHome) {
+      this.router.navigate(['/homedef/', this._homeService.ChosedHome.ID]);
+    }
   }
 }

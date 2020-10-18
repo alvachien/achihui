@@ -1,10 +1,11 @@
-import { async, ComponentFixture, TestBed, fakeAsync, discardPeriodicTasks, tick, flush, inject } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, discardPeriodicTasks, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { PostListComponent } from './post-list.component';
 import { AuthService, UIStatusService, BlogOdataService, } from '../../../../services';
@@ -34,12 +35,12 @@ describe('PostListComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         NoopAnimationsModule,
+        BlogUIModule,
         getTranslocoModule(),
         RouterTestingModule,
       ],
@@ -49,6 +50,7 @@ describe('PostListComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        NzModalService,
         { provide: BlogOdataService, useValue: storageService },
       ],
     })

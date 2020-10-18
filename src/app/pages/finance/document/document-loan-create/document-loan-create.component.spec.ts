@@ -1,7 +1,8 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -11,6 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
 import { By } from '@angular/platform-browser';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
@@ -74,17 +76,17 @@ describe('DocumentLoanCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createbrwfrm', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
         NoopAnimationsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -96,6 +98,7 @@ describe('DocumentLoanCreateComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        NzModalService,
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -133,7 +136,7 @@ describe('DocumentLoanCreateComponent', () => {
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));  
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -166,7 +169,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
@@ -174,7 +177,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add the desp back
@@ -193,12 +196,12 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
-  
+
       // Update document header - missed desp
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -206,9 +209,9 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Account - missing
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100.20);
@@ -221,7 +224,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Add an account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       component.firstFormGroup.get('accountControl').markAsDirty();
@@ -229,20 +232,20 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
-  
+
       flush();
     }));
-  
+
     it('setp 0: amount is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
-  
+
       // Update document header - missed desp
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -250,9 +253,9 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       component.firstFormGroup.get('accountControl').markAsDirty();
@@ -265,7 +268,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Add amount back
       component.firstFormGroup.get('amountControl').setValue(100.20);
       component.firstFormGroup.get('amountControl').markAsDirty();
@@ -273,20 +276,20 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
-  
+
       flush();
     }));
-  
+
     it('setp 0: costing object is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
-  
+
       // Update document header - missed desp
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -294,9 +297,9 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl').markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();;
+      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       component.firstFormGroup.get('accountControl').markAsDirty();
@@ -309,7 +312,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Second false case: input both
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl').markAsDirty();
@@ -319,7 +322,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Now correct it - remove order
       component.firstFormGroup.get('orderControl').setValue(undefined);
       component.firstFormGroup.get('orderControl').markAsDirty();
@@ -327,19 +330,19 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
-  
+
       flush();
     }));
-  
+
     it('setp 1: back to step 0 shall work', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -359,33 +362,33 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1
       expect(component.currentStep).toEqual(1);
-  
+
       // Go back to step 0
       component.pre();
       tick();
       fixture.detectChanges();
       expect(component.currentStep).toEqual(0);
-  
+
       flush();
     }));
-  
+
     it('setp 1: loan extra info is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-  
+
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -403,16 +406,16 @@ describe('DocumentLoanCreateComponent', () => {
       // Order - empty
       tick();
       fixture.detectChanges();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1
       expect(component.extraFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
-  
+
       // Update the correct extra info
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
@@ -439,7 +442,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
-  
+
       flush();
     }));
 
@@ -451,7 +454,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 0
-      let dochead: Document = new Document();
+      const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
@@ -469,9 +472,9 @@ describe('DocumentLoanCreateComponent', () => {
       // Order - empty
       tick();
       fixture.detectChanges();
-  
+
       // Go to next page
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 

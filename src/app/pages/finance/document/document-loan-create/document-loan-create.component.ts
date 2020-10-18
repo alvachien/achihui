@@ -5,7 +5,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
 import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
 import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,

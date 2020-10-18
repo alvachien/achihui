@@ -11,7 +11,7 @@
       <nz-option *ngFor="let option of arrayStatus" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
     </nz-select>
     <nz-divider nzType="vertical"></nz-divider>
-    <a nz-button nzType="link" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
+    <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
     <a nz-button nzType="link" routerLink="/finance/account/list">{{'Common.ListView' | transloco}}</a>
   </nz-page-header-extra>
 </nz-page-header>

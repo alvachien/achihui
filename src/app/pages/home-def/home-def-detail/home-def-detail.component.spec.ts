@@ -1,19 +1,30 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
 import { AuthService, HomeDefOdataService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
@@ -44,7 +55,7 @@ describe('HomeDefDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -52,11 +63,20 @@ describe('HomeDefDetailComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
-        RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
+        NzPageHeaderModule,
+        NzTableModule,
+        NzResultModule,
+        NzSpinModule,
+        NzInputModule,
+        NzFormModule,
+        NzSelectModule,
+        NzBreadCrumbModule,
+        NzDividerModule,
+        NzCheckboxModule,
+        NzButtonModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -68,6 +88,8 @@ describe('HomeDefDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: finService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        Overlay,
+        NzModalService,
       ],
     });
 
@@ -136,7 +158,7 @@ describe('HomeDefDetailComponent', () => {
   });
 
   describe('3. display mode', () => {
-    beforeEach(() => {      
+    beforeEach(() => {
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));

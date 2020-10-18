@@ -1,16 +1,17 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { MarkdownModule, KatexOptions } from 'ngx-markdown';
 
+import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
 import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
@@ -44,15 +45,15 @@ describe('PostDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
         FormsModule,
+        BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
@@ -70,6 +71,7 @@ describe('PostDetailComponent', () => {
         UIStatusService,
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: BlogOdataService, useValue: storageService },
+        NzModalService,
       ],
     })
     .compileComponents();

@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed, inject, tick, fakeAsync, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
-import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
+import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -11,6 +12,7 @@ import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import * as moment from 'moment';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton, } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
@@ -44,7 +46,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
     fakeData.buildFinOrders();
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
@@ -79,10 +81,10 @@ describe('DocumentRecurredMassCreateComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         getTranslocoModule(),
       ],
       declarations: [
@@ -93,6 +95,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
+        NzModalService,
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },

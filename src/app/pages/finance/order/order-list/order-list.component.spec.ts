@@ -1,18 +1,19 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject, of, } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { FinanceUIModule } from '../../finance-ui.module';
 import { OrderValidityFilterPipe, } from '../../pipes';
 import { OrderListComponent } from './order-list.component';
 import { getTranslocoModule, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 
@@ -28,6 +29,7 @@ describe('OrderListComponent', () => {
   let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -37,6 +39,11 @@ describe('OrderListComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllOrders',
@@ -54,7 +61,7 @@ describe('OrderListComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         OrderValidityFilterPipe,
@@ -64,8 +71,8 @@ describe('OrderListComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        FinanceUIModule,
         ReactiveFormsModule,
-        NgZorroAntdModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -75,6 +82,8 @@ describe('OrderListComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
+        NzModalService,
       ]
     });
 
