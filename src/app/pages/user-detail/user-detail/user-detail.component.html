@@ -14,7 +14,7 @@
       <nz-descriptions-item [nzTitle]="'Nav.Home' | transloco" [nzSpan]="2">{{currentHomeName}}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="'Common.Name' | transloco" [nzSpan]="1">{{currentHomeMemDisplayAs}}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="'Common.Relationship' | transloco" [nzSpan]="1">{{currentHomeMemRelI18n | transloco}}</nz-descriptions-item>
-      <nz-descriptions-item [nzTitle]="'Sys.MemRel.Children' | transloco" [nzSpan]="1"><nz-switch [(ngModel)]="currentHomeMemIsChild" nzDisabled></nz-switch></nz-descriptions-item>
+      <label nz-checkbox nzDisabled [ngModel]="currentHomeMemIsChild">{{ 'Sys.MemRel.Children' | transloco }}</label>
     </nz-descriptions>
   </nz-page-header-content>
 </nz-page-header>
