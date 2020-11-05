@@ -79,7 +79,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._docDate = moment();
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    // this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
     // this.assetAccount = new AccountExtraAsset();
     this.arMembers = this.homeService.ChosedHome.Members.slice();
 
@@ -101,6 +101,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit',
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
+    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
