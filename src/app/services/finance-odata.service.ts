@@ -1735,29 +1735,29 @@ export class FinanceOdataService {
    * Create asset document
    * @param apidetail API Data for creation
    */
-  public createAssetBuyinDocument(apidetail: FinanceAssetBuyinDocumentAPI): Observable<any> {
+  public createAssetBuyinDocument(apidetail: FinanceAssetBuyinDocumentAPI): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetBuyDocument';
-    const jobj: any = {};
-    jobj.DocumentInfo = apidetail.writeJSONObject();
+    const jobj = apidetail.writeJSONObject();
     const jdata: string = JSON && JSON.stringify(jobj);
 
     return this.http.post(apiurl, jdata, {
       headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetBuyinDocument in FinanceOdataService: ' + response,
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAssetBuyinDocument succeed',
           ConsoleLogTypeEnum.debug);
 
-        const ndocid: number = +(response as any);
-        return ndocid;
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
       }),
       catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc failed`,
           ConsoleLogTypeEnum.error);
 
         const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

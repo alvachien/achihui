@@ -2518,7 +2518,9 @@ describe('FinanceOdataService', () => {
       });
 
       // Respond with the mock data
-      req.flush(100);
+      req.flush({
+        Id: 100
+      });
     });
 
     it('should return error in case error appear', () => {

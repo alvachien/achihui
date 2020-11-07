@@ -93,6 +93,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     if (curr) {
       this._baseCurr = curr;
       if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl').value) {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent baseCurrency setter, set form control: ${curr}`,
+          ConsoleLogTypeEnum.debug);
         this.headerForm.get('currControl').setValue(this._baseCurr);
       }
     }

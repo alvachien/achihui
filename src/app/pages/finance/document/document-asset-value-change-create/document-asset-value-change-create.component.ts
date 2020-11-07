@@ -236,14 +236,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     // Do the real submit.
     this.detailObject = new FinanceAssetValChgDocumentAPI();
     this.detailObject.HID = this._homeService.ChosedHome.ID;
-    this.detailObject.tranDate = docobj.TranDateFormatString;
-    this.detailObject.tranCurr = docobj.TranCurr;
-    this.detailObject.desp = docobj.Desp;
-    this.detailObject.assetAccountID = this.firstFormGroup.get('accountControl').value;
-    this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
-    this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
+    this.detailObject.TranDate = docobj.TranDateFormatString;
+    this.detailObject.TranCurr = docobj.TranCurr;
+    this.detailObject.Desp = docobj.Desp;
+    this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl').value;
+    this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl').value;
+    this.detailObject.OrderID = this.firstFormGroup.get('orderControl').value;
     docobj.Items.forEach((val: DocumentItem) => {
-      this.detailObject.items.push(val);
+      this.detailObject.Items.push(val);
     });
 
     this._storageService.createAssetValChgDocument(this.detailObject)

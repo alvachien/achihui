@@ -3308,16 +3308,32 @@ export class DocumentCreatedFrequenciesByUser {
  */
 export abstract class FinanceAssetDocumentAPIBase {
   public HID: number;
-  public tranCurr: string;
-  public tranDate: string;
-  public desp: string;
-  public controlCenterID?: number;
-  public orderID?: number;
+  public TranCurr: string;
+  public TranDate: string;
+  public Desp: string;
+  public ControlCenterID?: number;
+  public OrderID?: number;
 
-  public items: DocumentItem[] = [];
+  public Items: DocumentItem[] = [];
 
   public writeJSONObject(): any {
-    return this;
+    const rst: any = {
+      HID: this.HID,
+      TranCurr: this.TranCurr,
+      TranDate: this.TranDate,
+      Desp: this.Desp,
+    };
+    if (this.ControlCenterID) {
+      rst.ControlCenterID = this.ControlCenterID;
+    }
+    if (this.OrderID) {
+      rst.OrderID = this.OrderID;
+    }
+    rst.Items = [];
+    this.Items.forEach(val => {
+      rst.Items.push(val.writeJSONObject());
+    });
+    return rst;
   }
 }
 
@@ -3325,18 +3341,19 @@ export abstract class FinanceAssetDocumentAPIBase {
  * API for Asset Buyin document
  */
 export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public isLegacy?: boolean;
-  public tranAmount: number;
-  public accountOwner: string;
-  public accountAsset: AccountExtraAsset;
+  public IsLegacy?: boolean;
+  public TranAmount: number;
+  public AccountOwner: string;
+  public AccountAsset: AccountExtraAsset;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
-    if (this.isLegacy) {
-      rst.isLegacy = true;
+    if (this.IsLegacy) {
+      rst.IsLegacy = true;
     }
-    rst.accountOwner = this.accountOwner;
-    rst.accountAsset = this.accountAsset.writeJSONObject();
+    rst.TranAmount = this.TranAmount;
+    rst.AccountOwner = this.AccountOwner;
+    rst.ExtraAsset = this.AccountAsset.writeJSONObject();
     return rst;
   }
 }
@@ -3345,12 +3362,14 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
  * API for Asset Soldout document
  */
 export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public assetAccountID: number;
-  public tranAmount: number;
+  public AssetAccountID: number;
+  public TranAmount: number;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
-    rst.assetAccountID = this.assetAccountID;
+    rst.AssetAccountID = this.AssetAccountID;
+    rst.TranAmount = this.TranAmount;
+
     return rst;
   }
 }
@@ -3359,11 +3378,11 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
  * API for Asset ValChg document
  */
 export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public assetAccountID: number;
+  public AssetAccountID: number;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
-    rst.assetAccountID = this.assetAccountID;
+    rst.AssetAccountID = this.AssetAccountID;
     return rst;
   }
 }

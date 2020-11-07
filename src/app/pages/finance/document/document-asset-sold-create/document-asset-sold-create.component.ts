@@ -226,15 +226,15 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     // Do the real submit.
     this.detailObject = new FinanceAssetSoldoutDocumentAPI();
     this.detailObject.HID = this.homeService.ChosedHome.ID;
-    this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
-    this.detailObject.tranCurr = docobj.TranCurr;
-    this.detailObject.tranAmount = this.firstFormGroup.get('amountControl').value;
-    this.detailObject.desp = docobj.Desp;
-    this.detailObject.assetAccountID = this.firstFormGroup.get('accountControl').value;
-    this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
-    this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
+    this.detailObject.TranDate = docobj.TranDate.format(momentDateFormat);
+    this.detailObject.TranCurr = docobj.TranCurr;
+    this.detailObject.TranAmount = this.firstFormGroup.get('amountControl').value;
+    this.detailObject.Desp = docobj.Desp;
+    this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl').value;
+    this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl').value;
+    this.detailObject.OrderID = this.firstFormGroup.get('orderControl').value;
     docobj.Items.forEach((val: DocumentItem) => {
-      this.detailObject.items.push(val);
+      this.detailObject.Items.push(val);
     });
 
     this.odataService.createAssetSoldoutDocument(this.detailObject)

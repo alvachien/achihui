@@ -245,33 +245,33 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
     // Do the real submit.
     const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this.homeService.ChosedHome.ID;
-    apidetail.tranDate = docobj.TranDateFormatString;
-    apidetail.tranCurr = docobj.TranCurr;
-    apidetail.tranAmount = this.firstFormGroup.get('amountControl').value;
-    apidetail.desp = docobj.Desp;
-    apidetail.controlCenterID = this.firstFormGroup.get('ccControl').value;
-    apidetail.orderID = this.firstFormGroup.get('orderControl').value;
-    apidetail.isLegacy = this.IsLegacyAsset;
-    apidetail.accountOwner = this.firstFormGroup.get('ownerControl').value;
-    apidetail.accountAsset = this.firstFormGroup.get('assetAccountControl').value;
+    apidetail.TranDate = docobj.TranDateFormatString;
+    apidetail.TranCurr = docobj.TranCurr;
+    apidetail.TranAmount = this.firstFormGroup.get('amountControl').value;
+    apidetail.Desp = docobj.Desp;
+    apidetail.ControlCenterID = this.firstFormGroup.get('ccControl').value;
+    apidetail.OrderID = this.firstFormGroup.get('orderControl').value;
+    apidetail.IsLegacy = this.IsLegacyAsset;
+    apidetail.AccountOwner = this.firstFormGroup.get('ownerControl').value;
+    apidetail.AccountAsset = this.firstFormGroup.get('assetAccountControl').value;
 
     docobj.Items.forEach((val: DocumentItem) => {
-      apidetail.items.push(val);
+      apidetail.Items.push(val);
     });
 
     this.odataService.createAssetBuyinDocument(apidetail)
       .pipe(takeUntil(this._destroyed$),
       finalize(() => {
         this.isDocPosting = false;
-        this.currentStep = 4;
+        this.currentStep = 3;
       }))
       .subscribe({
-        next: (nid: number) => {
+        next: (docObj: Document) => {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
             ConsoleLogTypeEnum.debug);
 
-          this.docIdCreated = nid;
+          this.docIdCreated = docObj.Id;
           this.docPostingFailed = null;
         },
         error: (err: string) => {
