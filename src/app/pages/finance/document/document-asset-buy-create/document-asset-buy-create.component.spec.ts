@@ -168,7 +168,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: document header is manadatory', fakeAsync(() => {
+    it('step 0: document header is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -200,7 +200,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: asset account is manadatory', fakeAsync(() => {
+    it('step 0: asset account is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -250,7 +250,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: amount is manadatory', fakeAsync(() => {
+    it('step 0: amount is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -300,7 +300,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: owner is manadatory', fakeAsync(() => {
+    it('step 0: owner is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -350,7 +350,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: legacy flag is manadatory', fakeAsync(() => {
+    it('step 0: legacy flag is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -405,7 +405,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
+    it('step 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -463,7 +463,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: item is manadatory with non-legacy case', fakeAsync(() => {
+    it('step 1: item is manadatory with non-legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -535,7 +535,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: item amount shall equal to amount in step 0 with non-legacy case', fakeAsync(() => {
+    it('step 1: item amount shall equal to amount in step 0 with non-legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -602,7 +602,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: go to review page with valid non-legacy case', fakeAsync(() => {
+    it('step 2: go to review page with valid non-legacy case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -670,7 +670,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
+    it('step 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
 
       fixture.detectChanges();
@@ -767,8 +767,10 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 3: display success result page with valid non-legacy case', fakeAsync(() => {
-      createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
+    it('step 3: display success result page with valid non-legacy case', fakeAsync(() => {
+      createAssetBuyinDocumentSpy.and.returnValue(asyncData({
+        Id: 1
+      }));
 
       fixture.detectChanges();
       tick();
@@ -838,7 +840,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
       tick();
       fixture.detectChanges();
-      expect(component.currentStep).toBe(4);
+      expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toEqual(1);
       tick();
@@ -847,7 +849,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    it('setp 3: display failed  result page with valid non-legacy case', fakeAsync(() => {
+    it('step 3: display failed  result page with valid non-legacy case', fakeAsync(() => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncError('doc failed to create'));
 
       fixture.detectChanges();
@@ -918,7 +920,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
       tick();
       fixture.detectChanges();
-      expect(component.currentStep).toBe(4);
+      expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
       expect(component.docPostingFailed).toBeTruthy();

@@ -1504,40 +1504,40 @@ export class FakeDataHelper {
   public buildFinAssetBuyInDocumentForCreate(): FinanceAssetBuyinDocumentAPI {
     const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._chosedHome.ID;
-    apidetail.tranDate = moment().format(momentDateFormat);
-    apidetail.tranCurr = this._chosedHome.BaseCurrency;
-    apidetail.tranAmount = 100;
-    apidetail.desp = 'test';
-    apidetail.controlCenterID = 11;
-    apidetail.isLegacy = false;
-    apidetail.accountOwner = this._chosedHome.Members[0].User;
-    apidetail.accountAsset = new AccountExtraAsset();
-    apidetail.accountAsset.CategoryID = 2;
-    apidetail.accountAsset.Name = 'test';
-    apidetail.accountAsset.Comment = 'test';
+    apidetail.TranDate = moment().format(momentDateFormat);
+    apidetail.TranCurr = this._chosedHome.BaseCurrency;
+    apidetail.TranAmount = 100;
+    apidetail.Desp = 'test';
+    apidetail.ControlCenterID = 11;
+    apidetail.IsLegacy = false;
+    apidetail.AccountOwner = this._chosedHome.Members[0].User;
+    apidetail.AccountAsset = new AccountExtraAsset();
+    apidetail.AccountAsset.CategoryID = 2;
+    apidetail.AccountAsset.Name = 'test';
+    apidetail.AccountAsset.Comment = 'test';
 
     return apidetail;
   }
   public buildFinAssetSoldoutDocumentForCreate(): FinanceAssetSoldoutDocumentAPI {
     const detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
     detail.HID = this._chosedHome.ID;
-    detail.tranDate = moment().format(momentDateFormat);
-    detail.tranCurr = this._chosedHome.BaseCurrency;
-    detail.tranAmount = 20;
-    detail.desp = 'test';
-    detail.assetAccountID = 11;
-    detail.controlCenterID = 11;
+    detail.TranDate = moment().format(momentDateFormat);
+    detail.TranCurr = this._chosedHome.BaseCurrency;
+    detail.TranAmount = 20;
+    detail.Desp = 'test';
+    detail.AssetAccountID = 11;
+    detail.ControlCenterID = 11;
 
     return detail;
   }
   public buildFinAssetValueChangeDocumentForCreate(): FinanceAssetValChgDocumentAPI {
     const detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
     detailObject.HID = this._chosedHome.ID;
-    detailObject.tranDate = moment().format(momentDateFormat);
-    detailObject.tranCurr = this._chosedHome.BaseCurrency;
-    detailObject.desp = 'test';
-    detailObject.assetAccountID = 21;
-    detailObject.controlCenterID = 11;
+    detailObject.TranDate = moment().format(momentDateFormat);
+    detailObject.TranCurr = this._chosedHome.BaseCurrency;
+    detailObject.Desp = 'test';
+    detailObject.AssetAccountID = 21;
+    detailObject.ControlCenterID = 11;
     // detailObject.orderID = this.firstFormGroup.get('orderControl').value;
     // docobj.Items.forEach((val: DocumentItem) => {
     //   this.detailObject.items.push(val.writeJSONObject());
