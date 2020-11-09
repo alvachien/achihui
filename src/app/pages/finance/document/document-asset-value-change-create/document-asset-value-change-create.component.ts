@@ -288,7 +288,26 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       .subscribe((x: any) => {
       // Get the output
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
-        let docitems: DocumentItemView[] = x.contentList as DocumentItemView[];
+        let docitems: DocumentItemView[] = [];
+        x.contentList.forEach(element => {
+          const di = new DocumentItemView();
+          di.AccountID = element.AccountID;
+          di.Amount = element.Amount;
+          di.AmountInLocalCurrency = element.AmountInLocalCurrency;
+          di.ControlCenterID = element.ControlCenterID;
+          di.Currency = element.CUrrency;
+          di.DocumentDesp = element.DocumentDesp;
+          di.DocumentID = element.DocumentID;
+          di.HomeID = element.HomeID;
+          di.IsExpense = element.IsExpense;
+          di.ItemDesp = element.ItemDesp;
+          di.ItemID = element.ItemID;
+          di.OrderID = element.OrderID;
+          di.OriginAmount = element.OriginAmount;
+          di.TransactionDate = moment(element.TransactionDate);
+          di.TransactionType = element.TransactionType;
+          docitems.push(di);
+        });
         docitems = docitems.sort((a, b) => {
           if (a.TransactionDate.isBefore(b.TransactionDate)) {
             return -1;

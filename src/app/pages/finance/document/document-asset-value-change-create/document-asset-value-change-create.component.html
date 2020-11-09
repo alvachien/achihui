@@ -83,7 +83,7 @@
     <div [hidden]="currentStep !== 1">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
         <div>
-          <h2 nz-title>{{'Common.Name' | transloco}}: {{confirmInfo?.assetName}}</h2>
+          <h2 nz-title>{{'Common.Name' | transloco}}: {{confirmInfo?.targetAssetAccountName}}</h2>
           <h3 nz-title>{{'Finance.Amount' | transloco}}: {{confirmInfo?.tranAmount}} ({{confirmInfo?.tranCurrency}})
           </h3>
           <h3 nz-title>{{'Common.Date' | transloco}}: {{confirmInfo?.tranDateString}}</h3>
