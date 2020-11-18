@@ -13,7 +13,7 @@ import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccoun
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, momentDateFormat, ModelUtility,
   financeDocTypeAssetSoldOut, FinanceAssetSoldoutDocumentAPI, ConsoleLogTypeEnum,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, financeTranTypeAssetSoldoutIncome,
 } from '../../../../model';
 import { costObjectValidator, } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
@@ -115,6 +115,10 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         this.arOrders = rst[6];
         this.arCurrencies = rst[7];
 
+        // Tran. type
+        // this.arTranTypes = this.arTranTypes.filter(val => {
+        //   val.Id === financeTranTypeAssetSoldoutIncome;
+        // });
         // Accounts
         this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
         this.uiAccountStatusFilter = undefined;
@@ -231,8 +235,14 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.detailObject.TranAmount = this.firstFormGroup.get('amountControl').value;
     this.detailObject.Desp = docobj.Desp;
     this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl').value;
-    this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl').value;
-    this.detailObject.OrderID = this.firstFormGroup.get('orderControl').value;
+    const ncc = this.firstFormGroup.get('ccControl').value;
+    if (ncc) {
+      this.detailObject.ControlCenterID = ncc;
+    }
+    const norder = this.firstFormGroup.get('orderControl').value;
+    if (norder) {
+      this.detailObject.OrderID = norder;
+    }
     docobj.Items.forEach((val: DocumentItem) => {
       this.detailObject.Items.push(val);
     });
@@ -243,12 +253,12 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         this.currentStep = 3;
         this.isDocPosting = false;
       }))
-      .subscribe((nid: number) => {
+      .subscribe((ndoc: Document) => {
       // New doc created with ID returned
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument',
         ConsoleLogTypeEnum.debug);
 
-      this.docIdCreated = nid;
+      this.docIdCreated = ndoc.Id;
       this.docPostingFailed = null;
     }, (err: string) => {
       // Handle the error
@@ -308,13 +318,15 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     let totalAmt = 0;
     if (items) {
       for (const item of items) {
-        const bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
-          return valtt.Id === item.TranType;
-        }).Expense;
-        if (bExpense) {
-          totalAmt -= item.TranAmount;
-        } else {
-          totalAmt += item.TranAmount;
+        if (item.TranType) {
+          const bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
+            return valtt.Id === item.TranType;
+          }).Expense;
+          if (bExpense) {
+            totalAmt -= item.TranAmount;
+          } else {
+            totalAmt += item.TranAmount;
+          }  
         }
       }
     }
@@ -327,6 +339,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   }
 
   public onDisplayCreatedDoc(): void {
-
+    if (this.docIdCreated) {
+      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
   }
 }

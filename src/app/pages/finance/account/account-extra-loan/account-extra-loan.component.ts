@@ -285,7 +285,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         tmpdoc.Desp = val.Comment + ' | ' + rstidx.toString()
           + ' / ' + x.length.toString();
 
-        tmpdoc.DocId = ++topDocID; // Generate document ID
+        // tmpdoc.DocId = ++topDocID; // Generate document ID
         arKeepItems.push(tmpdoc);
       }
 

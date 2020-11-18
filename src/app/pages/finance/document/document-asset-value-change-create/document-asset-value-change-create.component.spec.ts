@@ -151,7 +151,9 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         totalCount: 0,
         contentList: [],
       }));
-      createAssetValChgDocumentSpy = storageService.createAssetValChgDocument.and.returnValue(asyncData(1));
+      createAssetValChgDocumentSpy = storageService.createAssetValChgDocument.and.returnValue(asyncData({
+        Id: 1
+      }));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -164,7 +166,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('setp 0: initial status', fakeAsync(() => {
+    it('step 0: initial status', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -175,7 +177,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: document header is manadatory', fakeAsync(() => {
+    it('step 0: document header is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -207,7 +209,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: asset account is manadatory', fakeAsync(() => {
+    it('step 0: asset account is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -250,7 +252,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: amount is manadatory', fakeAsync(() => {
+    it('step 0: amount is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -295,7 +297,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 0: costing object is manadatory', fakeAsync(() => {
+    it('step 0: costing object is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -348,7 +350,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: back to step 0 shall work', fakeAsync(() => {
+    it('step 1: back to step 0 shall work', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -398,7 +400,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: shall calculate correct document item with case value descreased', fakeAsync(() => {
+    it('step 1: shall calculate correct document item with case value descreased', fakeAsync(() => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({
@@ -467,7 +469,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 1: shall calculate correct document item with case value increased', fakeAsync(() => {
+    it('step 1: shall calculate correct document item with case value increased', fakeAsync(() => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({
@@ -538,7 +540,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: shall popup dialog if verification on generated document failed', fakeAsync(() => {
+    it('step 2: shall popup dialog if verification on generated document failed', fakeAsync(() => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({
@@ -634,7 +636,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: shall display success page when posted succeed', fakeAsync(() => {
+    it('step 2: shall display success page when posted succeed', fakeAsync(() => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({
@@ -713,7 +715,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: shall display error page when posted failed', fakeAsync(() => {
+    it('step 2: shall display error page when posted failed', fakeAsync(() => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({

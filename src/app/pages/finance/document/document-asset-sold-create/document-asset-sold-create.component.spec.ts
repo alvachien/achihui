@@ -145,7 +145,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
-      createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(asyncData(1));
+      createAssetSoldoutDocumentSpy = storageService.createAssetSoldoutDocument.and.returnValue(asyncData({Id: 1}));
     });
 
     beforeEach(inject([OverlayContainer],

@@ -91,19 +91,19 @@
       </nz-spin>
 
       <nz-divider></nz-divider>
-      <nz-table #basicTable [nzLoading]="isLoadingResults" [nzData]="existingDocItems">
+      <nz-table #extDocItemTable nzBordered [nzData]="existingDocItems">
         <thead>
           <tr>
             <th>ID</th>
             <th>{{'Common.Date' | transloco}}</th>
-            <th>{{'Finance.Balance' | transloco}}</th>
+            <th>Before</th>
             <th>{{'Finance.Amount' | transloco}}</th>
             <th>{{'Finance.Balance' | transloco}} (*)</th>
             <th>{{'Common.Description' | transloco}}</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
+          <tr *ngFor="let data of extDocItemTable.data">
             <td>{{data.docId}}</td>
             <td>{{data.tranDate}}</td>
             <td>{{data.balance}}</td>

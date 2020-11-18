@@ -253,12 +253,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         this.isDocPosting = false;
       }))
       .subscribe({
-        next: (nid: number) => {
+        next: (ndoc: Document) => {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
             ConsoleLogTypeEnum.debug);
 
-          this.docIdCreated = nid;
+          this.docIdCreated = ndoc.Id;
           this.docPostingFailed = null;
         },
         error: (err: string) => {
@@ -282,79 +282,85 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.confirmInfo.tranDateString = this.firstFormGroup.get('headerControl').value.TranDateFormatString;
 
     // Fetch the existing items
-    this.existingDocItems = [];
     this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       // Get the output
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
-        let docitems: DocumentItemView[] = [];
-        x.contentList.forEach(element => {
-          const di = new DocumentItemView();
-          di.AccountID = element.AccountID;
-          di.Amount = element.Amount;
-          di.AmountInLocalCurrency = element.AmountInLocalCurrency;
-          di.ControlCenterID = element.ControlCenterID;
-          di.Currency = element.CUrrency;
-          di.DocumentDesp = element.DocumentDesp;
-          di.DocumentID = element.DocumentID;
-          di.HomeID = element.HomeID;
-          di.IsExpense = element.IsExpense;
-          di.ItemDesp = element.ItemDesp;
-          di.ItemID = element.ItemID;
-          di.OrderID = element.OrderID;
-          di.OriginAmount = element.OriginAmount;
-          di.TransactionDate = moment(element.TransactionDate);
-          di.TransactionType = element.TransactionType;
-          docitems.push(di);
-        });
-        docitems = docitems.sort((a, b) => {
-          if (a.TransactionDate.isBefore(b.TransactionDate)) {
-            return -1;
-          }
-          if (a.TransactionDate.isAfter(b.TransactionDate)) {
-            return 1;
-          }
-          return 0;
-        });
-        let curbal2 = 0;
-        for (const ditem of docitems) {
-          const dbal: DocItemWithBlance = new DocItemWithBlance();
-          dbal.docId = ditem.DocumentID;
-          dbal.tranDate = ditem.TransactionDate.format(momentDateFormat);
-          dbal.tranAmount = ditem.Amount;
-          dbal.balance = curbal2;
-          dbal.newBalance = dbal.balance + ditem.Amount;
-          dbal.desp = ditem.ItemDesp;
-          curbal2 = dbal.newBalance;
-          this.existingDocItems.push(dbal);
-        }
-
-        const fakebalance: DocItemWithBlance = new DocItemWithBlance();
-        fakebalance.docId = 0;
-        fakebalance.tranDate = this.confirmInfo.tranDateString;
-        fakebalance.tranAmount = 0;
-        fakebalance.balance = 0;
-        fakebalance.newBalance = this.NewEstimatedAmount;
-        this.existingDocItems.push(fakebalance);
-
-        // Sorting
-        this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
-          return a.tranDate.localeCompare(b.tranDate);
-        });
-
-        let curbal = 0;
-        for (let idx = 0; idx < this.existingDocItems.length; idx++) {
-          curbal += this.existingDocItems[idx].tranAmount;
-          if (this.existingDocItems[idx].docId) {
-            this.existingDocItems[idx].newBalance = curbal;
-          } else {
-            this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
-            this.tranAmount = this.existingDocItems[idx].tranAmount;
-          }
-        }
+        this._workOutExistingDocs(x.contentList);
       }
     });
+  }
+
+  private _workOutExistingDocs(prvdocitems: any[]) {
+    this.existingDocItems = [];
+
+    let docitems: DocumentItemView[] = [];
+    prvdocitems.forEach(element => {
+      const di = new DocumentItemView();
+      di.AccountID = element.AccountID;
+      di.Amount = element.Amount;
+      di.AmountInLocalCurrency = element.AmountInLocalCurrency;
+      di.ControlCenterID = element.ControlCenterID;
+      di.Currency = element.CUrrency;
+      di.DocumentDesp = element.DocumentDesp;
+      di.DocumentID = element.DocumentID;
+      di.HomeID = element.HomeID;
+      di.IsExpense = element.IsExpense;
+      di.ItemDesp = element.ItemDesp;
+      di.ItemID = element.ItemID;
+      di.OrderID = element.OrderID;
+      di.OriginAmount = element.OriginAmount;
+      di.TransactionDate = moment(element.TransactionDate);
+      di.TransactionType = element.TransactionType;
+      docitems.push(di);
+    });
+    docitems = docitems.sort((a, b) => {
+      if (a.TransactionDate.isBefore(b.TransactionDate)) {
+        return -1;
+      }
+      if (a.TransactionDate.isAfter(b.TransactionDate)) {
+        return 1;
+      }
+      return 0;
+    });
+    let curbal2 = 0;
+    for (const ditem of docitems) {
+      const dbal: DocItemWithBlance = new DocItemWithBlance();
+      dbal.docId = ditem.DocumentID;
+      dbal.tranDate = ditem.TransactionDate.format(momentDateFormat);
+      dbal.tranAmount = ditem.Amount;
+      dbal.balance = curbal2;
+      dbal.newBalance = dbal.balance + ditem.Amount;
+      dbal.desp = ditem.ItemDesp;
+      curbal2 = dbal.newBalance;
+      this.existingDocItems.push(dbal);
+    }
+
+    const fakebalance: DocItemWithBlance = new DocItemWithBlance();
+    fakebalance.docId = 0;
+    fakebalance.tranDate = this.confirmInfo.tranDateString;
+    fakebalance.tranAmount = 0;
+    fakebalance.balance = 0;
+    fakebalance.newBalance = this.NewEstimatedAmount;
+    fakebalance.desp = '>>> NEW <<<';
+    this.existingDocItems.push(fakebalance);
+
+    // Sorting
+    this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
+      return a.tranDate.localeCompare(b.tranDate);
+    });
+
+    let curbal = 0;
+    for (let idx = 0; idx < this.existingDocItems.length; idx++) {
+      curbal += this.existingDocItems[idx].tranAmount;
+      if (this.existingDocItems[idx].docId) {
+        this.existingDocItems[idx].newBalance = curbal;
+      } else {
+        this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
+        this.tranAmount = this.existingDocItems[idx].tranAmount;
+      }
+    }
   }
 
   private _generateDoc(): Document {
@@ -397,6 +403,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   }
 
   public onDisplayCreatedDoc(): void {
-
+    if (this.docIdCreated) {
+      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    }
   }
 }
