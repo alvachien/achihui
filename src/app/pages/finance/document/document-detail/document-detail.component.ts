@@ -160,4 +160,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.complete();
     }
   }
+
+  onSubmit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSubmit...',
+      ConsoleLogTypeEnum.debug);
+  }
 }

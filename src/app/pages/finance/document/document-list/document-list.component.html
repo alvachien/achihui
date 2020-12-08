@@ -91,11 +91,11 @@
               <nz-table #itemTable [nzData]="data.Items" [nzShowPagination]="false">
                 <thead>
                   <tr>
-                    <th [nzWidth]="50">#</th>
-                    <th [nzWidth]="150">{{'Finance.Account' | transloco}}</th>
-                    <th [nzWidth]="200">{{'Finance.TransactionType' | transloco}}</th>
-                    <th [nzWidth]="150">{{'Finance.Amount' | transloco}}</th>
-                    <th [nzWidth]="200">{{'Common.Description' | transloco}}</th>
+                    <th nzWidth="50px">#</th>
+                    <th nzWidth="200px">{{'Finance.Account' | transloco}}</th>
+                    <th nzWidth="300px">{{'Finance.TransactionType' | transloco}}</th>
+                    <th nzWidth="200px">{{'Finance.Amount' | transloco}}</th>
+                    <th nzWidth="400px">{{'Common.Description' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>

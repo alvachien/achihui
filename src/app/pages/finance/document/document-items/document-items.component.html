@@ -14,14 +14,14 @@
   <nz-table #basicTable nzBordered [nzData]="listItems">
     <thead>
       <tr>
-        <th [nzWidth]="50">#</th>
-        <th [nzWidth]="150">{{'Finance.Account' | transloco}}</th>
-        <th [nzWidth]="200">{{'Finance.TransactionType' | transloco}}</th>
-        <th [nzWidth]="100">{{'Finance.Amount' | transloco}}</th>
-        <th [nzWidth]="50">{{'Finance.Currency' | transloco}}</th>
-        <th [nzWidth]="250">{{'Common.Comment' | transloco}}</th>
-        <th [nzWidth]="150">{{'Finance.ControlCenter' | transloco}}</th>
-        <th [nzWidth]="150">{{'Finance.Activity' | transloco}}</th>
+        <th nzWidth="50px">#</th>
+        <th nzWidth="150px">{{'Finance.Account' | transloco}}</th>
+        <th nzWidth="200px">{{'Finance.TransactionType' | transloco}}</th>
+        <th nzWidth="100px">{{'Finance.Amount' | transloco}}</th>
+        <th nzWidth="50px">{{'Finance.Currency' | transloco}}</th>
+        <th nzWidth="250px">{{'Common.Comment' | transloco}}</th>
+        <th nzWidth="150px">{{'Finance.ControlCenter' | transloco}}</th>
+        <th nzWidth="150px">{{'Finance.Activity' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
@@ -91,12 +91,12 @@
           </nz-form-item>
         </td>
         <td>
-          <nz-select style="width: 100%" [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select style="width: 100%" [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
