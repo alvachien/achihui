@@ -1787,9 +1787,9 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
-          const hd: Document = new Document();
-          hd.onSetData(response as any);
-          return hd;
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
       }),
       catchError((errresp: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
