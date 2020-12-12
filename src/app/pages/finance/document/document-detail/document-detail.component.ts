@@ -120,13 +120,55 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
                 this.currentDocument = rsts[7] as Document;
 
-                this.docFormGroup.get('headerControl').setValue(this.currentDocument);
-                this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.docFormGroup.disable();
+                // Check the accounts in use
+                const listAcntIDs = this.currentDocument.Items.map(item => {
+                  return item.AccountId;
+                });
+                const listNIDs: number[] = [];
+                listAcntIDs.forEach(acntid => {
+                  if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid)) {
+                    // DO nothing.
+                  } else {
+                    listNIDs.push(acntid);
+                  }
+                });
+      
+                if (listNIDs.length > 0) {
+                  const listRst = [];
+                  listNIDs.forEach(nid => {
+                    listRst.push(this.odataService.readAccount(nid));
+                  });
+      
+                  // Read the account
+                  forkJoin([...listRst]).pipe(takeUntil(this._destroyed$),
+                    finalize(() => {
+                      this.docFormGroup.get('headerControl').setValue(this.currentDocument);
+                      this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
+      
+                      if (this.uiMode === UIMode.Display) {
+                        this.docFormGroup.disable();
+                      } else {
+                        this.docFormGroup.enable();
+                      }                          
+                    }))
+                    .subscribe({
+                      next: acnts => {
+                        this.arUIAccounts = [];
+                        this.arUIAccounts = BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories);
+                      },
+                      error: err => {
+                        // TBD.
+                      }
+                    });
                 } else {
-                  this.docFormGroup.enable();
+                  this.docFormGroup.get('headerControl').setValue(this.currentDocument);
+                  this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
+  
+                  if (this.uiMode === UIMode.Display) {
+                    this.docFormGroup.disable();
+                  } else {
+                    this.docFormGroup.enable();
+                  }  
                 }
               },
               error: err => {

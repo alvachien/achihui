@@ -169,12 +169,8 @@
               </a>
               <nz-dropdown-menu #menuApps="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>
-                    <button nz-button type="link" (click)="onOpenPhotoGallery()">AC Gallery</button>
-                  </li>
-                  <li nz-menu-item>
-                    <button nz-button type="link" (click)="onOpenMathExcises()">Math Learn</button>
-                  </li>
+                  <li nz-menu-item (click)="onOpenPhotoGallery()">AC Gallery</li>
+                  <li nz-menu-item (click)="onOpenMathExcises()">Math Learn</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -187,6 +183,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - 2020 Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - 2021 Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

@@ -273,30 +273,6 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
 
           this.docIdCreated = docObj.Id;
           this.docPostingFailed = null;
-
-          // Read the new created asset account into buffer.
-          const listAcntIDs = docObj.Items.map(item => {
-            return item.AccountId;
-          });
-          const listNIDs: number[] = [];
-          listAcntIDs.forEach(acntid => {
-            if (this.odataService.Accounts.findIndex(acnt => acnt.Id === acntid)) {
-              // DO nothing.
-            } else {
-              listNIDs.push(acntid);
-            }
-          });
-
-          if (listNIDs.length > 0) {
-            const listRst = [];
-            listNIDs.forEach(nid => {
-              listRst.push(this.odataService.readAccount(nid));
-            });
-
-            // Read the account
-            forkJoin(listRst).pipe(takeUntil(this._destroyed$))
-              .subscribe();
-          }
         },
         error: (err: string) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,

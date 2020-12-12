@@ -107,7 +107,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public onGoToSelectedHome(): void {
     // Go to selected home
     if (this._homeService.ChosedHome) {
-      this.router.navigate(['/homedef/', this._homeService.ChosedHome.ID]);
+      this.router.navigate(['/homedef/display/', this._homeService.ChosedHome.ID]);
     }
   }
 }
