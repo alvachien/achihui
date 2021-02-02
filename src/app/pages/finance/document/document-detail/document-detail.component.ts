@@ -5,13 +5,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  UIMode, getUIModeString,
+  getUIModeString,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -42,7 +43,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   docFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
 
   constructor(
@@ -77,7 +78,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -88,7 +89,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
 

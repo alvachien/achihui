@@ -4,9 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString, HomeMember, } from '../../../../model';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember, } from '../../../../model';
 import { popupDialog } from '../../../message-dialog';
 import { translate } from '@ngneat/transloco';
 
@@ -27,7 +28,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   public arMembers: HomeMember[] = [];
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -71,7 +72,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -79,7 +80,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         }
         this.currentMode = getUIModeString(this.uiMode);
         switch (this.uiMode) {
-          case UIMode.Change:
+          case UIMode.Update:
           case UIMode.Display: {
             this.isLoadingResults = true;
 
@@ -192,7 +193,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
     if (this.uiMode === UIMode.Create) {
       this._createControlCenter(detailObject);
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       // Check the dirty control
       const arcontent: any = {};
       // nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),

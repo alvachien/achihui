@@ -5,8 +5,9 @@ import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Account, UIMode, getUIModeString, financeAccountCategoryAsset,
+import { Account, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum, ModelUtility,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
@@ -48,7 +49,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public tranType: number;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -129,7 +130,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -139,7 +140,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           forkJoin([
             this.odataService.fetchAllAccountCategories(),
@@ -228,7 +229,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Create) {
       this.onCreateImpl();
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       this.onUpdateImpl();
     }
   }
@@ -342,7 +343,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   private _generateAccount(): Account {
     const acntObj: Account = new Account();
     acntObj.HID = this.homeSevice.ChosedHome.ID;
-    if (this.uiMode === UIMode.Change) {
+    if (this.uiMode === UIMode.Update) {
       acntObj.Id = this.routerID;
     }
 

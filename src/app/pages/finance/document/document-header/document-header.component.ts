@@ -2,8 +2,9 @@ import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, 
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
+import { Document, DocumentItem, getUIModeString, Currency, financeDocTypeCurrencyExchange,
   financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, DocumentType, momentDateFormat, } from '../../../../model';
 
 @Component({
@@ -67,7 +68,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       this._uiMode = mode;
       if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
         this.setDisabledState(true);
-      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Change) {
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Update) {
         this.setDisabledState(false);
       }
     }
@@ -108,7 +109,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
   get isTranDateEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isCurrencyExchangeDocument(): boolean {
     return this.docType === financeDocTypeCurrencyExchange;
@@ -149,7 +150,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return insobj;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable && (this.currentUIMode === UIMode.Change || this.currentUIMode === UIMode.Create);
+    return this._isChangable && (this.currentUIMode === UIMode.Update || this.currentUIMode === UIMode.Create);
   }
   get tranCurrency(): string {
     return this.headerForm && this.headerForm.get('currControl') && this.headerForm.get('currControl').value;
@@ -169,14 +170,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   get isCurrencyEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isExchangeRateEditable(): boolean {
     return this.isCurrencyEditable;
   }
   get isCurrency2Editable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isExchangeRate2Editable(): boolean {
     return this.isCurrency2Editable;

@@ -2,8 +2,9 @@ import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, } from '
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Account, ControlCenter, Order, AccountCategory, UIMode, Currency,
+import { Account, ControlCenter, Order, AccountCategory, Currency,
   TranType, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum, financeDocTypeNormal,
   UIAccountForSelection, UIOrderForSelection,
 } from '../../../../model';
@@ -114,7 +115,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       this._uiMode = mode;
       if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
         this.setDisabledState(true);
-      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Change) {
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Update) {
         this.setDisabledState(false);
       }
     }
@@ -152,31 +153,31 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this.listItems;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Change);
+    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Update);
   }
   get isAddItemAllowed(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isDeleteItemAllowed(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isItemIDEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isAccountIDEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isTranTypeEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isAmountEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
 
   constructor() { }

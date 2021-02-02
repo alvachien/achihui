@@ -5,9 +5,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { ModelUtility, ConsoleLogTypeEnum, BlogPost, UIMode,
-  BlogUserSetting, } from '../../../model';
+import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogUserSetting, } from '../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../services';
 
 @Component({
@@ -23,7 +23,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   uiMode: UIMode;
 
   get isSaveButtonEnabled(): boolean {
-    return this.uiMode === UIMode.Change
+    return this.uiMode === UIMode.Update
       && this.detailFormGroup.enabled
       && this.detailFormGroup.valid;
   }
@@ -54,7 +54,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: next => {
           if (next !== null) {
-            this.uiMode = UIMode.Change;
+            this.uiMode = UIMode.Update;
             this.detailFormGroup.get('userControl').setValue(next.owner);
             this.detailFormGroup.get('deployControl').setValue(next.deploy);
             this.detailFormGroup.get('titleControl').setValue(next.title);

@@ -6,9 +6,10 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, Plan, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
+import { ControlCenter, Plan, ModelUtility, ConsoleLogTypeEnum, getUIModeString,
   UIDisplayString, UIDisplayStringUtil, UIAccountForSelection, AccountCategory,
   TranType, Currency, BuildupAccountForSelection, PlanTypeEnum,
 } from '../../../../model';
@@ -42,7 +43,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   objectSavedFailed: string;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -125,7 +126,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -135,7 +136,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           forkJoin([
@@ -242,7 +243,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     this.isObjectSubmitting = true;
     if (this.uiMode === UIMode.Create) {
       this.onCreatePlan();
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       this.onChangePlan();
     }
   }
@@ -398,7 +399,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private _generatePlan(): Plan {
     const dataInstance: Plan = new Plan();
     dataInstance.HID = this.homeService.ChosedHome.ID;
-    if (this.uiMode === UIMode.Change) {
+    if (this.uiMode === UIMode.Update) {
       dataInstance.ID = this.detailFormGroup.get('idControl').value;
     }
     dataInstance.StartDate = moment(this.detailFormGroup.get('startDateControl').value as Date);

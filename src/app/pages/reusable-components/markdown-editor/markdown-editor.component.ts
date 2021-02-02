@@ -12,7 +12,7 @@ import { editor } from 'monaco-editor';
 // tslint:disable-next-line no-any
 declare const monaco: any;
 
-import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
+import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 

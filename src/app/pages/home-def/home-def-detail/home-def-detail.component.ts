@@ -5,8 +5,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { HomeDef, Currency, UIMode, getUIModeString, HomeMember,
+import { HomeDef, Currency, getUIModeString, HomeMember,
   ModelUtility, ConsoleLogTypeEnum, UIDisplayString, UIDisplayStringUtil, HomeMemberRelationEnum } from '../../../model';
 import { AuthService, HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../services';
 
@@ -32,7 +33,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isSaveAllowed(): boolean {
     if (this.isFieldChangable) {
@@ -113,7 +114,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -123,7 +124,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           forkJoin([
@@ -146,7 +147,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
             if (this.uiMode === UIMode.Display) {
               this.detailFormGroup.disable();
-            } else if (this.uiMode === UIMode.Change) {
+            } else if (this.uiMode === UIMode.Update) {
               this.detailFormGroup.enable();
               this.detailFormGroup.get('idControl').disable();
             }
@@ -250,7 +251,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           });
         }
       });
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       // Change mode
       const hdobj = new HomeDef();
       hdobj.ID = +this.routerID;

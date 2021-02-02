@@ -5,8 +5,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic, UIMode,
+import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic,
   getUIModeString, BlogCollection, BlogPostCollection, BlogPostStatus_PublishAsPrivate,
   BlogPostStatus_Draft, BlogPostTag,
 } from '../../../../model';
@@ -51,7 +52,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   get isDeployButtonEnabled(): boolean {
-    if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+    if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Update) {
       return this.detailFormGroup.valid;
     }
     return false;
@@ -73,7 +74,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -84,7 +85,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           forkJoin([
@@ -124,7 +125,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
-              } else if (this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Update) {
                 this.detailFormGroup.enable();
                 this.detailFormGroup.get('idControl').disable();
               }
@@ -278,7 +279,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             });
           }
         });
-      } else if (this.uiMode === UIMode.Change) {
+      } else if (this.uiMode === UIMode.Update) {
         this.instancePost.id = this.routerID;
         this.odataService.changePost(this.instancePost)
         .pipe(takeUntil(this._destroyed$))

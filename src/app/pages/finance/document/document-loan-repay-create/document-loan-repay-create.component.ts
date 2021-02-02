@@ -7,9 +7,10 @@ import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
-  ControlCenter, Order, TranType, financeDocTypeLendTo, UIMode,
+  ControlCenter, Order, TranType, financeDocTypeLendTo,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, ModelUtility,

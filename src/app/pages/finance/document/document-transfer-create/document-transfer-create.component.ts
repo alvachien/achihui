@@ -5,9 +5,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
-  financeDocTypeTransfer, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
+  financeDocTypeTransfer, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, financeTranTypeTransferOut, financeTranTypeTransferIn,
 } from '../../../../model';

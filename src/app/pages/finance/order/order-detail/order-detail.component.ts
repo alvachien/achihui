@@ -6,9 +6,10 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString,
+import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, getUIModeString,
   SettlementRule, } from '../../../../model';
 import { dateRangeValidator, } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
@@ -37,7 +38,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   orderSavedFailed: string;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -88,7 +89,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -100,7 +101,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       this.ruleChanged = false; // Clear the flag
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
 
@@ -192,7 +193,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     this.isOrderSubmitting = true;
     if (this.uiMode === UIMode.Create) {
       this.onCreateOrder();
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       this.onChangeOrder();
     }
   }
@@ -372,7 +373,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   private _generateOrder(): Order {
     const ordInstance: Order = new Order();
     ordInstance.HID = this.homeService.ChosedHome.ID;
-    if (this.uiMode === UIMode.Change) {
+    if (this.uiMode === UIMode.Update) {
       ordInstance.Id = this.routerID;
     }
     ordInstance.Name = this.detailFormGroup.get('nameControl').value;

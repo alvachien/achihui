@@ -3,8 +3,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Account, UIMode, getUIModeString,
+import { Account, getUIModeString,
   UICommonLabelEnum, ModelUtility, UIDisplayString, UIDisplayStringUtil,
   ConsoleLogTypeEnum, HomeMember, LearnCategory, LearnObject,
 } from '../../../../model';
@@ -31,7 +32,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   detailFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -73,7 +74,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -83,7 +84,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
 
@@ -168,7 +169,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             // TBD.
           }
         });
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
     }
   }
 }

@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { UIMode } from 'actslib';
 
 // tslint:disable:variable-name
 // tslint:disable:no-inferrable-types
@@ -76,27 +77,12 @@ export enum OverviewScopeEnum {
   All             = 9,
 }
 
-/**
- * UI Mode on detail page
- */
-export enum UIMode {
-  Create    = 1,
-  Change    = 2,
-  Display   = 3,
-
-  Invalid   = 9,
-}
-
-export function isUIEditable(mode: UIMode): boolean {
-  return mode === UIMode.Create || mode === UIMode.Change;
-}
-
 export function getUIModeString(mode: UIMode): string {
   switch (mode) {
     case UIMode.Create:
       return 'Common.Create';
 
-    case UIMode.Change:
+    case UIMode.Update:
       return 'Common.Change';
 
     case UIMode.Display:

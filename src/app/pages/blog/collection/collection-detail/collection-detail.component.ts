@@ -5,9 +5,10 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  BlogCollection, momentDateFormat, UIMode, getUIModeString, } from '../../../../model';
+  BlogCollection, momentDateFormat, getUIModeString, } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -55,7 +56,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -65,7 +66,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           this.odataService.readCollection(this.routerID)
@@ -81,7 +82,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
-              } else if (this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Update) {
                 this.detailFormGroup.enable();
                 this.detailFormGroup.get('idControl').disable();
               }

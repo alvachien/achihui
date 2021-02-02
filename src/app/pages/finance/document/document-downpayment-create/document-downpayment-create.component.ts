@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
+import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
   ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection,
   Document, DocumentItem, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn,

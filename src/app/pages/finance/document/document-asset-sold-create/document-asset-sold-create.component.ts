@@ -7,8 +7,9 @@ import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } fr
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
+import { Document, DocumentItem, getUIModeString, Account, financeAccountCategoryAsset,
   AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, momentDateFormat, ModelUtility,

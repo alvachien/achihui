@@ -13,7 +13,7 @@ export class CreditsComponent {
       url: 'https://angular.io',
       desp: 'One framework. Mobile & desktop. Angular is a development platform for building mobile and desktop web applications using TypeScript/JavaScript and other languages.'
     }, {
-      name: 'TypeScript 3+',
+      name: 'TypeScript 4+',
       url: 'http://www.typescriptlang.org/',
       desp: 'JavaScript that scales. TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. Any browser. Any host. Any OS. Open source.',
     }, {

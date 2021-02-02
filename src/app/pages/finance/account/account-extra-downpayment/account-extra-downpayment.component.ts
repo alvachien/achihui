@@ -7,8 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
+import { AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   ConsoleLogTypeEnum, ModelUtility, TranType, RepeatFrequencyEnum,
 } from '../../../../model';
