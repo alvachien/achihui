@@ -7,12 +7,13 @@ import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService, } from '../../../../services';
-import { UserAuthInfo, UIMode } from '../../../../model';
+import { UserAuthInfo } from '../../../../model';
 
 describe('CollectionDetailComponent', () => {
   let component: CollectionDetailComponent;

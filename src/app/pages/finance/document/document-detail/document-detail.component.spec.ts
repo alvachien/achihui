@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode } from 'actslib';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
@@ -15,7 +16,7 @@ import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange, Document } from '../../../../model';
+import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;

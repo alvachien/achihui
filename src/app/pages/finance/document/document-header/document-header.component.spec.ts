@@ -7,12 +7,13 @@ import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import { UIMode } from 'actslib';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from './document-header.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
-import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange, Document } from '../../../../model';
+import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -72,7 +73,7 @@ describe('DocumentHeaderComponent', () => {
       component.docType = financeDocTypeNormal;
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
-      component.currentUIMode = UIMode.Change;
+      component.currentUIMode = UIMode.Update;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
 
@@ -290,7 +291,7 @@ describe('DocumentHeaderComponent', () => {
     beforeEach(() => {
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
-      component.currentUIMode = UIMode.Change;
+      component.currentUIMode = UIMode.Update;
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
