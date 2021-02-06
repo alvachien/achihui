@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, flushMicrotasks } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, flushMicrotasks, } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BehaviorSubject, of, } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,14 +6,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { TranTypeListComponent } from './tran-type-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 
 describe('TranTypeListComponent', () => {
   let component: TranTypeListComponent;
@@ -39,7 +38,7 @@ describe('TranTypeListComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(fakeAsync(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -48,28 +47,21 @@ describe('TranTypeListComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
+        NzModalModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
       declarations: [
-        MessageDialogComponent,
         TranTypeListComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
-        NzModalService,
       ],
     });
 
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [
-          MessageDialogComponent,
-        ],
-      },
-    }).compileComponents();
+    TestBed.compileComponents();
   }));
 
   beforeEach(() => {
@@ -113,12 +105,11 @@ describe('TranTypeListComponent', () => {
 
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
     }));
-  
+
     afterEach(() => {
       overlayContainer.ngOnDestroy();
-    });    
+    });
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
@@ -126,15 +117,15 @@ describe('TranTypeListComponent', () => {
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      flushMicrotasks();
+      // fixture.detectChanges();
 
+      overlayContainerElement = overlayContainer.getContainerElement();
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
