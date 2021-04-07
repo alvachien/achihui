@@ -5,7 +5,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
-import { EChartOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem,
@@ -28,8 +28,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
   baseCurrency: string;
-  chartAssetOption: EChartOption;
-  chartLiabilitiesOption: EChartOption;
+  chartAssetOption: EChartsOption;
+  chartLiabilitiesOption: EChartsOption;
   listCategoryFilter: ITableFilterValues[] = [];
   selectedCategoryFilter: number[] = [];
   // Filters

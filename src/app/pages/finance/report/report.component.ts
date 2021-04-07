@@ -4,7 +4,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
-import { EChartOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
@@ -33,11 +33,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   // Card: Account
   reportAccountAsset = 0;
   reportAccountLibility = 0;
-  chartAccountOption: EChartOption;
+  chartAccountOption: EChartsOption;
   // Card: Control center
-  chartControlCenterOption: EChartOption;
+  chartControlCenterOption: EChartsOption;
   // Card: Order
-  chartOrderOption: EChartOption;
+  chartOrderOption: EChartsOption;
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome.IsChild;
