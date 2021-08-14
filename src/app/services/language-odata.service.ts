@@ -26,7 +26,7 @@ export class LanguageOdataService {
 
   public fetchAllLanguages(): Observable<AppLanguage[]> {
     if (!this._islistLoaded) {
-      const apiurl: string = environment.ApiUrl + '/api/Languages';
+      const apiurl: string = environment.ApiUrl + '/Languages';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')

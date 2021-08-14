@@ -16,9 +16,9 @@ export class LearnStorageService {
   private _isEnSentListLoaded: boolean = false;
 
   // URLs
-  readonly objecturl: string = environment.ApiUrl + '/api/learnobject';
-  readonly historyurl: string = environment.ApiUrl + '/api/learnhistory';
-  readonly questionurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
+  readonly objecturl: string = environment.ApiUrl + '/LearnObject';
+  readonly historyurl: string = environment.ApiUrl + '/LearnHistory';
+  readonly questionurl: string = environment.ApiUrl + '/LearnQuestionBank';
 
   listEnWordChange: BehaviorSubject<EnWord[]> = new BehaviorSubject<EnWord[]>([]);
   get EnWords(): EnWord[] {
@@ -169,7 +169,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
+    let apiurl: string = environment.ApiUrl + '/LearnReportUserDate';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -208,7 +208,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
+    let apiurl: string = environment.ApiUrl + '/LearnReportCtgyDate';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -421,7 +421,7 @@ export class LearnStorageService {
    */
   public fetchAllEnWords(forceReload?: boolean): Observable<EnWord[]> {
     if (!this._isEnWordListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LearnEnWord';
+      const apiurl: string = environment.ApiUrl + '/LearnEnWord';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -479,7 +479,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnEnWord';
+    let apiurl: string = environment.ApiUrl + '/LearnEnWord';
 
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -527,7 +527,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnEnWord/' + itemid.toString();
+    let apiurl: string = environment.ApiUrl + '/LearnEnWord/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -568,7 +568,7 @@ export class LearnStorageService {
    */
   public fetchAllEnSentences(forceReload?: boolean): Observable<EnSentence[]> {
     if (!this._isEnSentListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LearnEnSentence';
+      const apiurl: string = environment.ApiUrl + '/LearnEnSentence';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -626,7 +626,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnEnSentence';
+    let apiurl: string = environment.ApiUrl + '/LearnEnSentence';
 
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -674,7 +674,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnEnSentence/' + itemid.toString();
+    let apiurl: string = environment.ApiUrl + '/LearnEnSentence/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {

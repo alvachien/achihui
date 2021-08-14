@@ -104,7 +104,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.uploadAPI = environment.ApiUrl + '/api/PhotoFile';
+    this.uploadAPI = environment.ApiUrl + '/PhotoFile';
   }
 
   ngOnInit() {

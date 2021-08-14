@@ -20,18 +20,18 @@ describe('FinanceOdataService', () => {
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: FinanceOdataService;
-  const currAPIURL: any = environment.ApiUrl + `/api/Currencies`;
-  const accountCategoryAPIURL: any =  environment.ApiUrl + `/api/FinanceAccountCategories`;
-  const docTypeAPIURL: any = environment.ApiUrl + `/api/FinanceDocumentTypes`;
-  const tranTypeAPIURL: any = environment.ApiUrl + `/api/FinanceTransactionTypes`;
-  const assetCategoryAPIURL: any = environment.ApiUrl + `/api/FinanceAssetCategories`;
-  const accountAPIURL: any = environment.ApiUrl + `/api/FinanceAccounts`;
-  const ccAPIURL: any = environment.ApiUrl + `/api/FinanceControlCenters`;
-  const documentAPIURL: any = environment.ApiUrl + `/api/FinanceDocuments`;
+  const currAPIURL: any = environment.ApiUrl + `/Currencies`;
+  const accountCategoryAPIURL: any =  environment.ApiUrl + `/FinanceAccountCategories`;
+  const docTypeAPIURL: any = environment.ApiUrl + `/FinanceDocumentTypes`;
+  const tranTypeAPIURL: any = environment.ApiUrl + `/FinanceTransactionTypes`;
+  const assetCategoryAPIURL: any = environment.ApiUrl + `/FinanceAssetCategories`;
+  const accountAPIURL: any = environment.ApiUrl + `/FinanceAccounts`;
+  const ccAPIURL: any = environment.ApiUrl + `/FinanceControlCenters`;
+  const documentAPIURL: any = environment.ApiUrl + `/FinanceDocuments`;
   const adpDocumentAPIURL: any = documentAPIURL + `/PostDPDocument`;
-  const reportByAccountURL: any = environment.ApiUrl + `/api/FinanceReportByAccounts`;
-  const reportByCCURL: any = environment.ApiUrl + `/api/FinanceReportByControlCenters`;
-  const reportByOrderURL: any = environment.ApiUrl + `/api/FinanceReportByOrders`;
+  const reportByAccountURL: any = environment.ApiUrl + `/FinanceReportByAccounts`;
+  const reportByCCURL: any = environment.ApiUrl + `/FinanceReportByControlCenters`;
+  const reportByOrderURL: any = environment.ApiUrl + `/FinanceReportByOrders`;
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -2111,7 +2111,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('createDocumentFromDPTemplate', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments/PostDocument';
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments/PostDocument';
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -2305,7 +2305,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('fetchAllDPTmpDocs', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
@@ -2385,7 +2385,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('fetchAllLoanTmpDocs', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
@@ -2700,7 +2700,7 @@ describe('FinanceOdataService', () => {
     let apiurl: string;
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
-      apiurl = environment.ApiUrl + '/api/FinanceTmpLoanDocuments/PostRepayDocument';
+      apiurl = environment.ApiUrl + '/FinanceTmpLoanDocuments/PostRepayDocument';
     });
 
     afterEach(() => {
@@ -3029,7 +3029,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('calcADPTmpDocs', () => {
-    const calcADPTmpAPIURL: any = environment.ApiUrl + '/api/GetRepeatedDatesWithAmount';
+    const calcADPTmpAPIURL: any = environment.ApiUrl + '/GetRepeatedDatesWithAmount';
     let inputData: RepeatedDatesWithAmountAPIInput;
     let outputData: RepeatedDatesWithAmountAPIOutput[];
 
@@ -3098,7 +3098,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('calcLoanTmpDocs', () => {
-    const calcLoanTmpAPIURL: any = environment.ApiUrl + '/api/GetRepeatedDatesWithAmountAndInterest';
+    const calcLoanTmpAPIURL: any = environment.ApiUrl + '/GetRepeatedDatesWithAmountAndInterest';
     let inputData: RepeatDatesWithAmountAndInterestAPIInput;
     let outputData: RepeatDatesWithAmountAndInterestAPIOutput[];
 
@@ -3342,7 +3342,7 @@ describe('FinanceOdataService', () => {
 
     beforeAll(() => {
       objrst = {
-        '@odata.context': 'http://localhost:25688/api/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)',
+        '@odata.context': 'http://localhost:25688/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)',
         '@odata.count': 2,
         value: [{
           DocumentID: 668, ItemID: 1, TransactionDate: '2018-03-27', AccountID: 8, TransactionType: 3, Currency: 'CNY',
@@ -3592,7 +3592,7 @@ describe('FinanceOdataService', () => {
   });
 
   describe('getRepeatedDates', () => {
-    const apiurl: any = environment.ApiUrl + '/api/GetRepeatedDates';
+    const apiurl: any = environment.ApiUrl + '/GetRepeatedDates';
     let inputData: RepeatedDatesAPIInput;
     let outputData: RepeatedDatesAPIOutput[];
 

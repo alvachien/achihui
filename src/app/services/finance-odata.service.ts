@@ -47,12 +47,12 @@ export class FinanceOdataService {
   private isReportByOrderLoaded: boolean;
   private listReportByOrder: FinanceReportByOrder[];
 
-  readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccounts';
-  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenters';
-  readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrders';
-  readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocuments';
-  readonly docItemViewAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItemViews';
-  readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlans';
+  readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/FinanceOrders';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/FinanceDocuments';
+  readonly docItemViewAPIUrl: string = environment.ApiUrl + '/FinanceDocumentItemViews';
+  readonly planAPIUrl: string = environment.ApiUrl + '/FinancePlans';
 
   // Buffer in current page.
   get Currencies(): Currency[] {
@@ -141,7 +141,7 @@ export class FinanceOdataService {
    */
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
-      const currencyAPIUrl: string = environment.ApiUrl + '/api/Currencies';
+      const currencyAPIUrl: string = environment.ApiUrl + '/Currencies';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -193,7 +193,7 @@ export class FinanceOdataService {
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this.isAcntCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceAccountCategories`;
+      const apiurl: string = environment.ApiUrl + `/FinanceAccountCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -248,7 +248,7 @@ export class FinanceOdataService {
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this.isDocTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceDocumentTypes`;
+      const apiurl: string = environment.ApiUrl + `/FinanceDocumentTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -303,7 +303,7 @@ export class FinanceOdataService {
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this.isTranTypeListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceTransactionTypes`;
+      const apiurl: string = environment.ApiUrl + `/FinanceTransactionTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -381,7 +381,7 @@ export class FinanceOdataService {
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this.isAsstCtgyListLoaded || forceReload) {
       const hid = this.homeService.ChosedHome.ID;
-      const apiurl: string = environment.ApiUrl + `/api/FinanceAssetCategories`;
+      const apiurl: string = environment.ApiUrl + `/FinanceAssetCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -1414,7 +1414,7 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpDPDocuments';
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments';
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
 
@@ -1461,7 +1461,7 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    const apiurl: string = environment.ApiUrl + '/api/FinanceTmpLoanDocuments';
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
     let params: HttpParams = new HttpParams();
     let filterstring = `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`;
     if (docid) {
@@ -1548,7 +1548,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + `/api/FinanceTmpDPDocuments/PostDocument`;
+    const apiurl: string = environment.ApiUrl + `/FinanceTmpDPDocuments/PostDocument`;
 
     return this.http.post(apiurl, {
       AccountID: tpDoc.AccountId,
@@ -1705,7 +1705,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + `/api/FinanceTmpLoanDocuments/PostRepayDocument`;
+    const apiurl: string = environment.ApiUrl + `/FinanceTmpLoanDocuments/PostRepayDocument`;
 
     return this.http.post(apiurl, {
       DocumentInfo: doc.writeJSONObject(),
@@ -1886,7 +1886,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$filter', `HomeID eq ${hid}`);
 
-      const apiurl = environment.ApiUrl + '/api/FinanceReportByAccounts';
+      const apiurl = environment.ApiUrl + '/FinanceReportByAccounts';
       return this.http.get(apiurl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByAccount`,
@@ -1934,7 +1934,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$filter', `HomeID eq ${hid}`);
 
-      const apiurl = environment.ApiUrl + '/api/FinanceReportByControlCenters';
+      const apiurl = environment.ApiUrl + '/FinanceReportByControlCenters';
       return this.http.get(apiurl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByControlCenter`,
@@ -1982,7 +1982,7 @@ export class FinanceOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('$filter', `HomeID eq ${hid}`);
 
-      const apiurl = environment.ApiUrl + '/api/FinanceReportByOrders';
+      const apiurl = environment.ApiUrl + '/FinanceReportByOrders';
       return this.http.get(apiurl, { headers, params, })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByOrder`,
@@ -2026,7 +2026,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDatesWithAmount';
+    const apiurl: string = environment.ApiUrl + '/GetRepeatedDatesWithAmount';
     const jobject: any = {
       StartDate: datainput.StartDate.format(momentDateFormat),
       TotalAmount: datainput.TotalAmount,
@@ -2074,7 +2074,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDatesWithAmountAndInterest';
+    const apiurl: string = environment.ApiUrl + '/GetRepeatedDatesWithAmountAndInterest';
     const jobject: any = {
       InterestFreeLoan: datainput.InterestFreeLoan ? true : false,
       InterestRate: datainput.InterestRate ? datainput.InterestRate : 0,
@@ -2141,7 +2141,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/GetRepeatedDates';
+    const apiurl: string = environment.ApiUrl + '/GetRepeatedDates';
     const jobject: any = {
       StartDate: datainput.StartDate.format(momentDateFormat),
       EndDate: datainput.EndDate.format(momentDateFormat),

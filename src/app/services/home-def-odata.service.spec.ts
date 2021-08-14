@@ -235,7 +235,7 @@ describe('HomeDefOdataService', () => {
   });
 
   describe('getHomeKeyFigure', () => {
-    const apiurl: string = environment.ApiUrl + '/api/HomeKeyFigure';
+    const apiurl: string = environment.ApiUrl + '/HomeKeyFigure';
     beforeEach(() => {
       service = TestBed.inject(HomeDefOdataService);
       service.ChosedHome = fakeData.chosedHome;

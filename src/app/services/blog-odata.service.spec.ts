@@ -45,7 +45,7 @@ describe('BlogOdataService', () => {
 
   /// BlogOdataService method tests begin ///
   describe('fetchAllCollections', () => {
-    const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
+    const apiUrl: string = environment.ApiUrl + '/BlogCollections';
 
     beforeEach(() => {
       service = TestBed.inject(BlogOdataService);

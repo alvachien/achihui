@@ -33,7 +33,7 @@ export class CreditsComponent {
       url: 'https://momentjs.com/',
       desp: 'Parse, validate, manipulate, and display dates and times in JavaScript',
     }, {
-      name: '.NET Core 3.1+',
+      name: '.NET Core 5.0+',
       url: 'https://dot.net',
       desp: 'Free. Cross-platform. Open source. A developer platform for building all your apps.',
     },

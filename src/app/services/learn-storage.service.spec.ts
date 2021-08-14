@@ -16,7 +16,7 @@ describe('LearnStorageService', () => {
   let httpClient: HttpClient;
   let fakeData: FakeDataHelper;
   let service: LearnStorageService;
-  const ctgyAPIURL: any = environment.ApiUrl + '/api/learncategory';
+  const ctgyAPIURL: any = environment.ApiUrl + '/LearnCategory';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -59,7 +59,7 @@ describe('LearnStorageService', () => {
   /// LearnStorageService method tests begin ///
 
   describe('getHistoryReportByUser', () => {
-    const apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
+    const apiurl: string = environment.ApiUrl + '/LearnReportUserDate';
 
     beforeEach(() => {
       service = TestBed.inject(LearnStorageService);
@@ -115,7 +115,7 @@ describe('LearnStorageService', () => {
   });
 
   describe('getHistoryReportByCategory', () => {
-    const apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
+    const apiurl: string = environment.ApiUrl + '/LearnReportCtgyDate';
 
     beforeEach(() => {
       service = TestBed.inject(LearnStorageService);

@@ -21,13 +21,13 @@ export class FinanceStorageService {
   // Buffer
   private _listAccount: Account[];
 
-  readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlan';
-  readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocument';
-  readonly documentMassCreateAPIUrl: string = environment.ApiUrl + '/api/FinanceNormalDocMassCreate';
-  readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccount';
-  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
-  readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
-  readonly docItemAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItem';
+  readonly planAPIUrl: string = environment.ApiUrl + '/FinancePlan';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/FinanceDocument';
+  readonly documentMassCreateAPIUrl: string = environment.ApiUrl + '/FinanceNormalDocMassCreate';
+  readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccount';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenter';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/FinanceOrder';
+  readonly docItemAPIUrl: string = environment.ApiUrl + '/FinanceDocumentItem';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -80,7 +80,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+    let apiurl: string = environment.ApiUrl + '/financeloandocument';
 
     this._http.put(apiurl, jdata, {
       headers: headers,
@@ -123,7 +123,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    let apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     const jdata: string = JSON && JSON.stringify(obj);
 
     return this._http.post(apiurl, jdata, {
@@ -153,7 +153,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -226,7 +226,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTrend';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (exctran) {
@@ -283,7 +283,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTrendEx';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('trendtype', (<number>trendtype).toString());
@@ -337,7 +337,7 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
+    let apiurl: string = environment.ApiUrl + '/FinanceDocCreatedFrequenciesByUser';
     return this._http.get(apiurl, {
       headers: headers,
       params: params,

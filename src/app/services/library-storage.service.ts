@@ -40,9 +40,9 @@ export class LibraryStorageService {
     return this.listMovieChange.value;
   }
 
-  readonly bookCategoryAPIURL: any = environment.ApiUrl + '/api/LibBookCategory';
-  readonly movieGenreAPIURL: any = environment.ApiUrl + '/api/LibMovieGenre';
-  readonly locationAPIURL: string = environment.ApiUrl + '/api/LibLocation';
+  readonly bookCategoryAPIURL: any = environment.ApiUrl + '/LibBookCategory';
+  readonly movieGenreAPIURL: any = environment.ApiUrl + '/LibMovieGenre';
+  readonly locationAPIURL: string = environment.ApiUrl + '/LibLocation';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -226,7 +226,7 @@ export class LibraryStorageService {
   // Book
   public fetchAllBooks(forceReload?: boolean): Observable<any> {
     if (!this._isBookListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LibBook';
+      const apiurl: string = environment.ApiUrl + '/LibBook';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')

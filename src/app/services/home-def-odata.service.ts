@@ -20,7 +20,7 @@ export class HomeDefOdataService {
   private _islistLoaded: boolean;
   private _listHomeDefList: HomeDef[];
   // API url.
-  readonly apiUrl = environment.ApiUrl + `/api/HomeDefines`;
+  readonly apiUrl = environment.ApiUrl + `/HomeDefines`;
 
   get HomeDefs(): HomeDef[] {
     return this._listHomeDefList;
@@ -243,7 +243,7 @@ export class HomeDefOdataService {
    * @param skip Skip the first X messages
    */
   public getHomeMessages(sentbox: boolean, top: number, skip: number): Observable<any> {
-    const apiurl: string = environment.ApiUrl + '/api/homemsg';
+    const apiurl: string = environment.ApiUrl + '/homemsg';
     const curhid: number = this.ChosedHome.ID;
     const requestUrl: any = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
@@ -264,7 +264,7 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/api/homemsg';
+    const apiurl: string = environment.ApiUrl + '/homemsg';
 
     const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
     return this._http.post(apiurl, jdata, {
@@ -287,7 +287,7 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
+    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
     const jdata: any[] = [{
@@ -318,7 +318,7 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
+    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
     const jdata: any[] = [{
@@ -345,7 +345,7 @@ export class HomeDefOdataService {
    * Get Key Figure
    */
   public getHomeKeyFigure(): Observable<any> {
-    const apiurl: string = environment.ApiUrl + '/api/HomeKeyFigure';
+    const apiurl: string = environment.ApiUrl + '/HomeKeyFigure';
     const curhid: number = this.ChosedHome.ID;
     const requestUrl: any = `${apiurl}?hid=${curhid}`;
 
@@ -379,7 +379,7 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json');
 
-    return this._http.post(environment.ApiUrl + '/api/DBVersions', {}, {
+    return this._http.post(environment.ApiUrl + '/DBVersions', {}, {
       headers,
     }).pipe(map((response: HttpResponse<any>) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,

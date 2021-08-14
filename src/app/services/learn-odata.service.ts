@@ -18,8 +18,8 @@ export class LearnOdataService {
   private listCategory: LearnCategory[];
 
   // URLs
-  readonly categoryurl: string = environment.ApiUrl + '/api/LearnCategories';
-  readonly objecturl: string = environment.ApiUrl + '/api/LearnObjects';
+  readonly categoryurl: string = environment.ApiUrl + '/LearnCategories';
+  readonly objecturl: string = environment.ApiUrl + '/LearnObjects';
   get Categories(): LearnCategory[] {
     return this.listCategory;
   }

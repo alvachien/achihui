@@ -12,9 +12,9 @@ import * as moment from 'moment';
 
 @Injectable()
 export class EventStorageService {
-  readonly eventHabitUrl: string = environment.ApiUrl + '/api/eventhabit';
-  readonly recurEventUrl: string = environment.ApiUrl + '/api/recurevent';
-  readonly generalEventUrl: string = environment.ApiUrl + '/api/event';
+  readonly eventHabitUrl: string = environment.ApiUrl + '/eventhabit';
+  readonly recurEventUrl: string = environment.ApiUrl + '/recurevent';
+  readonly generalEventUrl: string = environment.ApiUrl + '/event';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -284,7 +284,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/RecurEventSimulator';
+    let apiurl: string = environment.ApiUrl + '/RecurEventSimulator';
     // let params: HttpParams = new HttpParams();
     // params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     let jdata: any = {
@@ -387,7 +387,7 @@ export class EventStorageService {
   }
 
   public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
-    const apiurl: string = environment.ApiUrl + '/api/HabitEventDetailWithCheckIn';
+    const apiurl: string = environment.ApiUrl + '/HabitEventDetailWithCheckIn';
     const curhid: number = this._homeService.ChosedHome.ID;
     let bgnstr: string = bgn.format(momentDateFormat);
     let endstr: string = end.format(momentDateFormat);
@@ -550,7 +550,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/eventhabitcheckin';
+    let apiurl: string = environment.ApiUrl + '/eventhabitcheckin';
     let jdata: string = JSON && JSON.stringify(hevnt.writeJSONObject());
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
