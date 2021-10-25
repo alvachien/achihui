@@ -24,9 +24,9 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./document-downpayment-create.component.less'],
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   private _destroyed$: ReplaySubject<boolean>;
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _isADP: boolean;
 
   public curMode: UIMode = UIMode.Create;

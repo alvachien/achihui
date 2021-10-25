@@ -14,7 +14,7 @@ import { AuthService, HomeDefOdataService, } from '../../../services';
   styleUrls: ['./home-def-list.component.less'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
 
   isLoadingResults: boolean;

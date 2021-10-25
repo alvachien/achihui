@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { momentDateFormat } from './common';
 
-// tslint:disable: variable-name
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 export const BlogPostStatus_Draft = 1;
 export const BlogPostStatus_PublishAsPublic = 2;
 export const BlogPostStatus_PublishAsPrivate = 3;

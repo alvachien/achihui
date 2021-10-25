@@ -154,7 +154,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinanceOdataService`,
             ConsoleLogTypeEnum.debug);
 
@@ -192,7 +192,7 @@ export class FinanceOdataService {
    */
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this.isAcntCtgyListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       const apiurl: string = environment.ApiUrl + `/FinanceAccountCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
@@ -207,7 +207,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceOdataService`,
             ConsoleLogTypeEnum.debug);
 
@@ -247,7 +247,7 @@ export class FinanceOdataService {
    */
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this.isDocTypeListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       const apiurl: string = environment.ApiUrl + `/FinanceDocumentTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
@@ -262,7 +262,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceOdataService.`,
             ConsoleLogTypeEnum.debug);
 
@@ -302,7 +302,7 @@ export class FinanceOdataService {
    */
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this.isTranTypeListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       const apiurl: string = environment.ApiUrl + `/FinanceTransactionTypes`;
 
       let headers: HttpHeaders = new HttpHeaders();
@@ -318,7 +318,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllTranTypes`,
             ConsoleLogTypeEnum.debug);
 
@@ -380,7 +380,7 @@ export class FinanceOdataService {
    */
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this.isAsstCtgyListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       const apiurl: string = environment.ApiUrl + `/FinanceAssetCategories`;
 
       let headers: HttpHeaders = new HttpHeaders();
@@ -395,7 +395,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceOdataService`,
             ConsoleLogTypeEnum.debug);
 
@@ -433,7 +433,7 @@ export class FinanceOdataService {
    */
   public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
     if (!this.isAccountListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -447,7 +447,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllAccounts.`,
             ConsoleLogTypeEnum.debug);
 
@@ -490,13 +490,13 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${acntid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${acntid}`);
     params = params.append('$expand', `ExtraDP,ExtraAsset,ExtraLoan`);
     return this.http.get(this.accountAPIUrl, {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readAccount`, ConsoleLogTypeEnum.debug);
 
         const hd: Account = new Account();
@@ -539,7 +539,7 @@ export class FinanceOdataService {
     return this.http.post(this.accountAPIUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAccount succeed',
           ConsoleLogTypeEnum.debug);
 
@@ -571,7 +571,7 @@ export class FinanceOdataService {
     return this.http.put(this.accountAPIUrl + `(${objAcnt.Id})`, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccount succeed',
           ConsoleLogTypeEnum.debug);
 
@@ -615,7 +615,7 @@ export class FinanceOdataService {
     return this.http.patch(this.accountAPIUrl + `/${accountId}`, listOfChanges, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeAccountByPatch succeed',
           ConsoleLogTypeEnum.debug);
 
@@ -657,7 +657,7 @@ export class FinanceOdataService {
     return this.http.delete(this.accountAPIUrl + `(${accountId})`, {
       headers
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteAccount succeed',
           ConsoleLogTypeEnum.debug);
 
@@ -684,7 +684,7 @@ export class FinanceOdataService {
    */
   public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
     if (!this.isConctrolCenterListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -698,7 +698,7 @@ export class FinanceOdataService {
           params,
         })
         // .retry(3)
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllControlCenters, map.`,
             ConsoleLogTypeEnum.debug);
 
@@ -742,13 +742,13 @@ export class FinanceOdataService {
 
     const apiurl: string = this.controlCenterAPIUrl;
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${ccid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${ccid}`);
     params = params.append('$select', `ID,Name,Comment,Owner,ParentID`);
     return this.http.get(apiurl, {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readControlCenter`,
          ConsoleLogTypeEnum.debug);
 
@@ -791,7 +791,7 @@ export class FinanceOdataService {
     return this.http.post(this.controlCenterAPIUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createControlCenter',
           ConsoleLogTypeEnum.debug);
 
@@ -829,7 +829,7 @@ export class FinanceOdataService {
       headers,
       // params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeControlCenter',
           ConsoleLogTypeEnum.debug);
 
@@ -874,7 +874,7 @@ export class FinanceOdataService {
     return this.http.patch(apiurl, listOfChanges, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeControlCenterByPatch',
           ConsoleLogTypeEnum.debug);
 
@@ -915,7 +915,7 @@ export class FinanceOdataService {
     return this.http.delete(this.controlCenterAPIUrl + `${objectId}`, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteControlCenter',
           ConsoleLogTypeEnum.debug);
 
@@ -941,7 +941,7 @@ export class FinanceOdataService {
    */
   public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
     if (!this.isOrderListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -953,7 +953,7 @@ export class FinanceOdataService {
       params = params.append('$expand', `SRule`);
 
       return this.http.get(this.orderAPIUrl, { headers, params, })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllOrders`,
             ConsoleLogTypeEnum.debug);
 
@@ -996,13 +996,13 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${ordid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${ordid}`);
     params = params.append('$expand', `SRule`);
     return this.http.get(this.orderAPIUrl, {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceStorageService readOrder`,
           ConsoleLogTypeEnum.debug);
 
@@ -1046,7 +1046,7 @@ export class FinanceOdataService {
     return this.http.post(this.orderAPIUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createOrder.',
           ConsoleLogTypeEnum.debug);
 
@@ -1081,7 +1081,7 @@ export class FinanceOdataService {
     return this.http.put(apiurl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService changeOrder`,
           ConsoleLogTypeEnum.debug);
 
@@ -1125,7 +1125,7 @@ export class FinanceOdataService {
     return this.http.patch(apiurl, listOfChanges, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService changeOrderByPatch`,
           ConsoleLogTypeEnum.debug);
 
@@ -1166,7 +1166,7 @@ export class FinanceOdataService {
     return this.http.delete(this.orderAPIUrl + `(${orderId})`, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService deleteOrder succeed.',
           ConsoleLogTypeEnum.debug);
 
@@ -1195,7 +1195,7 @@ export class FinanceOdataService {
    */
   public fetchAllPlans(forceReload?: boolean): Observable<Plan[]> {
     if (!this.isPlanListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -1205,7 +1205,7 @@ export class FinanceOdataService {
       params = params.append('$filter', `HomeID eq ${hid}`);
 
       return this.http.get(this.planAPIUrl, { headers, params, })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllPlans`,
             ConsoleLogTypeEnum.debug);
 
@@ -1250,7 +1250,7 @@ export class FinanceOdataService {
     return this.http.post(this.planAPIUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService createPlan`,
           ConsoleLogTypeEnum.debug);
 
@@ -1276,9 +1276,9 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${planid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${planid}`);
     return this.http.get(this.planAPIUrl, { headers, params })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readPlan`,
           ConsoleLogTypeEnum.debug);
 
@@ -1321,8 +1321,8 @@ export class FinanceOdataService {
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-    const hid = this.homeService.ChosedHome.ID;
-    let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
+    const hid = this.homeService.ChosedHome!.ID;
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome!.ID}`;
     const subfilter = getFilterString(filters);
     if (subfilter) {
       filterstr += ` and ${subfilter}`;
@@ -1340,7 +1340,7 @@ export class FinanceOdataService {
     params = params.append('$expand', `Items`);
 
     return this.http.get(this.documentAPIUrl, { headers, params })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllDocuments.`,
           ConsoleLogTypeEnum.debug);
 
@@ -1379,10 +1379,10 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${docid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${docid}`);
     params = params.append('$expand', `Items`);
     return this.http.get(this.documentAPIUrl, { headers, params })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readDocument`,
           ConsoleLogTypeEnum.debug);
 
@@ -1411,7 +1411,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome.ID;
+    const hid = this.homeService.ChosedHome!.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
     const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments';
@@ -1422,7 +1422,7 @@ export class FinanceOdataService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllDPTmpDocs.`,
           ConsoleLogTypeEnum.debug);
 
@@ -1458,7 +1458,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome.ID;
+    const hid = this.homeService.ChosedHome!.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
     const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
@@ -1482,7 +1482,7 @@ export class FinanceOdataService {
         headers,
         params,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllLoanTmpDocs.`,
           ConsoleLogTypeEnum.debug);
 
@@ -1522,7 +1522,7 @@ export class FinanceOdataService {
     return this.http.post(this.documentAPIUrl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocument, map.`,
           ConsoleLogTypeEnum.debug);
 
@@ -1553,11 +1553,11 @@ export class FinanceOdataService {
     return this.http.post(apiurl, {
       AccountID: tpDoc.AccountId,
       DocumentID: tpDoc.DocId,
-      HomeID: this.homeService.ChosedHome.ID,
+      HomeID: this.homeService.ChosedHome!.ID,
     }, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocumentFromDPTemplate`,
           ConsoleLogTypeEnum.debug);
 
@@ -1589,7 +1589,7 @@ export class FinanceOdataService {
     return this.http.delete(apiurl, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, deleteDocument, map.`,
           ConsoleLogTypeEnum.debug);
 
@@ -1622,7 +1622,7 @@ export class FinanceOdataService {
     const sobj: any = {};
     sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
     const acntobj: Account = new Account();
-    acntobj.HID = this.homeService.ChosedHome.ID;
+    acntobj.HID = this.homeService.ChosedHome!.ID;
     if (isADP) {
       acntobj.CategoryId = financeAccountCategoryAdvancePayment;
     } else {
@@ -1641,7 +1641,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, sobj, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createADPDocument in FinanceStorageService: ' + response,
           ConsoleLogTypeEnum.debug);
 
@@ -1678,7 +1678,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, sobj, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
@@ -1710,11 +1710,11 @@ export class FinanceOdataService {
     return this.http.post(apiurl, {
       DocumentInfo: doc.writeJSONObject(),
       LoanTemplateDocumentID: tmpdocid,
-      HomeID: this.homeService.ChosedHome.ID,
+      HomeID: this.homeService.ChosedHome!.ID,
     }, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createLoanRepayDoc`,
           ConsoleLogTypeEnum.debug);
 
@@ -1748,7 +1748,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService createAssetBuyinDocument succeed',
           ConsoleLogTypeEnum.debug);
 
@@ -1783,7 +1783,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<Document>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
@@ -1818,7 +1818,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
 
@@ -1877,7 +1877,7 @@ export class FinanceOdataService {
    */
   public fetchAllReportsByAccount(forceReload?: boolean): Observable<FinanceReportByAccount[]> {
     if (!this.isReportByAccountLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -1888,7 +1888,7 @@ export class FinanceOdataService {
 
       const apiurl = environment.ApiUrl + '/FinanceReportByAccounts';
       return this.http.get(apiurl, { headers, params, })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByAccount`,
             ConsoleLogTypeEnum.debug);
 
@@ -1925,7 +1925,7 @@ export class FinanceOdataService {
    */
   public fetchAllReportsByControlCenter(forceReload?: boolean): Observable<FinanceReportByControlCenter[]> {
     if (!this.isReportByControlCenterLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -1936,7 +1936,7 @@ export class FinanceOdataService {
 
       const apiurl = environment.ApiUrl + '/FinanceReportByControlCenters';
       return this.http.get(apiurl, { headers, params, })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByControlCenter`,
             ConsoleLogTypeEnum.debug);
 
@@ -1973,7 +1973,7 @@ export class FinanceOdataService {
    */
   public fetchAllReportsByOrder(forceReload?: boolean): Observable<FinanceReportByOrder[]> {
     if (!this.isReportByOrderLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome.ID;
+      const hid = this.homeService.ChosedHome!.ID;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -1984,7 +1984,7 @@ export class FinanceOdataService {
 
       const apiurl = environment.ApiUrl + '/FinanceReportByOrders';
       return this.http.get(apiurl, { headers, params, })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllReportsByOrder`,
             ConsoleLogTypeEnum.debug);
 
@@ -2040,7 +2040,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
 
         const results: RepeatedDatesWithAmountAPIOutput[] = [];
@@ -2107,7 +2107,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceOdataService`, ConsoleLogTypeEnum.debug);
 
         const results: RepeatDatesWithAmountAndInterestAPIOutput[] = [];
@@ -2152,7 +2152,7 @@ export class FinanceOdataService {
     return this.http.post(apiurl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService GetRepeatedDates`,
           ConsoleLogTypeEnum.debug);
 
@@ -2342,7 +2342,7 @@ export class FinanceOdataService {
 
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp');
-    let filterstr = `HomeID eq ${this.homeService.ChosedHome.ID}`;
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome!.ID}`;
     const subfilter = getFilterString(filters);
     if (subfilter) {
       filterstr += ` and ${subfilter}`;

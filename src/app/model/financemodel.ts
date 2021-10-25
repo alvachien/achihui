@@ -1,7 +1,7 @@
 import * as hih from './common';
 import * as moment from 'moment';
 
-// tslint:disable:variable-name
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
 export const financeAccountCategoryCash = 1;
 export const financeAccountCategoryDeposit = 2;
@@ -88,26 +88,26 @@ export interface CurrencyJson {
  * Currency
  */
 export class Currency extends hih.BaseModel {
-  private _curr: string;
-  private _name: string;
-  private _symbol: string;
+  private _curr: string | null = null;
+  private _name: string | null = null;
+  private _symbol: string | null = null;
 
-  get Currency(): string {
+  get Currency(): string | null {
     return this._curr;
   }
-  set Currency(curr: string) {
+  set Currency(curr: string | null) {
     this._curr = curr;
   }
-  get Name(): string {
+  get Name(): string | null {
     return this._name;
   }
-  set Name(nm: string) {
+  set Name(nm: string | null) {
     this._name = nm;
   }
-  get Symbol(): string {
+  get Symbol(): string | null {
     return this._symbol;
   }
-  set Symbol(sy: string) {
+  set Symbol(sy: string | null) {
     this._symbol = sy;
   }
 
@@ -117,24 +117,24 @@ export class Currency extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-    this._curr = undefined;
-    this._name = undefined;
-    this._symbol = undefined;
-   }
+    this._curr = null;
+    this._name = null;
+    this._symbol = null;
+  }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
-    if (this._curr === undefined
+    if (this._curr === null
       || this._curr.length <= 0) {
       return false;
     }
-    if (this._name === undefined
+    if (this._name === null
       || this._name.length <= 0) {
       return false;
     }
-    if (this._symbol === undefined
+    if (this._symbol === null
       || this._symbol.length <= 0) {
       return false;
     }
@@ -180,26 +180,26 @@ export interface AccountCategoryJson extends hih.BaseModelJson {
  * Account category
  */
 export class AccountCategory extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _assetFlag: boolean;
-  private _comment: string;
+  private _id: number | null = null;
+  private _hid: number | null = null;
+  private _name: string | null = null;
+  private _assetFlag: boolean | null = null;
+  private _comment: string | null = null;
 
-  get ID(): number          { return this._id;        }
-  set ID(id: number)        { this._id = id;          }
-  get HID(): number         { return this._hid;       }
-  set HID(hid: number)      { this._hid = hid;        }
-  get Name(): string        { return this._name;      }
-  set Name(nm: string)      { this._name = nm;        }
-  get AssetFlag(): boolean  { return this._assetFlag; }
-  set AssetFlag(af: boolean) {
+  get ID(): number | null          { return this._id;        }
+  set ID(id: number | null)        { this._id = id;          }
+  get HID(): number  | null        { return this._hid;       }
+  set HID(hid: number | null)      { this._hid = hid;        }
+  get Name(): string | null        { return this._name;      }
+  set Name(nm: string | null)      { this._name = nm;        }
+  get AssetFlag(): boolean | null  { return this._assetFlag; }
+  set AssetFlag(af: boolean | null) {
     this._assetFlag = af;
   }
-  get Comment(): string {
+  get Comment(): string | null {
     return this._comment;
   }
-  set Comment(cmt: string) {
+  set Comment(cmt: string | null) {
     this._comment = cmt;
   }
 
@@ -209,18 +209,18 @@ export class AccountCategory extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-    this._id = undefined;
-    this._hid = undefined;
-    this._name = undefined;
-    this._assetFlag = undefined;
-    this._comment = undefined;
+    this._id = null;
+    this._hid = null;
+    this._name = null;
+    this._assetFlag = null;
+    this._comment = null;
   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
-    if (this._name === undefined
+    if (this._name === null
       || this._name.length <= 0) {
       return false;
     }
@@ -269,19 +269,19 @@ export interface DocumentTypeJson extends hih.BaseModelJson {
 }
 
 export class DocumentType extends hih.BaseModel {
-  private _hid: number;
-  private _id: number;
-  private _name: string;
-  private _comment: string;
+  private _hid: number | null = null;
+  private _id: number | null = null;
+  private _name: string | null = null;
+  private _comment: string | null = null;
 
-  get HID(): number       { return this._hid;   }
-  set HID(homeid: number) { this._hid = homeid; }
-  get Id(): number        { return this._id;    }
-  set Id(tid: number)     { this._id = tid;     }
-  get Name(): string      { return this._name;  }
-  set Name(tname: string) { this._name = tname; }
-  get Comment(): string     { return this._comment; }
-  set Comment(cmt: string)  { this._comment = cmt;  }
+  get HID(): number | null       { return this._hid;   }
+  set HID(homeid: number | null) { this._hid = homeid; }
+  get Id(): number | null        { return this._id;    }
+  set Id(tid: number | null)     { this._id = tid;     }
+  get Name(): string | null      { return this._name;  }
+  set Name(tname: string | null) { this._name = tname; }
+  get Comment(): string | null   { return this._comment; }
+  set Comment(cmt: string | null){ this._comment = cmt;  }
 
   constructor() {
     super();
@@ -289,17 +289,17 @@ export class DocumentType extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-    this._hid = undefined;
-    this._id = undefined;
-    this._name = undefined;
-    this._comment = undefined;
+    this._hid = null;
+    this._id = null;
+    this._name = null;
+    this._comment = null;
   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
-    if (this._name === undefined
+    if (this._name === null
       || this._name.length <= 0) {
       return false;
     }
@@ -345,36 +345,36 @@ export interface AssetCategoryJson extends hih.BaseModelJson {
 }
 
 export class AssetCategory extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _desp: string;
+  private _id: number | null = null;
+  private _hid: number | null = null;
+  private _name: string | null = null;
+  private _desp: string | null = null;
 
-  get ID(): number {
+  get ID(): number | null {
     return this._id;
   }
-  set ID(id: number) {
+  set ID(id: number | null) {
     this._id = id;
   }
 
-  get HID(): number {
+  get HID(): number | null {
     return this._hid;
   }
-  set HID(hid: number) {
+  set HID(hid: number | null) {
     this._hid = hid;
   }
 
-  get Name(): string {
+  get Name(): string | null {
     return this._name;
   }
-  set Name(nm: string) {
+  set Name(nm: string | null) {
     this._name = nm;
   }
 
-  get Desp(): string {
+  get Desp(): string | null {
     return this._desp;
   }
-  set Desp(cmt: string) {
+  set Desp(cmt: string | null) {
     this._desp = cmt;
   }
 
@@ -384,17 +384,17 @@ export class AssetCategory extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-    this._id = undefined;
-    this._hid = undefined;
-    this._name = undefined;
-    this._desp = undefined;
+    this._id = null;
+    this._hid = null;
+    this._name = null;
+    this._desp = null;
   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
-    if (this._name === undefined
+    if (this._name === null
       || this._name.length < 0) {
       return false;
     }
@@ -439,14 +439,14 @@ export interface IAccountVerifyContext {
  * Account extra info
  */
 export abstract class AccountExtra {
-  private accountID: number;
-  get AccountID(): number {
+  private accountID: number | null = null;
+  get AccountID(): number | null {
     return this.accountID;
   }
 
   public writeJSONObject(): AccountExtraBaseJson {
     return {
-      AccountID: this.accountID,
+      AccountID: this.accountID!,
     };
   }
   public onInit(): void {

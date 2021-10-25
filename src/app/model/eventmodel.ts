@@ -5,7 +5,7 @@ import * as moment from 'moment';
  * General event
  */
 export class GeneralEvent extends hih.BaseModel {
-  // tslint:disable: variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _id: number;
   private _hid: number;
   private _assignee: string;

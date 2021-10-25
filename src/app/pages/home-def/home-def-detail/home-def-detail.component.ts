@@ -17,7 +17,7 @@ import { AuthService, HomeDefOdataService, FinanceOdataService, UIStatusService 
   styleUrls: ['./home-def-detail.component.less'],
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable: variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   private routerID = -1; // Current object ID in routing
 

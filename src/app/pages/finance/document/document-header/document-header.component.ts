@@ -24,7 +24,7 @@ import { Document, DocumentItem, getUIModeString, Currency, financeDocTypeCurren
   ],
 })
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;

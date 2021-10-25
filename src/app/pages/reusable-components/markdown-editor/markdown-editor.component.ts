@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
-// tslint:disable-next-line no-any
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
@@ -17,7 +17,7 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ac-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrls: ['./markdown-editor.component.less'],
@@ -55,9 +55,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     };
   }
 
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   private _onChange: (val: any) => void;
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _onTouched: () => void;
 
   get value(): string {

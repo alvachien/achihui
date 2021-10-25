@@ -32,7 +32,7 @@ export enum GeneralFilterOperatorEnum {
 /**
  * Navigation item
  */
-// tslint:disable-next-line:class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface appNavItems {
   name: string;
   route: string;
@@ -41,7 +41,7 @@ export interface appNavItems {
 /**
  * App languages
  */
-// tslint:disable-next-line:class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface appLanguage {
   displayas: string;
   value: string;
@@ -49,13 +49,13 @@ export interface appLanguage {
 
 // For credits part
 export class CreditsComponent {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   Name: string;
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   Version: string;
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   Homepage: string;
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   GithubRepo: string;
 }
 

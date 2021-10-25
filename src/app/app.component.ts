@@ -13,7 +13,7 @@ import { AuthService, UIStatusService, HomeDefOdataService } from './services';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   isCollapsed = false;
   searchContent: string;
   public isLoggedIn: boolean;

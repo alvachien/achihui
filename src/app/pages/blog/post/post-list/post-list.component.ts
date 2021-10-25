@@ -17,7 +17,7 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./post-list.component.less'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
   pageIndex = 0;

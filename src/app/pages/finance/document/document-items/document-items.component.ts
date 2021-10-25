@@ -26,7 +26,7 @@ import { Account, ControlCenter, Order, AccountCategory, Currency,
   ],
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _tranCurr: string;
   private _tranCurr2: string;

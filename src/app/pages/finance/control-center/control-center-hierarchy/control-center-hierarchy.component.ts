@@ -17,7 +17,7 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, TranType, Order,
   styleUrls: ['./control-center-hierarchy.component.less'],
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   filterDocItem: GeneralFilterItem[] = [];
 

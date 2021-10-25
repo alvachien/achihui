@@ -5,11 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './plan.component.html',
   styleUrls: ['./plan.component.less']
 })
-export class PlanComponent implements OnInit {
+export class PlanComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
-
 }

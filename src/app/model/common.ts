@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { UIMode } from 'actslib';
 
-// tslint:disable:variable-name
-// tslint:disable:no-inferrable-types
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 
 export const typeParentSplitter: string = ' > ';
 export const idSplitChar: string = ',';

@@ -55,7 +55,7 @@ export class LearnOdataService {
           headers,
           params,
         })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllCategories, map...',
             ConsoleLogTypeEnum.debug);
 
@@ -120,7 +120,7 @@ export class LearnOdataService {
         headers,
         params,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllObjects map...',
           ConsoleLogTypeEnum.debug);
 
@@ -162,7 +162,7 @@ export class LearnOdataService {
     return this.http.post(this.objecturl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService createObject map...',
           ConsoleLogTypeEnum.debug);
 
@@ -197,7 +197,7 @@ export class LearnOdataService {
     return this.http.put(apiurl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService updateObject, map...',
           ConsoleLogTypeEnum.debug);
 
@@ -230,7 +230,7 @@ export class LearnOdataService {
     return this.http.delete(apiurl, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService deleteObject, map',
           ConsoleLogTypeEnum.debug);
 
@@ -264,7 +264,7 @@ export class LearnOdataService {
         headers,
         params,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService readObject, map',
           ConsoleLogTypeEnum.debug);
 

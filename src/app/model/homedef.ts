@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import * as hih from './common';
 
-// tslint:disable:variable-name
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
 /**
  * Relationship

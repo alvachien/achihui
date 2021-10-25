@@ -24,7 +24,7 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./account-detail.component.less'],
 })
 export class AccountDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing

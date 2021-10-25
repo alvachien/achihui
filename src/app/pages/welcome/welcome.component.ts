@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
 })
-export class WelcomeComponent implements OnInit {
+export class WelcomeComponent {
   array = [1, 2, 3, 4];
 
   constructor() { }
-
-  ngOnInit() {
-  }
 }

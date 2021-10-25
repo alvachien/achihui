@@ -23,7 +23,7 @@ import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
   ],
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;

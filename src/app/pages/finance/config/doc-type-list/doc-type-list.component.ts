@@ -13,7 +13,7 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./doc-type-list.component.less'],
 })
 export class DocTypeListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   dataSet: DocumentType[] = [];

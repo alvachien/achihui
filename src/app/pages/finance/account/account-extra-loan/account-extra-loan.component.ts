@@ -32,7 +32,7 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
   ],
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   private _isChangable = true; // Default is changable
   private _onTouched: () => void;

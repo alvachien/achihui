@@ -13,7 +13,7 @@ import { FinanceOdataService } from '../../../services';
   styleUrls: ['./currency.component.less'],
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;

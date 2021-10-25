@@ -13,7 +13,7 @@ import { LanguageOdataService } from '../../services';
   styleUrls: ['./language.component.less'],
 })
 export class LanguageComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;

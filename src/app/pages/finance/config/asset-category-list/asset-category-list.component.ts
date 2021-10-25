@@ -13,7 +13,7 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./asset-category-list.component.less'],
 })
 export class AssetCategoryListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   dataSet: AssetCategory[] = [];
   isLoadingResults: boolean;

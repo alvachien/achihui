@@ -5,10 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './lack-authority.component.html',
   styleUrls: ['./lack-authority.component.less'],
 })
-export class LackAuthorityComponent implements OnInit {
+export class LackAuthorityComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 }

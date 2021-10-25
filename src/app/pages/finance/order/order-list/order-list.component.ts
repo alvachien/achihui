@@ -18,7 +18,7 @@ import { DocumentItemViewComponent } from '../../document-item-view';
   styleUrls: ['./order-list.component.less'],
 })
 export class OrderListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   validOrderOnly = false;

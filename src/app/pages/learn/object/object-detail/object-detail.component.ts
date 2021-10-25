@@ -19,7 +19,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
   styleUrls: ['./object-detail.component.less'],
 })
 export class ObjectDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing

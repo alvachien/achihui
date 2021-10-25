@@ -6,7 +6,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
 export class UIStatusService {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _currLang: string;
   get CurrentLanguage(): string {
     return this._currLang;

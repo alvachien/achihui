@@ -18,7 +18,7 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../.
   styleUrls: ['./report.component.less'],
 })
 export class ReportComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults = false;
   dataReportByAccount: FinanceReportByAccount[] = [];

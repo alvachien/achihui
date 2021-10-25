@@ -5,11 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './object-hierarchy.component.html',
   styleUrls: ['./object-hierarchy.component.less']
 })
-export class ObjectHierarchyComponent implements OnInit {
+export class ObjectHierarchyComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
-
 }

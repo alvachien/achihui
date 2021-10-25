@@ -119,7 +119,7 @@ export class ModelUtility {
    */
   public static hasDuplicatesInStringArray(strarray: string): boolean {
     const valuesSoFar: any = Object.create(undefined);
-    // tslint:disable-next-line:prefer-for-of
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < strarray.length; ++i) {
       const value: any = strarray[i];
       if (value in valuesSoFar) {
@@ -179,21 +179,21 @@ export class ModelUtility {
       switch (logType) {
         case ConsoleLogTypeEnum.debug:
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.debug(log);
           }
           break;
 
         case ConsoleLogTypeEnum.warn:
           if (environment.LoggingLevel >= LogLevel.Warning) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.warn(log);
           }
           break;
 
         case ConsoleLogTypeEnum.error:
           if (environment.LoggingLevel >= LogLevel.Error) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.error(log);
           }
           break;
@@ -201,7 +201,7 @@ export class ModelUtility {
         case ConsoleLogTypeEnum.log:
         default:
           if (environment.LoggingLevel >= LogLevel.Info) {
-            // tslint:disable-next-line:no-console
+            // eslint-disable-next-line no-console
             console.log(log);
           }
           break;

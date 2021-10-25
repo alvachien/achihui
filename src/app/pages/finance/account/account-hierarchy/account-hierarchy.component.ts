@@ -20,7 +20,7 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
   styleUrls: ['./account-hierarchy.component.less'],
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean>;
   filterDocItem: GeneralFilterItem[] = [];
 

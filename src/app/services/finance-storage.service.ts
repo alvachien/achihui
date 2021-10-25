@@ -19,7 +19,7 @@ import { HomeDefOdataService } from './home-def-odata.service';
 @Injectable()
 export class FinanceStorageService {
   // Buffer
-  private _listAccount: Account[];
+  private _listAccount: Account[] = [];
 
   readonly planAPIUrl: string = environment.ApiUrl + '/FinancePlan';
   readonly documentAPIUrl: string = environment.ApiUrl + '/FinanceDocument';
@@ -53,7 +53,7 @@ export class FinanceStorageService {
     return this._http.put(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService updateNormalDocument, map');
         }
@@ -85,7 +85,7 @@ export class FinanceStorageService {
     this._http.put(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug('AC_HIH_UI [Debug]: Entering Map of updateLoanDocument in FinanceStorageService: ' + response);
         }
@@ -129,7 +129,7 @@ export class FinanceStorageService {
     return this._http.post(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
         }
@@ -167,7 +167,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`);
         }
@@ -243,7 +243,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           // console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService: ${response}`);
           console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService`);
@@ -301,7 +301,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService.`);
         }
@@ -341,7 +341,7 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-    }).pipe(map((response: HttpResponse<any>) => {
+    }).pipe(map((response: any) => {
       // Read the data out
       let rst: DocumentCreatedFrequenciesByUser[] = [];
 

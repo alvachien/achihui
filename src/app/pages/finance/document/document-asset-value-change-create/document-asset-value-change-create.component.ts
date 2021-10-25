@@ -45,7 +45,7 @@ class DocItemWithBlance {
   styleUrls: ['./document-asset-value-change-create.component.less'],
 })
 export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   public detailObject: FinanceAssetValChgDocumentAPI;
   public baseCurrency: string;

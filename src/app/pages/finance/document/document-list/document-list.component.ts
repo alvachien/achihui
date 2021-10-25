@@ -23,7 +23,7 @@ import { UITableColumnItem } from '../../../../uimodel';
   styleUrls: ['./document-list.component.less'],
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean>;
   private _filterDocItem: GeneralFilterItem[] = [];
   private _isInitialized = false;
