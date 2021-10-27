@@ -479,31 +479,30 @@ export interface AccountJson extends hih.BaseModelJson {
  * Account
  */
 export class Account extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _ctgyid: number;
-  private _name: string;
-  private _comment: string;
-  private _ownerid: string;
+  private _id?: number;
+  private _hid?: number;
+  private _ctgyid?: number;
+  private _name?: string;
+  private _comment?: string;
+  private _ownerid?: string;
 
-  get Id(): number        { return this._id;    }
-  set Id(id: number)      { this._id = id;      }
-  get HID(): number       { return this._hid;   }
-  set HID(hid: number)    { this._hid = hid;    }
-  get CategoryId(): number    { return this._ctgyid;  }
-  set CategoryId(cid: number) { this._ctgyid = cid;   }
-  get Name(): string      { return this._name;        }
-  set Name(name: string)  { this._name = name;        }
-  get Comment(): string   { return this._comment;     }
-  set Comment(cmt: string)    { this._comment = cmt;  }
-  get OwnerId(): string   { return this._ownerid;     }
-  set OwnerId(oid: string)    { this._ownerid = oid;  }
+  get Id(): number | undefined        { return this._id;    }
+  set Id(id: number | undefined)      { this._id = id;      }
+  get HID(): number | undefined       { return this._hid;   }
+  set HID(hid: number | undefined)    { this._hid = hid;    }
+  get CategoryId(): number | undefined    { return this._ctgyid;  }
+  set CategoryId(cid: number | undefined) { this._ctgyid = cid;   }
+  get Name(): string | undefined      { return this._name;        }
+  set Name(name: string | undefined)  { this._name = name;        }
+  get Comment(): string | undefined   { return this._comment;     }
+  set Comment(cmt: string | undefined)    { this._comment = cmt;  }
+  get OwnerId(): string | undefined   { return this._ownerid;     }
+  set OwnerId(oid: string | undefined)    { this._ownerid = oid;  }
 
   public Status: AccountStatusEnum;
-  public CategoryName: string;
-  public OwnerDisplayAs: string;
-
-  public ExtraInfo: AccountExtra = undefined;
+  public CategoryName?: string;
+  public OwnerDisplayAs?: string;
+  public ExtraInfo?: AccountExtra = undefined;
 
   constructor() {
     super();
@@ -677,7 +676,7 @@ export interface IAccountCategoryFilterEx {
  * Extra info, JSON format
  */
 export class AccountExtraBaseJson {
-  public AccountID: number;
+  public AccountID?: number;
 }
 
 /**

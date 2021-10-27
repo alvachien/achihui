@@ -50,13 +50,13 @@ export interface appLanguage {
 // For credits part
 export class CreditsComponent {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  Name: string;
+  Name?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  Version: string;
+  Version?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  Homepage: string;
+  Homepage?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  GithubRepo: string;
+  GithubRepo?: string;
 }
 
 // For UI controls
