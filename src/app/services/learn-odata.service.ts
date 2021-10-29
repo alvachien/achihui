@@ -111,9 +111,9 @@ export class LearnOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'ID,HomeID,CategoryID,Name');
     if (ctgyID) {
-      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and CategoryID eq ${ctgyID}`);
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID} and CategoryID eq ${ctgyID}`);
     } else {
-      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID}`);
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID}`);
     }
 
     return this.http.get(this.objecturl, {
@@ -259,7 +259,7 @@ export class LearnOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${objid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID} and ID eq ${objid}`);
     return this.http.get(this.objecturl, {
         headers,
         params,

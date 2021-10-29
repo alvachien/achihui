@@ -19,9 +19,9 @@ export class DocumentNormalMassCreateItemComponent {
   @Input()
   arTranType: TranType[] = [];
   @Input()
-  baseCurrency: string;
+  baseCurrency?: string;
   @Input()
-  public itemFormGroup: FormGroup;
+  public itemFormGroup?: FormGroup;
 
   constructor() {
     // Empty

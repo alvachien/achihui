@@ -1633,7 +1633,7 @@ export class FinanceOdataService {
     acntobj.OwnerId = this.authService.authSubject.getValue().getUserId();
     for (const tmpitem of acntExtraObject.dpTmpDocs) {
       tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
-      tmpitem.OrderId = docObj.Items[0].OrderId;
+      tmpitem.OrderId = docObj.Items[0].OrderId!;
     }
     acntobj.ExtraInfo = acntExtraObject;
     sobj.AccountInfo = acntobj.writeJSONObject();
@@ -1854,7 +1854,7 @@ export class FinanceOdataService {
       arsent.push(this.createDocument(doc));
     });
     return forkJoin(arsent).pipe(map((alldocs: any[]) => {
-      const rsts = {
+      const rsts: { PostedDocuments: Document[], FailedDocuments: Document[] } = {
         PostedDocuments: [],
         FailedDocuments: [],
       };

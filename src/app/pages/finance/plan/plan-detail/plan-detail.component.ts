@@ -23,10 +23,10 @@ import { popupDialog } from '../../../message-dialog';
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string | null = null;
   public uiMode: UIMode = UIMode.Create;
   public arControlCenters: ControlCenter[] = [];
   arFinPlanTypes: UIDisplayString[] = [];
@@ -39,8 +39,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   // Submitting
   isObjectSubmitting = false;
   isObjectSubmitted = false;
-  objectIdCreated?: number = null;
-  objectSavedFailed: string;
+  objectIdCreated: number | null = null;
+  objectSavedFailed: string | null = null;
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -51,27 +51,27 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   get saveButtonEnabled(): boolean {
     if (this.isFieldChangable) {
       if (this.detailFormGroup.valid) {
-        const planType = this.detailFormGroup.get('typeControl').value as PlanTypeEnum;
+        const planType = this.detailFormGroup.get('typeControl')?.value as PlanTypeEnum;
         switch (planType) {
           case PlanTypeEnum.Account:
-            if (this.detailFormGroup.get('accountControl').value) {
+            if (this.detailFormGroup.get('accountControl')?.value) {
               return true;
             }
             break;
           case PlanTypeEnum.AccountCategory:
-            if (this.detailFormGroup.get('acntCtgyControl').value) {
+            if (this.detailFormGroup.get('acntCtgyControl')?.value) {
               return true;
             }
             break;
 
           case PlanTypeEnum.ControlCenter:
-            if (this.detailFormGroup.get('controlCenterControl').value) {
+            if (this.detailFormGroup.get('controlCenterControl')?.value) {
               return true;
             }
             break;
 
           case PlanTypeEnum.TranType:
-            if (this.detailFormGroup.get('tranTypeControl').value) {
+            if (this.detailFormGroup.get('tranTypeControl')?.value) {
               return true;
             }
             break;
@@ -107,7 +107,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       tranTypeControl: new FormControl({value: undefined, disabled: true}),
       controlCenterControl: new FormControl({value: undefined, disabled: true}),
       amountControl: new FormControl(0, [Validators.required]),
-      currControl: new FormControl(this.homeService.ChosedHome.BaseCurrency, [Validators.required]),
+      currControl: new FormControl(this.homeService.ChosedHome!.BaseCurrency, [Validators.required]),
     }, [dateRangeValidator]);
   }
 
@@ -147,7 +147,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllControlCenters(),
             this.odataService.readPlan(this.routerID)
           ])
-          .pipe(takeUntil(this._destroyed$),
+          .pipe(takeUntil(this._destroyed$!),
             finalize(() => {
               this.isLoadingResults = false;
             }))
@@ -159,17 +159,17 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.arControlCenters = rsts[4];
 
             const planObj = rsts[5] as Plan;
-            this.detailFormGroup.get('idControl').setValue(planObj.ID);
-            this.detailFormGroup.get('startDateControl').setValue(planObj.StartDate.toDate());
-            this.detailFormGroup.get('endDateControl').setValue(planObj.TargetDate.toDate());
-            this.detailFormGroup.get('despControl').setValue(planObj.Description);
-            this.detailFormGroup.get('accountControl').setValue(planObj.AccountID);
-            this.detailFormGroup.get('acntCtgyControl').setValue(planObj.AccountCategoryID);
-            this.detailFormGroup.get('tranTypeControl').setValue(planObj.TranTypeID);
-            this.detailFormGroup.get('controlCenterControl').setValue(planObj.ControlCenterID);
-            this.detailFormGroup.get('amountControl').setValue(planObj.TargetBalance);
-            this.detailFormGroup.get('currControl').setValue(planObj.TranCurrency);
-            this.detailFormGroup.get('typeControl').setValue(planObj.PlanType);
+            this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
+            this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate.toDate());
+            this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate.toDate());
+            this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
+            this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
+            this.detailFormGroup.get('acntCtgyControl')?.setValue(planObj.AccountCategoryID);
+            this.detailFormGroup.get('tranTypeControl')?.setValue(planObj.TranTypeID);
+            this.detailFormGroup.get('controlCenterControl')?.setValue(planObj.ControlCenterID);
+            this.detailFormGroup.get('amountControl')?.setValue(planObj.TargetBalance);
+            this.detailFormGroup.get('currControl')?.setValue(planObj.TranCurrency);
+            this.detailFormGroup.get('typeControl')?.setValue(planObj.PlanType);
 
             // Disable the form
             if (this.uiMode === UIMode.Display) {
@@ -199,7 +199,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllAccounts(),
             this.odataService.fetchAllControlCenters()
           ])
-            .pipe(takeUntil(this._destroyed$),
+            .pipe(takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false))
             .subscribe((rsts: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
@@ -330,52 +330,52 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     switch (newType) {
       case PlanTypeEnum.Account: {
         if (this.isFieldChangable) {
-          this.detailFormGroup.get('accountControl').enable();
-          this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
-          this.detailFormGroup.get('acntCtgyControl').disable();
-          this.detailFormGroup.get('tranTypeControl').setValue(undefined);
-          this.detailFormGroup.get('tranTypeControl').disable();
-          this.detailFormGroup.get('controlCenterControl').setValue(undefined);
-          this.detailFormGroup.get('controlCenterControl').disable();
+          this.detailFormGroup.get('accountControl')?.enable();
+          this.detailFormGroup.get('acntCtgyControl')?.setValue(undefined);
+          this.detailFormGroup.get('acntCtgyControl')?.disable();
+          this.detailFormGroup.get('tranTypeControl')?.setValue(undefined);
+          this.detailFormGroup.get('tranTypeControl')?.disable();
+          this.detailFormGroup.get('controlCenterControl')?.setValue(undefined);
+          this.detailFormGroup.get('controlCenterControl')?.disable();
         }
         break;
       }
 
       case PlanTypeEnum.AccountCategory: {
         if (this.isFieldChangable) {
-          this.detailFormGroup.get('accountControl').setValue(undefined);
-          this.detailFormGroup.get('accountControl').disable();
-          this.detailFormGroup.get('acntCtgyControl').enable();
-          this.detailFormGroup.get('tranTypeControl').setValue(undefined);
-          this.detailFormGroup.get('tranTypeControl').disable();
-          this.detailFormGroup.get('controlCenterControl').setValue(undefined);
-          this.detailFormGroup.get('controlCenterControl').disable();
+          this.detailFormGroup.get('accountControl')?.setValue(undefined);
+          this.detailFormGroup.get('accountControl')?.disable();
+          this.detailFormGroup.get('acntCtgyControl')?.enable();
+          this.detailFormGroup.get('tranTypeControl')?.setValue(undefined);
+          this.detailFormGroup.get('tranTypeControl')?.disable();
+          this.detailFormGroup.get('controlCenterControl')?.setValue(undefined);
+          this.detailFormGroup.get('controlCenterControl')?.disable();
         }
         break;
       }
 
       case PlanTypeEnum.TranType: {
         if (this.isFieldChangable) {
-          this.detailFormGroup.get('accountControl').setValue(undefined);
-          this.detailFormGroup.get('accountControl').disable();
-          this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
-          this.detailFormGroup.get('acntCtgyControl').disable();
-          this.detailFormGroup.get('tranTypeControl').enable();
-          this.detailFormGroup.get('controlCenterControl').setValue(undefined);
-          this.detailFormGroup.get('controlCenterControl').disable();
+          this.detailFormGroup.get('accountControl')?.setValue(undefined);
+          this.detailFormGroup.get('accountControl')?.disable();
+          this.detailFormGroup.get('acntCtgyControl')?.setValue(undefined);
+          this.detailFormGroup.get('acntCtgyControl')?.disable();
+          this.detailFormGroup.get('tranTypeControl')?.enable();
+          this.detailFormGroup.get('controlCenterControl')?.setValue(undefined);
+          this.detailFormGroup.get('controlCenterControl')?.disable();
         }
         break;
       }
 
       case PlanTypeEnum.ControlCenter: {
         if (this.isFieldChangable) {
-          this.detailFormGroup.get('accountControl').setValue(undefined);
-          this.detailFormGroup.get('accountControl').disable();
-          this.detailFormGroup.get('acntCtgyControl').setValue(undefined);
-          this.detailFormGroup.get('acntCtgyControl').disable();
-          this.detailFormGroup.get('tranTypeControl').setValue(undefined);
-          this.detailFormGroup.get('tranTypeControl').disable();
-          this.detailFormGroup.get('controlCenterControl').enable();
+          this.detailFormGroup.get('accountControl')?.setValue(undefined);
+          this.detailFormGroup.get('accountControl')?.disable();
+          this.detailFormGroup.get('acntCtgyControl')?.setValue(undefined);
+          this.detailFormGroup.get('acntCtgyControl')?.disable();
+          this.detailFormGroup.get('tranTypeControl')?.setValue(undefined);
+          this.detailFormGroup.get('tranTypeControl')?.disable();
+          this.detailFormGroup.get('controlCenterControl')?.enable();
         }
         break;
       }
@@ -398,36 +398,36 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
   private _generatePlan(): Plan {
     const dataInstance: Plan = new Plan();
-    dataInstance.HID = this.homeService.ChosedHome.ID;
+    dataInstance.HID = this.homeService.ChosedHome!.ID;
     if (this.uiMode === UIMode.Update) {
-      dataInstance.ID = this.detailFormGroup.get('idControl').value;
+      dataInstance.ID = this.detailFormGroup.get('idControl')?.value;
     }
-    dataInstance.StartDate = moment(this.detailFormGroup.get('startDateControl').value as Date);
-    dataInstance.TargetDate = moment(this.detailFormGroup.get('endDateControl').value as Date);
-    dataInstance.Description = this.detailFormGroup.get('despControl').value;
-    dataInstance.PlanType = this.detailFormGroup.get('typeControl').value as PlanTypeEnum;
+    dataInstance.StartDate = moment(this.detailFormGroup.get('startDateControl')?.value as Date);
+    dataInstance.TargetDate = moment(this.detailFormGroup.get('endDateControl')?.value as Date);
+    dataInstance.Description = this.detailFormGroup.get('despControl')?.value;
+    dataInstance.PlanType = this.detailFormGroup.get('typeControl')?.value as PlanTypeEnum;
     switch (dataInstance.PlanType) {
       case PlanTypeEnum.AccountCategory:
-        dataInstance.AccountCategoryID = this.detailFormGroup.get('acntCtgyControl').value;
+        dataInstance.AccountCategoryID = this.detailFormGroup.get('acntCtgyControl')?.value;
         break;
 
       case PlanTypeEnum.Account:
-        dataInstance.AccountID = this.detailFormGroup.get('accountControl').value;
+        dataInstance.AccountID = this.detailFormGroup.get('accountControl')?.value;
         break;
 
       case PlanTypeEnum.ControlCenter:
-        dataInstance.ControlCenterID = this.detailFormGroup.get('controlCenterControl').value;
+        dataInstance.ControlCenterID = this.detailFormGroup.get('controlCenterControl')?.value;
         break;
 
       case PlanTypeEnum.TranType:
-        dataInstance.TranTypeID = this.detailFormGroup.get('tranTypeControl').value;
+        dataInstance.TranTypeID = this.detailFormGroup.get('tranTypeControl')?.value;
         break;
 
       default:
         break;
     }
-    dataInstance.TargetBalance = this.detailFormGroup.get('amountControl').value;
-    dataInstance.TranCurrency = this.detailFormGroup.get('currControl').value;
+    dataInstance.TargetBalance = this.detailFormGroup.get('amountControl')?.value;
+    dataInstance.TranCurrency = this.detailFormGroup.get('currControl')?.value;
 
     return dataInstance;
   }

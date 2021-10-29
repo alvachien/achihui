@@ -26,7 +26,6 @@ const authSettings: any = {
 @Injectable()
 export class AuthService {
   private mgr: UserManager;
-  private authHeaders: Headers;
 
   public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
   public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();

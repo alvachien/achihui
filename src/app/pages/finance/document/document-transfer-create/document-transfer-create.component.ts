@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -23,7 +23,7 @@ import { popupDialog } from '../../../message-dialog';
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   public curDocType: number = financeDocTypeTransfer;
   public curMode: UIMode = UIMode.Create;
@@ -36,12 +36,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
-  public baseCurrency: string;
+  public baseCurrency: string | null = null;
   public currentStep = 0;
   // public docCreateSucceed = false;
-  public docIdCreated?: number = null;
+  public docIdCreated: number | null = null;
   public isDocPosting = false;
-  public docPostingFailed: string;
+  public docPostingFailed: string | null = null;
   // Step: Header
   public headerFormGroup: FormGroup;
   // Step: From
@@ -127,7 +127,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         this.arDocTypes = rst[6];
 
         // Set the default currency
-        this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+        this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
       }, (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent ngOnInit, forkJoin, ${error}`,
           ConsoleLogTypeEnum.error);
@@ -163,7 +163,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       DocumentTypes: this.arDocTypes,
       TransactionTypes: this.arTranType,
       Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
@@ -177,7 +177,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     // Now call to the service
     this.currentStep = 4;
     this.odataService.createDocument(detailObject)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => {
         this.isDocPosting = false;
       }))
@@ -228,7 +228,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     }
   }
   public onDisplayCreatedDoc(): void {
-    this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+    this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
   }
 
   private _updateConfirmInfo(): void {
@@ -253,39 +253,39 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerFormGroup.get('headerControl').value as Document;
-    detailObject.HID = this.homeService.ChosedHome.ID;
+    const detailObject: Document = this.headerFormGroup.get('headerControl')?.value as Document;
+    detailObject.HID = this.homeService.ChosedHome!.ID;
     detailObject.DocType = this.curDocType;
     detailObject.Items = [];
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;
-    docitem.AccountId = this.fromFormGroup.get('accountControl').value;
-    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;
-    docitem.OrderId = this.fromFormGroup.get('orderControl').value;
+    docitem.AccountId = this.fromFormGroup.get('accountControl')?.value;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl')?.value;
+    docitem.OrderId = this.fromFormGroup.get('orderControl')?.value;
     docitem.TranType = financeTranTypeTransferOut;
-    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
     docitem.Desp = detailObject.Desp;
     detailObject.Items.push(docitem);
 
     docitem = new DocumentItem();
     docitem.ItemId = 2;
-    docitem.AccountId = this.toFormGroup.get('accountControl').value;
+    docitem.AccountId = this.toFormGroup.get('accountControl')?.value;
     docitem.TranType = financeTranTypeTransferIn;
-    docitem.ControlCenterId = this.toFormGroup.get('ccControl').value;
-    docitem.OrderId = this.toFormGroup.get('orderControl').value;
-    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    docitem.ControlCenterId = this.toFormGroup.get('ccControl')?.value;
+    docitem.OrderId = this.toFormGroup.get('orderControl')?.value;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
     docitem.Desp = detailObject.Desp;
     detailObject.Items.push(docitem);
 
     return detailObject;
   }
-  private _duplicateAccountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  private _duplicateAccountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent _duplicateAccountValidator`,
       ConsoleLogTypeEnum.debug);
 
-    const account: any = group.get('accountControl').value;
-    const fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl').value;
+    const account: any = group.get('accountControl')?.value;
+    const fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl')?.value;
     if (account && fromAccount && account === fromAccount) {
       return { duplicatedccount: true };
     }

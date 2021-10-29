@@ -11,7 +11,7 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDoc
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
-  public CurrentDate: moment.Moment;
+  public CurrentDate: moment.Moment | null = null;
   public DPDocs: TemplateDocADP[] = [];
   public LoanDocs: TemplateDocLoan[] = [];
 }
@@ -23,16 +23,16 @@ class DateCellData {
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
-  private _selectedYear: number;
-  private _selectedMonth?: number;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  private _selectedYear: number | null = null;
+  private _selectedMonth: number | null = null;
 
-  public selectedDate: Date;
+  public selectedDate: Date | null = null;
   isLoadingResults: boolean;
 
   listDate: DateCellData[] = [];
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -85,7 +85,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
-      if (cell.CurrentDate.isSame(mcell)) {
+      if (cell.CurrentDate!.isSame(mcell)) {
         dpdocs.push(...cell.DPDocs);
       }
     });
@@ -97,7 +97,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
-      if (cell.CurrentDate.isSame(mcell)) {
+      if (cell.CurrentDate!.isSame(mcell)) {
         dpdocs.push(...cell.LoanDocs);
       }
     });
@@ -131,7 +131,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDPTmpDocs(dtbgn, dtend),
       this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend)
     ]).pipe(
-      takeUntil(this._destroyed$),
+      takeUntil(this._destroyed$!),
       finalize(() => this.isLoadingResults = false)
     ).subscribe({
       next: (rsts: any[]) => {
@@ -141,7 +141,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         if (rsts[0] instanceof Array && rsts[0].length > 0) {
           rsts[0].forEach((val: TemplateDocADP) => {
             let idx = this.listDate.findIndex(cell => {
-              return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));
+              return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
             });
             if (idx === -1) {
               const ncell = new DateCellData();
@@ -157,7 +157,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         if (rsts[1] instanceof Array && rsts[1].length > 0) {
           rsts[1].forEach((val: TemplateDocLoan) => {
             let idx = this.listDate.findIndex(cell => {
-              return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));
+              return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
             });
             if (idx === -1) {
               const ncell = new DateCellData();
@@ -184,13 +184,13 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
   doPostDPDoc(dpdoc: TemplateDocADP) {
     this.odataService.createDocumentFromDPTemplate(dpdoc)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: val => {
           this.messageService.success(translate('Finance.DocumentPosted'));
           // Remove the doc
           let idx = this.listDate.findIndex(cell => {
-            return cell.CurrentDate.startOf('date').isSame(val.TranDate.startOf('date'));
+            return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
           });
           if (idx !== -1) {
             let secidx = this.listDate[idx].DPDocs.findIndex(doc => {

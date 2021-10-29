@@ -29,8 +29,8 @@ export interface MessageDialogInfo {
   styleUrls: ['./message-dialog.component.less'],
 })
 export class MessageDialogComponent {
-  @Input() title: string;
-  @Input() infoMessages: InfoMessage[];
+  @Input() title: string = '';
+  @Input() infoMessages: InfoMessage[] = [];
 
   constructor(private modal: NzModalRef) {
   }
@@ -60,10 +60,10 @@ export function popupDialog(
     case MessageDialogButtonEnum.okcancel:
       footer = [{
         label: 'OK',
-        onClick: componentInstance => componentInstance!.handleOk()
+        onClick: (componentInstance: any) => componentInstance!.handleOk()
       }, {
         label: 'Cancel',
-        onClick: componentInstance => componentInstance!.handleCancel()
+        onClick: (componentInstance: any) => componentInstance!.handleCancel()
       }];
       break;
 
@@ -71,7 +71,7 @@ export function popupDialog(
       default:
         footer = [{
           label: 'OK',
-          onClick: componentInstance => componentInstance!.handleOk()
+          onClick: (componentInstance: any) => componentInstance!.handleOk()
         }];
         break;
   }

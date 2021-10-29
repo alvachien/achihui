@@ -24,7 +24,7 @@ import { popupDialog } from '../../../message-dialog';
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$?: ReplaySubject<boolean>;
 
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
@@ -40,7 +40,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step: Item
-  public itemsFormGroup: FormGroup;
+  public itemsFormGroup?: FormGroup;
   // Step: Confirm
   public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
@@ -60,7 +60,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.confirmInfo = [];
   }
 

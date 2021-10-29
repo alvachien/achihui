@@ -15,10 +15,10 @@ import { AuthService, UIStatusService, HomeDefOdataService } from './services';
 export class AppComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   isCollapsed = false;
-  searchContent: string;
-  public isLoggedIn: boolean;
-  public titleLogin: string;
-  public userDisplayAs: string;
+  searchContent?: string;
+  public isLoggedIn?: boolean;
+  public titleLogin?: string;
+  public userDisplayAs?: string;
 
   constructor(
     private i18n: NzI18nService,

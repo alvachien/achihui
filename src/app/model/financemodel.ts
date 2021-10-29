@@ -546,7 +546,7 @@ export class Account extends hih.BaseModel {
         && context.Categories.length > 0) {
         let bCategory = false;
         for (const ctgy of context.Categories) {
-          if (+ctgy.ID === +this.CategoryId) {
+          if (+ctgy.ID! === +this.CategoryId) {
             bCategory = true;
             break;
           }
@@ -683,13 +683,13 @@ export class AccountExtraBaseJson {
  * Extra info: Advance payment, JSON format
  */
 export class AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
-  public Direct: boolean;
-  public StartDate: string;
-  public EndDate: string;
-  public RepeatType: string;
-  public RefenceDocumentID: number;
-  public DefrrDays: string;
-  public Comment: string;
+  public Direct?: boolean;
+  public StartDate?: string;
+  public EndDate?: string;
+  public RepeatType?: string;
+  public RefenceDocumentID?: number;
+  public DefrrDays?: string;
+  public Comment?: string;
 }
 
 /**

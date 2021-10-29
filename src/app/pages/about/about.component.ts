@@ -13,7 +13,7 @@ export class AboutComponent {
 
   version: string;
   // relDate: string;
-  resultVersion: CheckVersionResult;
+  resultVersion?: CheckVersionResult;
 
   constructor(private uiStatus: UIStatusService) {
     this.version = environment.CurrentVersion;

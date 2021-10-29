@@ -21,10 +21,10 @@ import { popupDialog } from '../../../message-dialog';
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string | null = null;
   public uiMode: UIMode = UIMode.Create;
   public arControlCenters: ControlCenter[] = [];
   // Form: detail
@@ -34,8 +34,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   // Submitting
   isOrderSubmitting = false;
   isOrderSubmitted = false;
-  orderIdCreated?: number = null;
-  orderSavedFailed: string;
+  orderIdCreated: number | null = null;
+  orderSavedFailed: string | null = null;
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -109,19 +109,19 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllControlCenters(),
             this.odataService.readOrder(this.routerID)
           ])
-          .pipe(takeUntil(this._destroyed$),
+          .pipe(takeUntil(this._destroyed$!),
             finalize(() => {
               this.isLoadingResults = false;
             }))
           .subscribe((rsts: any) => {
             this.arControlCenters = rsts[0];
 
-            this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
-            this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
-            this.detailFormGroup.get('startDateControl').setValue(rsts[1].ValidFrom.toDate());
-            this.detailFormGroup.get('endDateControl').setValue(rsts[1].ValidTo.toDate());
+            this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
+            this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+            this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom.toDate());
+            this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo.toDate());
             if (rsts[1].Comment) {
-              this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
+              this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
             }
 
             // Disable the form
@@ -151,7 +151,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
 
           this.odataService.fetchAllControlCenters()
-            .pipe(takeUntil(this._destroyed$),
+            .pipe(takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false))
             .subscribe((cc: any) => {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
@@ -288,16 +288,16 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         });
     } else {
       const arcontent: any = {};
-      if (this.detailFormGroup.get('nameControl').dirty) {
+      if (this.detailFormGroup.get('nameControl')?.dirty) {
         arcontent.Name = ordObj.Name;
       }
-      if (this.detailFormGroup.get('startDateControl').dirty) {
+      if (this.detailFormGroup.get('startDateControl')?.dirty) {
         arcontent.ValidFrom = ordObj.ValidFromFormatString;
       }
-      if (this.detailFormGroup.get('endDateControl').dirty) {
+      if (this.detailFormGroup.get('endDateControl')?.dirty) {
         arcontent.ValidTo = ordObj.ValidToFormatString;
       }
-      if (this.detailFormGroup.get('cmtControl').dirty) {
+      if (this.detailFormGroup.get('cmtControl')?.dirty) {
         arcontent.Comment = ordObj.Comment;
       }
 
@@ -372,14 +372,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
   private _generateOrder(): Order {
     const ordInstance: Order = new Order();
-    ordInstance.HID = this.homeService.ChosedHome.ID;
+    ordInstance.HID = this.homeService.ChosedHome!.ID;
     if (this.uiMode === UIMode.Update) {
       ordInstance.Id = this.routerID;
     }
-    ordInstance.Name = this.detailFormGroup.get('nameControl').value;
-    ordInstance.ValidFrom = moment(this.detailFormGroup.get('startDateControl').value);
-    ordInstance.ValidTo = moment(this.detailFormGroup.get('endDateControl').value);
-    ordInstance.Comment = this.detailFormGroup.get('cmtControl').value;
+    ordInstance.Name = this.detailFormGroup.get('nameControl')?.value;
+    ordInstance.ValidFrom = moment(this.detailFormGroup.get('startDateControl')?.value);
+    ordInstance.ValidTo = moment(this.detailFormGroup.get('endDateControl')?.value);
+    ordInstance.Comment = this.detailFormGroup.get('cmtControl')?.value;
     ordInstance.SRules = [];
     ordInstance.SRules = this.listRules.slice();
     return ordInstance;
