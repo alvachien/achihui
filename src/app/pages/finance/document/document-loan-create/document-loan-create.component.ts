@@ -27,23 +27,23 @@ import { popupDialog } from '../../../message-dialog';
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   public curDocType: number;
 
-  public documentTitle: string;
+  public documentTitle: string = '';
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Variables
-  arControlCenters: ControlCenter[];
-  arOrders: Order[];
-  arTranTypes: TranType[];
-  arAccounts: Account[];
-  arDocTypes: DocumentType[];
-  arCurrencies: Currency[];
-  baseCurrency: string;
+  arControlCenters: ControlCenter[] = [];
+  arOrders: Order[] = [];
+  arTranTypes: TranType[] = [];
+  arAccounts: Account[] = [];
+  arDocTypes: DocumentType[] = [];
+  arCurrencies: Currency[] = [];
+  baseCurrency: string = '';
   curMode: UIMode = UIMode.Create;
   // Step: Generic info
   public firstFormGroup: FormGroup;
@@ -53,18 +53,18 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated: number | null = null;
+  public docPostingFailed: string | null = null;
   currentStep = 0;
 
   get tranAmount(): number {
-    return this.firstFormGroup && this.firstFormGroup.get('amountControl').value;
+    return this.firstFormGroup && this.firstFormGroup.get('amountControl')?.value;
   }
   get controlCenterID(): number {
-    return this.firstFormGroup && this.firstFormGroup.get('ccControl').value;
+    return this.firstFormGroup && this.firstFormGroup.get('ccControl')?.value;
   }
   get orderID(): number {
-    return this.firstFormGroup && this.firstFormGroup.get('orderControl').value;
+    return this.firstFormGroup && this.firstFormGroup.get('orderControl')?.value;
   }
 
   constructor(
@@ -80,7 +80,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.curDocType = financeDocTypeBorrowFrom;
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
 
     this.firstFormGroup = new FormGroup({
       headerControl: new FormControl(undefined, Validators.required),
@@ -229,7 +229,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       DocumentTypes: this.arDocTypes,
       TransactionTypes: this.arTranTypes,
       Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
     })) {
       // Show a dialog for error details
       popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
@@ -239,7 +239,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
 
     const acntobj: Account = new Account();
-    acntobj.HID = this.homeService.ChosedHome.ID;
+    acntobj.HID = this.homeService.ChosedHome!.ID;
     if (this.curDocType === financeDocTypeLendTo) {
       acntobj.CategoryId = financeAccountCategoryLendTo;
     } else {
@@ -249,10 +249,10 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
-    acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl').value as AccountExtraLoan;
+    acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl')?.value as AccountExtraLoan;
 
     this.odataService.createLoanDocument(docObj, acntobj)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => {
         this.currentStep = 3;
         this.isDocPosting = false;
@@ -277,22 +277,22 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDocument(): Document {
-    const doc: Document = this.firstFormGroup.get('headerControl').value;
-    doc.HID = this.homeService.ChosedHome.ID;
+    const doc: Document = this.firstFormGroup.get('headerControl')?.value;
+    doc.HID = this.homeService.ChosedHome!.ID;
     doc.DocType = this.curDocType;
     doc.Items = [];
 
     const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
-    fitem.AccountId = this.firstFormGroup.get('accountControl').value;
-    fitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
-    fitem.OrderId = this.firstFormGroup.get('orderControl').value;
+    fitem.AccountId = this.firstFormGroup.get('accountControl')?.value;
+    fitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
+    fitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
     if (this.curDocType === financeDocTypeLendTo) {
       fitem.TranType = financeTranTypeLendTo;
     } else {
       fitem.TranType = financeTranTypeBorrowFrom;
     }
-    fitem.TranAmount = this.firstFormGroup.get('amountControl').value;
+    fitem.TranAmount = this.firstFormGroup.get('amountControl')?.value;
     fitem.Desp = doc.Desp;
     doc.Items.push(fitem);
 
@@ -300,13 +300,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   private _updateConfirmInfo() {
-    const doc: Document = this.firstFormGroup.get('headerControl').value;
+    const doc: Document = this.firstFormGroup.get('headerControl')?.value;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;
-    this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
-    this.confirmInfo.controlCenterID = this.firstFormGroup.get('ccControl').value;
-    this.confirmInfo.orderID = this.firstFormGroup.get('orderControl').value;
+    this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl')?.value;
+    this.confirmInfo.controlCenterID = this.firstFormGroup.get('ccControl')?.value;
+    this.confirmInfo.orderID = this.firstFormGroup.get('orderControl')?.value;
   }
 
   public onDisplayCreatedDoc(): void {

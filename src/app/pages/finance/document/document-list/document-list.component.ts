@@ -24,7 +24,7 @@ import { UITableColumnItem } from '../../../../uimodel';
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _filterDocItem: GeneralFilterItem[] = [];
   private _isInitialized = false;
   isLoadingResults: boolean;
@@ -50,7 +50,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listDocTypeFilters: ITableFilterValues[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -138,11 +138,11 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
           this.arUIOrders = BuildupOrderForSelection(this.arOrders);
 
-          let arfilters = [];
+          let arfilters: any[] = [];
           this.arCurrencies.forEach(cur => {
             arfilters.push({
               value: cur.Currency,
-              text: translate(cur.Name),
+              text: translate(cur.Name!),
             });
           });
           this.listCurrencyFilters = arfilters.slice();
@@ -151,7 +151,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arDocTypes.forEach(dt => {
             arfilters.push({
               value: dt.Id,
-              text: translate(dt.Name),
+              text: translate(dt.Name!),
             });
           });
           this.listDocTypeFilters = arfilters.slice();
@@ -185,7 +185,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const curobj = this.arCurrencies.find(c => {
       return c.Currency === curr;
     });
-    return curobj ? translate(curobj.Name) + `(${curr})`  : curr;
+    return curobj ? translate(curobj.Name!) + `(${curr})`  : curr;
   }
   public getDocTypeName(dtid: number) {
     const dtobj = this.arDocTypes.find(dt => {
@@ -197,7 +197,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -274,7 +274,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.pageSize,
       this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
       orderby)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (revdata: BaseListModel<Document>) => {
@@ -304,7 +304,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       });
   }
 
-  public onRangeChange(event): void {
+  public onRangeChange(event: any): void {
     this.fetchData();
   }
   public onCreateNormalDocument(): void {

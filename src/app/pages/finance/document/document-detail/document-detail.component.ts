@@ -24,10 +24,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   public currentDocument: Document;
   // Attributes
@@ -56,7 +56,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.currentDocument = new Document();
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.docFormGroup = new FormGroup({
       headerControl: new FormControl(this.currentDocument, Validators.required),
       itemsControl: new FormControl()
@@ -104,7 +104,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllOrders(),
             this.odataService.readDocument(this.routerID),
           ])
-          .pipe(takeUntil(this._destroyed$),
+          .pipe(takeUntil(this._destroyed$!),
             finalize(() => {
               this.isLoadingResults = false;
             }))
@@ -135,16 +135,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 });
       
                 if (listNIDs.length > 0) {
-                  const listRst = [];
+                  const listRst: any[] = [];
                   listNIDs.forEach(nid => {
                     listRst.push(this.odataService.readAccount(nid));
                   });
       
                   // Read the account
-                  forkJoin([...listRst]).pipe(takeUntil(this._destroyed$),
+                  forkJoin([...listRst]).pipe(takeUntil(this._destroyed$!),
                     finalize(() => {
-                      this.docFormGroup.get('headerControl').setValue(this.currentDocument);
-                      this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
+                      this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+                      this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
       
                       if (this.uiMode === UIMode.Display) {
                         this.docFormGroup.disable();
@@ -162,8 +162,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                       }
                     });
                 } else {
-                  this.docFormGroup.get('headerControl').setValue(this.currentDocument);
-                  this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
+                  this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+                  this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
   
                   if (this.uiMode === UIMode.Display) {
                     this.docFormGroup.disable();

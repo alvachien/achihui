@@ -28,13 +28,13 @@ import { Account, ControlCenter, Order, AccountCategory, Currency,
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _tranCurr: string;
-  private _tranCurr2: string;
-  private _docType: number;
-  private _onTouched: () => void;
-  private _onChange: (val: any) => void;
-  private _uiMode: UIMode;
-  private _docDate: moment.Moment;
+  private _tranCurr: string = '';
+  private _tranCurr2: string = '';
+  private _docType: number | null = null;
+  private _onTouched?: () => void = undefined;
+  private _onChange?: (val: any) => void = undefined;
+  private _uiMode: UIMode = UIMode.Invalid;
+  private _docDate: moment.Moment = moment();
 
   public uiAccountStatusFilter: string | undefined;
   // public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -136,10 +136,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._tranCurr2;
   }
   @Input()
-  set docType(doctype: number) {
+  set docType(doctype: number | null) {
     this._docType = doctype;
   }
-  get docType(): number {
+  get docType(): number | null {
     return this._docType;
   }
   @Input()
@@ -211,7 +211,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...', ConsoleLogTypeEnum.debug);
     this._onTouched = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...', ConsoleLogTypeEnum.debug);
     if (isDisabled) {
       this._isChangable = false;

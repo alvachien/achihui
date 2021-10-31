@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -23,12 +23,12 @@ import { popupDialog } from '../../../message-dialog';
 
 // Assistant class
 class DocItemWithBlance {
-  docId: number;
-  tranDate: string;
-  desp: string;
-  tranAmount: number;
-  balance: number;
-  newBalance: number;
+  docId: number | null = null;
+  tranDate: string | null = null;
+  desp: string | null = null;
+  tranAmount: number | null = null;
+  balance: number | null = null;
+  newBalance: number | null = null;
 
   fromData(val: DocumentItemWithBalance): void {
     this.docId = val.DocId;
@@ -46,8 +46,8 @@ class DocItemWithBlance {
 })
 export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
-  public detailObject: FinanceAssetValChgDocumentAPI;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  public detailObject: FinanceAssetValChgDocumentAPI | null = null;
   public baseCurrency: string;
   isLoadingResults = false;
 
@@ -55,36 +55,37 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetValChg;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountStatusFilter: string | undefined;
-  public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
+  public uiAccountStatusFilter: string | null = null;
+  public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | null = null;
   public arUIOrder: UIOrderForSelection[] = [];
-  public uiOrderFilter: boolean | undefined;
-  public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  tranAmount: number;
+  public uiOrderFilter: boolean | null = null;
+  public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | null = null;
+  tranAmount: number = 0;
   // Step: Confirm
   public confirmInfo: any = {};
   public existingDocItems: DocItemWithBlance[] = [];
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated: number | null = null;
+  public docPostingFailed: string | null = null;
   currentStep = 0;
 
   // Variables
-  arMembersInChosedHome: HomeMember[];
-  arControlCenters: ControlCenter[];
-  arOrders: Order[];
-  arTranTypes: TranType[];
-  arAccounts: Account[];
-  arDocTypes: DocumentType[];
-  arCurrencies: Currency[];
+  arMembersInChosedHome: HomeMember[] = [];
+  arControlCenters: ControlCenter[] = [];
+  arOrders: Order[] = [];
+  arTranTypes: TranType[] = [];
+  arAccounts: Account[] = [];
+  arDocTypes: DocumentType[] = [];
+  arCurrencies: Currency[] = [];
   curMode: UIMode = UIMode.Create;
 
-  get NewEstimatedAmount(): number {
+  get NewEstimatedAmount(): number | null {
     const amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
+    return null;
   }
 
   constructor(
@@ -95,8 +96,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
-    this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
-    this.baseCurrency = this._homeService.ChosedHome.BaseCurrency;
+    this.arMembersInChosedHome = this._homeService.ChosedHome!.Members.slice();
+    this.baseCurrency = this._homeService.ChosedHome!.BaseCurrency;
 
     this.firstFormGroup = new FormGroup({
       accountControl: new FormControl(undefined, Validators.required),
@@ -136,7 +137,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
         // Accounts
         this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-        this.uiAccountStatusFilter = undefined;
+        this.uiAccountStatusFilter = null;
         this.uiAccountCtgyFilterEx = {
           includedCategories: [financeAccountCategoryAsset],
           excludedCategories: [],
@@ -147,7 +148,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         };
         // Orders
         this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-        this.uiOrderFilter = undefined;
+        this.uiOrderFilter = null;
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
@@ -227,7 +228,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       DocumentTypes: this.arDocTypes,
       TransactionTypes: this.arTranTypes,
       Currencies: this.arCurrencies,
-      BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
+      BaseCurrency: this._homeService.ChosedHome!.BaseCurrency,
     })) {
       popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
       this.isDocPosting = false;
@@ -236,19 +237,19 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     // Do the real submit.
     this.detailObject = new FinanceAssetValChgDocumentAPI();
-    this.detailObject.HID = this._homeService.ChosedHome.ID;
+    this.detailObject.HID = this._homeService.ChosedHome!.ID;
     this.detailObject.TranDate = docobj.TranDateFormatString;
     this.detailObject.TranCurr = docobj.TranCurr;
     this.detailObject.Desp = docobj.Desp;
-    this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl').value;
-    this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl').value;
-    this.detailObject.OrderID = this.firstFormGroup.get('orderControl').value;
+    this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl')?.value;
+    this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl')?.value;
+    this.detailObject.OrderID = this.firstFormGroup.get('orderControl')?.value;
     docobj.Items.forEach((val: DocumentItem) => {
-      this.detailObject.Items.push(val);
+      this.detailObject!.Items.push(val);
     });
 
     this._storageService.createAssetValChgDocument(this.detailObject)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => {
         this.currentStep = 2;
         this.isDocPosting = false;
@@ -276,15 +277,15 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent _updateConfirmInfo',
       ConsoleLogTypeEnum.debug);
 
-    this.confirmInfo.targetAssetAccountID = this.firstFormGroup.get('accountControl').value;
+    this.confirmInfo.targetAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
     this.confirmInfo.targetAssetAccountName = this.arAccounts.find((val: Account) => {
       return val.Id === this.confirmInfo.targetAssetAccountID;
     })!.Name;
-    this.confirmInfo.tranDateString = this.firstFormGroup.get('headerControl').value.TranDateFormatString;
+    this.confirmInfo.tranDateString = this.firstFormGroup.get('headerControl')?.value.TranDateFormatString;
 
     // Fetch the existing items
     this._storageService.getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((x: any) => {
       // Get the output
       if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
@@ -354,48 +355,48 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     let curbal = 0;
     for (let idx = 0; idx < this.existingDocItems.length; idx++) {
-      curbal += this.existingDocItems[idx].tranAmount;
+      curbal += this.existingDocItems[idx].tranAmount!;
       if (this.existingDocItems[idx].docId) {
         this.existingDocItems[idx].newBalance = curbal;
       } else {
-        this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance - curbal;
-        this.tranAmount = this.existingDocItems[idx].tranAmount;
+        this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance! - curbal;
+        this.tranAmount = this.existingDocItems[idx].tranAmount!;
       }
     }
   }
 
   private _generateDoc(): Document {
-    const ndoc: Document = this.firstFormGroup.get('headerControl').value;
-    ndoc.HID = this._homeService.ChosedHome.ID;
+    const ndoc: Document = this.firstFormGroup.get('headerControl')?.value;
+    ndoc.HID = this._homeService.ChosedHome!.ID;
     ndoc.DocType = this.curDocType;
     ndoc.Items = [];
 
     // Add items
     const ndocitem: DocumentItem = new DocumentItem();
     ndocitem.ItemId = 1;
-    ndocitem.AccountId = this.firstFormGroup.get('accountControl').value;
-    ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
-    ndocitem.OrderId = this.firstFormGroup.get('orderControl').value;
+    ndocitem.AccountId = this.firstFormGroup.get('accountControl')?.value;
+    ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
+    ndocitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
     ndocitem.Desp = ndoc.Desp;
     const gitem = this.existingDocItems.find((val: DocItemWithBlance) => {
       return val.docId === 0;
-    });
-    if (gitem.tranAmount > 0) {
-      ndocitem.TranAmount = gitem.tranAmount;
+    })!;
+    if (gitem.tranAmount! > 0) {
+      ndocitem.TranAmount = gitem.tranAmount!;
       ndocitem.TranType = financeTranTypeAssetValueIncrease;
     } else {
-      ndocitem.TranAmount = Math.abs(gitem.tranAmount);
+      ndocitem.TranAmount = Math.abs(gitem.tranAmount!);
       ndocitem.TranType = financeTranTypeAssetValueDecrease;
     }
     ndoc.Items = [ndocitem];
 
     return ndoc;
   }
-  private _amountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  private _amountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor',
       ConsoleLogTypeEnum.debug);
 
-    const amt: any = group.get('amountControl').value;
+    const amt: any = group.get('amountControl')?.value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }

@@ -26,14 +26,14 @@ import { Document, DocumentItem, getUIModeString, Currency, financeDocTypeCurren
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _onTouched: () => void;
-  private _onChange: (val: any) => void;
-  private _doctype: number;
-  private _uiMode: UIMode;
+  private _onTouched?: () => void = undefined;
+  private _onChange?: (val: any) => void = undefined;
+  private _doctype: number | null = null;
+  private _uiMode: UIMode = UIMode.Invalid;
 
   private _arCurrencies: Currency[] = [];
   private _arDocTypes: DocumentType[] = [];
-  private _baseCurr: string;
+  private _baseCurr: string = '';
 
   @Input()
   set arDocTypes(doctypes: DocumentType[]) {
@@ -74,14 +74,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
   @Input()
-  get docType(): number { return this._doctype;  }
-  set docType(dt: number) {
+  get docType(): number | null { return this._doctype;  }
+  set docType(dt: number | null) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent docType setter: ${dt}`,
       ConsoleLogTypeEnum.debug);
 
     this._doctype = dt;
     if (this.headerForm) {
-      this.headerForm.get('docTypeControl').setValue(dt);
+      this.headerForm.get('docTypeControl')?.setValue(dt);
     }
   }
   @Input()
@@ -93,10 +93,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       ConsoleLogTypeEnum.debug);
     if (curr) {
       this._baseCurr = curr;
-      if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl').value) {
+      if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl')?.value) {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent baseCurrency setter, set form control: ${curr}`,
           ConsoleLogTypeEnum.debug);
-        this.headerForm.get('currControl').setValue(this._baseCurr);
+        this.headerForm.get('currControl')?.setValue(this._baseCurr);
       }
     }
   }
@@ -116,28 +116,28 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   }
   get value(): Document {
     const insobj: Document = new Document();
-    insobj.DocType = this.headerForm.get('docTypeControl').value;
+    insobj.DocType = this.headerForm.get('docTypeControl')?.value;
     if (!insobj.DocType && this.docType) {
       insobj.DocType = this.docType;
     }
-    insobj.TranCurr = this.headerForm.get('currControl').value;
+    insobj.TranCurr = this.headerForm.get('currControl')?.value;
     // let dateobj: Date = this.headerForm.get('dateControl').value as Date;
     // insobj.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
-    insobj.TranDate = moment(this.headerForm.get('dateControl').value as Date);
-    insobj.Desp = this.headerForm.get('despControl').value;
-    insobj.DocType = this.docType;
+    insobj.TranDate = moment(this.headerForm.get('dateControl')?.value as Date);
+    insobj.Desp = this.headerForm.get('despControl')?.value;
+    insobj.DocType = this.docType!;
     if (this.isForeignCurrency) {
-      insobj.ExgRate = this.headerForm.get('exgControl').value;
-      insobj.ExgRate_Plan = this.headerForm.get('exgpControl').value;
+      insobj.ExgRate = this.headerForm.get('exgControl')?.value;
+      insobj.ExgRate_Plan = this.headerForm.get('exgpControl')?.value;
     } else {
       insobj.ExgRate = undefined;
       insobj.ExgRate_Plan = undefined;
     }
     if (this.isCurrencyExchangeDocument) {
-      insobj.TranCurr2 = this.headerForm.get('curr2Control').value;
+      insobj.TranCurr2 = this.headerForm.get('curr2Control')?.value;
       if (this.isForeignCurrency2) {
-        insobj.ExgRate2 = this.headerForm.get('exg2Control').value;
-        insobj.ExgRate_Plan2 = this.headerForm.get('exgp2Control').value;
+        insobj.ExgRate2 = this.headerForm.get('exg2Control')?.value;
+        insobj.ExgRate_Plan2 = this.headerForm.get('exgp2Control')?.value;
       } else {
         insobj.ExgRate2 = undefined;
         insobj.ExgRate_Plan2 = undefined;
@@ -153,20 +153,20 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     return this._isChangable && (this.currentUIMode === UIMode.Update || this.currentUIMode === UIMode.Create);
   }
   get tranCurrency(): string {
-    return this.headerForm && this.headerForm.get('currControl') && this.headerForm.get('currControl').value;
+    return this.headerForm && this.headerForm.get('currControl') && this.headerForm.get('currControl')?.value;
   }
   get isForeignCurrency(): boolean {
     return this.headerForm && this.headerForm.get('currControl')
-      && this.headerForm.get('currControl').value
-      && this.baseCurrency !== this.headerForm.get('currControl').value;
+      && this.headerForm.get('currControl')?.value
+      && this.baseCurrency !== this.headerForm.get('currControl')?.value;
   }
   get tranCurrency2(): string {
-    return this.headerForm && this.headerForm.get('curr2Control') && this.headerForm.get('curr2Control').value;
+    return this.headerForm && this.headerForm.get('curr2Control') && this.headerForm.get('curr2Control')?.value;
   }
   get isForeignCurrency2(): boolean {
     return this.headerForm && this.headerForm.get('curr2Control')
-      && this.headerForm.get('curr2Control').value
-      && this.baseCurrency !== this.headerForm!.get('curr2Control').value;
+      && this.headerForm.get('curr2Control')?.value
+      && this.baseCurrency !== this.headerForm!.get('curr2Control')?.value;
   }
   get isCurrencyEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
@@ -216,15 +216,15 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent writeValue...', ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.headerForm.get('docTypeControl').setValue(val.DocType ? val.DocType : this.docType);
-      this.headerForm.get('dateControl').setValue(val.TranDate ? val.TranDate.toDate() : '');
-      this.headerForm.get('despControl').setValue(val.Desp);
-      this.headerForm.get('currControl').setValue(val.TranCurr);
-      this.headerForm.get('exgControl').setValue(val.ExgRate);
-      this.headerForm.get('exgpControl').setValue(val.ExgRate_Plan);
-      this.headerForm.get('curr2Control').setValue(val.TranCurr2);
-      this.headerForm.get('exg2Control').setValue(val.ExgRate2);
-      this.headerForm.get('exgp2Control').setValue(val.ExgRate_Plan2);
+      this.headerForm.get('docTypeControl')?.setValue(val.DocType ? val.DocType : this.docType);
+      this.headerForm.get('dateControl')?.setValue(val.TranDate ? val.TranDate.toDate() : '');
+      this.headerForm.get('despControl')?.setValue(val.Desp);
+      this.headerForm.get('currControl')?.setValue(val.TranCurr);
+      this.headerForm.get('exgControl')?.setValue(val.ExgRate);
+      this.headerForm.get('exgpControl')?.setValue(val.ExgRate_Plan);
+      this.headerForm.get('curr2Control')?.setValue(val.TranCurr2);
+      this.headerForm.get('exg2Control')?.setValue(val.ExgRate2);
+      this.headerForm.get('exgp2Control')?.setValue(val.ExgRate_Plan2);
     }
   }
 
@@ -236,14 +236,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnTouched...', ConsoleLogTypeEnum.debug);
     this._onTouched = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent setDisabledState...', ConsoleLogTypeEnum.debug);
     if (isDisabled) {
       this.headerForm.disable();
       this._isChangable = false;
     } else {
       this.headerForm.enable();
-      this.headerForm.get('docTypeControl').disable(); // doc. type cannot be edit
+      this.headerForm.get('docTypeControl')?.disable(); // doc. type cannot be edit
       this._isChangable = true;
     }
   }
@@ -287,37 +287,37 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
 
-  private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  private exchangeRateMissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isForeignCurrency) {
-      if (!this.headerForm.get('exgControl').value) {
+      if (!this.headerForm.get('exgControl')?.value) {
         return { required: true };
       }
     }
 
     return null;
   }
-  private exchangeRate2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  private exchangeRate2MissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument && this.isForeignCurrency2) {
-      if (!this.headerForm.get('exg2Control').value) {
+      if (!this.headerForm.get('exg2Control')?.value) {
         return { required: true };
       }
     }
 
     return null;
   }
-  private curr2MissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  private curr2MissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
-      if (!this.headerForm.get('curr2Control').value) {
+      if (!this.headerForm.get('curr2Control')?.value) {
         return { required: true };
       }
     }
 
     return null;
   }
-  private currencyMustDiffForExchgValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  private currencyMustDiffForExchgValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
-      if (this.headerForm.get('curr2Control').value && this.headerForm.get('currControl').value
-        && this.headerForm.get('curr2Control').value === this.headerForm.get('currControl').value) {
+      if (this.headerForm.get('curr2Control')?.value && this.headerForm.get('currControl')?.value
+        && this.headerForm.get('curr2Control')?.value === this.headerForm.get('currControl')?.value) {
         return { currencyMustDiff: true };
       }
     }
