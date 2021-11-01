@@ -17,7 +17,7 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 })
 export class CollectionListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: BlogCollection[] = [];
 
@@ -39,7 +39,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllCollections()
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: BlogCollection[]) => {

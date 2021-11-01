@@ -14,7 +14,7 @@ import { FinanceOdataService } from '../../../services';
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;
 
@@ -35,7 +35,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = false;
     this.currService.fetchAllCurrencies().pipe(
-      takeUntil(this._destroyed$),
+      takeUntil(this._destroyed$!),
       finalize(() => this.isLoadingResults = false)
       )
       .subscribe({

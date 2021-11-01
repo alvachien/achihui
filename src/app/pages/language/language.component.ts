@@ -14,7 +14,7 @@ import { LanguageOdataService } from '../../services';
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 

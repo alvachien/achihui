@@ -8,9 +8,11 @@ import { UIStatusService } from '../../services';
   styleUrls: ['./fatal-error.component.less'],
 })
 export class FatalErrorComponent {
-  errorContext: string;
+  errorContext: string = '';
 
   constructor(private uiStatus: UIStatusService) {
-    this.errorContext = this.uiStatus.latestError;
+    if (this.uiStatus.latestError) {
+      this.errorContext = this.uiStatus.latestError;
+    }
   }
 }

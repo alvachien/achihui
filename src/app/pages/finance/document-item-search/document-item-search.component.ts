@@ -18,7 +18,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   styleUrls: ['./document-item-search.component.less'],
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   // Filter
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
@@ -28,7 +28,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
   public arOrders: Order[] = [];
-  public arAccounts: Account[];
+  public arAccounts: Account[] = [];
   pageIndex = 1;
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
@@ -112,20 +112,20 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
       showSort: true,
       sortOrder: null,
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
+        this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
     }, {
       name: 'Finance.Activity',
       columnKey: 'order',
       showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID).localeCompare(this.getOrderName(b.OrderID))
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
     }];
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {

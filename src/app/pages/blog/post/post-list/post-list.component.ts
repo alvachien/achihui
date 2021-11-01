@@ -18,7 +18,7 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   pageIndex = 0;
   pageSize = 10;
@@ -69,7 +69,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllPosts(this.pageSize, this.pageIndex * this.pageSize)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: revdata => {

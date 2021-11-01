@@ -21,15 +21,15 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 })
 export class AccountReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: any[] = [];
   arAccounts: Account[] = [];
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
   baseCurrency: string;
-  chartAssetOption: EChartsOption;
-  chartLiabilitiesOption: EChartsOption;
+  chartAssetOption: EChartsOption | null = null;
+  chartLiabilitiesOption: EChartsOption | null = null;
   listCategoryFilter: ITableFilterValues[] = [];
   selectedCategoryFilter: number[] = [];
   // Filters
@@ -47,7 +47,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = false;
     this.arAccountStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit() {
@@ -73,7 +73,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
           this.arAccountCategories.forEach((val: AccountCategory) => {
             this.listCategoryFilter.push({
-              text: translate(val.Name),
+              text: translate(val.Name!),
               value: val.ID
             });
           });
@@ -253,7 +253,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     const names: any[] = [];
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name);
+        const ctgyName = translate(ctgy.Name!);
         names.push(ctgyName);
 
         let ctgyAmt = 0;
@@ -272,8 +272,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });
 
         namevalues.push({
-          category: ctgy.ID,
-          name: ctgyName,
+          category: ctgy.ID!,
+          name: ctgyName as string,
           value: ctgyAmt,
         });
       }
@@ -311,7 +311,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     const namevalues: Array<{ category: number; name: string; value: number; }> = [];
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (!ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name);
+        const ctgyName = translate(ctgy.Name!);
         names.push(ctgyName);
 
         let ctgyAmt = 0;
@@ -330,8 +330,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });
 
         namevalues.push({
-          category: ctgy.ID,
-          name: ctgyName,
+          category: ctgy.ID!,
+          name: ctgyName as string,
           value: ctgyAmt,
         });
       }
@@ -372,11 +372,11 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
     });
     this.arReportByAccount.forEach((baldata: FinanceReportByAccount) => {
-      const acntobj: Account = acnts.find((acnt: Account) => {
+      const acntobj?: Account = acnts.find((acnt: Account) => {
         return acnt.Id === baldata.AccountId;
       });
       if (acntobj !== undefined) {
-        const ctgyobj: AccountCategory = this.arAccountCategories.find((ctg: AccountCategory) => {
+        const ctgyobj?: AccountCategory = this.arAccountCategories.find((ctg: AccountCategory) => {
           return ctg.ID === acntobj.CategoryId;
         });
 

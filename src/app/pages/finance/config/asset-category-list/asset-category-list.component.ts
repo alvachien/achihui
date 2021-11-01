@@ -14,7 +14,7 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
 })
 export class AssetCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   dataSet: AssetCategory[] = [];
   isLoadingResults: boolean;
 

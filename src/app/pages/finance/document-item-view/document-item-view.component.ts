@@ -20,7 +20,7 @@ import * as moment from 'moment';
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _filterDocItem: GeneralFilterItem[] = [];
 
   @Input()
@@ -47,7 +47,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
   public arOrders: Order[] = [];
-  public arAccounts: Account[];
+  public arAccounts: Account[] = [];
   pageIndex = 1;
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
@@ -104,13 +104,13 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       showSort: true,
       sortOrder: null,
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
+        this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
     }, {
       name: 'Finance.Activity',
       columnKey: 'order',
       showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID).localeCompare(this.getOrderName(b.OrderID))
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
     }];
   }
 
@@ -130,14 +130,14 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
-      this._destroyed$ = undefined;
+      this._destroyed$ = null;
     }
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -209,7 +209,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
     ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingDocItems = false))
       .subscribe({
         next: (revdata: any) => {

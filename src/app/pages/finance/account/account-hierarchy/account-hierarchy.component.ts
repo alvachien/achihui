@@ -21,7 +21,7 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
@@ -37,7 +37,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   id = -1;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -76,8 +76,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug);
 
-    if (event.keys.length > 0) {
-      const evtkey = event.keys[0];
+    if (event.keys!.length > 0) {
+      const evtkey = event.keys![0];
       const arFilters = [];
       if (evtkey.startsWith('c')) {
         const ctgyid = +evtkey.substr(1);
@@ -146,7 +146,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllAccounts(isReload),
     ])
       .pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
@@ -188,11 +188,11 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         const node: NzTreeNodeOptions = {
           key: `c${val.ID}`,
           // title: translate(val.Name) + `(${val.ID})`,
-          title: translate(val.Name),
+          title: translate(val.Name!),
           isLeaf: false,
           icon: 'cluster'
         };
-        node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID);
+        node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID!);
         if (node.children) {
           node.isLeaf = false;
         } else {
@@ -208,7 +208,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           const node: NzTreeNodeOptions = {
             key: `a${val.Id}`,
             // title: val.Name + `(${val.Id})`,
-            title: val.Name,
+            title: val.Name!,
             isLeaf: true,
             icon: 'account-book',
           };

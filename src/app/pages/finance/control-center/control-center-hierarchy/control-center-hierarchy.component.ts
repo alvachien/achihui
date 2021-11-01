@@ -18,7 +18,7 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, TranType, Order,
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
@@ -29,7 +29,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   id = -1;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -98,8 +98,8 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug);
 
-    if (event.keys.length > 0) {
-      const evtkey = +event.keys[0];
+    if (event.keys!.length > 0) {
+      const evtkey = +event.keys![0];
       const arflt = [];
 
       arflt.push({

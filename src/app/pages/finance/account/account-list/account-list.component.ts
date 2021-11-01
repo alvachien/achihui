@@ -18,7 +18,7 @@ import { UITableColumnItem } from '../../../../uimodel';
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Account[] = [];
   arCategories: AccountCategory[] = [];
@@ -28,7 +28,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   listOfColumns: UITableColumnItem[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -54,7 +54,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       name: 'Common.ID',
     }, {
       name: 'Common.Name',
-      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
+      sortFn: (a: Account, b: Account) => a.Name!.localeCompare(b.Name!),
       showSort: true,
     }, {
       name: 'Common.Category',
@@ -78,16 +78,16 @@ export class AccountListComponent implements OnInit, OnDestroy {
       name: 'Common.Comment',
       showSort: true,
       sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.Comment.localeCompare(b.Comment),
+      sortFn: (a: Account, b: Account) => a.Comment!.localeCompare(b.Comment!),
     }];
   }
   public getCategoryName(ctgyid: number): string {
     const ctgyobj = this.arCategories.find(val => {
       return val.ID === ctgyid;
     });
-    return ctgyobj ? ctgyobj.Name : '';
+    return ctgyobj && ctgyobj.Name? ctgyobj.Name : '';
   }
-  public getStatusString(sts): string {
+  public getStatusString(sts: any): string {
     const stsobj = this.arrayStatus.find(val => {
       return val.value === sts;
     });
@@ -112,7 +112,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
             this.arCategories = val;
             this.arCategories.forEach((val2: AccountCategory) => {
               this.listCategoryFilter.push({
-                text: translate(val2.Name),
+                text: translate(val2.Name!),
                 value: val2.ID
               });
             });
@@ -148,7 +148,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.dataSet = [];
     this.odataService.fetchAllAccounts(isreload)
       .pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
@@ -183,7 +183,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     // After the pop confirm
     this.odataService.deleteAccount(rid)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: val => {
           // Just remove the item

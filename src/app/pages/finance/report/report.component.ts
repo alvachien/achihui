@@ -19,7 +19,7 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../.
 })
 export class ReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataReportByAccount: FinanceReportByAccount[] = [];
   dataReportByControlCenter: FinanceReportByControlCenter[] = [];
@@ -40,7 +40,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   chartOrderOption: EChartsOption;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild;
   }
 
   constructor(
@@ -51,7 +51,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
     this.isLoadingResults = false;
   }
 
@@ -72,7 +72,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
     ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: any[]) => {

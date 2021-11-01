@@ -18,10 +18,10 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 })
 export class CollectionDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
 
@@ -71,20 +71,20 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
           this.odataService.readCollection(this.routerID)
           .pipe(
-            takeUntil(this._destroyed$),
+            takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
             next: e => {
-              this.detailFormGroup.get('idControl').setValue(e.id);
-              this.detailFormGroup.get('nameControl').setValue(e.name);
-              this.detailFormGroup.get('commentControl').setValue(e.comment);
+              this.detailFormGroup.get('idControl')?.setValue(e.id);
+              this.detailFormGroup.get('nameControl')?.setValue(e.name);
+              this.detailFormGroup.get('commentControl')?.setValue(e.comment);
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
               } else if (this.uiMode === UIMode.Update) {
                 this.detailFormGroup.enable();
-                this.detailFormGroup.get('idControl').disable();
+                this.detailFormGroup.get('idControl')?.disable();
               }
             },
             error: err => {
@@ -103,7 +103,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         case UIMode.Create:
         default: {
           // Do nothing
-          this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;
         }
       }
@@ -125,12 +125,12 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     const objColl = new BlogCollection();
-    objColl.name = this.detailFormGroup.get('nameControl').value;
-    objColl.comment = this.detailFormGroup.get('commentControl').value;
+    objColl.name = this.detailFormGroup.get('nameControl')?.value;
+    objColl.comment = this.detailFormGroup.get('commentControl')?.value;
 
     if (this.uiMode === UIMode.Create) {
       this.odataService.createCollection(objColl)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: e => {
           // Succeed.

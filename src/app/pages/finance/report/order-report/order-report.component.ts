@@ -20,7 +20,7 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: any[] = [];
   arReportByOrder: FinanceReportByOrder[] = [];
@@ -40,7 +40,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit() {

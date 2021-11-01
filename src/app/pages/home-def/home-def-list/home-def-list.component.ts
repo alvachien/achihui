@@ -15,7 +15,7 @@ import { AuthService, HomeDefOdataService, } from '../../../services';
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   isLoadingResults: boolean;
   public dataSource: HomeDef[] = [];
@@ -79,7 +79,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
 
     this.homeService.fetchAllHomeDef(forceLoad)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((arHomeDef: HomeDef[]) => {
         this.dataSource = arHomeDef;
       }, (error: any) => {

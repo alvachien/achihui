@@ -17,7 +17,7 @@ import { LearnOdataService, UIStatusService, } from '../../../../services';
 })
 export class ObjectListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: LearnObject[] = [];
   arCategories: LearnCategory[] = [];
@@ -43,7 +43,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCategories(),
       this.odataService.fetchAllObjects(),
     ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (rsts: any[]) => {

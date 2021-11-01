@@ -20,15 +20,15 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
 
-  instancePost: BlogPost;
-  inputtedContent: string;
-  contentFromChangedEvent: string;
+  instancePost: BlogPost | null = null;
+  inputtedContent: string = '';
+  contentFromChangedEvent: string = '';
   detailFormGroup: FormGroup;
   listOfCollection: BlogCollection[] = [];
   listOfTags: BlogPostTag[] = [];
@@ -94,7 +94,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             // this.odataService.fetchAllPostTags(10, 0),
           ])
           .pipe(
-            takeUntil(this._destroyed$),
+            takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
@@ -102,24 +102,24 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               this.listOfCollection = rtns[0];
 
               this.instancePost = rtns[1] as BlogPost;
-              this.detailFormGroup.get('idControl').setValue(this.instancePost.id);
-              this.detailFormGroup.get('titleControl').setValue(this.instancePost.title);
-              this.detailFormGroup.get('briefControl').setValue(this.instancePost.brief);
-              this.detailFormGroup.get('contentControl').setValue(this.instancePost.content);
-              this.detailFormGroup.get('collectionControl').setValue(
+              this.detailFormGroup.get('idControl')?.setValue(this.instancePost.id);
+              this.detailFormGroup.get('titleControl')?.setValue(this.instancePost.title);
+              this.detailFormGroup.get('briefControl')?.setValue(this.instancePost.brief);
+              this.detailFormGroup.get('contentControl')?.setValue(this.instancePost.content);
+              this.detailFormGroup.get('collectionControl')?.setValue(
                 this.instancePost.BlogPostCollections.map(val => val.CollectionID));
-              this.detailFormGroup.get('tagControl').setValue(
+              this.detailFormGroup.get('tagControl')?.setValue(
                 this.instancePost.BlogPostTags.map(val => val.Tag));
               switch (this.instancePost.status) {
                 case BlogPostStatus_PublishAsPublic:
-                  this.detailFormGroup.get('statusControl').setValue('PublicPublish');
+                  this.detailFormGroup.get('statusControl')?.setValue('PublicPublish');
                   break;
                 case BlogPostStatus_PublishAsPrivate:
-                  this.detailFormGroup.get('statusControl').setValue('PrivatePublish');
+                  this.detailFormGroup.get('statusControl')?.setValue('PrivatePublish');
                   break;
                 case BlogPostStatus_Draft:
                   default:
-                  this.detailFormGroup.get('statusControl').setValue('Draft');
+                  this.detailFormGroup.get('statusControl')?.setValue('Draft');
                   break;
               }
 
@@ -127,7 +127,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.disable();
               } else if (this.uiMode === UIMode.Update) {
                 this.detailFormGroup.enable();
-                this.detailFormGroup.get('idControl').disable();
+                this.detailFormGroup.get('idControl')?.disable();
               }
             },
             error: err => {
@@ -148,13 +148,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         default: {
           this.isLoadingResults = true;
           this.odataService.fetchAllCollections()
-            .pipe(takeUntil(this._destroyed$),
+            .pipe(takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false)
             )
             .subscribe({
               next: val => {
                 // Do nothing
-                this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
                 this.listOfCollection = val;
               },
               error: err => {
@@ -191,24 +191,24 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       if (this.uiMode === UIMode.Create) {
         this.instancePost = new BlogPost();
       }
-      this.instancePost.title = frmvalue.titleControl;
-      this.instancePost.brief = frmvalue.briefControl;
-      this.instancePost.content = frmvalue.contentControl;
-      this.instancePost.format = 1;
+      this.instancePost!.title = frmvalue.titleControl;
+      this.instancePost!.brief = frmvalue.briefControl;
+      this.instancePost!.content = frmvalue.contentControl;
+      this.instancePost!.format = 1;
       if (frmvalue.statusControl === 'PublicPublish') {
-        this.instancePost.status = BlogPostStatus_PublishAsPublic;
+        this.instancePost!.status = BlogPostStatus_PublishAsPublic;
       } else if (frmvalue.statusControl === 'PrivatePublish') {
-        this.instancePost.status = BlogPostStatus_PublishAsPrivate;
+        this.instancePost!.status = BlogPostStatus_PublishAsPrivate;
       } else {
-        this.instancePost.status = BlogPostStatus_Draft;
+        this.instancePost!.status = BlogPostStatus_Draft;
       }
       // Collection
       const arcoll = frmvalue.collectionControl as any[];
       if (arcoll) {
         arcoll.forEach(element => {
-          this.instancePost.BlogPostCollections.push({
+          this.instancePost!.BlogPostCollections.push({
             CollectionID: element,
-            PostID: this.instancePost.id,
+            PostID: this.instancePost!.id,
           } as BlogPostCollection);
         });
       }
@@ -216,27 +216,27 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       const artags = frmvalue.tagControl as any[];
       if (artags) {
         artags.forEach(tag => {
-          this.instancePost.BlogPostTags.push({
+          this.instancePost!.BlogPostTags.push({
             Tag: tag,
-            PostID: this.instancePost.id,
+            PostID: this.instancePost!.id,
           } as BlogPostTag);
         });
       }
 
       if (this.uiMode === UIMode.Create) {
-        this.odataService.createPost(this.instancePost)
-        .pipe(takeUntil(this._destroyed$))
+        this.odataService.createPost(this.instancePost!)
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: e => {
             // Succeed.
-            if (this.instancePost.status === BlogPostStatus_PublishAsPublic) {
+            if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
               this.modalService.confirm({
                 nzTitle: 'Confirm',
                 nzContent: 'Deploy the content now?',
                 nzOkText: 'OK',
                 nzCancelText: 'Cancel',
                 nzOnOk: okrst => {
-                  this.odataService.deployPost(e.id).subscribe({
+                  this.odataService.deployPost(e.id!).subscribe({
                     next: rst => {
                       // Show success dialog
                       const ref: NzModalRef = this.modalService.success({
@@ -245,7 +245,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       });
                       ref.afterClose.subscribe({
                         next: next => {
-                          this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                          this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
                         }
                       });
                       setTimeout(() => {
@@ -262,11 +262,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                   });
                 },
                 nzOnCancel: cancrst => {
-                  this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                  this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
                 }
               });
             } else {
-              this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+              this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
             }
           },
           error: err => {
@@ -280,20 +280,20 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           }
         });
       } else if (this.uiMode === UIMode.Update) {
-        this.instancePost.id = this.routerID;
-        this.odataService.changePost(this.instancePost)
-        .pipe(takeUntil(this._destroyed$))
+        this.instancePost!.id = this.routerID;
+        this.odataService.changePost(this.instancePost!)
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: e => {
             // Succeed.
-            if (this.instancePost.status === BlogPostStatus_PublishAsPublic) {
+            if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
               this.modalService.confirm({
                 nzTitle: 'Confirm',
                 nzContent: 'Deploy the content now?',
                 nzOkText: 'OK',
                 nzCancelText: 'Cancel',
                 nzOnOk: okrst => {
-                  this.odataService.deployPost(e.id).subscribe({
+                  this.odataService.deployPost(e.id!).subscribe({
                     next: rst => {
                       // Show success dialog
                       const ref: NzModalRef = this.modalService.success({
@@ -302,7 +302,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       });
                       ref.afterClose.subscribe({
                         next: next => {
-                          this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                          this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
                         }
                       });
                       setTimeout(() => {
@@ -319,11 +319,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                   });
                 },
                 nzOnCancel: cancrst => {
-                  this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+                  this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
                 }
               });
             } else {
-              this.router.navigate(['/blog/post/display/' + e.id.toString()]);
+              this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
             }
           },
           error: err => {

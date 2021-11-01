@@ -33,10 +33,10 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
-  private _onTouched: () => void;
-  private _onChange: (val: any) => void;
+  private _onTouched?: () => void;
+  private _onChange?: (val: any) => void;
   private _refDocID?: number;
 
   isLoadingTmpDocs =  false;
@@ -53,44 +53,44 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   get value(): AccountExtraLoan {
     const objrst = new AccountExtraLoan();
-    let controlVal = this.loanInfoForm.get('dateRangeControl').value;
+    let controlVal = this.loanInfoForm.get('dateRangeControl')?.value;
     if (controlVal) {
       objrst.startDate = moment((controlVal as any[])[0]);
       objrst.endDate = moment((controlVal as any[])[1]);
     }
-    controlVal = this.loanInfoForm.get('totalMonthControl').value;
+    controlVal = this.loanInfoForm.get('totalMonthControl')?.value;
     if (controlVal) {
       objrst.TotalMonths = controlVal as number;
     }
-    controlVal = this.loanInfoForm.get('repayDayControl').value;
+    controlVal = this.loanInfoForm.get('repayDayControl')?.value;
     if (controlVal) {
       objrst.RepayDayInMonth = controlVal as number;
     }
-    controlVal = this.loanInfoForm.get('firstRepayDateControl').value;
+    controlVal = this.loanInfoForm.get('firstRepayDateControl')?.value;
     if (controlVal) {
       objrst.FirstRepayDate = moment(controlVal as Date);
     }
-    controlVal = this.loanInfoForm.get('interestFreeControl').value;
+    controlVal = this.loanInfoForm.get('interestFreeControl')?.value;
     if (controlVal) {
       objrst.InterestFree = controlVal as boolean;
     }
-    controlVal = this.loanInfoForm.get('annualRateControl').value;
+    controlVal = this.loanInfoForm.get('annualRateControl')?.value;
     if (controlVal) {
       objrst.annualRate = controlVal as number;
     }
-    controlVal = this.loanInfoForm.get('repayMethodControl').value;
+    controlVal = this.loanInfoForm.get('repayMethodControl')?.value;
     if (controlVal) {
       objrst.RepayMethod = controlVal as RepaymentMethodEnum;
     }
-    controlVal = this.loanInfoForm.get('payingAccountControl').value;
+    controlVal = this.loanInfoForm.get('payingAccountControl')?.value;
     if (controlVal) {
       objrst.PayingAccount = controlVal as number;
     }
-    controlVal = this.loanInfoForm.get('partnerControl').value;
+    controlVal = this.loanInfoForm.get('partnerControl')?.value;
     if (controlVal) {
       objrst.Partner = controlVal as string;
     }
-    controlVal = this.loanInfoForm.get('cmtControl').value;
+    controlVal = this.loanInfoForm.get('cmtControl')?.value;
     if (controlVal) {
       objrst.Comment = controlVal as string;
     }
@@ -103,16 +103,16 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     return objrst;
   }
-  @Input() tranAmount: number;
+  @Input() tranAmount: number = 0;
   @Input() controlCenterID?: number;
   @Input() orderID?: number;
-  @Input() arUIAccount: UIAccountForSelection[];
+  @Input() arUIAccount: UIAccountForSelection[] = [];
 
   get isFieldChangable(): boolean {
     return this._isChangable;
   }
   get isInterestFree(): string {
-    return this.loanInfoForm && this.loanInfoForm.get('interestFreeControl') && this.loanInfoForm.get('interestFreeControl').value;
+    return this.loanInfoForm && this.loanInfoForm.get('interestFreeControl') && this.loanInfoForm.get('interestFreeControl')?.value;
   }
   get canGenerateTmpDocs(): boolean {
     // Ensure it is changable
@@ -265,13 +265,13 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       di.RepayDayInMonth = val.RepayDayInMonth;
     }
     this.odataService.calcLoanTmpDocs(di)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((x: any) => {
       let rstidx: number = arKeepItems.length;
       for (const rst of x) {
         ++rstidx;
         const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
-        tmpdoc.HID = this.homeService.ChosedHome.ID;
+        tmpdoc.HID = this.homeService.ChosedHome!.ID;
         tmpdoc.InterestAmount = rst.InterestAmount;
         tmpdoc.TranAmount = rst.TranAmount;
         tmpdoc.TranDate = rst.TranDate;
@@ -310,24 +310,24 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     if (val) {
       const dtrange = [val.startDate ? val.startDate.toDate() : undefined, val.endDate ? val.endDate.toDate() : undefined ];
-      this.loanInfoForm.get('dateRangeControl').setValue(dtrange);
-      this.loanInfoForm.get('totalMonthControl').setValue(val.TotalMonths);
-      this.loanInfoForm.get('repayDayControl').setValue(val.RepayDayInMonth);
+      this.loanInfoForm.get('dateRangeControl')?.setValue(dtrange);
+      this.loanInfoForm.get('totalMonthControl')?.setValue(val.TotalMonths);
+      this.loanInfoForm.get('repayDayControl')?.setValue(val.RepayDayInMonth);
       if (val.FirstRepayDate) {
-        this.loanInfoForm.get('firstRepayDateControl').setValue(val.FirstRepayDate.toDate());
+        this.loanInfoForm.get('firstRepayDateControl')?.setValue(val.FirstRepayDate.toDate());
       } else {
-        this.loanInfoForm.get('firstRepayDateControl').setValue(undefined);
+        this.loanInfoForm.get('firstRepayDateControl')?.setValue(undefined);
       }
-      this.loanInfoForm.get('interestFreeControl').setValue(val.InterestFree);
-      this.loanInfoForm.get('annualRateControl').setValue(val.annualRate);
+      this.loanInfoForm.get('interestFreeControl')?.setValue(val.InterestFree);
+      this.loanInfoForm.get('annualRateControl')?.setValue(val.annualRate);
       if (val.RepayMethod) {
-        this.loanInfoForm.get('repayMethodControl').setValue(val.RepayMethod);
+        this.loanInfoForm.get('repayMethodControl')?.setValue(val.RepayMethod);
       }
       if (val.PayingAccount) {
-        this.loanInfoForm.get('payingAccountControl').setValue(val.PayingAccount);
+        this.loanInfoForm.get('payingAccountControl')?.setValue(val.PayingAccount);
       }
-      this.loanInfoForm.get('partnerControl').setValue(val.Partner);
-      this.loanInfoForm.get('cmtControl').setValue(val.Comment);
+      this.loanInfoForm.get('partnerControl')?.setValue(val.Partner);
+      this.loanInfoForm.get('cmtControl')?.setValue(val.Comment);
       this._refDocID = val.RefDocId;
 
       this.listTmpDocs = val.loanTmpDocs.slice();

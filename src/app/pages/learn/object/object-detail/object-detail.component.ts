@@ -20,14 +20,14 @@ import { takeUntil, finalize } from 'rxjs/operators';
 })
 export class ObjectDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   // Category
   listOfCategories: LearnCategory[] = [];
-  currentObject: LearnObject;
+  currentObject: LearnObject | null = null;
   // Form group
   detailFormGroup: FormGroup;
 
@@ -92,17 +92,17 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllCategories(),
             this.odataService.readObject(this.routerID),
           ]).pipe(
-            takeUntil(this._destroyed$),
+            takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false),
           ).subscribe({
               next: val => {
                 this.listOfCategories = val[0] as LearnCategory[];
                 this.currentObject = val[1] as LearnObject;
-                this.detailFormGroup.get('idControl').setValue(this.currentObject.Id);
-                this.detailFormGroup.get('nameControl').setValue(this.currentObject.Name);
-                this.detailFormGroup.get('categoryControl').setValue(this.currentObject.CategoryId);
-                this.detailFormGroup.get('contentControl').setValue(this.currentObject.Content);
-                this.detailFormGroup.get('idControl').disable();
+                this.detailFormGroup.get('idControl')?.setValue(this.currentObject.Id);
+                this.detailFormGroup.get('nameControl')?.setValue(this.currentObject.Name);
+                this.detailFormGroup.get('categoryControl')?.setValue(this.currentObject.CategoryId);
+                this.detailFormGroup.get('contentControl')?.setValue(this.currentObject.Content);
+                this.detailFormGroup.get('idControl')?.disable();
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -121,7 +121,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
           this.odataService.fetchAllCategories()
             .pipe(
-              takeUntil(this._destroyed$),
+              takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false),
             ).subscribe({
               next: val => {
@@ -131,7 +131,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
                 // Show error dialog
               }
             });
-          this.detailFormGroup.get('idControl').disable();
+          this.detailFormGroup.get('idControl')?.disable();
           this.currentObject = new LearnObject();
           break;
         }
@@ -154,13 +154,13 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
   onSave() {
     if (this.uiMode === UIMode.Create) {
-      this.currentObject.HID = this.homeSevice.ChosedHome.ID;
-      this.currentObject.Name = this.detailFormGroup.get('nameControl').value;
-      this.currentObject.CategoryId = this.detailFormGroup.get('categoryControl').value;
-      this.currentObject.Content = this.detailFormGroup.get('contentControl').value;
+      this.currentObject!.HID = this.homeSevice.ChosedHome!.ID;
+      this.currentObject!.Name = this.detailFormGroup.get('nameControl')?.value;
+      this.currentObject!.CategoryId = this.detailFormGroup.get('categoryControl')?.value;
+      this.currentObject!.Content = this.detailFormGroup.get('contentControl')?.value;
 
-      this.odataService.createObject(this.currentObject)
-        .pipe(takeUntil(this._destroyed$))
+      this.odataService.createObject(this.currentObject!)
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: val => {
             this.router.navigate(['/learn/object/display', val.Id.toString]);
