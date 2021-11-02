@@ -39,11 +39,11 @@
             {{data.Id}}
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
-            <button nz-button nzType="link" [disabled]="isChildMode" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
+            <button nz-button nzType="link" [disabled]="isChildMode" (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</button>
             <a nz-popconfirm [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
               *ngIf="!isChildMode"
               nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</a>
+              (nzOnConfirm)="onDelete(data.Id!)">{{'Common.Delete' | transloco}}</a>
           </td>
           <td>{{data.Name}}</td>
           <td>{{getCategoryName(data.CategoryId) | transloco}}</td>

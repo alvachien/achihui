@@ -372,16 +372,16 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
     });
     this.arReportByAccount.forEach((baldata: FinanceReportByAccount) => {
-      const acntobj?: Account = acnts.find((acnt: Account) => {
+      const acntobj = acnts.find((acnt: Account) => {
         return acnt.Id === baldata.AccountId;
       });
       if (acntobj !== undefined) {
-        const ctgyobj?: AccountCategory = this.arAccountCategories.find((ctg: AccountCategory) => {
+        const ctgyobj = this.arAccountCategories.find((ctg: AccountCategory) => {
           return ctg.ID === acntobj.CategoryId;
         });
 
         if (this.selectedCategoryFilter.length > 0 && ctgyobj !== undefined) {
-          if (this.selectedCategoryFilter.indexOf(ctgyobj.ID) !== -1) {
+          if (this.selectedCategoryFilter.indexOf(ctgyobj.ID!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,
               AccountName: acntobj.Name,

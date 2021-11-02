@@ -15,18 +15,18 @@ export enum GenderEnum {
  * Person
  */
 export class Person extends hih.MultipleNamesObject {
-  private _id: number;
-  private _hid: number;
-  private _gend?: GenderEnum;
-  private _shrtintro: string;
-  private _ext1link: string;
+  private _id: number = 0;
+  private _hid: number | null = null;
+  private _gend: GenderEnum | null = null;
+  private _shrtintro: string = '';
+  private _ext1link: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | undefined { return this._hid; }
-  set HID(hid: number | undefined) { this._hid = hid; }
-  get Gender(): GenderEnum { return this._gend; }
-  set Gender(gen: GenderEnum) { this._gend = gen; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
+  get Gender(): GenderEnum | null { return this._gend; }
+  set Gender(gen: GenderEnum | null) { this._gend = gen; }
   get ShortIntro(): string { return this._shrtintro; }
   set ShortIntro(si: string) { this._shrtintro = si; }
   get Ext1Link(): string { return this._ext1link; }
@@ -45,27 +45,27 @@ export interface LocationJson extends hih.BaseModelJson {
  * Location
  */
 export class Location extends hih.BaseModel {
-  private _id: number;
-  private _hid?: number;
-  private _name: string;
-  private _isdevice?: boolean;
-  private _desp: string;
+  private _id: number = 0;
+  private _hid: number | null;
+  private _name: string = '';
+  private _isdevice: boolean | null = null;
+  private _desp: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | undefined { return this._hid; }
-  set HID(hid: number | undefined) { this._hid = hid; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
-  get IsDevice(): boolean { return this._isdevice; }
-  set IsDevice(id: boolean) { this._isdevice = id; }
+  get IsDevice(): boolean | null { return this._isdevice; }
+  set IsDevice(id: boolean | null) { this._isdevice = id; }
   get Desp(): string { return this._desp; }
   set Desp(dsp: string) { this._desp = dsp; }
 
   constructor() {
     super();
 
-    this._hid = undefined;
+    this._hid = null;
   }
 
   public onVerify(context?: any): boolean {
@@ -120,31 +120,31 @@ export interface BookCategoryJson {
  * Book Category
  */
 export class BookCategory extends hih.BaseModel {
-  private _id: number;
-  private _hid?: number;
-  private _name: string;
-  private _parid?: number;
-  private _others: string;
+  private _id: number = 0;
+  private _hid: number | null = null;
+  private _name: string = '';
+  private _parid: number | null = null;
+  private _others: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | undefined { return this._hid; }
-  set HID(hid: number | undefined) { this._hid = hid; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
-  get ParentID(): number | undefined { return this._parid; }
-  set ParentID(pid: number | undefined) { this._parid = pid; }
+  get ParentID(): number | null { return this._parid; }
+  set ParentID(pid: number | null) { this._parid = pid; }
   get Others(): string { return this._others; }
   set Others(oth: string) { this._others = oth; }
 
-  public HierLevel: number;
-  public FullDisplayText: string;
+  public HierLevel: number | null = null;
+  public FullDisplayText: string = '';
 
   constructor() {
     super();
 
-    this._hid = undefined;
-    this._parid = undefined;
+    this._hid = null;
+    this._parid = null;
   }
 
   public onVerify(context?: any): boolean {
@@ -190,10 +190,10 @@ export class BookCategory extends hih.BaseModel {
  * Book
  */
 export class Book extends hih.MultipleNamesObject {
-  public Authors: Person[];
-  public Categories: BookCategory[];
-  public PublishDate: moment.Moment;
-  public Locations: Location[];
+  public Authors: Person[] = [];
+  public Categories: BookCategory[] = [];
+  public PublishDate: moment.Moment = moment();
+  public Locations: Location[] = [];
 }
 
 export interface MovieGenreJson {
@@ -208,31 +208,31 @@ export interface MovieGenreJson {
  * Movie genre
  */
 export class MovieGenre extends hih.BaseModel {
-  private _id: number;
-  private _hid?: number;
-  private _name: string;
-  private _parid?: number;
-  private _others: string;
+  private _id: number = 0;
+  private _hid: number | null = null;
+  private _name: string = '';
+  private _parid: number | null = null;
+  private _others: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | undefined { return this._hid; }
-  set HID(hid: number | undefined) { this._hid = hid; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
-  get ParentID(): number | undefined { return this._parid; }
-  set ParentID(pid: number | undefined) { this._parid = pid; }
+  get ParentID(): number | null { return this._parid; }
+  set ParentID(pid: number | null) { this._parid = pid; }
   get Others(): string { return this._others; }
   set Others(oth: string) { this._others = oth; }
 
-  public HierLevel: number;
-  public FullDisplayText: string;
+  public HierLevel: number | null = null;
+  public FullDisplayText: string = '';
 
   constructor() {
     super();
 
-    this._hid = undefined;
-    this._parid = undefined;
+    this._hid = null;
+    this._parid = null;
   }
 
   public onVerify(context?: any): boolean {
@@ -274,9 +274,9 @@ export class MovieGenre extends hih.BaseModel {
 }
 
 export class Movie extends hih.MultipleNamesObject {
-  public Genres: MovieGenre[];
-  public Directors: Person[];
-  public Actors: Person[];
-  public PublishDate: moment.Moment;
-  public Locations: Location[];
+  public Genres: MovieGenre[] = [];
+  public Directors: Person[] = [];
+  public Actors: Person[] = [];
+  public PublishDate: moment.Moment = moment();
+  public Locations: Location[] = [];
 }

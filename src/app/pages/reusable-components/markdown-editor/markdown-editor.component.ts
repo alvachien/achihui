@@ -56,9 +56,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  private _onChange: (val: any) => void;
+  private _onChange?: (val: any) => void;
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _onTouched: () => void;
+  private _onTouched?: () => void;
 
   get value(): string {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',

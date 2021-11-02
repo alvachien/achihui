@@ -111,7 +111,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   get isFieldChangable(): boolean {
     return this._isChangable;
   }
-  get isInterestFree(): string {
+  get isInterestFree(): boolean {
     return this.loanInfoForm && this.loanInfoForm.get('interestFreeControl') && this.loanInfoForm.get('interestFreeControl')?.value;
   }
   get canGenerateTmpDocs(): boolean {
@@ -130,7 +130,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     return true;
   }
   get controlError(): any {
-    const err = this.validate(undefined);
+    const err = this.validate();
     if (err) {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent controlError: ${err}`,
         ConsoleLogTypeEnum.debug);
@@ -359,7 +359,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
-  validate(c: AbstractControl): ValidationErrors | null {
+  validate(): ValidationErrors | null {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent validate`,
       ConsoleLogTypeEnum.debug);
 

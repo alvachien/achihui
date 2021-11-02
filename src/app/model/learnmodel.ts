@@ -27,10 +27,10 @@ export enum EnPOSEnum {
  * EnWordExplain: English Word's Explain
  */
 export class EnWordExplain {
-  public ExplainId: number;
-  public PosAbb: EnPOSEnum;
-  public LangKey: number;
-  public Detail: string;
+  public ExplainId: number | null = null;
+  public PosAbb: EnPOSEnum = EnPOSEnum.adj;
+  public LangKey: number | null = null;
+  public Detail: string = '';
 
   public onVerify(context?: any): boolean {
     return true;
@@ -67,10 +67,10 @@ export class EnWordExplain {
  * ENWord: English Word
  */
 export class EnWord extends hih.BaseModel {
-  public ID: number;
-  public HID: number;
-  public WordString: string;
-  public Explains: EnWordExplain[];
+  public ID: number | null = null;
+  public HID: number | null = null;
+  public WordString: string = '';
+  public Explains: EnWordExplain[] = [];
 
   constructor() {
     super();
@@ -133,9 +133,9 @@ export class EnWord extends hih.BaseModel {
  * ENSentenceExplain: English Sentence's Explain
  */
 export class EnSentenceExplain {
-  public ExplainId: number;
-  public LangKey: number;
-  public Detail: string;
+  public ExplainId: number | null = null;
+  public LangKey: number | null = null;
+  public Detail: string = '';
 
   public onVerify(context?: any): boolean {
     return true;
@@ -166,9 +166,9 @@ export class EnSentenceExplain {
  * EnSentence: English Sentence
  */
 export class EnSentence extends hih.BaseModel {
-  public ID: number;
-  public HID: number;
-  public SentenceString: string;
+  public ID: number | null = null;
+  public HID: number | null = null;
+  public SentenceString: string = '';
   public Explains: EnSentenceExplain[];
   public RelatedWords: number[];
 
@@ -255,13 +255,13 @@ export interface LearnCategoryJson {
  * LearnCategory: Learn category, same as knowledge type
  */
 export class LearnCategory extends hih.BaseModel {
-  private _id: number;
-  private _name: string;
-  private _cmt: string;
-  private _sysflg: boolean;
+  private _id: number | null = null;
+  private _name: string = '';
+  private _cmt: string = '';
+  private _sysflg: boolean = false;
 
-  get Id(): number { return this._id; }
-  set Id(nid: number) { this._id = nid; }
+  get Id(): number | null { return this._id; }
+  set Id(nid: number | null) { this._id = nid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
   get Comment(): string { return this._cmt; }
@@ -271,8 +271,8 @@ export class LearnCategory extends hih.BaseModel {
   public ParentId?: number;
 
   // Runtime information
-  public HierLevel: number; // Level in the hierarchy: 0 stands for the root
-  public FullDisplayText: string;
+  public HierLevel: number | null = null; // Level in the hierarchy: 0 stands for the root
+  public FullDisplayText: string = '';
 
   constructor() {
     super();
@@ -328,17 +328,17 @@ export class LearnCategory extends hih.BaseModel {
  * Learn Object: Learn object, same as Knowledge
  */
 export class LearnObject extends hih.BaseModel {
-  private _id: number;
-  private _cid: number;
-  private _name: string;
-  private _cont: string;
-  private _ctgyname: string;
+  private _id: number | null = null;
+  private _cid: number | null = null;
+  private _name: string = '';
+  private _cont: string = '';
+  private _ctgyname: string = '';
 
-  public HID: number;
-  get Id(): number { return this._id; }
-  set Id(nid: number) { this._id = nid; }
-  get CategoryId(): number { return this._cid; }
-  set CategoryId(cid: number) { this._cid = cid; }
+  public HID: number | null = null;
+  get Id(): number | null { return this._id; }
+  set Id(nid: number | null) { this._id = nid; }
+  get CategoryId(): number | null { return this._cid; }
+  set CategoryId(cid: number | null) { this._cid = cid; }
   get Name(): string { return this._name; }
   set Name(nme: string) { this._name = nme; }
   get Content(): string { return this._cont; }
@@ -422,22 +422,22 @@ export class LearnObject extends hih.BaseModel {
  * Learn History: History of the learn object and the user
  */
 export class LearnHistory extends hih.BaseModel {
-  private _learnDate: moment.Moment;
-  private _userId: string;
-  private _objId: number;
-  private _cmt: string;
+  private _learnDate: moment.Moment = moment();
+  private _userId: string = '';
+  private _objId: number | null = null;
+  private _cmt: string = '';
 
-  public HID: number;
+  public HID: number | null = null;
   get UserId(): string { return this._userId; }
   set UserId(userid: string) { this._userId = userid; }
-  get ObjectId(): number { return this._objId; }
-  set ObjectId(objid: number) { this._objId = objid; }
+  get ObjectId(): number | null { return this._objId; }
+  set ObjectId(objid: number | null) { this._objId = objid; }
   get Comment(): string { return this._cmt; }
   set Comment(cmt: string) { this._cmt = cmt; }
 
   // Additional info, not need for saving
-  public UserDisplayAs: string;
-  public ObjectName: string;
+  public UserDisplayAs: string = '';
+  public ObjectName: string = '';
 
   constructor() {
     super();
@@ -446,7 +446,7 @@ export class LearnHistory extends hih.BaseModel {
   }
 
   public generateKey(): string {
-    return this.HID.toString() + '_' + this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.momentDateFormat);
+    return this.HID!.toString() + '_' + this.UserId + '_' + this.ObjectId!.toString() + '_' + this._learnDate.format(hih.momentDateFormat);
   }
 
   get LearnDate(): moment.Moment {
@@ -652,11 +652,11 @@ export class DropdownQuestion extends QuestionBase<string> {
 */
 
 export class QuestionBankItem extends hih.BaseModel {
-  public HID: number;
-  public QBType: QuestionBankTypeEnum;
-  public ID: number;
-  public Question: string;
-  public BriefAnswer: string;
+  public HID: number | null = null;
+  public QBType: QuestionBankTypeEnum = QuestionBankTypeEnum.EssayQuestion;
+  public ID: number | null = null;
+  public Question: string = '';
+  public BriefAnswer: string = '';
 
   public SubItems: QuestionBankSubItem[] = [];
   public Tags: string[] = [];
@@ -728,11 +728,11 @@ export class QuestionBankItem extends hih.BaseModel {
  * Sub items
  */
 export class QuestionBankSubItem {
-  public QuestionID: number;
-  public SubItem: string;
+  public QuestionID: number | null = null;
+  public SubItem: string = '';
 
-  public Detail: string;
-  public Others: string;
+  public Detail: string = '';
+  public Others: string = '';
 
   public onSetData(data?: any): void {
     if (data && data.subItem) {

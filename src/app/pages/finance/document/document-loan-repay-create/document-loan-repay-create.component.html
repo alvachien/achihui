@@ -221,7 +221,7 @@
             {{getControlCenterName(iteminfo.ControlCenterId)}} ({{iteminfo.ControlCenterId}})
           </nz-descriptions-item>  
           <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-            {{getOrderName(iteminfo.OrderId)}} ({{iteminfo.OrderId}})
+            {{getOrderName(iteminfo.OrderId!)}} ({{iteminfo.OrderId!}})
           </nz-descriptions-item>  
         </div>
       </nz-descriptions>

@@ -52,32 +52,45 @@ export class AccountListComponent implements OnInit, OnDestroy {
     // Columns: ID, Name, Category, Status, Comment
     this.listOfColumns = [{
       name: 'Common.ID',
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false    
     }, {
       name: 'Common.Name',
-      sortFn: (a: Account, b: Account) => a.Name!.localeCompare(b.Name!),
-      showSort: true,
+      sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: Account, b: Account): number => a.Name!.localeCompare(b.Name!)
     }, {
       name: 'Common.Category',
       sortOrder: null,
-      showSort: false,
       sortFn: null,
-      listOfFilter: this.listCategoryFilter,
+      sortDirections: [],
+      listOfFilter: [],
       filterMultiple: true,
       filterFn: (selectedCategories: number[], item: Account) =>
         selectedCategories ? selectedCategories.some(ctgyid => item.CategoryId === ctgyid) : false
     }, {
       name: 'Common.Status',
       sortOrder: null,
-      showSort: false,
-      // sortFn: (a: Account, b: Account) => a.Status === b.Status ? 0 : (a. Status > b.Status ? 1 : -1),
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listStatusFilter,
       filterMultiple: true,
       filterFn: (selectedStatus: AccountStatusEnum[], item: Account) =>
         selectedStatus ? selectedStatus.some(sts => item.Status === sts) : false
     }, {
       name: 'Common.Comment',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: Account, b: Account) => a.Comment!.localeCompare(b.Comment!),
     }];
   }

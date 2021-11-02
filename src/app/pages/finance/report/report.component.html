@@ -36,7 +36,7 @@
               <ng-template #prefixTplLibility><i nz-icon nzType="down-circle"></i></ng-template>
             </div>
             <div nz-col [nzSpan]="24">
-              <div echarts [options]="chartAccountOption" style="height: 200px;"
+              <div echarts [options]="chartAccountOption!" style="height: 200px;"
                 (chartClick)="onDrillDownToAccount($event)"></div>
             </div>
           </div>
@@ -45,7 +45,7 @@
       <div nz-col [nzSpan]="12">
         <nz-card [nzTitle]="'Finance.ControlCenters' | transloco" [nzActions]="[actionControlCenterDrilldown]">
           <div nz-col [nzSpan]="24">
-            <div echarts [options]="chartControlCenterOption" style="height: 320px;"
+            <div echarts [options]="chartControlCenterOption!" style="height: 320px;"
               (chartClick)="onDrillDownToControlCenter($event)"></div>
           </div>
         </nz-card>
@@ -54,7 +54,7 @@
       <div nz-col [nzSpan]="24">
         <nz-card [nzTitle]="'Finance.Orders' | transloco" [nzActions]="[actionOrderDrilldown]">
           <div nz-col [nzSpan]="24">
-            <div echarts [options]="chartOrderOption" style="height: 320px;"
+            <div echarts [options]="chartOrderOption!" style="height: 320px;"
               (chartClick)="onDrillDownToOrder($event)"></div>
           </div>
         </nz-card>

@@ -72,16 +72,16 @@ export const costObjectValidator: ValidatorFn = (group: AbstractControl): Valida
  */
 export interface UITableColumnItem {
   name: string;
-  columnKey?: string;
+  // columnKey: string;
 
   // Sort
-  sortOrder?: NzTableSortOrder;
-  sortFn?: NzTableSortFn | boolean;
+  sortOrder: NzTableSortOrder | null;
+  sortFn: NzTableSortFn<any> | null;
   showSort?: boolean;
-  sortDirections?: NzTableSortOrder[];
+  sortDirections: NzTableSortOrder[];
 
   // Filter
-  listOfFilter?: NzTableFilterList;
-  filterFn?: NzTableFilterFn | true;
-  filterMultiple?: boolean;
+  listOfFilter: NzTableFilterList;
+  filterFn: NzTableFilterFn<any> | null;
+  filterMultiple: boolean;
 }

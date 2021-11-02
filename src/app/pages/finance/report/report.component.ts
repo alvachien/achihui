@@ -33,11 +33,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   // Card: Account
   reportAccountAsset = 0;
   reportAccountLibility = 0;
-  chartAccountOption: EChartsOption;
+  chartAccountOption?: EChartsOption;
   // Card: Control center
-  chartControlCenterOption: EChartsOption;
+  chartControlCenterOption?: EChartsOption;
   // Card: Order
-  chartOrderOption: EChartsOption;
+  chartOrderOption?: EChartsOption;
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome!.IsChild;
@@ -129,14 +129,16 @@ export class ReportComponent implements OnInit, OnDestroy {
         return val.Id === val3.AccountId;
       });
       if (bal !== undefined) {
-        const ctgy: AccountCategory = this.arAccountCategories.find((val2: AccountCategory) => {
+        const ctgy = this.arAccountCategories.find((val2: AccountCategory) => {
           return val.CategoryId === val2.ID;
         });
 
-        if (ctgy.AssetFlag) {
-          this.reportAccountAsset += bal.Balance;
-        } else {
-          this.reportAccountLibility += bal.Balance;
+        if (ctgy) {
+          if (ctgy.AssetFlag) {
+            this.reportAccountAsset += bal.Balance;
+          } else {
+            this.reportAccountLibility += bal.Balance;
+          }  
         }
       }
     });

@@ -61,25 +61,25 @@ export class CreditsComponent {
 
 // For UI controls
 export class UIRadioButton {
-  public id: string;
-  public name: string;
+  public id: string = '';
+  public name: string = '';
   public value: any;
-  public label: string;
-  public checked: boolean;
-  public disabled: boolean;
-  public arialabel: string;
+  public label: string = '';
+  public checked: boolean = false;
+  public disabled: boolean = false;
+  public arialabel: string = '';
 }
 
 export class UIRadioButtonGroup {
-  public selected: UIRadioButton;
+  public selected: UIRadioButton | null = null;
   public value: any;
-  public disabled: boolean;
+  public disabled: boolean = false;
 }
 
 export class UIRouteLink {
-  public title: string;
-  public route: string;
-  public icon: string;
+  public title: string = '';
+  public route: string = '';
+  public icon: string = '';
 }
 
 /**
@@ -95,8 +95,8 @@ export interface ITableFilterValues {
  * Name value pair
  */
 export class UINameValuePair<T> {
-  name: string;
-  value: T;
+  name?: string;
+  value?: T;
 }
 
 /**
@@ -110,9 +110,9 @@ export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | Tag
  * UI Display string
  */
 export class UIDisplayString {
-  public value: UIDisplayStringEnum;
-  public i18nterm: string;
-  public displaystring: string;
+  public value: UIDisplayStringEnum = UICommonLabelEnum.Category;
+  public i18nterm: string = '';
+  public displaystring: string = '';
 }
 
 /**
@@ -590,11 +590,11 @@ export enum GeneralFilterValueType {
  * General Filter Item
  */
 export class GeneralFilterItem {
-  fieldName: string;
-  operator: GeneralFilterOperatorEnum;
+  fieldName: string = '';
+  operator: GeneralFilterOperatorEnum = GeneralFilterOperatorEnum.Equal;
   lowValue: any;
   highValue: any;
-  valueType: GeneralFilterValueType;
+  valueType: GeneralFilterValueType = GeneralFilterValueType.string;
 }
 
 
@@ -808,12 +808,12 @@ export function getSingleFilterString(flt: GeneralFilterItem): string {
  * Account for selection
  */
 export class UIAccountForSelection {
-  public Id: number;
-  public CategoryId: number;
-  public Name: string;
-  public CategoryName: string;
-  public AssetFlag: boolean;
-  public Status: AccountStatusEnum;
+  public Id: number = 0;
+  public CategoryId: number = 0;
+  public Name: string = '';
+  public CategoryName: string = '';
+  public AssetFlag: boolean = false;
+  public Status: AccountStatusEnum = AccountStatusEnum.Normal;
 }
 
 /**
@@ -833,9 +833,9 @@ export function BuildupAccountForSelection(
   if (acnts && acnts.length > 0) {
     for (const acnt of acnts) {
       const rst: UIAccountForSelection = new UIAccountForSelection();
-      rst.CategoryId = acnt.CategoryId;
-      rst.Id = acnt.Id;
-      rst.Name = acnt.Name;
+      rst.CategoryId = acnt.CategoryId!;
+      rst.Id = acnt.Id!;
+      rst.Name = acnt.Name!;
       rst.Status = acnt.Status;
 
       // Skip some categories
@@ -859,8 +859,8 @@ export function BuildupAccountForSelection(
       if (acntctg && acntctg.length > 0) {
         for (const ctgy of acntctg) {
           if (ctgy.ID === rst.CategoryId) {
-            rst.CategoryName = ctgy.Name;
-            rst.AssetFlag = ctgy.AssetFlag;
+            rst.CategoryName = ctgy.Name!;
+            rst.AssetFlag = ctgy.AssetFlag!;
           }
         }
       }
@@ -876,10 +876,10 @@ export function BuildupAccountForSelection(
  * Order for selection
  */
 export class UIOrderForSelection {
-  public Id: number;
-  public Name: string;
-  public _validFrom: moment.Moment;
-  public _validTo: moment.Moment;
+  public Id: number = 0;
+  public Name: string = '';
+  public _validFrom: moment.Moment = moment();
+  public _validTo: moment.Moment = moment();
 }
 
 /**
