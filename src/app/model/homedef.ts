@@ -28,11 +28,11 @@ export interface IHomeMemberJson {
  * Home member
  */
 export class HomeMember {
-  private _hid: number;
-  private _user: string;
-  private _displayas: string;
-  private _relation: HomeMemberRelationEnum;
-  private _ischild?: boolean;
+  private _hid: number = 0;
+  private _user: string = '';
+  private _displayas: string = '';
+  private _relation: HomeMemberRelationEnum | null = null;
+  private _ischild: boolean | null = null;
 
   get HomeID(): number {
     return this._hid;
@@ -52,16 +52,16 @@ export class HomeMember {
   set DisplayAs(da: string) {
     this._displayas = da;
   }
-  get Relation(): HomeMemberRelationEnum {
+  get Relation(): HomeMemberRelationEnum | null {
     return this._relation;
   }
-  set Relation(rel: HomeMemberRelationEnum) {
+  set Relation(rel: HomeMemberRelationEnum | null) {
     this._relation = rel;
   }
-  get IsChild(): boolean {
+  get IsChild(): boolean | null {
     return this._ischild;
   }
-  set IsChild(cld: boolean) {
+  set IsChild(cld: boolean | null) {
     this._ischild = cld;
   }
 
@@ -79,7 +79,6 @@ export class HomeMember {
   }
 
   constructor() {
-    this._relation = null;
   }
 
   public parseJSONData(data: IHomeMemberJson): void {
@@ -102,9 +101,11 @@ export class HomeMember {
       HomeID: this._hid,
       User: this._user,
       DisplayAs: this._displayas,
-      Relation: HomeMemberRelationEnum[this._relation],
-      IsChild: this._ischild,
+      Relation: HomeMemberRelationEnum[this._relation!],
     };
+    if (this._ischild !== null) {
+      jdata.IsChild = this._ischild;
+    }
     return jdata;
   }
 }
@@ -126,11 +127,11 @@ export interface HomeDefJson {
  * Home definition
  */
 export class HomeDef extends hih.BaseModel {
-  private _id: number;
-  private _name: string;
-  private _details: string;
-  private _host: string;
-  private _basecurr: string;
+  private _id: number = 0;
+  private _name: string = '';
+  private _details: string = '';
+  private _host: string = '';
+  private _basecurr: string = '';
   private _listMembers: HomeMember[];
 
   constructor() {
@@ -223,7 +224,7 @@ export class HomeDef extends hih.BaseModel {
   }
 
   public parseJSONData(data: HomeDefJson): void {
-    this._id = data.ID;
+    this._id = data.ID!;
     this._name = data.Name;
     this._details = data.Details;
     this._host = data.Host;
@@ -251,7 +252,7 @@ export class HomeDef extends hih.BaseModel {
     if (this._listMembers) {
       for (const mem of this._listMembers) {
         const memjson: IHomeMemberJson = mem.generateJSONData();
-        jdata.HomeMembers.push(memjson);
+        jdata.HomeMembers!.push(memjson);
       }
     }
 
@@ -277,16 +278,16 @@ export interface IHomeMsgJson {
  * Home message
  */
 export class HomeMsg {
-  private _hid: number;
-  private _id: number;
-  private _usrto: string;
-  private _usrtoDisplayAs: string;
-  private _usrfrom: string;
-  private _usrfromDisplayAs: string;
+  private _hid: number = 0;
+  private _id: number = 0;
+  private _usrto: string = '';
+  private _usrtoDisplayAs: string = '';
+  private _usrfrom: string = '';
+  private _usrfromDisplayAs: string = '';
   private _senddate: moment.Moment;
-  private _readflag: boolean;
-  private _title: string;
-  private _content: string;
+  private _readflag: boolean = false;
+  private _title: string = '';
+  private _content: string = '';
 
   constructor() {
     this._senddate = moment();
@@ -408,13 +409,13 @@ export class HomeMsg {
  * Key Figure
  */
 export class HomeKeyFigure {
-  private _totalAssets: number;
-  private _totalLiabilities: number;
-  private _totalAssetsUnderMyName: number;
-  private _totalLiabilitiesUnderMyName: number;
-  private _totalUnreadMessage: number;
-  private _myUnCompletedEvents: number;
-  private _myCompletedEvents: number;
+  private _totalAssets: number = 0;
+  private _totalLiabilities: number = 0;
+  private _totalAssetsUnderMyName: number = 0;
+  private _totalLiabilitiesUnderMyName: number = 0;
+  private _totalUnreadMessage: number = 0;
+  private _myUnCompletedEvents: number = 0;
+  private _myCompletedEvents: number = 0;
   get TotalAssets(): number {
     return this._totalAssets;
   }

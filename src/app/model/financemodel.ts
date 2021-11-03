@@ -675,21 +675,21 @@ export interface IAccountCategoryFilterEx {
 /**
  * Extra info, JSON format
  */
-export class AccountExtraBaseJson {
-  public AccountID?: number;
+export interface AccountExtraBaseJson {
+  AccountID?: number;
 }
 
 /**
  * Extra info: Advance payment, JSON format
  */
-export class AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
-  public Direct?: boolean;
-  public StartDate?: string;
-  public EndDate?: string;
-  public RepeatType?: string;
-  public RefenceDocumentID?: number;
-  public DefrrDays?: string;
-  public Comment?: string;
+export interface AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
+  Direct?: boolean;
+  StartDate?: string;
+  EndDate?: string;
+  RepeatType?: string;
+  RefenceDocumentID?: number;
+  DefrrDays?: string;
+  Comment?: string;
 }
 
 /**
@@ -698,11 +698,11 @@ export class AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
 export class AccountExtraAdvancePayment extends AccountExtra {
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
-  private _refDocId: number;
-  private _comment: string;
-  public Direct: boolean;
-  public RepeatType: hih.RepeatFrequencyEnum;
-  public DeferredDays: number;
+  private _refDocId: number | null = null;
+  private _comment: string = '';
+  public Direct: boolean = false;
+  public RepeatType: hih.RepeatFrequencyEnum | null = null;
+  public DeferredDays: number | null = null;
   public dpTmpDocs: TemplateDocADP[] = [];
 
   get StartDate(): moment.Moment {
@@ -717,10 +717,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
   }
-  get RefDocId(): number {
+  get RefDocId(): number | null {
     return this._refDocId;
   }
-  set RefDocId(rdocid: number) {
+  set RefDocId(rdocid: number | null) {
     this._refDocId = rdocid;
   }
   get Comment(): string {
@@ -742,11 +742,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
     this._startDate = moment();
     this._endDate = moment().add(1, 'y');
-    this._comment = null;
+    this._comment = '';
     this.RepeatType = null;
     this.dpTmpDocs = [];
     this.DeferredDays = null;
-    this.Direct = null;
+    this.Direct = false;
   }
 
   get isAccountValid(): boolean {
@@ -850,22 +850,22 @@ export class AccountExtraAdvancePayment extends AccountExtra {
  * Extra info: Asset, JSON format
  */
 export class AccountExtraAssetJson extends AccountExtraBaseJson {
-  public CategoryID: number;
-  public Name: string;
-  public Comment: string;
-  public RefenceBuyDocumentID: number;
-  public RefenceSoldDocumentID?: number;
+  public CategoryID: number | null = null;
+  public Name: string = '';
+  public Comment: string = '';
+  public RefenceBuyDocumentID: number | null = null;
+  public RefenceSoldDocumentID?: number | null = null;
 }
 
 /**
  * Extra info: Asset
  */
 export class AccountExtraAsset extends AccountExtra {
-  private _name: string;
-  private _comment: string;
-  public CategoryID: number;
-  public RefDocForBuy: number;
-  public RefDocForSold?: number;
+  private _name: string = '';
+  private _comment: string = '';
+  public CategoryID: number | null = null;
+  public RefDocForBuy: number | null = null;
+  public RefDocForSold: number | null = null;
 
   get Name(): string {
     return this._name;
@@ -885,11 +885,11 @@ export class AccountExtraAsset extends AccountExtra {
 
   public onInit(): void {
     super.onInit();
-    this._name = undefined;
-    this._comment = undefined;
-    this.CategoryID = undefined;
-    this.RefDocForBuy = undefined;
-    this.RefDocForSold = undefined;
+    this._name = '';
+    this._comment = '';
+    this.CategoryID = null;
+    this.RefDocForBuy = null;
+    this.RefDocForSold = null;
   }
 
   public clone(): AccountExtraAsset {
@@ -940,19 +940,19 @@ export class AccountExtraAsset extends AccountExtra {
 /**
  * Extra info: Loan, JSON format
  */
-export class AccountExtraLoanJson extends AccountExtraBaseJson {
-  public StartDate: string;
-  public AnnualRate?: number;
-  public InterestFree?: boolean;
-  public RepaymentMethod?: number;
-  public TotalMonths?: number;
-  public RefDocID: number;
-  public Others: string;
-  public EndDate?: string;
-  public PayingAccount?: number;
-  public Partner: string;
+export interface AccountExtraLoanJson extends AccountExtraBaseJson {
+  StartDate: string;
+  AnnualRate?: number;
+  InterestFree?: boolean;
+  RepaymentMethod?: number;
+  TotalMonths?: number;
+  RefDocID: number;
+  Others: string;
+  EndDate?: string;
+  PayingAccount?: number;
+  Partner: string;
 
-  public LoanTmpDocs: any[] = [];
+  LoanTmpDocs: any[];
 }
 
 /**
