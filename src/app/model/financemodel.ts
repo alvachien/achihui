@@ -3,30 +3,30 @@ import * as moment from 'moment';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
-export const financeAccountCategoryCash = 1;
-export const financeAccountCategoryDeposit = 2;
-export const financeAccountCategoryCreditCard = 3;
-export const financeAccountCategoryAsset = 7;
-export const financeAccountCategoryAdvancePayment = 8; // Advance payment
-export const financeAccountCategoryBorrowFrom = 9;
-export const financeAccountCategoryLendTo = 10;
-export const financeAccountCategoryAdvanceReceived = 11;
-export const financeAccountCategoryInsurance = 12;
+export const financeAccountCategoryCash             = 1;
+export const financeAccountCategoryDeposit          = 2;
+export const financeAccountCategoryCreditCard       = 3;
+export const financeAccountCategoryAsset            = 7;
+export const financeAccountCategoryAdvancePayment   = 8; // Advance payment
+export const financeAccountCategoryBorrowFrom       = 9;
+export const financeAccountCategoryLendTo           = 10;
+export const financeAccountCategoryAdvanceReceived  = 11;
+export const financeAccountCategoryInsurance        = 12;
 
-export const financeDocTypeNormal = 1;
-export const financeDocTypeTransfer = 2; // Transfer doc
+export const financeDocTypeNormal           = 1;
+export const financeDocTypeTransfer         = 2; // Transfer doc
 export const financeDocTypeCurrencyExchange = 3; // Currency exchange
-export const financeDocTypeAdvancePayment = 5;
+export const financeDocTypeAdvancePayment   = 5;
 // export const FinanceDocType_CreditcardRepay: number = 6;
-export const financeDocTypeAssetBuyIn = 7;
-export const financeDocTypeAssetSoldOut = 8;
-export const financeDocTypeBorrowFrom = 9;
-export const financeDocTypeLendTo = 10;
-export const financeDocTypeRepay = 11;
-export const financeDocTypeAdvanceReceived = 12;
-export const financeDocTypeAssetValChg = 13;
-export const financeDocTypeInsurance = 14;
-export const financeDocTypeLoanPrepayment = 15; // Prepayment to loan
+export const financeDocTypeAssetBuyIn       = 7;
+export const financeDocTypeAssetSoldOut     = 8;
+export const financeDocTypeBorrowFrom       = 9;
+export const financeDocTypeLendTo           = 10;
+export const financeDocTypeRepay            = 11;
+export const financeDocTypeAdvanceReceived  = 12;
+export const financeDocTypeAssetValChg      = 13;
+export const financeDocTypeInsurance        = 14;
+export const financeDocTypeLoanPrepayment   = 15; // Prepayment to loan
 
 export const financeTranTypeOpeningAsset = 1;
 export const financeTranTypeOpeningLiability = 82;
@@ -628,7 +628,7 @@ export class Account extends hih.BaseModel {
     }
     if (data && data.Status) {
       if (typeof data.Status === 'string') {
-        this.Status = AccountStatusEnum[data.Status];
+        this.Status = AccountStatusEnum[data.Status as keyof typeof AccountStatusEnum];
       } else if (typeof data.Status === 'number') {
         this.Status = data.Status as AccountStatusEnum;
       }
@@ -849,7 +849,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 /**
  * Extra info: Asset, JSON format
  */
-export class AccountExtraAssetJson extends AccountExtraBaseJson {
+export class AccountExtraAssetJson implements AccountExtraBaseJson {
   public CategoryID: number | null = null;
   public Name: string = '';
   public Comment: string = '';
@@ -959,8 +959,8 @@ export interface AccountExtraLoanJson extends AccountExtraBaseJson {
  * Extra info: Loan
  */
 export class AccountExtraLoan extends AccountExtra {
-  private _startDate: moment.Moment;
-  private _endDate: moment.Moment;
+  private _startDate: moment.Moment = moment();
+  private _endDate: moment.Moment = moment();
   private _annualRate: number;
   private _payingAccount: number;
   private _partner: string;
@@ -1373,8 +1373,8 @@ export class Order extends hih.BaseModel {
   private _hid: number;
   private _name: string;
   private _cmt: string;
-  private _validFrom: moment.Moment;
-  private _validTo: moment.Moment;
+  private _validFrom: moment.Moment = moment();
+  private _validTo: moment.Moment = moment();
 
   get Id(): number                    { return this._id;              }
   set Id(id: number)                  { this._id = id;                }
@@ -1801,7 +1801,7 @@ export interface DocumentJson {
  */
 export class Document extends hih.BaseModel {
   private _id: number;
-  private _tranDate: moment.Moment;
+  private _tranDate: moment.Moment = moment();
   private _hid: number;
   private _doctype: number;
   private _trancurr: string;
@@ -3267,9 +3267,9 @@ export class DocumentWithPlanExgRate {
 
 // Update document's exchange rate
 export class DocumentWithPlanExgRateForUpdate {
-  public hid: number;
-  public targetCurrency: string;
-  public exchangeRate: number;
+  public hid: number = -1;
+  public targetCurrency: string | null = null;
+  public exchangeRate: number | null = null;
   public docIDs: number[] = [];
 }
 
@@ -3277,11 +3277,11 @@ export class DocumentWithPlanExgRateForUpdate {
  * Document created frequencies by user
  */
 export class DocumentCreatedFrequenciesByUser {
-  public userID: string;
-  public year: number;
-  public month?: string;
-  public week?: string;
-  public amountOfDocuments: number;
+  public userID: string = '';
+  public year: number | null = null;
+  public month: string | null = null;
+  public week: string | null = null;
+  public amountOfDocuments: number | null = null;
 
   public onSetData(data: any): void {
     if (data && data.userID) {

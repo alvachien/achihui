@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import * as hih from './common';
 import { QuestionBankTypeEnum } from './common';
 
-  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
 /**
  * English Part of Speech

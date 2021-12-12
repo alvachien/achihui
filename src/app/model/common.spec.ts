@@ -3,7 +3,7 @@
 //
 
 import { isOverviewDateInScope, OverviewScopeEnum, MultipleNamesObject, AppLanguage,
-  AppLanguageJson, getOverviewScopeRange, momentDateFormat, Tag, TagTypeEnum, TagCount,
+  AppLanguageJson, getOverviewScopeRange, Tag, TagTypeEnum, TagCount,
 } from './common';
 import * as moment from 'moment';
 

@@ -191,7 +191,7 @@ export class LearnOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.objecturl + '(' + obj.Id.toString() + ')';
+    const apiurl: string = `${this.objecturl}(${obj ? obj.Id?.toString() : ''})`;
 
     const jdata: string = obj.writeJSONString();
     return this.http.put(apiurl, jdata, {

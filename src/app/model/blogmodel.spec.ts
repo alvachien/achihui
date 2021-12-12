@@ -106,12 +106,12 @@ describe('BlogPost', () => {
 
     const instance2: BlogPost = new BlogPost();
     instance2.onSetData(apidata);
-    expect(instance.id).toEqual(instance2.id);
-    expect(instance.format).toEqual(instance2.format);
-    expect(instance.owner).toEqual(instance2.owner);
-    expect(instance.title).toEqual(instance2.title);
-    expect(instance.brief).toEqual(instance2.brief);
-    expect(instance.content).toEqual(instance2.content);
+    expect(instance.id).toEqual(instance2.id!);
+    expect(instance.format).toEqual(instance2.format!);
+    expect(instance.owner).toEqual(instance2.owner!);
+    expect(instance.title).toEqual(instance2.title!);
+    expect(instance.brief).toEqual(instance2.brief!);
+    expect(instance.content).toEqual(instance2.content!);
   });
 });
 
@@ -125,17 +125,4 @@ describe('BlogPostTag', () => {
   it('shall work', () => {
     expect(instance).toBeTruthy();
   });
-  // it('writeAPIJson and onSetData', () => {
-  //   instance.PostID = 1;
-  //   instance.Tag = 'a';
-
-  //   const apijson: BlogPostTagAPIJson = instance.();
-  //   expect(apijson.PostID).toEqual(instance.PostID);
-  //   expect(apijson.Tag).toEqual(instance.Tag);
-
-  //   const instance2: BlogPostTag = new BlogPostTag();
-  //   instance2.onSetData(apijson);
-  //   expect(instance2.postID).toEqual(instance.PostID);
-  //   expect(instance2.tag).toEqual(instance.Tag);
-  // });
 });

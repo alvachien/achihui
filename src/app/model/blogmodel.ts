@@ -2,10 +2,10 @@ import * as moment from 'moment';
 import { momentDateFormat } from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-export const BlogPostStatus_Draft = 1;
-export const BlogPostStatus_PublishAsPublic = 2;
-export const BlogPostStatus_PublishAsPrivate = 3;
-export const BlogPostStatus_Deleted = 4;
+export const BlogPostStatus_Draft             = 1;
+export const BlogPostStatus_PublishAsPublic   = 2;
+export const BlogPostStatus_PublishAsPrivate  = 3;
+export const BlogPostStatus_Deleted           = 4;
 
 /**
  * User Setting
@@ -20,6 +20,7 @@ export interface BlogUserSettingAPIJson {
   AuthorDesp?: string;
   AuthorImage?: string;
 }
+
 export class BlogUserSetting {
   owner: string;
   title: string;
