@@ -849,12 +849,12 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 /**
  * Extra info: Asset, JSON format
  */
-export class AccountExtraAssetJson implements AccountExtraBaseJson {
-  public CategoryID: number | null = null;
-  public Name: string = '';
-  public Comment: string = '';
-  public RefenceBuyDocumentID: number | null = null;
-  public RefenceSoldDocumentID?: number | null = null;
+export interface AccountExtraAssetJson extends AccountExtraBaseJson {
+  CategoryID: number;
+  Name: string;
+  Comment: string;
+  RefenceBuyDocumentID: number;
+  RefenceSoldDocumentID?: number;
 }
 
 /**
@@ -959,86 +959,54 @@ export interface AccountExtraLoanJson extends AccountExtraBaseJson {
  * Extra info: Loan
  */
 export class AccountExtraLoan extends AccountExtra {
-  private _startDate: moment.Moment = moment();
-  private _endDate: moment.Moment = moment();
-  private _annualRate: number;
-  private _payingAccount: number;
-  private _partner: string;
-  private _interestFree: boolean;
-  private _totalMonths: number;
-  private _comment: string;
-  private _firstRepayDate?: moment.Moment;
-  private _repayDayInMonth?: number;
-  public RepayMethod: RepaymentMethodEnum;
-  public RefDocId: number;
+  private _startDate: moment.Moment | null = null;
+  private _endDate: moment.Moment | null = null;
+  private _annualRate: number | null = null;
+  private _payingAccount: number | null = null;
+  private _partner: string | null = null;
+  private _interestFree: boolean | null = null;
+  private _totalMonths: number | null = null;
+  private _comment: string = '';
+  private _firstRepayDate: moment.Moment | null = null;
+  private _repayDayInMonth: number | null = null;
+  public RepayMethod: RepaymentMethodEnum = RepaymentMethodEnum.DueRepayment;
+  public RefDocId: number | null = null;
   public loanTmpDocs: TemplateDocLoan[] = [];
 
-  get startDate(): moment.Moment {
-    return this._startDate;
+  get startDate(): moment.Moment | null       { return this._startDate;     }
+  set startDate(sd: moment.Moment | null)     { this._startDate = sd;       }
+  get StartDateFormatString(): string | null  { 
+    if (this._startDate !== null) {
+      return this._startDate!.format(hih.momentDateFormat);
+    }
+    return null;
   }
-  set startDate(sd: moment.Moment) {
-    this._startDate = sd;
+  get endDate(): moment.Moment | null         { return this._endDate;       }
+  set endDate(ed: moment.Moment | null)       { this._endDate = ed;         }
+  get EndDateFormatString(): string | null {
+    if (this._endDate !== null) {
+      return this._endDate.format(hih.momentDateFormat);
+    }
+    return null;
   }
-  get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
-  }
-  get endDate(): moment.Moment {
-    return this._endDate;
-  }
-  set endDate(ed: moment.Moment) {
-    this._endDate = ed;
-  }
-  get EndDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
-  }
-  get annualRate(): number {
-    return this._annualRate;
-  }
-  set annualRate(ar: number) {
-    this._annualRate = ar;
-  }
-  get PayingAccount(): number {
-    return this._payingAccount;
-  }
-  set PayingAccount(paid: number) {
-    this._payingAccount = paid;
-  }
-  get Partner(): string {
-    return this._partner;
-  }
-  set Partner(ptner: string) {
-    this._partner = ptner;
-  }
-  get InterestFree(): boolean {
-    return this._interestFree;
-  }
-  set InterestFree(ifree: boolean) {
-    this._interestFree = ifree;
-  }
-  get TotalMonths(): number {
-    return this._totalMonths;
-  }
-  set TotalMonths(tmon: number) {
-    this._totalMonths = tmon;
-  }
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
-  get FirstRepayDate(): moment.Moment {
-    return this._firstRepayDate;
-  }
-  set FirstRepayDate(firstdate: moment.Moment) {
+  get annualRate(): number | null             { return this._annualRate;    }
+  set annualRate(ar: number | null)           { this._annualRate = ar;      }
+  get PayingAccount(): number | null          { return this._payingAccount; }
+  set PayingAccount(paid: number | null)      { this._payingAccount = paid; }
+  get Partner(): string | null                { return this._partner;       }
+  set Partner(ptner: string | null)           { this._partner = ptner;      }
+  get InterestFree(): boolean | null          { return this._interestFree;  }
+  set InterestFree(ifree: boolean | null)     { this._interestFree = ifree; }
+  get TotalMonths(): number | null            { return this._totalMonths;   }
+  set TotalMonths(tmon: number | null)        { this._totalMonths = tmon;   }
+  get Comment(): string                       { return this._comment;       }
+  set Comment(cmt: string)                    { this._comment = cmt;        }
+  get FirstRepayDate(): moment.Moment | null  { return this._firstRepayDate; }
+  set FirstRepayDate(firstdate: moment.Moment | null) {
     this._firstRepayDate = firstdate;
   }
-  get RepayDayInMonth(): number {
-    return this._repayDayInMonth;
-  }
-  set RepayDayInMonth(rdim: number) {
-    this._repayDayInMonth = rdim;
-  }
+  get RepayDayInMonth(): number | null        { return this._repayDayInMonth;}
+  set RepayDayInMonth(rdim: number | null)    { this._repayDayInMonth = rdim;}
 
   get isAccountValid(): boolean {
     if (this.startDate === undefined || this.startDate === null) {
@@ -1113,8 +1081,8 @@ export class AccountExtraLoan extends AccountExtra {
     super.onInit();
 
     this._startDate = moment();
-    this._firstRepayDate = undefined;
-    this._repayDayInMonth = undefined;
+    this._firstRepayDate = null;
+    this._repayDayInMonth = null;
   }
 
   public clone(): AccountExtraLoan {
@@ -1228,24 +1196,24 @@ export interface ControlCenterJson extends hih.BaseModelJson {
  * Control center
  */
 export class ControlCenter extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _comment: string;
-  private _owner: string;
+  private _id?: number;
+  private _hid?: number;
+  private _name: string = '';
+  private _comment: string = '';
+  private _owner: string = '';
   private _parid?: number;
 
-  get Id(): number                        { return this._id;              }
-  set Id(id: number)                      { this._id = id;                }
-  get HID(): number                       { return this._hid;             }
-  set HID(hid: number)                    { this._hid = hid;              }
+  get Id(): number | undefined            { return this._id;              }
+  set Id(id: number | undefined)          { this._id = id;                }
+  get HID(): number | undefined           { return this._hid;             }
+  set HID(hid: number | undefined)        { this._hid = hid;              }
   get Name(): string                      { return this._name;            }
   set Name(name: string)                  { this._name = name;            }
   get Comment(): string                   { return this._comment;         }
   set Comment(cmt: string)                { this._comment = cmt;          }
   get Owner(): string                     { return this._owner;           }
   set Owner(owner: string)                { this._owner = owner;          }
-  get ParentId(): number                  { return this._parid;           }
+  get ParentId(): number | undefined      { return this._parid;           }
   set ParentId(pid: number | undefined)   { this._parid = pid;            }
 
   constructor() {
@@ -1256,11 +1224,11 @@ export class ControlCenter extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-    this._name = undefined;
+    this._name = '';
     this._hid = undefined;
     this._id = undefined;
-    this._comment = undefined;
-    this._owner = undefined;
+    this._comment = '';
+    this._owner = '';
 
     this._parid = undefined;
   }
@@ -1369,17 +1337,17 @@ export interface OrderJson extends hih.BaseModelJson {
  * Order
  */
 export class Order extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _cmt: string;
+  private _id?: number;
+  private _hid?: number;
+  private _name: string = '';
+  private _cmt: string = '';
   private _validFrom: moment.Moment = moment();
   private _validTo: moment.Moment = moment();
 
-  get Id(): number                    { return this._id;              }
-  set Id(id: number)                  { this._id = id;                }
-  get HID(): number                   { return this._hid;             }
-  set HID(hid: number)                { this._hid = hid;              }
+  get Id(): number | undefined        { return this._id;              }
+  set Id(id: number | undefined)      { this._id = id;                }
+  get HID(): number | undefined       { return this._hid;             }
+  set HID(hid: number | undefined)    { this._hid = hid;              }
   get Name(): string                  { return this._name;            }
   set Name(name: string)              { this._name = name;            }
   get Comment(): string               { return this._cmt;             }
@@ -1395,7 +1363,7 @@ export class Order extends hih.BaseModel {
     return this._validTo.format(hih.momentDateFormat);
   }
 
-  public SRules: SettlementRule[];
+  public SRules: SettlementRule[] = [];
 
   constructor() {
     super();
@@ -1406,8 +1374,8 @@ export class Order extends hih.BaseModel {
   public onInit(): void {
     super.onInit();
     this._id = undefined;
-    this._name = undefined;
-    this._cmt = undefined;
+    this._name = '';
+    this._cmt = '';
 
     this._validFrom = moment();
     this._validTo = this._validFrom.clone().add(1, 'M');
@@ -1572,22 +1540,22 @@ export interface SettlementRuleJson {
  * Settlement rule
  */
 export class SettlementRule {
-  private _orderid: number;
-  private _ruleid: number;
-  private _ccid: number;
-  private _precent: number;
-  private _cmt: string;
+  private _orderid?: number;
+  private _ruleid: number = 0;
+  private _ccid?: number;
+  private _precent: number = 0;
+  private _cmt: string = '';
 
-  get OrdId(): number               { return this._orderid;       }
-  set OrdId(oi: number)             { this._orderid = oi;         }
-  get RuleId(): number              { return this._ruleid;        }
-  set RuleId(rid: number)           { this._ruleid = rid;         }
-  get ControlCenterId(): number     { return this._ccid;          }
-  set ControlCenterId(cid: number)  { this._ccid = cid;           }
-  get Precent(): number             { return this._precent;       }
-  set Precent(precent: number)      { this._precent = precent;    }
-  get Comment(): string             { return this._cmt;           }
-  set Comment(cmt: string)          { this._cmt = cmt;            }
+  get OrdId(): number | undefined               { return this._orderid;       }
+  set OrdId(oi: number | undefined)             { this._orderid = oi;         }
+  get RuleId(): number                          { return this._ruleid;        }
+  set RuleId(rid: number)                       { this._ruleid = rid;         }
+  get ControlCenterId(): number | undefined     { return this._ccid;          }
+  set ControlCenterId(cid: number | undefined)  { this._ccid = cid;           }
+  get Precent(): number                         { return this._precent;       }
+  set Precent(precent: number)                  { this._precent = precent;    }
+  get Comment(): string                         { return this._cmt;           }
+  set Comment(cmt: string)                      { this._cmt = cmt;            }
 
   public VerifiedMsgs: hih.InfoMessage[] = [];
 
@@ -1686,29 +1654,29 @@ export interface TranTypeJson extends hih.BaseModelJson {
 }
 
 export class TranType extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _expense: boolean;
+  private _id?: number;
+  private _hid?: number;
+  private _name: string = '';
+  private _expense: boolean = false;
   private _parid?: number;
-  private _cmt: string;
+  private _cmt: string = '';
 
-  get Id(): number                    { return this._id;        }
-  set Id(id: number)                  { this._id = id;          }
-  get HID(): number                   { return this._hid;       }
-  set HID(hid: number)                { this._hid = hid;        }
+  get Id(): number | undefined        { return this._id;        }
+  set Id(id: number | undefined)      { this._id = id;          }
+  get HID(): number | undefined       { return this._hid;       }
+  set HID(hid: number | undefined)    { this._hid = hid;        }
   get Name(): string                  { return this._name;      }
   set Name(name: string)              { this._name = name;      }
   get Expense(): boolean              { return this._expense;   }
   set Expense(exp: boolean)           { this._expense = exp;    }
-  get ParId(): number                 { return this._parid;     }
+  get ParId(): number | undefined     { return this._parid;     }
   set ParId(pid: number | undefined)  { this._parid = pid;      }
   get Comment(): string               { return this._cmt;       }
   set Comment(cmt: string)            { this._cmt = cmt;        }
 
   // For UI display
-  public HierLevel: TranTypeLevelEnum;
-  public FullDisplayText: string;
+  public HierLevel: TranTypeLevelEnum = TranTypeLevelEnum.TopLevel;
+  public FullDisplayText: string = '';
 
   constructor() {
     super();
@@ -1800,40 +1768,40 @@ export interface DocumentJson {
  * Document
  */
 export class Document extends hih.BaseModel {
-  private _id: number;
+  private _id?: number;
   private _tranDate: moment.Moment = moment();
-  private _hid: number;
-  private _doctype: number;
-  private _trancurr: string;
-  private _desp: string;
+  private _hid?: number;
+  private _doctype?: number;
+  private _trancurr: string = '';
+  private _desp: string = '';
   private _exgrate?: number;
   private _exgratePlan?: boolean;
   private _trancurr2?: string;
   private _exgrate2?: number;
   private _exgrate2Plan?: boolean;
 
-  get Id(): number                      { return this._id;          }
-  set Id(id: number)                    { this._id = id;            }
-  get HID(): number                     { return this._hid;         }
-  set HID(hid: number)                  { this._hid = hid;          }
-  get DocType(): number                 { return this._doctype;     }
-  set DocType(dt: number)               { this._doctype = dt;       }
-  get TranCurr(): string                { return this._trancurr;    }
-  set TranCurr(curr: string)            { this._trancurr = curr;    }
-  get Desp(): string                    { return this._desp;        }
-  set Desp(desp: string)                { this._desp = desp;        }
-  get ExgRate(): number                 { return this._exgrate;     }
-  set ExgRate(exg: number | undefined)  { this._exgrate = exg;      }
-  get ExgRate_Plan(): boolean           { return this._exgratePlan; }
-  set ExgRate_Plan(plan: boolean | undefined) { this._exgratePlan = plan; }
-  get TranCurr2(): string               { return this._trancurr2;   }
-  set TranCurr2(cr: string | undefined) { this._trancurr2 = cr;     }
-  get ExgRate2(): number                { return this._exgrate2;    }
-  set ExgRate2(eg2: number | undefined) { this._exgrate2 = eg2;     }
-  get ExgRate_Plan2(): boolean          { return this._exgrate2Plan; }
-  set ExgRate_Plan2(pl: boolean | undefined) { this._exgrate2Plan = pl; }
-  get TranDate(): moment.Moment         { return this._tranDate;    }
-  set TranDate(td: moment.Moment)       { this._tranDate = td;      }
+  get Id(): number | undefined                      { return this._id;            }
+  set Id(id: number | undefined)                    { this._id = id;              }
+  get HID(): number | undefined                     { return this._hid;           }
+  set HID(hid: number | undefined)                  { this._hid = hid;            }
+  get DocType(): number | undefined                 { return this._doctype;       }
+  set DocType(dt: number | undefined)               { this._doctype = dt;         }
+  get TranCurr(): string                            { return this._trancurr;      }
+  set TranCurr(curr: string)                        { this._trancurr = curr;      }
+  get Desp(): string                                { return this._desp;          }
+  set Desp(desp: string)                            { this._desp = desp;          }
+  get ExgRate(): number | undefined                 { return this._exgrate;       }
+  set ExgRate(exg: number | undefined)              { this._exgrate = exg;        }
+  get ExgRate_Plan(): boolean | undefined           { return this._exgratePlan;   }
+  set ExgRate_Plan(plan: boolean | undefined)       { this._exgratePlan = plan;   }
+  get TranCurr2(): string | undefined               { return this._trancurr2;     }
+  set TranCurr2(cr: string | undefined)             { this._trancurr2 = cr;       }
+  get ExgRate2(): number | undefined                { return this._exgrate2;      }
+  set ExgRate2(eg2: number | undefined)             { this._exgrate2 = eg2;       }
+  get ExgRate_Plan2(): boolean | undefined          { return this._exgrate2Plan;  }
+  set ExgRate_Plan2(pl: boolean | undefined)        { this._exgrate2Plan = pl;    }
+  get TranDate(): moment.Moment                     { return this._tranDate;      }
+  set TranDate(td: moment.Moment)                   { this._tranDate = td;        }
 
   public Items: DocumentItem[] = [];
 
@@ -1986,7 +1954,7 @@ export class Document extends hih.BaseModel {
         } else {
           // Amount
           let amtItem = 0;
-          for (const tt of context.TransactionTypes) {
+          for (const tt of context!.TransactionTypes) {
             const ftt: TranType = tt as TranType;
             if (ftt.Id === fit.TranType) {
               if (ftt.Expense) {
@@ -2014,9 +1982,9 @@ export class Document extends hih.BaseModel {
           }
 
           // Order valid check
-          if (fit.OrderId > 0 && context && context.Orders.length > 0) {
+          if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
             const vordidx: number = context.Orders.findIndex((ord: Order) => {
-              return (+fit.OrderId === +ord.Id && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
+              return (+fit.OrderId === +ord!.Id && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
             });
 
             if (vordidx === -1) {
@@ -2127,46 +2095,38 @@ export class Document extends hih.BaseModel {
  */
 export class DocumentItem {
   private _docid?: number;
-  private _itemid: number;
-  private _accountid: number;
-  private _trantype: number;
-  private _tranamt: number;
+  private _itemid: number = 0;
+  private _accountid?: number;
+  private _trantype?: number;
+  private _tranamt: number = 0;
   private _usecurr2?: boolean;
   private _ccid?: number;
   private _orderid?: number;
-  private _desp: string;
+  private _desp: string = '';
 
-  get DocId(): number             { return this._docid;       }
-  set DocId(docid: number )       { this._docid = docid;      }
-  get ItemId(): number            { return this._itemid;      }
-  set ItemId(iid: number)         { this._itemid = iid;       }
-  get AccountId(): number         { return this._accountid;   }
-  set AccountId(acntid: number)   { this._accountid = acntid; }
-  get TranType(): number          { return this._trantype;    }
-  set TranType(tt: number)        { this._trantype = tt;      }
-  get TranAmount(): number        { return this._tranamt;     }
-  set TranAmount(tamt: number)    { this._tranamt = tamt;     }
-  get UseCurr2(): boolean         { return this._usecurr2;    }
-  set UseCurr2(ucur2: boolean | undefined) {
-    this._usecurr2 = ucur2;
-  }
-  get ControlCenterId(): number   { return this._ccid;        }
-  set ControlCenterId(ccid: number | undefined) {
-    this._ccid = ccid;
-  }
-  get OrderId(): number | undefined { return this._orderid;   }
-  set OrderId(oid: number | undefined) {
-    this._orderid = oid;
-  }
-  get Desp(): string              { return this._desp;        }
-  set Desp(dsp: string)           { this._desp = dsp;         }
+  get DocId(): number | undefined             { return this._docid;       }
+  set DocId(docid: number | undefined)        { this._docid = docid;      }
+  get ItemId(): number                        { return this._itemid;      }
+  set ItemId(iid: number)                     { this._itemid = iid;       }
+  get AccountId(): number | undefined         { return this._accountid;   }
+  set AccountId(acntid: number | undefined)   { this._accountid = acntid; }
+  get TranType(): number | undefined          { return this._trantype;    }
+  set TranType(tt: number | undefined)        { this._trantype = tt;      }
+  get TranAmount(): number                    { return this._tranamt;     }
+  set TranAmount(tamt: number)                { this._tranamt = tamt;     }
+  get UseCurr2(): boolean | undefined         { return this._usecurr2;    }
+  set UseCurr2(ucur2: boolean | undefined)    { this._usecurr2 = ucur2;   }
+  get ControlCenterId(): number | undefined   { return this._ccid;        }
+  set ControlCenterId(cd: number | undefined) { this._ccid = cd;          }
+  get OrderId(): number | undefined           { return this._orderid;     }
+  set OrderId(oid: number | undefined)        { this._orderid = oid;      }
+  get Desp(): string                          { return this._desp;        }
+  set Desp(dsp: string)                       { this._desp = dsp;         }
 
   public VerifiedMsgs: hih.InfoMessage[];
-
   public Tags: string[];
 
   constructor() {
-    this.TranAmount = 0;
     this.Tags = [];
     this.VerifiedMsgs = [];
   }
@@ -2353,12 +2313,6 @@ export class DocumentItem {
     if (this.OrderId) {
       rstObj.OrderID = this.OrderId;
     }
-    // if (this.Tags.length > 0) {
-    //   rstObj.tagTerms = [];
-    //   for (const tag of this.Tags) {
-    //     rstObj.tagTerms.push(tag);
-    //   }
-    // }
 
     return rstObj;
   }
@@ -2388,11 +2342,6 @@ export class DocumentItem {
     if (data && data.Desp) {
       this.Desp = data.Desp;
     }
-    // if (data && data.tagTerms && data.tagTerms instanceof Array && data.tagTerms.length > 0) {
-    //   for (const term of data.tagTerms) {
-    //     this.Tags.push(term);
-    //   }
-    // }
   }
 }
 
@@ -2400,81 +2349,45 @@ export class DocumentItem {
  * Tempalte docs base class
  */
 export abstract class TemplateDocBase extends hih.BaseModel {
-  protected _tranDate: moment.Moment;
-  protected _totalAmount: number;
-  protected _tranAmount: number;
-  protected _tranType: number;
-  protected _accountId: number;
-  protected _controlCenterId: number;
-  protected _orderId: number;
-  protected _docId: number;
-  protected _desp: string;
-  protected _refDocId: number;
+  protected _tranDate?: moment.Moment;
+  protected _totalAmount: number = 0;
+  protected _tranAmount: number = 0;
+  protected _tranType?: number;
+  protected _accountId?: number;
+  protected _controlCenterId?: number;
+  protected _orderId?: number;
+  protected _docId?: number;
+  protected _desp: string = '';
+  protected _refDocId?: number;
 
-  public HID: number;
-  get DocId(): number {
-    return this._docId;
+  public HID?: number;
+
+  get DocId(): number | undefined               { return this._docId;             }
+  set DocId(docid: number| undefined)           { this._docId = docid;            }
+  get RefDocId(): number  | undefined           { return this._refDocId;          }
+  set RefDocId(refdocid: number | undefined)    { this._refDocId = refdocid;      }
+  get AccountId(): number | undefined           { return this._accountId;         }
+  set AccountId(acntid: number | undefined)     { this._accountId = acntid;       }
+  get TranType(): number | undefined            { return this._tranType;          }
+  set TranType(ttype: number | undefined)       { this._tranType = ttype;         }
+  get TranAmount(): number                      { return this._tranAmount;        }
+  set TranAmount(tamt: number)                  { this._tranAmount = tamt;        }
+  get ControlCenterId(): number | undefined     { return this._controlCenterId;   }
+  set ControlCenterId(ccid: number | undefined) { this._controlCenterId = ccid;   }
+  get OrderId(): number | undefined             { return this._orderId;           }
+  set OrderId(ordid: number | undefined)        { this._orderId = ordid;          }
+  get Desp(): string                            { return this._desp;              }
+  set Desp(dsp: string)                         { this._desp = dsp;               }
+  get TranDate(): moment.Moment | undefined     { return this._tranDate;          }
+  set TranDate(td: moment.Moment | undefined)   { this._tranDate = td;            }
+  get TranDateFormatString(): string | null     {
+    if (this._tranDate !== null) {
+      return this._tranDate!.format(hih.momentDateFormat);
+    }
+    return null;
   }
-  set DocId(docid: number) {
-    this._docId = docid;
-  }
-  get RefDocId(): number {
-    return this._refDocId;
-  }
-  set RefDocId(refdocid: number) {
-    this._refDocId = refdocid;
-  }
-  get AccountId(): number {
-    return this._accountId;
-  }
-  set AccountId(acntid: number) {
-    this._accountId = acntid;
-  }
-  get TranType(): number {
-    return this._tranType;
-  }
-  set TranType(ttype: number) {
-    this._tranType = ttype;
-  }
-  get TranAmount(): number {
-    return this._tranAmount;
-  }
-  set TranAmount(tamt: number) {
-    this._tranAmount = tamt;
-  }
-  get ControlCenterId(): number {
-    return this._controlCenterId;
-  }
-  set ControlCenterId(ccid: number) {
-    this._controlCenterId = ccid;
-  }
-  get OrderId(): number {
-    return this._orderId;
-  }
-  set OrderId(ordid: number) {
-    this._orderId = ordid;
-  }
-  get Desp(): string {
-    return this._desp;
-  }
-  set Desp(dsp: string) {
-    this._desp = dsp;
-  }
-  get TranDate(): moment.Moment {
-    return this._tranDate;
-  }
-  set TranDate(td: moment.Moment) {
-    this._tranDate = td;
-  }
-  get TranDateFormatString(): string {
-    return this._tranDate.format(hih.momentDateFormat);
-  }
-  get TotalAmount(): number {
-    return this._totalAmount;
-  }
-  set TotalAmount(tamt: number) {
-    this._totalAmount = tamt;
-  }
+  get TotalAmount(): number                     { return this._totalAmount;       }
+  set TotalAmount(tamt: number)                 { this._totalAmount = tamt;       }
 
   constructor() {
     super();
@@ -2504,7 +2417,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.HomeID = this.HID;
     rstObj.ReferenceDocumentID = this.RefDocId;
     rstObj.AccountID = this.AccountId;
-    rstObj.TransactionDate = this._tranDate.format(hih.momentDateFormat);
+    rstObj.TransactionDate = this._tranDate?.format(hih.momentDateFormat);
     rstObj.TransactionType = this.TranType;
     rstObj.TransactionAmount = this.TranAmount;
     rstObj.TranAmount = this.TranAmount;
@@ -2580,13 +2493,9 @@ export class TemplateDocADP extends TemplateDocBase {
  * Tempalte doc for Loan
  */
 export class TemplateDocLoan extends TemplateDocBase {
-  private _amtInterest: number;
-  get InterestAmount(): number {
-    return this._amtInterest;
-  }
-  set InterestAmount(amt: number) {
-    this._amtInterest = amt;
-  }
+  private _amtInterest: number = 0;
+  get InterestAmount(): number      { return this._amtInterest;       }
+  set InterestAmount(amt: number)   { this._amtInterest = amt;        }
 
   public writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
@@ -2619,91 +2528,43 @@ export enum PlanTypeEnum {
  * Plan
  */
 export class Plan extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _planType: PlanTypeEnum;
-  private _accountID: number;
-  private _accountCtgyID: number;
-  private _ccID: number;
-  private _tranTypeID: number;
-  private _startDate: moment.Moment;
-  private _targetDate: moment.Moment;
-  private _tagetBalance: number;
-  private _tranCurr: string;
-  private _description: string;
+  private _id?: number;
+  private _hid?: number;
+  private _planType: PlanTypeEnum = PlanTypeEnum.Account;
+  private _accountID?: number;
+  private _accountCtgyID?: number;
+  private _ccID?: number;
+  private _tranTypeID?: number;
+  private _startDate?: moment.Moment;
+  private _targetDate?: moment.Moment;
+  private _tagetBalance: number = 0;
+  private _tranCurr: string = '';
+  private _description: string = '';
 
-  get ID(): number {
-    return this._id;
-  }
-  set ID(id: number) {
-    this._id = id;
-  }
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
-  get PlanType(): PlanTypeEnum {
-    return this._planType;
-  }
-  set PlanType(pt: PlanTypeEnum) {
-    this._planType = pt;
-  }
-  get AccountID(): number {
-    return this._accountID;
-  }
-  set AccountID(acid: number) {
-    this._accountID = acid;
-  }
-  get AccountCategoryID(): number {
-    return this._accountCtgyID;
-  }
-  set AccountCategoryID(acid: number) {
-    this._accountCtgyID = acid;
-  }
-  get ControlCenterID(): number {
-    return this._ccID;
-  }
-  set ControlCenterID(ccid: number) {
-    this._ccID = ccid;
-  }
-  get TranTypeID(): number {
-    return this._tranTypeID;
-  }
-  set TranTypeID(ttid: number) {
-    this._tranTypeID = ttid;
-  }
-  get StartDate(): moment.Moment {
-    return this._startDate;
-  }
-  set StartDate(sd: moment.Moment) {
-    this._startDate = sd;
-  }
-  get TargetDate(): moment.Moment {
-    return this._targetDate;
-  }
-  set TargetDate(tdate: moment.Moment) {
-    this._targetDate = tdate;
-  }
-  get TargetBalance(): number {
-    return this._tagetBalance;
-  }
-  set TargetBalance(tb: number) {
-    this._tagetBalance = tb;
-  }
-  get TranCurrency(): string {
-    return this._tranCurr;
-  }
-  set TranCurrency(curr: string) {
-    this._tranCurr = curr;
-  }
-  get Description(): string {
-    return this._description;
-  }
-  set Description(desp: string) {
-    this._description = desp;
-  }
+  get ID(): number | undefined                  { return this._id;                  }
+  set ID(id: number | undefined)                { this._id = id;                    }
+  get HID(): number | undefined                 { return this._hid;                 }
+  set HID(hid: number | undefined)              { this._hid = hid;                  }
+  get PlanType(): PlanTypeEnum                  { return this._planType;            }
+  set PlanType(pt: PlanTypeEnum)                { this._planType = pt;              }
+  get AccountID(): number | undefined           { return this._accountID;           }
+  set AccountID(acid: number | undefined)       { this._accountID = acid;           }
+  get AccountCategoryID(): number | undefined   { return this._accountCtgyID;       }
+  set AccountCategoryID(cd: number | undefined) { this._accountCtgyID = cd;         }
+  get ControlCenterID(): number | undefined     { return this._ccID;                }
+  set ControlCenterID(cd: number | undefined)   { this._ccID = cd;                  }
+  get TranTypeID(): number | undefined          { return this._tranTypeID;          }
+  set TranTypeID(ttid: number | undefined)      { this._tranTypeID = ttid;          }
+  get StartDate(): moment.Moment | undefined    { return this._startDate;           }
+  set StartDate(sd: moment.Moment | undefined)  { this._startDate = sd;             }
+  get TargetDate(): moment.Moment | undefined   { return this._targetDate;          }
+  set TargetDate(td: moment.Moment | undefined) { this._targetDate = td;            }
+  get TargetBalance(): number                   { return this._tagetBalance;        }
+  set TargetBalance(tb: number)                 { this._tagetBalance = tb;          }
+  get TranCurrency(): string                    { return this._tranCurr;            }
+  set TranCurrency(curr: string)                { this._tranCurr = curr;            }
+  get Description(): string                     { return this._description;         }
+  set Description(desp: string)                 { this._description = desp;         }
 
   constructor() {
     super();
@@ -2727,7 +2588,7 @@ export class Plan extends hih.BaseModel {
       this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
       bsuccess = false;
     }
-    if (this.StartDate.isSameOrAfter(this.TargetDate)) {
+    if (this.StartDate && this.StartDate.isSameOrAfter(this.TargetDate)) {
       this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
       bsuccess = false;
     }
@@ -2757,8 +2618,8 @@ export class Plan extends hih.BaseModel {
       default:
         break;
     }
-    rstObj.StartDate = this.StartDate.format(hih.momentDateFormat);
-    rstObj.TargetDate = this.TargetDate.format(hih.momentDateFormat);
+    rstObj.StartDate = this.StartDate?.format(hih.momentDateFormat);
+    rstObj.TargetDate = this.TargetDate?.format(hih.momentDateFormat);
     rstObj.TargetBalance = this.TargetBalance;
     rstObj.TranCurr = this.TranCurrency;
     rstObj.Description = this.Description;
@@ -2774,7 +2635,7 @@ export class Plan extends hih.BaseModel {
     }
     if (data && data.PlanType) {
       if (typeof data.PlanType === 'string') {
-        this.PlanType = PlanTypeEnum[data.PlanType as string];
+        this.PlanType = PlanTypeEnum[data.PlanType as keyof typeof PlanTypeEnum];
       } else if (typeof data.Status === 'number') {
         this.PlanType = data.PlanType as PlanTypeEnum;
       }
@@ -2813,51 +2674,40 @@ export class Plan extends hih.BaseModel {
  * Document Item view
  */
 export class DocumentItemView {
-  public DocumentID: number;
-  public ItemID: number;
-  public HomeID: number;
-  public TransactionDate: moment.Moment;
-  public DocumentDesp: string;
-  public AccountID: number;
-  public TransactionType: number;
-  public IsExpense: boolean;
-  public Currency: string;
-  public OriginAmount: number;
-  public Amount: number;
-  public AmountInLocalCurrency: number;
+  public DocumentID?: number;
+  public ItemID: number = 0;
+  public HomeID?: number;
+  public TransactionDate?: moment.Moment;
+  public DocumentDesp: string = '';
+  public AccountID?: number;
+  public TransactionType?: number;
+  public IsExpense: boolean = false;
+  public Currency: string = '';
+  public OriginAmount: number = 0;
+  public Amount: number = 0;
+  public AmountInLocalCurrency: number = 0;
   public ControlCenterID?: number;
   public OrderID?: number;
-  public ItemDesp: string;
+  public ItemDesp: string = '';
 }
 
 /**
  * Report base
  */
 export class FinanceReportBase {
-  private hid: number;
-  private _debitBalance: number;
-  private _creditBalance: number;
-  private _balance: number;
-  get HomeID(): number { return this.hid; }
-  set HomeID(hid: number) { this.hid = hid; }
-  get DebitBalance(): number {
-    return this._debitBalance;
-  }
-  set DebitBalance(db: number) {
-    this._debitBalance = db;
-  }
-  get CreditBalance(): number {
-    return this._creditBalance;
-  }
-  set CreditBalance(cb: number) {
-    this._creditBalance = cb;
-  }
-  get Balance(): number {
-    return this._balance;
-  }
-  set Balance(bal: number) {
-    this._balance = bal;
-  }
+  private hid?: number;
+  private _debitBalance: number = 0;
+  private _creditBalance: number = 0;
+  private _balance: number = 0;
+
+  get HomeID(): number | undefined                  { return this.hid;                    }
+  set HomeID(hid: number | undefined)               { this.hid = hid;                     }
+  get DebitBalance(): number                        { return this._debitBalance;          }
+  set DebitBalance(db: number)                      { this._debitBalance = db;            }
+  get CreditBalance(): number                       { return this._creditBalance;         }
+  set CreditBalance(cb: number)                     { this._creditBalance = cb;           }
+  get Balance(): number                             { return this._balance;               }
+  set Balance(bal: number)                          { this._balance = bal;                }
 
   public onSetData(data: any): void {
     if (data && data.DebitBalance) {
@@ -2884,13 +2734,10 @@ export class FinanceReportBase {
  * Report by Account
  */
 export class FinanceReportByAccount extends FinanceReportBase {
-  private _accountID: number;
-  get AccountId(): number {
-    return this._accountID;
-  }
-  set AccountId(acid: number) {
-    this._accountID = acid;
-  }
+  private _accountID?: number;
+
+  get AccountId(): number | undefined       { return this._accountID;     }
+  set AccountId(acid: number | undefined)   { this._accountID = acid;     }
   public onSetData(data: any): void {
     super.onSetData(data);
 
@@ -2904,34 +2751,19 @@ export class FinanceReportByAccount extends FinanceReportBase {
  * Balance sheet
  */
 export class BalanceSheetReport extends FinanceReportBase {
-  private _accountID: number;
-  private _accountName: string;
-  private _accountCtgyID: number;
-  private _accountCtgyName: string;
-  get AccountId(): number {
-    return this._accountID;
-  }
-  set AccountId(acid: number) {
-    this._accountID = acid;
-  }
-  get AccountName(): string {
-    return this._accountName;
-  }
-  set AccountName(acntname: string) {
-    this._accountName = acntname;
-  }
-  get AccountCategoryId(): number {
-    return this._accountCtgyID;
-  }
-  set AccountCategoryId(ctgyid: number) {
-    this._accountCtgyID = ctgyid;
-  }
-  get AccountCategoryName(): string {
-    return this._accountCtgyName;
-  }
-  set AccountCategoryName(ctgyName: string) {
-    this._accountCtgyName = ctgyName;
-  }
+  private _accountID: number = 0;
+  private _accountName: string = '';
+  private _accountCtgyID: number = 0;
+  private _accountCtgyName: string = '';
+
+  get AccountId(): number                       { return this._accountID;           }
+  set AccountId(acid: number)                   { this._accountID = acid;           }
+  get AccountName(): string                     { return this._accountName;         }
+  set AccountName(acntname: string)             { this._accountName = acntname;     }
+  get AccountCategoryId(): number               { return this._accountCtgyID;       }
+  set AccountCategoryId(cd: number)             { this._accountCtgyID = cd;         }
+  get AccountCategoryName(): string             { return this._accountCtgyName;     }
+  set AccountCategoryName(ctgyName: string)     { this._accountCtgyName = ctgyName; }
 
   public onSetData(data: any): void {
     super.onSetData(data);
@@ -2955,13 +2787,10 @@ export class BalanceSheetReport extends FinanceReportBase {
  * Control center report
  */
 export class FinanceReportByControlCenter extends FinanceReportBase {
-  private _ccID: number;
-  get ControlCenterId(): number {
-    return this._ccID;
-  }
-  set ControlCenterId(ccid: number) {
-    this._ccID = ccid;
-  }
+  private _ccID: number = 0;
+
+  get ControlCenterId(): number     { return this._ccID;        }
+  set ControlCenterId(ccid: number) { this._ccID = ccid;        }
 
   public onSetData(data: any): void {
     super.onSetData(data);
@@ -2976,13 +2805,10 @@ export class FinanceReportByControlCenter extends FinanceReportBase {
  * Order report
  */
 export class FinanceReportByOrder extends FinanceReportBase {
-  private _orderID: number;
-  get OrderId(): number {
-    return this._orderID;
-  }
-  set OrderId(oid: number) {
-    this._orderID = oid;
-  }
+  private _orderID: number = 0;
+
+  get OrderId(): number     { return this._orderID;     }
+  set OrderId(oid: number)  { this._orderID = oid;      }
 
   public onSetData(data: any): void {
     super.onSetData(data);
@@ -2997,36 +2823,21 @@ export class FinanceReportByOrder extends FinanceReportBase {
  * Tran type report
  */
 export class TranTypeReport {
-  private _tranType: number;
-  private _tranTypeName: string;
-  private _expenseFlag: boolean;
-  private _tranAmount: number;
+  private _tranType: number = 0;
+  private _tranTypeName: string = '';
+  private _expenseFlag: boolean = false;
+  private _tranAmount: number = 0;
 
-  get TranType(): number {
-    return this._tranType;
-  }
-  set TranType(tt: number) {
-    this._tranType = tt;
-  }
-  get TranTypeName(): string {
-    return this._tranTypeName;
-  }
-  set TranTypeName(ttname: string) {
-    this._tranTypeName = ttname;
-  }
-  get ExpenseFlag(): boolean {
-    return this._expenseFlag;
-  }
-  set ExpenseFlag(ef: boolean) {
-    this._expenseFlag = ef;
-  }
-  get TranAmount(): number {
-    return this._tranAmount;
-  }
-  set TranAmount(tamt: number) {
-    this._tranAmount = tamt;
-  }
-  public TranDate: moment.Moment;
+  get TranType(): number            { return this._tranType;        }
+  set TranType(tt: number)          { this._tranType = tt;          }
+  get TranTypeName(): string        { return this._tranTypeName;    }
+  set TranTypeName(ttname: string)  { this._tranTypeName = ttname;  }
+  get ExpenseFlag(): boolean        { return this._expenseFlag;     }
+  set ExpenseFlag(ef: boolean)      { this._expenseFlag = ef;       }
+  get TranAmount(): number          { return this._tranAmount;      }
+  set TranAmount(tamt: number)      { this._tranAmount = tamt;      }
+  
+  public TranDate?: moment.Moment;
 
   public onSetData(data: any): void {
     if (data && data.tranType) {
@@ -3051,10 +2862,10 @@ export class TranTypeReport {
  * Month on month report
  */
 export class MonthOnMonthReport {
-  public year: number;
-  public month: number;
-  public expense: boolean;
-  public tranAmount: number;
+  public year: number = 0;
+  public month: number = 0;
+  public expense: boolean = false;
+  public tranAmount: number = 0;
 
   public onSetData(data: any): void {
     if (data && data.year) {
@@ -3083,8 +2894,8 @@ export class ReportTrendExData {
   tranWeek?: number;
   tranMonth?: number;
   tranYear?: number;
-  expense: boolean;
-  tranAmount: number;
+  expense: boolean = false;
+  tranAmount: number = 0;
 
   public onSetData(data: any): void {
     if (data && data.tranDate) {
@@ -3112,27 +2923,27 @@ export class ReportTrendExData {
  * Document item with balance
  */
 export class DocumentItemWithBalance {
-  private _tranDate: moment.Moment;
-  public TranType_Exp: boolean;
-  public TranCurr: string;
-  public TranAmount: number;
-  public TranAmount_Org: number;
-  public TranAmount_LC: number;
-  public Balance: number;
-  public DocDesp: string;
-  public DocId: number;
-  public ItemId: number;
-  public AccountId: number;
-  public TranType: number;
-  public ControlCenterId: number;
-  public OrderId: number;
-  public UseCurr2: boolean;
-  public Desp: string;
+  private _tranDate: moment.Moment = moment();
+  public TranType_Exp: boolean = false;
+  public TranCurr: string = '';
+  public TranAmount: number = 0;
+  public TranAmount_Org: number = 0;
+  public TranAmount_LC: number = 0;
+  public Balance: number = 0;
+  public DocDesp: string = '';
+  public DocId: number = 0;
+  public ItemId: number = 0;
+  public AccountId: number = 0;
+  public TranType: number = 0;
+  public ControlCenterId: number = 0;
+  public OrderId: number = 0;
+  public UseCurr2: boolean = false;
+  public Desp: string = '';
 
-  public AccountName: string;
-  public TranTypeName: string;
-  public ControlCenterName: string;
-  public OrderName: string;
+  public AccountName: string = '';
+  public TranTypeName: string = '';
+  public ControlCenterName: string = '';
+  public OrderName: string = '';
   get TranDate(): moment.Moment {
     return this._tranDate;
   }
@@ -3140,7 +2951,7 @@ export class DocumentItemWithBalance {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate ? this._tranDate.format(hih.momentDateFormat) : null;
+    return this._tranDate.format(hih.momentDateFormat);
   }
 
   public onSetData(data: any): void {
@@ -3212,21 +3023,21 @@ export class DocumentItemWithBalance {
  * Document with exchange rate as planned
  */
 export class DocumentWithPlanExgRate {
-  public HID: number;
-  public DocID: number;
-  public DocType: number;
-  public TranDate: moment.Moment;
+  public HID?: number;
+  public DocID?: number;
+  public DocType?: number;
+  public TranDate: moment.Moment = moment();
   get TranDateDisplayString(): string {
     return this.TranDate.format(hih.momentDateFormat);
   }
-  public Desp: string;
-  public TranCurr: string;
-  public ExgRate: number;
-  public ExgRate_Plan: boolean;
+  public Desp: string = '';
+  public TranCurr: string = '';
+  public ExgRate: number = 0;
+  public ExgRate_Plan: boolean = false;
 
-  public TranCurr2: string;
-  public ExgRate2: number;
-  public ExgRate_Plan2: boolean;
+  public TranCurr2: string = '';
+  public ExgRate2: number = 0;
+  public ExgRate_Plan2: boolean = false;
 
   public onSetData(jdata: any): void {
     if (jdata && jdata.hid) {
@@ -3306,10 +3117,10 @@ export class DocumentCreatedFrequenciesByUser {
  * Basic API for Asset document
  */
 export abstract class FinanceAssetDocumentAPIBase {
-  public HID: number;
-  public TranCurr: string;
-  public TranDate: string;
-  public Desp: string;
+  public HID: number = 0;
+  public TranCurr: string = '';
+  public TranDate: string = '';
+  public Desp: string = '';
   public ControlCenterID?: number;
   public OrderID?: number;
 
@@ -3341,9 +3152,9 @@ export abstract class FinanceAssetDocumentAPIBase {
  */
 export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
   public IsLegacy?: boolean;
-  public TranAmount: number;
-  public AccountOwner: string;
-  public AccountAsset: AccountExtraAsset;
+  public TranAmount: number = 0;
+  public AccountOwner: string = '';
+  public AccountAsset: AccountExtraAsset | null = null;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
@@ -3352,7 +3163,7 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
     }
     rst.TranAmount = this.TranAmount;
     rst.AccountOwner = this.AccountOwner;
-    rst.ExtraAsset = this.AccountAsset.writeJSONObject();
+    rst.ExtraAsset = this.AccountAsset?.writeJSONObject();
     return rst;
   }
 }
@@ -3361,8 +3172,8 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
  * API for Asset Soldout document
  */
 export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public AssetAccountID: number;
-  public TranAmount: number;
+  public AssetAccountID: number = 0;
+  public TranAmount: number = 0;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
@@ -3377,7 +3188,7 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
  * API for Asset ValChg document
  */
 export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public AssetAccountID: number;
+  public AssetAccountID: number = 0;
 
   public writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
@@ -3388,17 +3199,17 @@ export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
 
 // Normal document Mass Create
 export class FinanceNormalDocItemMassCreate {
-  public tranDate: moment.Moment;
-  public accountID: number;
-  public tranType: number;
-  public tranAmount: number;
-  public tranCurrency: string;
+  public tranDate: moment.Moment = moment();
+  public accountID: number = 0;
+  public tranType: number = 0;
+  public tranAmount: number = 0;
+  public tranCurrency: string = '';
   public controlCenterID?: number;
   public orderID?: number;
-  public desp: string;
+  public desp: string = '';
 
   // Tag
-  public tagTerms: string[];
+  public tagTerms: string[] = [];
 
   get isValid(): boolean {
     if (!this.desp) {
@@ -3435,32 +3246,31 @@ export class FinanceNormalDocItemMassCreate {
  * Confirm info for Mass Create
  */
 export class FinanceDocumentMassCreateConfirm {
-  // public countOfDocuments: number;
   public listDocByDate: Array<{
-    dateString: string,
-    count: number,
+    dateString: string;
+    count: number;
     itemByAccount: Array<{
-      accountID: number,
+      accountID: number;
       accountName: string;
-      debitAmount: number,
-      creditAmount: number
-    }>,
+      debitAmount: number;
+      creditAmount: number;
+    }>;
     itemByControlCenter: Array<{
-      controlCenterID: number,
+      controlCenterID: number;
       controlCenterName: string;
-      debitAmount: number,
-      creditAmount: number,
-    }>,
+      debitAmount: number;
+      creditAmount: number;
+    }>;
     itemByOrder: Array<{
-      orderID: number,
-      orderName: string,
-      debitAmount: number,
-      creditAmount: number
-    }>,
+      orderID: number;
+      orderName: string;
+      debitAmount: number;
+      creditAmount: number;
+    }>;
     itemByTranType: Array<{
-      tranTypeID: number,
-      tranTypeName: string,
-      amount: number,
-    }>
-  }>;
+      tranTypeID: number;
+      tranTypeName: string;
+      amount: number;
+    }>;
+  }> = [];
 }
