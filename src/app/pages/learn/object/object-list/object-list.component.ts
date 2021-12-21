@@ -76,12 +76,12 @@ export class ObjectListComponent implements OnInit, OnDestroy {
   onCreate() {
     this.router.navigate(['/learn/object/create']);
   }
-  onDelete(id: number) {
+  onDelete(id?: number) {
   }
-  onEdit(id: number) {
-    this.router.navigate(['/learn/object/edit', id.toString()]);
+  onEdit(id?: number) {
+    this.router.navigate(['/learn/object/edit', id?.toString()]);
   }
-  onDisplay(id: number) {
-    this.router.navigate(['/learn/object/display', id.toString()]);
+  onDisplay(id?: number) {
+    this.router.navigate(['/learn/object/display', id?.toString()]);
   }
 }

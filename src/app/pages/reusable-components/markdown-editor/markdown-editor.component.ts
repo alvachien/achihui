@@ -218,7 +218,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '**' + curmodel.getValueInRange(sel) + '**',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -239,7 +239,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '~~' + curmodel.getValueInRange(sel) + '~~',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -260,7 +260,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '*' + curmodel.getValueInRange(sel) + '*',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -280,7 +280,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '> ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -313,7 +313,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '# ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -334,7 +334,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '## ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -355,7 +355,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -376,7 +376,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '#### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -397,7 +397,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '##### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -418,7 +418,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '###### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -438,7 +438,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '- \n' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -458,7 +458,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '1. ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -478,7 +478,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '` ' + curmodel.getValueInRange(sel) + ' `',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -499,7 +499,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: '``` \n' + curmodel.getValueInRange(sel) + '\n ```',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -524,7 +524,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
               ` + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -547,7 +547,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
               text: '![Image](' + environment.ApiUrl + filename + ')',
             });
           });
-          curmodel.pushEditOperations(cursels, arrst, undefined);
+          curmodel.pushEditOperations(cursels, arrst, () => null);
         } else {
           cursels!.forEach(sel => {
             arrst.push({
@@ -555,7 +555,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
               text: '![Image]()',
             });
           });
-          curmodel.pushEditOperations(cursels, arrst, undefined);
+          curmodel.pushEditOperations(cursels, arrst, () => null);
         }
       }
 
@@ -623,7 +623,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
             text: curmodel.getValueInRange(sel) + moment().toString(),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();

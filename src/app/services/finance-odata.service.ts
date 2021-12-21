@@ -820,7 +820,7 @@ export class FinanceOdataService {
       .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.controlCenterAPIUrl + '(' + objDetail.Id.toString() + ')';
+    const apiurl: string = `${this.controlCenterAPIUrl}(${objDetail.Id})`;
 
     const jdata: string = objDetail.writeJSONString();
     // let params: HttpParams = new HttpParams();
@@ -1076,7 +1076,7 @@ export class FinanceOdataService {
       .append('Prefer', 'return=representation')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
+    const apiurl: string = `${this.orderAPIUrl}/${objDetail.Id}`;
     const jdata: string = objDetail.writeJSONString();
     return this.http.put(apiurl, jdata, {
       headers,
