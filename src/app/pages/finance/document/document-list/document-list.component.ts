@@ -50,7 +50,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listDocTypeFilters: ITableFilterValues[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(

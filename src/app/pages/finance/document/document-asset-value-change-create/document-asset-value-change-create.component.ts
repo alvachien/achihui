@@ -23,12 +23,12 @@ import { popupDialog } from '../../../message-dialog';
 
 // Assistant class
 class DocItemWithBlance {
-  docId: number | null = null;
-  tranDate: string | null = null;
-  desp: string | null = null;
-  tranAmount: number | null = null;
-  balance: number | null = null;
-  newBalance: number | null = null;
+  docId?: number;
+  tranDate?: string;
+  desp?: string;
+  tranAmount?: number;
+  balance?: number;
+  newBalance?: number;
 
   fromData(val: DocumentItemWithBalance): void {
     this.docId = val.DocId;
@@ -66,8 +66,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public existingDocItems: DocItemWithBlance[] = [];
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed?: string;
   currentStep = 0;
 
   // Variables
@@ -80,12 +80,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   arCurrencies: Currency[] = [];
   curMode: UIMode = UIMode.Create;
 
-  get NewEstimatedAmount(): number | null {
+  get NewEstimatedAmount(): number | undefined {
     const amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
-    return null;
+    return undefined;
   }
 
   constructor(
@@ -261,13 +261,13 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
             ConsoleLogTypeEnum.debug);
 
           this.docIdCreated = ndoc.Id;
-          this.docPostingFailed = null;
+          this.docPostingFailed = undefined;
         },
         error: (err: string) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
             ConsoleLogTypeEnum.error);
 
-          this.docIdCreated = null;
+          this.docIdCreated = undefined;
           this.docPostingFailed = err;
         },
       });
@@ -318,10 +318,10 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      if (a.TransactionDate.isBefore(b.TransactionDate)) {
+      if (a.TransactionDate?.isBefore(b.TransactionDate)) {
         return -1;
       }
-      if (a.TransactionDate.isAfter(b.TransactionDate)) {
+      if (a.TransactionDate?.isAfter(b.TransactionDate)) {
         return 1;
       }
       return 0;
@@ -330,7 +330,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     for (const ditem of docitems) {
       const dbal: DocItemWithBlance = new DocItemWithBlance();
       dbal.docId = ditem.DocumentID;
-      dbal.tranDate = ditem.TransactionDate.format(momentDateFormat);
+      dbal.tranDate = ditem.TransactionDate?.format(momentDateFormat);
       dbal.tranAmount = ditem.Amount;
       dbal.balance = curbal2;
       dbal.newBalance = dbal.balance + ditem.Amount;

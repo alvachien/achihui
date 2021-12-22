@@ -39,17 +39,17 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed?: string;
   currentStep = 0;
 
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountStatusFilter: string | undefined;
-  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+  public uiAccountStatusFilter?: string;
+  public uiAccountCtgyFilter?: IAccountCategoryFilter;
   public arUIOrder: UIOrderForSelection[] = [];
-  public uiOrderFilter: boolean | undefined;
-  public baseCurrency: string | null = null;
+  public uiOrderFilter?: boolean;
+  public baseCurrency: string = '';
   // Buffered variables
   arAssetCategories: AssetCategory[] = [];
   arMembers: HomeMember[] = [];
@@ -273,14 +273,14 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
             ConsoleLogTypeEnum.debug);
 
           this.docIdCreated = docObj.Id;
-          this.docPostingFailed = null;
+          this.docPostingFailed = undefined;
         },
         error: (err: string) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
             ConsoleLogTypeEnum.error);
 
           // Handle the error
-          this.docIdCreated = null;
+          this.docIdCreated = undefined;
           this.docPostingFailed = err;
         }
       });

@@ -41,8 +41,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed?: string;
   currentStep = 0;
 
   public curMode: UIMode = UIMode.Create;
@@ -260,13 +260,13 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         ConsoleLogTypeEnum.debug);
 
       this.docIdCreated = ndoc.Id;
-      this.docPostingFailed = null;
+      this.docPostingFailed = undefined;
     }, (err: string) => {
       // Handle the error
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
         ConsoleLogTypeEnum.error);
 
-      this.docIdCreated = null;
+      this.docIdCreated = undefined;
       this.docPostingFailed = err;
     });
   }

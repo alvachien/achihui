@@ -52,8 +52,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed?: string;
   currentStep = 0;
 
   get tranAmount(): number {
@@ -251,11 +251,11 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug);
 
           this.docIdCreated = ndoc.Id;
-          this.docPostingFailed = null;
+          this.docPostingFailed = undefined;
         },
         error: (error: any) => {
           // Show error message
-          this.docIdCreated = null;
+          this.docIdCreated = undefined;
           this.docPostingFailed = error;
         }
       });

@@ -130,7 +130,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid)) {
                     // DO nothing.
                   } else {
-                    listNIDs.push(acntid);
+                    listNIDs.push(acntid!);
                   }
                 });
       
