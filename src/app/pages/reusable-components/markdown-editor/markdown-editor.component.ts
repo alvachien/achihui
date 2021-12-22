@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
-import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import * as moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
@@ -571,7 +571,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       this.editor.focus();
     }
   }
-  beforeUpload(file: File) {
+  beforeUpload(file: NzUploadFile, fileList: NzUploadFile[]) {
     return new Observable((observer: Observer<boolean>) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
@@ -581,7 +581,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         return;
       }
 
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size! / 1024 / 1024 < 2;
       if (!isLt2M) {
         // TBD.
         // this.msg.error('Image must smaller than 2MB!');

@@ -39,8 +39,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   // Submitting
   isObjectSubmitting = false;
   isObjectSubmitted = false;
-  objectIdCreated: number | null = null;
-  objectSavedFailed: string | null = null;
+  objectIdCreated?: number;
+  objectSavedFailed: string = '';
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -160,8 +160,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
             const planObj = rsts[5] as Plan;
             this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
-            this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate.toDate());
-            this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate.toDate());
+            this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!.toDate());
+            this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!.toDate());
             this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
             this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
             this.detailFormGroup.get('acntCtgyControl')?.setValue(planObj.AccountCategoryID);
@@ -273,14 +273,14 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug);
 
           this.objectIdCreated = newplan.ID;
-          this.objectSavedFailed = null;
+          this.objectSavedFailed = '';
         },
         error: (error: any) => {
           // Show error message
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanDetailComponent, onCreatePlan, failed: ${error}`,
             ConsoleLogTypeEnum.error);
 
-          this.objectIdCreated = null;
+          this.objectIdCreated = undefined;
           this.objectSavedFailed = error;
         }
       });
@@ -388,8 +388,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public goBack(): void {
     this.isObjectSubmitted = false;
     this.isObjectSubmitting = false;
-    this.objectIdCreated = null;
-    this.objectSavedFailed = null;
+    this.objectIdCreated = undefined;
+    this.objectSavedFailed = '';
   }
 
   public onDisplayPlan(): void {

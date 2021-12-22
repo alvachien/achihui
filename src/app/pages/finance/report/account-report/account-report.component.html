@@ -20,14 +20,14 @@
     <div nz-col [nzSpan]="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetOption" style="height: 320px;" (chartClick)="onAssetsClicked($event)"></div>
+          <div echarts [options]="chartAssetOption!" style="height: 320px;" (chartClick)="onAssetsClicked($event)"></div>
         </div>
       </nz-card>
     </div>
     <div nz-col [nzSpan]="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesOption" style="height: 320px;" (chartClick)="onLiabilitiesClicked($event)"></div>
+          <div echarts [options]="chartLiabilitiesOption!" style="height: 320px;" (chartClick)="onLiabilitiesClicked($event)"></div>
         </div>
       </nz-card>
     </div>

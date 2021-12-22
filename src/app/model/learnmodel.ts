@@ -328,17 +328,17 @@ export class LearnCategory extends hih.BaseModel {
  * Learn Object: Learn object, same as Knowledge
  */
 export class LearnObject extends hih.BaseModel {
-  private _id: number | null = null;
-  private _cid: number | null = null;
+  private _id?: number;
+  private _cid?: number;
   private _name: string = '';
   private _cont: string = '';
   private _ctgyname: string = '';
 
   public HID: number | null = null;
-  get Id(): number | null { return this._id; }
-  set Id(nid: number | null) { this._id = nid; }
-  get CategoryId(): number | null { return this._cid; }
-  set CategoryId(cid: number | null) { this._cid = cid; }
+  get Id(): number | undefined { return this._id; }
+  set Id(nid: number | undefined) { this._id = nid; }
+  get CategoryId(): number | undefined { return this._cid; }
+  set CategoryId(cid: number | undefined) { this._cid = cid; }
   get Name(): string { return this._name; }
   set Name(nme: string) { this._name = nme; }
   get Content(): string { return this._cont; }

@@ -27,7 +27,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   arAccounts: Account[] = [];
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
-  baseCurrency: string;
+  baseCurrency: string = '';
   chartAssetOption: EChartsOption | null = null;
   chartLiabilitiesOption: EChartsOption | null = null;
   listCategoryFilter: ITableFilterValues[] = [];

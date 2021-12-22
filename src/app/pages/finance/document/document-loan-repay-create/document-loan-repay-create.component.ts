@@ -67,8 +67,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   confirmInfo: Document;
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed: string = '';
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -147,8 +147,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
                 tmpdocid = +x[1].path;
                 this.searchFormGroup.get('docIDControl')?.setValue(tmpdocid);
                 this.searchFormGroup.get('dateRangeControl')?.setValue([
-                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
-                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
                 ]);
                 this.searchFormGroup.get('accountControl')?.setValue(this.uiService.SelectedLoanTmp
                   ? this.uiService.SelectedLoanTmp.AccountId : undefined);
@@ -308,7 +308,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 1. Items
   private readLoanAccountInfo() {
     if (this.selectedLoanTmpDoc.length === 1) {
-      this.odataService.readAccount(this.selectedLoanTmpDoc[0].AccountId)
+      this.odataService.readAccount(this.selectedLoanTmpDoc[0].AccountId!)
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: val => {
@@ -446,7 +446,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 3.
   private doPosting() {
     // Now go to the real posting
-    this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId)
+    this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId!)
     .pipe(takeUntil(this._destroyed$!),
     finalize(() => {
       this.isDocPosting = false;
@@ -456,12 +456,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       next: val => {
         // Value
         this.docIdCreated = val.Id;
-        this.docPostingFailed = null;
+        this.docPostingFailed = '';
       },
       error: err => {
         // Error
         this.docPostingFailed = err;
-        this.docIdCreated = null;
+        this.docIdCreated = undefined;
       }
     });
   }

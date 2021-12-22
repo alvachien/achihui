@@ -81,9 +81,9 @@
               <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
               <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
             </td>
-            <td>{{ getCurrencyName(data.TranCurr) }}</td>
+            <td>{{ getCurrencyName(data.TranCurr!) }}</td>
             <td>{{ data.TranDateFormatString }}</td>
-            <td>{{ getDocTypeName(data.DocType) | transloco }} </td>
+            <td>{{ getDocTypeName(data.DocType!) | transloco }} </td>
             <td>{{ data.Desp }}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
@@ -101,9 +101,9 @@
                 <tbody>
                   <tr *ngFor="let itemdata of itemTable.data">
                     <td>{{ itemdata.ItemId }}</td>
-                    <td>{{ getAccountName(itemdata.AccountId) }} </td>
-                    <td>{{ getTranTypeName(itemdata.TranType) }} </td>
-                    <td>{{ itemdata.TranAmount | number: '1.0-2' }} <small>{{ getCurrencyName(data.TranCurr) }}</small></td>
+                    <td>{{ getAccountName(itemdata.AccountId!) }} </td>
+                    <td>{{ getTranTypeName(itemdata.TranType!) }} </td>
+                    <td>{{ itemdata.TranAmount | number: '1.0-2' }} <small>{{ getCurrencyName(data.TranCurr!) }}</small></td>
                     <td>{{ itemdata.Desp }}</td>
                   </tr>
                 </tbody>

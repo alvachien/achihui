@@ -53,8 +53,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed: string = '';
   currentStep = 0;
 
   get tranAmount(): number {
@@ -263,14 +263,14 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           ConsoleLogTypeEnum.debug);
 
         this.docIdCreated = nid.Id;
-        this.docPostingFailed = null;
+        this.docPostingFailed = '';
       },
       error: (error: any) => {
         // Show error message
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
           ConsoleLogTypeEnum.error);
 
-        this.docIdCreated = null;
+        this.docIdCreated = undefined;
         this.docPostingFailed = error;
       },
     });

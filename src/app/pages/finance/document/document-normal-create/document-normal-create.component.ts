@@ -45,8 +45,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   // Step: Result
   public isDocPosting = false;
-  public docIdCreated: number | null = null;
-  public docPostingFailed: string | null = null;
+  public docIdCreated?: number;
+  public docPostingFailed: string = '';
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -164,12 +164,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
           ConsoleLogTypeEnum.debug);
         this.docIdCreated = doc.Id;
-        this.docPostingFailed = null;
+        this.docPostingFailed = '';
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
           ConsoleLogTypeEnum.error);
-        this.docIdCreated = null;
+        this.docIdCreated = undefined;
         this.docPostingFailed = error;
       },
     });
@@ -177,7 +177,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   onDisplayCreatedDoc(): void {
     if (this.docIdCreated !== null) {
-      this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+      this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
     }
   }
 
@@ -187,8 +187,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.headerForm.reset();
     this.confirmInfo = {};
     this.isDocPosting = false;
-    this.docIdCreated = null;
-    this.docPostingFailed = null;
+    this.docIdCreated = undefined;
+    this.docPostingFailed = '';
   }
 
   pre(): void {

@@ -52,19 +52,19 @@
           </nz-descriptions-item>
           <div *ngFor="let iteminfo of docinfo.Items">
             <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-              {{getAccountName(iteminfo.AccountId)}} ({{iteminfo.AccountId}})
+              {{getAccountName(iteminfo.AccountId!)}} ({{iteminfo.AccountId}})
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-              {{getTranTypeName(iteminfo.TranType)}} ({{iteminfo.TranType}})
+              {{getTranTypeName(iteminfo.TranType!)}} ({{iteminfo.TranType}})
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
               {{iteminfo.TranAmount}} <span style="margin-left: 3px;">{{baseCurrency}}</span>
             </nz-descriptions-item>
             <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-              {{getControlCenterName(iteminfo.ControlCenterId)}} ({{iteminfo.ControlCenterId}})
+              {{getControlCenterName(iteminfo.ControlCenterId!)}} ({{iteminfo.ControlCenterId}})
             </nz-descriptions-item>  
             <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-              {{getOrderName(iteminfo.OrderId)}} ({{iteminfo.OrderId}})
+              {{getOrderName(iteminfo.OrderId!)}} ({{iteminfo.OrderId}})
             </nz-descriptions-item>  
           </div>
         </nz-descriptions>
@@ -84,7 +84,7 @@
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id)">{{pdocinfo.Id}}</button>
+                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">{{pdocinfo.Id}}</button>
                 </nz-descriptions-item>
               </nz-descriptions>
               <nz-divider *ngIf="!isPostDocLast"></nz-divider>  
@@ -105,7 +105,7 @@
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id)">{{pdocinfo.Id}}</button>
+                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">{{pdocinfo.Id}}</button>
                 </nz-descriptions-item>
               </nz-descriptions>
               <nz-divider *ngIf="!isPostDocLast"></nz-divider>  

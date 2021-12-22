@@ -32,7 +32,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
   listDate: DateCellData[] = [];
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -141,11 +141,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
         if (rsts[0] instanceof Array && rsts[0].length > 0) {
           rsts[0].forEach((val: TemplateDocADP) => {
             let idx = this.listDate.findIndex(cell => {
-              return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
+              return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
             });
             if (idx === -1) {
               const ncell = new DateCellData();
-              ncell.CurrentDate = val.TranDate.clone();
+              ncell.CurrentDate = val.TranDate!.clone();
               ncell.DPDocs.push(val);
               this.listDate.push(ncell);
             } else {
@@ -157,11 +157,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
         if (rsts[1] instanceof Array && rsts[1].length > 0) {
           rsts[1].forEach((val: TemplateDocLoan) => {
             let idx = this.listDate.findIndex(cell => {
-              return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
+              return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
             });
             if (idx === -1) {
               const ncell = new DateCellData();
-              ncell.CurrentDate = val.TranDate.clone();
+              ncell.CurrentDate = val.TranDate!.clone();
               ncell.LoanDocs.push(val);
               this.listDate.push(ncell);
             } else {
@@ -213,7 +213,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   doPostLoanDoc(loandoc: TemplateDocLoan) {
     // It shall just jump to repay page
     this.uiService.SelectedLoanTmp = loandoc;
-    this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId.toString()]);
+    this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId!.toString()]);
   }
 
   private _updateSelectedDate() {

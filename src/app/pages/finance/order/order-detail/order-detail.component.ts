@@ -34,8 +34,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   // Submitting
   isOrderSubmitting = false;
   isOrderSubmitted = false;
-  orderIdCreated: number | null = null;
-  orderSavedFailed: string | null = null;
+  orderIdCreated?: number;
+  orderSavedFailed: string = '';
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -235,14 +235,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug);
 
           this.orderIdCreated = neword.Id;
-          this.orderSavedFailed = null;
+          this.orderSavedFailed = '';
         },
         error: (error: any) => {
           // Show error message
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${error}`,
             ConsoleLogTypeEnum.error);
 
-          this.orderIdCreated = null;
+          this.orderIdCreated = undefined;
           this.orderSavedFailed = error;
         }
       });
@@ -276,7 +276,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
               ConsoleLogTypeEnum.debug);
 
-            this.orderSavedFailed = null;
+            this.orderSavedFailed = '';
           },
           error: (error: any) => {
             // Show error message
@@ -311,7 +311,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
               ConsoleLogTypeEnum.debug);
 
-            this.orderSavedFailed = null;
+            this.orderSavedFailed = '';
           },
           error: (error: any) => {
             // Show error message
@@ -327,8 +327,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public goBack(): void {
     this.isOrderSubmitted = false;
     this.isOrderSubmitting = false;
-    this.orderIdCreated = null;
-    this.orderSavedFailed = null;
+    this.orderIdCreated = undefined;
+    this.orderSavedFailed = '';
   }
 
   public onDeleteRule(rule: SettlementRule): void {

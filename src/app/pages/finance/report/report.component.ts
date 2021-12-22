@@ -11,6 +11,7 @@ import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStri
   ControlCenter, Order,
 } from '../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
+import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
 
 @Component({
   selector: 'hih-finance-report',
@@ -31,8 +32,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   arOrders: Order[] = [];
 
   // Card: Account
-  reportAccountAsset = 0;
-  reportAccountLibility = 0;
+  reportAccountAsset: NzStatisticValueType = 0;
+  reportAccountLibility: NzStatisticValueType = 0;
   chartAccountOption?: EChartsOption;
   // Card: Control center
   chartControlCenterOption?: EChartsOption;
@@ -40,7 +41,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   chartOrderOption?: EChartsOption;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -135,9 +136,9 @@ export class ReportComponent implements OnInit, OnDestroy {
 
         if (ctgy) {
           if (ctgy.AssetFlag) {
-            this.reportAccountAsset += bal.Balance;
+            this.reportAccountAsset = bal.Balance + (+this.reportAccountAsset);
           } else {
-            this.reportAccountLibility += bal.Balance;
+            this.reportAccountLibility = bal.Balance + (+this.reportAccountLibility);
           }  
         }
       }

@@ -24,7 +24,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   dataSet: Order[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(

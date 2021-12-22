@@ -163,7 +163,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: val => {
-            this.router.navigate(['/learn/object/display', val.Id.toString]);
+            this.router.navigate(['/learn/object/display', val.Id?.toString]);
           },
           error: err => {
             // TBD.

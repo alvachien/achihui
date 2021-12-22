@@ -36,10 +36,10 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
-  public baseCurrency: string | null = null;
+  public baseCurrency: string = '';
   public currentStep = 0;
   // public docCreateSucceed = false;
-  public docIdCreated: number | null = null;
+  public docIdCreated?: number;
   public isDocPosting = false;
   public docPostingFailed: string | null = null;
   // Step: Header
@@ -192,7 +192,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
             ConsoleLogTypeEnum.error);
           this.docPostingFailed = error;
-          this.docIdCreated = null;
+          this.docIdCreated = undefined;
           this.isDocPosting = false;
         },
       });

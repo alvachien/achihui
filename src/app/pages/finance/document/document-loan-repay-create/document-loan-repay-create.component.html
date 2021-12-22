@@ -209,16 +209,16 @@
         </nz-descriptions-item>
         <div *ngFor="let iteminfo of confirmInfo.Items">
           <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-            {{getAccountName(iteminfo.AccountId)}} ({{iteminfo.AccountId}})
+            {{getAccountName(iteminfo.AccountId!)}} ({{iteminfo.AccountId}})
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-            {{getTranTypeName(iteminfo.TranType)}} ({{iteminfo.TranType}})
+            {{getTranTypeName(iteminfo.TranType!)}} ({{iteminfo.TranType}})
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
             {{iteminfo.TranAmount}} <span style="margin-left: 3px;">{{baseCurrency}}</span>
           </nz-descriptions-item>
           <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-            {{getControlCenterName(iteminfo.ControlCenterId)}} ({{iteminfo.ControlCenterId}})
+            {{getControlCenterName(iteminfo.ControlCenterId!)}} ({{iteminfo.ControlCenterId}})
           </nz-descriptions-item>  
           <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
             {{getOrderName(iteminfo.OrderId!)}} ({{iteminfo.OrderId!}})
