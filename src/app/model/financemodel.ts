@@ -1019,12 +1019,12 @@ export class AccountExtraLoan extends AccountExtra {
     if (this.InterestFree && this.annualRate) {
       return false;
     }
-    if (this.annualRate < 0) {
+    if (this.annualRate === null ||  this.annualRate < 0) {
       return false;
     }
     if (this.RepayMethod === RepaymentMethodEnum.EqualPrincipal
       || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset) {
-      if (this.TotalMonths <= 0) {
+      if (this.TotalMonths === null || this.TotalMonths <= 0) {
         return false;
       }
     } else if (this.RepayMethod === RepaymentMethodEnum.DueRepayment) {
@@ -1052,7 +1052,7 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
 
-    if (this.TotalMonths === undefined || this.TotalMonths <= 0) {
+    if (this.TotalMonths === null || this.TotalMonths <= 0) {
       return false;
     }
 
@@ -1105,18 +1105,30 @@ export class AccountExtraLoan extends AccountExtra {
 
   public writeJSONObject(): AccountExtraLoanJson {
     const rstobj: AccountExtraLoanJson = super.writeJSONObject() as AccountExtraLoanJson;
-    rstobj.StartDate = this._startDate.format(hih.momentDateFormat);
+    rstobj.StartDate = this._startDate!.format(hih.momentDateFormat);
     if (this._endDate) {
       rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
     }
-    rstobj.AnnualRate = this.annualRate;
-    rstobj.InterestFree = this.InterestFree;
-    rstobj.TotalMonths = this.TotalMonths;
+    if (this.annualRate) {
+      rstobj.AnnualRate = this.annualRate;
+    }
+    if (this.InterestFree) {
+      rstobj.InterestFree = this.InterestFree;
+    }
+    if (this.TotalMonths) {
+      rstobj.TotalMonths = this.TotalMonths;
+    }    
     rstobj.RepaymentMethod = +this.RepayMethod;
-    rstobj.RefDocID = this.RefDocId;
+    if (this.RefDocId) {
+      rstobj.RefDocID = this.RefDocId;
+    }
     rstobj.Others = this.Comment;
-    rstobj.PayingAccount = this._payingAccount;
-    rstobj.Partner = this._partner;
+    if (this._payingAccount) {
+      rstobj.PayingAccount = this._payingAccount;
+    }
+    if (this._partner) {
+      rstobj.Partner = this._partner;
+    }
     rstobj.LoanTmpDocs = [];
     for (const tdoc of this.loanTmpDocs) {
       const tdocjson: any = tdoc.writeJSONObject();
@@ -1984,7 +1996,7 @@ export class Document extends hih.BaseModel {
           // Order valid check
           if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
             const vordidx: number = context.Orders.findIndex((ord: Order) => {
-              return (+fit.OrderId === +ord!.Id && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
+              return (+fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
             });
 
             if (vordidx === -1) {
@@ -2145,8 +2157,8 @@ export class DocumentItem {
     // Account
     if (context && context.Accounts
       && context.Accounts instanceof Array && context.Accounts.length > 0) {
-      if (this.AccountId > 0) {
-        const acnt: Account = context.Accounts.find((val: Account) => {
+      if (this.AccountId !== undefined && this.AccountId > 0) {
+        const acnt: Account | undefined = context.Accounts.find((val: Account) => {
           return val.Id === this.AccountId;
         });
 
@@ -2296,14 +2308,23 @@ export class DocumentItem {
   }
 
   public writeJSONObject(): DocumentItemJson {
-    const rstObj: DocumentItemJson = {
-      DocID: this.DocId,
+    const rstObj: any = {
+      // DocID: this.DocId,
       ItemID: this.ItemId,
-      AccountID: this.AccountId,
-      TranType: this.TranType,
+      // AccountID: this.AccountId,
+      // TranType: this.TranType,
       TranAmount: this.TranAmount,
       Desp: this.Desp,
     };
+    if (this.DocId) {
+      rstObj.DocID = this.DocId;
+    }
+    if (this.AccountId) {
+      rstObj.AccountID = this.AccountId;
+    }
+    if (this.TranType) {
+      rstObj.TranType = this.TranType;
+    }
     if (this.UseCurr2) {
       rstObj.UseCurr2 = this.UseCurr2;
     }
@@ -2314,7 +2335,7 @@ export class DocumentItem {
       rstObj.OrderID = this.OrderId;
     }
 
-    return rstObj;
+    return rstObj as DocumentItemJson;
   }
 
   public onSetData(data: DocumentItemJson): void {

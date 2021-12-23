@@ -25,10 +25,10 @@ export class AccountListComponent implements OnInit, OnDestroy {
   arrayStatus: UIDisplayString[] = [];
   listCategoryFilter: ITableFilterValues[] = [];
   listStatusFilter: ITableFilterValues[] = [];
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<Account>[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(

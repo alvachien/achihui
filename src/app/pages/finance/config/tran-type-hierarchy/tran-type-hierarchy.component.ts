@@ -81,7 +81,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (!val.ParId) {
           // Root nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id.toString(),
+            key: val.Id!.toString(),
             title: val.Name,
             icon: 'cluster',
           };
@@ -100,7 +100,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (val.ParId === id) {
           // Child nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id.toString(),
+            key: val.Id!.toString(),
             title: val.Name,
             icon: 'cluster',
           };

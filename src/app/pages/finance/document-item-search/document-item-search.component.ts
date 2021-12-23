@@ -33,7 +33,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
 
   constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService, ) {

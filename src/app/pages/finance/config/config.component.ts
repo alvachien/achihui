@@ -12,6 +12,6 @@ export class ConfigComponent {
   }
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 }

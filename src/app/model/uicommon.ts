@@ -893,7 +893,9 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
   if (orders && orders.length > 0) {
     for (const ord of orders) {
       const rst: UIOrderForSelection = new UIOrderForSelection();
-      rst.Id = ord.Id;
+      if (ord.Id) {
+        rst.Id = ord.Id;
+      }      
       rst.Name = ord.Name;
       rst._validFrom = ord.ValidFrom.clone();
       rst._validTo = ord.ValidTo.clone();

@@ -239,8 +239,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         monthPaid ++;
         arKeepItems.push(tdl);
 
-        if (topDocID < tdl.DocId) {
-          topDocID = tdl.DocId;
+        if (topDocID < tdl.DocId!) {
+          topDocID = tdl.DocId!;
         }
       }
     });
@@ -249,9 +249,9 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     const val = this.value;
     const di: RepeatDatesWithAmountAndInterestAPIInput = {
       TotalAmount: this.tranAmount - amtTotal + amtPaid,
-      TotalMonths: val.TotalMonths - monthPaid,
-      InterestRate: val.annualRate / 100,
-      StartDate: val.startDate.clone(),
+      TotalMonths: val.TotalMonths! - monthPaid,
+      InterestRate: val.annualRate! / 100,
+      StartDate: val.startDate!.clone(),
       InterestFreeLoan: val.InterestFree ? true : false,
       RepaymentMethod: val.RepayMethod,
     };
@@ -328,7 +328,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       }
       this.loanInfoForm.get('partnerControl')?.setValue(val.Partner);
       this.loanInfoForm.get('cmtControl')?.setValue(val.Comment);
-      this._refDocID = val.RefDocId;
+      this._refDocID = val.RefDocId!;
 
       this.listTmpDocs = val.loanTmpDocs.slice();
     }

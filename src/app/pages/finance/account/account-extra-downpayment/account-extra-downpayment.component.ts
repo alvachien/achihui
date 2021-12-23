@@ -154,7 +154,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     const datInput: RepeatedDatesWithAmountAPIInput = {
       StartDate: objval.StartDate.clone(),
       EndDate: objval.EndDate.clone(),
-      RepeatType: objval.RepeatType,
+      RepeatType: objval.RepeatType!,
       Desp: objval.Comment,
       TotalAmount: this.tranAmount,
     };

@@ -37,7 +37,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   id = -1;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
