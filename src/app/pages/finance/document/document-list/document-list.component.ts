@@ -13,7 +13,7 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat,
+  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 
@@ -41,7 +41,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arTranTypes: TranType[] = [];
   public selectedRange: any[] = [];
   // Table
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
   pageIndex = 1;
   pageSize = 10;
   listOfDocs: Document[] = [];

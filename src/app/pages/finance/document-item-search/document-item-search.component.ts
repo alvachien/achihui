@@ -72,52 +72,77 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     ];
     this.listOfColumns = [{
       name: 'Common.ID',
-      columnKey: 'docid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.Items',
-      columnKey: 'itemid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Common.Description',
-      columnKey: 'desp',
+      sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
-      showSort: true,
     }, {
       name: 'Common.Date',
-      columnKey: 'date',
       sortOrder: null,
-      showSort: true,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,   
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        a.TransactionDate.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate.format(moment.HTML5_FMT.DATE)),
+        a.TransactionDate!.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
     }, {
       name: 'Finance.TransactionType',
-      columnKey: 'trantype',
       sortOrder: null,
-      showSort: true,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType - b.TransactionType
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType! - b.TransactionType!
     }, {
       name: 'Finance.Amount',
-      columnKey: 'amount',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
     }, {
       name: 'Finance.Account',
-      columnKey: 'account',
-      showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID).localeCompare(this.getAccountName(b.AccountID))
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID!).localeCompare(this.getAccountName(b.AccountID!))
     }, {
       name: 'Finance.ControlCenter',
-      columnKey: 'controlcenter',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
         this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
     }, {
       name: 'Finance.Activity',
-      columnKey: 'order',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
     }];
   }
@@ -146,7 +171,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem): string {
+  trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
     return item.name;
   }
 

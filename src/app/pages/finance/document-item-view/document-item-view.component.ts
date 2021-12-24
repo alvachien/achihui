@@ -69,7 +69,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       sortDirections: [],
       listOfFilter: [],
       filterFn: null,
-      filterMultiple: false    
+      filterMultiple: false
     }, {
       name: 'Finance.Items',
       sortOrder: null,
@@ -77,7 +77,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       sortDirections: [],
       listOfFilter: [],
       filterFn: null,
-      filterMultiple: false    
+      filterMultiple: false
     }, {
       name: 'Common.Description',
       sortOrder: null,

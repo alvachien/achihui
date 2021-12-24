@@ -47,7 +47,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.documentAPIUrl + '/' + objDetail.Id.toString();
+    const apiurl: string = this.documentAPIUrl + '/' + objDetail.Id!.toString();
 
     const jdata: string = objDetail.writeJSONString();
     return this._http.put(apiurl, jdata, {
@@ -155,7 +155,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     if (dtbgn) {
       params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
@@ -228,7 +228,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/FinanceReportTrend';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     if (exctran) {
       params = params.append('exctran', exctran.toString());
     }
@@ -285,7 +285,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/FinanceReportTrendEx';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     params = params.append('trendtype', (<number>trendtype).toString());
     if (exctran) {
       params = params.append('exctran', exctran.toString());
@@ -335,7 +335,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
 
     let apiurl: string = environment.ApiUrl + '/FinanceDocCreatedFrequenciesByUser';
     return this._http.get(apiurl, {
