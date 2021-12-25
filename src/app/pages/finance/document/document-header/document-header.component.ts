@@ -101,9 +101,9 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
   @Output()
-  currencyChanged: EventEmitter<string> = new EventEmitter();
+  currencyChanged: EventEmitter<String> = new EventEmitter();
   @Output()
-  currency2Changed: EventEmitter<string> = new EventEmitter();
+  currency2Changed: EventEmitter<String> = new EventEmitter();
 
   public headerForm: FormGroup;
 
@@ -267,7 +267,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   onCurrencyChange(event: any): void {
     if (event) {
       if (event.Currency) {
-        this.currencyChanged.emit((event as Currency).Currency);
+        this.currencyChanged.emit((event as Currency).Currency!);
       } else {
         this.currencyChanged.emit(event);
       }
@@ -278,7 +278,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   onCurrency2Change(event: any): void {
     if (event) {
       if (event.Currency) {
-        this.currency2Changed.emit((event as Currency).Currency);
+        this.currency2Changed.emit((event as Currency).Currency!);
       } else {
         this.currency2Changed.emit(event);
       }

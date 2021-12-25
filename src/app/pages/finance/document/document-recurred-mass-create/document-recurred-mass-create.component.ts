@@ -64,7 +64,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   // Step 2: Default value
   public defaultValueFormGroup: FormGroup;
   // Step 3: Items
-  public itemsFormGroup: FormGroup | null = null;
+  public itemsFormGroup: FormGroup;
   // Step 4: Confirm
   public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
@@ -106,6 +106,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     }, [costObjectValidator]);
+
+    this.itemsFormGroup = this.fb.group({
+      items: this.fb.array([]),
+    });
   }
 
   ngOnInit() {
@@ -113,9 +117,6 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-    this.itemsFormGroup = this.fb.group({
-      items: this.fb.array([]),
-    });
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),

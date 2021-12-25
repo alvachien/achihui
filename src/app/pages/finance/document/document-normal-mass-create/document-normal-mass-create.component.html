@@ -35,7 +35,7 @@
               <ng-template #headerTpl>
                 <button nz-button nzType="primary" (click)="onCopyItem($event, i)"><i nz-icon nzType="copy"></i></button>
                 <button nz-button nzType="default" (click)="onCreateNewItem($event)"><i nz-icon nzType="plus"></i></button>
-                <button nz-button nzType="danger" [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)"><i nz-icon nzType="minus"></i></button>
+                <button nz-button nzDanger [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)"><i nz-icon nzType="minus"></i></button>
               </ng-template>
             </nz-collapse-panel>
           </nz-collapse>

@@ -13,7 +13,7 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView,
+  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView, DocumentItem,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 
@@ -66,36 +66,44 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.listOfColumns = [{
       name: 'Common.ID',
-      columnKey: 'docid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.Currency',
-      columnKey: 'curr',
       sortOrder: null,
-      sortFn: true,
-      showSort: true,
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listCurrencyFilters,
-      filterMultiple: true,
-      filterFn: true
+      filterFn: null,
+      filterMultiple: true
     }, {
       name: 'Common.Date',
-      columnKey: 'date',
       sortOrder: 'descend',
-      showSort: true,
-      sortFn: true
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.DocumentType',
-      columnKey: 'doctype',
       sortOrder: null,
-      showSort: true,
-      sortFn: true,
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listDocTypeFilters,
       filterMultiple: true,
-      filterFn: true
+      filterFn: null,
     }, {
       name: 'Common.Description',
-      columnKey: 'desp',
-      sortFn: true,
-      showSort: true,
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterMultiple: true,
+      filterFn: null,
     }];
   }
 
@@ -218,7 +226,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem): string {
+  trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
     return item.name;
   }
 

@@ -23,13 +23,13 @@
         <nz-card [nzTitle]="'Finance.Accounts' | transloco" [nzActions]="[actionAccountDrilldown]">
           <div nz-row [nzGutter]="8">
             <div nz-col [nzSpan]="12" style="height: 120px;">
-              <nz-statistic [nzValue]="reportAccountAsset | number: '1.0-2'" [nzTitle]="'Finance.Assets' | transloco"
+              <nz-statistic [nzValue]="(reportAccountAsset | number: '1.0-2')!" [nzTitle]="'Finance.Assets' | transloco"
                 [nzPrefix]="prefixTplAsset" [nzSuffix]="baseCurrency" [nzValueStyle]="{ color: '#3F8600' }">
               </nz-statistic>
               <ng-template #prefixTplAsset><i nz-icon nzType="up-circle"></i></ng-template>
             </div>
             <div nz-col [nzSpan]="12" style="height: 120px;">
-              <nz-statistic [nzValue]="reportAccountLibility | number: '1.0-2'"
+              <nz-statistic [nzValue]="(reportAccountLibility | number: '1.0-2')!"
                 [nzTitle]="'Finance.Liabilities' | transloco" [nzPrefix]="prefixTplLibility" [nzSuffix]="baseCurrency"
                 [nzValueStyle]="{ color: '#EF8600' }">
               </nz-statistic>

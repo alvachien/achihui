@@ -46,7 +46,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
   get controlError(): any {
-    const err = this.validate(undefined);
+    const err = this.validate();
     if (err) {
       if (err.noitems) {
         return { value: 'Finance.NoDocumentItem' };
@@ -220,7 +220,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  validate(c: AbstractControl): ValidationErrors | null {
+  validate(c?: AbstractControl): ValidationErrors | null {
     // ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
 
     // Check 1: Have items
