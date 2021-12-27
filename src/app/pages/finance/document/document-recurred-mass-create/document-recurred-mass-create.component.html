@@ -286,10 +286,10 @@
       <form nz-form [formGroup]="itemsFormGroup" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
-            <nz-collapse-panel *ngFor="let item of itemsFormGroup?.get('items')['controls']; index as i; first as isFirst; last as isLast" 
+            <nz-collapse-panel *ngFor="let item of getItemControls; index as i; first as isFirst; last as isLast" 
               [nzHeader]="headerTpl" [nzActive]="true">
               <hih-document-normal-mass-create-item 
-                [itemFormGroup]="itemsFormGroup?.get('items')['controls'][i]"
+                [itemFormGroup]="getItemControls[i]"
                 [arUIAccounts]="arUIAccounts"
                 [arUIOrders]="arUIOrders"
                 [arControlCenters]="arControlCenters"

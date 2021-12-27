@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.2.135",
+  "version": "1.2.150",
   "private": true,
   "description": "Web App for Home Information Hub.",
   "keywords": [
@@ -34,7 +34,7 @@
     "@ngneat/transloco": "^3.0.6",
     "@types/katex": "^0.11.1",
     "@types/marked": "^3.0.2",
-    "actslib": "^0.4.29",
+    "actslib": "^0.5.55",
     "echarts": "^5.2.1",
     "emoji-toolkit": "^6.6.0",
     "katex": "^0.13.20",

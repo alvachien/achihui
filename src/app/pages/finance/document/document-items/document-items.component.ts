@@ -30,7 +30,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _isChangable = true; // Default is changable
   private _tranCurr: string = '';
   private _tranCurr2: string = '';
-  private _docType: number | null = null;
+  private _docType?: number;
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: any) => void = undefined;
   private _uiMode: UIMode = UIMode.Invalid;
@@ -136,10 +136,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._tranCurr2;
   }
   @Input()
-  set docType(doctype: number | null) {
+  set docType(doctype: number | undefined) {
     this._docType = doctype;
   }
-  get docType(): number | null {
+  get docType(): number | undefined {
     return this._docType;
   }
   @Input()

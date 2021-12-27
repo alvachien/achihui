@@ -9,9 +9,7 @@
   (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
-      <th *ngFor="let column of listOfColumns; trackBy: trackByName"
-        [nzColumnKey]="column.columnKey"
-        [nzShowSort]="column.showSort"
+      <th *ngFor="let column of listOfColumns; trackBy: trackByName"        
         [nzSortFn]="column.sortFn"
         [(nzSortOrder)]="column.sortOrder"
         [nzSortFn]="column.sortFn">
@@ -25,11 +23,11 @@
       <td>{{ data.ItemID }}</td>
       <td>{{ data.ItemDesp }} </td>
       <td>{{ data.TransactionDate }}</td>
-      <td>{{ getTranTypeName(data.TransactionType) }}<small>({{data.TransactionType}})</small></td>
+      <td>{{ getTranTypeName(data.TransactionType!) }}<small>({{data.TransactionType}})</small></td>
       <td>{{ data.Amount | number: '1.0-2' }} <small>{{data.Currency}}</small></td>
-      <td>{{ getAccountName(data.AccountID) }} <small>({{data.AccountID}})</small></td>
-      <td>{{ getControlCenterName(data.ControlCenterID) }}<small>({{data.ControlCenterID}})</small></td>
-      <td>{{ getOrderName(data.OrderID) }} <small>({{data.OrderID}})</small></td>
+      <td>{{ getAccountName(data.AccountID!) }} <small>({{data.AccountID}})</small></td>
+      <td>{{ getControlCenterName(data.ControlCenterID!) }}<small>({{data.ControlCenterID}})</small></td>
+      <td>{{ getOrderName(data.OrderID!) }} <small>({{data.OrderID}})</small></td>
     </tr>
   </tbody>
 </nz-table>

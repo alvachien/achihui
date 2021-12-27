@@ -46,7 +46,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public orderID?: number;
   public arUIAccount: UIAccountForSelection[] = [];
   public arTranTypes: TranType[] = [];
-  public tranType: number | null = null;
+  public tranType?: number;
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);

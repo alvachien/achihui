@@ -20,7 +20,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   dataSet: ControlCenter[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(

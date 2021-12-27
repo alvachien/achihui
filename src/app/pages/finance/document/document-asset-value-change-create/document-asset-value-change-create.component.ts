@@ -56,7 +56,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public curDocType: number = financeDocTypeAssetValChg;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | null = null;
-  public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | null = null;
+  public uiAccountCtgyFilterEx?: IAccountCategoryFilterEx;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | null = null;
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | null = null;

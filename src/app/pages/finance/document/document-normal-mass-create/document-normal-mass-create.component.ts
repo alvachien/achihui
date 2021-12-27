@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -247,13 +247,19 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     control.push(newItem);
     return control.length - 1;
   }
+  get getItemFormArray(): FormArray {
+    return this.itemsFormGroup?.controls.items as FormArray;
+  }
+  get getItemControls(): FormGroup[] {
+    return this.getItemFormArray.controls as FormGroup[];
+  }
   private removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const control: FormArray = this.getItemFormArray;
     control.removeAt(i);
   }
   private _generateItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const controlArrays: FormArray = this.getItemFormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];

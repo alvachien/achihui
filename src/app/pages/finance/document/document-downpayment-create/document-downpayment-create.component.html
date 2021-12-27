@@ -95,7 +95,7 @@
 
     <form nz-form [formGroup]="accountExtraInfoFormGroup" [hidden]="currentStep !== 1">
       <hih-finance-account-extra-downpayment formControlName="infoControl" [tranAmount]="tranAmount"
-        [tranType]="tranType" [allTranTypes]="arTranType"></hih-finance-account-extra-downpayment>
+        [tranType]="+tranType" [allTranTypes]="arTranType"></hih-finance-account-extra-downpayment>
     </form>
 
     <div [hidden]="currentStep !== 2">

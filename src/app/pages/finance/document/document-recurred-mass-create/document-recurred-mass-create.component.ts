@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
 import * as moment from 'moment';
@@ -241,6 +241,12 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     });
 
     return tranTypeObj ? tranTypeObj.Name : '';
+  }
+  get getItemFormArray(): FormArray {
+    return this.itemsFormGroup?.controls.items as FormArray;
+  }
+  get getItemControls(): FormGroup[] {
+    return this.getItemFormArray.controls as FormGroup[];
   }
 
   // Step 1: Existing documents

@@ -28,7 +28,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: any) => void = undefined;
-  private _doctype: number | null = null;
+  private _doctype?: number;
   private _uiMode: UIMode = UIMode.Invalid;
 
   private _arCurrencies: Currency[] = [];
@@ -74,8 +74,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
   @Input()
-  get docType(): number | null { return this._doctype;  }
-  set docType(dt: number | null) {
+  get docType(): number | undefined { return this._doctype;  }
+  set docType(dt: number | undefined) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent docType setter: ${dt}`,
       ConsoleLogTypeEnum.debug);
 
