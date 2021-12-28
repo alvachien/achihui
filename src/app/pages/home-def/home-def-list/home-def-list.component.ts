@@ -57,10 +57,14 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onChooseHome(row: HomeDef): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...',
+      ConsoleLogTypeEnum.debug);
     this.homeService.ChosedHome = row;
     // Set current home member
     this.homeService.ChosedHome.Members.forEach(mem => {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
+          ConsoleLogTypeEnum.debug);
         this.homeService.CurrentMemberInChosedHome = mem;
       }
     });

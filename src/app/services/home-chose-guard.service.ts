@@ -39,7 +39,7 @@ export class HomeChoseGuardService implements CanActivate {
     // Has logged in but no home chosen yet.
     this.homeService.RedirectURL = url;
 
-    if (this.homeService.ChosedHome === undefined) {
+    if (!this.homeService.ChosedHome) {
       // Navigate to other page
       this.router.navigate(['/homedef']);
       return false;
