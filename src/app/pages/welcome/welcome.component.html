@@ -1,67 +1,57 @@
-<div nz-row nzType="flex">
-  <nz-carousel nzDotPosition="right">
-    <div nz-carousel-content *ngFor="let index of array">
-      <div [ngSwitch]="index">
-        <div class="carousel_content" *ngSwitchCase="1">
-          <article nz-typography>
-            <h1 nz-typography>{{'Common.WelcomeToHIH' | transloco}}</h1>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
-            <article nz-typography>
-              <ul>
-                <li>
-                  <a href="/hih.finance/overview">{{'Nav.FinanceTrace' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/learn">{{'Nav.LearningTrace' | transloco}}</a>
-                </li>
-              </ul>
-            </article>
-          </article>
-        </div>
-        <div class="carousel_content" *ngSwitchCase="2">
-          <article nz-typography>
-            <h1 nz-typography>{{'Nav.FinanceTrace' | transloco}}</h1>
-            <p nz-typography>
-              Finance System is record the activities which happened with finance influences.
-              Finance System embedded in H.I.H., is target to make the finance activities transparent to whole family.
-            </p>
-            <p nz-typography>
-              With respect to the H.I.H. focuses only on family level, it doesn't follow <mark>Accounting Principles</mark> by any means.              
-            </p>
-            <article nz-typography>
-              <ul>
-                <li>
-                  <a href="/hih/finance/account">{{'Finance.Accounts' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/controlcenter">{{'Finance.ControlCenters' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/order">{{'Finance.Activities' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/order">{{'Finance.Documents' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/report">{{'Finance.Reports' | transloco}}</a>
-                </li>
-              </ul>
-            </article>
-          </article>
-        </div>
-
-        <div class="carousel_content" *ngSwitchCase="3">
-          <article nz-typography>
-            <h1 nz-typography>{{'Nav.LearningTrace' | transloco}}</h1>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
-          </article>
-        </div>
-
-        <div class="carousel_content" *ngSwitchCase="4">          
-        </div>
-      </div>
+<div style="background: #ECECEC;padding:30px;">
+  <nz-card nzTitle="Finance">
+    <div nz-card-grid [ngStyle]="gridFinanceStyle">
+      <img
+        nz-image
+        width="200px"
+        height="200px"
+        nzSrc="/assets/img/Accounts.png"
+        nzDisablePreview="true"
+        alt=""
+      />
+      <h2 nz-typography>Accounts</h2>
+      <p nz-typography>
+        In the process of internal desktop applications development, many different design specs and implementations
+        would be involved, which might cause designers and developers difficulties and duplication and reduce the
+        efficiency of development.
+      </p>
     </div>
-  </nz-carousel>
+    <div nz-card-grid [ngStyle]="gridFinanceStyle">
+      <img
+        nz-image
+        width="200px"
+        height="200px"
+        nzSrc="/assets/img/Documents.png"
+        nzDisablePreview="true"
+        alt=""
+      />
+      <h2 nz-typography>Documents</h2>
+      <p nz-typography>
+        In the process of internal desktop applications development, many different design specs and implementations
+        would be involved, which might cause designers and developers difficulties and duplication and reduce the
+        efficiency of development.
+      </p>
+    </div>
+    <div nz-card-grid [ngStyle]="gridFinanceStyle">
+      <img
+        nz-image
+        width="200px"
+        height="200px"
+        nzSrc="/assets/img/Reports.png"
+        nzDisablePreview="true"
+        alt=""
+      />
+      <h2 nz-typography>Reports</h2>
+      <p nz-typography>
+        In the process of internal desktop applications development, many different design specs and implementations
+        would be involved, which might cause designers and developers difficulties and duplication and reduce the
+        efficiency of development.
+      </p>
+    </div>
+  </nz-card>
+</div>
+
+<nz-divider></nz-divider>
+<div style="background: #1ECECE;padding:30px;">
+  
 </div>

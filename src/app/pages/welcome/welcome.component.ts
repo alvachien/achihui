@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./welcome.component.css'],
 })
 export class WelcomeComponent {
-  array = [1, 2, 3, 4];
-
+  gridFinanceStyle = {
+    width: '33%',
+    textAlign: 'center'
+  };
   constructor() { }
 }
