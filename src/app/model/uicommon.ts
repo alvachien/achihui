@@ -601,7 +601,7 @@ export class GeneralFilterItem {
 export function getFilterString(filters: GeneralFilterItem[]): string {
   const arfields: string[] = [];
   filters.forEach((val) => {
-    if (arfields.indexOf(val.fieldName) === -1) {
+    if (val && val.fieldName && arfields.indexOf(val.fieldName) === -1) {
       arfields.push(val.fieldName);
     }
   });

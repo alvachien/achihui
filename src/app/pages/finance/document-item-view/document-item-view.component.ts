@@ -7,8 +7,8 @@ import { takeUntil, finalize } from 'rxjs/operators';
 
 import { FinanceOdataService, UIStatusService } from '../../../services';
 import { Account, ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, DocumentItemView,
-  TranType, ControlCenter, UIAccountForSelection, Order,
+  GeneralFilterItem, DocumentItemView,
+  TranType, ControlCenter, Order,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import * as moment from 'moment';
@@ -59,8 +59,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     private modalService: NzModalService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
 
     this.listOfColumns = [{
       name: 'Common.ID',
@@ -143,16 +141,14 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    if (this._destroyed$ === undefined) {
-      this._destroyed$ = new ReplaySubject(1);
-    }
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
 
-    if (this._destroyed$) {
+    if (this._destroyed$ !== null) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
       this._destroyed$ = null;

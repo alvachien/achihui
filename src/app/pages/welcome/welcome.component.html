@@ -1,51 +1,27 @@
 <div style="background: #ECECEC;padding:30px;">
   <nz-card nzTitle="Finance">
     <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img
-        nz-image
-        width="200px"
-        height="200px"
-        nzSrc="/assets/img/Accounts.png"
-        nzDisablePreview="true"
-        alt=""
-      />
-      <h2 nz-typography>Accounts</h2>
+      <img nz-image width="200px" height="200px" [nzSrc]="accountImage"
+        nzDisablePreview="true" alt="" />
+      <h2 nz-typography>{{'Finance.Accounts' | transloco}}</h2>
       <p nz-typography>
-        In the process of internal desktop applications development, many different design specs and implementations
-        would be involved, which might cause designers and developers difficulties and duplication and reduce the
-        efficiency of development.
+        Accounts which mapping to daily transaction.
       </p>
     </div>
     <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img
-        nz-image
-        width="200px"
-        height="200px"
-        nzSrc="/assets/img/Documents.png"
-        nzDisablePreview="true"
-        alt=""
-      />
-      <h2 nz-typography>Documents</h2>
+      <img nz-image width="200px" height="200px" [nzSrc]="documentImage"
+        nzDisablePreview="true" alt="" />
+      <h2 nz-typography>{{'Finance.Documents' | transloco}}</h2>
       <p nz-typography>
-        In the process of internal desktop applications development, many different design specs and implementations
-        would be involved, which might cause designers and developers difficulties and duplication and reduce the
-        efficiency of development.
+        Document to trace every transaction.
       </p>
     </div>
     <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img
-        nz-image
-        width="200px"
-        height="200px"
-        nzSrc="/assets/img/Reports.png"
-        nzDisablePreview="true"
-        alt=""
-      />
-      <h2 nz-typography>Reports</h2>
+      <img nz-image width="200px" height="200px" [nzSrc]="reportImage"
+        nzDisablePreview="true" alt="" />
+      <h2 nz-typography>{{'Finance.Reports' | transloco}}</h2>
       <p nz-typography>
-        In the process of internal desktop applications development, many different design specs and implementations
-        would be involved, which might cause designers and developers difficulties and duplication and reduce the
-        efficiency of development.
+        Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.
       </p>
     </div>
   </nz-card>
@@ -53,5 +29,5 @@
 
 <nz-divider></nz-divider>
 <div style="background: #1ECECE;padding:30px;">
-  
+  TBD.
 </div>

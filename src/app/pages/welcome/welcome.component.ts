@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'hih-welcome',
@@ -11,4 +12,14 @@ export class WelcomeComponent {
     textAlign: 'center'
   };
   constructor() { }
+
+  get accountImage(): string {
+    return `${environment.AppHost}/assets/img/Accounts.png`;
+  }
+  get documentImage(): string {
+    return `${environment.AppHost}/assets/img/Documents.png`;
+  }
+  get reportImage(): string {
+    return `${environment.AppHost}/assets/img/Reports.png`;
+  }
 }
