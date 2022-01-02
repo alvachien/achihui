@@ -676,10 +676,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
-      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -690,8 +690,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -700,7 +700,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component.currentStep).toBe(2);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeFalsy();
 
@@ -720,10 +720,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -735,8 +735,8 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -745,9 +745,9 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component.currentStep).toBe(2);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeFalsy();
 

@@ -8,11 +8,11 @@ import { ReplaySubject, BehaviorSubject } from 'rxjs';
 export class ActivatedRouteUrlStub {
   // Use a ReplaySubject to share previous values with subscribers
   // and pump new values into the `url` observable
-  private subject: BehaviorSubject<UrlSegment[]>;
+  private subject: BehaviorSubject<UrlSegment[]> | undefined;
 
   /** The mock url observable */
   get url(): any {
-    return this.subject.asObservable();
+    return this.subject?.asObservable();
   }
 
   constructor(initialUrls?: UrlSegment[]) {
@@ -21,6 +21,6 @@ export class ActivatedRouteUrlStub {
 
   /** Set the url observables's next value */
   setURL(url?: UrlSegment[]): void {
-    this.subject = new BehaviorSubject<UrlSegment[]>(url);
+    this.subject = new BehaviorSubject<UrlSegment[]>(url!);
   }
 }

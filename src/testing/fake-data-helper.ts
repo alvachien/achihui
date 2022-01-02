@@ -77,16 +77,19 @@ export class FakeDataHelper {
     if (this._currencies) {
       return this._currencies;
     }
+    return [];
   }
   get currenciesFromAPI(): CurrencyJson[] {
     if (this._currenciesFromAPI) {
       return this._currenciesFromAPI;
     }
+    return [];
   }
   get HomeDefs(): HomeDef[] {
     if (this._homeDefs) {
       return this._homeDefs;
     }
+    return [];
   }
   get chosedHome(): HomeDef {
     if (this._chosedHome) {
@@ -97,41 +100,49 @@ export class FakeDataHelper {
     if (this._finDocTypes) {
       return this._finDocTypes;
     }
+    return [];
   }
   get finDocTypesFromAPI(): DocumentTypeJson[] {
     if (this._finDocTypesFromAPI) {
       return this._finDocTypesFromAPI;
     }
+    return [];
   }
   get finAccountCategories(): AccountCategory[] {
     if (this._finAccountCategories) {
       return this._finAccountCategories;
     }
+    return [];
   }
   get finAccountCategoriesFromAPI(): AccountCategoryJson[] {
     if (this._finAccountCategoriesFromAPI) {
       return this._finAccountCategoriesFromAPI;
     }
+    return [];
   }
   get finAssetCategories(): AssetCategory[] {
     if (this._finAssetCategories) {
       return this._finAssetCategories;
     }
+    return [];
   }
   get finAssetCategoriesFromAPI(): AssetCategoryJson[] {
     if (this._finAssetCategoriesFromAPI) {
       return this._finAssetCategoriesFromAPI;
     }
+    return [];
   }
   get finTranTypes(): TranType[] {
     if (this._finTranType) {
       return this._finTranType;
     }
+    return [];
   }
   get finTranTypesFromAPI(): TranTypeJson[] {
     if (this._finTranTypeFromAPI) {
       return this._finTranTypeFromAPI;
     }
+    return [];
   }
   get finTranTypeTopNodeAmount(): number {
     if (this._finTranType) {
@@ -144,11 +155,13 @@ export class FakeDataHelper {
     if (this._finAccounts) {
       return this._finAccounts;
     }
+    return [];
   }
   get finAccountsFromAPI(): AccountJson[] {
     if (this._finAccountsFromAPI) {
       return this._finAccountsFromAPI;
     }
+    return [];
   }
   get finAccountExtraAdvancePayment(): AccountExtraAdvancePayment {
     if (this._finAccountExtraAdvancePayment) {
@@ -159,26 +172,31 @@ export class FakeDataHelper {
     if (this._finControlCenters) {
       return this._finControlCenters;
     }
+    return [];
   }
   get finControlCentersFromAPI(): ControlCenterJson[] {
     if (this._finControlCentersFromAPI) {
       return this._finControlCentersFromAPI;
     }
+    return [];
   }
   get finOrders(): Order[] {
     if (this._finOrders) {
       return this._finOrders;
     }
+    return [];
   }
   get finOrdersFromAPI(): OrderJson[] {
     if (this._finOrdersFromAPI) {
       return this._finOrdersFromAPI;
     }
+    return [];
   }
   get finPlans(): Plan[] {
     if (this._finPlans) {
       return this._finPlans;
     }
+    return [];
   }
   get finNormalDocumentForCreate(): Document {
     if (this._finNormalDocumentForCreate) {
@@ -204,36 +222,43 @@ export class FakeDataHelper {
     if (this._appLanguages) {
       return this._appLanguages;
     }
+    return [];
   }
   get appLanguagesFromAPI(): any[] {
     if (this._appLanguagesFromAPI) {
       return this._appLanguagesFromAPI;
     }
+    return [];
   }
   get learnCategoriesFromAPI(): LearnCategoryJson[] {
     if (this._learnCategoriesFromAPI) {
       return this._learnCategoriesFromAPI;
     }
+    return [];
   }
   get learnCategories(): LearnCategory[] {
     if (this._learnCategories) {
       return this._learnCategories;
     }
+    return [];
   }
   get learnObjects(): LearnObject[] {
     if (this._learnObjects) {
       return this._learnObjects;
     }
+    return [];
   }
   get libBookCategories(): BookCategory[] {
     if (this._libBookCategories) {
       return this._libBookCategories;
     }
+    return [];
   }
   get libBookCategoriesFromAPI(): BookCategoryJson[] {
     if (this._libBookCategoriesFromAPI) {
       return this._libBookCategoriesFromAPI;
     }
+    return [];
   }
   get libBookCategoriesFullReplyFromAPI(): any {
     if (this._libBookCategoriesFromAPI) {
@@ -247,11 +272,13 @@ export class FakeDataHelper {
     if (this._libMovieGenres) {
       return this._libMovieGenres;
     }
+    return [];
   }
   get libMovieGenresFromAPI(): MovieGenreJson[] {
     if (this._libMovieGenresFromAPI) {
       return this._libMovieGenresFromAPI;
     }
+    return [];
   }
   get libMovieGenresFullReplyFromAPI(): any {
     if (this._libMovieGenresFromAPI) {
@@ -265,11 +292,13 @@ export class FakeDataHelper {
     if (this._libLocations) {
       return this._libLocations;
     }
+    return [];
   }
   get libLocationsFromAPI(): LocationJson[] {
     if (this._libLocationsFromAPI) {
       return this._libLocationsFromAPI;
     }
+    return [];
   }
   get libLocationsFullReplyFromAPI(): any {
     if (this._libLocationsFromAPI) {
@@ -283,36 +312,43 @@ export class FakeDataHelper {
     if (this._tags) {
       return this._tags;
     }
+    return [];
   }
   get tagsFromAPI(): TagJson[] {
     if (this._tagsFromAPI) {
       return this._tagsFromAPI;
     }
+    return [];
   }
   get tagsCount(): TagCount[] {
     if (this._tagsCount) {
       return this._tagsCount;
     }
+    return [];
   }
   get blogCollectionAPI(): BlogCollectionAPIJson[] {
     if (this._blogCollectionAPI) {
       return this._blogCollectionAPI;
     }
+    return [];
   }
   get blogCollection(): BlogCollection[] {
     if (this._blogCollection) {
       return this._blogCollection;
     }
+    return [];
   }
   get blogPostAPI(): BlogPostAPIJson[] {
     if (this._blogPostAPI) {
       return this._blogPostAPI;
     }
+    return [];
   }
   get blogPost(): BlogPost[] {
     if (this._blogPost) {
       return this._blogPost;
     }
+    return [];
   }
 
   public buildCurrencies(): void {
