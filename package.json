@@ -13,7 +13,7 @@
     "ng": "ng",
     "start": "ng serve --ssl true -o --ssl-key ssl/server.key --ssl-cert ssl/server.crt",
     "build": "ng build",
-    "build-ali": "ng build --prod --base-href=/hih/",
+    "build-ali": "ng build --base-href=/hih/",
     "test": "ng test",
     "devtest": "ng test --code-coverage",
     "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox",

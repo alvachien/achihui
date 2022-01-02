@@ -1,30 +1,43 @@
-<div style="background: #ECECEC;padding:30px;">
-  <nz-card nzTitle="Finance">
-    <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img nz-image width="200px" height="200px" [nzSrc]="accountImage"
-        nzDisablePreview="true" alt="" />
-      <h2 nz-typography>{{'Finance.Accounts' | transloco}}</h2>
-      <p nz-typography>
-        Accounts which mapping to daily transaction.
-      </p>
+<div nz-row style="background: #ECECEC;padding:30px;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="accountImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Accounts' | transloco"
+          nzDescription="Accounts which mapping to daily transaction.">
+        </nz-card-meta>
+      </nz-card>
     </div>
-    <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img nz-image width="200px" height="200px" [nzSrc]="documentImage"
-        nzDisablePreview="true" alt="" />
-      <h2 nz-typography>{{'Finance.Documents' | transloco}}</h2>
-      <p nz-typography>
-        Document to trace every transaction.
-      </p>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="documentImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Documents' | transloco"
+          nzDescription="Document to trace every transaction.">
+        </nz-card-meta>
+      </nz-card>
     </div>
-    <div nz-card-grid [ngStyle]="gridFinanceStyle">
-      <img nz-image width="200px" height="200px" [nzSrc]="reportImage"
-        nzDisablePreview="true" alt="" />
-      <h2 nz-typography>{{'Finance.Reports' | transloco}}</h2>
-      <p nz-typography>
-        Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.
-      </p>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="reportImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Reports' | transloco"
+          nzDescription="Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.">      
+        </nz-card-meta>
+      </nz-card>
     </div>
-  </nz-card>
+  </div>
 </div>
 
 <nz-divider></nz-divider>
