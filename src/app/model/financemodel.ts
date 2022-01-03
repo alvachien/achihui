@@ -445,8 +445,12 @@ export abstract class AccountExtra {
   }
 
   public writeJSONObject(): AccountExtraBaseJson {
+    if (this.accountID) {
+      return {
+        AccountID: this.accountID
+      };
+    }
     return {
-      AccountID: this.accountID!,
     };
   }
   public onInit(): void {
