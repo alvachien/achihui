@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -11,7 +12,7 @@ export class WelcomeComponent {
     width: '33%',
     textAlign: 'center'
   };
-  constructor() { }
+  constructor(private router: Router,) { }
 
   get accountImage(): string {
     return `${environment.AppHost}/assets/img/Accounts.png`;
@@ -21,5 +22,14 @@ export class WelcomeComponent {
   }
   get reportImage(): string {
     return `${environment.AppHost}/assets/img/Reports.png`;
+  }
+  onNavigateToAccount():void {
+    this.router.navigate(['finance', 'account']);
+  }
+  onNavigateToDocument():void {
+    this.router.navigate(['finance', 'document']);
+  }
+  onNavigateToReport():void {
+    this.router.navigate(['finance', 'report']);
   }
 }

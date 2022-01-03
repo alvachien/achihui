@@ -54,7 +54,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
     fakeData.buildFinOrders();
     assetAccount = fakeData.finAccounts.find(val => {
       return val.CategoryId === financeAccountCategoryAsset;
-    });
+    })!;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
@@ -190,8 +190,8 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();;
@@ -199,11 +199,11 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Now add the desp back
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
@@ -222,19 +222,19 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account - missing
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -242,8 +242,8 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add the asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -265,30 +265,30 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
       // Control center - empty
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // component.firstFormGroup.get('ccControl').markAsDirty();
       // Order
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add amount back
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -310,18 +310,18 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
       tick();
@@ -330,18 +330,18 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Second false case: input both
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now correct it - remove order
-      component.firstFormGroup.get('orderControl').setValue(undefined);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(undefined);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -360,22 +360,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -433,22 +433,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(1000);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(1000);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -502,22 +502,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(2000);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(2000);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -573,22 +573,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(1000);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(1000);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -603,8 +603,8 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
       // Fake an error in generated doc
       dochead.Desp = '';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       // Click the next button
       nextButtonNativeEl.click();
@@ -669,22 +669,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(1000);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(1000);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -749,22 +749,22 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
-      component.firstFormGroup.get('accountControl').setValue(assetAccount.Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(assetAccount.Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(1000);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(1000);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order 
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 

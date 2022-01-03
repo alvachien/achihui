@@ -99,7 +99,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       ctgyControl: new FormControl(undefined, [
         Validators.required,
-        // this.categoryValidator,
+        this.categoryValidator,
       ]),
       cmtControl: new FormControl('', Validators.maxLength(45)),
       statusControl: new FormControl(),
@@ -121,6 +121,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`,
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
+    this.headerFormGroup.get('idControl')?.disable();
 
     // Distinguish current mode
     this.activateRoute.url.subscribe((x: any) => {

@@ -181,8 +181,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();;
@@ -190,11 +190,11 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Now add the desp back
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       flush();
@@ -213,33 +213,33 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center - empty
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // component.firstFormGroup.get('ccControl').markAsDirty();
       // Order
-      component.headerFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.headerFormGroup.get('orderControl').markAsDirty();
+      component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.headerFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add amount back
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -261,33 +261,33 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center - empty
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // component.firstFormGroup.get('ccControl').markAsDirty();
       // Order
-      component.headerFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.headerFormGroup.get('orderControl').markAsDirty();
+      component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.headerFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Correct missed fields
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -309,33 +309,33 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
       // Control center - empty
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // component.firstFormGroup.get('ccControl').markAsDirty();
       // Order
-      component.headerFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.headerFormGroup.get('orderControl').markAsDirty();
+      component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.headerFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Correct missed fields
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -357,21 +357,21 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
       tick();
@@ -380,18 +380,18 @@ describe('DocumentDownpaymentCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Second false case: input both
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
-      component.headerFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.headerFormGroup.get('orderControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
+      component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.headerFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now correct it - remove order
-      component.headerFormGroup.get('orderControl').setValue(undefined);
-      component.headerFormGroup.get('orderControl').markAsDirty();
+      component.headerFormGroup.get('orderControl')?.setValue(undefined);
+      component.headerFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -413,24 +413,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -469,24 +469,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -515,8 +515,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         TranAmount: 100,
         Desp: 'test'
       } as TemplateDocADP);
-      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
-      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      component.accountExtraInfoFormGroup.get('infoControl')?.setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl')?.markAsDirty();
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
 
@@ -536,24 +536,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -582,8 +582,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         TranAmount: 100,
         Desp: 'test'
       } as TemplateDocADP);
-      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
-      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      component.accountExtraInfoFormGroup.get('infoControl')?.setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl')?.markAsDirty();
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       // Click th next button
@@ -608,24 +608,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -654,8 +654,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         TranAmount: 100,
         Desp: 'test'
       } as TemplateDocADP);
-      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
-      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      component.accountExtraInfoFormGroup.get('infoControl')?.setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl')?.markAsDirty();
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       // Click th next button
@@ -666,8 +666,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       // Fake an error in generated doc
       dochead.Desp = '';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
       flush();
@@ -714,24 +714,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -760,8 +760,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         TranAmount: 100,
         Desp: 'test'
       } as TemplateDocADP);
-      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
-      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      component.accountExtraInfoFormGroup.get('infoControl')?.setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl')?.markAsDirty();
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       // Click th next button
@@ -799,24 +799,24 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(dochead);
-      component.headerFormGroup.get('headerControl').markAsDirty();
+      component.headerFormGroup.get('headerControl')?.setValue(dochead);
+      component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
-      component.headerFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.headerFormGroup.get('accountControl').markAsDirty();
+      component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.headerFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.headerFormGroup.get('amountControl').setValue(100.20);
-      component.headerFormGroup.get('amountControl').markAsDirty();
+      component.headerFormGroup.get('amountControl')?.setValue(100.20);
+      component.headerFormGroup.get('amountControl')?.markAsDirty();
       // Tran. type
-      component.headerFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.headerFormGroup.get('tranTypeControl').markAsDirty();
+      component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center
-      component.headerFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.headerFormGroup.get('ccControl').markAsDirty();
+      component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -845,8 +845,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         TranAmount: 100,
         Desp: 'test'
       } as TemplateDocADP);
-      component.accountExtraInfoFormGroup.get('infoControl').setValue(dp1);
-      component.accountExtraInfoFormGroup.get('infoControl').markAsDirty();
+      component.accountExtraInfoFormGroup.get('infoControl')?.setValue(dp1);
+      component.accountExtraInfoFormGroup.get('infoControl')?.markAsDirty();
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       // Click th next button

@@ -1,7 +1,7 @@
 <div nz-row style="background: #ECECEC;padding:30px;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
     <div class="inner-box">
-      <nz-card nzHoverable [nzBordered]="false">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToAccount()">
         <div>
           <img nz-image width="200px" height="200px" [nzSrc]="accountImage" nzDisablePreview="true" alt="" />
         </div>
@@ -14,7 +14,7 @@
   </div>
   <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
     <div class="inner-box">
-      <nz-card nzHoverable [nzBordered]="false">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToDocument()">
         <div>
           <img nz-image width="200px" height="200px" [nzSrc]="documentImage" nzDisablePreview="true" alt="" />
         </div>
@@ -27,7 +27,7 @@
   </div>
   <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
     <div class="inner-box">
-      <nz-card nzHoverable [nzBordered]="false">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToReport()">
         <div>
           <img nz-image width="200px" height="200px" [nzSrc]="reportImage" nzDisablePreview="true" alt="" />
         </div>

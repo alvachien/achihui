@@ -154,7 +154,7 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      const docobj: Document = component.headerForm.get('headerControl').value as Document;
+      const docobj: Document = component.headerForm.get('headerControl')?.value as Document;
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
@@ -182,8 +182,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -206,13 +206,13 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = 'USD';
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       docheader.ExgRate = 653;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -235,8 +235,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -259,8 +259,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -275,8 +275,8 @@ describe('DocumentNormalCreateComponent', () => {
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get('itemControl').setValue(aritems);
-      component.itemsForm.get('itemControl').markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -296,8 +296,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
@@ -314,8 +314,8 @@ describe('DocumentNormalCreateComponent', () => {
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get('itemControl').setValue(aritems);
-      component.itemsForm.get('itemControl').markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       nextButtonNativeEl.click();
@@ -325,8 +325,8 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.currentStep).toEqual(2);
       // Fake an error in generated doc
       docheader.Desp = '';
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
       flush();
@@ -369,8 +369,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -386,8 +386,8 @@ describe('DocumentNormalCreateComponent', () => {
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get('itemControl').setValue(aritems);
-      component.itemsForm.get('itemControl').markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -423,8 +423,8 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -440,8 +440,8 @@ describe('DocumentNormalCreateComponent', () => {
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get('itemControl').setValue(aritems);
-      component.itemsForm.get('itemControl').markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -470,12 +470,12 @@ describe('DocumentNormalCreateComponent', () => {
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = 'USD';
-      component.headerForm.get('headerControl').setValue(docheader);
-      component.headerForm.get('headerControl').markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       docheader.ExgRate = 634;
-      component.headerForm.get('headerControl').setValue(docheader);
+      component.headerForm.get('headerControl')?.setValue(docheader);
       tick();
       fixture.detectChanges();
       component.next();
@@ -491,8 +491,8 @@ describe('DocumentNormalCreateComponent', () => {
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get('itemControl').setValue(aritems);
-      component.itemsForm.get('itemControl').markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();

@@ -113,18 +113,18 @@ describe('AccountExtraLoanComponent', () => {
     const loan1: AccountExtraLoan = new AccountExtraLoan();
     const startdt = moment().add(1, 'M');
     loan1.startDate = startdt;
-    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
-    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     flush();
   }));
@@ -138,18 +138,18 @@ describe('AccountExtraLoanComponent', () => {
     const startdt = moment().add(1, 'M');
     loan1.startDate = startdt;
     loan1.TotalMonths = 24;
-    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
-    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     flush();
   }));
@@ -164,18 +164,18 @@ describe('AccountExtraLoanComponent', () => {
     loan1.startDate = startdt;
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    const loanval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraLoan;
+    const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate.isSame(startdt)).toBeTruthy();
-    expect(testcomponent.extraComponent.listTmpDocs.length).toEqual(0);
+    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     flush();
   }));
@@ -209,22 +209,22 @@ describe('AccountExtraLoanComponent', () => {
     loan1.Comment = 'test';
     expect(loan1.isAccountValid).toBeTruthy();
 
-    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+    expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
-    testcomponent.extraComponent.onGenerateTmpDocs();
+    testcomponent.extraComponent?.onGenerateTmpDocs();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
     flush();
@@ -260,22 +260,22 @@ describe('AccountExtraLoanComponent', () => {
     loan1.Comment = 'test';
     expect(loan1.isAccountValid).toBeTruthy();
 
-    testcomponent.formGroup.get('extraControl').setValue(loan1);
+    testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+    expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
-    testcomponent.extraComponent.onGenerateTmpDocs();
+    testcomponent.extraComponent?.onGenerateTmpDocs();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
     flush();
@@ -313,17 +313,17 @@ describe('AccountExtraLoanComponent', () => {
       loan1.RepayDayInMonth = 15;
       expect(loan1.isAccountValid).toBeTruthy();
 
-      testcomponent.formGroup.get('extraControl').setValue(loan1);
+      testcomponent.formGroup.get('extraControl')?.setValue(loan1);
       flush();
       tick();
       fixture.detectChanges();
 
-      expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+      expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
       expect(testcomponent.formGroup.valid).toBeFalse();
 
-      expect(testcomponent.extraComponent.canGenerateTmpDocs).toBeTruthy();
+      expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
-      testcomponent.extraComponent.onGenerateTmpDocs();
+      testcomponent.extraComponent?.onGenerateTmpDocs();
       flush();
       tick();
       fixture.detectChanges();
@@ -347,21 +347,21 @@ describe('AccountExtraLoanComponent', () => {
 
   it('shall work with disabled mode', fakeAsync(() => {
     fixture.detectChanges();
-    expect(testcomponent.extraComponent.isFieldChangable).toBeTruthy();
+    expect(testcomponent.extraComponent?.isFieldChangable).toBeTruthy();
 
     testcomponent.formGroup.disable();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.isFieldChangable).toBeFalsy();
+    expect(testcomponent.extraComponent?.isFieldChangable).toBeFalsy();
   }));
 
   it('shall work with reference doc.', fakeAsync(() => {
     const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
-    testcomponent.extraComponent.onRefDocClick(123);
+    testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
   }));
@@ -387,7 +387,7 @@ export class AccountExtraLoanTestFormComponent {
   public orderID?: number;
   public arUIAccount: UIAccountForSelection[] = [];
 
-  @ViewChild(AccountExtraLoanComponent, {static: true}) extraComponent: AccountExtraLoanComponent;
+  @ViewChild(AccountExtraLoanComponent, {static: true}) extraComponent: AccountExtraLoanComponent | undefined;
 
   constructor() {
     this.formGroup = new FormGroup({
