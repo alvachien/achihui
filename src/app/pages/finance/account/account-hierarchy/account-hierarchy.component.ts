@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
-import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -35,6 +34,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   accountTreeNodes: NzTreeNodeOptions[] = [];
   col = 8;
   id = -1;
+  activatedNode?: NzTreeNode;
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome!.IsChild!;
@@ -72,15 +72,26 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNodeClick(event: NzFormatEmitEvent): void {
+  onNodeActivated(data: NzFormatEmitEvent): void {
+    this.activatedNode = data.node!;
+  }
+  onNodeClick(data: NzTreeNode | NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug);
+    // if (data instanceof NzTreeNode) {
+    //   data.isExpanded = !data.isExpanded;
+    // } else {
+    //   const node = data.node;
+    //   if (node) {
+    //     node.isExpanded = !node.isExpanded;
+    //   }
+    // }
 
-    if (event.keys!.length > 0) {
-      const evtkey = event.keys![0];
+    if (this.activatedNode) {
       const arFilters = [];
-      if (evtkey.startsWith('c')) {
-        const ctgyid = +evtkey.substr(1);
+
+      if (this.activatedNode?.key.startsWith('c')) {
+        const ctgyid = +this.activatedNode?.key.substr(1);
 
         this.availableAccounts.forEach(acnt => {
           if (acnt.CategoryId === ctgyid) {
@@ -93,8 +104,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             });
           }
         });
-      } else if (evtkey.startsWith('a')) {
-        const acntid = +evtkey.substr(1);
+      } else if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substr(1);
         arFilters.push({
           fieldName: 'AccountID',
           operator: GeneralFilterOperatorEnum.Equal,
@@ -104,22 +115,34 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         });
       }
       this.filterDocItem = arFilters;
-    }
+    }    
   }
 
   ///
   /// Context menu
   onNodeContextMenu(event: any, menu: NzDropdownMenuComponent): void {
-    this.nzContextMenuService.create({
-      x: event.event.clientX,
-      y: event.event.clientY,
-    }, menu);
+    this.nzContextMenuService.create(event, menu);
   }
   onDisplayAccount(): void {
+    if (this.activatedNode) {
+    }
   }
   onEditAccount(): void {
   }
   onCloseAccount(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substr(1);
+        this.odataService.closeAccount(acntid).subscribe({
+          next: val => {
+            console.log(val);
+          },
+          error: err => {
+            console.error(err);
+          }
+        })
+      }
+    }
   }
 
   onResize({ col }: NzResizeEvent): void {

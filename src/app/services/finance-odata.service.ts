@@ -14,6 +14,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString,
+  AccountStatusEnum,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -672,6 +673,43 @@ export class FinanceOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /* Close an account
+   * @param accountId Id of account
+   */
+  public closeAccount(accountId: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      AccountID: accountId,
+    };
+    return this.http.post(`${this.accountAPIUrl}/CloseAccount`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService closeAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+        // const isSucc = response as boolean;
+        const extidx = this.listAccount.findIndex(val => {
+          return val.Id === accountId;
+        });
+        if (extidx !== -1) {
+          this.listAccount[extidx].Status = AccountStatusEnum.Closed;
+        }
+
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService closeAccount failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

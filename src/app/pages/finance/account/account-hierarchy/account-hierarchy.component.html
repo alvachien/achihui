@@ -26,12 +26,25 @@
     </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="onNodeClick($event)" (nzContextMenu)="onNodeContextMenu($event, treeMenu)">
-        </nz-tree>
+        <nz-tree  nzBlockNode [nzData]="accountTreeNodes" nzShowLine
+          (nzClick)="onNodeActivated($event)"
+          (nzDblClick)="onNodeClick($event)"
+          [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
+        <ng-template #nzTreeTemplate let-node let-origin="origin">
+          <span class="custom-node">
+            <span *ngIf="!node.isLeaf" (contextmenu)="onNodeContextMenu($event, treeMenu)">
+              <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"></i>
+              <span class="folder-name">{{ node.title }}</span>
+            </span>
+            <span *ngIf="node.isLeaf" (contextmenu)="onNodeContextMenu($event, treeMenu)">
+              <i nz-icon nzType="file"></i>
+              <span class="file-name">{{ node.title }}</span>
+            </span>
+          </span>
+        </ng-template>
         <nz-dropdown-menu #treeMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="onDisplayAccount()">{{'Common.Display' | transloco}}</li>
-            <li nz-menu-item nzDisabled>disabled menu item</li>
             <li nz-submenu nzTitle="sub menu">
               <ul>
                 <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li>
