@@ -698,15 +698,17 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService closeAccount succeed',
           ConsoleLogTypeEnum.debug);
 
-        // const isSucc = response as boolean;
-        const extidx = this.listAccount.findIndex(val => {
-          return val.Id === accountId;
-        });
-        if (extidx !== -1) {
-          this.listAccount[extidx].Status = AccountStatusEnum.Closed;
+        const isSucc = response.value as boolean;
+        if (isSucc) {
+          const extidx = this.listAccount.findIndex(val => {
+            return val.Id === accountId;
+          });
+          if (extidx !== -1) {
+            this.listAccount[extidx].Status = AccountStatusEnum.Closed;
+          }  
         }
 
-        return true;
+        return isSucc;
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService closeAccount failed ${error}`,

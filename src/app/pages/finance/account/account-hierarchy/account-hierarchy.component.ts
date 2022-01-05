@@ -12,6 +12,7 @@ import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplay
   GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../../../../model';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { popupDialog } from 'src/app/pages/message-dialog';
 
 @Component({
   selector: 'hih-fin-account-hierarchy',
@@ -91,7 +92,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       const arFilters = [];
 
       if (this.activatedNode?.key.startsWith('c')) {
-        const ctgyid = +this.activatedNode?.key.substr(1);
+        const ctgyid = +this.activatedNode?.key.substring(1);
 
         this.availableAccounts.forEach(acnt => {
           if (acnt.CategoryId === ctgyid) {
@@ -105,7 +106,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           }
         });
       } else if (this.activatedNode?.key.startsWith('a')) {
-        const acntid = +this.activatedNode?.key.substr(1);
+        const acntid = +this.activatedNode?.key.substring(1);
         arFilters.push({
           fieldName: 'AccountID',
           operator: GeneralFilterOperatorEnum.Equal,
@@ -132,10 +133,18 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   onCloseAccount(): void {
     if (this.activatedNode) {
       if (this.activatedNode?.key.startsWith('a')) {
-        const acntid = +this.activatedNode?.key.substr(1);
+        const acntid = +this.activatedNode?.key.substring(1);
         this.odataService.closeAccount(acntid).subscribe({
           next: val => {
-            console.log(val);
+            if (val) {
+              this._refreshTreeCore();
+            } else {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Common.Error'),
+                nzClosable: true,
+              });
+            }
           },
           error: err => {
             console.error(err);
