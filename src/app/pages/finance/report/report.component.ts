@@ -8,10 +8,11 @@ import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
-  ControlCenter, Order,
+  ControlCenter, Order, FinanceReportEntryByTransactionType,
 } from '../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
 import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
+import * as moment from 'moment';
 
 @Component({
   selector: 'hih-finance-report',
@@ -64,41 +65,50 @@ export class ReportComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchAllReportsByAccount(),
-      this.odataService.fetchAllReportsByControlCenter(),
-      this.odataService.fetchAllReportsByOrder(),
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
-    ])
-      .pipe(takeUntil(this._destroyed$!),
-        finalize(() => this.isLoadingResults = false))
-      .subscribe({
-        next: (x: any[]) => {
-          this.dataReportByAccount = x[0];
-          this.dataReportByControlCenter = x[1];
-          this.dataReportByOrder = x[2];
+    let today = moment();
+    this.odataService.fetchMontlyReportByTransactionType(today.year(), today.month() + 1).subscribe({
+      next: val => {
+        console.log(val);
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
+    // forkJoin([
+    //   this.odataService.fetchAllReportsByAccount(),
+    //   this.odataService.fetchAllReportsByControlCenter(),
+    //   this.odataService.fetchAllReportsByOrder(),
+    //   this.odataService.fetchAllAccountCategories(),
+    //   this.odataService.fetchAllAccounts(),
+    //   this.odataService.fetchAllControlCenters(),
+    //   this.odataService.fetchAllOrders(),
+    // ])
+    //   .pipe(takeUntil(this._destroyed$!),
+    //     finalize(() => this.isLoadingResults = false))
+    //   .subscribe({
+    //     next: (x: any[]) => {
+    //       this.dataReportByAccount = x[0];
+    //       this.dataReportByControlCenter = x[1];
+    //       this.dataReportByOrder = x[2];
 
-          this.arAccountCategories = x[3];
-          this.arAccounts = x[4];
-          this.arControlCenters = x[5];
-          this.arOrders = x[6];
+    //       this.arAccountCategories = x[3];
+    //       this.arAccounts = x[4];
+    //       this.arControlCenters = x[5];
+    //       this.arOrders = x[6];
 
-          this.buildInfo();
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReportComponent ngOnInit forkJoin failed ${error}`,
-            ConsoleLogTypeEnum.error);
+    //       this.buildInfo();
+    //     },
+    //     error: (error: any) => {
+    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReportComponent ngOnInit forkJoin failed ${error}`,
+    //         ConsoleLogTypeEnum.error);
 
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error,
-            nzClosable: true,
-          });
-        },
-      });
+    //       this.modalService.error({
+    //         nzTitle: translate('Common.Error'),
+    //         nzContent: error,
+    //         nzClosable: true,
+    //       });
+    //     },
+    //   });
   }
 
   ngOnDestroy() {

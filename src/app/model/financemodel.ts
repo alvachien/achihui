@@ -3299,3 +3299,39 @@ export class FinanceDocumentMassCreateConfirm {
     }>;
   }> = [];
 }
+
+/**
+ * Finance Report Entry
+ */
+export class FinanceReportEntry {
+  public HomeID: number = 0;
+  public InAmount: number = 0;
+  public OutAmount: number = 0;
+  public onSetData(val: any) {
+    if (val && val.HomeID) {
+      this.HomeID = val.HomeID;
+    }
+    if (val && val.InAmount) {
+      this.InAmount = val.InAmount;
+    }
+    if (val && val.OutAmount) {
+      this.OutAmount = val.OutAmount;
+    }
+  }
+}
+
+export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
+  public TransactionType: number = 0;
+  public TransactionTypeName: string = '';
+
+  public onSetData(val: any) {
+    super.onSetData(val);
+
+    if (val && val.TransactionType) {
+      this.TransactionType = val.TransactionType;
+    }
+    if (val && val.TransactionTypeName) {
+      this.TransactionTypeName = val.TransactionTypeName;
+    }
+  }
+}
