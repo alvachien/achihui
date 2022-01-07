@@ -8,7 +8,7 @@ import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
-  ControlCenter, Order, FinanceReportEntryByTransactionType,
+  ControlCenter, Order, FinanceReportEntryByTransactionType, FinanceReportMostExpenseEntry,
 } from '../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
 import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
@@ -32,6 +32,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   arControlCenters: ControlCenter[] = [];
   arOrders: Order[] = [];
 
+  // Current Month - Transaction Type
+  reportByMostOutgoInCurrentMonth: FinanceReportMostExpenseEntry[] = [];
+  totalOutgoInCurrentMonth = 0;
+  reportByMostIncomeInCurrentMonth: FinanceReportMostExpenseEntry[] = [];
+  totalIncomeInCurrentMonth = 0;
   // Card: Account
   reportAccountAsset: NzStatisticValueType = 0;
   reportAccountLibility: NzStatisticValueType = 0;
@@ -66,12 +71,54 @@ export class ReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     let today = moment();
+    this.reportByMostIncomeInCurrentMonth = [];
+    this.totalOutgoInCurrentMonth = 0;
+    this.reportByMostOutgoInCurrentMonth = [];
+    this.totalIncomeInCurrentMonth = 0;
     this.odataService.fetchMontlyReportByTransactionType(today.year(), today.month() + 1).subscribe({
       next: val => {
-        console.log(val);
+        val.forEach(item => {
+          if (item.InAmount !== 0) {
+            this.totalIncomeInCurrentMonth += item.InAmount;
+          }
+          if (item.OutAmount !== 0) {
+            this.totalOutgoInCurrentMonth += item.OutAmount;
+          }
+        });
+        val.forEach(item => {
+          if (item.InAmount !== 0) {
+            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+            entry.Amount = item.InAmount;
+            entry.TransactionType  = item.TransactionType;
+            entry.TransactionTypeName = item.TransactionTypeName;
+            entry.Precentage = 100 * item.InAmount / this.totalIncomeInCurrentMonth;
+            this.reportByMostIncomeInCurrentMonth.push(entry);
+          }
+          if (item.OutAmount !== 0) {
+            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+            entry.Amount = item.OutAmount;
+            entry.TransactionType  = item.TransactionType;
+            entry.TransactionTypeName = item.TransactionTypeName;
+            entry.Precentage = 100 * item.OutAmount / this.totalOutgoInCurrentMonth;            
+            this.reportByMostOutgoInCurrentMonth.push(entry);
+          }
+        });
+
+        this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
+        if (this.reportByMostIncomeInCurrentMonth.length > 3) {
+          this.reportByMostIncomeInCurrentMonth.splice(2);
+        }
+        this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
+        if (this.reportByMostOutgoInCurrentMonth.length > 3) {
+          this.reportByMostOutgoInCurrentMonth.splice(3);
+        }
       },
       error: err => {
-        console.error(err);
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
       }
     });
     // forkJoin([

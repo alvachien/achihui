@@ -3335,3 +3335,10 @@ export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
     }
   }
 }
+
+export class FinanceReportMostExpenseEntry {
+  public Amount: number = 0;
+  public TransactionType: number = 0;
+  public TransactionTypeName: string = '';
+  public Precentage: number = 0;
+}

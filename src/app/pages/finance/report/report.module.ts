@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FinanceUIModule } from '../finance-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
+import { NzListModule } from 'ng-zorro-antd/list';
 
 import { ReportRoutingModule } from './report-routing.module';
 import { ControlCenterReportComponent } from './control-center-report/control-center-report.component';
@@ -23,6 +24,7 @@ import { DocumentItemViewModule } from '../document-item-view/document-item-view
     ReportRoutingModule,
     TranslocoModule,
     DocumentItemViewModule,
+    NzListModule,
   ]
 })
 export class ReportModule { }

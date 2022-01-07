@@ -16,6 +16,36 @@
   </article>
 </div>
 <div *ngIf="!isChildMode">
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+    <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <div class="inner-box" style="background: #ECECEC;padding:30px;" >
+        <nz-list nzBordered nzSize="small">
+          <nz-list-header>Top 3 Expense in Current Month</nz-list-header>
+          <nz-list-item *ngFor="let item of reportByMostIncomeInCurrentMonth">{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount | number:'1.0-2'}} with {{item.Precentage | number:'1.0-2'}}%</nz-list-item>
+          <nz-list-footer>Total: {{totalIncomeInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
+        </nz-list>
+      </div>
+    </div>
+    <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <div class="inner-box" style="background: #ECECEC;padding:30px;" >
+        <nz-list nzBordered nzSize="small">
+          <nz-list-header>Top 3 Earn in Current Month</nz-list-header>
+          <nz-list-item *ngFor="let item of reportByMostOutgoInCurrentMonth">{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount  | number:'1.0-2'}} with {{item.Precentage | number:'1.0-2'}}%</nz-list-item>
+          <nz-list-footer>Total: {{totalOutgoInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
+        </nz-list>
+      </div>
+    </div>
+    <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+      <!-- <div class="inner-box">
+        <nz-card nzHoverable [nzBordered]="false">
+          <nz-card-meta
+            [nzTitle]="'Finance.Reports' | transloco"
+            nzDescription="Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.">      
+          </nz-card-meta>
+        </nz-card>
+      </div> -->
+    </div>
+  </div>  
 <!-- <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <div style="background: #ECECEC;padding:30px;">
     <div nz-row [nzGutter]="8">
