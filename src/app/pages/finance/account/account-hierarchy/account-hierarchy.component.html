@@ -10,6 +10,9 @@
       (ngModelChange)="onAccountStatusFilterChanged($event)">
       <nz-option *ngFor="let option of arrayStatus" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
     </nz-select>
+    <nz-select [(ngModel)]="selectedScope" nzPlaceHolder="Scope" (ngModelChange)="onScopeChanged($event)">
+      <nz-option *ngFor="let option of arrayScopes" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
+    </nz-select>
     <nz-divider nzType="vertical"></nz-divider>
     <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
     <a nz-button nzType="link" routerLink="/finance/account/list">{{'Common.ListView' | transloco}}</a>
@@ -26,11 +29,11 @@
     </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree  nzBlockNode [nzData]="accountTreeNodes" nzShowLine
-          (nzClick)="onNodeActivated($event)"
+        <nz-tree [nzData]="accountTreeNodes" nzShowLine
+          (nzClick)="onNodeClick($event)"
           (nzDblClick)="onNodeClick($event)"
-          [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
-        <ng-template #nzTreeTemplate let-node let-origin="origin">
+          [nzTreeTemplate]="tmplAccountHierarchy"></nz-tree>
+        <ng-template #tmplAccountHierarchy let-node let-origin="origin">
           <span class="custom-node">
             <span *ngIf="!node.isLeaf" (contextmenu)="onNodeContextMenu($event, treeMenu)">
               <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"></i>
@@ -45,9 +48,10 @@
         <nz-dropdown-menu #treeMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="onDisplayAccount()">{{'Common.Display' | transloco}}</li>
-            <li nz-submenu nzTitle="Advanced Operations">
+            <li nz-submenu [nzTitle]="'Common.AdvancedOperations' | transloco">
               <ul>
                 <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li>
+                <li nz-menu-item (click)="onSettleAccount()">{{'Finance.SettleAccountWithInitialBalance' | transloco}}</li>
                 <li nz-menu-item (click)="onCloseAccount()">{{'Common.Close' | transloco}}</li>
               </ul>
             </li>
@@ -61,4 +65,67 @@
       <hih-fin-document-item-view [filterDocItem]="filterDocItem"></hih-fin-document-item-view>
     </div>
   </div>
+
+  <nz-modal [(nzVisible)]="isAccountSettleDlgVisible" [nzTitle]="tmpAccountSettleDlgTitle"
+    [nzContent]="tmpAccountSettleDlgContent" [nzFooter]="tmpAccountSettleDlgFooter"
+    (nzOnCancel)="handleDlgSettleAccountCancel()">
+    <ng-template #tmpAccountSettleDlgTitle>{{'Finance.SettleAccountWithInitialBalance' | transloco}}</ng-template>
+
+    <ng-template #tmpAccountSettleDlgContent>
+      <!-- ID -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input disabled readonly [ngModel]="selectedAccountForSettle!.AccountID" />
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Name -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" >
+          <input nz-input maxlength="30" disabled readonly [ngModel]="selectedAccountForSettle!.AccountName" />
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Category -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input maxlength="30" disabled readonly [ngModel]="selectedAccountForSettle!.AccountCategoryID" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Settle Date -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.Date' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-date-picker [(ngModel)]="selectedAccountForSettle!.SettleDate" ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Amount -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Finance.Amount' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-number [(ngModel)]="selectedAccountForSettle!.Amount"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Control center-->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Finance.ControlCenter' | transloco}}</nz-form-label>
+        <nz-form-control>
+          <nz-select [(ngModel)]="selectedAccountForSettle!.ControlCenterID">
+            <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-template>
+
+    <ng-template #tmpAccountSettleDlgFooter>
+      <button nz-button nzType="default" (click)="handleDlgSettleAccountCancel()">{{'Common.Cancel' | transloco}}</button>
+      <button nz-button nzType="primary" (click)="handleDlgSettleAccountSave()">{{'Common.OK' | transloco}}</button>
+    </ng-template>
+  </nz-modal>
 </div>

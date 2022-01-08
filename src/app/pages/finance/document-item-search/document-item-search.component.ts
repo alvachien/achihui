@@ -1,16 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import * as moment from 'moment';
 
 import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
-  DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
   GeneralFilterValueType, TranType, UICommonLabelEnum, Account,
   ControlCenter, Order, DocumentItemView, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
-import { FinanceOdataService, UIStatusService } from '../../../services';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   selector: 'hih-document-item-search',
@@ -23,6 +21,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
+  realFilters: GeneralFilterItem[] = [];
   // Table
   isLoadingDocItems = false;
   public arTranType: TranType[] = [];
@@ -35,8 +34,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
 
-  constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService, ) {
+  constructor(private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
@@ -269,10 +267,14 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
       }
       arRealFilter.push(val);
     });
-
-    this.filters = arRealFilter;
-
-    // Do the real search
-    // this.subjFilters.next(arRealFilter);
+    if (arRealFilter.length > 0) {
+      this.realFilters = arRealFilter;
+    } else {
+      this.modalService.warning({
+        nzTitle: translate('Common.Warning'),
+        nzContent: translate("Common.FilterIsMust"),
+        nzClosable: true,
+      });
+    }
   }
 }

@@ -718,6 +718,41 @@ export class FinanceOdataService {
       }));
   }
 
+  /** Settle an account with initial amount
+   * @param accountId Id of account
+   */
+  public settleAccount(accountId: number, settledDate: moment.Moment, amount: number, ccid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      AccountID: accountId,
+      SettledDate: settledDate.format(momentDateFormat),
+      InitialAmount: amount,
+      ControlCenterID: ccid,
+      Currency: this.homeService.ChosedHome?.BaseCurrency,
+    };
+    return this.http.post(`${this.accountAPIUrl}/SettleAccount`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService settleAccount succeed',
+          ConsoleLogTypeEnum.debug);
+
+          const isSucc = response.value as boolean;
+ 
+          return isSucc;
+        }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService settleAccount failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
   /**
    * fetch all control centers, and save it to buffer
    * @param forceReload set to true to enforce reload all data

@@ -7,8 +7,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 
 import { FinanceOdataService, UIStatusService } from '../../../services';
 import { Account, ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, DocumentItemView,
-  TranType, ControlCenter, Order,
+  GeneralFilterItem, DocumentItemView, TranType, ControlCenter, Order,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import * as moment from 'moment';
@@ -54,8 +53,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
 
-  constructor(
-    private odataService: FinanceOdataService,
+  constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -219,6 +217,10 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
       ConsoleLogTypeEnum.debug);
     this.isLoadingDocItems = true;
+
+    // Not allow select all.
+    if (this.filterDocItem.length <= 0) 
+      return;
 
     forkJoin([
       this.odataService.searchDocItem(this.filterDocItem,

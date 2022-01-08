@@ -118,33 +118,33 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.odataService.fetchAllAccountCategories()
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
-        .subscribe({
-          next: val => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
-              ConsoleLogTypeEnum.debug);
-            this.arCategories = val;
-            this.arCategories.forEach((val2: AccountCategory) => {
-              this.listCategoryFilter.push({
-                text: translate(val2.Name!),
-                value: val2.ID
-              });
+      .subscribe({
+        next: val => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
+            ConsoleLogTypeEnum.debug);
+          this.arCategories = val;
+          this.arCategories.forEach((val2: AccountCategory) => {
+            this.listCategoryFilter.push({
+              text: translate(val2.Name!),
+              value: val2.ID
             });
-          },
-          error: err => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
-              ConsoleLogTypeEnum.error);
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err,
-              nzClosable: true,
-            });
-          },
-          complete: () => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
-              ConsoleLogTypeEnum.debug);
-            this.onRefresh();
-          }
-        });
+          });
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        },
+        complete: () => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
+            ConsoleLogTypeEnum.debug);
+          this.onRefresh();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -153,6 +153,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 

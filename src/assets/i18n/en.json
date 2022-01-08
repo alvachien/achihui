@@ -207,7 +207,9 @@
     "CreatedAt": "Crated at",
     "CreatedBy": "Created by",
     "LastChangedAt": "Last chagned at",
-    "LastChangedBy": "Last chagned by"
+    "LastChangedBy": "Last chagned by",
+    "FilterIsMust": "Filter is must",
+    "AdvancedOperations": "Advanced Operations"
   },
   "Sys": {
     "Currency": {
@@ -577,7 +579,14 @@
     "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation",
     "CloseAccountIsNotAllowed": "It is not allowed to close account which status is not normal or the account cannot be manually closed",
     "CurrencyMustDiff": "Currency must different for currency exchange document",
-    "ExistingDocuments": "Existing Documents"
+    "ExistingDocuments": "Existing Documents",
+    "Top3IncomeTransactionInCurrentMonth": "Top 3 incoming transaction types in current month",
+    "Top3OutgoTransactionInCurrentMonth": "Top 3 outoging transaction types in current month",
+    "Top3IncomeTransactionInLastMonth": "Top 3 incoming transaction types in last month",
+    "Top3OutgoTransactionInLastMonth": "Top 3 outoging transaction types in last month",
+    "AccountClosedSuccesfully": "Account closed successfully",
+    "CurrentNodeNotAccount": "Current node is not an account",
+    "SettleAccountWithInitialBalance": "Settle Account and set initial balance"
   },
   "Library": {
     "BookCategories": "Book Categories",

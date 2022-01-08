@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FinanceUIModule } from '../finance-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
 import { NzListModule } from 'ng-zorro-antd/list';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 import { ReportRoutingModule } from './report-routing.module';
 import { ControlCenterReportComponent } from './control-center-report/control-center-report.component';
@@ -25,6 +26,7 @@ import { DocumentItemViewModule } from '../document-item-view/document-item-view
     TranslocoModule,
     DocumentItemViewModule,
     NzListModule,
+    NzProgressModule,
   ]
 })
 export class ReportModule { }

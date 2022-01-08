@@ -13,6 +13,7 @@ import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStri
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
 import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
 import * as moment from 'moment';
+import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-finance-report',
@@ -37,6 +38,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   totalOutgoInCurrentMonth = 0;
   reportByMostIncomeInCurrentMonth: FinanceReportMostExpenseEntry[] = [];
   totalIncomeInCurrentMonth = 0;
+  // Last Month - Transaction Type
+  reportByMostOutgoInLastMonth: FinanceReportMostExpenseEntry[] = [];
+  totalOutgoInLastMonth = 0;
+  reportByMostIncomeInLastMonth: FinanceReportMostExpenseEntry[] = [];
+  totalIncomeInLastMonth = 0;
   // Card: Account
   reportAccountAsset: NzStatisticValueType = 0;
   reportAccountLibility: NzStatisticValueType = 0;
@@ -75,52 +81,100 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.totalOutgoInCurrentMonth = 0;
     this.reportByMostOutgoInCurrentMonth = [];
     this.totalIncomeInCurrentMonth = 0;
-    this.odataService.fetchMontlyReportByTransactionType(today.year(), today.month() + 1).subscribe({
-      next: val => {
-        val.forEach(item => {
-          if (item.InAmount !== 0) {
-            this.totalIncomeInCurrentMonth += item.InAmount;
-          }
-          if (item.OutAmount !== 0) {
-            this.totalOutgoInCurrentMonth += item.OutAmount;
-          }
-        });
-        val.forEach(item => {
-          if (item.InAmount !== 0) {
-            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-            entry.Amount = item.InAmount;
-            entry.TransactionType  = item.TransactionType;
-            entry.TransactionTypeName = item.TransactionTypeName;
-            entry.Precentage = 100 * item.InAmount / this.totalIncomeInCurrentMonth;
-            this.reportByMostIncomeInCurrentMonth.push(entry);
-          }
-          if (item.OutAmount !== 0) {
-            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-            entry.Amount = item.OutAmount;
-            entry.TransactionType  = item.TransactionType;
-            entry.TransactionTypeName = item.TransactionTypeName;
-            entry.Precentage = 100 * item.OutAmount / this.totalOutgoInCurrentMonth;            
-            this.reportByMostOutgoInCurrentMonth.push(entry);
+
+    // Current month
+    let dateInLastMonth = today.clone();
+    dateInLastMonth.subtract(1, "month");
+    forkJoin([
+      this.odataService.fetchMontlyReportByTransactionType(today.year(), today.month() + 1),
+      this.odataService.fetchMontlyReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
+      ])
+      .pipe(takeUntil(this._destroyed$!),
+      finalize(() => this.isLoadingResults = false))
+      .subscribe({
+          next: (val: any[]) => {
+            // Current month
+            val[0].forEach((item: any) => {
+              if (item.InAmount !== 0) {
+                this.totalIncomeInCurrentMonth += item.InAmount;
+              }
+              if (item.OutAmount !== 0) {
+                this.totalOutgoInCurrentMonth += item.OutAmount;
+              }
+            });
+            val[0].forEach((item: any) => {
+              if (item.InAmount !== 0) {
+                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+                entry.Amount = item.InAmount;
+                entry.TransactionType  = item.TransactionType;
+                entry.TransactionTypeName = item.TransactionTypeName;
+                entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInCurrentMonth);
+                this.reportByMostIncomeInCurrentMonth.push(entry);
+              }
+              if (item.OutAmount !== 0) {
+                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+                entry.Amount = item.OutAmount;
+                entry.TransactionType  = item.TransactionType;
+                entry.TransactionTypeName = item.TransactionTypeName;
+                entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInCurrentMonth);
+                this.reportByMostOutgoInCurrentMonth.push(entry);
+              }
+            });
+    
+            this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
+            if (this.reportByMostIncomeInCurrentMonth.length > 3) {
+              this.reportByMostIncomeInCurrentMonth.splice(2);
+            }
+            this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
+            if (this.reportByMostOutgoInCurrentMonth.length > 3) {
+              this.reportByMostOutgoInCurrentMonth.splice(3);
+            }
+            // Last month
+            val[1].forEach((item: any) => {
+              if (item.InAmount !== 0) {
+                this.totalIncomeInLastMonth += item.InAmount;
+              }
+              if (item.OutAmount !== 0) {
+                this.totalOutgoInLastMonth += item.OutAmount;
+              }
+            });
+            val[1].forEach((item: any) => {
+              if (item.InAmount !== 0) {
+                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+                entry.Amount = item.InAmount;
+                entry.TransactionType  = item.TransactionType;
+                entry.TransactionTypeName = item.TransactionTypeName;
+                entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInLastMonth);
+                this.reportByMostIncomeInLastMonth.push(entry);
+              }
+              if (item.OutAmount !== 0) {
+                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+                entry.Amount = item.OutAmount;
+                entry.TransactionType  = item.TransactionType;
+                entry.TransactionTypeName = item.TransactionTypeName;
+                entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInLastMonth);
+                this.reportByMostOutgoInLastMonth.push(entry);
+              }
+            });
+    
+            this.reportByMostIncomeInLastMonth.sort((a, b) => b.Amount - a.Amount);
+            if (this.reportByMostIncomeInLastMonth.length > 3) {
+              this.reportByMostIncomeInLastMonth.splice(2);
+            }
+            this.reportByMostOutgoInLastMonth.sort((a, b) => a.Amount - b.Amount);
+            if (this.reportByMostOutgoInLastMonth.length > 3) {
+              this.reportByMostOutgoInLastMonth.splice(3);
+            }    
+          },
+          error: err => {
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });    
           }
         });
 
-        this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
-        if (this.reportByMostIncomeInCurrentMonth.length > 3) {
-          this.reportByMostIncomeInCurrentMonth.splice(2);
-        }
-        this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
-        if (this.reportByMostOutgoInCurrentMonth.length > 3) {
-          this.reportByMostOutgoInCurrentMonth.splice(3);
-        }
-      },
-      error: err => {
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err,
-          nzClosable: true,
-        });
-      }
-    });
     // forkJoin([
     //   this.odataService.fetchAllReportsByAccount(),
     //   this.odataService.fetchAllReportsByControlCenter(),
