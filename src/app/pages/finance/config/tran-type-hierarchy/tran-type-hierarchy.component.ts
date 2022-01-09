@@ -16,17 +16,14 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
+  isLoadingResults: boolean = false;
   ttTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(
-    public odataService: FinanceOdataService,
+  constructor(public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
@@ -67,10 +64,8 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
-  }
-
-  nodeClick(event: any) {
   }
 
   private _buildTree(value: TranType[], level: number, id?: number): NzTreeNodeOptions[] {
@@ -82,7 +77,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           // Root nodes!
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
-            title: val.Name,
+            title: val.Name + '(' + val.Id!.toString() + ')',
             icon: 'cluster',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
@@ -90,6 +85,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
+            node.icon = 'file';
           }
 
           data.push(node);
@@ -101,7 +97,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
-            title: val.Name,
+            title: val.Name + '(' + val.Id!.toString() + ')',
             icon: 'cluster',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
@@ -109,6 +105,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
+            node.icon = 'file';
           }
 
           data.push(node);
