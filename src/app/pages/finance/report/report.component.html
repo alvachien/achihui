@@ -5,7 +5,9 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-extra>
-    <!-- <button nz-button nzType="primary" (click)="onCreate()">{{'Common.Create' | transloco}}</button> -->
+    <button nz-button nzType="default" (click)="onDrillDownToAccount()">{{'Finance.Accounts' | transloco}}</button>
+    <button nz-button nzType="default" (click)="onDrillDownToControlCenter()">{{'Finance.ControlCenters' | transloco}}</button>
+    <button nz-button nzType="default" (click)="onDrillDownToOrder()">{{'Finance.Activity' | transloco}}</button>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -20,7 +22,7 @@
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
       <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <div class="inner-box" style="background: #ECECEC;padding:30px;" >
-          <nz-list nzBordered nzSize="small">
+          <nz-list nzBordered nzSize="large">
             <nz-list-header>{{'Finance.Top3IncomeTransactionInCurrentMonth' | transloco}}</nz-list-header>
             <nz-list-item *ngFor="let item of reportByMostIncomeInCurrentMonth">
               <div>
@@ -28,13 +30,14 @@
                 <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
+            <nz-list-empty *ngIf="reportByMostIncomeInCurrentMonth.length === 0"></nz-list-empty>
             <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
           </nz-list>
         </div>
       </div>
       <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <div class="inner-box" style="background: #ECECEC;padding:30px;" >
-          <nz-list nzBordered nzSize="small">
+          <nz-list nzBordered nzSize="large">
             <nz-list-header>{{'Finance.Top3OutgoTransactionInCurrentMonth' | transloco}}</nz-list-header>
             <nz-list-item *ngFor="let item of reportByMostOutgoInCurrentMonth">
               <div>
@@ -42,13 +45,14 @@
                 <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
+            <nz-list-empty *ngIf="reportByMostOutgoInCurrentMonth.length === 0"></nz-list-empty>
             <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
           </nz-list>
         </div>
       </div>
       <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <div class="inner-box" style="background: #1CECEC;padding:30px;" >
-          <nz-list nzBordered nzSize="small">
+          <nz-list nzBordered nzSize="large">
             <nz-list-header>{{'Finance.Top3IncomeTransactionInLastMonth' | transloco}}</nz-list-header>
             <nz-list-item *ngFor="let item of reportByMostIncomeInLastMonth">
               <div>
@@ -56,13 +60,14 @@
                 <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>              
             </nz-list-item>
+            <nz-list-empty *ngIf="reportByMostIncomeInLastMonth.length === 0"></nz-list-empty>
             <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInLastMonth | number:'1.0-2'}}</nz-list-footer>
           </nz-list>
         </div>
       </div>
       <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <div class="inner-box" style="background: #1CECEC;padding:30px;" >
-          <nz-list nzBordered nzSize="small">
+          <nz-list nzBordered nzSize="large">
             <nz-list-header>{{'Finance.Top3OutgoTransactionInLastMonth' | transloco}}</nz-list-header>
             <nz-list-item *ngFor="let item of reportByMostOutgoInLastMonth">
               <div>
@@ -70,6 +75,7 @@
                 <nz-progress style="width: 100%;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
+            <nz-list-empty *ngIf="reportByMostOutgoInLastMonth.length === 0"></nz-list-empty>
             <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInLastMonth | number:'1.0-2'}}</nz-list-footer>
           </nz-list>
         </div>

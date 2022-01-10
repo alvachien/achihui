@@ -37,8 +37,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
-  isLoadingResults: boolean;
-  isLoadingDocItems = false;
+  isLoadingResults: boolean = false;
+  isLoadingDocItems: boolean = false;
   // Filter
   listSelectedAccountStatus: AccountStatusEnum[] = [];
   arrayStatus: UIDisplayString[] = [];
@@ -341,18 +341,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // Root nodes!
         const node: NzTreeNodeOptions = {
           key: `c${val.ID}`,
-          // title: translate(val.Name) + `(${val.ID})`,
           title: translate(val.Name!),
-          isLeaf: false,
-          icon: 'cluster'
+          isLeaf: false
         };
         node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID!);
-        if (node.children) {
-          node.isLeaf = false;
-        } else {
-          node.isLeaf = true;
-        }
-
         data.push(node);
       });
     } else {
@@ -361,10 +353,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `a${val.Id}`,
-            // title: val.Name + `(${val.Id})`,
             title: val.Name!,
-            isLeaf: true,
-            icon: 'account-book',
+            isLeaf: true
           };
 
           data.push(node);

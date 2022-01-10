@@ -222,13 +222,13 @@ export class ReportComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDrillDownToAccount(event: any) {
+  onDrillDownToAccount(): void {
     this.router.navigate(['/finance/report/account']);
   }
-  onDrillDownToControlCenter(event: any) {
+  onDrillDownToControlCenter(): void {
     this.router.navigate(['/finance/report/controlcenter']);
   }
-  onDrillDownToOrder(event: any) {
+  onDrillDownToOrder(): void {
     this.router.navigate(['/finance/report/order']);
   }
 

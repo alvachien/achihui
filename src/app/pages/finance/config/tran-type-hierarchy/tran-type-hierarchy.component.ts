@@ -78,14 +78,12 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
             title: val.Name + '(' + val.Id!.toString() + ')',
-            icon: 'cluster',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
-            node.icon = 'file';
           }
 
           data.push(node);
@@ -98,14 +96,12 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
             title: val.Name + '(' + val.Id!.toString() + ')',
-            icon: 'cluster',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
-            node.icon = 'file';
           }
 
           data.push(node);

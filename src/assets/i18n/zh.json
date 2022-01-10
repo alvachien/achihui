@@ -586,7 +586,9 @@
     "Top3OutgoTransactionInLastMonth": "上月迄今消费最多的三种交易类型",
     "AccountClosedSuccesfully": "指定账户关闭成功",
     "CurrentNodeNotAccount": "当期节点不是账户",
-    "SettleAccountWithInitialBalance": "结清账户并设置初始金额"
+    "SettleAccountWithInitialBalance": "结清账户并设置初始金额",
+    "In": "流入",
+    "Out": "流出"
   },
   "Library": {
     "BookCategories": "图书种类",

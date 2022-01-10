@@ -586,7 +586,9 @@
     "Top3OutgoTransactionInLastMonth": "Top 3 outoging transaction types in last month",
     "AccountClosedSuccesfully": "Account closed successfully",
     "CurrentNodeNotAccount": "Current node is not an account",
-    "SettleAccountWithInitialBalance": "Settle Account and set initial balance"
+    "SettleAccountWithInitialBalance": "Settle Account and set initial balance",
+    "In": "In",
+    "Out": "Out"
   },
   "Library": {
     "BookCategories": "Book Categories",

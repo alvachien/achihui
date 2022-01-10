@@ -29,7 +29,7 @@
     </nz-resize-handle>
     <div>
       <nz-spin [nzSpinning]="isLoadingResults">
-        <nz-tree [nzData]="accountTreeNodes" nzShowLine
+        <nz-tree nzBlockNode [nzData]="accountTreeNodes"
           (nzClick)="onNodeClick($event)"
           (nzDblClick)="onNodeClick($event)"
           [nzTreeTemplate]="tmplAccountHierarchy"></nz-tree>
@@ -40,7 +40,7 @@
               <span class="folder-name">{{ node.title }}</span>
             </span>
             <span *ngIf="node.isLeaf" (contextmenu)="onNodeContextMenu($event, treeMenu)">
-              <i nz-icon nzType="file"></i>
+              <i nz-icon nzType="account-book"></i>
               <span class="file-name">{{ node.title }}</span>
             </span>
           </span>
