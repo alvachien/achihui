@@ -25,7 +25,7 @@ export class FakeDataHelper {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _currencies: Currency[] = [];
   private _currenciesFromAPI: CurrencyJson[] = [];
-  private _chosedHome: HomeDef;
+  private _chosedHome: HomeDef = new HomeDef();
   private _homeDefs: HomeDef[] = [];
   private _finDocTypes: DocumentType[] = [];
   private _finDocTypesFromAPI: DocumentTypeJson[] = [];
@@ -37,16 +37,16 @@ export class FakeDataHelper {
   private _finAssetCategoriesFromAPI: AssetCategoryJson[] = [];
   private _finAccounts: Account[] = [];
   private _finAccountsFromAPI: AccountJson[] = [];
-  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment;
+  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
   private _finControlCenters: ControlCenter[] = [];
   private _finControlCentersFromAPI: ControlCenterJson[] = [];
   private _finOrders: Order[] = [];
   private _finOrdersFromAPI: OrderJson[] = [];
   private _finPlans: Plan[] = [];
-  private _finNormalDocumentForCreate: Document;
-  private _finTransferDocumentForCreate: Document;
-  private _finADPDocumentForCreate: Document;
-  private _currUser: UserAuthInfo;
+  private _finNormalDocumentForCreate: Document = new Document();
+  private _finTransferDocumentForCreate: Document = new Document();
+  private _finADPDocumentForCreate: Document = new Document();
+  private _currUser: UserAuthInfo = new UserAuthInfo();
   private _appLanguages: AppLanguage[] = [];
   private _appLanguagesFromAPI: AppLanguageJson[] = [];
   private _learnCategoriesFromAPI: LearnCategoryJson[] = [];
@@ -92,9 +92,7 @@ export class FakeDataHelper {
     return [];
   }
   get chosedHome(): HomeDef {
-    if (this._chosedHome) {
-      return this._chosedHome;
-    }
+    return this._chosedHome;
   }
   get finDocTypes(): DocumentType[] {
     if (this._finDocTypes) {
@@ -150,6 +148,7 @@ export class FakeDataHelper {
         return val.ParId === undefined;
       }).length;
     }
+    return 0;
   }
   get finAccounts(): Account[] {
     if (this._finAccounts) {
@@ -164,9 +163,7 @@ export class FakeDataHelper {
     return [];
   }
   get finAccountExtraAdvancePayment(): AccountExtraAdvancePayment {
-    if (this._finAccountExtraAdvancePayment) {
-      return this._finAccountExtraAdvancePayment;
-    }
+    return this._finAccountExtraAdvancePayment;
   }
   get finControlCenters(): ControlCenter[] {
     if (this._finControlCenters) {
@@ -199,24 +196,16 @@ export class FakeDataHelper {
     return [];
   }
   get finNormalDocumentForCreate(): Document {
-    if (this._finNormalDocumentForCreate) {
-      return this._finNormalDocumentForCreate;
-    }
+    return this._finNormalDocumentForCreate;
   }
   get finTransferDocumentForCreate(): Document {
-    if (this._finTransferDocumentForCreate) {
-      return this._finTransferDocumentForCreate;
-    }
+    return this._finTransferDocumentForCreate;
   }
   get finADPDocumentForCreate(): Document {
-    if (this._finADPDocumentForCreate) {
-      return this._finADPDocumentForCreate;
-    }
+    return this._finADPDocumentForCreate;
   }
   get currentUser(): UserAuthInfo {
-    if (this._currUser) {
-      return this._currUser;
-    }
+    return this._currUser;
   }
   get appLanguages(): AppLanguage[] {
     if (this._appLanguages) {

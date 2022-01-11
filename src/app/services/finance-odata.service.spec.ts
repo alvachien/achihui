@@ -1048,7 +1048,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + currentAccount.Id.toString() + ')';
+        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + currentAccount.Id!.toString() + ')';
       });
 
       req.flush(currentAccount); // Respond with data
@@ -1066,7 +1066,7 @@ describe('FinanceOdataService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + currentAccount.Id.toString() + ')';
+        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + currentAccount.Id!.toString() + ')';
       });
 
       // respond with a 500 and the error message in the body

@@ -105,8 +105,8 @@ describe('PostListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onDisplay(fakeData.blogPost[0].id);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/display/' + fakeData.blogPost[0].id.toString()]);
+      component.onDisplay(fakeData.blogPost[0].id!);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/display/' + fakeData.blogPost[0].id!.toString()]);
 
       discardPeriodicTasks();
       flush();
@@ -123,8 +123,8 @@ describe('PostListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onEdit(fakeData.blogPost[0].id);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/edit/' + fakeData.blogPost[0].id.toString()]);
+      component.onEdit(fakeData.blogPost[0].id!);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/edit/' + fakeData.blogPost[0].id!.toString()]);
 
       discardPeriodicTasks();
       flush();

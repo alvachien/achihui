@@ -124,7 +124,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreateNewItem(event: MouseEvent): number {
+  onCreateNewItem(event?: MouseEvent): number {
     if (event) {
       event.stopPropagation();
     }
@@ -132,20 +132,20 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     return this.createItem();
   }
 
-  onCopyItem(event: MouseEvent, i: number): number {
+  onCopyItem(event?: MouseEvent, i?: number): number {
     if (event) {
       event.stopPropagation();
     }
 
-    return this.copyItem(i);
+    return this.copyItem(i!);
   }
 
-  onRemoveItem(event: MouseEvent, i: number) {
+  onRemoveItem(event?: MouseEvent, i?: number) {
     if (event) {
       event.stopPropagation();
     }
 
-    this.removeItem(i);
+    this.removeItem(i!);
   }
 
   pre(): void {

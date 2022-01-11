@@ -61,9 +61,9 @@ describe('UserAuthInfo', () => {
 
     authinfo.setContent(usrvalue as User);
     expect(authinfo.isAuthorized).toBeTruthy();
-    expect(authinfo.getUserName()).toEqual(usrvalue.profile.name);
-    expect(authinfo.getUserId()).toEqual(usrvalue.profile.sub);
-    expect(authinfo.getUserMailbox()).toEqual(usrvalue.profile.mail);
+    expect(authinfo.getUserName()).toEqual(usrvalue.profile?.name);
+    expect(authinfo.getUserId()).toEqual(usrvalue.profile?.sub);
+    expect(authinfo.getUserMailbox()).toEqual(usrvalue.profile?.mail);
     expect(authinfo.getAccessToken()).toEqual(usrvalue.access_token);
 
     authinfo.cleanContent();

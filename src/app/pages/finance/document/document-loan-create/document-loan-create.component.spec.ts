@@ -173,8 +173,8 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -182,11 +182,11 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Now add the desp back
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl').valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
@@ -205,8 +205,8 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -214,11 +214,11 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Account - missing
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -226,8 +226,8 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add an account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -249,20 +249,20 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount - missing
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -270,8 +270,8 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add amount back
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -293,19 +293,19 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount - missing
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
       tick();
@@ -314,18 +314,18 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Second false case: input both
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
-      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now correct it - remove order
-      component.firstFormGroup.get('orderControl').setValue(undefined);
-      component.firstFormGroup.get('orderControl').markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(undefined);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -346,17 +346,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -392,17 +392,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -436,8 +436,8 @@ describe('DocumentLoanCreateComponent', () => {
           TranDate: moment().add(1, 'd')
         } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
@@ -458,17 +458,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -498,8 +498,8 @@ describe('DocumentLoanCreateComponent', () => {
           TranDate: moment().add(1, 'd')
         } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -527,17 +527,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -567,8 +567,8 @@ describe('DocumentLoanCreateComponent', () => {
           TranDate: moment().add(1, 'd')
         } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -579,8 +579,8 @@ describe('DocumentLoanCreateComponent', () => {
       // Step 2.
       // Fake an error in generated doc
       dochead.Desp = '';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
       flush();
@@ -626,17 +626,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -666,8 +666,8 @@ describe('DocumentLoanCreateComponent', () => {
           TranDate: moment().add(1, 'd')
         } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -704,17 +704,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
-      component.firstFormGroup.get('headerControl').setValue(dochead);
-      component.firstFormGroup.get('headerControl').markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get('accountControl').markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get('amountControl').setValue(100.20);
-      component.firstFormGroup.get('amountControl').markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.20);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get('ccControl').markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -744,8 +744,8 @@ describe('DocumentLoanCreateComponent', () => {
           TranDate: moment().add(1, 'd')
         } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get('loanAccountControl').setValue(extraLoan);
-      component.extraFormGroup.get('loanAccountControl').markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 

@@ -413,27 +413,27 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       validators: [costObjectValidator],
     });
   }
-  public onCreateNewItem(event: MouseEvent): number {
+  public onCreateNewItem(event?: MouseEvent): number {
     if (event) {
       event.stopPropagation();
     }
 
     return this.createItem();
   }
-  public onCopyItem(event: MouseEvent, i: number): number {
+  public onCopyItem(event?: MouseEvent, i?: number): number {
     if (event) {
       event.stopPropagation();
     }
 
-    return this.copyItem(i);
+    return this.copyItem(i!);
   }
 
-  public onRemoveItem(event: MouseEvent, i: number) {
+  public onRemoveItem(event?: MouseEvent, i?: number) {
     if (event) {
       event.stopPropagation();
     }
 
-    this.removeItem(i);
+    this.removeItem(i!);
   }
 
   private createItem(): number {

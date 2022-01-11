@@ -321,11 +321,11 @@ describe('DocumentNormalMassCreateComponent', () => {
       const nidx = component.onCreateNewItem();
       expect(nidx).toBeGreaterThan(0);
       if (nidx > 0) {
-        const nidx2 = component.onCopyItem(null, nidx);
+        const nidx2 = component.onCopyItem(undefined, nidx);
         if (nidx2 > 0) {
-          component.onRemoveItem(null, nidx2);
+          component.onRemoveItem(undefined, nidx2);
         }
-        component.onRemoveItem(null, nidx);
+        component.onRemoveItem(undefined, nidx);
       }
     }));
 

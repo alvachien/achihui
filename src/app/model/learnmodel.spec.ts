@@ -7,7 +7,6 @@ import { EnWordExplain, EnPOSEnum, EnWord, EnSentenceExplain,
   QuestionBankItem, } from './learnmodel';
 import * as hih from './common';
 import * as moment from 'moment';
-import { FakeDataHelper } from '../../testing';
 
 describe('EnWordExplain', () => {
   let instance: EnWordExplain;
@@ -237,7 +236,7 @@ describe('LearnHistory', () => {
     instance.HID = 1;
     instance.UserId = 'aaa';
     instance.ObjectId = 11;
-    instance.LearnDate = undefined;
+    instance.LearnDate = moment();
     expect(instance.onVerify()).toBeFalsy();
     const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.InvalidDate';

@@ -162,7 +162,7 @@ describe('AccountReportComponent', () => {
         });
 
         expect(acntobj).toBeTruthy();
-        if (acntobj.CategoryId === ctgyid) {
+        if (acntobj?.CategoryId === ctgyid) {
           expamt ++;
         }
       });

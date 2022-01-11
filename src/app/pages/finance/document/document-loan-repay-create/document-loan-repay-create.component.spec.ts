@@ -344,11 +344,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
       expect(component.searchFormGroup.valid).toBeTruthy();
@@ -386,11 +386,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
       expect(component.searchFormGroup.valid).toBeTruthy();
@@ -429,11 +429,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
       expect(component.searchFormGroup.valid).toBeTruthy();
@@ -479,11 +479,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.currentStep).toEqual(0);
 
       // Step 0. Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
@@ -509,8 +509,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
       component.onCreateItem();
       expect(component.listItems.length).toEqual(1);
 
-      component.listItems[0].AccountId = fakeData.finAccounts[0].Id;
-      component.listItems[0].TranAmount = component.amountOpen;
+      component.listItems[0].AccountId = fakeData.finAccounts[0].Id!;
+      component.listItems[0].TranAmount = component.amountOpen!;
       component.onItemAmountChange();
       expect(component.nextButtonEnabled).toBeTruthy();
 
@@ -525,11 +525,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.currentStep).toEqual(0);
 
       // Step 0. Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
@@ -555,8 +555,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
       component.onCreateItem();
       expect(component.listItems.length).toEqual(1);
 
-      component.listItems[0].AccountId = fakeData.finAccounts[0].Id;
-      component.listItems[0].TranAmount = component.amountOpen;
+      component.listItems[0].AccountId = fakeData.finAccounts[0].Id!;
+      component.listItems[0].TranAmount = component.amountOpen!;
       component.onItemAmountChange();
       expect(component.nextButtonEnabled).toBeTruthy();
 
@@ -577,11 +577,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.currentStep).toEqual(0);
 
       // Step 0. Search filter
-      component.searchFormGroup.get('dateRangeControl').setValue([
+      component.searchFormGroup.get('dateRangeControl')?.setValue([
         moment().toDate(),
         moment().add(1, 'month').toDate(),
       ]);
-      component.searchFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
@@ -605,8 +605,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       // Add items
       component.onCreateItem();
-      component.listItems[0].AccountId = fakeData.finAccounts[0].Id;
-      component.listItems[0].TranAmount = component.amountOpen;
+      component.listItems[0].AccountId = fakeData.finAccounts[0].Id!;
+      component.listItems[0].TranAmount = component.amountOpen!;
       component.onItemAmountChange();
       expect(component.nextButtonEnabled).toBeTruthy();
 

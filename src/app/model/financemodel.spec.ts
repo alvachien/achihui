@@ -517,7 +517,7 @@ describe('Order', () => {
     expect(instance2).toBeTruthy();
   });
   it ('#4. onVerify: name is must', () => {
-    instance.Name = undefined;
+    instance.Name = '';
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -530,7 +530,7 @@ describe('Order', () => {
   });
   it ('#5. onVerify: valid from is must', () => {
     instance.Name = 'test';
-    instance.ValidFrom = undefined;
+    // instance.ValidFrom = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -543,7 +543,7 @@ describe('Order', () => {
   });
   it ('#6. onVerify: valid to is must', () => {
     instance.Name = 'test';
-    instance.ValidTo = undefined;
+    // instance.ValidTo = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -730,7 +730,7 @@ describe('Document', () => {
   });
   it('#4. onVerify: Doc type must be fetched', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -752,7 +752,7 @@ describe('Document', () => {
   });
   it('#5. onVerify: Desp is a must', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     // instance.Desp = 'test';
@@ -774,7 +774,7 @@ describe('Document', () => {
   });
   it('#6. onVerify: Desp larger than 44', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'testttttttttttttttttttttttttttttttttttttttttttttttttt';
@@ -796,7 +796,7 @@ describe('Document', () => {
   });
   it('#7. onVerify: currency is a must', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     // instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -818,7 +818,7 @@ describe('Document', () => {
   });
   it('#8. onVerify: currency should be valid', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = 'DEM'; // Invalid currency
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -840,7 +840,7 @@ describe('Document', () => {
   });
   it('#9. onVerify: currency should be fetched', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -863,7 +863,7 @@ describe('Document', () => {
   it('#10. onVerify: item ID shall not duplicated', () => {
     // Ref: https://github.com/alvachien/achihui/issues/244
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';

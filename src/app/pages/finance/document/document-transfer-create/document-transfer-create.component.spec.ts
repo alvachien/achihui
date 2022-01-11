@@ -356,7 +356,7 @@ describe('DocumentTransferCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      const docobj: Document = component.headerFormGroup.get('headerControl').value as Document;
+      const docobj: Document = component.headerFormGroup.get('headerControl')?.value as Document;
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
@@ -383,8 +383,8 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
       expect(component.headerFormGroup.valid).toBeFalsy('Expect header form is invalid because amount is missing');
       fixture.detectChanges();
@@ -412,10 +412,10 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -442,11 +442,11 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = 'USD';
       curdoc.ExgRate = 653.33;
       curdoc.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       fixture.detectChanges();
 
       // Click the next button
@@ -468,11 +468,11 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       expect(component.headerFormGroup.valid).toBeTruthy('Expect header from is valid');
       expect(component.nextButtonEnabled).toBeTruthy('Expect next button is enabled');
       expect(component.currentStep).toBe(0);
@@ -509,10 +509,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -524,7 +524,7 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       fixture.detectChanges();
 
       // However, it is invalid
@@ -546,10 +546,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
-      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -561,9 +561,9 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
 
       // However, it is invalid
@@ -585,10 +585,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
-      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -599,8 +599,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -627,11 +627,11 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header form');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header form');
       component.headerFormGroup.updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('amountControl')?.setValue(100);
       expect(component.headerFormGroup.valid).toBeTruthy('Expect a valid header step');
       fixture.detectChanges();
 
@@ -642,8 +642,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now sit in step 2
       expect(component.currentStep).toBe(1, 'Expect the stepper is now in From Step');
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -652,8 +652,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component.currentStep).toBe(2);
-      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.toFormGroup.updateValueAndValidity();
       expect(component.toFormGroup.valid).toBeFalsy('Expect the from account and to account are not the same');
 
@@ -766,10 +766,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -781,8 +781,8 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 2
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -791,8 +791,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component.currentStep).toBe(2);
-      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
@@ -820,10 +820,10 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -835,8 +835,8 @@ describe('DocumentTransferCreateComponent', () => {
       // Step 1
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -845,8 +845,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Step 2
       expect(component.currentStep).toBe(2);
-      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
@@ -859,7 +859,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       // Just for test - make the check failed
-      component.headerFormGroup.get('amountControl').setValue(0);
+      component.headerFormGroup.get('amountControl')?.setValue(0);
       fixture.detectChanges();
 
       // Click the next button
@@ -898,10 +898,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -913,8 +913,8 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 1
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -923,8 +923,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 2
       expect(component.currentStep).toBe(2);
-      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
@@ -977,10 +977,10 @@ describe('DocumentTransferCreateComponent', () => {
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
       // curdoc.TranDate = moment();
-      component.headerFormGroup.get('headerControl').setValue(curdoc);
-      component.headerFormGroup.get('headerControl').updateValueAndValidity();
-      component.headerFormGroup.get('amountControl').setValue(100);
-      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -992,8 +992,8 @@ describe('DocumentTransferCreateComponent', () => {
       // Now sit in step 1
       expect(component.currentStep).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       // Click the next button
@@ -1002,8 +1002,8 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 2
       expect(component.currentStep).toBe(2);
-      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
-      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       tick();
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
