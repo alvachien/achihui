@@ -4,17 +4,20 @@
   [nzFrontPagination]="false"
   [nzLoading]="isLoadingDocItems"
   [nzTotal]="totalDocumentItemCount"
-  [(nzPageIndex)]="pageIndex"
-  [(nzPageSize)]="pageSize"
+  [nzPageIndex]="pageIndex"
+  [nzPageSize]="pageSize"
   (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
-      <th *ngFor="let column of listOfColumns; trackBy: trackByName"        
-        [nzSortFn]="column.sortFn"
-        [(nzSortOrder)]="column.sortOrder"
-        [nzSortFn]="column.sortFn">
-        {{column.name | transloco}}
-      </th>
+      <th nzColumnKey="docid">{{'Common.ID' | transloco}}</th>
+      <th nzColumnKey="itemid">{{'Finance.Items' | transloco}}</th>
+      <th nzColumnKey="desp" [nzSortFn]="true">{{'Common.Description' | transloco}}</th>
+      <th nzColumnKey="date" [nzSortFn]="true">{{'Common.Date' | transloco}}</th>
+      <th nzColumnKey="trantype">{{'Finance.TransactionType' | transloco}}</th>
+      <th nzColumnKey="account" [nzSortFn]="true">{{'Finance.Account' | transloco}}</th>
+      <th nzColumnKey="amount" [nzSortFn]="true">{{'Finance.Amount' | transloco}}</th>
+      <th nzColumnKey="controlcenter" [nzSortFn]="true">{{'Finance.ControlCenter' | transloco}}</th>
+      <th nzColumnKey="order" [nzSortFn]="true">{{'Finance.Activity' | transloco}}</th>
     </tr>
   </thead>
   <tbody>
@@ -24,8 +27,8 @@
       <td>{{ data.ItemDesp }} </td>
       <td>{{ data.TransactionDate }}</td>
       <td>{{ getTranTypeName(data.TransactionType!) }}<small>({{data.TransactionType}})</small></td>
-      <td>{{ data.Amount | number: '1.0-2' }} <small>{{data.Currency}}</small></td>
       <td>{{ getAccountName(data.AccountID!) }} <small>({{data.AccountID}})</small></td>
+      <td>{{ data.Amount | number: '1.0-2' }} <small>{{data.Currency}}</small></td>
       <td>{{ getControlCenterName(data.ControlCenterID!) }}<small>({{data.ControlCenterID}})</small></td>
       <td>{{ getOrderName(data.OrderID!) }} <small>({{data.OrderID}})</small></td>
     </tr>

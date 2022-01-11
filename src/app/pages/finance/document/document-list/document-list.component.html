@@ -52,21 +52,17 @@
       [nzData]="listOfDocs"
       [nzLoading]="isLoadingResults"
       [nzTotal]="totalDocumentCount"
-      [(nzPageIndex)]="pageIndex"
-      [(nzPageSize)]="pageSize"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
       (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
           <th nzShowExpand></th>
-          <th *ngFor="let column of listOfColumns; trackBy: trackByName"            
-            [nzSortFn]="column.sortFn"
-            [(nzSortOrder)]="column.sortOrder"
-            [nzSortFn]="column.sortFn"
-            [nzFilterMultiple]="column.filterMultiple"
-            [nzFilters]="column.listOfFilter"
-            [nzFilterFn]="column.filterFn">
-            {{column.name | transloco}}
-          </th>
+          <th nzColumnKey="docid">{{'Common.ID' | transloco}}</th>
+          <th nzColumnKey="curr">{{'Finance.Currency' | transloco}}</th>
+          <th nzColumnKey="date" [nzSortFn]="true">{{'Common.Date' | transloco}}</th>
+          <th nzColumnKey="doctype">{{'Finance.DocumentType' | transloco}}</th>
+          <th nzColumnKey="desp" [nzSortFn]="true">{{'Common.Description' | transloco}}</th>
         </tr>
       </thead>
       <tbody>

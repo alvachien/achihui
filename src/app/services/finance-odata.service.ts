@@ -2465,7 +2465,7 @@ export class FinanceOdataService {
     if (subfilter) {
       filterstr += ` and ${subfilter}`;
     }
-    params = params.append('$filter', filterstr );
+    params = params.append('$filter', filterstr);
     params = params.append('$count', `true`);
     if (top) {
       params = params.append('$top', `${top}`);
@@ -2481,8 +2481,7 @@ export class FinanceOdataService {
       headers,
       params,
     }).pipe(map((response: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService searchDocItem.`,
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService searchDocItem.`, ConsoleLogTypeEnum.debug);
 
       const data: any = response as any;
       const amt = data['@odata.count'];

@@ -209,7 +209,8 @@
     "LastChangedAt": "最后修改于",
     "LastChangedBy": "最后修改者",
     "FilterIsMust": "过滤条件是必须的",
-    "AdvancedOperations": "高级操作"
+    "AdvancedOperations": "高级操作",
+    "OnlyValidOnes": "仅有效项"
   },
   "Sys": {
     "Currency": {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -226,9 +226,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
-    return item.name;
-  }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent onQueryParamsChange...',
@@ -240,7 +237,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const sortOrder = (currentSort && currentSort.value) || null;
     let fieldName = '';
     switch (sortField) {
-      case 'curr': fieldName = 'Desp'; break;
+      case 'curr': fieldName = 'Currency'; break;
       case 'date': fieldName = 'TranDate'; break;
       case 'doctype': fieldName = 'DocType'; break;
       case 'desp': fieldName = 'Desp'; break;

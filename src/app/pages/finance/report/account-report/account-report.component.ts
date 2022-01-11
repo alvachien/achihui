@@ -102,6 +102,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 

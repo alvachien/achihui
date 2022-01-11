@@ -30,9 +30,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this._filterDocItem = flters;
 
       this.pageIndex = 1;
-      this.listOfColumns.forEach(item => {
-        item.sortOrder = null;
-      });
       this.fetchDocItems();
     } else {
       this._filterDocItem = [];
@@ -51,95 +48,23 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
-  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
 
   constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this.listOfColumns = [{
-      name: 'Common.ID',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Finance.Items',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Common.Description',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
-    }, {
-      name: 'Common.Date',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,   
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        a.TransactionDate!.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
-    }, {
-      name: 'Finance.TransactionType',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType! - b.TransactionType!
-    }, {
-      name: 'Finance.Amount',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
-    }, {
-      name: 'Finance.Account',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID!).localeCompare(this.getAccountName(b.AccountID!))
-    }, {
-      name: 'Finance.ControlCenter',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
-    }, {
-      name: 'Finance.Activity',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
-    }];
+    if (this._destroyed$ == null) {
+      this._destroyed$ = new ReplaySubject(1);
+    }
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    this._destroyed$ = new ReplaySubject(1);
+    if (this._destroyed$ == null) {
+      this._destroyed$ = new ReplaySubject(1);
+    }
   }
 
   ngOnDestroy(): void {
@@ -177,9 +102,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
-    return item.name;
-  }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...',
@@ -216,12 +138,12 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   fetchDocItems(orderby?: { field: string, order: string }): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
       ConsoleLogTypeEnum.debug);
-    this.isLoadingDocItems = true;
 
     // Not allow select all.
     if (this.filterDocItem.length <= 0) 
       return;
 
+    this.isLoadingDocItems = true;
     forkJoin([
       this.odataService.searchDocItem(this.filterDocItem,
         this.pageSize,
@@ -259,7 +181,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchData, fetchAllDocuments failed ${error}...`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${error}...`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({

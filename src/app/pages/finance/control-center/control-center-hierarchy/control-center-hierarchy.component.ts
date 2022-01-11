@@ -123,11 +123,10 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           // Root nodes!
           const node: NzTreeNodeOptions = {
             key: `${val.Id}`,
-            title: val.Name + `(${val.Id})`,
-            icon: 'cluster',
+            title: val.Name + `(${val.Id})`
           };
           node.children = this._buildControlCenterTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
@@ -142,11 +141,10 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `${val.Id}`,
-            title: val.Name + `(${val.Id})`,
-            icon: 'cluster',
+            title: val.Name + `(${val.Id})`
           };
           node.children = this._buildControlCenterTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;

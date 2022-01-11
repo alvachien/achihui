@@ -209,7 +209,8 @@
     "LastChangedAt": "Last chagned at",
     "LastChangedBy": "Last chagned by",
     "FilterIsMust": "Filter is must",
-    "AdvancedOperations": "Advanced Operations"
+    "AdvancedOperations": "Advanced Operations",
+    "OnlyValidOnes": "Only Valid Ones"
   },
   "Sys": {
     "Currency": {
