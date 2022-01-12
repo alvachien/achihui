@@ -9,7 +9,7 @@ import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem,
-  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString,
+  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString, FinanceReportEntryByAccountAndExpense,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -59,7 +59,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByAccount(),
+      // this.odataService.fetchAllReportsByAccount(),
+      this.odataService.fetchReportByAccountAndExpense(),
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts()
     ])
@@ -67,6 +68,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: any[]) => {
+          let arData = x[0] as FinanceReportEntryByAccountAndExpense[];
+          
           this.arReportByAccount = x[0] as FinanceReportByAccount[];
           this.arAccountCategories = x[1];
           this.arAccounts = x[2];

@@ -3342,3 +3342,27 @@ export class FinanceReportMostExpenseEntry {
   public TransactionTypeName: string = '';
   public Precentage: number = 0;
 }
+
+export class FinanceReportEntryByAccountAndExpense {
+  public HomeID: number = 0;
+  public AccountID: number = 0;
+  public IsExpense: boolean = false;
+  public Balance: number = 0;
+
+  public onSetData(val: any): void {
+    if (val && val.HomeID) {
+      this.HomeID = val.HomeID;
+    }
+    if (val && val.AccountID) {
+      this.AccountID = val.AccountID;
+    }
+    if (val && val.IsExpense) {
+      this.IsExpense = true;
+    } else {
+      this.IsExpense = false;
+    }
+    if (val && val.Balance) {
+      this.Balance = val.Balance;
+    }
+  }
+}

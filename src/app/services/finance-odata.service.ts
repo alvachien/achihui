@@ -13,7 +13,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
-  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType,
+  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceReportEntryByAccountAndExpense,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -2127,6 +2127,45 @@ export class FinanceOdataService {
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchMontlyReportByTransactionType failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /** Get report by account and expense
+   */
+   public fetchReportByAccountAndExpense(): Observable<FinanceReportEntryByAccountAndExpense[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+    };
+
+    return this.http.post(`${this.reportAPIUrl}/GetReportByAccountAndExpense`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByAccountAndExpense succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        const result: FinanceReportEntryByAccountAndExpense[] = [];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportEntryByAccountAndExpense = new FinanceReportEntryByAccountAndExpense();
+            rst.onSetData(si);
+            result.push(rst);
+          }
+        }
+
+        return result;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccountAndExpense failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
