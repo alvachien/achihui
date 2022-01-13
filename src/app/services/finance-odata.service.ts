@@ -46,6 +46,8 @@ export class FinanceOdataService {
   private listReportByControlCenter: FinanceReportByControlCenter[];
   private isReportByOrderLoaded: boolean;
   private listReportByOrder: FinanceReportByOrder[];
+  private isReportByAccountAndExpenseLoaded: boolean = false;
+  private listReportByAccountAndExpense: FinanceReportEntryByAccountAndExpense[] = [];
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
@@ -2133,43 +2135,48 @@ export class FinanceOdataService {
       }));
   }
 
-  /** Get report by account and expense
+  /** Get report by account
    */
-   public fetchReportByAccountAndExpense(): Observable<FinanceReportEntryByAccountAndExpense[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-    const jdata = {
-      HomeID: this.homeService.ChosedHome?.ID,
-    };
-
-    return this.http.post(`${this.reportAPIUrl}/GetReportByAccountAndExpense`, jdata, {
-      headers
-    })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByAccountAndExpense succeed',
-          ConsoleLogTypeEnum.debug);
-
-        const rjs: any = response;
-        const result: FinanceReportEntryByAccountAndExpense[] = [];
-        if (rjs.value instanceof Array && rjs.value.length > 0) {
-          for (const si of rjs.value) {
-            const rst: FinanceReportEntryByAccountAndExpense = new FinanceReportEntryByAccountAndExpense();
-            rst.onSetData(si);
-            result.push(rst);
+   public fetchReportByAccount(forceReload?: boolean): Observable<FinanceReportByAccount[]> {
+    if (!this.isReportByAccountLoaded || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+  
+      const jdata = {
+        HomeID: this.homeService.ChosedHome?.ID,
+      };
+  
+      return this.http.post(`${this.reportAPIUrl}/GetReportByAccount`, jdata, {
+        headers
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByAccount succeed',
+            ConsoleLogTypeEnum.debug);
+  
+          const rjs: any = response;
+          this.listReportByAccount = [];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: FinanceReportByAccount = new FinanceReportByAccount();
+              rst.onSetData(si);
+              this.listReportByAccount.push(rst);
+            }
           }
-        }
-
-        return result;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccountAndExpense failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          this.isReportByAccountLoaded = true;
+  
+          return this.listReportByAccount;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
+  
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));  
+    } else {
+      return of(this.listReportByAccount);
+    }
   }
   
   /**
