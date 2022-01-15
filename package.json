@@ -35,7 +35,7 @@
     "echarts": "^4.9.0",
     "emoji-toolkit": "^6.0.1",
     "katex": "^0.12.0",
-    "marked": "^1.2.0",
+    "marked": "^4.0.10",
     "moment": "^2.29.1",
     "monaco-editor": "^0.21.2",
     "ng-zorro-antd": "^10.1.0",
