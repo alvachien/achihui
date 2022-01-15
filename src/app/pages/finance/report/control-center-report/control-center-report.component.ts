@@ -48,7 +48,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByControlCenter(),
+      this.odataService.fetchReportByControlCenter(),
       this.odataService.fetchAllControlCenters(),
     ])
     .pipe(takeUntil(this._destroyed$),

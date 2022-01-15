@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { LogLevel, FinanceReportByOrder, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
+  GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
   Order, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -52,7 +52,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByOrder(),
+      this.odataService.fetchReportByOrder(),
       this.odataService.fetchAllOrders(),
     ])
     .pipe(takeUntil(this._destroyed$),

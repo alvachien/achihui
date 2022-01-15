@@ -5,6 +5,7 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-extra>
+    <button nz-button nzType="default" (click)="onDrillDownToTranType()">{{'Finance.TransactionTypes' | transloco}}</button>
     <button nz-button nzType="default" (click)="onDrillDownToAccount()">{{'Finance.Accounts' | transloco}}</button>
     <button nz-button nzType="default" (click)="onDrillDownToControlCenter()">{{'Finance.ControlCenters' | transloco}}</button>
     <button nz-button nzType="default" (click)="onDrillDownToOrder()">{{'Finance.Activity' | transloco}}</button>

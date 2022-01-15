@@ -232,6 +232,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     const { pageSize, pageIndex, sort, filter } = params;
+    this.pageIndex = pageIndex;
+    this.pageSize = pageSize;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;

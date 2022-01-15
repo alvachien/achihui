@@ -86,130 +86,94 @@ export class ReportComponent implements OnInit, OnDestroy {
     let dateInLastMonth = today.clone();
     dateInLastMonth.subtract(1, "month");
     forkJoin([
-      this.odataService.fetchMontlyReportByTransactionType(today.year(), today.month() + 1),
-      this.odataService.fetchMontlyReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
+      this.odataService.fetchReportByTransactionType(today.year(), today.month() + 1),
+      this.odataService.fetchReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
       ])
       .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isLoadingResults = false))
       .subscribe({
-          next: (val: any[]) => {
-            // Current month
-            val[0].forEach((item: any) => {
-              if (item.InAmount !== 0) {
-                this.totalIncomeInCurrentMonth += item.InAmount;
-              }
-              if (item.OutAmount !== 0) {
-                this.totalOutgoInCurrentMonth += item.OutAmount;
-              }
-            });
-            val[0].forEach((item: any) => {
-              if (item.InAmount !== 0) {
-                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-                entry.Amount = item.InAmount;
-                entry.TransactionType  = item.TransactionType;
-                entry.TransactionTypeName = item.TransactionTypeName;
-                entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInCurrentMonth);
-                this.reportByMostIncomeInCurrentMonth.push(entry);
-              }
-              if (item.OutAmount !== 0) {
-                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-                entry.Amount = item.OutAmount;
-                entry.TransactionType  = item.TransactionType;
-                entry.TransactionTypeName = item.TransactionTypeName;
-                entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInCurrentMonth);
-                this.reportByMostOutgoInCurrentMonth.push(entry);
-              }
-            });
-    
-            this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
-            if (this.reportByMostIncomeInCurrentMonth.length > 3) {
-              this.reportByMostIncomeInCurrentMonth.splice(2);
+        next: (val: any[]) => {
+          // Current month
+          val[0].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              this.totalIncomeInCurrentMonth += item.InAmount;
             }
-            this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
-            if (this.reportByMostOutgoInCurrentMonth.length > 3) {
-              this.reportByMostOutgoInCurrentMonth.splice(3);
+            if (item.OutAmount !== 0) {
+              this.totalOutgoInCurrentMonth += item.OutAmount;
             }
-            // Last month
-            val[1].forEach((item: any) => {
-              if (item.InAmount !== 0) {
-                this.totalIncomeInLastMonth += item.InAmount;
-              }
-              if (item.OutAmount !== 0) {
-                this.totalOutgoInLastMonth += item.OutAmount;
-              }
-            });
-            val[1].forEach((item: any) => {
-              if (item.InAmount !== 0) {
-                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-                entry.Amount = item.InAmount;
-                entry.TransactionType  = item.TransactionType;
-                entry.TransactionTypeName = item.TransactionTypeName;
-                entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInLastMonth);
-                this.reportByMostIncomeInLastMonth.push(entry);
-              }
-              if (item.OutAmount !== 0) {
-                const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-                entry.Amount = item.OutAmount;
-                entry.TransactionType  = item.TransactionType;
-                entry.TransactionTypeName = item.TransactionTypeName;
-                entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInLastMonth);
-                this.reportByMostOutgoInLastMonth.push(entry);
-              }
-            });
-    
-            this.reportByMostIncomeInLastMonth.sort((a, b) => b.Amount - a.Amount);
-            if (this.reportByMostIncomeInLastMonth.length > 3) {
-              this.reportByMostIncomeInLastMonth.splice(2);
+          });
+          val[0].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.InAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInCurrentMonth);
+              this.reportByMostIncomeInCurrentMonth.push(entry);
             }
-            this.reportByMostOutgoInLastMonth.sort((a, b) => a.Amount - b.Amount);
-            if (this.reportByMostOutgoInLastMonth.length > 3) {
-              this.reportByMostOutgoInLastMonth.splice(3);
-            }    
-          },
-          error: err => {
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err,
-              nzClosable: true,
-            });    
+            if (item.OutAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.OutAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInCurrentMonth);
+              this.reportByMostOutgoInCurrentMonth.push(entry);
+            }
+          });
+  
+          this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
+          if (this.reportByMostIncomeInCurrentMonth.length > 3) {
+            this.reportByMostIncomeInCurrentMonth.splice(2);
           }
-        });
-
-    // forkJoin([
-    //   this.odataService.fetchAllReportsByAccount(),
-    //   this.odataService.fetchAllReportsByControlCenter(),
-    //   this.odataService.fetchAllReportsByOrder(),
-    //   this.odataService.fetchAllAccountCategories(),
-    //   this.odataService.fetchAllAccounts(),
-    //   this.odataService.fetchAllControlCenters(),
-    //   this.odataService.fetchAllOrders(),
-    // ])
-    //   .pipe(takeUntil(this._destroyed$!),
-    //     finalize(() => this.isLoadingResults = false))
-    //   .subscribe({
-    //     next: (x: any[]) => {
-    //       this.dataReportByAccount = x[0];
-    //       this.dataReportByControlCenter = x[1];
-    //       this.dataReportByOrder = x[2];
-
-    //       this.arAccountCategories = x[3];
-    //       this.arAccounts = x[4];
-    //       this.arControlCenters = x[5];
-    //       this.arOrders = x[6];
-
-    //       this.buildInfo();
-    //     },
-    //     error: (error: any) => {
-    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReportComponent ngOnInit forkJoin failed ${error}`,
-    //         ConsoleLogTypeEnum.error);
-
-    //       this.modalService.error({
-    //         nzTitle: translate('Common.Error'),
-    //         nzContent: error,
-    //         nzClosable: true,
-    //       });
-    //     },
-    //   });
+          this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
+          if (this.reportByMostOutgoInCurrentMonth.length > 3) {
+            this.reportByMostOutgoInCurrentMonth.splice(3);
+          }
+          // Last month
+          val[1].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              this.totalIncomeInLastMonth += item.InAmount;
+            }
+            if (item.OutAmount !== 0) {
+              this.totalOutgoInLastMonth += item.OutAmount;
+            }
+          });
+          val[1].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.InAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInLastMonth);
+              this.reportByMostIncomeInLastMonth.push(entry);
+            }
+            if (item.OutAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.OutAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInLastMonth);
+              this.reportByMostOutgoInLastMonth.push(entry);
+            }
+          });
+  
+          this.reportByMostIncomeInLastMonth.sort((a, b) => b.Amount - a.Amount);
+          if (this.reportByMostIncomeInLastMonth.length > 3) {
+            this.reportByMostIncomeInLastMonth.splice(2);
+          }
+          this.reportByMostOutgoInLastMonth.sort((a, b) => a.Amount - b.Amount);
+          if (this.reportByMostOutgoInLastMonth.length > 3) {
+            this.reportByMostOutgoInLastMonth.splice(3);
+          }    
+        },
+        error: err => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });    
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -230,6 +194,9 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
   onDrillDownToOrder(): void {
     this.router.navigate(['/finance/report/order']);
+  }
+  onDrillDownToTranType(): void {
+    // How to Tran. type page?
   }
 
   private buildInfo() {
