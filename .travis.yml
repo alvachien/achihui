@@ -7,6 +7,6 @@ branches:
   only:
     - master
 before_script:
-  - npm install -g @angular/cli
+  - npm install -g @angular/cli@12.2.12
 script:  
   - npm run test-headless
