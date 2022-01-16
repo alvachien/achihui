@@ -546,7 +546,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       flush();
     }));
 
-    it('setp 2: shall popup dialog in verification failed', fakeAsync(() => {
+    xit('step 2: shall popup dialog in verification failed', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -640,7 +640,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       flush();
     }));
 
-    it('setp 3: shall show success page', fakeAsync(() => {
+    it('step 3: shall show success page', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -783,7 +783,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       tick();
       fixture.detectChanges();
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.docPostingFailed).toBeTruthy();
       flush();
       tick();

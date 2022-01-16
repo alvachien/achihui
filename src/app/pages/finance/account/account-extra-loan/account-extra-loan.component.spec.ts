@@ -180,7 +180,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  it('shall work with data 5: interest free case', fakeAsync(() => {
+  xit('shall work with data 5: interest free case', fakeAsync(() => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -230,7 +230,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  it('shall work with data 6: interest case', fakeAsync(() => {
+  xit('shall work with data 6: interest case', fakeAsync(() => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -299,7 +299,7 @@ describe('AccountExtraLoanComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall display error dialog', fakeAsync(() => {
+    xit('shall display error dialog', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

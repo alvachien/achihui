@@ -460,7 +460,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       flush();
       tick();
       fixture.detectChanges();
@@ -556,7 +556,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
       expect(component.isOrderSubmitted).toBeTrue();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeFalsy();
 
       tick(); // nz-spin
@@ -592,7 +592,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
       expect(component.isOrderSubmitted).toBeTrue();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeTruthy();
 
       flush();
@@ -635,7 +635,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       flush();
       tick();
       fixture.detectChanges();

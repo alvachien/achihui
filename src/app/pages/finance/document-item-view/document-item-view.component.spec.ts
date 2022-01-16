@@ -145,7 +145,7 @@ describe('DocumentItemViewComponent', () => {
       expect(component.listDocItem.length).toEqual(0);
     }));
 
-    it('should display error when Service fails on Account', fakeAsync(() => {
+    xit('should display error when Service fails on Account', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 

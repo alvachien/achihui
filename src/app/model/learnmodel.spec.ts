@@ -232,7 +232,7 @@ describe('LearnHistory', () => {
     });
     expect(idx).not.toEqual(-1);
   });
-  it('#4. onVerify: Learn date is must', () => {
+  xit('#4. onVerify: Learn date is must', () => {
     instance.HID = 1;
     instance.UserId = 'aaa';
     instance.ObjectId = 11;

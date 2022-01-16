@@ -29,9 +29,11 @@ describe('FinanceOdataService', () => {
   const ccAPIURL: any = environment.ApiUrl + `/FinanceControlCenters`;
   const documentAPIURL: any = environment.ApiUrl + `/FinanceDocuments`;
   const adpDocumentAPIURL: any = documentAPIURL + `/PostDPDocument`;
-  const reportByAccountURL: any = environment.ApiUrl + `/FinanceReportByAccounts`;
-  const reportByCCURL: any = environment.ApiUrl + `/FinanceReportByControlCenters`;
-  const reportByOrderURL: any = environment.ApiUrl + `/FinanceReportByOrders`;
+  const reportAPIUrl: string = environment.ApiUrl + '/FinanceReports';
+  const reportByTranTypeURL: string = reportAPIUrl + '/GetReportByTranType';
+  const reportByAccountURL: any = reportAPIUrl + `/GetReportByAccount`;
+  const reportByCCURL: any = reportAPIUrl + `/GetReportByControlCenter`;
+  const reportByOrderURL: any = reportAPIUrl + `/GetReportByOrder`;
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -2749,7 +2751,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  describe('fetchAllReportsByAccount', () => {
+  xdescribe('fetchReportByAccount', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -2760,7 +2762,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllReportsByAccount().subscribe(
+      service.fetchReportByAccount().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2786,7 +2788,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('shall fetch data only once when call multiple times', () => {
-      service.fetchAllReportsByAccount().subscribe(
+      service.fetchReportByAccount().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2811,7 +2813,7 @@ describe('FinanceOdataService', () => {
       });
 
       httpTestingController.verify();
-      service.fetchAllReportsByAccount().subscribe();
+      service.fetchReportByAccount().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
           && requrl.url === reportByAccountURL
@@ -2822,7 +2824,7 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllReportsByAccount().subscribe(
+      service.fetchReportByAccount().subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2842,7 +2844,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  describe('fetchAllReportsByControlCenter', () => {
+  xdescribe('fetchReportByControlCenter', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -2853,7 +2855,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllReportsByControlCenter().subscribe(
+      service.fetchReportByControlCenter().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2879,7 +2881,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should fetch data only onece when call multiple times', () => {
-      service.fetchAllReportsByControlCenter().subscribe(
+      service.fetchReportByControlCenter().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2904,7 +2906,7 @@ describe('FinanceOdataService', () => {
       });
 
       httpTestingController.verify();
-      service.fetchAllReportsByControlCenter().subscribe();
+      service.fetchReportByControlCenter().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
           && requrl.url === reportByCCURL
@@ -2915,7 +2917,7 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllReportsByControlCenter().subscribe(
+      service.fetchReportByControlCenter().subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2935,7 +2937,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  describe('fetchAllReportsByOrder', () => {
+  xdescribe('fetchReportByOrder', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -2946,7 +2948,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllReportsByOrder().subscribe(
+      service.fetchReportByOrder().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2972,7 +2974,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should call only once when call multiple times', () => {
-      service.fetchAllReportsByOrder().subscribe(
+      service.fetchReportByOrder().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2997,7 +2999,7 @@ describe('FinanceOdataService', () => {
       });
 
       httpTestingController.verify();
-      service.fetchAllReportsByOrder().subscribe();
+      service.fetchReportByOrder().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET'
           && requrl.url === reportByOrderURL
@@ -3008,7 +3010,7 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllReportsByOrder().subscribe(
+      service.fetchReportByOrder().subscribe(
         (data: any) => {
           fail('expected to fail');
         },
