@@ -16,13 +16,13 @@ import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../.
   styleUrls: ['./plan-list.component.less'],
 })
 export class PlanListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | undefined;
   isLoadingResults = false;
   dataSet: Plan[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -95,5 +95,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
     if (dt) {
       return dt.format(momentDateFormat);
     }
+    return '';
   }
 }

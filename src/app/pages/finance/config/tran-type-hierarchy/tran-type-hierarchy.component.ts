@@ -14,19 +14,16 @@ import { FinanceOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./tran-type-hierarchy.component.less'],
 })
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   ttTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(
-    public odataService: FinanceOdataService,
+  constructor(public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
@@ -67,10 +64,8 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
-  }
-
-  nodeClick(event: any) {
   }
 
   private _buildTree(value: TranType[], level: number, id?: number): NzTreeNodeOptions[] {
@@ -81,12 +76,11 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (!val.ParId) {
           // Root nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id.toString(),
-            title: val.Name,
-            icon: 'cluster',
+            key: val.Id!.toString(),
+            title: val.Name + '(' + val.Id!.toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
@@ -100,12 +94,11 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (val.ParId === id) {
           // Child nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id.toString(),
-            title: val.Name,
-            icon: 'cluster',
+            key: val.Id!.toString(),
+            title: val.Name + '(' + val.Id!.toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;

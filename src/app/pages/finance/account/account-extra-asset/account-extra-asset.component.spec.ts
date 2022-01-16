@@ -76,14 +76,14 @@ describe('AccountExtraAssetComponent', () => {
 
     const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
-    testingComponent.formGroup.get('infoControl').setValue(ast1);
+    testingComponent.formGroup.get('infoControl')?.setValue(ast1);
     flush();
     tick();
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBeFalse();
 
-    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl')?.value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeFalsy();
@@ -98,14 +98,14 @@ describe('AccountExtraAssetComponent', () => {
     const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     ast1.Name = 'test';
-    testingComponent.formGroup.get('infoControl').setValue(ast1);
+    testingComponent.formGroup.get('infoControl')?.setValue(ast1);
     flush();
     tick();
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
 
-    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl')?.value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeTruthy();
@@ -124,14 +124,14 @@ describe('AccountExtraAssetComponent', () => {
     ast1.Comment = 'comem';
     ast1.RefDocForBuy = 123;
     ast1.RefDocForSold = 345;
-    testingComponent.formGroup.get('infoControl').setValue(ast1);
+    testingComponent.formGroup.get('infoControl')?.setValue(ast1);
     flush();
     tick();
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
 
-    const astval2 = testingComponent.formGroup.get('infoControl').value as AccountExtraAsset;
+    const astval2 = testingComponent.formGroup.get('infoControl')?.value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
     expect(astval2.CategoryID).toEqual(ast1.CategoryID);
     expect(astval2.Name).toBeTruthy();
@@ -148,14 +148,14 @@ describe('AccountExtraAssetComponent', () => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
     fixture.detectChanges();
-    expect(testingComponent.assetComponent.isFieldChangable).toBeTruthy();
+    expect(testingComponent.assetComponent?.isFieldChangable).toBeTruthy();
 
     testingComponent.formGroup.disable();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testingComponent.assetComponent.isFieldChangable).toBeFalsy();
+    expect(testingComponent.assetComponent?.isFieldChangable).toBeFalsy();
   }));
 
   it('shall work with reference doc.', fakeAsync(() => {
@@ -164,7 +164,7 @@ describe('AccountExtraAssetComponent', () => {
     const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
-    testingComponent.assetComponent.onRefDocClick(123);
+    testingComponent.assetComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
   }));
@@ -181,7 +181,7 @@ describe('AccountExtraAssetComponent', () => {
 export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: FormGroup;
   public arAssetCategories: AssetCategory[] = [];
-  @ViewChild(AccountExtraAssetComponent, {static: true}) assetComponent: AccountExtraAssetComponent;
+  @ViewChild(AccountExtraAssetComponent, {static: true}) assetComponent: AccountExtraAssetComponent | undefined;
 
   constructor() {
     this.formGroup = new FormGroup({

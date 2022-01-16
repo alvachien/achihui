@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { LogLevel, FinanceReportByOrder, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
+  GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
   Order, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -19,8 +19,8 @@ import { DocumentItemViewComponent } from '../../document-item-view';
   styleUrls: ['./order-report.component.less'],
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: any[] = [];
   arReportByOrder: FinanceReportByOrder[] = [];
@@ -40,7 +40,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit() {
@@ -52,7 +52,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByOrder(),
+      this.odataService.fetchReportByOrder(),
       this.odataService.fetchAllOrders(),
     ])
     .pipe(takeUntil(this._destroyed$),

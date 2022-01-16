@@ -1,18 +1,31 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
-import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
 import { translate } from '@ngneat/transloco';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
+  ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
+  OverviewScopeEnum, getOverviewScopeRange, momentDateFormat, BuildupAccountForSelection, ControlCenter,
 } from '../../../../model';
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import * as moment from 'moment';
+
+// Interace: Settle Account Detail
+interface ISettleAccountDetail {
+  AccountID: number;
+  AccountName: string;
+  AccountCategoryID: number;
+  AccountCategoryName: string;
+  ControlCenterID?: number;
+  SettleDate: Date;
+  Amount: number;
+  Currency: string;
+}
 
 @Component({
   selector: 'hih-fin-account-hierarchy',
@@ -20,24 +33,31 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
   styleUrls: ['./account-hierarchy.component.less'],
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
-  isLoadingResults: boolean;
-  isLoadingDocItems = false;
+  isLoadingResults: boolean = false;
+  isLoadingDocItems: boolean = false;
   // Filter
   listSelectedAccountStatus: AccountStatusEnum[] = [];
-  arrayStatus: UIDisplayString[];
-  availableCategories: AccountCategory[];
-  availableAccounts: Account[];
+  arrayStatus: UIDisplayString[] = [];
+  availableCategories: AccountCategory[] = [];
+  availableAccounts: Account[] = [];
+  arrayScopes: UIDisplayString[] = [];
+  selectedScope: OverviewScopeEnum = OverviewScopeEnum.CurrentMonth;
   // Hierarchy
   accountTreeNodes: NzTreeNodeOptions[] = [];
   col = 8;
   id = -1;
+  activatedNode?: NzTreeNode;
+  // Settle dialog
+  isAccountSettleDlgVisible = false;
+  selectedAccountForSettle: ISettleAccountDetail | undefined;
+  arControlCenters: ControlCenter[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -45,14 +65,14 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     private uiStatusService: UIStatusService,
     private modalService: NzModalService,
     private homeService: HomeDefOdataService,
+    public router: Router,
     private nzContextMenuService: NzContextMenuService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.isLoadingResults = false; // Default value
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
-    this.availableCategories = [];
-    this.availableAccounts = [];
+    this.arrayScopes = UIDisplayStringUtil.getOverviewScopeStrings();
   }
 
   ngOnInit(): void {
@@ -72,54 +92,184 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNodeClick(event: NzFormatEmitEvent): void {
+  onNodeClick(data: NzTreeNode | NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug);
-
-    if (event.keys.length > 0) {
-      const evtkey = event.keys[0];
-      const arFilters = [];
-      if (evtkey.startsWith('c')) {
-        const ctgyid = +evtkey.substr(1);
-
-        this.availableAccounts.forEach(acnt => {
-          if (acnt.CategoryId === ctgyid) {
-            arFilters.push({
-              fieldName: 'AccountID',
-              operator: GeneralFilterOperatorEnum.Equal,
-              lowValue: acnt.Id,
-              highValue: 0,
-              valueType: GeneralFilterValueType.number,
-            });
-          }
-        });
-      } else if (evtkey.startsWith('a')) {
-        const acntid = +evtkey.substr(1);
-        arFilters.push({
-          fieldName: 'AccountID',
-          operator: GeneralFilterOperatorEnum.Equal,
-          lowValue: acntid,
-          highValue: 0,
-          valueType: GeneralFilterValueType.number,
-        });
+    
+    if (data instanceof NzTreeNode) {
+      this.activatedNode = data;
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      this.activatedNode = data.node!;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
       }
-      this.filterDocItem = arFilters;
+    }
+
+    if (this.activatedNode) {
+      this.refreshDocumentItemView();
     }
   }
 
   ///
   /// Context menu
   onNodeContextMenu(event: any, menu: NzDropdownMenuComponent): void {
-    this.nzContextMenuService.create({
-      x: event.event.clientX,
-      y: event.event.clientY,
-    }, menu);
+    this.nzContextMenuService.create(event, menu);
   }
   onDisplayAccount(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+        this.router.navigate(['/finance/account/display/' + acntid.toString()]);
+      } else {
+        this.modalService.warning({
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
+          nzClosable: true
+        });
+      }
+    }
   }
   onEditAccount(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+        this.router.navigate(['/finance/account/edit/' + acntid.toString()]);
+      } else {
+        this.modalService.warning({
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
+          nzClosable: true
+        });
+      }
+    }
   }
   onCloseAccount(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+        this.odataService.closeAccount(acntid).subscribe({
+          next: val => {
+            if (val) {
+              this.modalService.success({
+                nzTitle: translate('Common.Success'),
+                nzContent: translate('Finance.AccountClosedSuccesfully'),
+                nzClosable: true                
+              });
+              this._refreshTreeCore();
+            } else {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Finance.CloseAccountIsNotAllowed'),
+                nzClosable: true,
+              });
+            }
+          },
+          error: err => {
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          }
+        });
+      } else {
+        this.modalService.warning({
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
+          nzClosable: true
+        });
+      }
+    }
+  }
+  onSettleAccount(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+        
+        forkJoin([
+          this.odataService.fetchAllAccountCategories(),
+          this.odataService.fetchAllAccounts(),
+          this.odataService.fetchAllControlCenters(),
+        ])
+          .subscribe((rst: any) => {
+            // Accounts
+            let arAcnts = rst[1] as Account[];
+            let acntidx = arAcnts.findIndex(acnt => acnt.Id === acntid);
+            let acntName: string = '';
+            let acntCtgyId: number = 0;
+            let acntCtgyName: string = '';
+            if (acntidx !== -1) {
+              acntName = arAcnts[acntidx].Name!;
+              acntCtgyId = arAcnts[acntidx].CategoryId!;
+              acntCtgyName = arAcnts[acntidx].CategoryName!;
+            }
+            this.arControlCenters = rst[2];
+
+            this.selectedAccountForSettle = {
+              AccountID: +acntid,
+              AccountName: acntName,
+              AccountCategoryID: acntCtgyId,
+              AccountCategoryName: acntCtgyName,
+              SettleDate: new Date(),
+              Amount: 0,
+              Currency: this.homeService.ChosedHome!.BaseCurrency,
+            };
+            this.isAccountSettleDlgVisible = true;    
+          }, (error: any) => {
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: error,
+              nzClosable: true,
+            });
+          });    
+      } else {
+        this.modalService.warning({
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
+          nzClosable: true,
+        });
+      }
+    }
+  }
+  handleDlgSettleAccountCancel(): void {
+    this.isAccountSettleDlgVisible = false;
+  }
+  handleDlgSettleAccountSave(): void {
+    if (this.selectedAccountForSettle) {
+      this.odataService.settleAccount(this.selectedAccountForSettle.AccountID, moment(this.selectedAccountForSettle.SettleDate),
+        this.selectedAccountForSettle.Amount, this.selectedAccountForSettle.ControlCenterID!).subscribe({
+          next: val => {
+            // Settled.
+            if (val) {
+              this.modalService.success({
+                nzTitle: translate('Common.Success'),
+                nzContent: translate('Common.Success'),
+                nzClosable: true                
+              });
+              this._refreshTreeCore();
+            } else {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Common.Error'),
+                nzClosable: true,
+              });
+            }
+          },
+          error: err => {
+            // Error occurs
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          },
+          complete: () => {
+            this.isAccountSettleDlgVisible = false;
+          }
+        });
+    }
   }
 
   onResize({ col }: NzResizeEvent): void {
@@ -135,6 +285,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this._refreshTreeCore();
   }
 
+  onScopeChanged(event: any): void {
+    this.refreshDocumentItemView();
+  }
+
   private _refreshTree(isReload?: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...',
       ConsoleLogTypeEnum.debug);
@@ -146,7 +300,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllAccounts(isReload),
     ])
       .pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
@@ -187,18 +341,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // Root nodes!
         const node: NzTreeNodeOptions = {
           key: `c${val.ID}`,
-          // title: translate(val.Name) + `(${val.ID})`,
-          title: translate(val.Name),
-          isLeaf: false,
-          icon: 'cluster'
+          title: translate(val.Name!),
+          isLeaf: false
         };
-        node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID);
-        if (node.children) {
-          node.isLeaf = false;
-        } else {
-          node.isLeaf = true;
-        }
-
+        node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID!);
         data.push(node);
       });
     } else {
@@ -207,10 +353,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `a${val.Id}`,
-            // title: val.Name + `(${val.Id})`,
-            title: val.Name,
-            isLeaf: true,
-            icon: 'account-book',
+            title: val.Name!,
+            isLeaf: true
           };
 
           data.push(node);
@@ -219,5 +363,43 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
 
     return data;
+  }
+  private refreshDocumentItemView(): void {
+    const arFilters = [];
+
+    if (this.activatedNode?.key.startsWith('c')) {
+      const ctgyid = +this.activatedNode?.key.substring(1);
+
+      this.availableAccounts.forEach(acnt => {
+        if (acnt.CategoryId === ctgyid) {
+          arFilters.push({
+            fieldName: 'AccountID',
+            operator: GeneralFilterOperatorEnum.Equal,
+            lowValue: acnt.Id,
+            highValue: 0,
+            valueType: GeneralFilterValueType.number,
+          });
+        }
+      });
+    } else if (this.activatedNode?.key.startsWith('a')) {
+      const acntid = +this.activatedNode?.key.substring(1);
+      arFilters.push({
+        fieldName: 'AccountID',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: acntid,
+        highValue: 0,
+        valueType: GeneralFilterValueType.number,
+      });
+    }
+    // Scope
+    let dats = getOverviewScopeRange(this.selectedScope);
+    arFilters.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: dats.BeginDate.format(momentDateFormat),
+      highValue: dats.EndDate.format(momentDateFormat),
+      valueType: GeneralFilterValueType.date,
+    });
+    this.filterDocItem = arFilters;
   }
 }

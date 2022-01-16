@@ -5,9 +5,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { ModelUtility, ConsoleLogTypeEnum, BlogPost, UIMode,
-  BlogUserSetting, } from '../../../model';
+import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogUserSetting, } from '../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../services';
 
 @Component({
@@ -16,14 +16,14 @@ import { BlogOdataService, UIStatusService, } from '../../../services';
   styleUrls: ['./user-setting.component.less'],
 })
 export class UserSettingComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   detailFormGroup: FormGroup;
-  uiMode: UIMode;
+  uiMode: UIMode = UIMode.Invalid;
 
   get isSaveButtonEnabled(): boolean {
-    return this.uiMode === UIMode.Change
+    return this.uiMode === UIMode.Update
       && this.detailFormGroup.enabled
       && this.detailFormGroup.valid;
   }
@@ -54,17 +54,17 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: next => {
           if (next !== null) {
-            this.uiMode = UIMode.Change;
-            this.detailFormGroup.get('userControl').setValue(next.owner);
-            this.detailFormGroup.get('deployControl').setValue(next.deploy);
-            this.detailFormGroup.get('titleControl').setValue(next.title);
-            this.detailFormGroup.get('footerControl').setValue(next.footer);
-            this.detailFormGroup.get('authorControl').setValue(next.author);
-            this.detailFormGroup.get('authorDespControl').setValue(next.authordesp);
-            this.detailFormGroup.get('authorImageControl').setValue(next.authorimage);
+            this.uiMode = UIMode.Update;
+            this.detailFormGroup.get('userControl')?.setValue(next.owner);
+            this.detailFormGroup.get('deployControl')?.setValue(next.deploy);
+            this.detailFormGroup.get('titleControl')?.setValue(next.title);
+            this.detailFormGroup.get('footerControl')?.setValue(next.footer);
+            this.detailFormGroup.get('authorControl')?.setValue(next.author);
+            this.detailFormGroup.get('authorDespControl')?.setValue(next.authordesp);
+            this.detailFormGroup.get('authorImageControl')?.setValue(next.authorimage);
             this.detailFormGroup.enable();
-            this.detailFormGroup.get('userControl').disable();
-            this.detailFormGroup.get('deployControl').disable();
+            this.detailFormGroup.get('userControl')?.disable();
+            this.detailFormGroup.get('deployControl')?.disable();
           } else {
             this.uiMode = UIMode.Invalid;
             this.detailFormGroup.disable();
@@ -102,16 +102,16 @@ export class UserSettingComponent implements OnInit, OnDestroy {
     }
 
     const settings = new BlogUserSetting();
-    settings.owner = this.detailFormGroup.get('userControl').value;
-    settings.deploy = this.detailFormGroup.get('deployControl').value;
-    settings.title = this.detailFormGroup.get('titleControl').value;
-    settings.footer = this.detailFormGroup.get('footerControl').value;
-    settings.author = this.detailFormGroup.get('authorControl').value;
-    settings.authordesp = this.detailFormGroup.get('authorDespControl').value;
-    settings.authorimage = this.detailFormGroup.get('authorImageControl').value;
+    settings.owner = this.detailFormGroup.get('userControl')?.value;
+    settings.deploy = this.detailFormGroup.get('deployControl')?.value;
+    settings.title = this.detailFormGroup.get('titleControl')?.value;
+    settings.footer = this.detailFormGroup.get('footerControl')?.value;
+    settings.author = this.detailFormGroup.get('authorControl')?.value;
+    settings.authordesp = this.detailFormGroup.get('authorDespControl')?.value;
+    settings.authorimage = this.detailFormGroup.get('authorImageControl')?.value;
 
     this.odataService.updateUserSetting(settings)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: next => {
           this.modalService.confirm({

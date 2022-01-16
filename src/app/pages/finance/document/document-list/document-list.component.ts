@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat,
+  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView, DocumentItem,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 
@@ -23,8 +23,8 @@ import { UITableColumnItem } from '../../../../uimodel';
   styleUrls: ['./document-list.component.less'],
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _filterDocItem: GeneralFilterItem[] = [];
   private _isInitialized = false;
   isLoadingResults: boolean;
@@ -41,7 +41,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arTranTypes: TranType[] = [];
   public selectedRange: any[] = [];
   // Table
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
   pageIndex = 1;
   pageSize = 10;
   listOfDocs: Document[] = [];
@@ -50,7 +50,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listDocTypeFilters: ITableFilterValues[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -66,36 +66,44 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.listOfColumns = [{
       name: 'Common.ID',
-      columnKey: 'docid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.Currency',
-      columnKey: 'curr',
       sortOrder: null,
-      sortFn: true,
-      showSort: true,
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listCurrencyFilters,
-      filterMultiple: true,
-      filterFn: true
+      filterFn: null,
+      filterMultiple: true
     }, {
       name: 'Common.Date',
-      columnKey: 'date',
       sortOrder: 'descend',
-      showSort: true,
-      sortFn: true
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.DocumentType',
-      columnKey: 'doctype',
       sortOrder: null,
-      showSort: true,
-      sortFn: true,
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listDocTypeFilters,
       filterMultiple: true,
-      filterFn: true
+      filterFn: null,
     }, {
       name: 'Common.Description',
-      columnKey: 'desp',
-      sortFn: true,
-      showSort: true,
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterMultiple: true,
+      filterFn: null,
     }];
   }
 
@@ -138,11 +146,11 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
           this.arUIOrders = BuildupOrderForSelection(this.arOrders);
 
-          let arfilters = [];
+          let arfilters: any[] = [];
           this.arCurrencies.forEach(cur => {
             arfilters.push({
               value: cur.Currency,
-              text: translate(cur.Name),
+              text: translate(cur.Name!),
             });
           });
           this.listCurrencyFilters = arfilters.slice();
@@ -151,7 +159,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arDocTypes.forEach(dt => {
             arfilters.push({
               value: dt.Id,
-              text: translate(dt.Name),
+              text: translate(dt.Name!),
             });
           });
           this.listDocTypeFilters = arfilters.slice();
@@ -185,7 +193,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const curobj = this.arCurrencies.find(c => {
       return c.Currency === curr;
     });
-    return curobj ? translate(curobj.Name) + `(${curr})`  : curr;
+    return curobj ? translate(curobj.Name!) + `(${curr})`  : curr;
   }
   public getDocTypeName(dtid: number) {
     const dtobj = this.arDocTypes.find(dt => {
@@ -197,7 +205,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -218,21 +226,20 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem): string {
-    return item.name;
-  }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent onQueryParamsChange...',
       ConsoleLogTypeEnum.debug);
 
     const { pageSize, pageIndex, sort, filter } = params;
+    this.pageIndex = pageIndex;
+    this.pageSize = pageSize;
     const currentSort = sort.find(item => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
     let fieldName = '';
     switch (sortField) {
-      case 'curr': fieldName = 'Desp'; break;
+      case 'curr': fieldName = 'Currency'; break;
       case 'date': fieldName = 'TranDate'; break;
       case 'doctype': fieldName = 'DocType'; break;
       case 'desp': fieldName = 'Desp'; break;
@@ -274,7 +281,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.pageSize,
       this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
       orderby)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (revdata: BaseListModel<Document>) => {
@@ -304,7 +311,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       });
   }
 
-  public onRangeChange(event): void {
+  public onRangeChange(event: any): void {
     this.fetchData();
   }
   public onCreateNormalDocument(): void {

@@ -5,13 +5,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  UIMode, getUIModeString,
+  getUIModeString,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -22,11 +23,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./document-detail.component.less'],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   public currentDocument: Document;
   // Attributes
@@ -42,7 +43,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   docFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
 
   constructor(
@@ -55,7 +56,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.currentDocument = new Document();
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.docFormGroup = new FormGroup({
       headerControl: new FormControl(this.currentDocument, Validators.required),
       itemsControl: new FormControl()
@@ -77,7 +78,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -88,7 +89,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
 
@@ -103,7 +104,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllOrders(),
             this.odataService.readDocument(this.routerID),
           ])
-          .pipe(takeUntil(this._destroyed$),
+          .pipe(takeUntil(this._destroyed$!),
             finalize(() => {
               this.isLoadingResults = false;
             }))
@@ -120,13 +121,55 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
                 this.currentDocument = rsts[7] as Document;
 
-                this.docFormGroup.get('headerControl').setValue(this.currentDocument);
-                this.docFormGroup.get('itemsControl').setValue(this.currentDocument.Items);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.docFormGroup.disable();
+                // Check the accounts in use
+                const listAcntIDs = this.currentDocument.Items.map(item => {
+                  return item.AccountId;
+                });
+                const listNIDs: number[] = [];
+                listAcntIDs.forEach(acntid => {
+                  if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid)) {
+                    // DO nothing.
+                  } else {
+                    listNIDs.push(acntid!);
+                  }
+                });
+      
+                if (listNIDs.length > 0) {
+                  const listRst: any[] = [];
+                  listNIDs.forEach(nid => {
+                    listRst.push(this.odataService.readAccount(nid));
+                  });
+      
+                  // Read the account
+                  forkJoin([...listRst]).pipe(takeUntil(this._destroyed$!),
+                    finalize(() => {
+                      this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+                      this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
+      
+                      if (this.uiMode === UIMode.Display) {
+                        this.docFormGroup.disable();
+                      } else {
+                        this.docFormGroup.enable();
+                      }                          
+                    }))
+                    .subscribe({
+                      next: acnts => {
+                        this.arUIAccounts = [];
+                        this.arUIAccounts = BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories);
+                      },
+                      error: err => {
+                        // TBD.
+                      }
+                    });
                 } else {
-                  this.docFormGroup.enable();
+                  this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+                  this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
+  
+                  if (this.uiMode === UIMode.Display) {
+                    this.docFormGroup.disable();
+                  } else {
+                    this.docFormGroup.enable();
+                  }  
                 }
               },
               error: err => {
@@ -159,5 +202,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onSubmit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSubmit...',
+      ConsoleLogTypeEnum.debug);
   }
 }

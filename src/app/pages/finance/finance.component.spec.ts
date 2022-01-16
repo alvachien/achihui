@@ -168,7 +168,7 @@ describe('FinanceComponent', () => {
       component.doPostDPDoc(dp1);
       expect(createDocumentFromDPTemplateSpy).toHaveBeenCalled();
       expect(component.listDate.length).toEqual(1);
-      expect(component.listDate[0].CurrentDate.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
+      expect(component.listDate[0].CurrentDate!.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
 
       // Post the Loan doc
       const routerstub = TestBed.inject(Router);

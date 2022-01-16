@@ -1,55 +1,74 @@
 import * as moment from 'moment';
 import { momentDateFormat } from './common';
 
-// tslint:disable: variable-name
-export const BlogPostStatus_Draft = 1;
-export const BlogPostStatus_PublishAsPublic = 2;
-export const BlogPostStatus_PublishAsPrivate = 3;
-export const BlogPostStatus_Deleted = 4;
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+export const BlogPostStatus_Draft             = 1;
+export const BlogPostStatus_PublishAsPublic   = 2;
+export const BlogPostStatus_PublishAsPrivate  = 3;
+export const BlogPostStatus_Deleted           = 4;
 
 /**
  * User Setting
  */
-export class BlogUserSettingAPIJson {
-  Owner: string;
-  Name: string;
-  Comment: string;
+export interface BlogUserSettingAPIJson {
+  Owner?: string;
+  Name?: string;
+  Comment?: string;
   AllowComment?: boolean;
-  DeployFolder: string;
-  Author: string;
-  AuthorDesp: string;
-  AuthorImage: string;
+  DeployFolder?: string;
+  Author?: string;
+  AuthorDesp?: string;
+  AuthorImage?: string;
 }
+
 export class BlogUserSetting {
   owner: string;
   title: string;
-  footer: string;
+  footer: string | null  = null;
   deploy: string;
   author: string;
-  authordesp: string;
-  authorimage: string;
+  authordesp: string | null = null;
+  authorimage: string | null = null;
 
+  constructor() {
+    this.owner = '';
+    this.title = '';
+    this.author = '';
+    this.deploy = '';
+  }
   public onSetData(data: BlogUserSettingAPIJson): void {
     if (data) {
-      this.owner = data.Owner;
-      this.title = data.Name;
-      this.footer = data.Comment;
-      this.deploy = data.DeployFolder;
-      this.author = data.Author;
-      this.authordesp = data.AuthorDesp;
-      this.authorimage = data.AuthorImage;
+      this.owner = data.Owner ? data.Owner : '';
+      this.title = data.Name ? data.Name : '';
+      if (data.Comment) {
+        this.footer = data.Comment;
+      }
+      this.deploy = data.DeployFolder ? data.DeployFolder : '';
+      this.author = data.Author ? data.Author : '';
+      if (data.AuthorDesp) {
+        this.authordesp = data.AuthorDesp;
+      }
+      if (data.AuthorImage) {
+        this.authorimage = data.AuthorImage;
+      }
     }
   }
   public writeAPIJson(): BlogUserSettingAPIJson {
-    const jdata: BlogUserSettingAPIJson = new BlogUserSettingAPIJson();
-    jdata.Owner = this.owner;
-    jdata.Name = this.title;
-    jdata.Comment = this.footer;
-    // jdata.AllowComment = undefined;
-    jdata.DeployFolder = this.deploy;
-    jdata.Author = this.author;
-    jdata.AuthorDesp = this.authordesp;
-    jdata.AuthorImage = this.authorimage;
+    const jdata: BlogUserSettingAPIJson = {
+      Owner: this.owner,
+      Name: this.title,
+      DeployFolder: this.deploy,
+      Author: this.author,
+    };
+    if (this.footer) {
+      jdata.Comment = this.footer;
+    }
+    if (this.authordesp) {
+      jdata.AuthorDesp = this.authordesp;
+    }
+    if (this.authorimage) {
+      jdata.AuthorImage = this.authorimage;
+    }
     return jdata;
   }
 }
@@ -57,7 +76,7 @@ export class BlogUserSetting {
 /**
  * Blog Collection
  */
-export class BlogCollectionAPIJson {
+export interface BlogCollectionAPIJson {
   ID: number;
   Owner: string;
   Name: string;
@@ -65,14 +84,10 @@ export class BlogCollectionAPIJson {
 }
 
 export class BlogCollection {
-  public id: number;
-  public owner: string;
-  public name: string;
-  public comment?: string;
-
-  constructor() {
-    this.comment = null;
-  }
+  public id: number = -1;
+  public owner: string = '';
+  public name: string = '';
+  public comment: string | null = null;
 
   public onSetData(data: BlogCollectionAPIJson): void {
     if (data) {
@@ -91,27 +106,27 @@ export class BlogCollection {
       ID: this.id,
       Owner: this.owner,
       Name: this.name,
-      Comment: this.comment
+      Comment: this.comment ? this.comment: undefined
     } as BlogCollectionAPIJson;
   }
 }
 
 export class BlogPostCollection {
-  public PostID: number;
-  public CollectionID: number;
+  public PostID: number = -1;
+  public CollectionID: number = -1;
 }
 
 /**
  * Blog Post
  */
 export interface BlogPostAPIJson {
-  ID: number;
-  Owner: string;
-  Format: number;
-  Title: string;
-  Brief: string;
-  Content: string;
-  Status: number;
+  ID?: number;
+  Owner?: string;
+  Format?: number;
+  Title?: string;
+  Brief?: string;
+  Content?: string;
+  Status?: number;
   CreatedAt?: any;
   UpdatedAt?: any;
   BlogPostCollections: BlogPostCollection[];
@@ -119,13 +134,13 @@ export interface BlogPostAPIJson {
 }
 
 export class BlogPost {
-  public id: number;
-  public owner: string;
-  public format: number;
-  public title: string;
-  public brief: string;
-  public content: string;
-  public status: number;
+  public id?: number;
+  public owner?: string;
+  public format?: number;
+  public title?: string;
+  public brief?: string;
+  public content?: string;
+  public status?: number;
   public createdAt?: moment.Moment;
   public updatedAt?: moment.Moment;
   public BlogPostCollections: BlogPostCollection[];
@@ -140,11 +155,12 @@ export class BlogPost {
     if (this.createdAt) {
       return this.createdAt.format(momentDateFormat);
     }
+    return '';
   }
 
   public onSetData(data: BlogPostAPIJson) {
     if (data) {
-      this.id = +data.ID;
+      this.id = data.ID;
       this.owner = data.Owner;
       this.format = data.Format;
       this.title = data.Title;
@@ -189,6 +205,6 @@ export class BlogPost {
  * Blog post tag
  */
 export class BlogPostTag {
-  PostID: number;
-  Tag: string;
+  PostID?: number;
+  Tag?: string;
 }

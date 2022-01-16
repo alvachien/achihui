@@ -4,20 +4,20 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
-import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import * as moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
-// tslint:disable-next-line no-any
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 declare const monaco: any;
 
-import { ModelUtility, ConsoleLogTypeEnum, UIMode } from '../../../model';
+import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ac-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrls: ['./markdown-editor.component.less'],
@@ -34,11 +34,11 @@ import { AuthService } from '../../../services';
   ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @Input() editorID: string;
-  @ViewChild('previewElement', {static: true}) previewElement: ElementRef;
+  @Input() editorID: string = '';
+  @ViewChild('previewElement', {static: true}) previewElement: ElementRef | null = null;
 
-  editor: editor.ICodeEditor; // | editor.IEditor;
-  content: string;
+  editor: editor.ICodeEditor | null = null; // | editor.IEditor;
+  content: string = '';
   readOnly = false;
   uploadAPI: string;
 
@@ -55,10 +55,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     };
   }
 
-  // tslint:disable-next-line:variable-name
-  private _onChange: (val: any) => void;
-  // tslint:disable-next-line:variable-name
-  private _onTouched: () => void;
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
+  private _onChange?: (val: any) => void;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _onTouched?: () => void;
 
   get value(): string {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
@@ -104,7 +104,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.uploadAPI = environment.ApiUrl + '/api/PhotoFile';
+    this.uploadAPI = environment.ApiUrl + '/PhotoFile';
   }
 
   ngOnInit() {
@@ -122,23 +122,23 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       ConsoleLogTypeEnum.debug);
 
     this.editor = e;
-    this.editor.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
+    this.editor!.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
     this.setEditorReadOnly();
     if (this.content) {
-      this.editor.setValue(this.content);
+      this.editor!.setValue(this.content);
     }
 
-    this.editor.onDidChangeModelContent(ec => {
+    this.editor!.onDidChangeModelContent(ec => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
         ConsoleLogTypeEnum.debug);
 
-      this.content = this.editor.getValue();
+      this.content = this.editor!.getValue();
       this.changeDetect.detectChanges();
 
       this.onChange();
     });
 
-    this.editor.onDidScrollChange(ec => {
+    this.editor!.onDidScrollChange(ec => {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
         ConsoleLogTypeEnum.debug);
 
@@ -150,7 +150,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         } else {
           const percent = ec.scrollTop / ec.scrollHeight;
 
-          this.previewElement.nativeElement.scrollTop = percent * this.previewElement.nativeElement.scrollHeight;
+          this.previewElement!.nativeElement.scrollTop = percent * this.previewElement!.nativeElement.scrollHeight;
         }
     });
   }
@@ -212,13 +212,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '**' + curmodel.getValueInRange(sel) + '**',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -233,13 +233,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '~~' + curmodel.getValueInRange(sel) + '~~',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -254,13 +254,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '*' + curmodel.getValueInRange(sel) + '*',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -274,13 +274,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '> ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -307,13 +307,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '# ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -328,13 +328,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '## ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -349,13 +349,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -370,13 +370,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '#### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -391,13 +391,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '##### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -412,13 +412,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '###### ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -432,13 +432,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '- \n' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -452,13 +452,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '1. ' + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -472,13 +472,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '` ' + curmodel.getValueInRange(sel) + ' `',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -493,13 +493,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: '``` \n' + curmodel.getValueInRange(sel) + '\n ```',
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -517,14 +517,14 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: `---
               ` + curmodel.getValueInRange(sel),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();
@@ -541,21 +541,21 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         if (filename) {
-          cursels.forEach(sel => {
+          cursels!.forEach(sel => {
             arrst.push({
               range: sel,
               text: '![Image](' + environment.ApiUrl + filename + ')',
             });
           });
-          curmodel.pushEditOperations(cursels, arrst, undefined);
+          curmodel.pushEditOperations(cursels, arrst, () => null);
         } else {
-          cursels.forEach(sel => {
+          cursels!.forEach(sel => {
             arrst.push({
               range: sel,
               text: '![Image]()',
             });
           });
-          curmodel.pushEditOperations(cursels, arrst, undefined);
+          curmodel.pushEditOperations(cursels, arrst, () => null);
         }
       }
 
@@ -571,7 +571,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       this.editor.focus();
     }
   }
-  beforeUpload(file: File) {
+  beforeUpload(file: NzUploadFile, fileList: NzUploadFile[]) {
     return new Observable((observer: Observer<boolean>) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
@@ -581,7 +581,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         return;
       }
 
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size! / 1024 / 1024 < 2;
       if (!isLt2M) {
         // TBD.
         // this.msg.error('Image must smaller than 2MB!');
@@ -617,13 +617,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
-        cursels.forEach(sel => {
+        cursels!.forEach(sel => {
           arrst.push({
             range: sel,
             text: curmodel.getValueInRange(sel) + moment().toString(),
           });
         });
-        curmodel.pushEditOperations(cursels, arrst, undefined);
+        curmodel.pushEditOperations(cursels, arrst, () => null);
       }
 
       this.editor.focus();

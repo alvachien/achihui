@@ -33,7 +33,7 @@ export class TagsService {
     tagterm?: string,
   ): Observable<any> {
     // if (!this._islistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/Tag';
+      const apiurl: string = environment.ApiUrl + '/Tag';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')

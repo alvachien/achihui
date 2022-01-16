@@ -14,15 +14,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { createKeyboardEvent, dispatchFakeEvent, dispatchKeyboardEvent,
   dispatchMouseEvent, MockNgZone, typeInElement } from 'ng-zorro-antd/core/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode } from 'actslib';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentItemsComponent } from './document-items.component';
 import { getTranslocoModule, FakeDataHelper, } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
 import { UserAuthInfo, DocumentItem, Document, UIAccountForSelection, BuildupAccountForSelection, UIOrderForSelection,
-  BuildupOrderForSelection,
-  UIMode,
-  financeDocTypeNormal, } from '../../../../model';
+  BuildupOrderForSelection, financeDocTypeNormal, } from '../../../../model';
 
 describe('DocumentItemsComponent', () => {
   let component: DocumentItemsComponent;

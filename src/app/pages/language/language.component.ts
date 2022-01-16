@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
@@ -13,8 +13,8 @@ import { LanguageOdataService } from '../../services';
   styleUrls: ['./language.component.less'],
 })
 export class LanguageComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 

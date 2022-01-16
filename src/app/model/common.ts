@@ -1,7 +1,8 @@
 import * as moment from 'moment';
+import { UIMode } from 'actslib';
 
-// tslint:disable:variable-name
-// tslint:disable:no-inferrable-types
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 
 export const typeParentSplitter: string = ' > ';
 export const idSplitChar: string = ',';
@@ -76,27 +77,12 @@ export enum OverviewScopeEnum {
   All             = 9,
 }
 
-/**
- * UI Mode on detail page
- */
-export enum UIMode {
-  Create    = 1,
-  Change    = 2,
-  Display   = 3,
-
-  Invalid   = 9,
-}
-
-export function isUIEditable(mode: UIMode): boolean {
-  return mode === UIMode.Create || mode === UIMode.Change;
-}
-
 export function getUIModeString(mode: UIMode): string {
   switch (mode) {
     case UIMode.Create:
       return 'Common.Create';
 
-    case UIMode.Change:
+    case UIMode.Update:
       return 'Common.Change';
 
     case UIMode.Display:
@@ -145,10 +131,10 @@ export enum LogLevel {
  * Info message class
  */
 export class InfoMessage {
-  private _msgType: MessageType;
-  private _msgTime: moment.Moment;
-  private _msgTitle: string;
-  private _msgContent: string;
+  private _msgType: MessageType = MessageType.Info;
+  private _msgTime: moment.Moment = moment();
+  private _msgTitle: string | null = null;
+  private _msgContent: string | null = null;
   constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
     this.MsgTime = moment();
     if (msgtype) {
@@ -174,16 +160,16 @@ export class InfoMessage {
   set MsgTime(mt: moment.Moment) {
     this._msgTime = mt;
   }
-  get MsgTitle(): string {
+  get MsgTitle(): string | null {
     return this._msgTitle;
   }
-  set MsgTitle(mt: string) {
+  set MsgTitle(mt: string | null) {
     this._msgTitle = mt;
   }
-  get MsgContent(): string {
+  get MsgContent(): string | null {
     return this._msgContent;
   }
-  set MsgContent(mc: string) {
+  set MsgContent(mc: string | null) {
     this._msgContent = mc;
   }
 
@@ -214,19 +200,19 @@ export interface BaseModelJson {
 export class BaseModel {
   protected _createdAt: moment.Moment;
   protected _updatedAt: moment.Moment;
-  protected _createdBy: string;
-  protected _updatedBy: string;
+  protected _createdBy: string | null = null;
+  protected _updatedBy: string | null = null;
   protected _verifiedMsgs: InfoMessage[];
-  get Createdby(): string {
+  get Createdby(): string | null {
     return this._createdBy;
   }
-  set Createdby(cb: string) {
+  set Createdby(cb: string | null) {
     this._createdBy = cb;
   }
-  get Updatedby(): string {
+  get Updatedby(): string | null {
     return this._updatedBy;
   }
-  set Updatedby(ub: string) {
+  set Updatedby(ub: string | null) {
     this._updatedBy = ub;
   }
 
@@ -328,8 +314,8 @@ export class BaseModel {
 
 // List model
 export class BaseListModel<T> {
-  totalCount: number;
-  contentList: T[];
+  totalCount: number = 0;
+  contentList: T[] = [];
 }
 
 export interface TagJson {
@@ -341,10 +327,10 @@ export interface TagJson {
 
 // Tag
 export class Tag {
-  private _tagtype: TagTypeEnum;
-  private _tagid: number;
-  private _tagsubid: number;
-  private _term: string;
+  private _tagtype: TagTypeEnum = TagTypeEnum.FinanceDocumentItem;
+  private _tagid?: number;
+  private _tagsubid?: number;
+  private _term?: string;
 
   get TagType(): TagTypeEnum {
     return this._tagtype;
@@ -352,29 +338,29 @@ export class Tag {
   set TagType(tt: TagTypeEnum) {
     this._tagtype = tt;
   }
-  get TagID(): number {
+  get TagID(): number | undefined {
     return this._tagid;
   }
-  set TagID(ti: number) {
+  set TagID(ti: number | undefined) {
     this._tagid = ti;
   }
-  get TagSubID(): number {
+  get TagSubID(): number | undefined {
     return this._tagsubid;
   }
-  set TagSubID(tsi: number) {
+  set TagSubID(tsi: number | undefined) {
     this._tagsubid = tsi;
   }
-  get Term(): string {
+  get Term(): string | undefined {
     return this._term;
   }
-  set Term(term: string) {
+  set Term(term: string | undefined) {
     this._term = term;
   }
 
   get LinkTarget(): string {
     switch (this.TagType) {
       case TagTypeEnum.LearnQuestionBank:
-        return '/learn/questionbank/display/' + this.TagID.toString();
+        return '/learn/questionbank/display/' + this.TagID?.toString();
 
       // case TagTypeEnum.EnglishWord:
       //   return '/learn/enword/display/' + this.TagID.toString();
@@ -383,7 +369,7 @@ export class Tag {
       //   return '/learn/ensent/display/' + this.TagID.toString();
 
       case TagTypeEnum.FinanceDocumentItem:
-        return '/finance/document/display/' + this.TagID.toString();
+        return '/finance/document/display/' + this.TagID?.toString();
 
       default:
         throw new Error('Unsupportted tag type');
@@ -411,19 +397,19 @@ export class Tag {
 
 // Tag count
 export class TagCount {
-  private _term: string;
-  private _termcount: number;
+  private _term?: string;
+  private _termcount?: number;
 
-  get Term(): string {
+  get Term(): string | undefined {
     return this._term;
   }
-  set Term(term: string) {
+  set Term(term: string | undefined) {
     this._term = term;
   }
-  get TermCount(): number {
+  get TermCount(): number | undefined {
     return this._termcount;
   }
-  set TermCount(tc: number) {
+  set TermCount(tc: number | undefined) {
     this._termcount = tc;
   }
 
@@ -441,49 +427,49 @@ export class TagCount {
  * App. language JSON format
  */
 export interface AppLanguageJson {
-  Lcid: number;
-  EnglishName: string;
-  NativeName: string;
-  ISOName: string;
+  Lcid?: number;
+  EnglishName?: string;
+  NativeName?: string;
+  ISOName?: string;
   AppFlag?: boolean;
 }
 
 // App language: the language set which supported by current app.
 export class AppLanguage {
-  private _lcid: number;
-  private _isoname: string;
-  private _enname: string;
-  private _navname: string;
-  private _appflag: boolean;
+  private _lcid?: number;
+  private _isoname?: string;
+  private _enname?: string;
+  private _navname?: string;
+  private _appflag?: boolean;
 
-  get Lcid(): number {
+  get Lcid(): number | undefined {
     return this._lcid;
   }
-  set Lcid(lcid: number) {
+  set Lcid(lcid: number | undefined) {
     this._lcid = lcid;
   }
-  get IsoName(): string {
+  get IsoName(): string | undefined {
     return this._isoname;
   }
-  set IsoName(iso: string) {
+  set IsoName(iso: string | undefined) {
     this._isoname = iso;
   }
-  get EnglishName(): string {
+  get EnglishName(): string | undefined {
     return this._enname;
   }
-  set EnglishName(enname: string) {
+  set EnglishName(enname: string | undefined) {
     this._enname = enname;
   }
-  get NativeName(): string {
+  get NativeName(): string | undefined {
     return this._navname;
   }
-  set NativeName(navname: string) {
+  set NativeName(navname: string | undefined) {
     this._navname = navname;
   }
-  get AppFlag(): boolean {
+  get AppFlag(): boolean | undefined {
     return this._appflag;
   }
-  set AppFlag(af: boolean) {
+  set AppFlag(af: boolean | undefined) {
     this._appflag = af;
   }
 
@@ -510,26 +496,26 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  private _nativeName: string;
-  private _englishName: string;
-  private _englishIsNative: boolean;
+  private _nativeName?: string;
+  private _englishName?: string;
+  private _englishIsNative?: boolean;
 
-  get NativeName(): string {
+  get NativeName(): string | undefined {
     return this._nativeName;
   }
-  set NativeName(nn: string) {
+  set NativeName(nn: string | undefined) {
     this._nativeName = nn;
   }
-  get EnglishName(): string {
+  get EnglishName(): string | undefined {
     return this._englishName;
   }
-  set EnglishName(en: string) {
+  set EnglishName(en: string | undefined) {
     this._englishName = en;
   }
-  get EnglishIsNative(): boolean {
+  get EnglishIsNative(): boolean | undefined {
     return this._englishIsNative;
   }
-  set EnglishIsNative(ein: boolean) {
+  set EnglishIsNative(ein: boolean | undefined) {
     this._englishIsNative = ein;
   }
 

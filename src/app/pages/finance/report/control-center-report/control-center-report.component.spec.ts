@@ -21,7 +21,7 @@ describe('ControlCenterReportComponent', () => {
   let fixture: ComponentFixture<ControlCenterReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllReportsByControlCenterSpy: any;
+  let fetchReportByControlCenterSpy: any;
   let fetchAllControlCentersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -35,10 +35,10 @@ describe('ControlCenterReportComponent', () => {
     fakeData.buildFinControlCenter();
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllReportsByControlCenter',
+      'fetchReportByControlCenter',
       'fetchAllControlCenters',
     ]);
-    fetchAllReportsByControlCenterSpy = storageService.fetchAllReportsByControlCenter.and.returnValue(of([]));
+    fetchReportByControlCenterSpy = storageService.fetchReportByControlCenter.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
@@ -104,7 +104,7 @@ describe('ControlCenterReportComponent', () => {
         CreditBalance: 10,
         Balance: 290
       } as FinanceReportByControlCenter);
-      fetchAllReportsByControlCenterSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByControlCenterSpy.and.returnValue(asyncData(arRptData));
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
     });
 
@@ -147,7 +147,7 @@ describe('ControlCenterReportComponent', () => {
         CreditBalance: 10,
         Balance: 290
       } as FinanceReportByControlCenter);
-      fetchAllReportsByControlCenterSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByControlCenterSpy.and.returnValue(asyncData(arRptData));
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
     });
 
@@ -163,7 +163,7 @@ describe('ControlCenterReportComponent', () => {
 
     it('should display error when Report by control center Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllReportsByControlCenterSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchReportByControlCenterSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit

@@ -52,58 +52,52 @@
       [nzData]="listOfDocs"
       [nzLoading]="isLoadingResults"
       [nzTotal]="totalDocumentCount"
-      [(nzPageIndex)]="pageIndex"
-      [(nzPageSize)]="pageSize"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
       (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
           <th nzShowExpand></th>
-          <th *ngFor="let column of listOfColumns; trackBy: trackByName"
-            [nzColumnKey]="column.columnKey"
-            [nzShowSort]="column.showSort"
-            [nzSortFn]="column.sortFn"
-            [(nzSortOrder)]="column.sortOrder"
-            [nzSortFn]="column.sortFn"
-            [nzFilterMultiple]="column.filterMultiple"
-            [nzFilters]="column.listOfFilter"
-            [nzFilterFn]="column.filterFn">
-            {{column.name | transloco}}
-          </th>
+          <th nzColumnKey="docid">{{'Common.ID' | transloco}}</th>
+          <th nzColumnKey="curr">{{'Finance.Currency' | transloco}}</th>
+          <th nzColumnKey="date" [nzSortFn]="true">{{'Common.Date' | transloco}}</th>
+          <th nzColumnKey="doctype">{{'Finance.DocumentType' | transloco}}</th>
+          <th nzColumnKey="desp" [nzSortFn]="true">{{'Common.Description' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
         <ng-template ngFor let-data [ngForOf]="docTable.data">
           <tr>
-            <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id]"></td>
+            <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id!]"></td>
             <td>
               {{ data.Id }}
               <nz-divider nzType="vertical"></nz-divider>
-              <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
-              <button nz-button nzType="link" (click)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</button>
+              <button nz-button nzType="link" (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</button>
+              <button nz-button nzType="link" (click)="onDelete(data.Id!)">{{'Common.Delete' | transloco}}</button>
             </td>
-            <td>{{ getCurrencyName(data.TranCurr) }}</td>
+            <td>{{ getCurrencyName(data.TranCurr!) }}</td>
             <td>{{ data.TranDateFormatString }}</td>
-            <td>{{ getDocTypeName(data.DocType) | transloco }} </td>
+            <td>{{ getDocTypeName(data.DocType!) | transloco }} </td>
             <td>{{ data.Desp }}</td>
           </tr>
-          <tr [nzExpand]="mapOfExpandData[data.Id]">
+          <tr [nzExpand]="mapOfExpandData[data.Id!]">
             <td colspan="6">
               <nz-table #itemTable [nzData]="data.Items" [nzShowPagination]="false">
                 <thead>
                   <tr>
-                    <th [nzWidth]="50">#</th>
-                    <th [nzWidth]="150">{{'Finance.Account' | transloco}}</th>
-                    <th [nzWidth]="200">{{'Finance.TransactionType' | transloco}}</th>
-                    <th [nzWidth]="150">{{'Finance.Amount' | transloco}}</th>
-                    <th [nzWidth]="200">{{'Common.Description' | transloco}}</th>
+                    <th nzWidth="50px">#</th>
+                    <th nzWidth="200px">{{'Finance.Account' | transloco}}</th>
+                    <th nzWidth="300px">{{'Finance.TransactionType' | transloco}}</th>
+                    <th nzWidth="200px">{{'Finance.Amount' | transloco}}</th>
+                    <th nzWidth="400px">{{'Common.Description' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let itemdata of itemTable.data">
                     <td>{{ itemdata.ItemId }}</td>
-                    <td>{{ getAccountName(itemdata.AccountId) }} </td>
-                    <td>{{ getTranTypeName(itemdata.TranType) }} </td>
-                    <td>{{ itemdata.TranAmount | number: '1.0-2' }} <small>{{ getCurrencyName(data.TranCurr) }}</small></td>
+                    <td>{{ getAccountName(itemdata.AccountId!) }} </td>
+                    <td>{{ getTranTypeName(itemdata.TranType!) }} </td>
+                    <td>{{ itemdata.TranAmount | number: '1.0-2' }} <small>{{ getCurrencyName(data.TranCurr!) }}</small></td>
                     <td>{{ itemdata.Desp }}</td>
                   </tr>
                 </tbody>

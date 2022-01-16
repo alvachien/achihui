@@ -17,8 +17,8 @@ import { DocumentItemViewComponent } from '../../document-item-view';
   styleUrls: ['./control-center-report.component.less'],
 })
 export class ControlCenterReportComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: any[] = [];
   arReportByControlCenter: FinanceReportByControlCenter[] = [];
@@ -36,7 +36,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit() {
@@ -48,7 +48,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByControlCenter(),
+      this.odataService.fetchReportByControlCenter(),
       this.odataService.fetchAllControlCenters(),
     ])
     .pipe(takeUntil(this._destroyed$),

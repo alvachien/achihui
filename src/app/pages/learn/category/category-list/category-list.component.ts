@@ -16,8 +16,8 @@ import { LearnOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./category-list.component.less'],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: LearnCategory[] = [];
 
@@ -38,7 +38,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     this.odataService.fetchAllCategories()
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: LearnCategory[]) => {

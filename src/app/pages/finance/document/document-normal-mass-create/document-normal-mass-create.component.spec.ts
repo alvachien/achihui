@@ -312,20 +312,20 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
       expect(control.length).toEqual(1);
 
       expect(component.currentStep).toEqual(0);
 
       // Ensure create work
-      const nidx = component.onCreateNewItem(null);
+      const nidx = component.onCreateNewItem();
       expect(nidx).toBeGreaterThan(0);
       if (nidx > 0) {
-        const nidx2 = component.onCopyItem(null, nidx);
+        const nidx2 = component.onCopyItem(undefined, nidx);
         if (nidx2 > 0) {
-          component.onRemoveItem(null, nidx2);
+          component.onRemoveItem(undefined, nidx2);
         }
-        component.onRemoveItem(null, nidx);
+        component.onRemoveItem(undefined, nidx);
       }
     }));
 
@@ -334,17 +334,17 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
       expect(control.length).toEqual(1);
 
       const newItem: FormGroup = control.controls[0] as FormGroup;
       expect(newItem).toBeTruthy();
-      newItem.get('dateControl').setValue(new Date());
-      newItem.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      newItem.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      newItem.get('amountControl').setValue(100);
-      newItem.get('despControl').setValue('test');
-      newItem.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      newItem.get('dateControl')?.setValue(new Date());
+      newItem.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      newItem.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      newItem.get('amountControl')?.setValue(100);
+      newItem.get('despControl')?.setValue('test');
+      newItem.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
       expect(control.valid).toBeTrue();
 
@@ -363,17 +363,17 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
       expect(control.length).toEqual(1);
 
       const newItem: FormGroup = control.controls[0] as FormGroup;
       expect(newItem).toBeTruthy();
-      newItem.get('dateControl').setValue(new Date());
-      newItem.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      newItem.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      newItem.get('amountControl').setValue(100);
-      newItem.get('despControl').setValue('test');
-      newItem.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      newItem.get('dateControl')?.setValue(new Date());
+      newItem.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      newItem.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      newItem.get('amountControl')?.setValue(100);
+      newItem.get('despControl')?.setValue('test');
+      newItem.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
       expect(control.valid).toBeTrue();
 

@@ -14,13 +14,13 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../mo
   styleUrls: ['./control-center-list.component.less'],
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: ControlCenter[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -90,7 +90,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.odataService.deleteControlCenter(rid)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: val => {
           const extccs = this.dataSet.slice();

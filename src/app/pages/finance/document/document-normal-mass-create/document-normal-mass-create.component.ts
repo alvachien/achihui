@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
+import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
   FinanceDocumentMassCreateConfirm, FinanceNormalDocItemMassCreate, momentDateFormat,
@@ -22,8 +23,8 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./document-normal-mass-create.component.less'],
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$?: ReplaySubject<boolean> | null = null;
 
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
@@ -39,7 +40,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step: Item
-  public itemsFormGroup: FormGroup;
+  public itemsFormGroup?: FormGroup;
   // Step: Confirm
   public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
@@ -59,7 +60,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.confirmInfo = [];
   }
 
@@ -123,7 +124,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreateNewItem(event: MouseEvent): number {
+  onCreateNewItem(event?: MouseEvent): number {
     if (event) {
       event.stopPropagation();
     }
@@ -131,20 +132,20 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     return this.createItem();
   }
 
-  onCopyItem(event: MouseEvent, i: number): number {
+  onCopyItem(event?: MouseEvent, i?: number): number {
     if (event) {
       event.stopPropagation();
     }
 
-    return this.copyItem(i);
+    return this.copyItem(i!);
   }
 
-  onRemoveItem(event: MouseEvent, i: number) {
+  onRemoveItem(event?: MouseEvent, i?: number) {
     if (event) {
       event.stopPropagation();
     }
 
-    this.removeItem(i);
+    this.removeItem(i!);
   }
 
   pre(): void {
@@ -170,13 +171,13 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      const controlArray: FormArray = this.itemsFormGroup.controls.items as FormArray;
+      const controlArray: FormArray = this.itemsFormGroup?.controls.items as FormArray;
       if (controlArray.length <= 0) {
         return false;
       }
       return controlArray.valid;
     } else if (this.currentStep === 1) {
-      return this.itemsFormGroup.valid;
+      return this.itemsFormGroup!.valid;
     } else {
       return true;
     }
@@ -185,7 +186,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -223,36 +224,42 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     });
   }
   private createItem(): number {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     const newItem: FormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
-      newItem.get('dateControl').setValue(oldItem.dateControl);
-      newItem.get('accountControl').setValue(oldItem.accountControl);
-      newItem.get('tranTypeControl').setValue(oldItem.tranTypeControl);
-      newItem.get('amountControl').setValue(oldItem.amountControl);
-      newItem.get('despControl').setValue(oldItem.despControl);
-      newItem.get('ccControl').setValue(oldItem.ccControl);
-      newItem.get('orderControl').setValue(oldItem.orderControl);
+      newItem.get('dateControl')?.setValue(oldItem.dateControl);
+      newItem.get('accountControl')?.setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl')?.setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl')?.setValue(oldItem.amountControl);
+      newItem.get('despControl')?.setValue(oldItem.despControl);
+      newItem.get('ccControl')?.setValue(oldItem.ccControl);
+      newItem.get('orderControl')?.setValue(oldItem.orderControl);
     }
 
     control.push(newItem);
     return control.length - 1;
   }
+  get getItemFormArray(): FormArray {
+    return this.itemsFormGroup?.controls.items as FormArray;
+  }
+  get getItemControls(): FormGroup[] {
+    return this.getItemFormArray.controls as FormGroup[];
+  }
   private removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.getItemFormArray;
     control.removeAt(i);
   }
   private _generateItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const controlArrays: FormArray = this.getItemFormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];
@@ -313,7 +320,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         docObj = new Document();
         docObj.Desp = item.tranDate.format(momentDateFormat);
         docObj.DocType = financeDocTypeNormal;
-        docObj.HID = this.homeService.ChosedHome.ID;
+        docObj.HID = this.homeService.ChosedHome!.ID;
         docObj.TranCurr = this.baseCurrency;
         docObj.TranDate = moment(item.tranDate);
         const docitem = new DocumentItem();
@@ -347,7 +354,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranType,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
       })) {
         errorOccur = true;        
       }
@@ -361,7 +368,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.currentStep = 2; // Jump to the result page
 
     this.odataService.massCreateNormalDocument(this.confirmInfo)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isDocPosting = false))
       .subscribe({
         next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
@@ -384,7 +391,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public onResubmitFailedItems(): void {
     this.isDocPosting = true;
     this.odataService.massCreateNormalDocument(this.docIdFailed)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isDocPosting = false))
       .subscribe({
         next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {

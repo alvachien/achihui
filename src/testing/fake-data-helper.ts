@@ -22,49 +22,49 @@ import { User } from 'oidc-client';
 import * as moment from 'moment';
 
 export class FakeDataHelper {
-  // tslint:disable:variable-name
-  private _currencies: Currency[];
-  private _currenciesFromAPI: CurrencyJson[];
-  private _chosedHome: HomeDef;
-  private _homeDefs: HomeDef[];
-  private _finDocTypes: DocumentType[];
-  private _finDocTypesFromAPI: DocumentTypeJson[];
-  private _finAccountCategories: AccountCategory[];
-  private _finAccountCategoriesFromAPI: AccountCategoryJson[];
-  private _finTranType: TranType[];
-  private _finTranTypeFromAPI: TranTypeJson[];
-  private _finAssetCategories: AssetCategory[];
-  private _finAssetCategoriesFromAPI: AssetCategoryJson[];
-  private _finAccounts: Account[];
-  private _finAccountsFromAPI: AccountJson[];
-  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment;
-  private _finControlCenters: ControlCenter[];
-  private _finControlCentersFromAPI: ControlCenterJson[];
-  private _finOrders: Order[];
-  private _finOrdersFromAPI: OrderJson[];
-  private _finPlans: Plan[];
-  private _finNormalDocumentForCreate: Document;
-  private _finTransferDocumentForCreate: Document;
-  private _finADPDocumentForCreate: Document;
-  private _currUser: UserAuthInfo;
-  private _appLanguages: AppLanguage[];
-  private _appLanguagesFromAPI: AppLanguageJson[];
-  private _learnCategoriesFromAPI: LearnCategoryJson[];
-  private _learnCategories: LearnCategory[];
-  private _learnObjects: LearnObject[];
-  private _libBookCategories: BookCategory[];
-  private _libBookCategoriesFromAPI: BookCategoryJson[];
-  private _libMovieGenres: MovieGenre[];
-  private _libMovieGenresFromAPI: MovieGenreJson[];
-  private _libLocations: Location[];
-  private _libLocationsFromAPI: LocationJson[];
-  private _tags: Tag[];
-  private _tagsFromAPI: TagJson[];
-  private _tagsCount: TagCount[];
-  private _blogCollectionAPI: BlogCollectionAPIJson[];
-  private _blogCollection: BlogCollection[];
-  private _blogPostAPI: BlogPostAPIJson[];
-  private _blogPost: BlogPost[];
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _currencies: Currency[] = [];
+  private _currenciesFromAPI: CurrencyJson[] = [];
+  private _chosedHome: HomeDef = new HomeDef();
+  private _homeDefs: HomeDef[] = [];
+  private _finDocTypes: DocumentType[] = [];
+  private _finDocTypesFromAPI: DocumentTypeJson[] = [];
+  private _finAccountCategories: AccountCategory[] = [];
+  private _finAccountCategoriesFromAPI: AccountCategoryJson[] = [];
+  private _finTranType: TranType[] = [];
+  private _finTranTypeFromAPI: TranTypeJson[] = [];
+  private _finAssetCategories: AssetCategory[] = [];
+  private _finAssetCategoriesFromAPI: AssetCategoryJson[] = [];
+  private _finAccounts: Account[] = [];
+  private _finAccountsFromAPI: AccountJson[] = [];
+  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+  private _finControlCenters: ControlCenter[] = [];
+  private _finControlCentersFromAPI: ControlCenterJson[] = [];
+  private _finOrders: Order[] = [];
+  private _finOrdersFromAPI: OrderJson[] = [];
+  private _finPlans: Plan[] = [];
+  private _finNormalDocumentForCreate: Document = new Document();
+  private _finTransferDocumentForCreate: Document = new Document();
+  private _finADPDocumentForCreate: Document = new Document();
+  private _currUser: UserAuthInfo = new UserAuthInfo();
+  private _appLanguages: AppLanguage[] = [];
+  private _appLanguagesFromAPI: AppLanguageJson[] = [];
+  private _learnCategoriesFromAPI: LearnCategoryJson[] = [];
+  private _learnCategories: LearnCategory[] = [];
+  private _learnObjects: LearnObject[] = [];
+  private _libBookCategories: BookCategory[] = [];
+  private _libBookCategoriesFromAPI: BookCategoryJson[] = [];
+  private _libMovieGenres: MovieGenre[] = [];
+  private _libMovieGenresFromAPI: MovieGenreJson[] = [];
+  private _libLocations: Location[] = [];
+  private _libLocationsFromAPI: LocationJson[] = [];
+  private _tags: Tag[] = [];
+  private _tagsFromAPI: TagJson[] = [];
+  private _tagsCount: TagCount[] = [];
+  private _blogCollectionAPI: BlogCollectionAPIJson[] = [];
+  private _blogCollection: BlogCollection[] = [];
+  private _blogPostAPI: BlogPostAPIJson[] = [];
+  private _blogPost: BlogPost[] = [];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -77,61 +77,70 @@ export class FakeDataHelper {
     if (this._currencies) {
       return this._currencies;
     }
+    return [];
   }
   get currenciesFromAPI(): CurrencyJson[] {
     if (this._currenciesFromAPI) {
       return this._currenciesFromAPI;
     }
+    return [];
   }
   get HomeDefs(): HomeDef[] {
     if (this._homeDefs) {
       return this._homeDefs;
     }
+    return [];
   }
   get chosedHome(): HomeDef {
-    if (this._chosedHome) {
-      return this._chosedHome;
-    }
+    return this._chosedHome;
   }
   get finDocTypes(): DocumentType[] {
     if (this._finDocTypes) {
       return this._finDocTypes;
     }
+    return [];
   }
   get finDocTypesFromAPI(): DocumentTypeJson[] {
     if (this._finDocTypesFromAPI) {
       return this._finDocTypesFromAPI;
     }
+    return [];
   }
   get finAccountCategories(): AccountCategory[] {
     if (this._finAccountCategories) {
       return this._finAccountCategories;
     }
+    return [];
   }
   get finAccountCategoriesFromAPI(): AccountCategoryJson[] {
     if (this._finAccountCategoriesFromAPI) {
       return this._finAccountCategoriesFromAPI;
     }
+    return [];
   }
   get finAssetCategories(): AssetCategory[] {
     if (this._finAssetCategories) {
       return this._finAssetCategories;
     }
+    return [];
   }
   get finAssetCategoriesFromAPI(): AssetCategoryJson[] {
     if (this._finAssetCategoriesFromAPI) {
       return this._finAssetCategoriesFromAPI;
     }
+    return [];
   }
   get finTranTypes(): TranType[] {
     if (this._finTranType) {
       return this._finTranType;
     }
+    return [];
   }
   get finTranTypesFromAPI(): TranTypeJson[] {
     if (this._finTranTypeFromAPI) {
       return this._finTranTypeFromAPI;
     }
+    return [];
   }
   get finTranTypeTopNodeAmount(): number {
     if (this._finTranType) {
@@ -139,101 +148,106 @@ export class FakeDataHelper {
         return val.ParId === undefined;
       }).length;
     }
+    return 0;
   }
   get finAccounts(): Account[] {
     if (this._finAccounts) {
       return this._finAccounts;
     }
+    return [];
   }
   get finAccountsFromAPI(): AccountJson[] {
     if (this._finAccountsFromAPI) {
       return this._finAccountsFromAPI;
     }
+    return [];
   }
   get finAccountExtraAdvancePayment(): AccountExtraAdvancePayment {
-    if (this._finAccountExtraAdvancePayment) {
-      return this._finAccountExtraAdvancePayment;
-    }
+    return this._finAccountExtraAdvancePayment;
   }
   get finControlCenters(): ControlCenter[] {
     if (this._finControlCenters) {
       return this._finControlCenters;
     }
+    return [];
   }
   get finControlCentersFromAPI(): ControlCenterJson[] {
     if (this._finControlCentersFromAPI) {
       return this._finControlCentersFromAPI;
     }
+    return [];
   }
   get finOrders(): Order[] {
     if (this._finOrders) {
       return this._finOrders;
     }
+    return [];
   }
   get finOrdersFromAPI(): OrderJson[] {
     if (this._finOrdersFromAPI) {
       return this._finOrdersFromAPI;
     }
+    return [];
   }
   get finPlans(): Plan[] {
     if (this._finPlans) {
       return this._finPlans;
     }
+    return [];
   }
   get finNormalDocumentForCreate(): Document {
-    if (this._finNormalDocumentForCreate) {
-      return this._finNormalDocumentForCreate;
-    }
+    return this._finNormalDocumentForCreate;
   }
   get finTransferDocumentForCreate(): Document {
-    if (this._finTransferDocumentForCreate) {
-      return this._finTransferDocumentForCreate;
-    }
+    return this._finTransferDocumentForCreate;
   }
   get finADPDocumentForCreate(): Document {
-    if (this._finADPDocumentForCreate) {
-      return this._finADPDocumentForCreate;
-    }
+    return this._finADPDocumentForCreate;
   }
   get currentUser(): UserAuthInfo {
-    if (this._currUser) {
-      return this._currUser;
-    }
+    return this._currUser;
   }
   get appLanguages(): AppLanguage[] {
     if (this._appLanguages) {
       return this._appLanguages;
     }
+    return [];
   }
   get appLanguagesFromAPI(): any[] {
     if (this._appLanguagesFromAPI) {
       return this._appLanguagesFromAPI;
     }
+    return [];
   }
   get learnCategoriesFromAPI(): LearnCategoryJson[] {
     if (this._learnCategoriesFromAPI) {
       return this._learnCategoriesFromAPI;
     }
+    return [];
   }
   get learnCategories(): LearnCategory[] {
     if (this._learnCategories) {
       return this._learnCategories;
     }
+    return [];
   }
   get learnObjects(): LearnObject[] {
     if (this._learnObjects) {
       return this._learnObjects;
     }
+    return [];
   }
   get libBookCategories(): BookCategory[] {
     if (this._libBookCategories) {
       return this._libBookCategories;
     }
+    return [];
   }
   get libBookCategoriesFromAPI(): BookCategoryJson[] {
     if (this._libBookCategoriesFromAPI) {
       return this._libBookCategoriesFromAPI;
     }
+    return [];
   }
   get libBookCategoriesFullReplyFromAPI(): any {
     if (this._libBookCategoriesFromAPI) {
@@ -247,11 +261,13 @@ export class FakeDataHelper {
     if (this._libMovieGenres) {
       return this._libMovieGenres;
     }
+    return [];
   }
   get libMovieGenresFromAPI(): MovieGenreJson[] {
     if (this._libMovieGenresFromAPI) {
       return this._libMovieGenresFromAPI;
     }
+    return [];
   }
   get libMovieGenresFullReplyFromAPI(): any {
     if (this._libMovieGenresFromAPI) {
@@ -265,11 +281,13 @@ export class FakeDataHelper {
     if (this._libLocations) {
       return this._libLocations;
     }
+    return [];
   }
   get libLocationsFromAPI(): LocationJson[] {
     if (this._libLocationsFromAPI) {
       return this._libLocationsFromAPI;
     }
+    return [];
   }
   get libLocationsFullReplyFromAPI(): any {
     if (this._libLocationsFromAPI) {
@@ -283,36 +301,43 @@ export class FakeDataHelper {
     if (this._tags) {
       return this._tags;
     }
+    return [];
   }
   get tagsFromAPI(): TagJson[] {
     if (this._tagsFromAPI) {
       return this._tagsFromAPI;
     }
+    return [];
   }
   get tagsCount(): TagCount[] {
     if (this._tagsCount) {
       return this._tagsCount;
     }
+    return [];
   }
   get blogCollectionAPI(): BlogCollectionAPIJson[] {
     if (this._blogCollectionAPI) {
       return this._blogCollectionAPI;
     }
+    return [];
   }
   get blogCollection(): BlogCollection[] {
     if (this._blogCollection) {
       return this._blogCollection;
     }
+    return [];
   }
   get blogPostAPI(): BlogPostAPIJson[] {
     if (this._blogPostAPI) {
       return this._blogPostAPI;
     }
+    return [];
   }
   get blogPost(): BlogPost[] {
     if (this._blogPost) {
       return this._blogPost;
     }
+    return [];
   }
 
   public buildCurrencies(): void {

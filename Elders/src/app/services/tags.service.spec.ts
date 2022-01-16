@@ -15,7 +15,7 @@ describe('TagsService', () => {
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: TagsService;
-  const tagsAPIURL: any = environment.ApiUrl + '/api/Tag';
+  const tagsAPIURL: any = environment.ApiUrl + '/Tag';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();

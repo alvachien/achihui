@@ -38,10 +38,10 @@ describe('BookCategory', () => {
   it('init', () => {
     expect(bkctgy).toBeTruthy();
 
-    expect(bkctgy.ID).toBeUndefined();
-    expect(bkctgy.HID).toBeUndefined();
-    expect(bkctgy.Name).toBeUndefined();
-    expect(bkctgy.Others).toBeUndefined();
+    expect(bkctgy.ID).toBeFalsy();
+    expect(bkctgy.HID).toBeFalsy();
+    expect(bkctgy.Name).toBeFalsy();
+    expect(bkctgy.Others).toBeFalsy();
   });
 
   it('writeJSONobject and onSetdata', () => {
@@ -66,10 +66,10 @@ describe('MovieGenre', () => {
   it('init', () => {
     expect(mvgen).toBeTruthy();
 
-    expect(mvgen.ID).toBeUndefined();
-    expect(mvgen.HID).toBeUndefined();
-    expect(mvgen.Name).toBeUndefined();
-    expect(mvgen.Others).toBeUndefined();
+    expect(mvgen.ID).toBeFalsy();
+    expect(mvgen.HID).toBeFalsy();
+    expect(mvgen.Name).toBeFalsy();
+    expect(mvgen.Others).toBeFalsy();
   });
   it('writeJSONobject and onSetdata', () => {
     mvgen.Name = 'test1';

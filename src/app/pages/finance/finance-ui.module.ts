@@ -34,8 +34,10 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilterPipe, } from './pipes';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
   declarations: [
@@ -80,6 +82,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilt
     NzPopconfirmModule,
     NzMessageModule,
     NzDrawerModule,
+    NzEmptyModule,
     NgxEchartsModule,
   ],
   exports: [
@@ -120,6 +123,7 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilt
     NzMessageModule,
     NzDrawerModule,
     NgxEchartsModule,
+    NzModalModule,
 
     UIAccountCtgyFilterExPipe,
     UIAccountStatusFilterPipe,

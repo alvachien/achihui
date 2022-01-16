@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
+import { UIMode, } from 'actslib';
 
-import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
+import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection,
 } from '../../../../model';
@@ -20,8 +21,8 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./document-normal-create.component.less'],
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
@@ -44,8 +45,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   // Step: Result
   public isDocPosting = false;
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated?: number;
+  public docPostingFailed: string = '';
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -57,7 +58,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
     const docObj: Document = new Document();
     docObj.TranCurr = this.baseCurrency;
@@ -140,7 +141,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       DocumentTypes: this.arDocTypes,
       TransactionTypes: this.arTranType,
       Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
     })) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug);
@@ -153,7 +154,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
     // Now call to the service
     this.odataService.createDocument(detailObject)
-    .pipe(takeUntil(this._destroyed$),
+    .pipe(takeUntil(this._destroyed$!),
     finalize(() => {
       this.isDocPosting = false;
       this.currentStep = 3;
@@ -163,12 +164,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
           ConsoleLogTypeEnum.debug);
         this.docIdCreated = doc.Id;
-        this.docPostingFailed = null;
+        this.docPostingFailed = '';
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
           ConsoleLogTypeEnum.error);
-        this.docIdCreated = null;
+        this.docIdCreated = undefined;
         this.docPostingFailed = error;
       },
     });
@@ -176,7 +177,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   onDisplayCreatedDoc(): void {
     if (this.docIdCreated !== null) {
-      this.router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+      this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
     }
   }
 
@@ -186,8 +187,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.headerForm.reset();
     this.confirmInfo = {};
     this.isDocPosting = false;
-    this.docIdCreated = null;
-    this.docPostingFailed = null;
+    this.docIdCreated = undefined;
+    this.docPostingFailed = '';
   }
 
   pre(): void {
@@ -247,10 +248,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerForm.get('headerControl').value as Document;
-    detailObject.HID = this.homeService.ChosedHome.ID;
+    const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
+    detailObject.HID = this.homeService.ChosedHome!.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.itemsForm.get('itemControl').value as DocumentItem[];
+    detailObject.Items = this.itemsForm.get('itemControl')?.value as DocumentItem[];
 
     return detailObject;
   }

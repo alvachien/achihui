@@ -23,13 +23,13 @@ import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
   ],
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _onTouched: () => void;
-  private _onChange: (val: any) => void;
-  private _arAssetCategories: AssetCategory[];
-  private _refBuyDocID?: number;
-  private _refSoldDocID?: number;
+  private _onTouched?: () => void;
+  private _onChange?: (val: any) => void;
+  private _arAssetCategories: AssetCategory[] = [];
+  private _refBuyDocID: number | null = null;
+  private _refSoldDocID: number | null = null;
 
   public assetInfoFormGroup: FormGroup;
   get refBuyDocID(): number | null {
@@ -43,15 +43,15 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       ConsoleLogTypeEnum.debug);
 
     const insobj: AccountExtraAsset = new AccountExtraAsset();
-    let controlVal = this.assetInfoFormGroup.get('ctgyControl').value;
+    let controlVal = this.assetInfoFormGroup.get('ctgyControl')?.value;
     if (controlVal) {
       insobj.CategoryID = controlVal as number;
     }
-    controlVal = this.assetInfoFormGroup.get('nameControl').value;
+    controlVal = this.assetInfoFormGroup.get('nameControl')?.value;
     if (controlVal) {
       insobj.Name = controlVal as string;
     }
-    controlVal = this.assetInfoFormGroup.get('commentControl').value;
+    controlVal = this.assetInfoFormGroup.get('commentControl')?.value;
     if (controlVal) {
       insobj.Comment = controlVal as string;
     }
@@ -124,9 +124,9 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.assetInfoFormGroup.get('ctgyControl').setValue(val.CategoryID);
-      this.assetInfoFormGroup.get('nameControl').setValue(val.Name);
-      this.assetInfoFormGroup.get('commentControl').setValue(val.Comment);
+      this.assetInfoFormGroup.get('ctgyControl')?.setValue(val.CategoryID);
+      this.assetInfoFormGroup.get('nameControl')?.setValue(val.Name);
+      this.assetInfoFormGroup.get('commentControl')?.setValue(val.Comment);
       if (val.RefDocForBuy) {
         this._refBuyDocID = val.RefDocForBuy;
       } else {

@@ -3,8 +3,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Account, UIMode, getUIModeString,
+import { Account, getUIModeString,
   UICommonLabelEnum, ModelUtility, UIDisplayString, UIDisplayStringUtil,
   ConsoleLogTypeEnum, HomeMember, LearnCategory, LearnObject,
 } from '../../../../model';
@@ -18,20 +19,20 @@ import { takeUntil, finalize } from 'rxjs/operators';
   styleUrls: ['./object-detail.component.less'],
 })
 export class ObjectDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   // Category
   listOfCategories: LearnCategory[] = [];
-  currentObject: LearnObject;
+  currentObject: LearnObject | null = null;
   // Form group
   detailFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -73,7 +74,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -83,7 +84,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
 
@@ -91,17 +92,17 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllCategories(),
             this.odataService.readObject(this.routerID),
           ]).pipe(
-            takeUntil(this._destroyed$),
+            takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false),
           ).subscribe({
               next: val => {
                 this.listOfCategories = val[0] as LearnCategory[];
                 this.currentObject = val[1] as LearnObject;
-                this.detailFormGroup.get('idControl').setValue(this.currentObject.Id);
-                this.detailFormGroup.get('nameControl').setValue(this.currentObject.Name);
-                this.detailFormGroup.get('categoryControl').setValue(this.currentObject.CategoryId);
-                this.detailFormGroup.get('contentControl').setValue(this.currentObject.Content);
-                this.detailFormGroup.get('idControl').disable();
+                this.detailFormGroup.get('idControl')?.setValue(this.currentObject.Id);
+                this.detailFormGroup.get('nameControl')?.setValue(this.currentObject.Name);
+                this.detailFormGroup.get('categoryControl')?.setValue(this.currentObject.CategoryId);
+                this.detailFormGroup.get('contentControl')?.setValue(this.currentObject.Content);
+                this.detailFormGroup.get('idControl')?.disable();
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -120,7 +121,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
           this.odataService.fetchAllCategories()
             .pipe(
-              takeUntil(this._destroyed$),
+              takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false),
             ).subscribe({
               next: val => {
@@ -130,7 +131,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
                 // Show error dialog
               }
             });
-          this.detailFormGroup.get('idControl').disable();
+          this.detailFormGroup.get('idControl')?.disable();
           this.currentObject = new LearnObject();
           break;
         }
@@ -153,22 +154,22 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
   onSave() {
     if (this.uiMode === UIMode.Create) {
-      this.currentObject.HID = this.homeSevice.ChosedHome.ID;
-      this.currentObject.Name = this.detailFormGroup.get('nameControl').value;
-      this.currentObject.CategoryId = this.detailFormGroup.get('categoryControl').value;
-      this.currentObject.Content = this.detailFormGroup.get('contentControl').value;
+      this.currentObject!.HID = this.homeSevice.ChosedHome!.ID;
+      this.currentObject!.Name = this.detailFormGroup.get('nameControl')?.value;
+      this.currentObject!.CategoryId = this.detailFormGroup.get('categoryControl')?.value;
+      this.currentObject!.Content = this.detailFormGroup.get('contentControl')?.value;
 
-      this.odataService.createObject(this.currentObject)
-        .pipe(takeUntil(this._destroyed$))
+      this.odataService.createObject(this.currentObject!)
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: val => {
-            this.router.navigate(['/learn/object/display', val.Id.toString]);
+            this.router.navigate(['/learn/object/display', val.Id?.toString]);
           },
           error: err => {
             // TBD.
           }
         });
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
     }
   }
 }

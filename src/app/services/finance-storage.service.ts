@@ -19,15 +19,15 @@ import { HomeDefOdataService } from './home-def-odata.service';
 @Injectable()
 export class FinanceStorageService {
   // Buffer
-  private _listAccount: Account[];
+  private _listAccount: Account[] = [];
 
-  readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlan';
-  readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocument';
-  readonly documentMassCreateAPIUrl: string = environment.ApiUrl + '/api/FinanceNormalDocMassCreate';
-  readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccount';
-  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
-  readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
-  readonly docItemAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItem';
+  readonly planAPIUrl: string = environment.ApiUrl + '/FinancePlan';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/FinanceDocument';
+  readonly documentMassCreateAPIUrl: string = environment.ApiUrl + '/FinanceNormalDocMassCreate';
+  readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccount';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenter';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/FinanceOrder';
+  readonly docItemAPIUrl: string = environment.ApiUrl + '/FinanceDocumentItem';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -47,13 +47,13 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.documentAPIUrl + '/' + objDetail.Id.toString();
+    const apiurl: string = this.documentAPIUrl + '/' + objDetail.Id!.toString();
 
     const jdata: string = objDetail.writeJSONString();
     return this._http.put(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService updateNormalDocument, map');
         }
@@ -80,12 +80,12 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+    let apiurl: string = environment.ApiUrl + '/financeloandocument';
 
     this._http.put(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug('AC_HIH_UI [Debug]: Entering Map of updateLoanDocument in FinanceStorageService: ' + response);
         }
@@ -123,13 +123,13 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    let apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     const jdata: string = JSON && JSON.stringify(obj);
 
     return this._http.post(apiurl, jdata, {
       headers: headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
         }
@@ -153,9 +153,9 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     if (dtbgn) {
       params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
@@ -167,7 +167,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`);
         }
@@ -226,9 +226,9 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTrend';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     if (exctran) {
       params = params.append('exctran', exctran.toString());
     }
@@ -243,7 +243,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           // console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService: ${response}`);
           console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService`);
@@ -283,9 +283,9 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
+    let apiurl: string = environment.ApiUrl + '/FinanceReportTrendEx';
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
     params = params.append('trendtype', (<number>trendtype).toString());
     if (exctran) {
       params = params.append('exctran', exctran.toString());
@@ -301,7 +301,7 @@ export class FinanceStorageService {
       headers: headers,
       params: params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService.`);
         }
@@ -335,13 +335,13 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
+    let apiurl: string = environment.ApiUrl + '/FinanceDocCreatedFrequenciesByUser';
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-    }).pipe(map((response: HttpResponse<any>) => {
+    }).pipe(map((response: any) => {
       // Read the data out
       let rst: DocumentCreatedFrequenciesByUser[] = [];
 

@@ -124,3 +124,14 @@ nz-content {
 nz-footer {
   text-align: center;
 }
+
+@media screen and (max-width: 768px) { 
+  .app-header-nav > .app-header-nav-container { 
+    display: none; 
+  } 
+} 
+@media screen and (min-width: 768px) { 
+  .app-header-nav > .app-header-nav-container { 
+    display: inline-block; 
+  } 
+}

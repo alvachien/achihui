@@ -593,8 +593,8 @@ To check the URL without parameters, is quite simple:
 
 To check the URL with parameters, normally you get two error messages (in sequence) like:
 
-- Error: Expected one matching request for criteria "Match URL: http://localhost:25688/api/FinanceAccountCategory", found none.
-- Error: Expected no open requests, found 1: GET http://localhost:25688/api/FinanceAccountCategory
+- Error: Expected one matching request for criteria "Match URL: http://localhost:25688/FinanceAccountCategory", found none.
+- Error: Expected no open requests, found 1: GET http://localhost:25688/FinanceAccountCategory
 
 ```typescript
     const req: any = httpTestingController.expectOne(requrl => {

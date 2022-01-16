@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 
 describe('LanguageOdataService', () => {
   let httpTestingController: HttpTestingController;
-  const dataAPIURL: any = environment.ApiUrl + '/api/Languages';
+  const dataAPIURL: any = environment.ApiUrl + '/Languages';
   let fakeData: FakeDataHelper;
 
   beforeEach(() => {

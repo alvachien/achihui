@@ -4,9 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, UIMode, getUIModeString, HomeMember, } from '../../../../model';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember, } from '../../../../model';
 import { popupDialog } from '../../../message-dialog';
 import { translate } from '@ngneat/transloco';
 
@@ -16,18 +17,18 @@ import { translate } from '@ngneat/transloco';
   styleUrls: ['./control-center-detail.component.less'],
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
-  public existedCC: ControlCenter[];
+  public existedCC: ControlCenter[] = [];
   public detailFormGroup: FormGroup;
   public arMembers: HomeMember[] = [];
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -44,7 +45,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.isLoadingResults = false;
-    this.arMembers = this.homeService.ChosedHome.Members.slice();
+    this.arMembers = this.homeService.ChosedHome!.Members.slice();
 
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl(),
@@ -71,7 +72,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -79,7 +80,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         }
         this.currentMode = getUIModeString(this.uiMode);
         switch (this.uiMode) {
-          case UIMode.Change:
+          case UIMode.Update:
           case UIMode.Display: {
             this.isLoadingResults = true;
 
@@ -88,18 +89,18 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               this.odataService.readControlCenter(this.routerID)
             ])
             .pipe(
-              takeUntil(this._destroyed$),
+              takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false)
             )
             .subscribe({
               next: (rsts: any[]) => {
                 this.existedCC = rsts[0];
 
-                this.detailFormGroup.get('idControl').setValue(rsts[1].Id);
-                this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
-                this.detailFormGroup.get('cmtControl').setValue(rsts[1].Comment);
-                this.detailFormGroup.get('parentControl').setValue(rsts[1].ParentId);
-                this.detailFormGroup.get('ownerControl').setValue(rsts[1].Owner);
+                this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
+                this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+                this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
+                this.detailFormGroup.get('parentControl')?.setValue(rsts[1].ParentId);
+                this.detailFormGroup.get('ownerControl')?.setValue(rsts[1].Owner);
                 this.detailFormGroup.markAsPristine();
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -126,7 +127,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             this.isLoadingResults = true;
             this.odataService.fetchAllControlCenters()
               .pipe(
-                takeUntil(this._destroyed$),
+                takeUntil(this._destroyed$!),
                 finalize(() => this.isLoadingResults = false)
               )
               .subscribe({
@@ -192,7 +193,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
     if (this.uiMode === UIMode.Create) {
       this._createControlCenter(detailObject);
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       // Check the dirty control
       const arcontent: any = {};
       // nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
@@ -200,16 +201,16 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       // parentControl: new FormControl(),
       // ownerControl: new FormControl(),
 
-      if (this.detailFormGroup.get('nameControl').dirty) {
+      if (this.detailFormGroup.get('nameControl')?.dirty) {
         arcontent.Name = detailObject.Name;
       }
-      if (this.detailFormGroup.get('cmtControl').dirty) {
+      if (this.detailFormGroup.get('cmtControl')?.dirty) {
         arcontent.Comment = detailObject.Comment;
       }
-      if (this.detailFormGroup.get('parentControl').dirty) {
+      if (this.detailFormGroup.get('parentControl')?.dirty) {
         arcontent.ParentId = detailObject.ParentId;
       }
-      if (this.detailFormGroup.get('ownerControl').dirty) {
+      if (this.detailFormGroup.get('ownerControl')?.dirty) {
         arcontent.Owner = detailObject.Owner;
       }
 
@@ -219,18 +220,18 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private _generateObject(): ControlCenter {
     const detailObject: ControlCenter = new ControlCenter();
-    detailObject.HID = this.homeService.ChosedHome.ID;
-    detailObject.Name = this.detailFormGroup.get('nameControl').value;
-    detailObject.Comment = this.detailFormGroup.get('cmtControl').value;
-    detailObject.ParentId = this.detailFormGroup.get('parentControl').value;
-    detailObject.Owner = this.detailFormGroup.get('ownerControl').value;
+    detailObject.HID = this.homeService.ChosedHome!.ID;
+    detailObject.Name = this.detailFormGroup.get('nameControl')?.value;
+    detailObject.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    detailObject.ParentId = this.detailFormGroup.get('parentControl')?.value;
+    detailObject.Owner = this.detailFormGroup.get('ownerControl')?.value;
     return detailObject;
   }
 
   private _createControlCenter(detailObject: ControlCenter): void {
     this.odataService.createControlCenter(detailObject)
       .pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => {
           // Finalized
         })
@@ -255,7 +256,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private _updateControlCenter(changedContent: any): void {
     this.odataService.changeControlCenterByPatch(this.routerID, changedContent)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((x: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _updateControlCenter`,
           ConsoleLogTypeEnum.error);

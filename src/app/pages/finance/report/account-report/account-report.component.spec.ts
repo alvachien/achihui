@@ -23,7 +23,7 @@ describe('AccountReportComponent', () => {
   let fixture: ComponentFixture<AccountReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllReportsByAccountSpy: any;
+  let fetchReportByAccountSpy: any;
   let fetchAllAccountCategoriesSpy: any;
   let fetchAllAccountsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
@@ -40,11 +40,11 @@ describe('AccountReportComponent', () => {
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllReportsByAccount',
+      'fetchReportByAccount',
       'fetchAllAccountCategories',
       'fetchAllAccounts'
     ]);
-    fetchAllReportsByAccountSpy = storageService.fetchAllReportsByAccount.and.returnValue(of([]));
+    fetchReportByAccountSpy = storageService.fetchReportByAccount.and.returnValue(of([]));
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -113,7 +113,7 @@ describe('AccountReportComponent', () => {
           Balance: 290
         } as FinanceReportByAccount);
       }
-      fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByAccountSpy.and.returnValue(asyncData(arRptData));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
@@ -162,7 +162,7 @@ describe('AccountReportComponent', () => {
         });
 
         expect(acntobj).toBeTruthy();
-        if (acntobj.CategoryId === ctgyid) {
+        if (acntobj?.CategoryId === ctgyid) {
           expamt ++;
         }
       });
@@ -194,7 +194,7 @@ describe('AccountReportComponent', () => {
         CreditBalance: 10,
         Balance: 290
       } as FinanceReportByAccount);
-      fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByAccountSpy.and.returnValue(asyncData(arRptData));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
@@ -211,7 +211,7 @@ describe('AccountReportComponent', () => {
 
     it('should display error when Report by account Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllReportsByAccountSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchReportByAccountSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit

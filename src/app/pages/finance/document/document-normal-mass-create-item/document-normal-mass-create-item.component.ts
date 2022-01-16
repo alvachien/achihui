@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, } from '@angular/core';
+import { Component, Input, } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { UIAccountForSelection, UIOrderForSelection, Account, ControlCenter, Order, TranType,
@@ -19,9 +19,9 @@ export class DocumentNormalMassCreateItemComponent {
   @Input()
   arTranType: TranType[] = [];
   @Input()
-  baseCurrency: string;
+  baseCurrency?: string;
   @Input()
-  public itemFormGroup: FormGroup;
+  public itemFormGroup?: FormGroup;
 
   constructor() {
     // Empty

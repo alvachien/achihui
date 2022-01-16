@@ -16,8 +16,8 @@ import { LearnOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./object-list.component.less'],
 })
 export class ObjectListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: LearnObject[] = [];
   arCategories: LearnCategory[] = [];
@@ -43,7 +43,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCategories(),
       this.odataService.fetchAllObjects(),
     ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (rsts: any[]) => {
@@ -76,12 +76,12 @@ export class ObjectListComponent implements OnInit, OnDestroy {
   onCreate() {
     this.router.navigate(['/learn/object/create']);
   }
-  onDelete(id: number) {
+  onDelete(id?: number) {
   }
-  onEdit(id: number) {
-    this.router.navigate(['/learn/object/edit', id.toString()]);
+  onEdit(id?: number) {
+    this.router.navigate(['/learn/object/edit', id?.toString()]);
   }
-  onDisplay(id: number) {
-    this.router.navigate(['/learn/object/display', id.toString()]);
+  onDisplay(id?: number) {
+    this.router.navigate(['/learn/object/display', id?.toString()]);
   }
 }

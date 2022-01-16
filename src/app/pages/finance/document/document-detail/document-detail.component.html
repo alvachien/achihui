@@ -7,6 +7,9 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!isFieldChangable || !docFormGroup.valid">{{'Common.Save' | transloco}}</button>
+  </nz-page-header-extra>
 </nz-page-header>
 
 <form nz-form [formGroup]="docFormGroup">

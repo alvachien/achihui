@@ -1,27 +1,9 @@
-[nz-carousel-content] {
-  margin: 12px;
-  text-align: left;
-  height: 260px;
-  background: #364d79;
-  overflow: hidden;
+.welcome-content-row {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
-h1 {
-  text-align: center;
-  color: #fef;
-  font-size: 64px;
-}
-
-h2 {
-  color: #aee;
-  font-size: 32px;
-}
-
-p {
-  color: #99f;
-  font-size: 21px;
-}
-
-.carousel_content {
-  margin: 24px;
+.inner-box {
+  background: #0092ff;
+  padding: 8px 0;
 }

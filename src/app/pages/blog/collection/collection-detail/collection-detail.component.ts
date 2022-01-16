@@ -5,9 +5,10 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  BlogCollection, momentDateFormat, UIMode, getUIModeString, } from '../../../../model';
+  BlogCollection, momentDateFormat, getUIModeString, } from '../../../../model';
 import { BlogOdataService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -16,11 +17,11 @@ import { BlogOdataService, UIStatusService, } from '../../../../services';
   styleUrls: ['./collection-detail.component.less']
 })
 export class CollectionDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
-  isLoadingResults: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string;
+  public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
 
@@ -55,7 +56,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -65,25 +66,25 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           this.odataService.readCollection(this.routerID)
           .pipe(
-            takeUntil(this._destroyed$),
+            takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
             next: e => {
-              this.detailFormGroup.get('idControl').setValue(e.id);
-              this.detailFormGroup.get('nameControl').setValue(e.name);
-              this.detailFormGroup.get('commentControl').setValue(e.comment);
+              this.detailFormGroup.get('idControl')?.setValue(e.id);
+              this.detailFormGroup.get('nameControl')?.setValue(e.name);
+              this.detailFormGroup.get('commentControl')?.setValue(e.comment);
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
-              } else if (this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Update) {
                 this.detailFormGroup.enable();
-                this.detailFormGroup.get('idControl').disable();
+                this.detailFormGroup.get('idControl')?.disable();
               }
             },
             error: err => {
@@ -102,7 +103,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         case UIMode.Create:
         default: {
           // Do nothing
-          this.detailFormGroup.get('idControl').setValue('NEW OBJECT');
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;
         }
       }
@@ -124,12 +125,12 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     const objColl = new BlogCollection();
-    objColl.name = this.detailFormGroup.get('nameControl').value;
-    objColl.comment = this.detailFormGroup.get('commentControl').value;
+    objColl.name = this.detailFormGroup.get('nameControl')?.value;
+    objColl.comment = this.detailFormGroup.get('commentControl')?.value;
 
     if (this.uiMode === UIMode.Create) {
       this.odataService.createCollection(objColl)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: e => {
           // Succeed.

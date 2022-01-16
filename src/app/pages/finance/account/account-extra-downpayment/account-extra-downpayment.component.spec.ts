@@ -111,15 +111,15 @@ describe('AccountExtraDownpaymentComponent', () => {
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     const startdt = moment().add(1, 'M');
     dp1.StartDate = startdt;
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.valid).toBeFalse();
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalse();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalse();
 
-    const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
+    const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
     expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
     expect(dpval2.RepeatType).toBeFalsy();
@@ -141,16 +141,16 @@ describe('AccountExtraDownpaymentComponent', () => {
     const startdt = moment().add(1, 'M');
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalsy();
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
+    const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
     expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
@@ -173,16 +173,16 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    const dpval2 = testcomponent.formGroup.get('extraControl').value as AccountExtraAdvancePayment;
+    const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
     expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
@@ -193,7 +193,7 @@ describe('AccountExtraDownpaymentComponent', () => {
   }));
 
   it('shall work with data 4a: input start date, repeat type, comment but without tranamount', fakeAsync(() => {
-    testcomponent.tranAmount = undefined;
+    testcomponent.tranAmount = 0;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
@@ -205,12 +205,12 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeFalsy();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     flush();
@@ -229,16 +229,16 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    testcomponent.extraComponent.onGenerateTmpDocs();
+    testcomponent.extraComponent?.onGenerateTmpDocs();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
     flush();
@@ -269,21 +269,21 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
-    testcomponent.formGroup.get('extraControl').setValue(dp1);
+    testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBeFalse();
 
-    testcomponent.extraComponent.onGenerateTmpDocs();
+    testcomponent.extraComponent?.onGenerateTmpDocs();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.get('extraControl').valid).toBeTruthy();
+    expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
     flush();
@@ -294,14 +294,14 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    expect(testcomponent.extraComponent.isFieldChangable).toBeTruthy();
+    expect(testcomponent.extraComponent?.isFieldChangable).toBeTruthy();
 
     testcomponent.formGroup.disable();
     flush();
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.extraComponent.isFieldChangable).toBeFalsy();
+    expect(testcomponent.extraComponent?.isFieldChangable).toBeFalsy();
   }));
 
   it('shall work with reference doc.', fakeAsync(() => {
@@ -311,7 +311,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     const routerstub = TestBed.inject(Router);
     spyOn(routerstub, 'navigate');
 
-    testcomponent.extraComponent.onRefDocClick(123);
+    testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
   }));
@@ -347,16 +347,16 @@ describe('AccountExtraDownpaymentComponent', () => {
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
-      testcomponent.formGroup.get('extraControl').setValue(dp1);
+      testcomponent.formGroup.get('extraControl')?.setValue(dp1);
       flush();
       tick();
       fixture.detectChanges();
 
-      expect(testcomponent.extraComponent.canCalcTmpDocs).toBeTruthy();
-      expect(testcomponent.formGroup.get('extraControl').valid).toBeFalsy();
+      expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
+      expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
       expect(testcomponent.formGroup.valid).toBeFalse();
 
-      testcomponent.extraComponent.onGenerateTmpDocs();
+      testcomponent.extraComponent?.onGenerateTmpDocs();
       flush();
       tick();
       fixture.detectChanges();
@@ -397,7 +397,7 @@ export class FinanceAccountExtraDPTestFormComponent {
   public arTranTypes: TranType[] = [];
   public tranType = 100;
 
-  @ViewChild(AccountExtraDownpaymentComponent, {static: true}) extraComponent: AccountExtraDownpaymentComponent;
+  @ViewChild(AccountExtraDownpaymentComponent, {static: true}) extraComponent: AccountExtraDownpaymentComponent | undefined;
 
   constructor() {
     this.formGroup = new FormGroup({

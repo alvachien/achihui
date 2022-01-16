@@ -203,11 +203,14 @@
     "RevokeDeploy": "取消发布",
     "Abstract": "简要",
     "ChildMode": "儿童模式",
-    "ChildModeDetail": "当前用户在本家庭中设置为儿童，当前为儿童模式！",
+    "ChildModeDetail": "当前用户在本家庭中设置为儿童，当前为儿童模式!",
     "CreatedAt": "创建于",
     "CreatedBy": "创建者",
     "LastChangedAt": "最后修改于",
-    "LastChangedBy": "最后修改者"
+    "LastChangedBy": "最后修改者",
+    "FilterIsMust": "过滤条件是必须的",
+    "AdvancedOperations": "高级操作",
+    "OnlyValidOnes": "仅有效项"
   },
   "Sys": {
     "Currency": {
@@ -577,7 +580,16 @@
     "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前",
     "CloseAccountIsNotAllowed": "不能关闭非正常状态下的账户，也不能关闭不允许手动关闭的账户",
     "CurrencyMustDiff": "货币兑换凭证必须使用两种货币",
-    "ExistingDocuments": "已有凭证"
+    "ExistingDocuments": "已有凭证",
+    "Top3IncomeTransactionInCurrentMonth": "本月迄今收入最多的三种交易类型",
+    "Top3OutgoTransactionInCurrentMonth": "本月迄今消费最多的三种交易类型",
+    "Top3IncomeTransactionInLastMonth": "上月迄今收入最多的三种交易类型",
+    "Top3OutgoTransactionInLastMonth": "上月迄今消费最多的三种交易类型",
+    "AccountClosedSuccesfully": "指定账户关闭成功",
+    "CurrentNodeNotAccount": "当期节点不是账户",
+    "SettleAccountWithInitialBalance": "结清账户并设置初始金额",
+    "In": "流入",
+    "Out": "流出"
   },
   "Library": {
     "BookCategories": "图书种类",

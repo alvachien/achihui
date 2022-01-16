@@ -7,9 +7,10 @@ import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
-  ControlCenter, Order, TranType, financeDocTypeLendTo, UIMode,
+  ControlCenter, Order, TranType, financeDocTypeLendTo,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   DocumentType, IAccountCategoryFilter, AccountExtraLoan, ConsoleLogTypeEnum,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, ModelUtility,
@@ -33,8 +34,8 @@ interface PayingAccountItem {
   styleUrls: ['./document-loan-repay-create.component.less'],
 })
 export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -42,12 +43,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Variables
-  arControlCenters: ControlCenter[];
-  arOrders: Order[];
-  arTranTypes: TranType[];
-  arAccounts: Account[];
-  arDocTypes: DocumentType[];
-  arCurrencies: Currency[];
+  arControlCenters: ControlCenter[] = [];
+  arOrders: Order[] = [];
+  arTranTypes: TranType[] = [];
+  arAccounts: Account[] = [];
+  arDocTypes: DocumentType[] = [];
+  arCurrencies: Currency[] = [];
   baseCurrency: string;
   // Form
   currentStep = 0;
@@ -60,14 +61,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 1: items
   headerFormGroup: FormGroup;
   listItems: PayingAccountItem[] = [];
-  selectedLoanAccount: Account;
-  amountOpen: number;
+  selectedLoanAccount: Account | null = null;
+  amountOpen: number | null = null;
   // Step 2: Confirm
   confirmInfo: Document;
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated?: number;
+  public docPostingFailed: string = '';
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -77,7 +78,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NzModalService,
   ) {
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.searchFormGroup = new FormGroup({
       docIDControl: new FormControl(),
       dateRangeControl: new FormControl([new Date(), new Date()], Validators.required),
@@ -107,7 +108,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
-    let tmpdocid: number = null;
+    let tmpdocid: number | null = null;
     this.activedRoute.url.subscribe((x: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug);
@@ -120,7 +121,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         this.odataService.fetchAllControlCenters(),
         this.odataService.fetchAllOrders(),
         this.odataService.fetchAllCurrencies(),
-      ]).pipe(takeUntil(this._destroyed$)).subscribe({
+      ]).pipe(takeUntil(this._destroyed$!)).subscribe({
         next: (rst: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
             ConsoleLogTypeEnum.debug);
@@ -144,12 +145,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
             if (x[0].path === 'createloanrepay') {
               if (x.length === 2 && this.uiService.SelectedLoanTmp) {
                 tmpdocid = +x[1].path;
-                this.searchFormGroup.get('docIDControl').setValue(tmpdocid);
-                this.searchFormGroup.get('dateRangeControl').setValue([
-                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
-                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate.toDate() : undefined,
+                this.searchFormGroup.get('docIDControl')?.setValue(tmpdocid);
+                this.searchFormGroup.get('dateRangeControl')?.setValue([
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                  this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
                 ]);
-                this.searchFormGroup.get('accountControl').setValue(this.uiService.SelectedLoanTmp
+                this.searchFormGroup.get('accountControl')?.setValue(this.uiService.SelectedLoanTmp
                   ? this.uiService.SelectedLoanTmp.AccountId : undefined);
 
                 this.listOfLoanTmpDoc = [this.uiService.SelectedLoanTmp];
@@ -196,6 +197,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+    return false;
   }
   next(): void {
     switch (this.currentStep) {
@@ -233,7 +235,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -257,18 +259,18 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
   // Step 0: Serach
   public onSearchLoanTmp() {
-    const dtranges: any[] = this.searchFormGroup.get('dateRangeControl').value;
-    const acntid = this.searchFormGroup.get('accountControl').value;
-    const docid = this.searchFormGroup.get('docIDControl').value;
-    const ccid = this.searchFormGroup.get('ccControl').value;
-    const orderid = this.searchFormGroup.get('orderControl').value;
+    const dtranges: any[] = this.searchFormGroup.get('dateRangeControl')?.value;
+    const acntid = this.searchFormGroup.get('accountControl')?.value;
+    const docid = this.searchFormGroup.get('docIDControl')?.value;
+    const ccid = this.searchFormGroup.get('ccControl')?.value;
+    const orderid = this.searchFormGroup.get('orderControl')?.value;
     const dtbgn: moment.Moment = moment(dtranges[0]);
     const dtend: moment.Moment = moment(dtranges[1]);
 
     this.listOfLoanTmpDoc = [];
     this.selectedLoanTmpDoc = [];
     this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend, docid, acntid, ccid, orderid)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (tdocs: TemplateDocLoan[]) => {
           this.listOfLoanTmpDoc = tdocs.slice();
@@ -306,8 +308,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 1. Items
   private readLoanAccountInfo() {
     if (this.selectedLoanTmpDoc.length === 1) {
-      this.odataService.readAccount(this.selectedLoanTmpDoc[0].AccountId)
-        .pipe(takeUntil(this._destroyed$))
+      this.odataService.readAccount(this.selectedLoanTmpDoc[0].AccountId!)
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: val => {
             this.selectedLoanAccount = val;
@@ -347,7 +349,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     }
 
     this.listItems.forEach(item => {
-      this.amountOpen -= item.TranAmount ? item.TranAmount : 0;
+      if (this.amountOpen !== null) {
+        this.amountOpen -= item.TranAmount ? item.TranAmount : 0;
+      }
     });
 
     this.amountOpen = parseFloat(this.amountOpen.toFixed(2));
@@ -358,10 +362,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo = new Document();
 
     // Header
-    this.confirmInfo.HID = this.homeService.ChosedHome.ID;
+    this.confirmInfo.HID = this.homeService.ChosedHome!.ID;
     this.confirmInfo.DocType = financeDocTypeRepay;
-    this.confirmInfo.TranDate = moment(this.headerFormGroup.get('dateControl').value as Date);
-    this.confirmInfo.TranCurr = this.homeService.ChosedHome.BaseCurrency;
+    this.confirmInfo.TranDate = moment(this.headerFormGroup.get('dateControl')?.value as Date);
+    this.confirmInfo.TranCurr = this.homeService.ChosedHome!.BaseCurrency;
     // this.confirmInfo.TranCurr = this.tranCurrency;
     this.confirmInfo.Desp = this.selectedLoanTmpDoc[0].Desp;
 
@@ -442,8 +446,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Step 3.
   private doPosting() {
     // Now go to the real posting
-    this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId)
-    .pipe(takeUntil(this._destroyed$),
+    this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId!)
+    .pipe(takeUntil(this._destroyed$!),
     finalize(() => {
       this.isDocPosting = false;
       this.currentStep = 3; // Result page
@@ -452,12 +456,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       next: val => {
         // Value
         this.docIdCreated = val.Id;
-        this.docPostingFailed = undefined;
+        this.docPostingFailed = '';
       },
       error: err => {
         // Error
         this.docPostingFailed = err;
-        this.docIdCreated = null;
+        this.docIdCreated = undefined;
       }
     });
   }

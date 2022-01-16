@@ -21,7 +21,7 @@ describe('OrderReportComponent', () => {
   let fixture: ComponentFixture<OrderReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchAllReportsByOrderSpy: any;
+  let fetchReportByOrderSpy: any;
   let fetchAllOrdersSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -37,10 +37,10 @@ describe('OrderReportComponent', () => {
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllReportsByOrder',
+      'fetchReportByOrder',
       'fetchAllOrders'
     ]);
-    fetchAllReportsByOrderSpy = storageService.fetchAllReportsByOrder.and.returnValue(of([]));
+    fetchReportByOrderSpy = storageService.fetchReportByOrder.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -105,7 +105,7 @@ describe('OrderReportComponent', () => {
         CreditBalance: 10,
         Balance: 290
       } as FinanceReportByOrder);
-      fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByOrderSpy.and.returnValue(asyncData(arRptData));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
@@ -148,7 +148,7 @@ describe('OrderReportComponent', () => {
         CreditBalance: 10,
         Balance: 290
       } as FinanceReportByOrder);
-      fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptData));
+      fetchReportByOrderSpy.and.returnValue(asyncData(arRptData));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
@@ -164,7 +164,7 @@ describe('OrderReportComponent', () => {
 
     it('should display error when Report by order Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllReportsByOrderSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchReportByOrderSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit

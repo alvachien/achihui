@@ -101,7 +101,7 @@ describe('AppComponent', () => {
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, 'doLogin');
+    spyOn(authServiceStub, 'doLogin' as never);
 
     expect(authServiceStub.doLogin).toHaveBeenCalledTimes(0);
     component.onLogon();
@@ -119,7 +119,7 @@ describe('AppComponent', () => {
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, 'doLogout');
+    spyOn(authServiceStub, 'doLogout' as never);
 
     expect(authServiceStub.doLogout).toHaveBeenCalledTimes(0);
     component.onLogout();

@@ -7,12 +7,13 @@ import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import { UIMode } from 'actslib';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from './document-header.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, } from '../../../../services';
-import { UserAuthInfo, financeDocTypeNormal, UIMode, financeDocTypeCurrencyExchange, Document } from '../../../../model';
+import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -72,7 +73,7 @@ describe('DocumentHeaderComponent', () => {
       component.docType = financeDocTypeNormal;
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
-      component.currentUIMode = UIMode.Change;
+      component.currentUIMode = UIMode.Update;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
 
@@ -92,16 +93,16 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
-      expect(component.headerForm.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.headerForm.get('currControl')?.value).toEqual(fakeData.chosedHome.BaseCurrency);
 
-      component.headerForm.get('dateControl').setValue('');
-      component.headerForm.get('despControl').setValue('test');
+      component.headerForm.get('dateControl')?.setValue('');
+      component.headerForm.get('despControl')?.setValue('test');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('dateControl');
+      expect(errors.GetElement(0)?.key).toEqual('dateControl');
     }));
 
     it('Desp is mandatory', fakeAsync(() => {
@@ -111,14 +112,14 @@ describe('DocumentHeaderComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('dateControl')?.setValue(new Date());
       fixture.detectChanges();
       component.onChange();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('despControl');
+      expect(errors.GetElement(0)?.key).toEqual('despControl');
     }));
 
     it('Currency is mandatory', fakeAsync(() => {
@@ -128,15 +129,15 @@ describe('DocumentHeaderComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue('');
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue('');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('currControl');
+      expect(errors.GetElement(0)?.key).toEqual('currControl');
     }));
 
     it('shall show exchange rate for foreign currency', fakeAsync(() => {
@@ -148,7 +149,7 @@ describe('DocumentHeaderComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(0);
 
       // Input foreign currency
-      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('currControl')?.setValue('USD');
       fixture.detectChanges();
 
       expect(fixture.debugElement.queryAll(By.css('#idexg')).length).toEqual(1);
@@ -162,19 +163,19 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       // Input foreign currency
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue('USD');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('exgControl');
-      expect(errors.GetElement(0).error).toEqual('required');
+      expect(errors.GetElement(0)?.key).toEqual('exgControl');
+      expect(errors.GetElement(0)?.error).toEqual('required');
 
       // Input exchange rate
-      component.headerForm.get('exgControl').setValue('300');
+      component.headerForm.get('exgControl')?.setValue('300');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeTruthy();
@@ -192,23 +193,23 @@ describe('DocumentHeaderComponent', () => {
       expect(component.onChange).toHaveBeenCalledTimes(0);
 
       // Date
-      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('dateControl')?.setValue(new Date());
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(1);
       // Desp
-      component.headerForm.get('despControl').setValue('Test');
+      component.headerForm.get('despControl')?.setValue('Test');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(2);
       // Currency
-      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('currControl')?.setValue('USD');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(3);
       // Exchange rate
-      component.headerForm.get('exgControl').setValue('300');
+      component.headerForm.get('exgControl')?.setValue('300');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(4);
       // Planned exchange rate
-      component.headerForm.get('exgpControl').setValue(true);
+      component.headerForm.get('exgpControl')?.setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(5);
     }));
@@ -220,9 +221,9 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       // Input foreign currency
-      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('dateControl')?.setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue(fakeData.chosedHome.BaseCurrency);
       fixture.detectChanges();
 
       curDocument = component.value;
@@ -243,10 +244,10 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       // Input foreign currency
-      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
-      component.headerForm.get('despControl').setValue('Test');
-      component.headerForm.get('currControl').setValue('USD');
-      component.headerForm.get('exgControl').setValue(624.22);
+      component.headerForm.get('dateControl')?.setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl')?.setValue('Test');
+      component.headerForm.get('currControl')?.setValue('USD');
+      component.headerForm.get('exgControl')?.setValue(624.22);
       fixture.detectChanges();
 
       curDocument = component.value;
@@ -290,7 +291,7 @@ describe('DocumentHeaderComponent', () => {
     beforeEach(() => {
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
-      component.currentUIMode = UIMode.Change;
+      component.currentUIMode = UIMode.Update;
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
@@ -318,7 +319,7 @@ describe('DocumentHeaderComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan2')).length).toEqual(0);
 
       // Input foreign currency
-      component.headerForm.get('curr2Control').setValue('USD');
+      component.headerForm.get('curr2Control')?.setValue('USD');
       fixture.detectChanges();
 
       expect(fixture.debugElement.queryAll(By.css('#idexg2')).length).toEqual(1);
@@ -336,17 +337,17 @@ describe('DocumentHeaderComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue('');
-      component.headerForm.get('curr2Control').setValue('USD');
-      component.headerForm.get('exg2Control').setValue(600);
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue('');
+      component.headerForm.get('curr2Control')?.setValue('USD');
+      component.headerForm.get('exg2Control')?.setValue(600);
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('currControl');
+      expect(errors.GetElement(0)?.key).toEqual('currControl');
     }));
 
     it('Currency2 is mandatory', fakeAsync(() => {
@@ -356,17 +357,17 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
-      component.headerForm.get('curr2Control').setValue('');
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control')?.setValue('');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('curr2Control');
-      expect(errors.GetElement(0).error).toEqual('required');
+      expect(errors.GetElement(0)?.key).toEqual('curr2Control');
+      expect(errors.GetElement(0)?.error).toEqual('required');
     }));
     it('Currency must be diff', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
@@ -375,17 +376,17 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
-      component.headerForm.get('curr2Control').setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control')?.setValue(fakeData.chosedHome.BaseCurrency);
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('curr2Control');
-      expect(errors.GetElement(0).error).toEqual('currencyMustDiff');
+      expect(errors.GetElement(0)?.key).toEqual('curr2Control');
+      expect(errors.GetElement(0)?.error).toEqual('currencyMustDiff');
     }));
     it('Exgrate2 is mandatory if currency 2 is foreign', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
@@ -398,17 +399,17 @@ describe('DocumentHeaderComponent', () => {
 
       expect(component.isFieldChangable).toBeTruthy();
 
-      component.headerForm.get('dateControl').setValue(new Date());
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
-      component.headerForm.get('curr2Control').setValue('USD');
+      component.headerForm.get('dateControl')?.setValue(new Date());
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control')?.setValue('USD');
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeFalsy();
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
-      expect(errors.GetElement(0).key).toEqual('exg2Control');
-      expect(errors.GetElement(0).error).toEqual('required');
+      expect(errors.GetElement(0)?.key).toEqual('exg2Control');
+      expect(errors.GetElement(0)?.error).toEqual('required');
     }));
 
     it('OnChange method', fakeAsync(() => {
@@ -423,35 +424,35 @@ describe('DocumentHeaderComponent', () => {
 
       // Date
       expect(component.onChange).toHaveBeenCalledTimes(0);
-      component.headerForm.get('dateControl').setValue(new Date());
+      component.headerForm.get('dateControl')?.setValue(new Date());
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(1);
       // Desp
-      component.headerForm.get('despControl').setValue('Test');
+      component.headerForm.get('despControl')?.setValue('Test');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(2);
       // Currency
-      component.headerForm.get('currControl').setValue('USD');
+      component.headerForm.get('currControl')?.setValue('USD');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(3);
       // Exchange rate
-      component.headerForm.get('exgControl').setValue('300');
+      component.headerForm.get('exgControl')?.setValue('300');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(4);
       // Planned exchange rate
-      component.headerForm.get('exgpControl').setValue(true);
+      component.headerForm.get('exgpControl')?.setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(5);
       // Currency 2
-      component.headerForm.get('curr2Control').setValue('EUR');
+      component.headerForm.get('curr2Control')?.setValue('EUR');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(6);
       // Exchange rate 2
-      component.headerForm.get('exg2Control').setValue('200');
+      component.headerForm.get('exg2Control')?.setValue('200');
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(7);
       // Planned exchange rate 2
-      component.headerForm.get('exgp2Control').setValue(true);
+      component.headerForm.get('exgp2Control')?.setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(8);
     }));
@@ -463,11 +464,11 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       // Input foreign currency
-      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
-      component.headerForm.get('despControl').setValue('test');
-      component.headerForm.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
-      component.headerForm.get('curr2Control').setValue('USD');
-      component.headerForm.get('exg2Control').setValue(634.56);
+      component.headerForm.get('dateControl')?.setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl')?.setValue('test');
+      component.headerForm.get('currControl')?.setValue(fakeData.chosedHome.BaseCurrency);
+      component.headerForm.get('curr2Control')?.setValue('USD');
+      component.headerForm.get('exg2Control')?.setValue(634.56);
       fixture.detectChanges();
 
       curDocument = component.value;
@@ -490,13 +491,13 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       // Input foreign currency
-      component.headerForm.get('dateControl').setValue(new Date(2020, 2, 2));
-      component.headerForm.get('despControl').setValue('Test');
-      component.headerForm.get('currControl').setValue('USD');
-      component.headerForm.get('exgControl').setValue(624.22);
-      component.headerForm.get('curr2Control').setValue('EUR');
-      component.headerForm.get('exg2Control').setValue(666.56);
-      component.headerForm.get('exgp2Control').setValue(true);
+      component.headerForm.get('dateControl')?.setValue(new Date(2020, 2, 2));
+      component.headerForm.get('despControl')?.setValue('Test');
+      component.headerForm.get('currControl')?.setValue('USD');
+      component.headerForm.get('exgControl')?.setValue(624.22);
+      component.headerForm.get('curr2Control')?.setValue('EUR');
+      component.headerForm.get('exg2Control')?.setValue(666.56);
+      component.headerForm.get('exgp2Control')?.setValue(true);
       fixture.detectChanges();
 
       curDocument = component.value;

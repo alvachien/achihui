@@ -3,8 +3,7 @@
 //
 
 import { UIDisplayStringUtil, UIDisplayString, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
-  getSingleFilterString,
-  getFilterString} from './uicommon';
+  getSingleFilterString, getFilterString} from './uicommon';
 
 describe('UIDisplayStringUtil', () => {
 

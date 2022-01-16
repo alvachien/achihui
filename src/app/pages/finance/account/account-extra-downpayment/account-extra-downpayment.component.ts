@@ -7,8 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
+import { AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
   ConsoleLogTypeEnum, ModelUtility, TranType, RepeatFrequencyEnum,
 } from '../../../../model';
@@ -32,43 +33,43 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 })
 export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
 
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
-  private _onChange: (val: any) => void;
-  private _onTouched: () => void;
-  private _refDocID?: number;
+  private _onChange?: (val: any) => void;
+  private _onTouched?: () => void;
+  private _refDocID: number | null = null;
 
-  public currentMode: string;
+  public currentMode: string = '';
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  get refDocId(): number | undefined {
+  get refDocId(): number | null {
     return this._refDocID;
   }
-  isLoadingTmpDocs: boolean;
+  isLoadingTmpDocs: boolean = false;
   public listTmpDocs: TemplateDocADP[] = [];
 
   public adpInfoFormGroup: FormGroup;
 
-  @Input() tranAmount: number;
-  @Input() tranType: number;
-  @Input() allTranTypes: TranType[];
+  @Input() tranAmount: number = 0;
+  @Input() tranType?: number;
+  @Input() allTranTypes: TranType[] = [];
 
   get value(): AccountExtraAdvancePayment {
     const inst: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
 
-    let controlVal = this.adpInfoFormGroup.get('startDateControl').value;
+    let controlVal = this.adpInfoFormGroup.get('startDateControl')?.value;
     if (controlVal !== undefined) {
       inst.StartDate = moment(controlVal as Date);
     }
-    controlVal = this.adpInfoFormGroup.get('endDateControl').value;
+    controlVal = this.adpInfoFormGroup.get('endDateControl')?.value;
     if (controlVal !== undefined) {
       inst.EndDate = moment(controlVal as Date);
     }
-    controlVal = this.adpInfoFormGroup.get('frqControl').value;
+    controlVal = this.adpInfoFormGroup.get('frqControl')?.value;
     if (controlVal !== undefined) {
       inst.RepeatType = controlVal as RepeatFrequencyEnum;
     }
-    controlVal = this.adpInfoFormGroup.get('cmtControl').value;
+    controlVal = this.adpInfoFormGroup.get('cmtControl')?.value;
     if (controlVal !== undefined) {
       inst.Comment = controlVal as string;
     }
@@ -153,22 +154,22 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     const datInput: RepeatedDatesWithAmountAPIInput = {
       StartDate: objval.StartDate.clone(),
       EndDate: objval.EndDate.clone(),
-      RepeatType: objval.RepeatType,
+      RepeatType: objval.RepeatType!,
       Desp: objval.Comment,
       TotalAmount: this.tranAmount,
     };
 
     this.odataService.calcADPTmpDocs(datInput)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((rsts: RepeatedDatesWithAmountAPIOutput[]) => {
       if (rsts && rsts instanceof Array && rsts.length > 0) {
         const tmpDocs: TemplateDocADP[] = [];
 
         rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
           const item: TemplateDocADP = new TemplateDocADP();
-          item.HID = this.homeService.ChosedHome.ID;
+          item.HID = this.homeService.ChosedHome!.ID;
           item.DocId = idx + 1;
-          item.TranType = this.tranType;
+          item.TranType = this.tranType!;
           item.TranDate = rst.TranDate;
           item.TranAmount = rst.TranAmount;
           item.Desp = rst.Desp;
@@ -210,12 +211,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...', ConsoleLogTypeEnum.debug);
 
     if (val) {
-      this.adpInfoFormGroup.get('startDateControl').setValue(val.StartDate.toDate());
-      this.adpInfoFormGroup.get('endDateControl').setValue(val.EndDate.toDate());
+      this.adpInfoFormGroup.get('startDateControl')?.setValue(val.StartDate.toDate());
+      this.adpInfoFormGroup.get('endDateControl')?.setValue(val.EndDate.toDate());
       if (val.RepeatType !== null && val.RepeatType !== undefined) {
-        this.adpInfoFormGroup.get('frqControl').setValue(val.RepeatType);
+        this.adpInfoFormGroup.get('frqControl')?.setValue(val.RepeatType);
       }
-      this.adpInfoFormGroup.get('cmtControl').setValue(val.Comment);
+      this.adpInfoFormGroup.get('cmtControl')?.setValue(val.Comment);
       this.listTmpDocs = [];
       if (val.dpTmpDocs) {
         this.listTmpDocs = val.dpTmpDocs.slice();
@@ -224,10 +225,10 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       if (val.RefDocId) {
         this._refDocID = val.RefDocId;
       } else {
-        this._refDocID = undefined;
+        this._refDocID = null;
       }
     } else {
-      this._refDocID = undefined;
+      this._refDocID = null;
     }
   }
 

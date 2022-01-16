@@ -4,13 +4,16 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
-import { EChartOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
-  ControlCenter, Order,
+  ControlCenter, Order, FinanceReportEntryByTransactionType, FinanceReportMostExpenseEntry,
 } from '../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
+import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
+import * as moment from 'moment';
+import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-finance-report',
@@ -18,8 +21,8 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../.
   styleUrls: ['./report.component.less'],
 })
 export class ReportComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataReportByAccount: FinanceReportByAccount[] = [];
   dataReportByControlCenter: FinanceReportByControlCenter[] = [];
@@ -30,17 +33,27 @@ export class ReportComponent implements OnInit, OnDestroy {
   arControlCenters: ControlCenter[] = [];
   arOrders: Order[] = [];
 
+  // Current Month - Transaction Type
+  reportByMostOutgoInCurrentMonth: FinanceReportMostExpenseEntry[] = [];
+  totalOutgoInCurrentMonth = 0;
+  reportByMostIncomeInCurrentMonth: FinanceReportMostExpenseEntry[] = [];
+  totalIncomeInCurrentMonth = 0;
+  // Last Month - Transaction Type
+  reportByMostOutgoInLastMonth: FinanceReportMostExpenseEntry[] = [];
+  totalOutgoInLastMonth = 0;
+  reportByMostIncomeInLastMonth: FinanceReportMostExpenseEntry[] = [];
+  totalIncomeInLastMonth = 0;
   // Card: Account
-  reportAccountAsset = 0;
-  reportAccountLibility = 0;
-  chartAccountOption: EChartOption;
+  reportAccountAsset: NzStatisticValueType = 0;
+  reportAccountLibility: NzStatisticValueType = 0;
+  chartAccountOption?: EChartsOption;
   // Card: Control center
-  chartControlCenterOption: EChartOption;
+  chartControlCenterOption?: EChartsOption;
   // Card: Order
-  chartOrderOption: EChartOption;
+  chartOrderOption?: EChartsOption;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -51,7 +64,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
     this.isLoadingResults = false;
   }
 
@@ -63,40 +76,103 @@ export class ReportComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
+    let today = moment();
+    this.reportByMostIncomeInCurrentMonth = [];
+    this.totalOutgoInCurrentMonth = 0;
+    this.reportByMostOutgoInCurrentMonth = [];
+    this.totalIncomeInCurrentMonth = 0;
+
+    // Current month
+    let dateInLastMonth = today.clone();
+    dateInLastMonth.subtract(1, "month");
     forkJoin([
-      this.odataService.fetchAllReportsByAccount(),
-      this.odataService.fetchAllReportsByControlCenter(),
-      this.odataService.fetchAllReportsByOrder(),
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllControlCenters(),
-      this.odataService.fetchAllOrders(),
-    ])
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
+      this.odataService.fetchReportByTransactionType(today.year(), today.month() + 1),
+      this.odataService.fetchReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
+      ])
+      .pipe(takeUntil(this._destroyed$!),
+      finalize(() => this.isLoadingResults = false))
       .subscribe({
-        next: (x: any[]) => {
-          this.dataReportByAccount = x[0];
-          this.dataReportByControlCenter = x[1];
-          this.dataReportByOrder = x[2];
-
-          this.arAccountCategories = x[3];
-          this.arAccounts = x[4];
-          this.arControlCenters = x[5];
-          this.arOrders = x[6];
-
-          this.buildInfo();
+        next: (val: any[]) => {
+          // Current month
+          val[0].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              this.totalIncomeInCurrentMonth += item.InAmount;
+            }
+            if (item.OutAmount !== 0) {
+              this.totalOutgoInCurrentMonth += item.OutAmount;
+            }
+          });
+          val[0].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.InAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInCurrentMonth);
+              this.reportByMostIncomeInCurrentMonth.push(entry);
+            }
+            if (item.OutAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.OutAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInCurrentMonth);
+              this.reportByMostOutgoInCurrentMonth.push(entry);
+            }
+          });
+  
+          this.reportByMostIncomeInCurrentMonth.sort((a, b) => b.Amount - a.Amount);
+          if (this.reportByMostIncomeInCurrentMonth.length > 3) {
+            this.reportByMostIncomeInCurrentMonth.splice(2);
+          }
+          this.reportByMostOutgoInCurrentMonth.sort((a, b) => a.Amount - b.Amount);
+          if (this.reportByMostOutgoInCurrentMonth.length > 3) {
+            this.reportByMostOutgoInCurrentMonth.splice(3);
+          }
+          // Last month
+          val[1].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              this.totalIncomeInLastMonth += item.InAmount;
+            }
+            if (item.OutAmount !== 0) {
+              this.totalOutgoInLastMonth += item.OutAmount;
+            }
+          });
+          val[1].forEach((item: any) => {
+            if (item.InAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.InAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncomeInLastMonth);
+              this.reportByMostIncomeInLastMonth.push(entry);
+            }
+            if (item.OutAmount !== 0) {
+              const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+              entry.Amount = item.OutAmount;
+              entry.TransactionType  = item.TransactionType;
+              entry.TransactionTypeName = item.TransactionTypeName;
+              entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalOutgoInLastMonth);
+              this.reportByMostOutgoInLastMonth.push(entry);
+            }
+          });
+  
+          this.reportByMostIncomeInLastMonth.sort((a, b) => b.Amount - a.Amount);
+          if (this.reportByMostIncomeInLastMonth.length > 3) {
+            this.reportByMostIncomeInLastMonth.splice(2);
+          }
+          this.reportByMostOutgoInLastMonth.sort((a, b) => a.Amount - b.Amount);
+          if (this.reportByMostOutgoInLastMonth.length > 3) {
+            this.reportByMostOutgoInLastMonth.splice(3);
+          }    
         },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReportComponent ngOnInit forkJoin failed ${error}`,
-            ConsoleLogTypeEnum.error);
-
+        error: err => {
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: err,
             nzClosable: true,
-          });
-        },
+          });    
+        }
       });
   }
 
@@ -110,14 +186,17 @@ export class ReportComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDrillDownToAccount(event: any) {
+  onDrillDownToAccount(): void {
     this.router.navigate(['/finance/report/account']);
   }
-  onDrillDownToControlCenter(event: any) {
+  onDrillDownToControlCenter(): void {
     this.router.navigate(['/finance/report/controlcenter']);
   }
-  onDrillDownToOrder(event: any) {
+  onDrillDownToOrder(): void {
     this.router.navigate(['/finance/report/order']);
+  }
+  onDrillDownToTranType(): void {
+    // How to Tran. type page?
   }
 
   private buildInfo() {
@@ -129,14 +208,16 @@ export class ReportComponent implements OnInit, OnDestroy {
         return val.Id === val3.AccountId;
       });
       if (bal !== undefined) {
-        const ctgy: AccountCategory = this.arAccountCategories.find((val2: AccountCategory) => {
+        const ctgy = this.arAccountCategories.find((val2: AccountCategory) => {
           return val.CategoryId === val2.ID;
         });
 
-        if (ctgy.AssetFlag) {
-          this.reportAccountAsset += bal.Balance;
-        } else {
-          this.reportAccountLibility += bal.Balance;
+        if (ctgy) {
+          if (ctgy.AssetFlag) {
+            this.reportAccountAsset = bal.Balance + (+this.reportAccountAsset);
+          } else {
+            this.reportAccountLibility = bal.Balance + (+this.reportAccountLibility);
+          }  
         }
       }
     });

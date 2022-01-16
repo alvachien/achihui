@@ -1,6 +1,5 @@
 <nz-layout class="app-layout" *transloco="let t">
-  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
-    [nzTrigger]="null">
+  <nz-sider class="menu-sidebar" nzCollapsible nzBreakpoint="lg" [nzCollapsedWidth]="0" nzWidth="256px" [(nzCollapsed)]="isCollapsed">
     <div class="sidebar-logo">
       <a href="/hih/" target="_blank">
         <img src="favicon.ico" alt="logo">
@@ -101,14 +100,14 @@
             </div>
           </li>
         </ul>
-        <div class="app-header-search">
+        <!-- <div class="app-header-search">
           <nz-input-group [nzPrefix]="searchPrefixTemplate">
             <input type="text" nz-input placeholder="Search anything" />
           </nz-input-group>
           <ng-template #searchPrefixTemplate><i nz-icon nzType="search"></i></ng-template>
-        </div>
+        </div> -->
         <ul class="app-header-nav">
-          <li>
+          <li class="app-header-nav-container">
             <div class="app-header-nav-item">
               <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
                 <i nz-icon nzType="github" nzTheme="outline" class="app-header-icon"></i>
@@ -162,19 +161,15 @@
               </nz-dropdown-menu>
             </div>
           </li>
-          <li>
+          <li class="app-header-nav-container">
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuApps">
                 <i nz-icon nzType="appstore" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuApps="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>
-                    <button nz-button type="link" (click)="onOpenPhotoGallery()">AC Gallery</button>
-                  </li>
-                  <li nz-menu-item>
-                    <button nz-button type="link" (click)="onOpenMathExcises()">Math Learn</button>
-                  </li>
+                  <li nz-menu-item (click)="onOpenPhotoGallery()">AC Gallery</li>
+                  <li nz-menu-item (click)="onOpenMathExcises()">K.H.B.</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -187,6 +182,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - 2020 Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - 2022 Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

@@ -7,8 +7,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 
 import { FinanceOdataService, UIStatusService } from '../../../services';
 import { Account, ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, DocumentItemView,
-  TranType, ControlCenter, UIAccountForSelection, Order,
+  GeneralFilterItem, DocumentItemView, TranType, ControlCenter, Order,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import * as moment from 'moment';
@@ -19,8 +18,8 @@ import * as moment from 'moment';
   styleUrls: ['./document-item-view.component.less'],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
-  // tslint:disable: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _filterDocItem: GeneralFilterItem[] = [];
 
   @Input()
@@ -31,9 +30,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this._filterDocItem = flters;
 
       this.pageIndex = 1;
-      this.listOfColumns.forEach(item => {
-        item.sortOrder = null;
-      });
       this.fetchDocItems();
     } else {
       this._filterDocItem = [];
@@ -47,78 +43,26 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
   public arOrders: Order[] = [];
-  public arAccounts: Account[];
+  public arAccounts: Account[] = [];
   pageIndex = 1;
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
-  listOfColumns: UITableColumnItem[] = [];
 
-  constructor(
-    private odataService: FinanceOdataService,
+  constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.listOfColumns = [{
-      name: 'Common.ID',
-      columnKey: 'docid'
-    }, {
-      name: 'Finance.Items',
-      columnKey: 'itemid'
-    }, {
-      name: 'Common.Description',
-      columnKey: 'desp',
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
-      showSort: true,
-    }, {
-      name: 'Common.Date',
-      columnKey: 'date',
-      sortOrder: null,
-      showSort: true,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        a.TransactionDate.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate.format(moment.HTML5_FMT.DATE)),
-    }, {
-      name: 'Finance.TransactionType',
-      columnKey: 'trantype',
-      sortOrder: null,
-      showSort: true,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType - b.TransactionType
-    }, {
-      name: 'Finance.Amount',
-      columnKey: 'amount',
-      showSort: true,
-      sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
-    }, {
-      name: 'Finance.Account',
-      columnKey: 'account',
-      showSort: true,
-      sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID).localeCompare(this.getAccountName(b.AccountID))
-    }, {
-      name: 'Finance.ControlCenter',
-      columnKey: 'controlcenter',
-      showSort: true,
-      sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
-    }, {
-      name: 'Finance.Activity',
-      columnKey: 'order',
-      showSort: true,
-      sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID).localeCompare(this.getOrderName(b.OrderID))
-    }];
+    if (this._destroyed$ == null) {
+      this._destroyed$ = new ReplaySubject(1);
+    }
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    if (this._destroyed$ === undefined) {
+    if (this._destroyed$ == null) {
       this._destroyed$ = new ReplaySubject(1);
     }
   }
@@ -127,17 +71,17 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
 
-    if (this._destroyed$) {
+    if (this._destroyed$ !== null) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
-      this._destroyed$ = undefined;
+      this._destroyed$ = null;
     }
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -157,9 +101,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     });
 
     return tranTypeObj ? tranTypeObj.Name : '';
-  }
-  trackByName(_: number, item: UITableColumnItem): string {
-    return item.name;
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
@@ -197,8 +138,12 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   fetchDocItems(orderby?: { field: string, order: string }): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
       ConsoleLogTypeEnum.debug);
-    this.isLoadingDocItems = true;
 
+    // Not allow select all.
+    if (this.filterDocItem.length <= 0) 
+      return;
+
+    this.isLoadingDocItems = true;
     forkJoin([
       this.odataService.searchDocItem(this.filterDocItem,
         this.pageSize,
@@ -209,7 +154,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
     ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingDocItems = false))
       .subscribe({
         next: (revdata: any) => {
@@ -236,7 +181,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchData, fetchAllDocuments failed ${error}...`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${error}...`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({

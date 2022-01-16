@@ -9,12 +9,6 @@ import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable()
 export class TagsService {
-  // listDataChange: BehaviorSubject<Tag[]> = new BehaviorSubject<Tag[]>([]);
-  // get Tags(): Tag[] {
-  //   return this.listDataChange.value;
-  // }
-
-  // private _islistLoaded: boolean;
 
   constructor(private _http: HttpClient,
     private _homeService: HomeDefOdataService,
@@ -22,18 +16,15 @@ export class TagsService {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering TagsService constructor...');
     }
-
-    // this._islistLoaded = false; // Performance improvement
   }
 
   public fetchAllTags(
-    // forceReload?: boolean
     reqamt: boolean,
     tagtype?: TagTypeEnum,
     tagterm?: string,
   ): Observable<any> {
     // if (!this._islistLoaded || forceReload) {
-    const apiurl: string = environment.ApiUrl + '/api/Tag';
+    const apiurl: string = environment.ApiUrl + '/Tag';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -41,7 +32,7 @@ export class TagsService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', this._homeService.ChosedHome!.ID!.toString());
     params = params.append('reqamt', (<boolean>reqamt).toString());
     if (tagtype) {
       params = params.append('tagtype', (<number>tagtype).toString());
@@ -54,7 +45,7 @@ export class TagsService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
         }
@@ -73,7 +64,7 @@ export class TagsService {
             const tag: Tag = new Tag();
             tag.onSetData(si);
 
-            const rids: string = (<number> tag.TagType).toString() + '_' + tag.TagID.toString();
+            const rids: string = (<number> tag.TagType).toString() + '_' + tag.TagID?.toString();
             if (mapIDs.has(rids)) {
               continue;
             } else {

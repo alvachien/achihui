@@ -9,7 +9,7 @@ import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../model';
 @Injectable()
 export class LanguageOdataService {
   // Buffer
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _islistLoaded: boolean;
   private _listData: AppLanguage[];
   get Languages(): AppLanguage[] {
@@ -26,7 +26,7 @@ export class LanguageOdataService {
 
   public fetchAllLanguages(): Observable<AppLanguage[]> {
     if (!this._islistLoaded) {
-      const apiurl: string = environment.ApiUrl + '/api/Languages';
+      const apiurl: string = environment.ApiUrl + '/Languages';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -35,7 +35,7 @@ export class LanguageOdataService {
       return this._http.get(apiurl, {
           headers,
         })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LanguageOdataService fetchAllLanguages',
             ConsoleLogTypeEnum.debug);
 

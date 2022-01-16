@@ -7,7 +7,7 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.Activity' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-switch [(ngModel)]="validOrderOnly" nzCheckedChildren="Only Valid" nzUnCheckedChildren="All" (ngModelChange)="onOrderValidityChanged()"></nz-switch>
+    <nz-switch [(ngModel)]="validOrderOnly" [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" (ngModelChange)="onOrderValidityChanged()"></nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -17,8 +17,8 @@
       <tr>
         <th>#</th>
         <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Finance.Debit' | transloco}}</th>
-        <th>{{'Finance.Credit' | transloco}}</th>
+        <th>{{'Finance.In' | transloco}}</th>
+        <th>{{'Finance.Out' | transloco}}</th>
         <th>{{'Finance.Balance' | transloco}}</th>
       </tr>
     </thead>

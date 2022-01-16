@@ -2,12 +2,10 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
 
 import { LearnOdataService } from './learn-odata.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 import { QuestionBankItem, QuestionBankTypeEnum, LearnObject, LearnHistory } from '../model';
 
@@ -183,7 +181,7 @@ describe('LearnOdataService', () => {
     beforeEach(() => {
       item = new LearnObject();
       item.Name = 'object 1';
-      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.CategoryId = fakeData.learnCategories[0].Id!;
       item.Content = 'test';
 
       service = TestBed.inject(LearnOdataService);
@@ -241,7 +239,7 @@ describe('LearnOdataService', () => {
       item = new LearnObject();
       item.Id = 2;
       item.Name = 'object 1';
-      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.CategoryId = fakeData.learnCategories[0].Id!;
       item.Content = 'test';
 
       service = TestBed.inject(LearnOdataService);
@@ -299,7 +297,7 @@ describe('LearnOdataService', () => {
       item = new LearnObject();
       item.Id = 2;
       item.Name = 'object 1';
-      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.CategoryId = fakeData.learnCategories[0].Id!;
       item.Content = 'test';
 
       service = TestBed.inject(LearnOdataService);
@@ -357,7 +355,7 @@ describe('LearnOdataService', () => {
       item = new LearnObject();
       item.Id = 2;
       item.Name = 'object 1';
-      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.CategoryId = fakeData.learnCategories[0].Id!;
       item.Content = 'test';
 
       service = TestBed.inject(LearnOdataService);

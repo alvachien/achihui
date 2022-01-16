@@ -94,7 +94,7 @@
       <nz-form-label [nzSpan]="7">{{'Common.Tags' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
         <nz-select nzMode="tags" nzPlaceHolder="Tags" formControlName="tagControl">
-          <nz-option *ngFor="let tag of listOfTags" [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+          <nz-option *ngFor="let tag of listOfTags" [nzLabel]="tag.Tag!" [nzValue]="tag.Tag"></nz-option>
         </nz-select>
         <ng-template #titleTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">

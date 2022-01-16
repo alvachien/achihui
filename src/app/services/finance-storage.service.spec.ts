@@ -22,15 +22,15 @@ describe('FinanceStorageService', () => {
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: FinanceStorageService;
-  const accountCategoryAPIURL: any = environment.ApiUrl + '/api/FinanceAccountCategory';
-  const docTypeAPIURL: any = environment.ApiUrl + '/api/FinanceDocType';
-  const tranTypeAPIURL: any = environment.ApiUrl + '/api/FinanceTranType';
-  const assetCategoryAPIURL: any = environment.ApiUrl + '/api/FinanceAssetCategory';
-  const accountAPIURL: any = environment.ApiUrl + '/api/FinanceAccount';
-  const ccAPIURL: any = environment.ApiUrl + '/api/FinanceControlCenter';
-  const orderAPIURL: any = environment.ApiUrl + '/api/FinanceOrder';
-  const documentAPIURL: any = environment.ApiUrl + '/api/FinanceDocument';
-  const adpDocumentAPIURL: any = environment.ApiUrl + '/api/financeadpdocument';
+  const accountCategoryAPIURL: any = environment.ApiUrl + '/FinanceAccountCategory';
+  const docTypeAPIURL: any = environment.ApiUrl + '/FinanceDocType';
+  const tranTypeAPIURL: any = environment.ApiUrl + '/FinanceTranType';
+  const assetCategoryAPIURL: any = environment.ApiUrl + '/FinanceAssetCategory';
+  const accountAPIURL: any = environment.ApiUrl + '/FinanceAccount';
+  const ccAPIURL: any = environment.ApiUrl + '/FinanceControlCenter';
+  const orderAPIURL: any = environment.ApiUrl + '/FinanceOrder';
+  const documentAPIURL: any = environment.ApiUrl + '/FinanceDocument';
+  const adpDocumentAPIURL: any = environment.ApiUrl + '/Financeadpdocument';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -134,7 +134,7 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('updatePreviousDocWithPlanExgRate', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    const apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
     });
@@ -184,7 +184,7 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('fetchReportTrendData', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
+    const apiurl: string = environment.ApiUrl + '/FinanceReportTrendEx';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
@@ -297,7 +297,7 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('fetchDocPostedFrequencyPerUser', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
+    const apiurl: string = environment.ApiUrl + '/FinanceDocCreatedFrequenciesByUser';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
@@ -355,7 +355,7 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('getReportTranType', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
+    const apiurl: string = environment.ApiUrl + '/FinanceReportTranType';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
@@ -438,7 +438,7 @@ describe('FinanceStorageService', () => {
   });
 
   xdescribe('getReportMonthOnMonth', () => {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
+    const apiurl: string = environment.ApiUrl + '/FinanceReportTrend';
 
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);

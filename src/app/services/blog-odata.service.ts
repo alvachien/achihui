@@ -15,7 +15,7 @@ export class BlogOdataService {
   private isCollectionlistLoaded: boolean;
   private listCollection: BlogCollection[];
   private isSettingLoaded: boolean;
-  private setting: BlogUserSetting;
+  private setting: BlogUserSetting | null;
 
   constructor(
     private http: HttpClient,
@@ -33,16 +33,16 @@ export class BlogOdataService {
   get Collections(): BlogCollection[] {
     return this.listCollection;
   }
-  get Setting(): BlogUserSetting {
+  get Setting(): BlogUserSetting | null {
     return this.setting;
   }
 
   /**
    * Read setting
    */
-  public readUserSetting(): Observable<BlogUserSetting> {
+  public readUserSetting(): Observable<BlogUserSetting | null> {
     if (!this.isSettingLoaded) {
-      const apiUrl: string = environment.ApiUrl + '/api/BlogUserSettings';
+      const apiUrl: string = environment.ApiUrl + `/BlogUserSettings`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -55,7 +55,7 @@ export class BlogOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readUserSetting`,
             ConsoleLogTypeEnum.debug);
 
@@ -81,7 +81,7 @@ export class BlogOdataService {
     }
   }
   public updateUserSetting(newset: BlogUserSetting): Observable<BlogUserSetting> {
-    const apiUrl: string = environment.ApiUrl + `/api/BlogUserSettings('${newset.owner}')`;
+    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${newset.owner}')`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -92,7 +92,7 @@ export class BlogOdataService {
     return this.http.put(apiUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService updateUserSetting`,
           ConsoleLogTypeEnum.debug);
 
@@ -119,11 +119,11 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + `/api/BlogUserSettings('${owner}')/deploy`;
+    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${owner}')/deploy`;
     return this.http.get(apiUrl, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService deploySetting`,
           ConsoleLogTypeEnum.debug);
 
@@ -142,7 +142,7 @@ export class BlogOdataService {
    */
   public fetchAllCollections(forceReload?: boolean): Observable<BlogCollection[]> {
     if (!this.isCollectionlistLoaded || forceReload) {
-      const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
+      const apiUrl: string = environment.ApiUrl + '/BlogCollections';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -156,7 +156,7 @@ export class BlogOdataService {
         headers,
         params,
       })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllCollections`,
             ConsoleLogTypeEnum.debug);
 
@@ -198,13 +198,13 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
-    coll.owner = this.authService.authSubject.getValue().getUserId();
+    const apiUrl: string = environment.ApiUrl + '/BlogCollections';
+    coll.owner = this.authService.authSubject.getValue().getUserId()!;
     const jdata = coll.writeAPIJson();
     return this.http.post(apiUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService createCollection`,
           ConsoleLogTypeEnum.debug);
 
@@ -225,7 +225,7 @@ export class BlogOdataService {
    * @param id ID of the Collection to be read
    */
   public readCollection(id: number): Observable<BlogCollection> {
-    const apiUrl: string = environment.ApiUrl + '/api/BlogCollections';
+    const apiUrl: string = environment.ApiUrl + '/BlogCollections';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -238,7 +238,7 @@ export class BlogOdataService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readCollection`,
           ConsoleLogTypeEnum.debug);
 
@@ -274,7 +274,7 @@ export class BlogOdataService {
    * @param skip The offset position
    */
   public fetchAllPosts(top: number, skip: number): Observable<{totalCount: number, contentList: BlogPost[]}> {
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -291,7 +291,7 @@ export class BlogOdataService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPosts`,
           ConsoleLogTypeEnum.debug);
 
@@ -329,13 +329,13 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
     post.owner = this.authService.authSubject.getValue().getUserId();
     const jdata = post.writeAPIJson();
     return this.http.post(apiUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService createPost`,
           ConsoleLogTypeEnum.debug);
 
@@ -361,13 +361,13 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts/' + post.id.toString();
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts/' + post.id!.toString();
     post.owner = this.authService.authSubject.getValue().getUserId();
     const jdata = post.writeAPIJson();
     return this.http.put(apiUrl, jdata, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService changePost`,
           ConsoleLogTypeEnum.debug);
 
@@ -388,11 +388,11 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts(' + postid.toString() + ')/Deploy';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/Deploy';
     return this.http.get(apiUrl, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService deployPost`,
           ConsoleLogTypeEnum.debug);
 
@@ -411,11 +411,11 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts(' + postid.toString() + ')/ClearDeploy';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/ClearDeploy';
     return this.http.get(apiUrl, {
       headers,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService revokeDeployPost`,
           ConsoleLogTypeEnum.debug);
 
@@ -434,7 +434,7 @@ export class BlogOdataService {
    * @param id ID of the Post to be read
    */
   public readPost(id: number): Observable<BlogPost> {
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPosts';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -449,7 +449,7 @@ export class BlogOdataService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService readPost`,
           ConsoleLogTypeEnum.debug);
 
@@ -475,7 +475,7 @@ export class BlogOdataService {
    * @param skip The offset position
    */
   public fetchAllPostTags(top: number, skip: number): Observable<{totalCount: number, contentList: BlogPostTag[]}> {
-    const apiUrl: string = environment.ApiUrl + '/api/BlogPostTags';
+    const apiUrl: string = environment.ApiUrl + '/BlogPostTags';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -491,7 +491,7 @@ export class BlogOdataService {
       headers,
       params,
     })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPostTags`,
           ConsoleLogTypeEnum.debug);
 

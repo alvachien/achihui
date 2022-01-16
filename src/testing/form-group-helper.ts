@@ -22,8 +22,8 @@ export class FormGroupHelper {
     }
 
     Object.keys(formGroup.controls).forEach(key => {
-      const controlErrors: ValidationErrors = formGroup.get(key).errors;
-      if (controlErrors !== null) {
+      const controlErrors: ValidationErrors | null | undefined = formGroup.get(key)?.errors;
+      if (controlErrors) {
         Object.keys(controlErrors).forEach(keyError => {
           listErrors.AppendElement({
             key,

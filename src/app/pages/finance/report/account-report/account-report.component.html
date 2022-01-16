@@ -7,10 +7,7 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.Account' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-select [(ngModel)]="listSelectedAccountStatus" nzMode="multiple" nzAllowClear [nzPlaceHolder]="'Common.Status' | transloco"
-      (ngModelChange)="onAccountStatusFilterChanged($event)">
-      <nz-option *ngFor="let option of arAccountStatusDisplayStrings" [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
-    </nz-select>
+    <button nz-button>{{'Common.Refresh' | transloco}}</button>
     <nz-divider nzType="vertical"></nz-divider>
   </nz-page-header-extra>
 </nz-page-header>
@@ -20,19 +17,36 @@
     <div nz-col [nzSpan]="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetOption" style="height: 320px;" (chartClick)="onAssetsClicked($event)"></div>
+          <div echarts [options]="chartAssetOption!" style="height: 320px;" (chartClick)="onAssetsClicked($event)"></div>
         </div>
       </nz-card>
     </div>
     <div nz-col [nzSpan]="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesOption" style="height: 320px;" (chartClick)="onLiabilitiesClicked($event)"></div>
+          <div echarts [options]="chartLiabilitiesOption!" style="height: 320px;" (chartClick)="onLiabilitiesClicked($event)"></div>
         </div>
       </nz-card>
     </div>
   </div>
 
+  <nz-divider></nz-divider>
+  <div nz-row [nzGutter]="8">
+    <div nz-col [nzSpan]="12">
+      <nz-card [nzTitle]="'Finance.Assets' | transloco">
+        <div nz-col [nzSpan]="24">
+          <div echarts [options]="chartAssetAccountOption!" style="height: 320px;" ></div>
+        </div>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
+        <div nz-col [nzSpan]="24">
+          <div echarts [options]="chartLiabilitiesAccountOption!" style="height: 320px;"></div>
+        </div>
+      </nz-card>
+    </div>
+  </div>
   <nz-divider></nz-divider>
 
   <div nz-row style="padding-top: 30px;">
@@ -45,8 +59,8 @@
             (nzFilterChange)="filterReportByAccountTable($event)">
             {{'Common.Category' | transloco}}
           </th>
-          <th>{{'Finance.Debit' | transloco}}</th>
-          <th>{{'Finance.Credit' | transloco}}</th>
+          <th>{{'Finance.In' | transloco}}</th>
+          <th>{{'Finance.Out' | transloco}}</th>
           <th>{{'Finance.Balance' | transloco}}</th>
         </tr>
       </thead>

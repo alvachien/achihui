@@ -5,11 +5,11 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
-import { EChartOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem,
-  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString,
+  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString, FinanceReportEntryByAccountAndExpense,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -20,21 +20,20 @@ import { DocumentItemViewComponent } from '../../document-item-view';
   styleUrls: ['./account-report.component.less'],
 })
 export class AccountReportComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataSet: any[] = [];
   arAccounts: Account[] = [];
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
-  baseCurrency: string;
-  chartAssetOption: EChartOption;
-  chartLiabilitiesOption: EChartOption;
+  baseCurrency: string = '';
+  chartAssetOption: EChartsOption | null = null;
+  chartLiabilitiesOption: EChartsOption | null = null;
+  chartAssetAccountOption: EChartsOption | null = null;
+  chartLiabilitiesAccountOption: EChartsOption | null = null;
   listCategoryFilter: ITableFilterValues[] = [];
   selectedCategoryFilter: number[] = [];
-  // Filters
-  listSelectedAccountStatus: AccountStatusEnum[] = [];
-  arAccountStatusDisplayStrings: UIDisplayString[];
 
   constructor(
     private odataService: FinanceOdataService,
@@ -45,9 +44,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.isLoadingResults = false;
-    this.arAccountStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
-    this.baseCurrency = homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit() {
@@ -59,7 +56,8 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllReportsByAccount(),
+      // this.odataService.fetchAllReportsByAccount(),
+      this.odataService.fetchReportByAccount(),
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAccounts()
     ])
@@ -67,20 +65,24 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         finalize(() => this.isLoadingResults = false))
       .subscribe({
         next: (x: any[]) => {
+          // let arData = x[0] as FinanceReportEntryByAccountAndExpense[];
+          
           this.arReportByAccount = x[0] as FinanceReportByAccount[];
           this.arAccountCategories = x[1];
           this.arAccounts = x[2];
 
           this.arAccountCategories.forEach((val: AccountCategory) => {
             this.listCategoryFilter.push({
-              text: translate(val.Name),
+              text: translate(val.Name!),
               value: val.ID
             });
           });
 
           this.buildReportList();
           this.buildAssetChart();
+          this.buildAssetChartChart();
           this.buildLiabilityChart();
+          this.buildLiabilityAccountChart();
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
@@ -102,6 +104,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -253,15 +256,11 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     const names: any[] = [];
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name);
+        const ctgyName = translate(ctgy.Name!);
         names.push(ctgyName);
 
         let ctgyAmt = 0;
-        const acnts = this.arAccounts.filter(value => {
-          return this.listSelectedAccountStatus.length > 0 ?
-            this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
-        });
-        acnts.forEach((acnt: Account) => {
+        this.arAccounts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
@@ -271,11 +270,13 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           }
         });
 
-        namevalues.push({
-          category: ctgy.ID,
-          name: ctgyName,
-          value: ctgyAmt,
-        });
+        if (ctgyAmt > 0) {
+          namevalues.push({
+            category: ctgy.ID!,
+            name: ctgyName as string,
+            value: ctgyAmt,
+          });  
+        }
       }
     });
 
@@ -311,15 +312,11 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     const namevalues: Array<{ category: number; name: string; value: number; }> = [];
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (!ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name);
+        const ctgyName = translate(ctgy.Name!);
         names.push(ctgyName);
 
         let ctgyAmt = 0;
-        const acnts = this.arAccounts.filter(value => {
-          return this.listSelectedAccountStatus.length > 0 ?
-            this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
-        });
-        acnts.forEach((acnt: Account) => {
+        this.arAccounts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
@@ -329,11 +326,13 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           }
         });
 
-        namevalues.push({
-          category: ctgy.ID,
-          name: ctgyName,
-          value: ctgyAmt,
-        });
+        if (ctgyAmt > 0) {
+          namevalues.push({
+            category: ctgy.ID!,
+            name: ctgyName as string,
+            value: ctgyAmt,
+          });  
+        }
       }
     });
 
@@ -364,24 +363,118 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       }],
     };
   }
+  private buildAssetChartChart() {
+    const namevalues: Array<{ category: number; name: string; value: number; }> = [];
+    const names: any[] = [];
+
+    this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
+      const acntobj = this.arAccounts.find((acnt: Account) => {
+        return acnt.Id === rpt.AccountId;
+      });
+      const acntCtgy = this.arAccountCategories.find((ctgy: AccountCategory) => {
+        return ctgy.ID === acntobj?.CategoryId;
+      });
+      if (acntCtgy?.AssetFlag) {
+        names.push(acntobj?.Name);
+
+        namevalues.push({
+          category: rpt.AccountId!,
+          name: acntobj?.Name!,
+          value: rpt.Balance,
+        });  
+      }
+    });
+
+    this.chartAssetAccountOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+      },
+      legend: {
+        left: 'center',
+        top: 'bottom',
+        data: names
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          dataView: {show: true, readOnly: true},
+          restore: {show: true},
+          saveAsImage: {show: true},
+        }
+      },
+      series: [{
+        name: '',
+        type: 'pie',
+        radius: [30, 110],
+        roseType: 'area',
+        data: namevalues
+      }],
+    };
+  }
+  private buildLiabilityAccountChart() {
+    const names: any[] = [];
+    const namevalues: Array<{ category: number; name: string; value: number; }> = [];
+
+    this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
+      const acntobj = this.arAccounts.find((acnt: Account) => {
+        return acnt.Id === rpt.AccountId;
+      });
+      const acntCtgy = this.arAccountCategories.find((ctgy: AccountCategory) => {
+        return ctgy.ID === acntobj?.CategoryId;
+      });
+      if (acntCtgy && !acntCtgy.AssetFlag) {
+        names.push(acntobj?.Name);
+
+        namevalues.push({
+          category: rpt.AccountId!,
+          name: acntobj?.Name!,
+          value: rpt.Balance,
+        });  
+      }
+    });
+
+    this.chartLiabilitiesAccountOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+      },
+      legend: {
+        left: 'center',
+        top: 'bottom',
+        data: names,
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          dataView: {show: true, readOnly: true},
+          restore: {show: true},
+          saveAsImage: {show: true},
+        }
+      },
+      series: [{
+        name: '',
+        type: 'pie',
+        radius: [30, 110],
+        roseType: 'radius',
+        data: namevalues,
+      }],
+    };
+  }
   private buildReportList() {
     this.dataSet = [];
 
-    const acnts = this.arAccounts.filter(value => {
-      return this.listSelectedAccountStatus.length > 0 ?
-        this.listSelectedAccountStatus.some(sts => value.Status === sts) : true;
-    });
     this.arReportByAccount.forEach((baldata: FinanceReportByAccount) => {
-      const acntobj: Account = acnts.find((acnt: Account) => {
+      const acntobj = this.arAccounts.find((acnt: Account) => {
         return acnt.Id === baldata.AccountId;
       });
       if (acntobj !== undefined) {
-        const ctgyobj: AccountCategory = this.arAccountCategories.find((ctg: AccountCategory) => {
+        const ctgyobj = this.arAccountCategories.find((ctg: AccountCategory) => {
           return ctg.ID === acntobj.CategoryId;
         });
 
         if (this.selectedCategoryFilter.length > 0 && ctgyobj !== undefined) {
-          if (this.selectedCategoryFilter.indexOf(ctgyobj.ID) !== -1) {
+          if (this.selectedCategoryFilter.indexOf(ctgyobj.ID!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,
               AccountName: acntobj.Name,

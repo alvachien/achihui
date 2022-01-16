@@ -1,16 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import * as moment from 'moment';
 
 import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
-  DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
   GeneralFilterValueType, TranType, UICommonLabelEnum, Account,
   ControlCenter, Order, DocumentItemView, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
-import { FinanceOdataService, UIStatusService } from '../../../services';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   selector: 'hih-document-item-search',
@@ -18,25 +16,25 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   styleUrls: ['./document-item-search.component.less'],
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean>;
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   // Filter
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
+  realFilters: GeneralFilterItem[] = [];
   // Table
   isLoadingDocItems = false;
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
   public arOrders: Order[] = [];
-  public arAccounts: Account[];
+  public arAccounts: Account[] = [];
   pageIndex = 1;
   pageSize = 10;
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
 
-  constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService, ) {
+  constructor(private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
@@ -72,60 +70,85 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     ];
     this.listOfColumns = [{
       name: 'Common.ID',
-      columnKey: 'docid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Finance.Items',
-      columnKey: 'itemid'
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false
     }, {
       name: 'Common.Description',
-      columnKey: 'desp',
+      sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
-      showSort: true,
     }, {
       name: 'Common.Date',
-      columnKey: 'date',
       sortOrder: null,
-      showSort: true,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,   
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        a.TransactionDate.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate.format(moment.HTML5_FMT.DATE)),
+        a.TransactionDate!.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
     }, {
       name: 'Finance.TransactionType',
-      columnKey: 'trantype',
       sortOrder: null,
-      showSort: true,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType - b.TransactionType
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType! - b.TransactionType!
     }, {
       name: 'Finance.Amount',
-      columnKey: 'amount',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
     }, {
       name: 'Finance.Account',
-      columnKey: 'account',
-      showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID).localeCompare(this.getAccountName(b.AccountID))
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID!).localeCompare(this.getAccountName(b.AccountID!))
     }, {
       name: 'Finance.ControlCenter',
-      columnKey: 'controlcenter',
-      showSort: true,
       sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
       sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID).localeCompare(this.getControlCenterName(b.ControlCenterID))
+        this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
     }, {
       name: 'Finance.Activity',
-      columnKey: 'order',
-      showSort: true,
       sortOrder: null,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID).localeCompare(this.getOrderName(b.OrderID))
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
     }];
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -146,7 +169,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  trackByName(_: number, item: UITableColumnItem): string {
+  trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
     return item.name;
   }
 
@@ -158,6 +181,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -243,10 +267,14 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
       }
       arRealFilter.push(val);
     });
-
-    this.filters = arRealFilter;
-
-    // Do the real search
-    // this.subjFilters.next(arRealFilter);
+    if (arRealFilter.length > 0) {
+      this.realFilters = arRealFilter;
+    } else {
+      this.modalService.warning({
+        nzTitle: translate('Common.Warning'),
+        nzContent: translate("Common.FilterIsMust"),
+        nzClosable: true,
+      });
+    }
   }
 }

@@ -8,7 +8,8 @@
   <nz-page-header-extra>
     <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
     <nz-divider nzType="vertical"></nz-divider>
-    <nz-switch *ngIf="!isChildMode" [(ngModel)]="validOrderOnly" nzCheckedChildren="Only Valid" nzUnCheckedChildren="All" (ngModelChange)="onOrderValidityChanged()"></nz-switch>
+    <nz-switch *ngIf="!isChildMode" [(ngModel)]="validOrderOnly" [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" 
+      (ngModelChange)="onOrderValidityChanged()"></nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -20,36 +21,36 @@
 </div>
 
 <div *ngIf="!isChildMode">
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <nz-table #basicTable [nzData]="dataSet | orderValidityFilter: validOrderOnly">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Common.ValidFrom' | transloco}}</th>
-        <th>{{'Common.ValidTo' | transloco}}</th>
-        <th>{{'Common.Comment' | transloco}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{data.Id}}
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplay(data.Id)">{{'Common.Display' | transloco}}</button>
-          <button nz-button nzType="link" (click)="onEdit(data.Id)">{{'Common.Edit' | transloco}}</button>
-          <a nz-popconfirm [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-            nzPopconfirmPlacement="bottom"
-            (nzOnConfirm)="onDelete(data.Id)">{{'Common.Delete' | transloco}}</a>
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id, data.Name)">{{'Finance.Documents' | transloco}}</button>
-        </td>
-        <td>{{data.Name}}</td>
-        <td>{{data.ValidFromFormatString}}</td>
-        <td>{{data.ValidToFormatString}}</td>
-        <td>{{data.Comment}}</td>
-      </tr>
-    </tbody>
-  </nz-table>
-</nz-spin>
+  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+    <nz-table #basicTable [nzData]="dataSet | orderValidityFilter: validOrderOnly">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{'Common.Name' | transloco}}</th>
+          <th>{{'Common.ValidFrom' | transloco}}</th>
+          <th>{{'Common.ValidTo' | transloco}}</th>
+          <th>{{'Common.Comment' | transloco}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>
+            {{data.Id}}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplay(data.Id!)">{{'Common.Display' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</button>
+            <a nz-popconfirm [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
+              nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="onDelete(data.Id!)">{{'Common.Delete' | transloco}}</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">{{'Finance.Documents' | transloco}}</button>
+          </td>
+          <td>{{data.Name}}</td>
+          <td>{{data.ValidFromFormatString}}</td>
+          <td>{{data.ValidToFormatString}}</td>
+          <td>{{data.Comment}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-spin>
 </div>

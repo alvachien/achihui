@@ -10,13 +10,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { MarkdownModule, KatexOptions } from 'ngx-markdown';
+import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
 import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
 import { AuthService, UIStatusService, BlogOdataService, } from '../../../../services';
-import { UserAuthInfo, UIMode } from '../../../../model';
+import { UserAuthInfo } from '../../../../model';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;

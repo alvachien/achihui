@@ -133,8 +133,8 @@ describe('AccountListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onDisplay(fakeData.finAccounts[0].Id);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/display/' + fakeData.finAccounts[0].Id.toString()]);
+      component.onDisplay(fakeData.finAccounts[0].Id!);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/display/' + fakeData.finAccounts[0].Id!.toString()]);
 
       discardPeriodicTasks();
       flush();
@@ -151,9 +151,9 @@ describe('AccountListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onEdit(fakeData.finAccounts[0].Id);
+      component.onEdit(fakeData.finAccounts[0].Id!);
 
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/edit/' + fakeData.finAccounts[0].Id.toString()]);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/account/edit/' + fakeData.finAccounts[0].Id!.toString()]);
 
       discardPeriodicTasks();
       flush();

@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize, mergeAll, map, catchError } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { financeDocTypeNormal, UIMode, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
+import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
   BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil, GeneralFilterItem, GeneralFilterOperatorEnum,
   momentDateFormat, GeneralFilterValueType, DocumentItemView, RepeatedDatesAPIInput,
@@ -18,15 +19,15 @@ import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../..
 import { popupDialog } from '../../../message-dialog';
 
 class DocumentCountByDateRange {
-  StartDate: moment.Moment;
+  StartDate: moment.Moment | null = null;
   get StartDateString(): string {
     return this.StartDate ? this.StartDate.format(momentDateFormat) : '';
   }
-  EndDate: moment.Moment;
+  EndDate: moment.Moment  | null = null;
   get EndDateString(): string {
     return this.EndDate ? this.EndDate.format(momentDateFormat): '';
   }
-  expand: boolean;
+  expand: boolean = false;
   Items: DocumentItemView[] = [];
   get ItemsCount(): number {
     return this.Items.length;
@@ -39,8 +40,8 @@ class DocumentCountByDateRange {
   styleUrls: ['./document-recurred-mass-create.component.less'],
 })
 export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   public arFrequencies: UIDisplayString[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   public arUIOrders: UIOrderForSelection[] = [];
@@ -58,7 +59,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public searchFormGroup: FormGroup;
   // Step 1: Existing documents
   public isReadingExistingItem = false;
-  public listDates: RepeatedDatesAPIOutput[];
+  public listDates: RepeatedDatesAPIOutput[] = [];
   public listExistingDocItems: DocumentCountByDateRange[] = [];
   // Step 2: Default value
   public defaultValueFormGroup: FormGroup;
@@ -83,7 +84,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
     this.searchFormGroup = new FormGroup({
       dateRangeControl: new FormControl([new Date(), new Date()], [Validators.required]),
@@ -105,6 +106,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     }, [costObjectValidator]);
+
+    this.itemsFormGroup = this.fb.group({
+      items: this.fb.array([]),
+    });
   }
 
   ngOnInit() {
@@ -112,9 +117,6 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-    this.itemsFormGroup = this.fb.group({
-      items: this.fb.array([]),
-    });
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -208,7 +210,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     } else if (this.currentStep === 2) {
       return this.defaultValueFormGroup.valid;
     } else if (this.currentStep === 3) {
-      return this.itemsFormGroup.valid;
+      return this.itemsFormGroup!.valid;
     } else if (this.currentStep === 4) {
       return true;
     } else {
@@ -219,7 +221,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find(acnt => {
       return acnt.Id === acntid;
     });
-    return acntObj ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find(cc => {
@@ -240,12 +242,18 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
+  get getItemFormArray(): FormArray {
+    return this.itemsFormGroup?.controls.items as FormArray;
+  }
+  get getItemControls(): FormGroup[] {
+    return this.getItemFormArray.controls as FormGroup[];
+  }
 
   // Step 1: Existing documents
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
     // Date range
-    const dtrange = this.searchFormGroup.get('dateRangeControl').value as any[];
+    const dtrange = this.searchFormGroup.get('dateRangeControl')?.value as any[];
     filters.push({
       fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
@@ -254,7 +262,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       highValue: moment(dtrange[1] as Date).format(momentDateFormat),
     });
     // Tran. type
-    let idval = this.searchFormGroup.get('tranTypeControl').value;
+    let idval = this.searchFormGroup.get('tranTypeControl')?.value;
     if (idval) {
       filters.push({
         fieldName: 'TransactionType',
@@ -265,7 +273,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Account
-    idval = this.searchFormGroup.get('accountControl').value;
+    idval = this.searchFormGroup.get('accountControl')?.value;
     if (idval) {
       filters.push({
         fieldName: 'AccountID',
@@ -276,7 +284,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Control center
-    idval = this.searchFormGroup.get('ccControl').value;
+    idval = this.searchFormGroup.get('ccControl')?.value;
     if (idval) {
       filters.push({
         fieldName: 'ControlCenterID',
@@ -287,7 +295,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Order
-    idval = this.searchFormGroup.get('orderControl').value;
+    idval = this.searchFormGroup.get('orderControl')?.value;
     if (idval) {
       filters.push({
         fieldName: 'OrderID',
@@ -301,14 +309,14 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     const datinput: RepeatedDatesAPIInput = {
       StartDate: moment(dtrange[0] as Date),
       EndDate: moment(dtrange[1] as Date),
-      RepeatType: this.searchFormGroup.get('frqControl').value as RepeatFrequencyEnum,
+      RepeatType: this.searchFormGroup.get('frqControl')?.value as RepeatFrequencyEnum,
     };
 
     forkJoin([
       this.odataService.getRepeatedDates(datinput),
       this.odataService.searchDocItem(filters)
       ])
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isReadingExistingItem = false))
       .subscribe({
         next: (x: any[]) => {
@@ -319,7 +327,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
           // For dates
           this.listDates.forEach(datrange => {
             const aritems: DocumentItemView[] = [];
-            arallitems.forEach(div => {
+            arallitems.forEach((div: DocumentItemView) => {
               if (moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate)) {
                 aritems.push(div);
               }
@@ -348,32 +356,32 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   private prepareDefaultValue(): void {
     // Fetch data from search
     // 0. Account
-    if (this.searchFormGroup.get('accountControl').value) {
-      this.defaultValueFormGroup.get('accountControl').setValue(this.searchFormGroup.get('accountControl').value);
+    if (this.searchFormGroup.get('accountControl')?.value) {
+      this.defaultValueFormGroup.get('accountControl')?.setValue(this.searchFormGroup.get('accountControl')?.value);
     }
     // 1. Control center
-    if (this.searchFormGroup.get('ccControl').value) {
-      this.defaultValueFormGroup.get('ccControl').setValue(this.searchFormGroup.get('ccControl').value);
+    if (this.searchFormGroup.get('ccControl')?.value) {
+      this.defaultValueFormGroup.get('ccControl')?.setValue(this.searchFormGroup.get('ccControl')?.value);
     }
     // 2. Order
-    if (this.searchFormGroup.get('orderControl').value) {
-      this.defaultValueFormGroup.get('orderControl').setValue(this.searchFormGroup.get('orderControl').value);
+    if (this.searchFormGroup.get('orderControl')?.value) {
+      this.defaultValueFormGroup.get('orderControl')?.setValue(this.searchFormGroup.get('orderControl')?.value);
     }
     // 3. Tran. type
-    if (this.searchFormGroup.get('tranTypeControl').value) {
-      this.defaultValueFormGroup.get('tranTypeControl').setValue(this.searchFormGroup.get('tranTypeControl').value);
+    if (this.searchFormGroup.get('tranTypeControl')?.value) {
+      this.defaultValueFormGroup.get('tranTypeControl')?.setValue(this.searchFormGroup.get('tranTypeControl')?.value);
     }
   }
   // Step 3. Items
   private generateItems(): void {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     control.clear(); // Clear it
 
     const defval = this.defaultValueFormGroup.value;
     this.listExistingDocItems.forEach(docitems => {
       if (docitems.ItemsCount === 0) {
         const newItem: any = this.initItem();
-        let stdat = docitems.StartDate.clone();
+        let stdat = docitems.StartDate!.clone();
         if (defval.dayOffsetControl) {
           stdat = stdat.add(defval.dayOffsetControl, 'days');
         }
@@ -405,48 +413,48 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       validators: [costObjectValidator],
     });
   }
-  public onCreateNewItem(event: MouseEvent): number {
+  public onCreateNewItem(event?: MouseEvent): number {
     if (event) {
       event.stopPropagation();
     }
 
     return this.createItem();
   }
-  public onCopyItem(event: MouseEvent, i: number): number {
+  public onCopyItem(event?: MouseEvent, i?: number): number {
     if (event) {
       event.stopPropagation();
     }
 
-    return this.copyItem(i);
+    return this.copyItem(i!);
   }
 
-  public onRemoveItem(event: MouseEvent, i: number) {
+  public onRemoveItem(event?: MouseEvent, i?: number) {
     if (event) {
       event.stopPropagation();
     }
 
-    this.removeItem(i);
+    this.removeItem(i!);
   }
 
   private createItem(): number {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     const newItem: FormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
-      newItem.get('dateControl').setValue(oldItem.dateControl);
-      newItem.get('accountControl').setValue(oldItem.accountControl);
-      newItem.get('tranTypeControl').setValue(oldItem.tranTypeControl);
-      newItem.get('amountControl').setValue(oldItem.amountControl);
-      newItem.get('despControl').setValue(oldItem.despControl);
-      newItem.get('ccControl').setValue(oldItem.ccControl);
-      newItem.get('orderControl').setValue(oldItem.orderControl);
+      newItem.get('dateControl')?.setValue(oldItem.dateControl);
+      newItem.get('accountControl')?.setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl')?.setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl')?.setValue(oldItem.amountControl);
+      newItem.get('despControl')?.setValue(oldItem.despControl);
+      newItem.get('ccControl')?.setValue(oldItem.ccControl);
+      newItem.get('orderControl')?.setValue(oldItem.orderControl);
     }
 
     control.push(newItem);
@@ -454,13 +462,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return control.length - 1;
   }
   private removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
     control.removeAt(i);
   }
   // Step 4: Confirm
   private generateMassDocumentItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.itemsFormGroup.controls.items as FormArray;
+    const controlArrays: FormArray = this.itemsFormGroup?.controls.items as FormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];
@@ -520,7 +528,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         docObj = new Document();
         docObj.Desp = item.tranDate.format(momentDateFormat);
         docObj.DocType = financeDocTypeNormal;
-        docObj.HID = this.homeService.ChosedHome.ID;
+        docObj.HID = this.homeService.ChosedHome!.ID;
         docObj.TranCurr = this.baseCurrency;
         docObj.TranDate = moment(item.tranDate);
         const docitem = new DocumentItem();
@@ -554,7 +562,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranType,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
       })) {
         errorOccur = true;        
       }
@@ -568,7 +576,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.currentStep = 5; // Result page
 
     this.odataService.massCreateNormalDocument(this.confirmInfo)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isDocPosting = false))
       .subscribe({
         next: (rsts: { PostedDocuments: Document[], FailedDocuments: Document[] }) => {
@@ -591,7 +599,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public onResubmitFailedItems(): void {
     this.isDocPosting = true;
     this.odataService.massCreateNormalDocument(this.docIdFailed)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isDocPosting = false))
       .subscribe({
         next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {

@@ -4,7 +4,7 @@
  * UI Models with UI Framework dependent
  */
 
-import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
+import { ValidatorFn, FormGroup, ValidationErrors, AbstractControl, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd/table';
 
@@ -12,12 +12,12 @@ import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } f
  * Validator for date range
  * @param group Instance of the form group
  */
-export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  const strdt = group.get('startDateControl').value as Date;
+export const dateRangeValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const strdt = group.get('startDateControl')?.value as Date;
   if (!strdt) {
     return { invalidStartDate: true };
   }
-  const enddt = group.get('endDateControl').value as Date;
+  const enddt = group.get('endDateControl')?.value as Date;
   if (!enddt) {
     return { invalidEndDate: true };
   }
@@ -34,9 +34,9 @@ export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErr
  * Validator for cost object
  * @param group Instance of the form group
  */
-export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
-  const cc: any = group.get('ccControl').value;
-  const order: any = group.get('orderControl').value;
+export const costObjectValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const cc: any = group.get('ccControl')?.value;
+  const order: any = group.get('orderControl')?.value;
   if (cc) {
     if (order) {
       return { costobjectoverassign: true };
@@ -70,18 +70,16 @@ export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationEr
 /**
  * Column item definition interface for nz-table
  */
-export interface UITableColumnItem {
+export interface UITableColumnItem<T> {
   name: string;
-  columnKey?: string;
 
   // Sort
-  sortOrder?: NzTableSortOrder;
-  sortFn?: NzTableSortFn | boolean;
-  showSort?: boolean;
-  sortDirections?: NzTableSortOrder[];
+  sortOrder: NzTableSortOrder | null;
+  sortFn: NzTableSortFn<T> | null;
+  sortDirections: NzTableSortOrder[];
 
   // Filter
-  listOfFilter?: NzTableFilterList;
-  filterFn?: NzTableFilterFn | true;
-  filterMultiple?: boolean;
+  listOfFilter: NzTableFilterList;
+  filterFn: NzTableFilterFn<T> | null;
+  filterMultiple: boolean;
 }

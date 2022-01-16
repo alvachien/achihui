@@ -14,8 +14,8 @@ import { AuthService, HomeDefOdataService, } from '../../../services';
   styleUrls: ['./home-def-list.component.less'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
 
   isLoadingResults: boolean;
   public dataSource: HomeDef[] = [];
@@ -57,10 +57,14 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onChooseHome(row: HomeDef): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...',
+      ConsoleLogTypeEnum.debug);
     this.homeService.ChosedHome = row;
     // Set current home member
     this.homeService.ChosedHome.Members.forEach(mem => {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
+          ConsoleLogTypeEnum.debug);
         this.homeService.CurrentMemberInChosedHome = mem;
       }
     });
@@ -79,7 +83,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
 
     this.homeService.fetchAllHomeDef(forceLoad)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe((arHomeDef: HomeDef[]) => {
         this.dataSource = arHomeDef;
       }, (error: any) => {

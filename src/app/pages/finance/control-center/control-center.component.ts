@@ -5,10 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './control-center.component.html',
   styleUrls: ['./control-center.component.less']
 })
-export class ControlCenterComponent implements OnInit {
+export class ControlCenterComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 }

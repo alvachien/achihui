@@ -157,15 +157,15 @@ describe('OrderDetailComponent', () => {
       // Name
       // component.detailFormGroup.get('nameControl').setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
 
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
 
@@ -182,17 +182,17 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().subtract(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().subtract(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
 
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
 
@@ -209,13 +209,13 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -251,13 +251,13 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -325,13 +325,13 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -396,13 +396,13 @@ describe('OrderDetailComponent', () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get('nameControl').setValue('test');
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl').setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup.get('endDateControl').setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get('cmtControl').setValue('test');
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -460,7 +460,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       flush();
       tick();
       fixture.detectChanges();
@@ -542,8 +542,8 @@ describe('OrderDetailComponent', () => {
 
       expect(component).toBeTruthy();
       // Change the name
-      component.detailFormGroup.get('nameControl').setValue('test2');
-      component.detailFormGroup.get('nameControl').markAsDirty();
+      component.detailFormGroup.get('nameControl')?.setValue('test2');
+      component.detailFormGroup.get('nameControl')?.markAsDirty();
 
       expect(component.saveButtonEnabled).toBeTrue();
 
@@ -556,7 +556,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
       expect(component.isOrderSubmitted).toBeTrue();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeFalsy();
 
       tick(); // nz-spin
@@ -576,8 +576,8 @@ describe('OrderDetailComponent', () => {
 
       expect(component).toBeTruthy();
       // Change the name
-      component.detailFormGroup.get('nameControl').setValue('test2');
-      component.detailFormGroup.get('nameControl').markAsDirty();
+      component.detailFormGroup.get('nameControl')?.setValue('test2');
+      component.detailFormGroup.get('nameControl')?.markAsDirty();
 
       expect(component.saveButtonEnabled).toBeTrue();
 
@@ -592,7 +592,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
       expect(component.isOrderSubmitted).toBeTrue();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeTruthy();
 
       flush();
@@ -635,7 +635,7 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.orderIdCreated).toBeNull();
+      expect(component.orderIdCreated).toBeUndefined();
       flush();
       tick();
       fixture.detectChanges();

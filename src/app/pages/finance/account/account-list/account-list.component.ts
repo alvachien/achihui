@@ -17,18 +17,18 @@ import { UITableColumnItem } from '../../../../uimodel';
   styleUrls: ['./account-list.component.less'],
 })
 export class AccountListComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Account[] = [];
   arCategories: AccountCategory[] = [];
   arrayStatus: UIDisplayString[] = [];
   listCategoryFilter: ITableFilterValues[] = [];
   listStatusFilter: ITableFilterValues[] = [];
-  listOfColumns: UITableColumnItem[] = [];
+  listOfColumns: UITableColumnItem<Account>[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -52,42 +52,55 @@ export class AccountListComponent implements OnInit, OnDestroy {
     // Columns: ID, Name, Category, Status, Comment
     this.listOfColumns = [{
       name: 'Common.ID',
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false    
     }, {
       name: 'Common.Name',
-      sortFn: (a: Account, b: Account) => a.Name.localeCompare(b.Name),
-      showSort: true,
+      sortOrder: null,
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: Account, b: Account): number => a.Name!.localeCompare(b.Name!)
     }, {
       name: 'Common.Category',
       sortOrder: null,
-      showSort: false,
       sortFn: null,
-      listOfFilter: this.listCategoryFilter,
+      sortDirections: [],
+      listOfFilter: [],
       filterMultiple: true,
       filterFn: (selectedCategories: number[], item: Account) =>
         selectedCategories ? selectedCategories.some(ctgyid => item.CategoryId === ctgyid) : false
     }, {
       name: 'Common.Status',
       sortOrder: null,
-      showSort: false,
-      // sortFn: (a: Account, b: Account) => a.Status === b.Status ? 0 : (a. Status > b.Status ? 1 : -1),
+      sortFn: null,
+      sortDirections: [],
       listOfFilter: this.listStatusFilter,
       filterMultiple: true,
       filterFn: (selectedStatus: AccountStatusEnum[], item: Account) =>
         selectedStatus ? selectedStatus.some(sts => item.Status === sts) : false
     }, {
       name: 'Common.Comment',
-      showSort: true,
       sortOrder: null,
-      sortFn: (a: Account, b: Account) => a.Comment.localeCompare(b.Comment),
+      sortDirections: [],
+      listOfFilter: [],
+      filterFn: null,
+      filterMultiple: false,
+      sortFn: (a: Account, b: Account) => a.Comment!.localeCompare(b.Comment!),
     }];
   }
   public getCategoryName(ctgyid: number): string {
     const ctgyobj = this.arCategories.find(val => {
       return val.ID === ctgyid;
     });
-    return ctgyobj ? ctgyobj.Name : '';
+    return ctgyobj && ctgyobj.Name? ctgyobj.Name : '';
   }
-  public getStatusString(sts): string {
+  public getStatusString(sts: any): string {
     const stsobj = this.arrayStatus.find(val => {
       return val.value === sts;
     });
@@ -105,33 +118,33 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.odataService.fetchAllAccountCategories()
       .pipe(takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false))
-        .subscribe({
-          next: val => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
-              ConsoleLogTypeEnum.debug);
-            this.arCategories = val;
-            this.arCategories.forEach((val2: AccountCategory) => {
-              this.listCategoryFilter.push({
-                text: translate(val2.Name),
-                value: val2.ID
-              });
+      .subscribe({
+        next: val => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
+            ConsoleLogTypeEnum.debug);
+          this.arCategories = val;
+          this.arCategories.forEach((val2: AccountCategory) => {
+            this.listCategoryFilter.push({
+              text: translate(val2.Name!),
+              value: val2.ID
             });
-          },
-          error: err => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
-              ConsoleLogTypeEnum.error);
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err,
-              nzClosable: true,
-            });
-          },
-          complete: () => {
-            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
-              ConsoleLogTypeEnum.debug);
-            this.onRefresh();
-          }
-        });
+          });
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        },
+        complete: () => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
+            ConsoleLogTypeEnum.debug);
+          this.onRefresh();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -140,6 +153,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -148,7 +162,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.dataSet = [];
     this.odataService.fetchAllAccounts(isreload)
       .pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
@@ -183,7 +197,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     // After the pop confirm
     this.odataService.deleteAccount(rid)
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: val => {
           // Just remove the item

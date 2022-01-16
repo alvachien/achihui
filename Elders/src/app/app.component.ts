@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json');
 
-    this._http.post(environment.ApiUrl + '/api/DBVersionCheck', '', {
+    this._http.post(environment.ApiUrl + '/DBVersionCheck', '', {
         headers: headers,
       }).subscribe((y: any) => {
         // Register the Auth service

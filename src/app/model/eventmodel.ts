@@ -5,45 +5,45 @@ import * as moment from 'moment';
  * General event
  */
 export class GeneralEvent extends hih.BaseModel {
-  // tslint:disable: variable-name
-  private _id: number;
-  private _hid: number;
-  private _assignee: string;
-  private _name: string;
-  private _content: string;
-  private _startTime: moment.Moment;
-  private _endTime: moment.Moment;
-  private _completeTime: moment.Moment;
-  private _ispublic: boolean;
-  private _refRecurID: number;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _id?: number;
+  private _hid?: number;
+  private _assignee?: string;
+  private _name?: string;
+  private _content?: string;
+  private _startTime?: moment.Moment;
+  private _endTime?: moment.Moment;
+  private _completeTime?: moment.Moment;
+  private _ispublic?: boolean;
+  private _refRecurID?: number;
 
-  get ID(): number            { return this._id;          }
-  set ID(id: number)          { this._id = id;            }
-  get HID(): number           { return this._hid;         }
-  set HID(hid: number)        { this._hid = hid;          }
-  get Assignee(): string      { return this._assignee;    }
-  set Assignee(asgee: string) { this._assignee = asgee;   }
-  get Name(): string          { return this._name;        }
-  set Name(name: string)      { this._name = name;        }
-  get Content(): string       { return this._content;     }
-  set Content(cont: string)   { this._content = cont;     }
-  get StartTime(): moment.Moment {
+  get ID(): number | undefined            { return this._id;          }
+  set ID(id: number | undefined)          { this._id = id;            }
+  get HID(): number | undefined           { return this._hid;         }
+  set HID(hid: number | undefined)        { this._hid = hid;          }
+  get Assignee(): string | undefined      { return this._assignee;    }
+  set Assignee(asgee: string | undefined) { this._assignee = asgee;   }
+  get Name(): string | undefined          { return this._name;        }
+  set Name(name: string | undefined)      { this._name = name;        }
+  get Content(): string | undefined       { return this._content;     }
+  set Content(cont: string | undefined)   { this._content = cont;     }
+  get StartTime(): moment.Moment | undefined {
     return this._startTime;
   }
-  set StartTime(st: moment.Moment) {
+  set StartTime(st: moment.Moment | undefined) {
     this._startTime = st;
   }
-  get StartTimeFormatString(): string {
+  get StartTimeFormatString(): string | undefined {
     if (this._startTime) {
       return this._startTime.format(hih.momentDateFormat);
     }
 
     return '';
   }
-  get EndTime(): moment.Moment {
+  get EndTime(): moment.Moment | undefined {
     return this._endTime;
   }
-  set EndTime(et: moment.Moment) {
+  set EndTime(et: moment.Moment | undefined) {
     this._endTime = et;
   }
   get EndTimeFormatString(): string {
@@ -53,10 +53,10 @@ export class GeneralEvent extends hih.BaseModel {
 
     return '';
   }
-  get CompleteTime(): moment.Moment {
+  get CompleteTime(): moment.Moment | undefined {
     return this._completeTime;
   }
-  set CompleteTime(ct: moment.Moment) {
+  set CompleteTime(ct: moment.Moment | undefined) {
     this._completeTime = ct;
   }
   get CompleteTimeFormatString(): string {
@@ -66,19 +66,19 @@ export class GeneralEvent extends hih.BaseModel {
 
     return '';
   }
-  get IsComplete(): boolean {
+  get IsComplete(): boolean | undefined {
     return this._completeTime !== undefined;
   }
-  get IsPublic(): boolean {
+  get IsPublic(): boolean | undefined {
     return this._ispublic;
   }
-  set IsPublic(ip: boolean) {
+  set IsPublic(ip: boolean | undefined) {
     this._ispublic = ip;
   }
-  get RefRecurID(): number {
+  get RefRecurID(): number | undefined {
     return this._refRecurID;
   }
-  set RefRecurID(rid: number) {
+  set RefRecurID(rid: number | undefined) {
     this._refRecurID = rid;
   }
 
@@ -154,50 +154,50 @@ export class GeneralEvent extends hih.BaseModel {
  * Recur event
  */
 export class RecurEvent extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _assignee: string;
-  private _name: string;
-  private _content: string;
-  private _startTime: moment.Moment;
-  private _endTime: moment.Moment;
-  private _ispublic: boolean;
+  private _id?: number;
+  private _hid?: number;
+  private _assignee?: string;
+  private _name?: string;
+  private _content?: string;
+  private _startTime?: moment.Moment;
+  private _endTime?: moment.Moment;
+  private _ispublic?: boolean;
 
-  public repeatType: hih.RepeatFrequencyEnum;
-  get ID(): number {
+  public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Day;
+  get ID(): number | undefined {
     return this._id;
   }
-  set ID(id: number) {
+  set ID(id: number | undefined) {
     this._id = id;
   }
-  get HID(): number {
+  get HID(): number | undefined {
     return this._hid;
   }
-  set HID(hid: number) {
+  set HID(hid: number | undefined) {
     this._hid = hid;
   }
-  get Assignee(): string {
+  get Assignee(): string | undefined {
     return this._assignee;
   }
-  set Assignee(asgnee: string) {
+  set Assignee(asgnee: string | undefined) {
     this._assignee = asgnee;
   }
-  get Name(): string {
+  get Name(): string | undefined {
     return this._name;
   }
-  set Name(name: string) {
+  set Name(name: string | undefined) {
     this._name = name;
   }
-  get Content(): string {
+  get Content(): string | undefined {
     return this._content;
   }
-  set Content(content: string) {
+  set Content(content: string | undefined) {
     this._content = content;
   }
-  get StartTime(): moment.Moment {
+  get StartTime(): moment.Moment | undefined {
     return this._startTime;
   }
-  set StartTime(st: moment.Moment) {
+  set StartTime(st: moment.Moment | undefined) {
     this._startTime = st;
   }
   get StartTimeFormatString(): string {
@@ -207,10 +207,10 @@ export class RecurEvent extends hih.BaseModel {
 
     return '';
   }
-  get EndTime(): moment.Moment {
+  get EndTime(): moment.Moment | undefined {
     return this._endTime;
   }
-  set EndTime(et: moment.Moment) {
+  set EndTime(et: moment.Moment | undefined) {
     this._endTime = et;
   }
   get EndTimeFormatString(): string {
@@ -220,10 +220,10 @@ export class RecurEvent extends hih.BaseModel {
 
     return '';
   }
-  get IsPublic(): boolean {
+  get IsPublic(): boolean | undefined {
     return this._ispublic;
   }
-  set IsPublic(ip: boolean) {
+  set IsPublic(ip: boolean | undefined) {
     this._ispublic = ip;
   }
 
@@ -292,54 +292,60 @@ export class RecurEvent extends hih.BaseModel {
  * Habit event
  */
 export class EventHabit extends hih.BaseModel {
-  private _id: number;
-  private _hid: number;
-  private _name: string;
-  private _startDate: moment.Moment;
-  private _endDate: moment.Moment;
-  public repeatType: hih.RepeatFrequencyEnum;
-  public content: string;
-  public count: number;
-  public isPublic: boolean;
-  public assignee: string;
+  private _id?: number;
+  private _hid?: number;
+  private _name?: string;
+  private _startDate?: moment.Moment;
+  private _endDate?: moment.Moment;
+  public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Day;
+  public content?: string;
+  public count?: number;
+  public isPublic?: boolean;
+  public assignee?: string;
   public details: EventHabitDetail[] = [];
   public checkInLogs: EventHabitCheckin[] = [];
 
-  get ID(): number {
+  get ID(): number | undefined {
     return this._id;
   }
-  set ID(id: number) {
+  set ID(id: number | undefined) {
     this._id = id;
   }
-  get HID(): number {
+  get HID(): number | undefined {
     return this._hid;
   }
-  set HID(hid: number) {
+  set HID(hid: number | undefined) {
     this._hid = hid;
   }
-  get Name(): string {
+  get Name(): string | undefined {
     return this._name;
   }
-  set Name(name: string) {
+  set Name(name: string | undefined) {
     this._name = name;
   }
-  get StartDate(): moment.Moment {
+  get StartDate(): moment.Moment | undefined {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment) {
+  set StartDate(sd: moment.Moment | undefined) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
+    if (this._startDate !== undefined) {
+      return this._startDate.format(hih.momentDateFormat);
+    }
+    return '';    
   }
-  get EndDate(): moment.Moment {
+  get EndDate(): moment.Moment | undefined {
     return this._endDate;
   }
-  set EndDate(ed: moment.Moment) {
+  set EndDate(ed: moment.Moment | undefined) {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
-    return this._endDate.format(hih.momentDateFormat);
+    if (this._endDate !== undefined) {
+      return this._endDate.format(hih.momentDateFormat);
+    }
+    return '';
   }
   get CheckInLogsCount(): number {
     return this.checkInLogs.length;
@@ -393,7 +399,7 @@ export class EventHabit extends hih.BaseModel {
       for (const dtl of data.details) {
         const detail: EventHabitDetail = new EventHabitDetail();
         detail.onSetData(dtl);
-        if (!detail.Name) {
+        if (!detail.Name && this.Name) {
           detail.Name = this.Name;
         }
         this.details.push(detail);
@@ -432,46 +438,52 @@ export class EventHabit extends hih.BaseModel {
  * Event detail
  */
 export class EventHabitDetail {
-  private _id: number;
-  private _habitID: number;
-  private _startDate: moment.Moment;
-  private _endDate: moment.Moment;
-  private _name: string;
+  private _id?: number;
+  private _habitID?: number;
+  private _startDate?: moment.Moment;
+  private _endDate?: moment.Moment;
+  private _name?: string;
 
-  get ID(): number {
+  get ID(): number | undefined {
     return this._id;
   }
-  set ID(id: number) {
+  set ID(id: number | undefined) {
     this._id = id;
   }
-  get HabitID(): number {
+  get HabitID(): number | undefined {
     return this._habitID;
   }
-  set HabitID(hid: number) {
+  set HabitID(hid: number | undefined) {
     this._habitID = hid;
   }
-  get StartDate(): moment.Moment {
+  get StartDate(): moment.Moment | undefined {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment) {
+  set StartDate(sd: moment.Moment | undefined) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
+    if (this._startDate) {
+      return this._startDate.format(hih.momentDateFormat);
+    }
+    return '';
   }
-  get EndDate(): moment.Moment {
+  get EndDate(): moment.Moment | undefined {
     return this._endDate;
   }
-  set EndDate(ed: moment.Moment) {
+  set EndDate(ed: moment.Moment | undefined) {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
-    return this._endDate.format(hih.momentDateFormat);
+    if (this._endDate) {
+      return this._endDate.format(hih.momentDateFormat);;
+    }
+    return '';
   }
-  get Name(): string {
+  get Name(): string | undefined {
     return this._name;
   }
-  set Name(name: string) {
+  set Name(name: string | undefined) {
     this._name = name;
   }
 
@@ -498,14 +510,17 @@ export class EventHabitDetail {
  * Check in for event habit
  */
 export class EventHabitCheckin {
-  public id: number;
-  public hid: number;
-  public tranDate: moment.Moment;
-  public habitID: number;
-  public score: number;
-  public comment: string;
+  public id?: number;
+  public hid?: number;
+  public tranDate?: moment.Moment;
+  public habitID?: number;
+  public score?: number;
+  public comment?: string;
   get tranDateFormatString(): string {
-    return this.tranDate.format(hih.momentDateFormat);
+    if (this.tranDate) {
+      return this.tranDate.format(hih.momentDateFormat);
+    }
+    return '';
   }
 
   onSetData(data: any): void {
@@ -536,7 +551,7 @@ export class EventHabitCheckin {
     }
     robj.hid = this.hid;
     robj.habitID = this.habitID;
-    robj.tranDate = this.tranDate.format(hih.momentDateFormat);
+    robj.tranDate = this.tranDate?.format(hih.momentDateFormat);
     if (this.comment) {
       robj.comment = this.comment;
     }
@@ -547,16 +562,16 @@ export class EventHabitCheckin {
 }
 
 export class HabitEventDetailWithCheckInStatistics {
-  public HID: number;
-  public habitID: number;
-  public expectAmount: number;
-  public checkInAmount: number;
-  public averageScore: number;
-  public startDate: moment.Moment;
-  public endDate: moment.Moment;
-  public name: string;
-  public assignee: string;
-  public isPublic: boolean;
+  public HID?: number;
+  public habitID?: number;
+  public expectAmount?: number;
+  public checkInAmount?: number;
+  public averageScore?: number;
+  public startDate?: moment.Moment;
+  public endDate?: moment.Moment;
+  public name?: string;
+  public assignee?: string;
+  public isPublic?: boolean;
 
   get StartDateFormatString(): string {
     if (this.startDate) {

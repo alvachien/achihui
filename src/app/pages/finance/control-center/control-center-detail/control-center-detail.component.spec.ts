@@ -128,8 +128,8 @@ describe('ControlCenterDetailComponent', () => {
       tick();
       fixture.detectChanges();
 
-      component.detailFormGroup.get('nameControl').setValue('Test 1');
-      component.detailFormGroup.get('cmtControl').setValue('Test 1 Comment');
+      component.detailFormGroup.get('nameControl')?.setValue('Test 1');
+      component.detailFormGroup.get('cmtControl')?.setValue('Test 1 Comment');
       component.detailFormGroup.markAsDirty();
 
       expect(component.detailFormGroup.valid).toBeTrue();

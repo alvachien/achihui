@@ -155,9 +155,9 @@ describe('PlanDetailComponent', () => {
       expect(component.saveButtonEnabled).toBeFalsy();
 
       // Default values
-      expect(component.detailFormGroup.get('startDateControl').value).toBeTruthy();
-      expect(component.detailFormGroup.get('endDateControl').value).toBeTruthy();
-      expect(component.detailFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.detailFormGroup.get('startDateControl')?.value).toBeTruthy();
+      expect(component.detailFormGroup.get('endDateControl')?.value).toBeTruthy();
+      expect(component.detailFormGroup.get('currControl')?.value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush();
     }));
@@ -171,16 +171,16 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('despControl').setValue('test');
-      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('despControl')?.setValue('test');
+      component.detailFormGroup.get('amountControl')?.setValue(200);
 
       component.detailFormGroup.markAsDirty();
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
       expect(component.saveButtonEnabled).toBeFalsy();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.Account);
-      component.detailFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.Account);
+      component.detailFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.detailFormGroup.markAsDirty();
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
@@ -198,16 +198,16 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.Account);
-      component.detailFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.detailFormGroup.get('amountControl').setValue(200);
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.Account);
+      component.detailFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.detailFormGroup.get('amountControl')?.setValue(200);
 
       component.detailFormGroup.markAsDirty();
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
       expect(component.saveButtonEnabled).toBeFalsy();
 
-      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.get('despControl')?.setValue('test');
       component.detailFormGroup.markAsDirty();
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
@@ -225,10 +225,10 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.Account);
-      component.detailFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      component.detailFormGroup.get('amountControl').setValue(200);
-      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.Account);
+      component.detailFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.detailFormGroup.get('amountControl')?.setValue(200);
+      component.detailFormGroup.get('despControl')?.setValue('test');
       component.detailFormGroup.markAsDirty();
 
       component.detailFormGroup.markAsDirty();
@@ -258,10 +258,10 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.AccountCategory);
-      component.detailFormGroup.get('acntCtgyControl').setValue(fakeData.finAccountCategories[0].ID);
-      component.detailFormGroup.get('amountControl').setValue(200);
-      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.AccountCategory);
+      component.detailFormGroup.get('acntCtgyControl')?.setValue(fakeData.finAccountCategories[0].ID);
+      component.detailFormGroup.get('amountControl')?.setValue(200);
+      component.detailFormGroup.get('despControl')?.setValue('test');
       component.detailFormGroup.markAsDirty();
 
       component.detailFormGroup.markAsDirty();
@@ -291,10 +291,10 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.ControlCenter);
-      component.detailFormGroup.get('controlCenterControl').setValue(fakeData.finControlCenters[0].Id);
-      component.detailFormGroup.get('amountControl').setValue(200);
-      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.ControlCenter);
+      component.detailFormGroup.get('controlCenterControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.detailFormGroup.get('amountControl')?.setValue(200);
+      component.detailFormGroup.get('despControl')?.setValue('test');
       component.detailFormGroup.markAsDirty();
 
       component.detailFormGroup.markAsDirty();
@@ -324,10 +324,10 @@ describe('PlanDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
 
-      component.detailFormGroup.get('typeControl').setValue(PlanTypeEnum.TranType);
-      component.detailFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      component.detailFormGroup.get('amountControl').setValue(200);
-      component.detailFormGroup.get('despControl').setValue('test');
+      component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.TranType);
+      component.detailFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
+      component.detailFormGroup.get('amountControl')?.setValue(200);
+      component.detailFormGroup.get('despControl')?.setValue('test');
       component.detailFormGroup.markAsDirty();
 
       component.detailFormGroup.markAsDirty();

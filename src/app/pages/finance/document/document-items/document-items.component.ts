@@ -2,8 +2,9 @@ import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, } from '
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { Account, ControlCenter, Order, AccountCategory, UIMode, Currency,
+import { Account, ControlCenter, Order, AccountCategory, Currency,
   TranType, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum, financeDocTypeNormal,
   UIAccountForSelection, UIOrderForSelection,
 } from '../../../../model';
@@ -25,15 +26,15 @@ import { Account, ControlCenter, Order, AccountCategory, UIMode, Currency,
   ],
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
-  // tslint:disable:variable-name
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _tranCurr: string;
-  private _tranCurr2: string;
-  private _docType: number;
-  private _onTouched: () => void;
-  private _onChange: (val: any) => void;
-  private _uiMode: UIMode;
-  private _docDate: moment.Moment;
+  private _tranCurr: string = '';
+  private _tranCurr2: string = '';
+  private _docType?: number;
+  private _onTouched?: () => void = undefined;
+  private _onChange?: (val: any) => void = undefined;
+  private _uiMode: UIMode = UIMode.Invalid;
+  private _docDate: moment.Moment = moment();
 
   public uiAccountStatusFilter: string | undefined;
   // public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -45,7 +46,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
   get controlError(): any {
-    const err = this.validate(undefined);
+    const err = this.validate();
     if (err) {
       if (err.noitems) {
         return { value: 'Finance.NoDocumentItem' };
@@ -114,7 +115,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       this._uiMode = mode;
       if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
         this.setDisabledState(true);
-      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Change) {
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Update) {
         this.setDisabledState(false);
       }
     }
@@ -135,10 +136,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._tranCurr2;
   }
   @Input()
-  set docType(doctype: number) {
+  set docType(doctype: number | undefined) {
     this._docType = doctype;
   }
-  get docType(): number {
+  get docType(): number | undefined {
     return this._docType;
   }
   @Input()
@@ -152,31 +153,31 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this.listItems;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Change);
+    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Update);
   }
   get isAddItemAllowed(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isDeleteItemAllowed(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isItemIDEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isAccountIDEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isTranTypeEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
   get isAmountEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
   }
 
   constructor() { }
@@ -210,7 +211,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...', ConsoleLogTypeEnum.debug);
     this._onTouched = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...', ConsoleLogTypeEnum.debug);
     if (isDisabled) {
       this._isChangable = false;
@@ -219,7 +220,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  validate(c: AbstractControl): ValidationErrors | null {
+  validate(c?: AbstractControl): ValidationErrors | null {
     // ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
 
     // Check 1: Have items

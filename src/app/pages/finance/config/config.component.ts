@@ -7,14 +7,11 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.less'],
 })
-export class ConfigComponent implements OnInit {
+export class ConfigComponent {
   constructor(private homeService: HomeDefOdataService) {
   }
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
-  }
-
-  ngOnInit() {
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 }

@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIMode, UIAccountForSelection,
+import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
   ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection,
   Document, DocumentItem, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn,
@@ -23,10 +24,10 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./document-downpayment-create.component.less'],
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
-  // tslint:disable-next-line:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
-  // tslint:disable-next-line:variable-name
-  private _isADP: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
+  private _destroyed$: ReplaySubject<boolean> | null = null;
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  private _isADP: boolean = false;
 
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -34,7 +35,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
-  public curTitle: string;
+  public curTitle: string = '';
   public arCurrencies: Currency[] = [];
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
@@ -42,7 +43,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeAdvancePayment;
-  public baseCurrency: string;
+  public baseCurrency: string = '';
   // Step: Header
   public headerFormGroup: FormGroup;
   // Step: Account Extra Info
@@ -51,15 +52,15 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public confirmInfo: any = {};
   public isDocPosting = false;
   // Step: Result
-  public docIdCreated?: number = null;
-  public docPostingFailed: string;
+  public docIdCreated?: number;
+  public docPostingFailed?: string;
   currentStep = 0;
 
   get tranAmount(): number {
-    return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl').value;
+    return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl')?.value;
   }
   get tranType(): TranType {
-    return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl').value;
+    return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl')?.value;
   }
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
@@ -145,7 +146,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         // Document type
         this.arDocTypes = rst[1];
         // Base currency
-        this.baseCurrency = this.homeService.ChosedHome.BaseCurrency;
+        this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
         this._activateRoute.url.subscribe((x: any) => {
           if (x instanceof Array && x.length > 0) {
@@ -219,7 +220,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     // Save current document
     const docObj: Document = this._geneateDocument();
-    const accountExtra: AccountExtraAdvancePayment = this.accountExtraInfoFormGroup.get('infoControl').value;
+    const accountExtra: AccountExtraAdvancePayment = this.accountExtraInfoFormGroup.get('infoControl')?.value;
     // accountExtra.dpTmpDocs = this.accountExtraInfoFormGroup.
 
     // Check!
@@ -230,7 +231,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       DocumentTypes: this.arDocTypes,
       TransactionTypes: this.arTranType,
       Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome.BaseCurrency,
+      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
     } as DocumentVerifyContext)) {
       popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
       this.isDocPosting = false;
@@ -239,7 +240,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     }
 
     this.odataService.createADPDocument(docObj, accountExtra, this._isADP)
-      .pipe(takeUntil(this._destroyed$),
+      .pipe(takeUntil(this._destroyed$!),
       finalize(() => {
         this.currentStep = 3;
         this.isDocPosting = false;
@@ -250,11 +251,11 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug);
 
           this.docIdCreated = ndoc.Id;
-          this.docPostingFailed = null;
+          this.docPostingFailed = undefined;
         },
         error: (error: any) => {
           // Show error message
-          this.docIdCreated = null;
+          this.docIdCreated = undefined;
           this.docPostingFailed = error;
         }
       });
@@ -271,32 +272,32 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   }
 
   private _geneateDocument(): Document {
-    const doc: Document = this.headerFormGroup.get('headerControl').value;
-    doc.HID = this.homeService.ChosedHome.ID;
+    const doc: Document = this.headerFormGroup.get('headerControl')?.value;
+    doc.HID = this.homeService.ChosedHome!.ID;
     doc.DocType = this.curDocType;
     doc.Items = [];
 
     const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
-    fitem.AccountId = this.headerFormGroup.get('accountControl').value;
-    fitem.ControlCenterId = this.headerFormGroup.get('ccControl').value;
-    fitem.OrderId = this.headerFormGroup.get('orderControl').value;
+    fitem.AccountId = this.headerFormGroup.get('accountControl')?.value;
+    fitem.ControlCenterId = this.headerFormGroup.get('ccControl')?.value;
+    fitem.OrderId = this.headerFormGroup.get('orderControl')?.value;
     if (this._isADP) {
       fitem.TranType = financeTranTypeAdvancePaymentOut;
     } else {
       fitem.TranType = financeTranTypeAdvanceReceiveIn;
     }
-    fitem.TranAmount = this.headerFormGroup.get('amountControl').value;
+    fitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
     fitem.Desp = doc.Desp;
     doc.Items = [fitem];
 
     return doc;
   }
   private _updateConfirmInfo(): void {
-    const doc: Document = this.headerFormGroup.get('headerControl').value;
+    const doc: Document = this.headerFormGroup.get('headerControl')?.value;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
-    this.confirmInfo.tranAmount = this.headerFormGroup.get('amountControl').value;
+    this.confirmInfo.tranAmount = this.headerFormGroup.get('amountControl')?.value;
     this.confirmInfo.tranCurrency = doc.TranCurr;
     if (this._isADP) {
       this.confirmInfo.tranType = financeTranTypeAdvancePaymentOut;

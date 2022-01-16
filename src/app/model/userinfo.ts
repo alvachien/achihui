@@ -1,18 +1,17 @@
-import { environment } from '../../environments/environment';
 import { User } from 'oidc-client';
 
 /**
  * User detail
  */
 export class UserDetail {
-  // tslint:disable-next-line:variable-name
-  public UserId: string;
-  // tslint:disable-next-line:variable-name
-  public DisplayAs: string;
-  // tslint:disable-next-line:variable-name
-  public Email: string;
-  // tslint:disable-next-line:variable-name
-  public Others: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
+  public UserId: string = '';
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
+  public DisplayAs: string = '';
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
+  public Email: string = '';
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
+  public Others: string = '';
 
   public onSetData(data: any): void {
     this.UserId = data.userID;
@@ -36,13 +35,13 @@ export class UserDetail {
  * User Auth Info
  */
 export class UserAuthInfo {
-  private currentUser: User;
-  private userName: string;
-  private userId: string;
-  private userMailbox: string;
-  private accessToken: string;
+  private currentUser?: User;
+  private userName?: string;
+  private userId?: string;
+  private userMailbox?: string;
+  private accessToken?: string;
 
-  public isAuthorized: boolean;
+  public isAuthorized: boolean = false;
 
   public setContent(user: User): void {
     if (user) {
@@ -67,16 +66,16 @@ export class UserAuthInfo {
     this.accessToken = undefined;
 }
 
-  public getUserName(): string {
+  public getUserName(): string | undefined {
     return this.userName;
   }
-  public getUserId(): string {
+  public getUserId(): string | undefined {
     return this.userId;
   }
-  public getAccessToken(): string {
+  public getAccessToken(): string | undefined {
     return this.accessToken;
   }
-  public getUserMailbox(): string {
+  public getUserMailbox(): string | undefined {
     return this.userMailbox;
   }
 }

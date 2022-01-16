@@ -1,67 +1,46 @@
-<div nz-row nzType="flex">
-  <nz-carousel nzDotPosition="right">
-    <div nz-carousel-content *ngFor="let index of array">
-      <div [ngSwitch]="index">
-        <div class="carousel_content" *ngSwitchCase="1">
-          <article nz-typography>
-            <h1 nz-typography>{{'Common.WelcomeToHIH' | transloco}}</h1>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
-            <article nz-typography>
-              <ul>
-                <li>
-                  <a href="/hih.finance/overview">{{'Nav.FinanceTrace' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/learn">{{'Nav.LearningTrace' | transloco}}</a>
-                </li>
-              </ul>
-            </article>
-          </article>
+<div nz-row style="background: #ECECEC;padding:30px;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToAccount()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="accountImage" nzDisablePreview="true" alt="" />
         </div>
-        <div class="carousel_content" *ngSwitchCase="2">
-          <article nz-typography>
-            <h1 nz-typography>{{'Nav.FinanceTrace' | transloco}}</h1>
-            <p nz-typography>
-              Finance System is record the activities which happened with finance influences.
-              Finance System embedded in H.I.H., is target to make the finance activities transparent to whole family.
-            </p>
-            <p nz-typography>
-              With respect to the H.I.H. focuses only on family level, it doesn't follow <mark>Accounting Principles</mark> by any means.              
-            </p>
-            <article nz-typography>
-              <ul>
-                <li>
-                  <a href="/hih/finance/account">{{'Finance.Accounts' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/controlcenter">{{'Finance.ControlCenters' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/order">{{'Finance.Activities' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/order">{{'Finance.Documents' | transloco}}</a>
-                </li>
-                <li>
-                  <a href="/hih/finance/report">{{'Finance.Reports' | transloco}}</a>
-                </li>
-              </ul>
-            </article>
-          </article>
-        </div>
-
-        <div class="carousel_content" *ngSwitchCase="3">
-          <article nz-typography>
-            <h1 nz-typography>{{'Nav.LearningTrace' | transloco}}</h1>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH' | transloco}}</h2>
-            <h2 nz-typography>{{'Common.ShortIntroduceHIH2' | transloco}}</h2>
-          </article>
-        </div>
-
-        <div class="carousel_content" *ngSwitchCase="4">          
-        </div>
-      </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Accounts' | transloco"
+          nzDescription="Accounts which mapping to daily transaction.">
+        </nz-card-meta>
+      </nz-card>
     </div>
-  </nz-carousel>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToDocument()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="documentImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Documents' | transloco"
+          nzDescription="Document to trace every transaction.">
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToReport()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="reportImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Reports' | transloco"
+          nzDescription="Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.">      
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+</div>
+
+<nz-divider></nz-divider>
+<div style="background: #1ECECE;padding:30px;">
+  TBD.
 </div>

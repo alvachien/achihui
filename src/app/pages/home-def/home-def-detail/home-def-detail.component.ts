@@ -5,8 +5,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import { HomeDef, Currency, UIMode, getUIModeString, HomeMember,
+import { HomeDef, Currency, getUIModeString, HomeMember,
   ModelUtility, ConsoleLogTypeEnum, UIDisplayString, UIDisplayStringUtil, HomeMemberRelationEnum } from '../../../model';
 import { AuthService, HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../services';
 
@@ -16,12 +17,12 @@ import { AuthService, HomeDefOdataService, FinanceOdataService, UIStatusService 
   styleUrls: ['./home-def-detail.component.less'],
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
-  // tslint:disable: variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   private routerID = -1; // Current object ID in routing
 
   public isLoadingResults: boolean;
-  public currentMode: string;
+  public currentMode: string | null = null;
   public uiMode: UIMode = UIMode.Create;
   public arCurrencies: Currency[] = [];
   public detailFormGroup: FormGroup;
@@ -32,7 +33,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return isUIEditable(this.uiMode);
   }
   get isSaveAllowed(): boolean {
     if (this.isFieldChangable) {
@@ -68,8 +69,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
   get currentHomeDefObject(): HomeDef {
     const hdobj = new HomeDef();
-    hdobj.Name = this.detailFormGroup.get('nameControl').value;
-    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
+    hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
     this.listMembers.forEach(val => {
       hdobj.Members.push(val);
     });
@@ -113,7 +114,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
+          this.uiMode = UIMode.Update;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
@@ -123,32 +124,32 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       }
 
       switch (this.uiMode) {
-        case UIMode.Change:
+        case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
           forkJoin([
             this.finService.fetchAllCurrencies(),
             this.storageService.readHomeDef(this.routerID)
           ])
-          .pipe(takeUntil(this._destroyed$),
+          .pipe(takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false))
           .subscribe({
             next: (rsts: any[]) => {
             this.arCurrencies = rsts[0];
 
-            this.detailFormGroup.get('idControl').setValue(rsts[1].ID);
-            this.detailFormGroup.get('nameControl').setValue(rsts[1].Name);
-            this.detailFormGroup.get('baseCurrControl').setValue(rsts[1].BaseCurrency);
-            this.detailFormGroup.get('hostControl').setValue(rsts[1].Host);
-            this.detailFormGroup.get('detailControl').setValue(rsts[1].Details);
+            this.detailFormGroup.get('idControl')?.setValue(rsts[1].ID);
+            this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+            this.detailFormGroup.get('baseCurrControl')?.setValue(rsts[1].BaseCurrency);
+            this.detailFormGroup.get('hostControl')?.setValue(rsts[1].Host);
+            this.detailFormGroup.get('detailControl')?.setValue(rsts[1].Details);
             this.detailFormGroup.markAsUntouched();
             this.detailFormGroup.markAsPristine();
 
             if (this.uiMode === UIMode.Display) {
               this.detailFormGroup.disable();
-            } else if (this.uiMode === UIMode.Change) {
+            } else if (this.uiMode === UIMode.Update) {
               this.detailFormGroup.enable();
-              this.detailFormGroup.get('idControl').disable();
+              this.detailFormGroup.get('idControl')?.disable();
             }
 
             this.listMembers = rsts[1].Members.slice();
@@ -169,7 +170,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         default: {
           this.isLoadingResults = true;
           this.finService.fetchAllCurrencies()
-            .pipe(takeUntil(this._destroyed$),
+            .pipe(takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false))
             .subscribe({
               next: (curries: Currency[]) => {
@@ -178,7 +179,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                 // Insert one home member by default
                 this.listMembers = [];
                 const nm = new HomeMember();
-                nm.User = this.authService.authSubject.getValue().getUserId();
+                nm.User = this.authService.authSubject.getValue().getUserId()!;
                 nm.Relation = HomeMemberRelationEnum.Self;
                 nm.DisplayAs = nm.User;
                 this.listMembers.push(nm);
@@ -218,10 +219,10 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       // Create mode
       const hdobj = new HomeDef();
-      hdobj.Name = this.detailFormGroup.get('nameControl').value;
-      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
-      hdobj.Host = this.detailFormGroup.get('hostControl').value;
-      hdobj.Details = this.detailFormGroup.get('detailControl').value;
+      hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
+      hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
+      hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
       this.listMembers.forEach(val => hdobj.Members.push(val));
       if (!hdobj.isValid) {
@@ -235,7 +236,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       }
 
       this.storageService.createHomeDef(hdobj)
-        .pipe(takeUntil(this._destroyed$))
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
         next: val => {
           // Shall create successfully.
@@ -250,14 +251,14 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           });
         }
       });
-    } else if (this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Update) {
       // Change mode
       const hdobj = new HomeDef();
       hdobj.ID = +this.routerID;
-      hdobj.Name = this.detailFormGroup.get('nameControl').value;
-      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl').value;
-      hdobj.Host = this.detailFormGroup.get('hostControl').value;
-      hdobj.Details = this.detailFormGroup.get('detailControl').value;
+      hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
+      hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
+      hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
       this.listMembers.forEach(val => hdobj.Members.push(val));
       if (!hdobj.isValid) {
@@ -271,7 +272,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       }
 
       this.storageService.changeHomeDef(hdobj)
-        .pipe(takeUntil(this._destroyed$))
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
         next: val => {
           // Shall create successfully.

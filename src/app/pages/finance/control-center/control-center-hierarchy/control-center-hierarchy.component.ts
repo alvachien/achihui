@@ -17,8 +17,8 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, TranType, Order,
   styleUrls: ['./control-center-hierarchy.component.less'],
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
-  // tslint:disable:variable-name
-  private _destroyed$: ReplaySubject<boolean>;
+  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
   isLoadingResults: boolean;
@@ -29,7 +29,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   id = -1;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome.IsChild;
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
   constructor(
@@ -98,8 +98,8 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug);
 
-    if (event.keys.length > 0) {
-      const evtkey = +event.keys[0];
+    if (event.keys!.length > 0) {
+      const evtkey = +event.keys![0];
       const arflt = [];
 
       arflt.push({
@@ -123,11 +123,10 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           // Root nodes!
           const node: NzTreeNodeOptions = {
             key: `${val.Id}`,
-            title: val.Name + `(${val.Id})`,
-            icon: 'cluster',
+            title: val.Name + `(${val.Id})`
           };
           node.children = this._buildControlCenterTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;
@@ -142,11 +141,10 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `${val.Id}`,
-            title: val.Name + `(${val.Id})`,
-            icon: 'cluster',
+            title: val.Name + `(${val.Id})`
           };
           node.children = this._buildControlCenterTree(value, level + 1, val.Id);
-          if (node.children) {
+          if (node.children && node.children.length > 0) {
             node.isLeaf = false;
           } else {
             node.isLeaf = true;

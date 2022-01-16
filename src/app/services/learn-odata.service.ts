@@ -18,8 +18,8 @@ export class LearnOdataService {
   private listCategory: LearnCategory[];
 
   // URLs
-  readonly categoryurl: string = environment.ApiUrl + '/api/LearnCategories';
-  readonly objecturl: string = environment.ApiUrl + '/api/LearnObjects';
+  readonly categoryurl: string = environment.ApiUrl + '/LearnCategories';
+  readonly objecturl: string = environment.ApiUrl + '/LearnObjects';
   get Categories(): LearnCategory[] {
     return this.listCategory;
   }
@@ -55,7 +55,7 @@ export class LearnOdataService {
           headers,
           params,
         })
-        .pipe(map((response: HttpResponse<any>) => {
+        .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllCategories, map...',
             ConsoleLogTypeEnum.debug);
 
@@ -111,16 +111,16 @@ export class LearnOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'ID,HomeID,CategoryID,Name');
     if (ctgyID) {
-      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and CategoryID eq ${ctgyID}`);
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID} and CategoryID eq ${ctgyID}`);
     } else {
-      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID}`);
+      params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID}`);
     }
 
     return this.http.get(this.objecturl, {
         headers,
         params,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService fetchAllObjects map...',
           ConsoleLogTypeEnum.debug);
 
@@ -162,7 +162,7 @@ export class LearnOdataService {
     return this.http.post(this.objecturl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService createObject map...',
           ConsoleLogTypeEnum.debug);
 
@@ -191,13 +191,13 @@ export class LearnOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.objecturl + '(' + obj.Id.toString() + ')';
+    const apiurl: string = `${this.objecturl}(${obj ? obj.Id?.toString() : ''})`;
 
     const jdata: string = obj.writeJSONString();
     return this.http.put(apiurl, jdata, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService updateObject, map...',
           ConsoleLogTypeEnum.debug);
 
@@ -230,7 +230,7 @@ export class LearnOdataService {
     return this.http.delete(apiurl, {
         headers,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService deleteObject, map',
           ConsoleLogTypeEnum.debug);
 
@@ -259,12 +259,12 @@ export class LearnOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome.ID} and ID eq ${objid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID} and ID eq ${objid}`);
     return this.http.get(this.objecturl, {
         headers,
         params,
       })
-      .pipe(map((response: HttpResponse<any>) => {
+      .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LearnOdataService readObject, map',
           ConsoleLogTypeEnum.debug);
 
