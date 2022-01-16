@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 
-import { QuestionBankItem, TemplateDocLoan, CheckVersionResult, } from '../model';
+import { QuestionBankItem, TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
@@ -58,6 +58,7 @@ export class UIStatusService {
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
   constructor(private _tranService: TranslocoService) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService constructor...`, ConsoleLogTypeEnum.debug);
   }
 
   /**

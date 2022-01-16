@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogPostStatus_PublishAsPublic,
   getUIModeString, BlogCollection, BlogPostCollection, BlogPostStatus_PublishAsPrivate,
   BlogPostStatus_Draft, BlogPostTag,
 } from '../../../../model';
-import { BlogOdataService, UIStatusService, } from '../../../../services';
+import { BlogOdataService, } from '../../../../services';
 
 @Component({
   selector: 'hih-blog-post-detail',
