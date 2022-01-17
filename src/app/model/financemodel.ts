@@ -1023,8 +1023,10 @@ export class AccountExtraLoan extends AccountExtra {
     if (this.InterestFree && this.annualRate) {
       return false;
     }
-    if (this.annualRate === null ||  this.annualRate < 0) {
-      return false;
+    if (!this.InterestFree) {
+      if (this.annualRate === null ||  this.annualRate < 0) {
+        return false;
+      }
     }
     if (this.RepayMethod === RepaymentMethodEnum.EqualPrincipal
       || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset) {
@@ -1357,8 +1359,8 @@ export class Order extends hih.BaseModel {
   private _hid?: number;
   private _name: string = '';
   private _cmt: string = '';
-  private _validFrom: moment.Moment = moment();
-  private _validTo: moment.Moment = moment();
+  private _validFrom?: moment.Moment;
+  private _validTo?: moment.Moment;
 
   get Id(): number | undefined        { return this._id;              }
   set Id(id: number | undefined)      { this._id = id;                }
@@ -1368,15 +1370,15 @@ export class Order extends hih.BaseModel {
   set Name(name: string)              { this._name = name;            }
   get Comment(): string               { return this._cmt;             }
   set Comment(cmt: string)            { this._cmt = cmt;              }
-  get ValidFrom(): moment.Moment      { return this._validFrom;       }
-  set ValidFrom(vf: moment.Moment)    { this._validFrom = vf;         }
-  get ValidTo(): moment.Moment        { return this._validTo;         }
-  set ValidTo(vt: moment.Moment)      { this._validTo = vt;           }
+  get ValidFrom(): moment.Moment | undefined     { return this._validFrom;       }
+  set ValidFrom(vf: moment.Moment | undefined)   { this._validFrom = vf;         }
+  get ValidTo(): moment.Moment | undefined       { return this._validTo;         }
+  set ValidTo(vt: moment.Moment | undefined)     { this._validTo = vt;           }
   get ValidFromFormatString(): string {
-    return this._validFrom.format(hih.momentDateFormat);
+    return this._validFrom ? this._validFrom.format(hih.momentDateFormat) : '';
   }
   get ValidToFormatString(): string   {
-    return this._validTo.format(hih.momentDateFormat);
+    return this._validTo ? this._validTo.format(hih.momentDateFormat) : '';
   }
 
   public SRules: SettlementRule[] = [];
@@ -1498,8 +1500,8 @@ export class Order extends hih.BaseModel {
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.Name = this.Name;
-    rstObj.ValidFrom = this._validFrom.format(hih.momentDateFormat);
-    rstObj.ValidTo = this._validTo.format(hih.momentDateFormat);
+    rstObj.ValidFrom = this._validFrom?.format(hih.momentDateFormat);
+    rstObj.ValidTo = this._validTo?.format(hih.momentDateFormat);
     rstObj.Comment = this.Comment;
     rstObj.SRule = [];
 

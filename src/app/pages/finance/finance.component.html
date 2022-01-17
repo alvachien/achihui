@@ -10,8 +10,7 @@
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">
         <div>
-          <button nz-button nz-popconfirm
-          [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
+          <button nz-button nz-popconfirm [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
             (nzOnConfirm)="doPostDPDoc(item)"
             nzShape="circle"><i nz-icon nzType="export"></i></button>
           <span>{{item.Desp}}</span>
@@ -19,8 +18,7 @@
       </li>
       <li *ngFor="let item of getLoanDocsByDate(date)">
         <div>
-          <button nz-button nz-popconfirm
-            [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
+          <button nz-button nz-popconfirm [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
             (nzOnConfirm)="doPostLoanDoc(item)"><i nz-icon nzType="export"></i></button>
           <span>{{item.Desp}}</span>
         </div>

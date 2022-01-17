@@ -11,4 +11,46 @@
 </nz-page-header>
   
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+    <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <nz-table #incomeTable [nzData]="reportIncome">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{'Common.Name' | transloco}}</th>
+            <th>{{'Finance.Amount' | transloco}}</th>
+            <th>{{'Common.Precent' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of incomeTable.data">
+            <td>{{data.TransactionType}}</td>
+            <td>{{data.TransactionTypeName}}</td>
+            <td>{{data.Amount | number:'1.0-2'}}</td>
+            <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
+          </tr>
+        </tbody>
+      </nz-table>    
+    </div>
+    <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <nz-table #expenseTable [nzData]="reportExpense">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{'Common.Name' | transloco}}</th>
+            <th>{{'Finance.Amount' | transloco}}</th>
+            <th>{{'Common.Precent' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of expenseTable.data">
+            <td>{{data.TransactionType}}</td>
+            <td>{{data.TransactionTypeName}}</td>
+            <td>{{data.Amount | number:'1.0-2'}}</td>
+            <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
+          </tr>
+        </tbody>
+      </nz-table>    
+    </div>
+  </div>
 </nz-spin>

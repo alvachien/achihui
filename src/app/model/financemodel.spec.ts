@@ -427,7 +427,7 @@ describe('AccountExtraLoan', () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  xit('#5. isAccountValid', () => {
+  it('#5. isAccountValid', () => {
     expect(instance.isAccountValid).toBeFalsy();
     instance.InterestFree = true;
     instance.startDate = moment();
@@ -528,9 +528,9 @@ describe('Order', () => {
     });
     expect(erridx).not.toEqual(-1);
   });
-  xit ('#5. onVerify: valid from is must', () => {
+  it ('#5. onVerify: valid from is must', () => {
     instance.Name = 'test';
-    // instance.ValidFrom = undefined;
+    instance.ValidFrom = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -541,9 +541,9 @@ describe('Order', () => {
     });
     expect(erridx).not.toEqual(-1);
   });
-  xit ('#6. onVerify: valid to is must', () => {
+  it ('#6. onVerify: valid to is must', () => {
     instance.Name = 'test';
-    // instance.ValidTo = undefined;
+    instance.ValidTo = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -556,7 +556,7 @@ describe('Order', () => {
   });
   it ('#7. onVerify: valid from must earlier than valid to', () => {
     instance.Name = 'test';
-    instance.ValidTo = instance.ValidFrom.subtract(1, 'M');
+    instance.ValidTo = instance.ValidFrom?.subtract(1, 'M');
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();

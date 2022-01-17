@@ -6,10 +6,10 @@ import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 
-import { LogLevel, FinanceReportByOrder, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
-  Order, } from '../../../../model';
+import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+  FinanceReportEntryByTransactionType, TranType, FinanceReportMostExpenseEntry } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
+import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-finance-report-trantype',
@@ -19,8 +19,11 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../.
 export class TranTypeReportComponent implements OnInit {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
-  dataSet: any[] = [];
+  reportIncome: FinanceReportMostExpenseEntry[] = [];
+  reportExpense: FinanceReportMostExpenseEntry[] = [];
   baseCurrency: string;
+  totalIncome = 0;
+  totalExpense = 0;
 
   constructor(public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
@@ -49,10 +52,35 @@ export class TranTypeReportComponent implements OnInit {
     .pipe(takeUntil(this._destroyed$),
       finalize(() => this.isLoadingResults = false))
     .subscribe({
-      next: (x: any[]) => {
-        // this.arReportByOrder = x[0] as FinanceReportByOrder[];
-        // this.arOrder = x[1] as Order[];
-      },
+      next: (val: any[]) => {
+        val[0].forEach((item: any) => {
+          if (item.InAmount !== 0) {
+            this.totalIncome += item.InAmount;
+          }
+          if (item.OutAmount !== 0) {
+            this.totalExpense += item.OutAmount;
+          }
+        });
+
+        val[0].forEach((item: any) => {
+          if (item.InAmount !== 0) {
+            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+            entry.Amount = item.InAmount;
+            entry.TransactionType  = item.TransactionType;
+            entry.TransactionTypeName = item.TransactionTypeName;
+            entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncome);
+            this.reportIncome.push(entry);
+          }
+          if (item.OutAmount !== 0) {
+            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+            entry.Amount = item.OutAmount;
+            entry.TransactionType  = item.TransactionType;
+            entry.TransactionTypeName = item.TransactionTypeName;
+            entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalExpense);
+            this.reportExpense.push(entry);
+          }
+        });
+    },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent ngOnInit forkJoin failed ${error}`,
           ConsoleLogTypeEnum.error);

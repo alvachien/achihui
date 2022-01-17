@@ -216,7 +216,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     this.dataSet = [];
     const dt = moment();
     const ords = this.arOrder.filter(value => {
-      return this.validOrderOnly ? ( value.ValidFrom.isBefore(dt) && value.ValidTo.isAfter(dt) ) : true;
+      return this.validOrderOnly ? ( value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt) ) : true;
     });
     this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {
       const ordobj = ords.find((cc: Order) => {

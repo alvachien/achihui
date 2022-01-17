@@ -897,8 +897,8 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
         rst.Id = ord.Id;
       }      
       rst.Name = ord.Name;
-      rst._validFrom = ord.ValidFrom.clone();
-      rst._validTo = ord.ValidTo.clone();
+      rst._validFrom = ord.ValidFrom!.clone();
+      rst._validTo = ord.ValidTo!.clone();
 
       // Skip some categories
       if (skipinv) {

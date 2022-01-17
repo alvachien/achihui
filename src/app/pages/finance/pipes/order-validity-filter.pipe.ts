@@ -13,10 +13,10 @@ export class OrderValidityFilterPipe implements PipeTransform {
 
       if (args !== undefined) {
         if (moment.isMoment(args)) {
-          return value.ValidFrom.isBefore(args) && value.ValidTo.isAfter(args);
+          return value.ValidFrom!.isBefore(args) && value.ValidTo!.isAfter(args);
         } else if (args) {
           const dt = moment();
-          return value.ValidFrom.isBefore(dt) && value.ValidTo.isAfter(dt);
+          return value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt);
         }
       }
 

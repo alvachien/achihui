@@ -196,7 +196,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/report/order']);
   }
   onDrillDownToTranType(): void {
-    // How to Tran. type page?
+    this.router.navigate(['finance', 'report', 'trantype']);
   }
 
   private buildInfo() {
