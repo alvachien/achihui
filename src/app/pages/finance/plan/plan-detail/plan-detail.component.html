@@ -95,7 +95,7 @@
         <nz-form-label [nzSpan]="7">{{'Common.Category' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="acntCtgyTpl">
           <nz-select formControlName="acntCtgyControl">
-            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.ID" [nzLabel]="t(cc.Name)"></nz-option>
+            <nz-option *ngFor="let cc of arAccountCategories" [nzValue]="cc.ID" [nzLabel]="t(cc.Name!)"></nz-option>
           </nz-select>
           <ng-template #acntCtgyTpl let-control>
             <ng-container *ngIf="control.hasError('required')">
@@ -153,7 +153,7 @@
         <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
           <nz-select formControlName="currControl">
-            <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
+            <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
           </nz-select>
           <ng-template #currTpl let-control>
             <ng-container *ngIf="control.hasError('required')">

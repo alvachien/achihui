@@ -68,7 +68,7 @@ export class Location extends hih.BaseModel {
     this._hid = null;
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     this.VerifiedMsgs = [];
     if (!super.onVerify(context)) {
       return false;
@@ -77,7 +77,7 @@ export class Location extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
@@ -87,7 +87,7 @@ export class Location extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: LocationJson): void {
+  public override onSetData(data: LocationJson): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -147,7 +147,7 @@ export class BookCategory extends hih.BaseModel {
     this._parid = null;
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     this.VerifiedMsgs = [];
     if (!super.onVerify(context)) {
       return false;
@@ -156,7 +156,7 @@ export class BookCategory extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
@@ -165,7 +165,7 @@ export class BookCategory extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -235,7 +235,7 @@ export class MovieGenre extends hih.BaseModel {
     this._parid = null;
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     this.VerifiedMsgs = [];
     if (!super.onVerify(context)) {
       return false;
@@ -244,7 +244,7 @@ export class MovieGenre extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
     rstobj.id = this.ID;
     rstobj.hid = this.HID;
@@ -252,7 +252,7 @@ export class MovieGenre extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: MovieGenreJson): void {
+  public override onSetData(data: MovieGenreJson): void {
     super.onSetData(data);
 
     if (data && data.id) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
@@ -7,16 +7,16 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  FinanceReportEntryByTransactionType, TranType, FinanceReportMostExpenseEntry } from '../../../../model';
+  FinanceReportMostExpenseEntry } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-finance-report-trantype',
   templateUrl: './tran-type-report.component.html',
-  styleUrls: ['./tran-type-report.component.less']
+  styleUrls: ['./tran-type-report.component.less'],
 })
-export class TranTypeReportComponent implements OnInit {
+export class TranTypeReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   reportIncome: FinanceReportMostExpenseEntry[] = [];
@@ -24,12 +24,12 @@ export class TranTypeReportComponent implements OnInit {
   baseCurrency: string;
   totalIncome = 0;
   totalExpense = 0;
+  selectedYTD = false;
 
   constructor(public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    private router: Router,) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent constructor...',
+    private modalService: NzModalService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
@@ -40,19 +40,45 @@ export class TranTypeReportComponent implements OnInit {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    // Load data
     this._destroyed$ = new ReplaySubject(1);
+    this.onLoadData();
+  }
+
+  ngOnDestroy(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent ngOnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+      this._destroyed$ = null;
+    }        
+  }
+
+  onLoadData() {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering TranTypeReportComponent onLoadData...`,
+      ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = true;
-    const tnow = moment();
+    let tnow = moment();
+    if (this.selectedYTD) {
+      tnow = moment().subtract(1, "year");
+    }
+
     forkJoin([
       this.odataService.fetchReportByTransactionType(tnow.year()),
       this.odataService.fetchAllTranTypes(),
     ])
-    .pipe(takeUntil(this._destroyed$),
+    .pipe(takeUntil(this._destroyed$!),
       finalize(() => this.isLoadingResults = false))
     .subscribe({
       next: (val: any[]) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent onLoadData forkJoin succeed`,
+          ConsoleLogTypeEnum.debug);
+
+        this.reportExpense = [];
+        this.reportIncome = [];
+
         val[0].forEach((item: any) => {
           if (item.InAmount !== 0) {
             this.totalIncome += item.InAmount;
@@ -80,7 +106,7 @@ export class TranTypeReportComponent implements OnInit {
             this.reportExpense.push(entry);
           }
         });
-    },
+      },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent ngOnInit forkJoin failed ${error}`,
           ConsoleLogTypeEnum.error);

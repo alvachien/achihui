@@ -91,7 +91,7 @@ export class GeneralEvent extends hih.BaseModel {
     this._ispublic = false;
   }
 
-  onSetData(data: any): void {
+  override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -126,7 +126,7 @@ export class GeneralEvent extends hih.BaseModel {
     }
   }
 
-  writeJSONObject(): any {
+  override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
@@ -235,7 +235,7 @@ export class RecurEvent extends hih.BaseModel {
     this._ispublic = false;
   }
 
-  onSetData(data: any): void {
+  override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -269,7 +269,7 @@ export class RecurEvent extends hih.BaseModel {
     }
   }
 
-  writeJSONObject(): any {
+  override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
@@ -358,7 +358,7 @@ export class EventHabit extends hih.BaseModel {
     this._endDate = moment();
   }
 
-  onSetData(data: any): void {
+  override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -415,7 +415,7 @@ export class EventHabit extends hih.BaseModel {
     }
   }
 
-  writeJSONObject(): any {
+  override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;

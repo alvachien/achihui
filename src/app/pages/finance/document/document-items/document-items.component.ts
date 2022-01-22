@@ -48,17 +48,17 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   get controlError(): any {
     const err = this.validate();
     if (err) {
-      if (err.noitems) {
+      if (err['noitems']) {
         return { value: 'Finance.NoDocumentItem' };
-      } else if (err.itemwithoutaccount) {
+      } else if (err['itemwithoutaccount']) {
         return { value: 'Finance.AccountIsMust' };
-      } else if (err.itemwithouttrantype) {
+      } else if (err['itemwithouttrantype']) {
         return { value: 'Finance.TransactionTypeIsMust' };
-      } else if (err.itemwithoutamount) {
+      } else if (err['itemwithoutamount']) {
         return { value: 'Finance.AmountIsMust' };
-      } else if (err.itemwithwrongcostobject) {
+      } else if (err['itemwithwrongcostobject']) {
         return { value: 'Finance.EitherControlCenterOrOrder' };
-      } else if (err.itemwithoutdesp) {
+      } else if (err['itemwithoutdesp']) {
         return { value: 'Finance.DespIsMust' };
       }
     }
@@ -294,7 +294,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     });
 
     if (idx !== -1) {
-      exitems.splice(idx);
+      exitems.splice(idx, 1);
       this.listItems = exitems;
 
       this.onChange();

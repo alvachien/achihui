@@ -135,20 +135,20 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent controlError: ${err}`,
         ConsoleLogTypeEnum.debug);
 
-      if (err.noitems) {
+      if (err['noitems']) {
         return { value: 'Finance.NoDocumentItem' };
-      } else if (err.itemwithoutaccount) {
+      } else if (err['itemwithoutaccount']) {
         return { value: 'Finance.AccountIsMust' };
-      } else if (err.itemwithouttrantype) {
+      } else if (err['itemwithouttrantype']) {
         return { value: 'Finance.TransactionTypeIsMust' };
-      } else if (err.itemwithoutamount) {
+      } else if (err['itemwithoutamount']) {
         return { value: 'Finance.AmountIsMust' };
-      } else if (err.itemwithwrongcostobject) {
+      } else if (err['itemwithwrongcostobject']) {
         return { value: 'Finance.EitherControlCenterOrOrder' };
-      } else if (err.itemwithoutdesp) {
+      } else if (err['itemwithoutdesp']) {
         return { value: 'Finance.DespIsMust' };
-      } else if (err.invalidForm) {
-        return { value: err.invalidForm.message };
+      } else if (err['invalidForm']) {
+        return { value: err['invalidForm'].message };
       } else {
         return { value: 'Common.Error' };
       }

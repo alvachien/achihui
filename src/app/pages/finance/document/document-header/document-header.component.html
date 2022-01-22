@@ -4,7 +4,7 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.DocumentType' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="doctypeErrorTpl">
       <nz-select id="idDocType" formControlName="docTypeControl">
-        <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name)"></nz-option>
+        <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name!)"></nz-option>
       </nz-select>
       <ng-template #doctypeErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
@@ -48,7 +48,7 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
       <nz-select formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
-        <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
+        <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
       <ng-template #currTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
@@ -86,7 +86,7 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="curr2Tpl">
       <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onCurrency2Change($event)">
-        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' - ' + cr.Symbol"></nz-option>
+        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
       </nz-select>
       <ng-template #curr2Tpl let-control>
         <ng-container *ngIf="control.hasError('required')">

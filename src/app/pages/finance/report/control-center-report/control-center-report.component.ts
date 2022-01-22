@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -6,8 +6,8 @@ import { NzModalService, } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 
-import { LogLevel, FinanceReportByControlCenter, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, Account, AccountCategory, ControlCenter, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem, } from '../../../../model';
+import { FinanceReportByControlCenter, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+  ControlCenter, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
@@ -45,32 +45,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
     // Load data
     this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchReportByControlCenter(),
-      this.odataService.fetchAllControlCenters(),
-    ])
-    .pipe(takeUntil(this._destroyed$),
-      finalize(() => this.isLoadingResults = false))
-    .subscribe({
-      next: (x: any[]) => {
-        this.arReportByControlCenter = x[0];
-        this.arControlCenter = x[1];
-
-        this.buildReportList();
-      },
-      error: (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      },
-    });
+    this.onLoadData();
   }
 
   ngOnDestroy() {
@@ -198,6 +173,36 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       // if (typeof data === 'string') {
       //   this.value = data;
       // }
+    });
+  }
+
+  public onLoadData(forceReload?: true) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterReportComponent onLoadData(${forceReload})...`,
+      ConsoleLogTypeEnum.debug);
+    this.isLoadingResults = true;
+    forkJoin([
+      this.odataService.fetchReportByControlCenter(forceReload),
+      this.odataService.fetchAllControlCenters(),
+    ])
+    .pipe(takeUntil(this._destroyed$!),
+      finalize(() => this.isLoadingResults = false))
+    .subscribe({
+      next: (x: any[]) => {
+        this.arReportByControlCenter = x[0];
+        this.arControlCenter = x[1];
+
+        this.buildReportList();
+      },
+      error: (error: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: error,
+          nzClosable: true,
+        });
+      },
     });
   }
 

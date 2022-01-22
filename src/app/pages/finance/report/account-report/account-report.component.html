@@ -7,7 +7,7 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.Account' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button>{{'Common.Refresh' | transloco}}</button>
+    <button nz-button (click)="onLoadData(true)">{{'Common.Refresh' | transloco}}</button>
     <nz-divider nzType="vertical"></nz-divider>
   </nz-page-header-extra>
 </nz-page-header>

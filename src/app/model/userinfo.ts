@@ -50,7 +50,7 @@ export class UserAuthInfo {
 
       this.userName = user.profile.name;
       this.userId = user.profile.sub;
-      this.userMailbox = user.profile.mail;
+      this.userMailbox = user.profile['mail'];
       this.accessToken = user.access_token;
     } else {
       this.cleanContent();

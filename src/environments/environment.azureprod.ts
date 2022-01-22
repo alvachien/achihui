@@ -1,7 +1,7 @@
 export const environment: any = {
   production: true,
   LoginRequired: true,
-  CurrentVersion: '1.2.185',
+  CurrentVersion: '1.2.188',
   ReleasedDate: '2022.3.1',
   DefaultLanguage: 'en',
 

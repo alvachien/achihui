@@ -523,15 +523,15 @@ export class MultipleNamesObject extends BaseModel {
     super();
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     return super.onVerify(context);
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
 
     rstobj.nativeName = this.NativeName;
@@ -545,7 +545,7 @@ export class MultipleNamesObject extends BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.nativeName) {

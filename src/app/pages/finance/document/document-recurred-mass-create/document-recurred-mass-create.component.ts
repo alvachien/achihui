@@ -243,7 +243,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
   get getItemFormArray(): FormArray {
-    return this.itemsFormGroup?.controls.items as FormArray;
+    return this.itemsFormGroup?.controls['items'] as FormArray;
   }
   get getItemControls(): FormGroup[] {
     return this.getItemFormArray.controls as FormGroup[];
@@ -374,7 +374,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
   // Step 3. Items
   private generateItems(): void {
-    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
     control.clear(); // Clear it
 
     const defval = this.defaultValueFormGroup.value;
@@ -437,14 +437,14 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   private createItem(): number {
-    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
     const newItem: FormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
@@ -462,13 +462,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return control.length - 1;
   }
   private removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
     control.removeAt(i);
   }
   // Step 4: Confirm
   private generateMassDocumentItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.itemsFormGroup?.controls.items as FormArray;
+    const controlArrays: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];

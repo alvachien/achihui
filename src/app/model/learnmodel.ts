@@ -78,11 +78,11 @@ export class EnWord extends hih.BaseModel {
     this.Explains = [];
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -90,7 +90,7 @@ export class EnWord extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
@@ -103,7 +103,7 @@ export class EnWord extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -179,11 +179,11 @@ export class EnSentence extends hih.BaseModel {
     this.RelatedWords = [];
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -191,7 +191,7 @@ export class EnSentence extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
@@ -208,7 +208,7 @@ export class EnSentence extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -278,11 +278,11 @@ export class LearnCategory extends hih.BaseModel {
     super();
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -290,7 +290,7 @@ export class LearnCategory extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): LearnCategoryJson {
+  public override writeJSONObject(): LearnCategoryJson {
     const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.ParentID = this.ParentId;
@@ -299,7 +299,7 @@ export class LearnCategory extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: LearnCategoryJson): void {
+  public override onSetData(data: LearnCategoryJson): void {
     super.onSetData(data);
 
     if (data && data.ID) {
@@ -352,11 +352,11 @@ export class LearnObject extends hih.BaseModel {
     super();
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -387,7 +387,7 @@ export class LearnObject extends hih.BaseModel {
     return chkrst;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     rstObj.HomeID = this.HID;
     rstObj.ID = this.Id;
@@ -397,7 +397,7 @@ export class LearnObject extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.HomeID) {
@@ -459,12 +459,12 @@ export class LearnHistory extends hih.BaseModel {
     return this._learnDate.format(hih.momentDateFormat);
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
     this.LearnDate = moment();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -532,7 +532,7 @@ export class LearnHistory extends hih.BaseModel {
     return chkrst;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     rstObj.hid = this.HID;
     rstObj.userID = this.UserId;
@@ -542,7 +542,7 @@ export class LearnHistory extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.hid) {
@@ -577,11 +577,11 @@ export class LearnAward extends hih.BaseModel {
     super();
   }
 
-  public onInit(): void {
+  public override onInit(): void {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public override onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -589,12 +589,12 @@ export class LearnAward extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
   }
 }
@@ -661,7 +661,7 @@ export class QuestionBankItem extends hih.BaseModel {
   public SubItems: QuestionBankSubItem[] = [];
   public Tags: string[] = [];
 
-  public onSetData(data?: any): void {
+  public override onSetData(data?: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -694,7 +694,7 @@ export class QuestionBankItem extends hih.BaseModel {
     }
   }
 
-  public writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
 
     rst.hid = this.HID;

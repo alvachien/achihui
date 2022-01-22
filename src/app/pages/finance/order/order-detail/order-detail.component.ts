@@ -339,7 +339,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     });
 
     if (idx !== -1) {
-      srules.splice(idx);
+      srules.splice(idx, 1);
       this.listRules = srules;
 
       this.ruleChanged = true;

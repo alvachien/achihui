@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -53,48 +53,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     // Load data
     this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
-    forkJoin([
-      // this.odataService.fetchAllReportsByAccount(),
-      this.odataService.fetchReportByAccount(),
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts()
-    ])
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
-      .subscribe({
-        next: (x: any[]) => {
-          // let arData = x[0] as FinanceReportEntryByAccountAndExpense[];
-          
-          this.arReportByAccount = x[0] as FinanceReportByAccount[];
-          this.arAccountCategories = x[1];
-          this.arAccounts = x[2];
-
-          this.arAccountCategories.forEach((val: AccountCategory) => {
-            this.listCategoryFilter.push({
-              text: translate(val.Name!),
-              value: val.ID
-            });
-          });
-
-          this.buildReportList();
-          this.buildAssetChart();
-          this.buildAssetChartChart();
-          this.buildLiabilityChart();
-          this.buildLiabilityAccountChart();
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
-            ConsoleLogTypeEnum.error);
-
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error,
-            nzClosable: true,
-          });
-        },
-      });
+    this.onLoadData();
   }
 
   ngOnDestroy() {
@@ -115,7 +74,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     this.buildReportList();
     this.buildAssetChart();
     this.buildLiabilityChart();
-}
+  }
 
   onDisplayMasterData(acntid: number) {
     this.router.navigate(['/finance/account/display/' + acntid.toString()]);
@@ -249,6 +208,49 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     this.selectedCategoryFilter = seledCategory;
 
     this.buildReportList();
+  }
+  onLoadData(forceReload?: boolean) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountReportComponent onLoadData(${forceReload})...`,
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = true;
+    forkJoin([
+      this.odataService.fetchReportByAccount(forceReload),
+      this.odataService.fetchAllAccountCategories(),
+      this.odataService.fetchAllAccounts()
+    ])
+      .pipe(takeUntil(this._destroyed$!),
+        finalize(() => this.isLoadingResults = false))
+      .subscribe({
+        next: (x: any[]) => {
+          this.arReportByAccount = x[0] as FinanceReportByAccount[];
+          this.arAccountCategories = x[1];
+          this.arAccounts = x[2];
+
+          this.arAccountCategories.forEach((val: AccountCategory) => {
+            this.listCategoryFilter.push({
+              text: translate(val.Name!),
+              value: val.ID
+            });
+          });
+
+          this.buildReportList();
+          this.buildAssetChart();
+          this.buildAssetChartChart();
+          this.buildLiabilityChart();
+          this.buildLiabilityAccountChart();
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error,
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   private buildAssetChart() {
