@@ -312,7 +312,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
       expect(control.length).toEqual(1);
 
       expect(component.currentStep).toEqual(0);
@@ -334,7 +334,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
       expect(control.length).toEqual(1);
 
       const newItem: FormGroup = control.controls[0] as FormGroup;
@@ -363,7 +363,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls.items as FormArray;
+      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
       expect(control.length).toEqual(1);
 
       const newItem: FormGroup = control.controls[0] as FormGroup;

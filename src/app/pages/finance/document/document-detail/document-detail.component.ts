@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/core';
-import { ReplaySubject, forkJoin, of } from 'rxjs';
+import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -11,10 +11,8 @@ import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../..
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  getUIModeString,
+  ModelUtility, ConsoleLogTypeEnum, getUIModeString,
 } from '../../../../model';
-import { UITableColumnItem } from '../../../../uimodel';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -135,13 +133,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 });
       
                 if (listNIDs.length > 0) {
-                  const listRst: any[] = [];
+                  const listRst: any = [];
                   listNIDs.forEach(nid => {
                     listRst.push(this.odataService.readAccount(nid));
                   });
       
                   // Read the account
-                  forkJoin([...listRst]).pipe(takeUntil(this._destroyed$!),
+                  forkJoin(listRst).pipe(takeUntil(this._destroyed$!),
                     finalize(() => {
                       this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
                       this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
@@ -158,7 +156,12 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                         this.arUIAccounts = BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories);
                       },
                       error: err => {
-                        // TBD.
+                        this.uiMode = UIMode.Invalid;
+                        this.modalService.create({
+                          nzTitle: translate('Common.Error'),
+                          nzContent: err,
+                          nzClosable: true,
+                        });
                       }
                     });
                 } else {
@@ -207,5 +210,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSubmit...',
       ConsoleLogTypeEnum.debug);
+    if (this.uiMode === UIMode.Update) {
+      // Update mode.
+      
+    }
   }
 }

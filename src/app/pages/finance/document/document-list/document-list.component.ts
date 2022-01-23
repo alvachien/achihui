@@ -10,12 +10,10 @@ import * as moment from 'moment';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
-  OverviewScopeEnum, DocumentType, Currency, Order,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
-  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView, DocumentItem,
+  DocumentType, Currency, Order, BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
+  BaseListModel, ModelUtility, ConsoleLogTypeEnum,
+  ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat,
 } from '../../../../model';
-import { UITableColumnItem } from '../../../../uimodel';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -27,7 +25,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _filterDocItem: GeneralFilterItem[] = [];
   private _isInitialized = false;
-  isLoadingResults: boolean;
+  isLoadingResults = false;
 
   mapOfExpandData: { [key: string]: boolean } = {};
   public arCurrencies: Currency[] = [];
@@ -41,7 +39,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arTranTypes: TranType[] = [];
   public selectedRange: any[] = [];
   // Table
-  listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
   pageIndex = 1;
   pageSize = 10;
   listOfDocs: Document[] = [];
@@ -62,49 +59,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     private msgService: NzMessageService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
       ConsoleLogTypeEnum.debug);
-
-    this.isLoadingResults = false;
-    this.listOfColumns = [{
-      name: 'Common.ID',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Finance.Currency',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: this.listCurrencyFilters,
-      filterFn: null,
-      filterMultiple: true
-    }, {
-      name: 'Common.Date',
-      sortOrder: 'descend',
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Finance.DocumentType',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: this.listDocTypeFilters,
-      filterMultiple: true,
-      filterFn: null,
-    }, {
-      name: 'Common.Description',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterMultiple: true,
-      filterFn: null,
-    }];
   }
 
   ngOnInit() {
@@ -182,7 +136,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
 
-    this._isInitialized = false;
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

@@ -12,12 +12,11 @@ import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogCloseButton, ElementClass_DialogContent } from '../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, } from '../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from './document-item-view.component';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 
 describe('DocumentItemViewComponent', () => {
   let component: DocumentItemViewComponent;
