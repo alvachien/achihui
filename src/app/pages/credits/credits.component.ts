@@ -6,14 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./credits.component.less'],
 })
 export class CreditsComponent {
-
   creditApp: any[] = [
     {
       name: 'Angular',
       url: 'https://angular.io',
       desp: 'One framework. Mobile & desktop. Angular is a development platform for building mobile and desktop web applications using TypeScript/JavaScript and other languages.'
     }, {
-      name: 'TypeScript 4+',
+      name: 'TypeScript',
       url: 'http://www.typescriptlang.org/',
       desp: 'JavaScript that scales. TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. Any browser. Any host. Any OS. Open source.',
     }, {
@@ -33,7 +32,7 @@ export class CreditsComponent {
       url: 'https://momentjs.com/',
       desp: 'Parse, validate, manipulate, and display dates and times in JavaScript',
     }, {
-      name: '.NET Core 5.0+',
+      name: '.NET Core',
       url: 'https://dot.net',
       desp: 'Free. Cross-platform. Open source. A developer platform for building all your apps.',
     },
