@@ -1885,6 +1885,68 @@ export class FinanceOdataService {
   }
 
   /**
+   * Is document changable
+   * @params 
+   * @param docID Document ID
+   * @returns Observable<bool>
+   */
+  public isDocumentChangable(docid: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = `${this.documentAPIUrl}(${docid})/IsChangable()`;
+    return this.http.get(apiurl, {
+        headers,
+      })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, isDocumentChangable, map.`,
+          ConsoleLogTypeEnum.debug);
+
+        return response.value as boolean;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, isDocumentChangable failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }),
+      );
+  }
+
+  /**
+   * Change a document
+   * @param objDetail instance of document which to be created
+   */
+   public changeDocument(objDetail: Document): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const targetUrl = `${this.documentAPIUrl}/${objDetail.Id}`;
+    const jdata: string = objDetail.writeJSONString();
+    return this.http.put(targetUrl, jdata, {
+        headers,
+      })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, changeDocument, map.`,
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, changeDocument failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+
+  /**
    * Mass Create documents
    * @param docs Normal documents to be created
    * @returns An observable of documents:

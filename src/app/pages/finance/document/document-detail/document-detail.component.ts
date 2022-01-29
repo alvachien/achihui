@@ -1,17 +1,16 @@
-import { Component, OnInit, OnDestroy, DefaultIterableDiffer } from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import { Account, Document, ControlCenter, AccountCategory, TranType,
   OverviewScopeEnum, DocumentType, Currency, Order,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  ModelUtility, ConsoleLogTypeEnum, getUIModeString,
+  ModelUtility, ConsoleLogTypeEnum, getUIModeString, DocumentItem,
 } from '../../../../model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -141,14 +140,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   // Read the account
                   forkJoin(listRst).pipe(takeUntil(this._destroyed$!),
                     finalize(() => {
-                      this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
-                      this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
-      
-                      if (this.uiMode === UIMode.Display) {
-                        this.docFormGroup.disable();
-                      } else {
-                        this.docFormGroup.enable();
-                      }                          
+                      this.onSetData();
                     }))
                     .subscribe({
                       next: acnts => {
@@ -165,14 +157,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                       }
                     });
                 } else {
-                  this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
-                  this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
-  
-                  if (this.uiMode === UIMode.Display) {
-                    this.docFormGroup.disable();
-                  } else {
-                    this.docFormGroup.enable();
-                  }  
+                  this.onSetData();
                 }
               },
               error: err => {
@@ -207,12 +192,59 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSubmit...',
+  private onSetData() {
+    // this.odataService.isDocumentChangable(this.routerID);
+    this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+    this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
+
+    if (this.uiMode === UIMode.Display) {
+      this.docFormGroup.disable();
+    } else {
+      this.odataService.isDocumentChangable(this.routerID).subscribe({
+        next: val => {
+          if (val) {
+            this.docFormGroup.enable();
+          } else {
+            this.docFormGroup.disable();
+          }
+        },
+        error: err => {
+          this.uiMode = UIMode.Display;
+          this.docFormGroup.disable();
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      })
+    }
+  }
+
+  onSave(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Update) {
       // Update mode.
-      
+      let detailObject = this.docFormGroup.get('headerControl')?.value as Document;
+      detailObject.HID = this.currentDocument.HID;
+      detailObject.Id = this.currentDocument.Id;
+      detailObject.DocType = this.currentDocument.DocType;
+      detailObject.Items = this.docFormGroup.get('itemsControl')?.value as DocumentItem[];
+
+      this.odataService.changeDocument(detailObject).subscribe({
+        next: val => {
+          // Jump to display page
+          this.router.navigate(['/finance/document/display', val.Id]);
+        },
+        error: err => {
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });  
     }
   }
 }
