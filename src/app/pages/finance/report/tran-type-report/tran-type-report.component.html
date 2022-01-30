@@ -7,6 +7,11 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.TransactionTypes' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
+    <nz-button-group>
+      <button nz-button nzType="default">L</button>
+      <button nz-button nzType="default">M</button>
+      <button nz-button nzType="default">R</button>
+    </nz-button-group>
     <nz-switch [(ngModel)]="selectedYTD" [nzCheckedChildren]="'Common.PreviousYear' | transloco" [nzUnCheckedChildren]="'Common.CurrentYear' | transloco" (ngModelChange)="onLoadData()"></nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
