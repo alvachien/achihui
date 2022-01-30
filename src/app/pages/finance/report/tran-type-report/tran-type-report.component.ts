@@ -106,6 +106,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
             this.reportExpense.push(entry);
           }
         });
+        this.reportIncome.sort((a, b) => b.Precentage - a.Precentage);
+        this.reportExpense.sort((a, b) => b.Precentage - a.Precentage);
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent ngOnInit forkJoin failed ${error}`,

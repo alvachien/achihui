@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
+<nz-spin [nzSpinning]="isLoadingResults">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
@@ -77,7 +77,7 @@
             </td>
             <td>{{ getCurrencyName(data.TranCurr!) }}</td>
             <td>{{ data.TranDateFormatString }}</td>
-            <td>{{ getDocTypeName(data.DocType!) | transloco }} </td>
+            <td>{{ getDocTypeName(data.DocType!) }} </td>
             <td>{{ data.Desp }}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id!]">

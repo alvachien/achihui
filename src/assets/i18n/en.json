@@ -589,7 +589,9 @@
     "CurrentNodeNotAccount": "Current node is not an account",
     "SettleAccountWithInitialBalance": "Settle Account and set initial balance",
     "In": "In",
-    "Out": "Out"
+    "Out": "Out",
+    "EditDocumentNotAllowed": "Document change is not allowed",
+    "EditDocumentSuccessfully": "Document changed successfully"
   },
   "Library": {
     "BookCategories": "Book Categories",

@@ -152,7 +152,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const dtobj = this.arDocTypes.find(dt => {
       return dt.Id === dtid;
     });
-    return dtobj ? dtobj.Name : dtid.toString();
+    return dtobj ? translate(dtobj.Name!) : dtid.toString();
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {

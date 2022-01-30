@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 
@@ -124,9 +124,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 });
                 const listNIDs: number[] = [];
                 listAcntIDs.forEach(acntid => {
-                  if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid)) {
-                    // DO nothing.
-                  } else {
+                  if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid) === -1) {
                     listNIDs.push(acntid!);
                   }
                 });
@@ -193,7 +191,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   private onSetData() {
-    // this.odataService.isDocumentChangable(this.routerID);
     this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
     this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
 
@@ -205,7 +202,20 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           if (val) {
             this.docFormGroup.enable();
           } else {
-            this.docFormGroup.disable();
+            const ref: NzModalRef = this.modalService.info({
+              nzTitle: translate('Common.Error'),
+              nzContent: translate('Finance.EditDocumentNotAllowed'),
+              nzClosable: false
+            });
+            setTimeout(() => {
+              ref.close();
+              ref.destroy();
+            }, 1000);
+
+            setTimeout(() => {
+              this.uiMode = UIMode.Display;
+              this.docFormGroup.disable();  
+            });
           }
         },
         error: err => {
@@ -231,13 +241,25 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       detailObject.Id = this.currentDocument.Id;
       detailObject.DocType = this.currentDocument.DocType;
       detailObject.Items = this.docFormGroup.get('itemsControl')?.value as DocumentItem[];
+      detailObject.Items.forEach(item => {
+        item.DocId = detailObject.Id;
+      });
 
       this.odataService.changeDocument(detailObject).subscribe({
         next: val => {
-          // Jump to display page
+          const ref: NzModalRef = this.modalService.success({
+            nzTitle: translate('Common.Success'),
+            nzContent: translate('Finance.EditDocumentSuccessfully')
+          });
+          setTimeout(() => {
+            ref.close();
+            ref.destroy();
+          }, 1000);
+
           this.router.navigate(['/finance/document/display', val.Id]);
         },
         error: err => {
+          console.error(err);
           this.modalService.create({
             nzTitle: translate('Common.Error'),
             nzContent: err,

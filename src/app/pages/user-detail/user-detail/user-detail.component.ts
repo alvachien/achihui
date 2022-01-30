@@ -44,4 +44,8 @@ export class UserDetailComponent implements OnInit {
       });
     }
   }
+  onLogout(): void {
+    this.authService.doLogout();
+    // Clear all buffers    
+  }
 }

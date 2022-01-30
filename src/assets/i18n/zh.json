@@ -589,7 +589,9 @@
     "CurrentNodeNotAccount": "当期节点不是账户",
     "SettleAccountWithInitialBalance": "结清账户并设置初始金额",
     "In": "流入",
-    "Out": "流出"
+    "Out": "流出",
+    "EditDocumentNotAllowed": "该凭证不能被修改",
+    "EditDocumentSuccessfully": "凭证修改成功"
   },
   "Library": {
     "BookCategories": "图书种类",
