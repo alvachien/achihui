@@ -9,8 +9,6 @@ import { FinanceOdataService, UIStatusService } from '../../../services';
 import { Account, ModelUtility, ConsoleLogTypeEnum,
   GeneralFilterItem, DocumentItemView, TranType, ControlCenter, Order,
 } from '../../../model';
-import { UITableColumnItem } from '../../../uimodel';
-import * as moment from 'moment';
 
 @Component({
   selector: 'hih-fin-document-item-view',

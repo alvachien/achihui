@@ -1,5 +1,5 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
-  <nz-page-header nzBackIcon [nzTitle]="t('Common.Languages')">
+<nz-spin [nzSpinning]="isLoadingResults">
+  <nz-page-header nzBackIcon [nzTitle]="'Common.Languages' | transloco">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/welcome">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'Common.Languages' | transloco}}</nz-breadcrumb-item>
@@ -8,9 +8,6 @@
       <div class="wrap">
         <p nz-paragraph>
           {{'Common.Languages' | transloco}}
-        </p>
-        <p nz-paragraph>
-          The list of languages which supported.
         </p>
         <div>
           <nz-table #langTable [nzData]="dataSource">

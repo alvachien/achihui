@@ -3368,3 +3368,49 @@ export class FinanceReportEntryByAccountAndExpense {
     }
   }
 }
+
+export class FinanceOverviewKeyfigure {
+  public HomeID: number = 0;
+  public BaseCurrency: string = '';
+  public CurrentMonthIncome: number = 0;
+  public CurrentMonthOutgo: number = 0;
+  public LastMonthIncome: number = 0;
+  public LastMonthOutgo: number = 0;
+  public IncomeYTD: number = 0;
+  public OutgoYTD: number = 0;
+  public CurrentMonthIncomePrecentage: number = 0;
+  public CurrentMonthOutgoPrecentage: number = 0;
+
+  public onSetData(val: any): void {
+    if (val && val.HomeID) {
+      this.HomeID = val.HomeID;
+    }
+    if (val && val.Currency) {
+      this.BaseCurrency = val.Currency;
+    }
+    if (val && val.CurrentMonthIncome) {
+      this.CurrentMonthIncome = val.CurrentMonthIncome;
+    }
+    if (val && val.CurrentMonthOutgo) {
+      this.CurrentMonthOutgo = val.CurrentMonthOutgo;
+    }
+    if (val && val.LastMonthIncome) {
+      this.LastMonthIncome = val.LastMonthIncome;
+    }
+    if (val && val.LastMonthOutgo) {
+      this.LastMonthOutgo = val.LastMonthOutgo;
+    }
+    if (val && val.IncomeYTD) {
+      this.IncomeYTD = val.IncomeYTD;
+    }
+    if (val && val.OutgoYTD) {
+      this.OutgoYTD = val.OutgoYTD;
+    }
+    if (val && val.CurrentMonthIncomePrecentage) {
+      this.CurrentMonthIncomePrecentage = val.CurrentMonthIncomePrecentage;
+    }
+    if (val && val.CurrentMonthOutgoPrecentage) {
+      this.CurrentMonthOutgoPrecentage = val.CurrentMonthOutgoPrecentage;
+    }
+  }
+}

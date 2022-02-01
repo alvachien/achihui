@@ -1,6 +1,19 @@
 <div nz-row style="background: #ECECEC;padding:30px;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
     <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToOverview()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="overviewImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Common.Overview' | transloco"
+          nzDescription="An overview page where shows the key figure as well as the calendar of upcoming documents.">
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
       <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToAccount()">
         <div>
           <img nz-image width="200px" height="200px" [nzSrc]="accountImage" nzDisablePreview="true" alt="" />

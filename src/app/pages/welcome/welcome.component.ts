@@ -23,6 +23,12 @@ export class WelcomeComponent {
   get reportImage(): string {
     return `${environment.AppHost}/assets/img/Reports.png`;
   }
+  get overviewImage(): string {
+    return `${environment.AppHost}/assets/img/Overview.png`;
+  }
+  onNavigateToOverview(): void {
+    this.router.navigate(['finance', 'overview']);
+  }
   onNavigateToAccount():void {
     this.router.navigate(['finance', 'account']);
   }

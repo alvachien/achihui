@@ -7,7 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
-import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan } from '../../model';
+import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan, FinanceOverviewKeyfigure } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
@@ -26,11 +26,13 @@ export class FinanceComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _selectedYear: number | null = null;
   private _selectedMonth: number | null = null;
+  excludeTransfer = false;
 
   public selectedDate: Date | null = null;
   isLoadingResults: boolean;
 
   listDate: DateCellData[] = [];
+  keyfigure: FinanceOverviewKeyfigure | null = null;
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome?.IsChild!;
   }
@@ -120,7 +122,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     // Do nothing so far.
   }
 
-  fetchData(): void {
+  fetchData(forceReload = false): void {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
     dtbgn.startOf('month');
@@ -129,7 +131,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     forkJoin([
       this.odataService.fetchAllDPTmpDocs(dtbgn, dtend),
-      this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend)
+      this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend),
+      this.odataService.fetchOverviewKeyfigure(this.excludeTransfer, forceReload),
     ]).pipe(
       takeUntil(this._destroyed$!),
       finalize(() => this.isLoadingResults = false)
@@ -169,6 +172,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
             }
           });
         }
+        // Key figure
+        this.keyfigure = rsts[2];
       },
       error: err => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceComponent fetchData forkJoin failed ${err}...`,

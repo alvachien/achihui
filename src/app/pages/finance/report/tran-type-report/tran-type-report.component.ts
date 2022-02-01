@@ -2,14 +2,16 @@ import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  FinanceReportMostExpenseEntry } from '../../../../model';
+  FinanceReportMostExpenseEntry, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem, momentDateFormat} from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { NumberUtility } from 'actslib';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-finance-report-trantype',
@@ -24,11 +26,13 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   baseCurrency: string;
   totalIncome = 0;
   totalExpense = 0;
-  selectedYTD = false;
+  selectedYTD = '2'; // '2': Current Year, '1': Preview year
+  groupLevel = '3'; // '3': Group level is 3; '2': Group level is 2; '1': Group level is 1
 
   constructor(public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
-    private modalService: NzModalService,) {
+    private modalService: NzModalService,
+    private drawerService: NzDrawerService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -61,7 +65,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     let tnow = moment();
-    if (this.selectedYTD) {
+    if (this.selectedYTD == '1') {
       tnow = moment().subtract(1, "year");
     }
 
@@ -119,6 +123,57 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
           nzClosable: true,
         });
       },
+    });
+  }
+
+  public onDisplayDocumentItem(trantype: number) {
+    const fltrs = [];
+    fltrs.push({
+      fieldName: 'TransactionType',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: trantype,
+      highValue: 0,
+      valueType: GeneralFilterValueType.number,
+    });
+    if (this.selectedYTD == '1') { // Last year
+      fltrs.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().startOf('year').subtract(1, 'year').format(momentDateFormat),
+        highValue: moment().startOf('year').format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+      });
+    } else { // Current year
+      fltrs.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().startOf('year').format(momentDateFormat),
+        highValue: moment().startOf('year').add(1, 'year').format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+      });  
+    }
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: 'Document Items',
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
     });
   }
 }

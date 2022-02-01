@@ -591,7 +591,15 @@
     "In": "流入",
     "Out": "流出",
     "EditDocumentNotAllowed": "该凭证不能被修改",
-    "EditDocumentSuccessfully": "凭证修改成功"
+    "EditDocumentSuccessfully": "凭证修改成功",
+    "IncomeInCurrentMonth": "本月总流入",
+    "OutgoInCurrentMonth": "本月总流出",
+    "IncomeInLastMonth": "上月总流入",
+    "OutgoInLastMonth": "上月总流出",
+    "IncomeMonthOnMonthRatio": "流入环比",
+    "OutgoMonthOnMonthRatio": "流出环比",
+    "IncomeYTD": "本年迄今总流入",
+    "OutgoYTD": "本年迄今总流出"
   },
   "Library": {
     "BookCategories": "图书种类",

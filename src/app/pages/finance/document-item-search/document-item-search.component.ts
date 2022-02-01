@@ -5,7 +5,7 @@ import * as moment from 'moment';
 
 import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
   GeneralFilterValueType, TranType, UICommonLabelEnum, Account,
-  ControlCenter, Order, DocumentItemView, ModelUtility, ConsoleLogTypeEnum,
+  ControlCenter, Order, DocumentItemView, ModelUtility, ConsoleLogTypeEnum, momentDateFormat,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import { translate } from '@ngneat/transloco';
@@ -229,9 +229,9 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         case GeneralFilterValueType.date: {
           val.fieldName = value.fieldName;
           val.operator = +value.operator;
-          val.lowValue = moment(value.lowValue).format('YYYYMMDD');
+          val.lowValue = moment(value.lowValue).format(momentDateFormat);
           if (value.operator === GeneralFilterOperatorEnum.Between) {
-            val.highValue = moment(value.highValue).format('YYYYMMDD');
+            val.highValue = moment(value.highValue).format(momentDateFormat);
           } else {
             val.highValue = '';
           }

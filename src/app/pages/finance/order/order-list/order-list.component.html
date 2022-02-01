@@ -8,6 +8,11 @@
   <nz-page-header-extra>
     <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
     <nz-divider nzType="vertical"></nz-divider>
+    <!-- <nz-radio-group [(ngModel)]="selectedYTD" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
+      <label nz-radio-button nzValue="1">{{'Common.PreviousYear' | transloco}}</label>
+      <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
+    </nz-radio-group> -->
+
     <nz-switch *ngIf="!isChildMode" [(ngModel)]="validOrderOnly" [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" 
       (ngModelChange)="onOrderValidityChanged()"></nz-switch>
   </nz-page-header-extra>

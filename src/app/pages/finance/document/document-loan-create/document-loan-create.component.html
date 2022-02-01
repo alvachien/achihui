@@ -95,32 +95,34 @@
 
     <!-- Step 3: Result -->
     <div [hidden]="currentStep !== 3">
-      <div *ngIf="docIdCreated">
-        <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
-          <div nz-result-extra>
-            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
-            <button nz-button (click)="onCreateAnotherDoc()">Create another Document</button>
-          </div>
-        </nz-result>
-      </div>
-      <div *ngIf="!docIdCreated">
-        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
-          <div nz-result-content>
-            <div class="desc">
-              <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
-              <p nz-paragraph>
-                <i nz-icon nzType="close-circle"></i>
-                {{docPostingFailed}}
-              </p>
+      <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
+        <div *ngIf="docIdCreated">
+          <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
+            [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+            <div nz-result-extra>
+              <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">{{'Common.Display' | transloco}}</button>
+              <button nz-button (click)="onCreateAnotherDoc()">Create another Document</button>
             </div>
-          </div>
-          <div nz-result-extra>
-            <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
-          </div>
-        </nz-result>
-      </div>
+          </nz-result>
+        </div>
+        <div *ngIf="!docIdCreated">
+          <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
+            [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+            <div nz-result-content>
+              <div class="desc">
+                <h4 nz-title>{{'Common.TitleOfSubmitError' | transloco}}</h4>
+                <p nz-paragraph>
+                  <i nz-icon nzType="close-circle"></i>
+                  {{docPostingFailed}}
+                </p>
+              </div>
+            </div>
+            <div nz-result-extra>
+              <button nz-button nzType="primary" (click)="pre()"><i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}</button>
+            </div>
+          </nz-result>
+        </div>
+      </nz-spin>
     </div>
   </div>
 

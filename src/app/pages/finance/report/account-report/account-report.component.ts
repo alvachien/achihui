@@ -9,8 +9,7 @@ import { EChartsOption } from 'echarts';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, ITableFilterValues, GeneralFilterValueType, GeneralFilterItem,
-  GeneralFilterOperatorEnum, AccountStatusEnum, UIDisplayString, FinanceReportEntryByAccountAndExpense,
-} from '../../../../model';
+  GeneralFilterOperatorEnum, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
@@ -67,24 +66,15 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAccountStatusFilterChanged(event: any) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
-
-    this.buildReportList();
-    this.buildAssetChart();
-    this.buildLiabilityChart();
-  }
-
   onDisplayMasterData(acntid: number) {
     this.router.navigate(['/finance/account/display/' + acntid.toString()]);
   }
-  onDisplayDebitData(ccid: number) {
+  onDisplayDebitData(acntid: number) {
     const fltrs = [];
     fltrs.push({
       fieldName: 'AccountID',
       operator: GeneralFilterOperatorEnum.Equal,
-      lowValue: ccid,
+      lowValue: acntid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
@@ -236,7 +226,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
           this.buildReportList();
           this.buildAssetChart();
-          this.buildAssetChartChart();
+          this.buildAssetAccountChart();
           this.buildLiabilityChart();
           this.buildLiabilityAccountChart();
         },
@@ -256,23 +246,28 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   private buildAssetChart() {
     const namevalues: Array<{ category: number; name: string; value: number; }> = [];
     const names: any[] = [];
+
+    let ctgyAmt = 0;
+    let ctgyUsed = false;
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name!);
-        names.push(ctgyName);
-
-        let ctgyAmt = 0;
+        ctgyAmt = 0;
+        ctgyUsed = false;
         this.arAccounts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
+                ctgyUsed = true;
                 ctgyAmt += rpt.Balance;
               }
             });
           }
         });
 
-        if (ctgyAmt > 0) {
+        if (ctgyUsed) {
+          const ctgyName = translate(ctgy.Name!);
+          names.push(ctgyName);
+  
           namevalues.push({
             category: ctgy.ID!,
             name: ctgyName as string,
@@ -312,23 +307,30 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   private buildLiabilityChart() {
     const names: any[] = [];
     const namevalues: Array<{ category: number; name: string; value: number; }> = [];
+
+    let ctgyAmt = 0;
+    let ctgyUsed = false;
     this.arAccountCategories.forEach((ctgy: AccountCategory) => {
       if (!ctgy.AssetFlag) {
-        const ctgyName = translate(ctgy.Name!);
-        names.push(ctgyName);
+        ctgyAmt = 0;
+        ctgyUsed = false;
+          
 
-        let ctgyAmt = 0;
         this.arAccounts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
             this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
               if (rpt.AccountId === acnt.Id) {
+                ctgyUsed = true;
                 ctgyAmt += rpt.Balance;
               }
             });
           }
         });
 
-        if (ctgyAmt > 0) {
+        if (ctgyUsed) {
+          const ctgyName = translate(ctgy.Name!);
+          names.push(ctgyName);
+
           namevalues.push({
             category: ctgy.ID!,
             name: ctgyName as string,
@@ -365,7 +367,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       }],
     };
   }
-  private buildAssetChartChart() {
+  private buildAssetAccountChart() {
     const namevalues: Array<{ category: number; name: string; value: number; }> = [];
     const names: any[] = [];
 

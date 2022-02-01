@@ -113,35 +113,36 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             finalize(() => {
               this.isLoadingResults = false;
             }))
-          .subscribe((rsts: any) => {
-            this.arControlCenters = rsts[0];
+          .subscribe({
+            next: rsts => {
+              this.arControlCenters = rsts[0];
 
-            this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
-            this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
-            this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom.toDate());
-            this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo.toDate());
-            if (rsts[1].Comment) {
-              this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
+              this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
+              this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+              this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom!.toDate());
+              this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo!.toDate());
+              if (rsts[1].Comment) {
+                this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
+              }
+  
+              // Disable the form
+              if (this.uiMode === UIMode.Display) {
+                this.detailFormGroup.disable();
+              }
+  
+              this.listRules = [];
+              this.listRules = rsts[1].SRules;  
+            },
+            error: err => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${err}`,
+                ConsoleLogTypeEnum.error);
+              this.uiMode = UIMode.Invalid;
+              this.modalService.create({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
             }
-
-            // Disable the form
-            if (this.uiMode === UIMode.Display) {
-              this.detailFormGroup.disable();
-            }
-
-            this.listRules = [];
-            this.listRules = rsts[1].SRules;
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${error}`,
-              ConsoleLogTypeEnum.error);
-            this.uiMode = UIMode.Invalid;
-            this.modalService.create({
-              nzTitle: translate('Common.Error'),
-              nzContent: error,
-              nzClosable: true,
-            });
-          }, () => {
-            this.isLoadingResults = false;
           });
           break;
         }
@@ -153,24 +154,26 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           this.odataService.fetchAllControlCenters()
             .pipe(takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false))
-            .subscribe((cc: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
-              ConsoleLogTypeEnum.debug);
-
-            this.arControlCenters = cc;
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters ${error}`,
-              ConsoleLogTypeEnum.error);
-            this.modalService.create({
-              nzTitle: translate('Common.Error'),
-              nzContent: error,
-              nzClosable: true,
+            .subscribe({
+              next: val => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
+                  ConsoleLogTypeEnum.debug);
+                this.arControlCenters = val;  
+              },
+              error: err => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters ${err}`,
+                  ConsoleLogTypeEnum.error);
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err,
+                  nzClosable: true,
+                });  
+              }
             });
-          });
+          }
           break;
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy(): void {

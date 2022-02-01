@@ -591,7 +591,15 @@
     "In": "In",
     "Out": "Out",
     "EditDocumentNotAllowed": "Document change is not allowed",
-    "EditDocumentSuccessfully": "Document changed successfully"
+    "EditDocumentSuccessfully": "Document changed successfully",
+    "IncomeInCurrentMonth": "Incomes in current month",
+    "OutgoInCurrentMonth": "Outgos in current month",
+    "IncomeInLastMonth": "Incomes in last month",
+    "OutgoInLastMonth": "Outgos in last month",
+    "IncomeMonthOnMonthRatio": "Incomes month-on-month ratio",
+    "OutgoMonthOnMonthRatio": "Outgos month-on-month ratio",
+    "IncomeYTD": "YTD Incomes",
+    "OutgoYTD": "YTD Outgos"
   },
   "Library": {
     "BookCategories": "Book Categories",

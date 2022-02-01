@@ -7,12 +7,16 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.TransactionTypes' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-button-group>
-      <button nz-button nzType="default">L</button>
-      <button nz-button nzType="default">M</button>
-      <button nz-button nzType="default">R</button>
-    </nz-button-group>
-    <nz-switch [(ngModel)]="selectedYTD" [nzCheckedChildren]="'Common.PreviousYear' | transloco" [nzUnCheckedChildren]="'Common.CurrentYear' | transloco" (ngModelChange)="onLoadData()"></nz-switch>
+    <nz-radio-group [(ngModel)]="groupLevel" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="1">1</label>
+      <label nz-radio-button nzValue="2">2</label>
+      <label nz-radio-button nzValue="3">3</label>
+    </nz-radio-group>
+    <nz-divider nzType="vertical"></nz-divider>
+    <nz-radio-group [(ngModel)]="selectedYTD" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
+      <label nz-radio-button nzValue="1">{{'Common.PreviousYear' | transloco}}</label>
+      <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
+    </nz-radio-group>
   </nz-page-header-extra>
 </nz-page-header>
   
@@ -32,7 +36,11 @@
           <tr *ngFor="let data of incomeTable.data">
             <td>{{data.TransactionType}}</td>
             <td>{{data.TransactionTypeName}}</td>
-            <td>{{data.Amount | number:'1.0-2'}}</td>
+            <td>
+              <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
+                {{data.Amount | number:'1.0-2'}}
+              </button>
+            </td>
             <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>
         </tbody>
@@ -52,7 +60,11 @@
           <tr *ngFor="let data of expenseTable.data">
             <td>{{data.TransactionType}}</td>
             <td>{{data.TransactionTypeName}}</td>
-            <td>{{data.Amount | number:'1.0-2'}}</td>
+            <td>
+              <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
+                {{data.Amount | number:'1.0-2'}}
+              </button>
+            </td>
             <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>
         </tbody>

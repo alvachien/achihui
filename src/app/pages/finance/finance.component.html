@@ -1,3 +1,15 @@
+<nz-page-header nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Common.Overview' | transloco}}</nz-page-header-title>
+  <nz-page-header-extra>
+    <nz-switch *ngIf="!isChildMode" [(ngModel)]="excludeTransfer" [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" 
+      (ngModelChange)="fetchData(true)"></nz-switch>
+
+  </nz-page-header-extra>
+</nz-page-header>
+
 <div *ngIf="isChildMode">
   <article nz-typography>
     <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
@@ -6,6 +18,51 @@
 </div>
 
 <div *ngIf="!isChildMode">
+  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+    <nz-row [nzGutter]="16">
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthIncome | number: '1.0-2')!" [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"></nz-statistic>        
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthOutgo | number: '1.0-2')!" [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"></nz-statistic>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </div>
+  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+    <nz-row [nzGutter]="16">
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.IncomeYTD | number: '1.0-2')!" [nzTitle]="'Finance.IncomeYTD' | transloco"></nz-statistic>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.OutgoYTD | number: '1.0-2')!" [nzTitle]="'Finance.OutgoYTD' | transloco"></nz-statistic>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </div>  
+  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+    <nz-row [nzGutter]="16">
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthIncomePrecentage | number: '1.0-2')!" [nzSuffix]="'%'" [nzTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"></nz-statistic>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+        <nz-card>
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthOutgoPrecentage | number: '1.0-2')!" [nzSuffix]="'%'" [nzTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"></nz-statistic>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </div>
+
+  <nz-divider></nz-divider>
+
   <nz-calendar [(ngModel)]="selectedDate" (nzSelectChange)="onSelectChange($event)" (nzPanelChange)="onPanelChange($event)">
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">

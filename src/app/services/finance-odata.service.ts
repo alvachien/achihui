@@ -13,7 +13,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
-  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, 
+  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, 
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -46,6 +46,8 @@ export class FinanceOdataService {
   private listReportByControlCenter: FinanceReportByControlCenter[] = [];
   private isReportByOrderLoaded: boolean = false;
   private listReportByOrder: FinanceReportByOrder[] = [];
+  private isOverviewKeyfigureLoaded: boolean = false;
+  private overviewKeyfigure: FinanceOverviewKeyfigure = new FinanceOverviewKeyfigure();  
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
@@ -2174,6 +2176,54 @@ export class FinanceOdataService {
     } else {
       return of(this.listReportByOrder);
     }
+  }
+
+  /** fetch finance overview key figure
+   * @param forceReload force to reload data from server
+   */
+  public fetchOverviewKeyfigure(excludeTransfer = false, forceReload?: boolean): Observable<FinanceOverviewKeyfigure> {
+    if (!this.isOverviewKeyfigureLoaded || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+      let today = moment();
+
+      const jdata = {
+        HomeID: this.homeService.ChosedHome?.ID,
+        Year: today.year(), 
+        Month: today.month() + 1,
+        ExcludeTransfer: excludeTransfer
+      };
+  
+      return this.http.post(`${this.reportAPIUrl}/GetFinanceOverviewKeyFigure`, jdata, {
+        headers
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchOverviewKeyfigure succeed',
+            ConsoleLogTypeEnum.debug);
+  
+          const rjs: any = response;
+
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              this.overviewKeyfigure.onSetData(si);
+            }
+          }
+          this.isOverviewKeyfigureLoaded = true;
+  
+          return this.overviewKeyfigure;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchOverviewKeyfigure failed ${error}`,
+            ConsoleLogTypeEnum.error);
+  
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));  
+    } else {
+      return of(this.overviewKeyfigure);
+    }    
   }
   
   /**
