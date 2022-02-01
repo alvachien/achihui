@@ -26,7 +26,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   baseCurrency: string;
   totalIncome = 0;
   totalExpense = 0;
-  selectedYTD = '2'; // '2': Current Year, '1': Preview year
+  selectedScope = '2'; // '1': Preview year, '2': Current Year, '3': Preview month, '4': Current month
   groupLevel = '3'; // '3': Group level is 3; '2': Group level is 2; '1': Group level is 1
 
   constructor(public odataService: FinanceOdataService,
@@ -65,12 +65,24 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     let tnow = moment();
-    if (this.selectedYTD == '1') {
-      tnow = moment().subtract(1, "year");
+    let year = tnow.year();
+    let month: number | undefined = undefined;
+    if (this.selectedScope === '1') { // Previous year
+      year = year - 1;
+      month = undefined;
+    } else if(this.selectedScope === '2') { // Current year     
+      month = undefined;
+    } else if(this.selectedScope === '3') { // Previous month
+      tnow = moment().subtract(1, 'month');
+      year = tnow.year();
+      month = tnow.month() + 1;
+    } else if(this.selectedScope === '4') { // Current month
+      year = tnow.year();
+      month = tnow.startOf('month').month() + 1;
     }
 
     forkJoin([
-      this.odataService.fetchReportByTransactionType(tnow.year()),
+      this.odataService.fetchReportByTransactionType(year, month),
       this.odataService.fetchAllTranTypes(),
     ])
     .pipe(takeUntil(this._destroyed$!),
@@ -135,7 +147,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
-    if (this.selectedYTD == '1') { // Last year
+    if (this.selectedScope === '1') { // Last year
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
@@ -143,7 +155,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         highValue: moment().startOf('year').format(momentDateFormat),
         valueType: GeneralFilterValueType.date,
       });
-    } else { // Current year
+    } else if (this.selectedScope === '2') { // Current year
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
@@ -151,11 +163,27 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         highValue: moment().startOf('year').add(1, 'year').format(momentDateFormat),
         valueType: GeneralFilterValueType.date,
       });  
+    } else if (this.selectedScope === '3') { // Preview month
+      fltrs.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().startOf('month').subtract(1, 'month').format(momentDateFormat),
+        highValue: moment().startOf('month').format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+      });
+    } else if(this.selectedScope === '4') { // Current month
+      fltrs.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: moment().startOf('month').format(momentDateFormat),
+        highValue: moment().startOf('month').add(1, 'month').format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+      });
     }
     const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
       filterDocItem: GeneralFilterItem[],
     }, string>({
-      nzTitle: 'Document Items',
+      nzTitle: translate('Finance.Items'),
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,

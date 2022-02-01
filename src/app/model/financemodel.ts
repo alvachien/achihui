@@ -183,7 +183,7 @@ export class AccountCategory extends hih.BaseModel {
   private _id: number | null = null;
   private _hid: number | null = null;
   private _name: string | null = null;
-  private _assetFlag: boolean | null = null;
+  private _assetFlag = false;
   private _comment: string | null = null;
 
   get ID(): number | null          { return this._id;        }
@@ -192,16 +192,10 @@ export class AccountCategory extends hih.BaseModel {
   set HID(hid: number | null)      { this._hid = hid;        }
   get Name(): string | null        { return this._name;      }
   set Name(nm: string | null)      { this._name = nm;        }
-  get AssetFlag(): boolean | null  { return this._assetFlag; }
-  set AssetFlag(af: boolean | null) {
-    this._assetFlag = af;
-  }
-  get Comment(): string | null {
-    return this._comment;
-  }
-  set Comment(cmt: string | null) {
-    this._comment = cmt;
-  }
+  get AssetFlag(): boolean         { return this._assetFlag; }
+  set AssetFlag(af: boolean)       { this._assetFlag = af;   }
+  get Comment(): string | null     { return this._comment;   }
+  set Comment(cmt: string | null)  { this._comment = cmt;    }
 
   constructor() {
     super();
@@ -212,7 +206,7 @@ export class AccountCategory extends hih.BaseModel {
     this._id = null;
     this._hid = null;
     this._name = null;
-    this._assetFlag = null;
+    this._assetFlag = false;
     this._comment = null;
   }
 
@@ -251,6 +245,8 @@ export class AccountCategory extends hih.BaseModel {
     }
     if (data && data.AssetFlag) {
       this.AssetFlag = data.AssetFlag;
+    } else {
+      this.AssetFlag = false;
     }
     if (data && data.Comment) {
       this.Comment = data.Comment;

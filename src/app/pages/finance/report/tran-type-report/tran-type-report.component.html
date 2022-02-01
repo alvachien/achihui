@@ -13,9 +13,11 @@
       <label nz-radio-button nzValue="3">3</label>
     </nz-radio-group>
     <nz-divider nzType="vertical"></nz-divider>
-    <nz-radio-group [(ngModel)]="selectedYTD" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
+    <nz-radio-group [(ngModel)]="selectedScope" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
       <label nz-radio-button nzValue="1">{{'Common.PreviousYear' | transloco}}</label>
       <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
+      <label nz-radio-button nzValue="3">{{'Common.PreviousMonth' | transloco}}</label>
+      <label nz-radio-button nzValue="4">{{'Common.CurrentMonth' | transloco}}</label>
     </nz-radio-group>
   </nz-page-header-extra>
 </nz-page-header>
@@ -40,6 +42,7 @@
               <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
                 {{data.Amount | number:'1.0-2'}}
               </button>
+              <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
             <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>
@@ -64,6 +67,7 @@
               <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
                 {{data.Amount | number:'1.0-2'}}
               </button>
+              <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
             <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>

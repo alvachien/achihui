@@ -6,7 +6,6 @@
   <nz-page-header-extra>
     <nz-switch *ngIf="!isChildMode" [(ngModel)]="excludeTransfer" [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" 
       (ngModelChange)="fetchData(true)"></nz-switch>
-
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -22,12 +21,12 @@
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
-          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthIncome | number: '1.0-2')!" [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"></nz-statistic>        
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthIncome | number: '1.0-2')!" [nzSuffix]="keyfigure!.BaseCurrency" [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"></nz-statistic>        
         </nz-card>
       </nz-col>
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
-          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthOutgo | number: '1.0-2')!" [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"></nz-statistic>
+          <nz-statistic [nzValue]="(keyfigure!.CurrentMonthOutgo | number: '1.0-2')!" [nzSuffix]="keyfigure!.BaseCurrency" [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"></nz-statistic>
         </nz-card>
       </nz-col>
     </nz-row>
@@ -36,12 +35,12 @@
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
-          <nz-statistic [nzValue]="(keyfigure!.IncomeYTD | number: '1.0-2')!" [nzTitle]="'Finance.IncomeYTD' | transloco"></nz-statistic>
+          <nz-statistic [nzValue]="(keyfigure!.IncomeYTD | number: '1.0-2')!" [nzSuffix]="keyfigure!.BaseCurrency" [nzTitle]="'Finance.IncomeYTD' | transloco"></nz-statistic>
         </nz-card>
       </nz-col>
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
-          <nz-statistic [nzValue]="(keyfigure!.OutgoYTD | number: '1.0-2')!" [nzTitle]="'Finance.OutgoYTD' | transloco"></nz-statistic>
+          <nz-statistic [nzValue]="(keyfigure!.OutgoYTD | number: '1.0-2')!" [nzSuffix]="keyfigure!.BaseCurrency" [nzTitle]="'Finance.OutgoYTD' | transloco"></nz-statistic>
         </nz-card>
       </nz-col>
     </nz-row>

@@ -28,11 +28,11 @@
             <nz-list-item *ngFor="let item of reportByMostIncomeInCurrentMonth">
               <div>
                 <div>{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount | number:'1.0-2'}}</div>
-                <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                <nz-progress style="width: 120px;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
             <nz-list-empty *ngIf="reportByMostIncomeInCurrentMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
+            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInCurrentMonth | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></nz-list-footer>
           </nz-list>
         </div>
       </div>
@@ -43,11 +43,11 @@
             <nz-list-item *ngFor="let item of reportByMostOutgoInCurrentMonth">
               <div>
                 <div>{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount | number:'1.0-2'}}</div>
-                <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                <nz-progress style="width: 120px;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
             <nz-list-empty *ngIf="reportByMostOutgoInCurrentMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInCurrentMonth | number:'1.0-2'}}</nz-list-footer>
+            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInCurrentMonth | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></nz-list-footer>
           </nz-list>
         </div>
       </div>
@@ -58,11 +58,11 @@
             <nz-list-item *ngFor="let item of reportByMostIncomeInLastMonth">
               <div>
                 <div>{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount | number:'1.0-2'}}</div>
-                <nz-progress [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                <nz-progress style="width: 120px;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>              
             </nz-list-item>
             <nz-list-empty *ngIf="reportByMostIncomeInLastMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInLastMonth | number:'1.0-2'}}</nz-list-footer>
+            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalIncomeInLastMonth | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></nz-list-footer>
           </nz-list>
         </div>
       </div>
@@ -73,70 +73,14 @@
             <nz-list-item *ngFor="let item of reportByMostOutgoInLastMonth">
               <div>
                 <div>{{item.TransactionTypeName}}({{item.TransactionType}}): {{item.Amount | number:'1.0-2'}}</div>
-                <nz-progress style="width: 100%;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                <nz-progress style="width: 120px;" [nzPercent]="item.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
               </div>
             </nz-list-item>
             <nz-list-empty *ngIf="reportByMostOutgoInLastMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInLastMonth | number:'1.0-2'}}</nz-list-footer>
+            <nz-list-footer>{{'Common.Total' | transloco}}: {{totalOutgoInLastMonth | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></nz-list-footer>
           </nz-list>
         </div>
       </div>
     </div>  
   </nz-spin>
-
-  <!-- <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <div style="background: #ECECEC;padding:30px;">
-    <div nz-row [nzGutter]="8">
-      <div nz-col [nzSpan]="12">
-        <nz-card [nzTitle]="'Finance.Accounts' | transloco" [nzActions]="[actionAccountDrilldown]">
-          <div nz-row [nzGutter]="8">
-            <div nz-col [nzSpan]="12" style="height: 120px;">
-              <nz-statistic [nzValue]="(reportAccountAsset | number: '1.0-2')!" [nzTitle]="'Finance.Assets' | transloco"
-                [nzPrefix]="prefixTplAsset" [nzSuffix]="baseCurrency" [nzValueStyle]="{ color: '#3F8600' }">
-              </nz-statistic>
-              <ng-template #prefixTplAsset><i nz-icon nzType="up-circle"></i></ng-template>
-            </div>
-            <div nz-col [nzSpan]="12" style="height: 120px;">
-              <nz-statistic [nzValue]="(reportAccountLibility | number: '1.0-2')!"
-                [nzTitle]="'Finance.Liabilities' | transloco" [nzPrefix]="prefixTplLibility" [nzSuffix]="baseCurrency"
-                [nzValueStyle]="{ color: '#EF8600' }">
-              </nz-statistic>
-              <ng-template #prefixTplLibility><i nz-icon nzType="down-circle"></i></ng-template>
-            </div>
-            <div nz-col [nzSpan]="24">
-              <div echarts [options]="chartAccountOption!" style="height: 200px;"
-                (chartClick)="onDrillDownToAccount($event)"></div>
-            </div>
-          </div>
-        </nz-card>
-      </div>
-      <div nz-col [nzSpan]="12">
-        <nz-card [nzTitle]="'Finance.ControlCenters' | transloco" [nzActions]="[actionControlCenterDrilldown]">
-          <div nz-col [nzSpan]="24">
-            <div echarts [options]="chartControlCenterOption!" style="height: 320px;"
-              (chartClick)="onDrillDownToControlCenter($event)"></div>
-          </div>
-        </nz-card>
-      </div>
-
-      <div nz-col [nzSpan]="24">
-        <nz-card [nzTitle]="'Finance.Orders' | transloco" [nzActions]="[actionOrderDrilldown]">
-          <div nz-col [nzSpan]="24">
-            <div echarts [options]="chartOrderOption!" style="height: 320px;"
-              (chartClick)="onDrillDownToOrder($event)"></div>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-    <ng-template #actionAccountDrilldown>
-      <button nz-button nzType="default" (click)="onDrillDownToAccount($event)"><i nz-icon nzType="bars"></i></button>
-    </ng-template>
-    <ng-template #actionControlCenterDrilldown>
-      <button nz-button nzType="default" (click)="onDrillDownToControlCenter($event)"><i nz-icon nzType="bars"></i></button>
-    </ng-template>
-    <ng-template #actionOrderDrilldown>
-      <button nz-button nzType="default" (click)="onDrillDownToOrder($event)"><i nz-icon nzType="bars"></i></button>
-    </ng-template>
-  </div>
-</nz-spin> -->
 </div>

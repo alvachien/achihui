@@ -32,7 +32,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   chartAssetAccountOption: EChartsOption | null = null;
   chartLiabilitiesAccountOption: EChartsOption | null = null;
   listCategoryFilter: ITableFilterValues[] = [];
+  // Drilldown to table level
   selectedCategoryFilter: number[] = [];
+  selectedAccountFilter: number[] = [];
 
   constructor(
     private odataService: FinanceOdataService,
@@ -183,19 +185,33 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAssetsClicked(event: any) {
+  onAssetsCategoryChartClicked(event: any) {
     if (event && event.data && event.data.category) {
-      this.filterReportByAccountTable([event.data.category]);
+      this.filterReportByAccountTable([event.data.category], []);
     }
   }
-  onLiabilitiesClicked(event: any) {
+  onLiabilitiesCategoryChartClicked(event: any) {
     if (event && event.data && event.data.category) {
-      this.filterReportByAccountTable([event.data.category]);
+      this.filterReportByAccountTable([event.data.category], []);
+    }
+  }
+  onAssetsAccountChartClicked(event: any) {
+    if (event && event.data && event.data.category) {
+      this.filterReportByAccountTable([], [event.data.category]);
+    }
+  }
+  onLiabilitiesAccountChartClicked(event: any) {
+    if (event && event.data && event.data.category) {
+      this.filterReportByAccountTable([], [event.data.category]);
     }
   }
 
-  filterReportByAccountTable(seledCategory: number[]) {
-    this.selectedCategoryFilter = seledCategory;
+  filterReportByAccountTable(seledCategory: number[], selectedAccounts: number[]) {
+    if (seledCategory.length > 0) {
+      this.selectedCategoryFilter = seledCategory;
+    } else if (selectedAccounts.length > 0) {
+      this.selectedAccountFilter = selectedAccounts;
+    }
 
     this.buildReportList();
   }
@@ -314,7 +330,6 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       if (!ctgy.AssetFlag) {
         ctgyAmt = 0;
         ctgyUsed = false;
-          
 
         this.arAccounts.forEach((acnt: Account) => {
           if (acnt.CategoryId === ctgy.ID) {
@@ -334,7 +349,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           namevalues.push({
             category: ctgy.ID!,
             name: ctgyName as string,
-            value: ctgyAmt,
+            value: -1 * ctgyAmt,
           });  
         }
       }
@@ -433,7 +448,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         namevalues.push({
           category: rpt.AccountId!,
           name: acntobj?.Name!,
-          value: rpt.Balance,
+          value: -1 * rpt.Balance,
         });  
       }
     });
@@ -479,6 +494,17 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
         if (this.selectedCategoryFilter.length > 0 && ctgyobj !== undefined) {
           if (this.selectedCategoryFilter.indexOf(ctgyobj.ID!) !== -1) {
+            this.dataSet.push({
+              AccountId: baldata.AccountId,
+              AccountName: acntobj.Name,
+              CategoryName: ctgyobj ? ctgyobj.Name : '',
+              DebitBalance: baldata.DebitBalance,
+              CreditBalance: baldata.CreditBalance,
+              Balance: baldata.Balance,
+            });
+          }
+        } else if (this.selectedAccountFilter.length > 0) {
+          if (this.selectedAccountFilter.indexOf(acntobj.Id!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,
               AccountName: acntobj.Name,

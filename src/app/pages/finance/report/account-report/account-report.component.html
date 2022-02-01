@@ -16,32 +16,32 @@
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetOption!" style="height: 320px;" (chartClick)="onAssetsClicked($event)"></div>
+          <div echarts [options]="chartAssetOption!" style="height: 320px;" (chartClick)="onAssetsCategoryChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesOption!" style="height: 320px;" (chartClick)="onLiabilitiesClicked($event)"></div>
+          <div echarts [options]="chartLiabilitiesOption!" style="height: 320px;" (chartClick)="onLiabilitiesCategoryChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
   </div>
 
   <nz-divider></nz-divider>
-  <div nz-row nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-    <div nz-col [nzSpan]="12">
+  <div nz-row [nzGutter]="8">
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetAccountOption!" style="height: 320px;" ></div>
+          <div echarts [options]="chartAssetAccountOption!" style="height: 320px;" (chartClick)="onAssetsAccountChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesAccountOption!" style="height: 320px;"></div>
+          <div echarts [options]="chartLiabilitiesAccountOption!" style="height: 320px;" (chartClick)="onLiabilitiesAccountChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
@@ -54,10 +54,7 @@
         <tr>
           <th>#</th>
           <th>{{'Common.Name' | transloco}}</th>
-          <th nzFilter [nzFilters]="listCategoryFilter"
-            (nzFilterChange)="filterReportByAccountTable($event)">
-            {{'Common.Category' | transloco}}
-          </th>
+          <th>{{'Common.Category' | transloco}}</th>
           <th>{{'Finance.In' | transloco}}</th>
           <th>{{'Finance.Out' | transloco}}</th>
           <th>{{'Finance.Balance' | transloco}}</th>
@@ -74,18 +71,21 @@
           <td>{{data.CategoryName | transloco}}</td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayDebitData(data.AccountId)">
-              {{data.DebitBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+              {{data.DebitBalance | number: '1.0-2'}}
             </button>
+            <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayCreditData(data.AccountId)">
-              {{data.CreditBalance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+              {{data.CreditBalance | number: '1.0-2'}}
             </button>
+            <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayBalanceData(data.AccountId)">
-              {{data.Balance | number: '1.0-2'}}<span style="padding-left: 5px;">{{baseCurrency}}</span>
+              {{data.Balance | number: '1.0-2'}}
             </button>
+            <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>
         </tr>
       </tbody>
