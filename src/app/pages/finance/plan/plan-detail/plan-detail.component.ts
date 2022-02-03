@@ -97,7 +97,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     this.arFinPlanTypes = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayStrings();
     this.isLoadingResults = false;
     this.detailFormGroup = new FormGroup({
-      idControl: new FormControl(),
+      idControl: new FormControl({value: undefined, disabled: true}),
       typeControl: new FormControl(undefined, [Validators.required]),
       startDateControl: new FormControl(moment().toDate(), [Validators.required]),
       endDateControl: new FormControl(moment().add(1, 'y').toDate(), [Validators.required]),

@@ -94,6 +94,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
 
         this.reportExpense = [];
         this.reportIncome = [];
+        this.totalExpense = 0;
+        this.totalIncome = 0;
 
         val[0].forEach((item: any) => {
           if (item.InAmount !== 0) {

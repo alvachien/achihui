@@ -46,7 +46,33 @@
         </div>
         <nz-card-meta
           [nzTitle]="'Finance.Reports' | transloco"
-          nzDescription="Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.">      
+          nzDescription="Financial Reports provides you the various dimension among the figures, which stands for the incoming and outgoing.">
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToPlan()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="planImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.Plan' | transloco"
+          nzDescription="Financial Plan offer the functionality to setup your plan and compare the reality from time to time.">
+        </nz-card-meta>
+      </nz-card>
+    </div>
+  </div>
+  <div nz-col class="welcome-content-row" nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <div class="inner-box">
+      <nz-card nzHoverable [nzBordered]="false" (click)="onNavigateToConfig()">
+        <div>
+          <img nz-image width="200px" height="200px" [nzSrc]="configImage" nzDisablePreview="true" alt="" />
+        </div>
+        <nz-card-meta
+          [nzTitle]="'Finance.ConfigObjects' | transloco"
+          nzDescription="Configuration objects provides the way to configure of transaction types.">
         </nz-card-meta>
       </nz-card>
     </div>

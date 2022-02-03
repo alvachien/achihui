@@ -26,6 +26,12 @@ export class WelcomeComponent {
   get overviewImage(): string {
     return `${environment.AppHost}/assets/img/Overview.png`;
   }
+  get planImage(): string {
+    return `${environment.AppHost}/assets/img/Plan.png`;
+  }
+  get configImage(): string {
+    return `${environment.AppHost}/assets/img/Config.png`;
+  }
   onNavigateToOverview(): void {
     this.router.navigate(['finance', 'overview']);
   }
@@ -37,5 +43,11 @@ export class WelcomeComponent {
   }
   onNavigateToReport():void {
     this.router.navigate(['finance', 'report']);
+  }
+  onNavigateToPlan(): void {
+    this.router.navigate(['finance', 'plan']);
+  }
+  onNavigateToConfig(): void {
+    this.router.navigate(['finance', 'config']);
   }
 }
