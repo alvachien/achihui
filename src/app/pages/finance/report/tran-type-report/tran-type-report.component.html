@@ -7,7 +7,7 @@
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-subtitle>{{'Finance.TransactionTypes' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-radio-group [(ngModel)]="groupLevel" nzButtonStyle="solid">
+    <nz-radio-group [(ngModel)]="groupLevel" nzButtonStyle="solid" (ngModelChange)="onRebuildData()">
       <label nz-radio-button nzValue="1">1</label>
       <label nz-radio-button nzValue="2">2</label>
       <label nz-radio-button nzValue="3">3</label>

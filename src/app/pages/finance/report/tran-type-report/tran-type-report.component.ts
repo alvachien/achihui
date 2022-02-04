@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  FinanceReportMostExpenseEntry, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem, momentDateFormat} from '../../../../model';
+  FinanceReportMostExpenseEntry, GeneralFilterOperatorEnum, GeneralFilterValueType, GeneralFilterItem,
+  momentDateFormat, TranType, FinanceReportEntryByTransactionType, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../../services';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../../document-item-view';
@@ -28,6 +29,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   totalExpense = 0;
   selectedScope = '2'; // '1': Preview year, '2': Current Year, '3': Preview month, '4': Current month
   groupLevel = '3'; // '3': Group level is 3; '2': Group level is 2; '1': Group level is 1
+  arTranType: TranType[] = [];
+  arReportData: FinanceReportEntryByTransactionType[] = [];
 
   constructor(public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
@@ -36,7 +39,6 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.isLoadingResults = false;
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;    
   }
 
@@ -92,40 +94,10 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent onLoadData forkJoin succeed`,
           ConsoleLogTypeEnum.debug);
 
-        this.reportExpense = [];
-        this.reportIncome = [];
-        this.totalExpense = 0;
-        this.totalIncome = 0;
+        this.arReportData = val[0];
+        this.arTranType = val[1];
 
-        val[0].forEach((item: any) => {
-          if (item.InAmount !== 0) {
-            this.totalIncome += item.InAmount;
-          }
-          if (item.OutAmount !== 0) {
-            this.totalExpense += item.OutAmount;
-          }
-        });
-
-        val[0].forEach((item: any) => {
-          if (item.InAmount !== 0) {
-            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-            entry.Amount = item.InAmount;
-            entry.TransactionType  = item.TransactionType;
-            entry.TransactionTypeName = item.TransactionTypeName;
-            entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncome);
-            this.reportIncome.push(entry);
-          }
-          if (item.OutAmount !== 0) {
-            const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
-            entry.Amount = item.OutAmount;
-            entry.TransactionType  = item.TransactionType;
-            entry.TransactionTypeName = item.TransactionTypeName;
-            entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalExpense);
-            this.reportExpense.push(entry);
-          }
-        });
-        this.reportIncome.sort((a, b) => b.Precentage - a.Precentage);
-        this.reportExpense.sort((a, b) => b.Precentage - a.Precentage);
+        this.onRebuildData();
       },
       error: (error: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeReportComponent ngOnInit forkJoin failed ${error}`,
@@ -138,6 +110,113 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         });
       },
     });
+  }
+  public onRebuildData(): void {
+    this.reportExpense = [];
+    this.reportIncome = [];
+    this.totalExpense = 0;
+    this.totalIncome = 0;
+
+    this.arReportData.forEach((item: any) => {
+      if (item.InAmount !== 0) {
+        this.totalIncome += item.InAmount;
+      }
+      if (item.OutAmount !== 0) {
+        this.totalExpense += item.OutAmount;
+      }
+    });
+
+    let armaps: Map<number, number> = new Map<number, number>();
+
+    if (this.groupLevel === '3') {
+    } else if(this.groupLevel === '2') {
+      this.arTranType.forEach(trantype => {
+        if (trantype.HierLevel === 2) {
+          armaps.set(trantype.Id!, trantype.ParId!);
+        } else {
+          armaps.set(trantype.Id!, trantype.Id!);
+        }
+      });
+    } else if (this.groupLevel === '1') {
+      let armaps2: Map<number, number> = new Map<number, number>();
+      this.arTranType.forEach(trantype => {
+        if (trantype.HierLevel === 2) {
+          // Level 3: 
+          armaps2.set(trantype.Id!, trantype.ParId!);
+        } else if (trantype.HierLevel === 1) {
+          // Level 2: One step.
+          armaps.set(trantype.Id!, trantype.ParId!);
+        } else {
+          // Level 1: mapping to itself
+          armaps.set(trantype.Id!, trantype.Id!);
+        }
+      });
+      armaps2.forEach((val, key) => {
+        if (armaps.get(val)) {
+          armaps.set(key, armaps.get(val)!);
+        }
+      });
+    }
+
+    this.arReportData.forEach((item: FinanceReportEntryByTransactionType) => {
+      if (item.InAmount !== 0) {
+        const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+        if (armaps.size > 0 && armaps.get(item.TransactionType)) {
+          entry.TransactionType = armaps.get(item.TransactionType)!;
+          // Exist already?
+          let rptindex = this.reportIncome.findIndex(val => val.TransactionType === entry.TransactionType);
+          if (rptindex === -1) {
+            // Not exist
+            let ttObj = this.arTranType.find(val => val.Id === entry.TransactionType);
+            if (ttObj) {
+              entry.TransactionTypeName = ttObj.Name;
+            }
+            entry.Amount = item.InAmount;
+            entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncome);
+            this.reportIncome.push(entry);
+          } else {
+            this.reportIncome[rptindex].Amount += item.InAmount;
+            this.reportIncome[rptindex].Precentage = NumberUtility.Round2Two(100 * this.reportIncome[rptindex].Amount / this.totalIncome);
+          }          
+        } else {
+          entry.TransactionType  = item.TransactionType;
+          entry.TransactionTypeName = item.TransactionTypeName;  
+          entry.Amount = item.InAmount;
+          entry.Precentage = NumberUtility.Round2Two(100 * item.InAmount / this.totalIncome);
+          this.reportIncome.push(entry);
+        }
+      }
+      if (item.OutAmount !== 0) {
+        const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
+        
+        if (armaps.size > 0 && armaps.get(item.TransactionType)) {
+          entry.TransactionType = armaps.get(item.TransactionType)!;
+          // Exist already?
+          let rptindex = this.reportExpense.findIndex(val => val.TransactionType === entry.TransactionType);
+          if (rptindex === -1) {
+            let ttObj = this.arTranType.find(val => val.Id === entry.TransactionType);
+            if (ttObj) {
+              entry.TransactionTypeName = ttObj.Name;
+            }
+            entry.Amount = item.OutAmount;
+            entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalExpense);
+            this.reportExpense.push(entry);
+          } else {
+            this.reportExpense[rptindex].Amount += item.OutAmount;
+            this.reportExpense[rptindex].Precentage = NumberUtility.Round2Two(100 * this.reportExpense[rptindex].Amount / this.totalExpense);
+          }
+        } else {
+          entry.TransactionType  = item.TransactionType;
+          entry.TransactionTypeName = item.TransactionTypeName;
+          entry.Amount = item.OutAmount;
+          entry.Precentage = NumberUtility.Round2Two(100 * item.OutAmount / this.totalExpense);
+          this.reportExpense.push(entry);
+        }
+      }
+    });  
+
+    this.reportIncome.sort((a, b) => b.Precentage - a.Precentage);
+    this.reportExpense.sort((a, b) => b.Precentage - a.Precentage);
   }
 
   public onDisplayDocumentItem(trantype: number) {
