@@ -6,8 +6,8 @@ export const environment = {
   production: false,
 
   LoginRequired: true,
-  CurrentVersion: '1.2.205',
-  ReleasedDate: '2022.3.1',
+  CurrentVersion: '1.2.210',
+  ReleasedDate: '2022.7.31',
   DefaultLanguage: 'en',
 
   DebugLogging: true,

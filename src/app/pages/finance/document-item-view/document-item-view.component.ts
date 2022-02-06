@@ -4,6 +4,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate } from '@ngneat/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { FinanceOdataService, UIStatusService } from '../../../services';
 import { Account, ModelUtility, ConsoleLogTypeEnum,
@@ -48,7 +49,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
 
   constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService, ) {
+    private modalService: NzModalService,
+    private router: Router, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
     if (this._destroyed$ == null) {
@@ -189,5 +191,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           });
         },
       });
+  }
+  public onDisplayDocument(docid: number) {
+    this.router.navigate(['/finance/document/display/' + docid.toString()]);
   }
 }

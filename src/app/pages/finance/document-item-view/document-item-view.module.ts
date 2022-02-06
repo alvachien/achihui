@@ -22,4 +22,5 @@ import { DocumentItemViewComponent } from './';
     DocumentItemViewComponent,
   ],
 })
-export class DocumentItemViewModule { }
+export class DocumentItemViewModule { 
+}
