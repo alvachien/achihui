@@ -9,8 +9,7 @@ import * as moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, getUIModeString,
-  SettlementRule, } from '../../../../model';
+import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, getUIModeString, SettlementRule, } from '../../../../model';
 import { dateRangeValidator, } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
 
