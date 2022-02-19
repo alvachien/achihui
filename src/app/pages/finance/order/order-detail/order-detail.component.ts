@@ -279,6 +279,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.debug);
 
             this.orderSavedFailed = '';
+            this.orderIdCreated = ordObj.Id;
           },
           error: (error: any) => {
             // Show error message
@@ -314,6 +315,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.debug);
 
             this.orderSavedFailed = '';
+            this.orderIdCreated = ordObj.Id;
           },
           error: (error: any) => {
             // Show error message

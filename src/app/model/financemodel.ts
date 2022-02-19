@@ -1503,7 +1503,7 @@ export class Order extends hih.BaseModel {
 
     for (const srule of this.SRules) {
       const sruleinfo: any = srule.writeJSONObject();
-      sruleinfo.ordId = this.Id;
+      // sruleinfo.ordId = this.Id;
       rstObj.SRule.push(sruleinfo);
     }
 
