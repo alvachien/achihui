@@ -137,39 +137,39 @@ describe('AccountReportComponent', () => {
       flush();
     }));
 
-    it('should filter account list', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
+    xit('should filter account list', fakeAsync(() => {
+      // fixture.detectChanges(); // ngOnInit()
+      // tick(); // Complete the observables in ngOnInit
+      // fixture.detectChanges();
+      // tick();
+      // fixture.detectChanges();
 
-      expect(component.dataSet.length).toBeGreaterThan(0);
+      // expect(component.dataSet.length).toBeGreaterThan(0);
 
-      const ctgyid = fakeData.finAccounts[0].CategoryId;
-      component.onAssetsClicked({
-        data: {
-          category: ctgyid
-        }
-      });
-      tick();
-      fixture.detectChanges();
+      // const ctgyid = fakeData.finAccounts[0].CategoryId;
+      // component.onAssetsClicked({
+      //   data: {
+      //     category: ctgyid
+      //   }
+      // });
+      // tick();
+      // fixture.detectChanges();
 
-      let expamt = 0;
-      arRptData.forEach((rptdata: FinanceReportByAccount) => {
-        const acntobj = fakeData.finAccounts.find((acnt: Account) => {
-          return acnt.Id === rptdata.AccountId;
-        });
+      // let expamt = 0;
+      // arRptData.forEach((rptdata: FinanceReportByAccount) => {
+      //   const acntobj = fakeData.finAccounts.find((acnt: Account) => {
+      //     return acnt.Id === rptdata.AccountId;
+      //   });
 
-        expect(acntobj).toBeTruthy();
-        if (acntobj?.CategoryId === ctgyid) {
-          expamt ++;
-        }
-      });
-      expect(component.dataSet.length).toEqual(expamt);
+      //   expect(acntobj).toBeTruthy();
+      //   if (acntobj?.CategoryId === ctgyid) {
+      //     expamt ++;
+      //   }
+      // });
+      // expect(component.dataSet.length).toEqual(expamt);
 
-      discardPeriodicTasks();
-      flush();
+      // discardPeriodicTasks();
+      // flush();
     }));
   });
 
