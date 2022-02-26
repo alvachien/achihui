@@ -599,7 +599,8 @@
     "IncomeMonthOnMonthRatio": "流入环比",
     "OutgoMonthOnMonthRatio": "流出环比",
     "IncomeYTD": "本年迄今总流入",
-    "OutgoYTD": "本年迄今总流出"
+    "OutgoYTD": "本年迄今总流出",
+    "ChangeAccountName": "修改账户名称"
   },
   "Library": {
     "BookCategories": "图书种类",

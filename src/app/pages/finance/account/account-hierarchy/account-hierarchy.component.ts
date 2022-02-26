@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions, } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplay
   OverviewScopeEnum, getOverviewScopeRange, momentDateFormat, BuildupAccountForSelection, ControlCenter,
 } from '../../../../model';
 import * as moment from 'moment';
+import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -66,7 +67,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     private modalService: NzModalService,
     private homeService: HomeDefOdataService,
     public router: Router,
-    private nzContextMenuService: NzContextMenuService) {
+    private nzContextMenuService: NzContextMenuService,
+    private viewContainerRef: ViewContainerRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.isLoadingResults = false; // Default value
@@ -130,6 +132,36 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+  onChangeAccountName(): void {
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+
+        let acntidx = this.odataService.Accounts.findIndex(p => p.Id === acntid);
+        if (acntidx !== -1) {
+          // Change the account name
+          const modal = this.modalService.create({
+            nzTitle: 'Modal Title',
+            nzContent: AccountChangeNameDialogComponent,
+            nzViewContainerRef: this.viewContainerRef,
+            nzComponentParams: {
+              name: this.odataService.Accounts[acntidx].Name,
+              comment: this.odataService.Accounts[acntidx].Comment,
+            },
+            nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+          });
+          const instance = modal.getContentComponent();
+          modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+          // Return a result when closed
+          modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+
+        }
+      }
+    }
+  }
+  openAdvanceOperations(): void {
+    console.log('Entering openAdvanceOperations');
   }
   onEditAccount(): void {
     if (this.activatedNode) {

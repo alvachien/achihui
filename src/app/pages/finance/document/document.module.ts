@@ -5,13 +5,13 @@ import { FinanceUIModule } from '../finance-ui.module';
 
 import { DocumentRoutingModule } from './document-routing.module';
 import { DocumentComponent } from './document.component';
-import { DocumentListComponent } from './document-list/document-list.component';
-import { DocumentDetailComponent } from './document-detail/document-detail.component';
-import { DocumentHeaderComponent } from './document-header/document-header.component';
-import { DocumentItemsComponent } from './document-items/document-items.component';
-import { DocumentNormalCreateComponent } from './document-normal-create/document-normal-create.component';
-import { DocumentTransferCreateComponent } from './document-transfer-create/document-transfer-create.component';
-import { DocumentDownpaymentCreateComponent } from './document-downpayment-create/document-downpayment-create.component';
+import { DocumentListComponent } from './document-list';
+import { DocumentDetailComponent } from './document-detail';
+import { DocumentHeaderComponent } from './document-header';
+import { DocumentItemsComponent } from './document-items';
+import { DocumentNormalCreateComponent } from './document-normal-create';
+import { DocumentTransferCreateComponent } from './document-transfer-create';
+import { DocumentDownpaymentCreateComponent } from './document-downpayment-create';
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create/document-asset-buy-create.component';
 import { DocumentAssetSoldCreateComponent } from './document-asset-sold-create/document-asset-sold-create.component';
 import { DocumentLoanCreateComponent } from './document-loan-create/document-loan-create.component';
@@ -21,6 +21,8 @@ import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-cr
 import { DocumentNormalMassCreateItemComponent } from './document-normal-mass-create-item';
 import { AccountModule } from '../account/account.module';
 import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create/document-loan-repay-create.component';
+import { DocumentChangeDateDialogComponent } from './document-change-date-dialog';
+import { DocumentChangeDespDialogComponent } from './document-change-desp-dialog';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create/d
     DocumentRecurredMassCreateComponent,
     DocumentNormalMassCreateItemComponent,
     DocumentLoanRepayCreateComponent,
+    DocumentChangeDateDialogComponent,
+    DocumentChangeDespDialogComponent,
   ],
   imports: [
     CommonModule,

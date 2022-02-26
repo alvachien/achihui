@@ -309,6 +309,9 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public onMassCreateRecurredDocument(): void {
     this.router.navigate(['/finance/document/masscreaterecurred']);
   }
+  public onDisplay(docid: number): void {
+    this.router.navigate(['/finance/document/display/', docid]);
+  }
   public onEdit(docid: number): void {
     this.router.navigate(['/finance/document/edit/', docid]);
   }

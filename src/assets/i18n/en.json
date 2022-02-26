@@ -599,7 +599,8 @@
     "IncomeMonthOnMonthRatio": "Incomes month-on-month ratio",
     "OutgoMonthOnMonthRatio": "Outgos month-on-month ratio",
     "IncomeYTD": "YTD Incomes",
-    "OutgoYTD": "YTD Outgos"
+    "OutgoYTD": "YTD Outgos",
+    "ChangeAccountName": "Change Account Name"
   },
   "Library": {
     "BookCategories": "Book Categories",

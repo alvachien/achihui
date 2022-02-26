@@ -55,7 +55,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.currentDocument = new Document();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.docFormGroup = new FormGroup({
-      idControl: new FormControl(),
+      idControl: new FormControl({ disabled: true} ),
       headerControl: new FormControl(this.currentDocument, Validators.required),
       itemsControl: new FormControl()
     });
@@ -192,6 +192,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   private onSetData() {
+    this.docFormGroup.get('idControl')?.setValue(this.currentDocument.Id);
     this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
     this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
 
