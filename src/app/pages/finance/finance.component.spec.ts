@@ -25,12 +25,15 @@ describe('FinanceComponent', () => {
   let fetchAllDPTmpDocsSpy: any;
   let fetchAllLoanTmpDocsSpy: any;
   let createDocumentFromDPTemplateSpy: any;
+  let fetchOverviewKeyfigureSpy: any;
 
-  beforeEach(waitForAsync(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
+  });
 
+  beforeEach(waitForAsync(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const homeService: Partial<HomeDefOdataService> = {
@@ -43,10 +46,12 @@ describe('FinanceComponent', () => {
       'fetchAllDPTmpDocs',
       'fetchAllLoanTmpDocs',
       'createDocumentFromDPTemplate',
+      'fetchOverviewKeyfigure',
     ]);
     fetchAllDPTmpDocsSpy = odataService.fetchAllDPTmpDocs.and.returnValue([]);
     fetchAllLoanTmpDocsSpy = odataService.fetchAllLoanTmpDocs.and.returnValue([]);
     createDocumentFromDPTemplateSpy = odataService.createDocumentFromDPTemplate.and.returnValue();
+    fetchOverviewKeyfigureSpy = odataService.fetchOverviewKeyfigure.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
       imports: [
@@ -93,6 +98,7 @@ describe('FinanceComponent', () => {
       fetchAllDPTmpDocsSpy.and.returnValue(of(arDPTmpDoc));
       fetchAllLoanTmpDocsSpy.and.returnValue(of(arLoanTmpDoc));
       createDocumentFromDPTemplateSpy.and.returnValue(of({}));
+      fetchOverviewKeyfigureSpy.and.returnValue(of({}));
     });
 
     beforeEach(inject([OverlayContainer],

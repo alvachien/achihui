@@ -35,7 +35,7 @@ describe('FinanceOdataService', () => {
   const reportByCCURL: any = reportAPIUrl + `/GetReportByControlCenter`;
   const reportByOrderURL: any = reportAPIUrl + `/GetReportByOrder`;
 
-  beforeEach(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -44,7 +44,9 @@ describe('FinanceOdataService', () => {
     fakeData.buildFinAccountsFromAPI();
     fakeData.buildFinControlCenterFromAPI();
     fakeData.buildFinOrderFromAPI();
+  });
 
+  beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: Partial<HomeDefOdataService> = {

@@ -82,7 +82,7 @@ describe('AccountCategory', () => {
     instance.AssetFlag = true;
     instance.Comment = 'test';
     instance.onInit();
-    expect(instance.AssetFlag).toBeNull();
+    expect(instance.AssetFlag).toBeFalse();
     expect(instance.Comment).toBeNull();
   });
 

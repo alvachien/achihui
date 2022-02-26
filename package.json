@@ -16,7 +16,7 @@
     "build-ali": "ng build --base-href=/hih/",
     "test": "ng test",
     "devtest": "ng test --code-coverage",
-    "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox",
+    "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
