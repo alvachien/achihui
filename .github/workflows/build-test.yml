@@ -6,7 +6,7 @@ on:
     branches: 
         - master
 
-	jobs:
+jobs:
   build:
     # Machine environment:
     # We specify the Node.js version manually below, and use versioned Chrome from Puppeteer.
