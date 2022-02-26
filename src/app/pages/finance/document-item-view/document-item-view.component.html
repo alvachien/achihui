@@ -23,7 +23,6 @@
   <tbody>
     <tr *ngFor="let data of innerTable.data">
       <td>
-        <nz-divider nzType="vertical"></nz-divider>
         <button nz-button nzType="link" (click)="onDisplayDocument(data.DocumentID!)">{{ data.DocumentID }}</button>
       </td>
       <td>{{ data.ItemID }}</td>

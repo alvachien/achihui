@@ -1,3 +1,4 @@
+[![build and test](https://github.com/alvachien/achihui/actions/workflows/build-test.yml/badge.svg)](https://github.com/alvachien/achihui/actions/workflows/build-test.yml)
 [![Build Status](https://travis-ci.com/alvachien/achihui.svg?branch=master)](https://travis-ci.com/alvachien/achihui)
 
 # Home Info. Hub (Website Version)

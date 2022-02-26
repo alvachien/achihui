@@ -13,6 +13,13 @@
 </nz-page-header>
 
 <form nz-form [formGroup]="docFormGroup">
+  <!-- ID -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">ID</nz-form-label>
+    <nz-form-control [nzSpan]="12"style="text-align: left;" formControlName="idControl">
+    </nz-form-control>
+  </nz-form-item>
+
   <!-- Header -->
   <hih-fin-document-header formControlName="headerControl" [docType]="currentDocument.DocType" [currentUIMode]="uiMode"
     [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
