@@ -152,10 +152,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             },
             // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
           });
-          const instance = modal.getContentComponent();
-          modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-          // Return a result when closed
-          modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+          // const instance = modal.getContentComponent();
+          // modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+          // // Return a result when closed
+          // modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
         }
       }
     }

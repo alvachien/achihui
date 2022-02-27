@@ -3624,14 +3624,12 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return expected result', () => {
-      service.getRepeatedDates(inputData).subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(outputData.length, 'should return expected data');
+      service.getRepeatedDates(inputData).subscribe({
+        next: val => {
+          expect(val.length).toEqual(outputData.length, 'should return expected data');
         },
-        (fail: any) => {
-          // Empty
-        },
-      );
+        error: err => {}
+      });
 
       // Service should have made one request to POST
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -3657,6 +3655,197 @@ describe('FinanceOdataService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('fetchOverviewKeyfigure', () => {
+    const apiurl: any = `${reportAPIUrl}/GetFinanceOverviewKeyFigure`;
+
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('shall fetch out result', () => {
+      service.fetchOverviewKeyfigure().subscribe({
+        next: val => {
+          expect(val).toBeTruthy();
+          expect(val.HomeID).toEqual(1);
+        },
+        error: err => {
+          expect(err).toBeFalsy();
+        }
+      });
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush({
+        value: [{
+          HomeID: 1,
+          Currency: 'CNY',
+          CurrentMonthIncome: 0,
+          CurrentMonthOutgo: 0  
+        }]
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error occurred';
+      service.fetchOverviewKeyfigure().subscribe({
+        next: val => {
+          fail('Shall not occur');
+        },
+        error: err => {
+          expect(err).toContain(msg);
+        }
+      });
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('changeDocumentDateViaPatch', () => {
+    const apiurl = `${documentAPIURL}/22`;
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('shall work properly', () => {      
+      service.changeDocumentDateViaPatch(22, moment()).subscribe({
+        next: val => {
+        },
+        error: err => {
+          expect(err).toBeFalsy();
+        }
+      });
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush({
+        HomeID: 1,
+        ID: 22,
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error occurred';
+      service.changeDocumentDateViaPatch(22, moment()).subscribe({
+        next: val => {
+          fail('Shall not occur');
+        },
+        error: err => {
+          expect(err).toContain(msg);
+        }
+      });
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('changeDocumentDespViaPatch', () => {
+    const apiurl = `${documentAPIURL}/22`;
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('shall work properly', () => {      
+      service.changeDocumentDespViaPatch(22, '22').subscribe({
+        next: val => {
+        },
+        error: err => {
+          expect(err).toBeFalsy();
+        }
+      });
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush({
+        HomeID: 1,
+        ID: 22,
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error occurred';
+      service.changeDocumentDespViaPatch(22, '22').subscribe({
+        next: val => {
+          fail('Shall not occur');
+        },
+        error: err => {
+          expect(err).toContain(msg);
+        }
+      });
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('changeAccountByPatch', () => {
+    const apiurl = `${accountAPIURL}/22`;
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('shall work properly', () => {      
+      service.changeAccountByPatch(22, { Name:'22' }).subscribe({
+        next: val => {
+        },
+        error: err => {
+          expect(err).toBeFalsy();
+        }
+      });
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
+      });
+
+      // Respond with the mock data
+      req.flush({
+        HomeID: 1,
+        ID: 22,
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error occurred';
+      service.changeAccountByPatch(22, { Name:'22' }).subscribe({
+        next: val => {
+          fail('Shall not occur');
+        },
+        error: err => {
+          expect(err).toContain(msg);
+        }
+      });
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body

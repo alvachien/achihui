@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, } from '@angular/core';
 import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -48,7 +48,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private activateRoute: ActivatedRoute,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private router: Router) {
+    private router: Router,
+    private cd: ChangeDetectorRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -65,6 +66,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
+    this.cd.detectChanges();
 
     this.activateRoute.url.subscribe((x: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,

@@ -12,7 +12,9 @@ import { AccountExtraDownpaymentComponent } from './account-extra-downpayment';
 import { AccountExtraAssetComponent } from './account-extra-asset';
 import { AccountExtraLoanComponent } from './account-extra-loan';
 import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
+// Dialogs
 import { AccountChangeNameDialogComponent } from './account-change-name-dialog';
+import { AccountSettleDialogComponent } from './account-settle-dialog';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { AccountChangeNameDialogComponent } from './account-change-name-dialog';
     AccountExtraAssetComponent,
     AccountExtraLoanComponent,
     AccountChangeNameDialogComponent,
+    AccountSettleDialogComponent,
   ],
   imports: [
     CommonModule,

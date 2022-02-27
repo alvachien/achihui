@@ -324,7 +324,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public onChangeDate(docid: number, docdate: moment.Moment): void {
     // Change the account name
     const modal = this.modalService.create({
-      nzTitle: 'Change Date',
+      nzTitle: translate('Finance.ChangeDate'),
       nzContent: DocumentChangeDateDialogComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzComponentParams: {
@@ -333,16 +333,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });
-    const instance = modal.getContentComponent();
     modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
     modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-
   }
   public onChangeDesp(docid: number, docdesp: string): void {
     // Change the account name
     const modal = this.modalService.create({
-      nzTitle: 'Change Date',
+      nzTitle: translate('Finance.ChangeDate'),
       nzContent: DocumentChangeDespDialogComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzComponentParams: {
@@ -354,7 +352,6 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const instance = modal.getContentComponent();
     modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-    
+    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));    
   }
 }

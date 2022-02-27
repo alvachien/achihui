@@ -210,7 +210,8 @@
     "LastChangedBy": "最后修改者",
     "FilterIsMust": "过滤条件是必须的",
     "AdvancedOperations": "高级操作",
-    "OnlyValidOnes": "仅有效项"
+    "OnlyValidOnes": "仅有效项",
+    "Loading": "装载中"
   },
   "Sys": {
     "Currency": {
@@ -600,7 +601,10 @@
     "OutgoMonthOnMonthRatio": "流出环比",
     "IncomeYTD": "本年迄今总流入",
     "OutgoYTD": "本年迄今总流出",
-    "ChangeAccountName": "修改账户名称"
+    "ChangeAccountName": "修改账户名称",
+    "ChangeName": "修改名称",
+    "ChangeDate": "修改日期",
+    "ChangeDesp": "修改描述"
   },
   "Library": {
     "BookCategories": "图书种类",

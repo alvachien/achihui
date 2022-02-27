@@ -210,7 +210,8 @@
     "LastChangedBy": "Last chagned by",
     "FilterIsMust": "Filter is must",
     "AdvancedOperations": "Advanced Operations",
-    "OnlyValidOnes": "Only Valid Ones"
+    "OnlyValidOnes": "Only Valid Ones",
+    "Loading": "Loading"
   },
   "Sys": {
     "Currency": {
@@ -600,7 +601,10 @@
     "OutgoMonthOnMonthRatio": "Outgos month-on-month ratio",
     "IncomeYTD": "YTD Incomes",
     "OutgoYTD": "YTD Outgos",
-    "ChangeAccountName": "Change Account Name"
+    "ChangeAccountName": "Change Account Name",
+    "ChangeName": "ChangeName",
+    "ChangeDate": "Change Date",
+    "ChangeDesp": "Change Description"
   },
   "Library": {
     "BookCategories": "Book Categories",
