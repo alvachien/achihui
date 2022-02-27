@@ -1921,7 +1921,7 @@ export class FinanceOdataService {
    * Change a document
    * @param objDetail instance of document which to be created
    */
-   public changeDocument(objDetail: Document): Observable<Document> {
+  public changeDocument(objDetail: Document): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1945,6 +1945,70 @@ export class FinanceOdataService {
           ConsoleLogTypeEnum.error);
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+
+  /**
+   * Change document's date
+   */
+  public changeDocumentDateViaPatch(docid: number, docdate: moment.Moment): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const objcontent = {
+      'TranDate': docdate.format(momentDateFormat),
+    };
+    return this.http.patch(`${this.documentAPIUrl}/${docid}`, objcontent, {
+      headers,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeDocumentDateViaPatch succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDateViaPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Change document's desp
+   */
+  public changeDocumentDespViaPatch(docid: number, docdesp: string): Observable<Document> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const objcontent = {
+      'Desp': docdesp,
+    };
+    return this.http.patch(`${this.documentAPIUrl}/${docid}`, objcontent, {
+      headers,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService changeDocumentDespViaPatch succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const hd: Document = new Document();
+        hd.onSetData(response as any);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDespViaPatch failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 

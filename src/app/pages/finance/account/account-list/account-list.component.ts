@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { ITableFilterValues, Account, AccountStatusEnum, UIDisplayString, UIDisp
   ModelUtility, ConsoleLogTypeEnum, AccountCategory,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
+import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 
 @Component({
   selector: 'hih-fin-account-list',
@@ -36,7 +37,8 @@ export class AccountListComponent implements OnInit, OnDestroy {
     public uiStatusService: UIStatusService,
     public router: Router,
     private homeService: HomeDefOdataService,
-    public modalService: NzModalService) {
+    public modalService: NzModalService,
+    private viewContainerRef: ViewContainerRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -220,5 +222,27 @@ export class AccountListComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
+
+  onChangeAccountName(acntid: number): void {
+    let acntidx = this.odataService.Accounts.findIndex(p => p.Id === acntid);
+    if (acntidx !== -1) {
+      // Change the account name
+      const modal = this.modalService.create({
+        nzTitle: translate('Finance.ChangeAccountName'),
+        nzContent: AccountChangeNameDialogComponent,
+        nzViewContainerRef: this.viewContainerRef,
+        nzComponentParams: {
+          accountid: acntid,
+          name: this.odataService.Accounts[acntidx].Name,
+          comment: this.odataService.Accounts[acntidx].Comment,
+        },
+        // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+      });
+      const instance = modal.getContentComponent();
+      modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+      // Return a result when closed
+      modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+    }
   }
 }

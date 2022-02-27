@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -14,6 +14,8 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   BaseListModel, ModelUtility, ConsoleLogTypeEnum,
   ITableFilterValues, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat,
 } from '../../../../model';
+import { DocumentChangeDateDialogComponent } from '../document-change-date-dialog';
+import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialog';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -56,7 +58,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NzModalService,
     private homeService: HomeDefOdataService,
-    private msgService: NzMessageService) {
+    private msgService: NzMessageService,
+    private viewContainerRef: ViewContainerRef) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
@@ -317,5 +320,41 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
   public onDelete(docid: number): void {
     this.msgService.error('This functionality is still under construction', { nzDuration: 2500 });
+  }
+  public onChangeDate(docid: number, docdate: moment.Moment): void {
+    // Change the account name
+    const modal = this.modalService.create({
+      nzTitle: 'Change Date',
+      nzContent: DocumentChangeDateDialogComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        documentid: docid,
+        documentdate: docdate.toDate(),
+      },
+      // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+    });
+    const instance = modal.getContentComponent();
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+    // Return a result when closed
+    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+
+  }
+  public onChangeDesp(docid: number, docdesp: string): void {
+    // Change the account name
+    const modal = this.modalService.create({
+      nzTitle: 'Change Date',
+      nzContent: DocumentChangeDespDialogComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        documentid: docid,
+        documentdesp: docdesp,
+      },
+      // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+    });
+    const instance = modal.getContentComponent();
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+    // Return a result when closed
+    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+    
   }
 }

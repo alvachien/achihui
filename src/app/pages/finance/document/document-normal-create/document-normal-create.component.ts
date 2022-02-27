@@ -40,6 +40,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Header
   public headerForm: FormGroup;
   // Step: Item
+  public doccur: string = '';
+  public doccur2?: string = '';
   public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -50,7 +52,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   constructor(
     private homeService: HomeDefOdataService,
-    private uiStatusService: UIStatusService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private router: Router) {
@@ -90,31 +91,34 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDocTypes(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-        // Accounts
-        this.arAccounts = rst[2];
-        this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-        // this.uiAccountStatusFilter = undefined;
-        // this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arOrders = rst[4];
-        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-        // Tran. type
-        this.arTranType = rst[1];
-        // Control Centers
-        this.arControlCenters = rst[3];
-        // Currencies
-        this.arCurrencies = rst[5];
-        // Doc. type
-        this.arDocTypes = rst[6];
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${error}`,
+      .subscribe({
+        next: rst => {
+          // Accounts
+          this.arAccounts = rst[2];
+          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          // this.uiAccountStatusFilter = undefined;
+          // this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arOrders = rst[4];
+          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          // Tran. type
+          this.arTranType = rst[1];
+          // Control Centers
+          this.arControlCenters = rst[3];
+          // Currencies
+          this.arCurrencies = rst[5];
+          // Doc. type
+          this.arDocTypes = rst[6];
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${err}`,
           ConsoleLogTypeEnum.error);
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
       });
   }
 
@@ -125,6 +129,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -199,6 +204,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     switch (this.currentStep) {
       case 0: {
         this.currentStep ++;
+        const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
+        this.doccur = detailObject.TranCurr;        
+        this.doccur2 = detailObject.TranCurr2;
         break;
       }
       case 1: {

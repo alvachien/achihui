@@ -91,12 +91,12 @@
           </nz-form-item>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select [(ngModel)]="data.ControlCenterId" (ngModelChange)="data.ControlCenterId = ($event === null)? undefined : $event; onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
         <td>
-          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
+          <nz-select [(ngModel)]="data.OrderId" (ngModelChange)="data.OrderId = ($event === null)? undefined : $event; onChange()" [nzDisabled]="!isFieldChangable" nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>

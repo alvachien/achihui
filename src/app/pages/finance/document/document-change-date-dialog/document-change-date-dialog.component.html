@@ -1,1 +1,28 @@
-<p>document-change-date-dialog works!</p>
+<div>
+    <form nz-form [formGroup]="headerFormGroup">
+      <!-- ID -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">ID</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input formControlName="idControl" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Date -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left;">
+          <nz-date-picker id="idTranDate" formControlName="dateControl"></nz-date-picker>
+          <ng-template #trandateErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{'Common.FieldIsMandatory' | transloco}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>    
+    </form>
+</div>
+<div *nzModalFooter>
+    <button nz-button nzType="default" (click)="onSubmit()" [disabled]="isSubmittedDisabled">OK</button>
+    <button nz-button nzType="primary" (click)="onCancel()">{{'Common.Cancel' | transloco}}</button>
+</div>

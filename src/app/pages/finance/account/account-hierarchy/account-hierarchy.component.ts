@@ -142,20 +142,20 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         if (acntidx !== -1) {
           // Change the account name
           const modal = this.modalService.create({
-            nzTitle: 'Modal Title',
+            nzTitle: translate('Finance.ChangeAccountName'),
             nzContent: AccountChangeNameDialogComponent,
             nzViewContainerRef: this.viewContainerRef,
             nzComponentParams: {
+              accountid: acntid,
               name: this.odataService.Accounts[acntidx].Name,
               comment: this.odataService.Accounts[acntidx].Comment,
             },
-            nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+            // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
           });
           const instance = modal.getContentComponent();
           modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
           // Return a result when closed
           modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-
         }
       }
     }

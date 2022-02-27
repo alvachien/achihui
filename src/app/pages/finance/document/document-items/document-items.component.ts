@@ -29,7 +29,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _tranCurr: string = '';
-  private _tranCurr2: string = '';
+  private _tranCurr2?: string
   private _docType?: number;
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: any) => void = undefined;
@@ -129,10 +129,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._tranCurr;
   }
   @Input()
-  set tranCurr2(curr: string) {
+  set tranCurr2(curr: string | undefined) {
     this._tranCurr2 = curr;
   }
-  get tranCurr2(): string {
+  get tranCurr2(): string | undefined {
     return this._tranCurr2;
   }
   @Input()

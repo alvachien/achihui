@@ -28,7 +28,7 @@
     <!-- Items -->
     <form nz-form [formGroup]="itemsForm" [hidden]="currentStep !== 1">
       <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
-        [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
+        [arCurrencies]="arCurrencies" [tranCurr]="doccur" [tranCurr2]="doccur2" [arUIAccounts]="arUIAccounts" [arControlCenters]="arControlCenters"
         [arTranType]="arTranType" [arUIOrders]="arUIOrders" [docType]="curDocType">
       </hih-fin-document-items>
     </form>
