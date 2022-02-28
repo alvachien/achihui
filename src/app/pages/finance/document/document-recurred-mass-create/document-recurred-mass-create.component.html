@@ -343,7 +343,7 @@
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id)" nzBordered [nzColumn]="4">
+              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
                 <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
@@ -364,7 +364,7 @@
           [nzSubTitle]="'Common.ResubmissionHint' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id)" nzBordered [nzColumn]="4">
+              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
                 <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
