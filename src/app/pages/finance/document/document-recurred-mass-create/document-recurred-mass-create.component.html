@@ -9,7 +9,7 @@
   <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
 </nz-page-header>
 
-<div *transloco="let t">
+<div>
   <nz-steps [nzCurrent]="currentStep">
     <nz-step [nzTitle]="'Common.SearchCriteria' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.ExistingDocuments' | transloco"></nz-step>
@@ -45,7 +45,7 @@
               <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
                 <nz-select formControlName="frqControl">
-                  <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)">
+                  <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco">
                   </nz-option>
                 </nz-select>
                 <ng-template #frqTpl let-control>
@@ -310,7 +310,7 @@
     <!-- Step 4: Confirm -->
     <div nz-row [hidden]="currentStep !== 4" style="width: 100%;">
       <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex">
-        <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
+        <nz-descriptions [nzTitle]="getConfirmDocumentTitle(confirmIndex)" nzBordered [nzColumn]="4">
           <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
             {{docinfo.TranDateFormatString}}
           </nz-descriptions-item>
@@ -343,7 +343,7 @@
           [nzSubTitle]="'Finance.DocumentPosted' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
+              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id)" nzBordered [nzColumn]="4">
                 <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
@@ -364,7 +364,7 @@
           [nzSubTitle]="'Common.ResubmissionHint' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
+              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id)" nzBordered [nzColumn]="4">
                 <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
                   {{pdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>
@@ -376,7 +376,7 @@
             </div>
             <nz-divider></nz-divider>
             <div *ngFor="let fdocinfo of docIdFailed; last as isFailedDocLast; index as failDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + failDocIndex" nzBordered [nzColumn]="4">
+              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(failDocIndex)" nzBordered [nzColumn]="4">
                 <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
                   {{fdocinfo.TranDateFormatString}}
                 </nz-descriptions-item>

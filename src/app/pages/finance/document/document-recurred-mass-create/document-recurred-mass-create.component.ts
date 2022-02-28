@@ -16,7 +16,6 @@ import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, Co
 } from '../../../../model';
 import { costObjectValidator, } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
 
 class DocumentCountByDateRange {
   StartDate: moment.Moment | null = null;
@@ -75,7 +74,6 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
   constructor(
     private homeService: HomeDefOdataService,
-    private uiStatusService: UIStatusService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private fb: FormBuilder,
@@ -128,31 +126,34 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDocTypes(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-        // Accounts
-        this.arAccounts = rst[2];
-        this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-        // this.uiAccountStatusFilter = undefined;
-        // this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arOrders = rst[4];
-        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-        // Tran. type
-        this.arTranType = rst[1];
-        // Control Centers
-        this.arControlCenters = rst[3];
-        // Currencies
-        this.arCurrencies = rst[5];
-        // Doc. type
-        this.arDocTypes = rst[6];
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentRecurredMassCreateComponent ngOnInit, forkJoin, ${error}`,
-          ConsoleLogTypeEnum.error);
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
+      .subscribe({
+        next: rst => {
+          // Accounts
+          this.arAccounts = rst[2];
+          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          // this.uiAccountStatusFilter = undefined;
+          // this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arOrders = rst[4];
+          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          // Tran. type
+          this.arTranType = rst[1];
+          // Control Centers
+          this.arControlCenters = rst[3];
+          // Currencies
+          this.arCurrencies = rst[5];
+          // Doc. type
+          this.arDocTypes = rst[6];
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentRecurredMassCreateComponent ngOnInit, forkJoin, ${err}`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
       });
   }
 
@@ -216,6 +217,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     } else {
       return true;
     }
+  }
+  public getConfirmDocumentTitle(idx: number): string {
+    return translate('Finance.Document') + ' #' + (idx + 1);
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find(acnt => {

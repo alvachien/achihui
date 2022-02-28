@@ -194,7 +194,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       }));
 
       // Mass create
-      massCreateNormalDocumentSpy.and.returnValue(of({
+      massCreateNormalDocumentSpy.and.returnValue(asyncData({
         PostedDocuments: [{
           Id: 1,
           TranDateFormatString: '2020-01-01'
@@ -366,12 +366,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
+      //flush();
       tick();
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('Step 0: search page without input', fakeAsync(() => {
