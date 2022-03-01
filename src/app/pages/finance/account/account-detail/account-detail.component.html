@@ -94,7 +94,7 @@
       </nz-form-item>
     </form>
   
-    <form nz-form [formGroup]="extraADPFormGroup" *ngIf="isADPAccount">
+    <form nz-form #extraADP [formGroup]="extraADPFormGroup" *ngIf="isADPAccount">
       <hih-finance-account-extra-downpayment formControlName="extADPControl"
         [tranAmount]="tranAmount"
         [tranType]="tranType"
@@ -102,12 +102,12 @@
       </hih-finance-account-extra-downpayment>
     </form>
 
-    <form nz-form [formGroup]="extraAssetFormGroup" *ngIf="isAssetAccount">
+    <form nz-form #extraAsset [formGroup]="extraAssetFormGroup" *ngIf="isAssetAccount">
       <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">        
       </hih-finance-account-extra-asset>
     </form>
 
-    <form nz-form [formGroup]="extraLoanFormGroup" *ngIf="isLoanAccount">
+    <form nz-form #extraLoan [formGroup]="extraLoanFormGroup" *ngIf="isLoanAccount">
       <hih-finance-account-extra-loan formControlName="extLoanControl"
         [tranAmount]="tranAmount"
         [controlCenterID]="controlCenterID"

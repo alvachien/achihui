@@ -17,6 +17,9 @@ import { Account, getUIModeString, financeAccountCategoryAsset,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
+import { AccountExtraLoanComponent } from '../account-extra-loan';
+import { AccountExtraAssetComponent } from '../account-extra-asset';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -47,6 +50,13 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public arUIAccount: UIAccountForSelection[] = [];
   public arTranTypes: TranType[] = [];
   public tranType?: number;
+
+  @ViewChild('extraADP', { static: false })
+  compExtraADP?: AccountExtraDownpaymentComponent;
+  @ViewChild('extraLoan', { static: false })
+  compExtraLoan?: AccountExtraLoanComponent;
+  @ViewChild('extraAsset', { static: false })
+  compExtraAsset?: AccountExtraAssetComponent;
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -85,9 +95,9 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     private odataService: FinanceOdataService,
     private activateRoute: ActivatedRoute,
     private homeSevice: HomeDefOdataService,
-    private uiStatusService: UIStatusService,
     private modalService: NzModalService,
-    private router: Router) {
+    private router: Router,
+    private changeDetectRef: ChangeDetectorRef) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
@@ -117,7 +127,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`,
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
@@ -150,32 +160,35 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
             this.odataService.readAccount(this.routerID)
           ])
           .pipe(takeUntil(this._destroyed$!))
-          .subscribe((rst: any[]) => {
-            this.arAccountCategories = rst[0];
-            this.arAssetCategories = rst[1];
-            this.arTranTypes = rst[2];
-            this._displayAccountContent(rst[3]);
-            this.headerFormGroup.markAsPristine();
-            this.extraADPFormGroup.markAsPristine();
-            this.extraAssetFormGroup.markAsPristine();
-            this.extraLoanFormGroup.markAsPristine();
+          .subscribe({
+            next: (rst: any[]) => {
+              this.arAccountCategories = rst[0];
+              this.arAssetCategories = rst[1];
+              this.arTranTypes = rst[2];
+              this._displayAccountContent(rst[3]);
+              this.headerFormGroup.markAsPristine();
+              this.extraADPFormGroup.markAsPristine();
+              this.extraAssetFormGroup.markAsPristine();
+              this.extraLoanFormGroup.markAsPristine();
+  
+              if (this.uiMode === UIMode.Display) {
+                this.headerFormGroup.disable();
+                this.extraADPFormGroup.disable();
+                this.extraAssetFormGroup.disable();
+                this.extraLoanFormGroup.disable();
+              }  
+            },
+            error: err => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
+                ConsoleLogTypeEnum.error);
 
-            if (this.uiMode === UIMode.Display) {
-              this.headerFormGroup.disable();
-              this.extraADPFormGroup.disable();
-              this.extraAssetFormGroup.disable();
-              this.extraLoanFormGroup.disable();
+              this.uiMode = UIMode.Invalid;
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
             }
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`,
-              ConsoleLogTypeEnum.error);
-
-            this.uiMode = UIMode.Invalid;
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: error,
-              nzClosable: true,
-            });
           });
           break;
         }
@@ -184,18 +197,21 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         default: {
           this.odataService.fetchAllAccountCategories()
             .pipe(takeUntil(this._destroyed$!))
-            .subscribe((rst: any) => {
-            this.arAccountCategories = rst;
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`,
-              ConsoleLogTypeEnum.error);
-
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: error,
-              nzClosable: true,
+            .subscribe({
+              next: rst => {
+                this.arAccountCategories = rst;
+              },
+              error: err => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
+                ConsoleLogTypeEnum.error);
+  
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err,
+                  nzClosable: true,
+                });  
+              }
             });
-          });
           break;
         }
       }

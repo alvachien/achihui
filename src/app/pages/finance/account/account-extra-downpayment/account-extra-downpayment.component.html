@@ -1,4 +1,4 @@
-<ng-container *transloco="let t">
+<ng-container>
   <div [formGroup]="adpInfoFormGroup">
     <!-- Start date -->
     <nz-form-item>
@@ -31,7 +31,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
         <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="t(rt.i18nterm)"></nz-option>
+          <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco"></nz-option>
         </nz-select>
         <ng-template #frqTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
