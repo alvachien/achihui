@@ -269,7 +269,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     this.listOfLoanTmpDoc = [];
     this.selectedLoanTmpDoc = [];
-    this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend, docid, acntid, ccid, orderid)
+    this.odataService.fetchAllLoanTmpDocs({ TransactionDateBegin: dtbgn, TransactionDateEnd: dtend, DocumentID: docid, AccountID: acntid, 
+      ControlCenterID: ccid, OrderID: orderid })
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (tdocs: TemplateDocLoan[]) => {

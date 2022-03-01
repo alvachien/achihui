@@ -13,7 +13,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
-  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, 
+  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter, FinanceTmpLoanDocFilter, 
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -1455,18 +1455,32 @@ export class FinanceOdataService {
   /**
    * Get ADP tmp docs: for document item overview page
    */
-  public fetchAllDPTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment): Observable<TemplateDocADP[]> {
+  public fetchAllDPTmpDocs(filter: FinanceTmpDPDocFilter): Observable<TemplateDocADP[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const hid = this.homeService.ChosedHome!.ID;
-    const dtbgnfmt = dtbgn.format(momentDateFormat);
-    const dtendfmt = dtend.format(momentDateFormat);
+    const filterstrs: string[] = [];
+    filterstrs.push(`HomeID eq ${hid}`);
+    if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
+      const dtbgnfmt = filter.TransactionDateBegin.format(momentDateFormat);
+      const dtendfmt = filter.TransactionDateEnd.format(momentDateFormat);
+      filterstrs.push(`TransactionDate ge ${dtbgnfmt}`);
+      filterstrs.push(`TransactionDate le ${dtendfmt}`);
+    }
+    if (filter.IsPosted !== undefined) {
+      filterstrs.push(filter.IsPosted ? 'ReferenceDocumentID ne null' : 'ReferenceDocumentID eq null');
+    }
+    if (filter.AccountID) {
+      filterstrs.push(`AccountID eq ${filter.AccountID}`);
+    }
+    
     const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments';
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`);
+    
+    params = params.append('$filter', filterstrs.join(' and '));
 
     return this.http.get(apiurl, {
       headers,
@@ -1501,32 +1515,40 @@ export class FinanceOdataService {
   /**
    * Get Loan tmp docs: for document item overview page
    */
-  public fetchAllLoanTmpDocs(dtbgn: moment.Moment, dtend: moment.Moment,
-                             docid?: number, accountid?: number, ccid?: number, orderid?: number): Observable<TemplateDocLoan[]> {
+  public fetchAllLoanTmpDocs(filter: FinanceTmpLoanDocFilter): Observable<TemplateDocLoan[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const hid = this.homeService.ChosedHome!.ID;
-    const dtbgnfmt = dtbgn.format(momentDateFormat);
-    const dtendfmt = dtend.format(momentDateFormat);
+    const filterstrs: string[] = [];
+    filterstrs.push(`HomeID eq ${hid}`);
+    if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
+      const dtbgnfmt = filter.TransactionDateBegin.format(momentDateFormat);
+      const dtendfmt = filter.TransactionDateEnd.format(momentDateFormat);
+      filterstrs.push(`TransactionDate ge ${dtbgnfmt}`);
+      filterstrs.push(`TransactionDate le ${dtendfmt}`);
+    }
+    if (filter.IsPosted !== undefined) {
+      filterstrs.push(filter.IsPosted ? 'ReferenceDocumentID ne null' : 'ReferenceDocumentID eq null');
+    }
+    if (filter.AccountID) {
+      filterstrs.push(`AccountID eq ${filter.AccountID}`);
+    }
+    if (filter.DocumentID) {
+      filterstrs.push(`DocumentID eq ${filter.DocumentID}`);
+    }
+    if (filter.ControlCenterID) {
+      filterstrs.push(`ControlCenterID eq ${filter.ControlCenterID}`);
+    }
+    if (filter.OrderID) {
+      filterstrs.push(`ControlCenterID eq ${filter.OrderID}`);
+    }
+
     const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
     let params: HttpParams = new HttpParams();
-    let filterstring = `HomeID eq ${hid} and TransactionDate ge ${dtbgnfmt} and TransactionDate le ${dtendfmt} and ReferenceDocumentID eq null`;
-    if (docid) {
-      filterstring = filterstring + ` and DocumentID eq ${docid}`;
-    }
-    if (accountid) {
-      filterstring = filterstring + ` and AccountID eq ${accountid}`;
-    }
-    if (ccid) {
-      filterstring = filterstring + ` and ControlCenterID eq ${ccid}`;
-    }
-    if (orderid) {
-      filterstring = filterstring + ` and OrderID eq ${orderid}`;
-    }
-    params = params.append('$filter', filterstring);
+    params = params.append('$filter', filterstrs.join(' and '));
 
     return this.http.get(apiurl, {
         headers,

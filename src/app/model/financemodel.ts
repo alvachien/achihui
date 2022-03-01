@@ -2476,8 +2476,8 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     if (data && data.TransactionType) {
       this.TranType = +data.TransactionType;
     }
-    if (data && data.TransactionAmount) {
-      this.TranAmount = +data.TransactionAmount;
+    if (data && data.TranAmount) {
+      this.TranAmount = +data.TranAmount;
     }
     if (data && data.ControlCenterID) {
       this.ControlCenterId = +data.ControlCenterID;
@@ -3409,4 +3409,25 @@ export class FinanceOverviewKeyfigure {
       this.CurrentMonthOutgoPrecentage = val.CurrentMonthOutgoPrecentage;
     }
   }
+}
+
+// Filter for Tmp Doc.
+export interface FinanceTmpDPDocFilter {
+  TransactionDateBegin?: moment.Moment;
+  TransactionDateEnd?: moment.Moment;
+  ReferenceDocumentID?: number;
+  IsPosted?: boolean;
+  AccountID?: number;
+}
+
+// Filter for Loan Doc.
+export interface FinanceTmpLoanDocFilter {
+  TransactionDateBegin?: moment.Moment;
+  TransactionDateEnd?: moment.Moment;
+  ReferenceDocumentID?: number;
+  IsPosted?: boolean;
+  AccountID?: number;
+  DocumentID?: number;
+  ControlCenterID?: number;
+  OrderID?: number;
 }

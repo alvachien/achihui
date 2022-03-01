@@ -266,42 +266,45 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
     this.odataService.calcLoanTmpDocs(di)
       .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x: any) => {
-      let rstidx: number = arKeepItems.length;
-      for (const rst of x) {
-        ++rstidx;
-        const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
-        tmpdoc.HID = this.homeService.ChosedHome!.ID;
-        tmpdoc.InterestAmount = rst.InterestAmount;
-        tmpdoc.TranAmount = rst.TranAmount;
-        tmpdoc.TranDate = rst.TranDate;
-        // tmpdoc.TranType = this.detailObject.SourceTranType;
-        if (this.controlCenterID) {
-          tmpdoc.ControlCenterId = this.controlCenterID;
+      .subscribe({
+        next: x => {
+          let rstidx: number = arKeepItems.length;
+          for (const rst of x) {
+            ++rstidx;
+            const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+            tmpdoc.HID = this.homeService.ChosedHome!.ID;
+            tmpdoc.InterestAmount = rst.InterestAmount;
+            tmpdoc.TranAmount = rst.TranAmount;
+            tmpdoc.TranDate = rst.TranDate;
+            // tmpdoc.TranType = this.detailObject.SourceTranType;
+            if (this.controlCenterID) {
+              tmpdoc.ControlCenterId = this.controlCenterID;
+            }
+            if (this.orderID) {
+              tmpdoc.OrderId = this.orderID;
+            }
+            tmpdoc.Desp = val.Comment + ' | ' + rstidx.toString()
+              + ' / ' + x.length.toString();
+    
+            // tmpdoc.DocId = ++topDocID; // Generate document ID
+            arKeepItems.push(tmpdoc);
+          }
+    
+          this.listTmpDocs = arKeepItems;
+    
+          this.onChange();    
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtraLoanComponent onGenerateTmpDocs, failed with: ${err}`,
+            ConsoleLogTypeEnum.error);
+    
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });  
         }
-        if (this.orderID) {
-          tmpdoc.OrderId = this.orderID;
-        }
-        tmpdoc.Desp = val.Comment + ' | ' + rstidx.toString()
-          + ' / ' + x.length.toString();
-
-        // tmpdoc.DocId = ++topDocID; // Generate document ID
-        arKeepItems.push(tmpdoc);
-      }
-
-      this.listTmpDocs = arKeepItems;
-
-      this.onChange();
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtraLoanComponent onGenerateTmpDocs, failed with: ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.error({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
       });
-    });
   }
 
   writeValue(val: AccountExtraLoan): void {

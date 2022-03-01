@@ -2321,14 +2321,10 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return doc for success case', () => {
-      service.fetchAllDPTmpDocs(moment(), moment().add(1, 'w')).subscribe(
-        (data: any) => {
-          expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
-        },
-      );
+      service.fetchAllDPTmpDocs({ TransactionDateBegin: moment(), TransactionDateEnd: moment().add(1, 'w')}).subscribe({
+        next: data => { expect(data).toBeTruthy(); },
+        error: err => {}
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -2370,14 +2366,10 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllDPTmpDocs(moment(), moment().add(1, 'w')).subscribe(
-        (data: any) => {
-          fail('expected to fail');
-        },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
+      service.fetchAllDPTmpDocs({ TransactionDateBegin: moment(), TransactionDateEnd: moment().add(1, 'w')}).subscribe({
+        next: data => { fail('expected to fail'); },
+        error: err => { expect(err).toContain(msg); }
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl;
@@ -2401,14 +2393,10 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return doc for success case', () => {
-      service.fetchAllLoanTmpDocs(moment(), moment().add(1, 'w')).subscribe(
-        (data: any) => {
-          expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
-        },
-      );
+      service.fetchAllLoanTmpDocs({ TransactionDateBegin: moment(), TransactionDateEnd: moment().add(1, 'w')}).subscribe({
+        next: data => { expect(data).toBeTruthy(); },
+        error: err => { }
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -2423,14 +2411,10 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllLoanTmpDocs(moment(), moment().add(1, 'w')).subscribe(
-        (data: any) => {
-          fail('expected to fail');
-        },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
+      service.fetchAllLoanTmpDocs({ TransactionDateBegin: moment(), TransactionDateEnd: moment().add(1, 'w')}).subscribe({
+        next: data => { fail('expected to fail'); },
+        error: err => { expect(err).toContain(msg); }
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl;

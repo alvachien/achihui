@@ -130,8 +130,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = true;
     forkJoin([
-      this.odataService.fetchAllDPTmpDocs(dtbgn, dtend),
-      this.odataService.fetchAllLoanTmpDocs(dtbgn, dtend),
+      this.odataService.fetchAllDPTmpDocs({ TransactionDateBegin: dtbgn, TransactionDateEnd: dtend, IsPosted: false }),
+      this.odataService.fetchAllLoanTmpDocs({ TransactionDateBegin: dtbgn, TransactionDateEnd: dtend, IsPosted: false }),
       this.odataService.fetchOverviewKeyfigure(this.excludeTransfer, forceReload),
     ]).pipe(
       takeUntil(this._destroyed$!),

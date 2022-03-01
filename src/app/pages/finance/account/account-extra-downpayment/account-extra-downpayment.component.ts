@@ -161,36 +161,39 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     this.odataService.calcADPTmpDocs(datInput)
       .pipe(takeUntil(this._destroyed$!))
-      .subscribe((rsts: RepeatedDatesWithAmountAPIOutput[]) => {
-      if (rsts && rsts instanceof Array && rsts.length > 0) {
-        const tmpDocs: TemplateDocADP[] = [];
-
-        rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
-          const item: TemplateDocADP = new TemplateDocADP();
-          item.HID = this.homeService.ChosedHome!.ID;
-          item.DocId = idx + 1;
-          item.TranType = this.tranType!;
-          item.TranDate = rst.TranDate;
-          item.TranAmount = rst.TranAmount;
-          item.Desp = rst.Desp;
-          tmpDocs.push(item);
-        });
-
-        this.listTmpDocs = tmpDocs.slice();
-
-        // Trigger the change.
-        this.onChange();
-      }
-    }, (error: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`,
-        ConsoleLogTypeEnum.error);
-
-      this.modalService.error({
-        nzTitle: translate('Common.Error'),
-        nzContent: error,
-        nzClosable: true,
+      .subscribe({
+        next: (rsts: RepeatedDatesWithAmountAPIOutput[]) => {
+          if (rsts && rsts instanceof Array && rsts.length > 0) {
+            const tmpDocs: TemplateDocADP[] = [];
+    
+            rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
+              const item: TemplateDocADP = new TemplateDocADP();
+              item.HID = this.homeService.ChosedHome!.ID;
+              item.DocId = idx + 1;
+              item.TranType = this.tranType!;
+              item.TranDate = rst.TranDate;
+              item.TranAmount = rst.TranAmount;
+              item.Desp = rst.Desp;
+              tmpDocs.push(item);
+            });
+    
+            this.listTmpDocs = tmpDocs.slice();
+    
+            // Trigger the change.
+            this.onChange();
+          }
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
       });
-    });
   }
 
   // public onReset(): void {
