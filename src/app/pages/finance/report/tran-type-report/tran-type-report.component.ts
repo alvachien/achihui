@@ -228,6 +228,62 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
+    if(this.groupLevel === '2') {
+      this.arTranType.forEach(tt => {
+        if (tt.ParId === trantype) {
+          // Ensure it appears in report data
+          let rptidx = this.arReportData.findIndex(rp => rp.TransactionType === tt.Id);
+          if (rptidx !== -1) {
+            fltrs.push({
+              fieldName: 'TransactionType',
+              operator: GeneralFilterOperatorEnum.Equal,
+              lowValue: tt.Id,
+              highValue: 0,
+              valueType: GeneralFilterValueType.number,
+            });  
+          }
+        }
+      });
+    } else if(this.groupLevel === '1') {
+      // Level 2
+      let tts: number[] = [];
+      this.arTranType.forEach(tt => {
+        if (tt.ParId === trantype) {
+          tts.push(tt.Id!);
+          // Ensure it appears in report data
+          let rptidx = this.arReportData.findIndex(rp => rp.TransactionType === tt.Id);
+          if (rptidx !== -1) {
+            fltrs.push({
+              fieldName: 'TransactionType',
+              operator: GeneralFilterOperatorEnum.Equal,
+              lowValue: tt.Id,
+              highValue: 0,
+              valueType: GeneralFilterValueType.number,
+            });  
+          }
+        }
+      });
+
+      // Level 3
+      this.arTranType.forEach(tt => {
+        if (tt.ParId) {
+          let level2idx = tts.findIndex(val => tt.ParId === val);
+          if (level2idx !== -1) {
+            let rptidx = this.arReportData.findIndex(rp => rp.TransactionType === tt.Id);
+            if (rptidx !== -1) {
+              fltrs.push({
+                fieldName: 'TransactionType',
+                operator: GeneralFilterOperatorEnum.Equal,
+                lowValue: tt.Id,
+                highValue: 0,
+                valueType: GeneralFilterValueType.number,
+              });  
+            }
+          }
+        }
+      });
+    }
+
     if (this.selectedScope === '1') { // Last year
       fltrs.push({
         fieldName: 'TransactionDate',
@@ -261,9 +317,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         valueType: GeneralFilterValueType.date,
       });
     }
-    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
-      filterDocItem: GeneralFilterItem[],
-    }, string>({
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {filterDocItem: GeneralFilterItem[],}, string>({
       nzTitle: translate('Finance.Items'),
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
