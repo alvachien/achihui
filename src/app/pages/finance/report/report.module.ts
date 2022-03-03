@@ -12,6 +12,7 @@ import { AccountReportComponent } from './account-report';
 import { TranTypeReportComponent } from './tran-type-report';
 import { ReportComponent } from './report.component';
 import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
+import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DocumentItemViewModule } from '../document-item-view/document-item-view
     AccountReportComponent,
     ReportComponent,
     TranTypeReportComponent,
+    TranTypeMonthOnMonthReportComponent,
   ],
   imports: [
     CommonModule,
