@@ -13,6 +13,7 @@ import { TranTypeReportComponent } from './tran-type-report';
 import { ReportComponent } from './report.component';
 import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report';
+import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-
     DocumentItemViewModule,
     NzListModule,
     NzProgressModule,
+    NzCascaderModule,
   ]
 })
 export class ReportModule { }

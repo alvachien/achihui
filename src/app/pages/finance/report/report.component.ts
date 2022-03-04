@@ -189,6 +189,9 @@ export class ReportComponent implements OnInit, OnDestroy {
   onDrillDownToAccount(): void {
     this.router.navigate(['/finance/report/account']);
   }
+  onDrillDownToTranTypeMoM(): void {
+    this.router.navigate(['finance', 'report', 'trantypemom']);
+  }
   onDrillDownToControlCenter(): void {
     this.router.navigate(['/finance/report/controlcenter']);
   }

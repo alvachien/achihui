@@ -604,7 +604,9 @@
     "ChangeAccountName": "修改账户名称",
     "ChangeName": "修改名称",
     "ChangeDate": "修改日期",
-    "ChangeDesp": "修改描述"
+    "ChangeDesp": "修改描述",
+    "TranTypeMonthOnMonth": "交易类型月度环比",
+    "DetailReport": "详细报表"
   },
   "Library": {
     "BookCategories": "图书种类",

@@ -604,7 +604,9 @@
     "ChangeAccountName": "Change Account Name",
     "ChangeName": "ChangeName",
     "ChangeDate": "Change Date",
-    "ChangeDesp": "Change Description"
+    "ChangeDesp": "Change Description",
+    "TranTypeMonthOnMonth": "Transaction Type Month on Month",
+    "DetailReport": "Detail Report"
   },
   "Library": {
     "BookCategories": "Book Categories",

@@ -5,10 +5,20 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
   <nz-page-header-extra>
-    <button nz-button nzType="default" (click)="onDrillDownToTranType()">{{'Finance.TransactionTypes' | transloco}}</button>
-    <button nz-button nzType="default" (click)="onDrillDownToAccount()">{{'Finance.Accounts' | transloco}}</button>
-    <button nz-button nzType="default" (click)="onDrillDownToControlCenter()">{{'Finance.ControlCenters' | transloco}}</button>
-    <button nz-button nzType="default" (click)="onDrillDownToOrder()">{{'Finance.Activity' | transloco}}</button>
+    <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
+      {{'Finance.DetailReport' | transloco}}
+      <i nz-icon nzType="down"></i>
+    </button>
+    <nz-dropdown-menu #detailReports="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="onDrillDownToTranType()">{{'Finance.TransactionTypes' | transloco}}</li>
+        <li nz-menu-item (click)="onDrillDownToTranTypeMoM()">{{'Finance.TranTypeMonthOnMonth' | transloco}}</li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="onDrillDownToAccount()">{{'Finance.Accounts' | transloco}}</li>
+        <li nz-menu-item (click)="onDrillDownToControlCenter()">{{'Finance.ControlCenters' | transloco}}</li>
+        <li nz-menu-item (click)="onDrillDownToOrder()">{{'Finance.Activity' | transloco}}</li>
+      </ul>
+    </nz-dropdown-menu>
   </nz-page-header-extra>
 </nz-page-header>
 
