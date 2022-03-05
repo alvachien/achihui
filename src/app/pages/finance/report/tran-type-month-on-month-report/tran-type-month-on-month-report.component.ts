@@ -1,65 +1,82 @@
 import { Component, OnInit } from '@angular/core';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import { lastValueFrom } from 'rxjs';
+
+import { FinanceOdataService } from 'src/app/services';
+import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+  momentDateFormat, TranType, FinanceReportEntryByTransactionType, } from '../../../../model';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
   templateUrl: './tran-type-month-on-month-report.component.html',
-  styleUrls: ['./tran-type-month-on-month-report.component.less']
+  styleUrls: ['./tran-type-month-on-month-report.component.less'],
 })
-export class TranTypeMonthOnMonthReportComponent {
+export class TranTypeMonthOnMonthReportComponent implements OnInit {
 
-  constructor() { }
+  constructor(private oDataService: FinanceOdataService) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+  }
   
-  options: NzCascaderOption[] = [
-    {
-      value: 'zhejiang',
-      label: 'Zhejiang',
-      children: [
-        {
-          value: 'hangzhou',
-          label: 'Hangzhou',
-          children: [
-            {
-              value: 'xihu',
-              label: 'West Lake',
-              isLeaf: true
-            }
-          ]
-        },
-        {
-          value: 'ningbo',
-          label: 'Ningbo',
-          isLeaf: true
-        }
-      ]
-    },
-    {
-      value: 'jiangsu',
-      label: 'Jiangsu',
-      children: [
-        {
-          value: 'nanjing',
-          label: 'Nanjing',
-          children: [
-            {
-              value: 'zhonghuamen',
-              label: 'Zhong Hua Men',
-              isLeaf: true
-            }
-          ]
-        }
-      ]
-    }
-  ];;
+  listTranType: TranType[] = [];
+  values: number[] | null = null;
 
-  values: string[] | null = null;
-  text = 'Unselect';
+  ngOnInit(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent ngOnInit...',
+      ConsoleLogTypeEnum.debug);
+
+      this.oDataService.fetchAllTranTypes().subscribe({
+        next: (val: TranType[]) => {
+          this.listTranType = val.slice();
+        },
+        error: err => {
+          // Error
+        }
+      });
+  }
+
+  loadData(node: NzCascaderOption, index: number): PromiseLike<void> {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent loadData...',
+      ConsoleLogTypeEnum.debug);
+    let that = this;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        node.children = [];
+        if (index < 0) {
+          // if index less than 0 it is root node
+          that.listTranType.forEach(tt => {
+            if (tt.ParId === undefined) {
+              node.children?.push({
+                value: tt.Id,
+                label: tt.Name,
+              });
+            }
+          });
+        } else {
+          that.listTranType.forEach(tt => {
+            if (tt.ParId === node.value) {
+              node.children?.push({
+                value: tt.Id,
+                label: tt.Name,
+              });
+            }
+          });
+        }
+        resolve();
+      }, 1000);
+    });    
+  }
+
+  onLoadData(node: NzCascaderOption, index: number, resolve: (value: void | PromiseLike<void>) => void) {
+  }
 
   onChanges(values: string[]): void {
     console.log(values, this.values);
   }
 
-  onSelectionChange(selectedOptions: NzCascaderOption[]): void {
-    this.text = selectedOptions.map(o => o.label).join(', ');
-  }
+  // handleAreaClick(e: Event, label: string, option: NzCascaderOption): void {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   console.log('clicked "', label, '"', option);
+  // }
 }

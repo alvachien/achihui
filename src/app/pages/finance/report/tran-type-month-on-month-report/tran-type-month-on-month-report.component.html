@@ -6,15 +6,10 @@
     </nz-breadcrumb>
     <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Finance.TranTypeMonthOnMonth' | transloco}}</nz-page-header-subtitle>
-    <nz-page-header-extra>
-      <nz-cascader
-        [nzShowInput]="false"
-        [nzOptions]="options"
-      [(ngModel)]="values"
-      (ngModelChange)="onChanges($event)"
-      (nzSelectionChange)="onSelectionChange($event)"
-    >
-      <a href="javascript: void(0)">Change city</a>
-    </nz-cascader>      
+    <nz-page-header-extra>      
     </nz-page-header-extra>
 </nz-page-header>
+<!-- Header -->
+
+<nz-cascader style="width: 100%;" [(ngModel)]="values" [nzLoadData]="loadData" (ngModelChange)="onChanges($event)"></nz-cascader>
+
