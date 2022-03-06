@@ -18,16 +18,62 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       ConsoleLogTypeEnum.debug);
   }
   
-  listTranType: TranType[] = [];
-  values: number[] | null = null;
-
+  availableTranTypes: NzCascaderOption[] = [];
+  selectedTranTypes: number[] | null = null;
+  selectedPeriod = '3';
+  get isGoButtonDisabled(): boolean {
+    if (this.selectedTranTypes === null) {
+      return true;
+    }
+    if (this.selectedTranTypes.length === 0) {
+      return true;
+    }
+    
+    return false;
+  }
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
       this.oDataService.fetchAllTranTypes().subscribe({
         next: (val: TranType[]) => {
-          this.listTranType = val.slice();
+          this.availableTranTypes = [];
+          val.forEach(tt => {
+            if (!tt.ParId) {
+              // Root
+              this.availableTranTypes.push({
+                value: tt.Id,
+                label: tt.Name,
+                children: []
+              });
+            }
+          });
+
+          this.availableTranTypes.forEach(root => {
+            val.forEach(tt => {
+              if (tt.ParId === root.value) {
+                let level2node: NzCascaderOption = {
+                  value: tt.Id,
+                  label: tt.Name,
+                  children: [],
+                  isLeaf: false
+                };
+                val.forEach(tt2 => {
+                  if (tt2.ParId === tt.Id) {
+                    level2node.children?.push({
+                      value: tt2.Id,
+                      label: tt2.Name,
+                      isLeaf: true,
+                    });
+                  }
+                });
+                if (level2node.children?.length === 0) {
+                  level2node.isLeaf = true;
+                }
+                root.children?.push(level2node);
+              }
+            });
+          });
         },
         error: err => {
           // Error
@@ -35,43 +81,12 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       });
   }
 
-  loadData(node: NzCascaderOption, index: number): PromiseLike<void> {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent loadData...',
-      ConsoleLogTypeEnum.debug);
-    let that = this;
-    return new Promise(resolve => {
-      setTimeout(() => {
-        node.children = [];
-        if (index < 0) {
-          // if index less than 0 it is root node
-          that.listTranType.forEach(tt => {
-            if (tt.ParId === undefined) {
-              node.children?.push({
-                value: tt.Id,
-                label: tt.Name,
-              });
-            }
-          });
-        } else {
-          that.listTranType.forEach(tt => {
-            if (tt.ParId === node.value) {
-              node.children?.push({
-                value: tt.Id,
-                label: tt.Name,
-              });
-            }
-          });
-        }
-        resolve();
-      }, 1000);
-    });    
+  onChanges(event: any): void {
+    console.log(this.selectedTranTypes, this.selectedPeriod);
   }
 
-  onLoadData(node: NzCascaderOption, index: number, resolve: (value: void | PromiseLike<void>) => void) {
-  }
+  refreshData(): void {
 
-  onChanges(values: string[]): void {
-    console.log(values, this.values);
   }
 
   // handleAreaClick(e: Event, label: string, option: NzCascaderOption): void {

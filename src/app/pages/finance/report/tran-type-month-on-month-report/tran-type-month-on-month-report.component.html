@@ -9,7 +9,23 @@
     <nz-page-header-extra>      
     </nz-page-header-extra>
 </nz-page-header>
-<!-- Header -->
 
-<nz-cascader style="width: 100%;" [(ngModel)]="values" [nzLoadData]="loadData" (ngModelChange)="onChanges($event)"></nz-cascader>
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <nz-cascader style="width: 100%;" nzChangeOnSelect [nzShowSearch]="true"
+      [(ngModel)]="selectedTranTypes" [nzOptions]="availableTranTypes" (ngModelChange)="onChanges($event)">
+    </nz-cascader>      
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+    <nz-radio-group [(ngModel)]="selectedPeriod" (ngModelChange)="onChanges($event)">
+      <label nz-radio-button nzValue="1">Past Year</label>
+      <label nz-radio-button nzValue="2">Last 6M</label>
+      <label nz-radio-button nzValue="3">Last 3M</label>
+    </nz-radio-group>
+  </div>
+  <div nz-col nzXs="12" nzSm="12" nzMd="8" nzLg="4" nzXl="4">
+    <button nz-button nzType="primary" (click)="refreshData()" [disabled]="isGoButtonDisabled">Go</button>
+  </div>
+</div>
+
 
