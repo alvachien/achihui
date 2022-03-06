@@ -31,6 +31,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
     
     return false;
   }
+
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
@@ -86,6 +87,19 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   }
 
   refreshData(): void {
+    if (this.selectedTranTypes === null || this.selectedTranTypes?.length <= 0) {
+      return;
+    }
+
+    let trantype = this.selectedTranTypes[this.selectedTranTypes.length - 1];    
+    this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod).subscribe({
+      next: val => {
+        // Fetch out data
+      },
+      error: err => {
+
+      }
+    });
 
   }
 

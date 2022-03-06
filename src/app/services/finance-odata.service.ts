@@ -13,7 +13,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   FinanceAssetSoldoutDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentItem, DocumentItemView,
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
-  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter, FinanceTmpLoanDocFilter, 
+  getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter, FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, 
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -2089,7 +2089,7 @@ export class FinanceOdataService {
       headers
     })
       .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchMontlyReportByTransactionType succeed',
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByTransactionType succeed',
           ConsoleLogTypeEnum.debug);
 
         const rjs: any = response;
@@ -2105,7 +2105,54 @@ export class FinanceOdataService {
         return result;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchMontlyReportByTransactionType failed ${error}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionType failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /** Get monthly report by transaction type, Month on Month
+   * @param trantype Transaction type
+   * @param period Period: '1' - Last 12 month, '2' - Last 6 month, '3' - Last 3 month
+   * @param child Optional: Include children transaction type
+   */
+   public fetchReportByTransactionTypeMoM(trantype: number, period: string, child?: boolean): Observable<FinanceReportEntryByTransactionTypeMoM[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: any = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      TransactionType: trantype,
+      Period: period,
+    };
+    if (child) {
+      jdata.IncludeChildren = child;
+    }
+
+    return this.http.post(`${this.reportAPIUrl}/GetReportByTranTypeMOM`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByTransactionTypeMoM succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        const result: FinanceReportEntryByTransactionTypeMoM[] = [];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportEntryByTransactionTypeMoM = new FinanceReportEntryByTransactionTypeMoM();
+            rst.onSetData(si);
+            result.push(rst);
+          }
+        }
+
+        return result;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionTypeMoM failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

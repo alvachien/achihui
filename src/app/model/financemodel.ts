@@ -3334,6 +3334,18 @@ export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
   }
 }
 
+export class FinanceReportEntryByTransactionTypeMoM extends FinanceReportEntryByTransactionType {
+  public Month: number = 0;
+
+  public override onSetData(val: any) {
+    super.onSetData(val);
+
+    if (val && val.Month) {
+      this.Month = val.Month;
+    }
+  }
+}
+
 export class FinanceReportMostExpenseEntry {
   public Amount: number = 0;
   public TransactionType: number = 0;
