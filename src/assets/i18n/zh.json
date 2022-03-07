@@ -211,7 +211,10 @@
     "FilterIsMust": "过滤条件是必须的",
     "AdvancedOperations": "高级操作",
     "OnlyValidOnes": "仅有效项",
-    "Loading": "装载中"
+    "Loading": "装载中",
+    "Latest12Months": "最近12个月",
+    "Latest6Months": "最近6个月",
+    "Latest3Months": "最近3个月"
   },
   "Sys": {
     "Currency": {

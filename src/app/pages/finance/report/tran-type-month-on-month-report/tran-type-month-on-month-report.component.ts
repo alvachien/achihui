@@ -25,6 +25,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   
   availableTranTypes: NzCascaderOption[] = [];
   selectedTranTypes: number[] | null = null;
+  arTranType: TranType[] = [];
   selectedPeriod = '3';
   chartOption: EChartsOption | null = null;
 
@@ -45,7 +46,9 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
 
       this.oDataService.fetchAllTranTypes().subscribe({
         next: (val: TranType[]) => {
+          this.arTranType = val.slice();
           this.availableTranTypes = [];
+
           val.forEach(tt => {
             if (!tt.ParId) {
               // Root
@@ -108,72 +111,109 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
     }
 
     let trantype = this.selectedTranTypes[this.selectedTranTypes.length - 1];
-    let arTranType: string[] = ['In', 'Out', 'Balance'];
+    let isexpense = this.arTranType.find(p => p.Id === trantype)?.Expense;
     this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod, true).subscribe({
       next: (val: FinanceReportEntryByTransactionTypeMoM[]) => {        
         // Fetch out data
-        let arIn: any[] = [];
-        let arOut: any[] = [];
-        let arBal: any[] = [];
         const arAxis: string[] = [];
-        const arTranType: string[] = [];
+        const arTranTypeNames: string[] = [];
         val.forEach(valitem => {
-          if (arTranType.indexOf(valitem.TransactionTypeName) !== -1) {
-            arTranType.push(valitem.TransactionTypeName);
+          if (arTranTypeNames.indexOf(valitem.TransactionTypeName) === -1) {
+            arTranTypeNames.push(valitem.TransactionTypeName);
           }
         });
 
+        const arSeries: any[] = [];
         if (this.selectedPeriod === '1') {
           // Last 12 months
           for(let imonth = 11; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
             arAxis.push(monthinuse.format('YYYY.MM'));
-
-            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
-            if (validx !== -1) {
-              arIn.push(val[validx].InAmount);
-              arOut.push(val[validx].OutAmount);
-              arBal.push(val[validx].InAmount + val[validx].OutAmount);
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
-            }
           }
+          
+          arTranTypeNames.forEach(ttname => {
+            const ardata: number[] = [];
+
+            for(let imonth = 11; imonth >= 0; imonth --) {
+              let monthinuse = moment().subtract(imonth, 'month');
+              let validx = val.findIndex(p => p.TransactionTypeName === ttname && p.Month === (monthinuse.month() + 1));
+              if (validx !== -1) {
+                ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
+              } else {
+                ardata.push(0);
+              }
+            }
+            
+            arSeries.push({
+              name: ttname,
+              type: 'bar',
+              stack: 'stack',
+              emphasis: {
+                focus: 'series'
+              },
+              data: ardata,
+            });
+          });
         } else if (this.selectedPeriod === '2') {
           // Last 6 months
           for(let imonth = 5; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
             arAxis.push(monthinuse.format('YYYY.MM'));
-
-            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
-            if (validx !== -1) {
-              arIn.push(val[validx].InAmount);
-              arOut.push(val[validx].OutAmount);
-              arBal.push(val[validx].InAmount + val[validx].OutAmount);
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
-            }
           }
+
+          arTranTypeNames.forEach(ttname => {
+            const ardata: number[] = [];
+
+            for(let imonth = 5; imonth >= 0; imonth --) {
+              let monthinuse = moment().subtract(imonth, 'month');
+              let validx = val.findIndex(p => p.TransactionTypeName === ttname && p.Month === (monthinuse.month() + 1));
+              if (validx !== -1) {
+                ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
+              } else {
+                ardata.push(0);
+              }
+            }
+            
+            arSeries.push({
+              name: ttname,
+              type: 'bar',
+              stack: 'stack',
+              emphasis: {
+                focus: 'series'
+              },
+              data: ardata,
+            });
+          });
         } else if (this.selectedPeriod === '3') {
           // Last 3 months
           for(let imonth = 2; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
             arAxis.push(monthinuse.format('YYYY.MM'));
-
-            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
-            if (validx !== -1) {
-              arIn.push(val[validx].InAmount);
-              arOut.push(val[validx].OutAmount);
-              arBal.push(val[validx].InAmount + val[validx].OutAmount);
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
-            }
           }
+
+          arTranTypeNames.forEach(ttname => {
+            const ardata: number[] = [];
+
+            for(let imonth = 2; imonth >= 0; imonth --) {
+              let monthinuse = moment().subtract(imonth, 'month');
+              let validx = val.findIndex(p => p.TransactionTypeName === ttname && p.Month === (monthinuse.month() + 1));
+              if (validx !== -1) {
+                ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
+              } else {
+                ardata.push(0);
+              }
+            }
+            
+            arSeries.push({
+              name: ttname,
+              type: 'bar',
+              stack: 'stack',
+              emphasis: {
+                focus: 'series'
+              },
+              data: ardata,
+            });
+          });
         }
 
         this.chartOption = {
@@ -194,7 +234,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
             }
           },
           legend: {
-            data: arTranType,
+            data: arTranTypeNames,
           },
           grid: {
             left: '3%',
@@ -214,24 +254,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           yAxis: [{
             type: 'value',
           }],
-          series: [
-            {
-              name: 'In',
-              type: 'bar',
-              data: arIn,
-            },
-            {
-              name: 'Out',
-              type: 'bar',
-              data: arOut,
-            },
-            {
-              name: 'Balance',
-              type: 'line',
-              yAxisIndex: 1,
-              data: arBal,
-            }
-          ]
+          series: arSeries,
         };
       },
       error: (err: any) => {
