@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
+import * as moment from 'moment';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { lastValueFrom } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, TranType, FinanceReportEntryByTransactionType, } from '../../../../model';
+  momentDateFormat, TranType, FinanceReportEntryByTransactionType, FinanceReportEntryByTransactionTypeMoM, } from '../../../../model';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
@@ -82,7 +83,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
             });
           });
         },
-        error: err => {
+        error: (err: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeMonthOnMonthReportComponent ngOnInit fetchAllTranTypes failed ${err}`,
             ConsoleLogTypeEnum.error);
 
@@ -106,10 +107,75 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       return;
     }
 
-    let trantype = this.selectedTranTypes[this.selectedTranTypes.length - 1];    
-    this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod).subscribe({
-      next: val => {
+    let trantype = this.selectedTranTypes[this.selectedTranTypes.length - 1];
+    let arTranType: string[] = ['In', 'Out', 'Balance'];
+    this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod, true).subscribe({
+      next: (val: FinanceReportEntryByTransactionTypeMoM[]) => {        
         // Fetch out data
+        let arIn: any[] = [];
+        let arOut: any[] = [];
+        let arBal: any[] = [];
+        const arAxis: string[] = [];
+        const arTranType: string[] = [];
+        val.forEach(valitem => {
+          if (arTranType.indexOf(valitem.TransactionTypeName) !== -1) {
+            arTranType.push(valitem.TransactionTypeName);
+          }
+        });
+
+        if (this.selectedPeriod === '1') {
+          // Last 12 months
+          for(let imonth = 11; imonth >= 0; imonth --) {
+            let monthinuse = moment().subtract(imonth, 'month');
+            arAxis.push(monthinuse.format('YYYY.MM'));
+
+            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
+            if (validx !== -1) {
+              arIn.push(val[validx].InAmount);
+              arOut.push(val[validx].OutAmount);
+              arBal.push(val[validx].InAmount + val[validx].OutAmount);
+            } else {
+              arIn.push(0);
+              arOut.push(0);
+              arBal.push(0);
+            }
+          }
+        } else if (this.selectedPeriod === '2') {
+          // Last 6 months
+          for(let imonth = 5; imonth >= 0; imonth --) {
+            let monthinuse = moment().subtract(imonth, 'month');
+            arAxis.push(monthinuse.format('YYYY.MM'));
+
+            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
+            if (validx !== -1) {
+              arIn.push(val[validx].InAmount);
+              arOut.push(val[validx].OutAmount);
+              arBal.push(val[validx].InAmount + val[validx].OutAmount);
+            } else {
+              arIn.push(0);
+              arOut.push(0);
+              arBal.push(0);
+            }
+          }
+        } else if (this.selectedPeriod === '3') {
+          // Last 3 months
+          for(let imonth = 2; imonth >= 0; imonth --) {
+            let monthinuse = moment().subtract(imonth, 'month');
+            arAxis.push(monthinuse.format('YYYY.MM'));
+
+            let validx = val.findIndex(p => p.Month === (monthinuse.month() + 1));
+            if (validx !== -1) {
+              arIn.push(val[validx].InAmount);
+              arOut.push(val[validx].OutAmount);
+              arBal.push(val[validx].InAmount + val[validx].OutAmount);
+            } else {
+              arIn.push(0);
+              arOut.push(0);
+              arBal.push(0);
+            }
+          }
+        }
+
         this.chartOption = {
           tooltip: {
             trigger: 'axis',
@@ -123,70 +189,52 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           toolbox: {
             feature: {
               dataView: { show: true, readOnly: false },
-              magicType: { show: true, type: ['line', 'bar'] },
               restore: { show: true },
               saveAsImage: { show: true }
             }
           },
           legend: {
-            data: ['Evaporation', 'Precipitation', 'Temperature']
+            data: arTranType,
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
           },
           xAxis: [
             {
               type: 'category',
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              data: arAxis,
               axisPointer: {
                 type: 'shadow'
               }
             }
           ],
-          yAxis: [
-            {
-              type: 'value',
-              name: 'Precipitation',
-              min: 0,
-              max: 250,
-              interval: 50,
-              axisLabel: {
-                formatter: '{value} ml'
-              }
-            },
-            {
-              type: 'value',
-              name: 'Temperature',
-              min: 0,
-              max: 25,
-              interval: 5,
-              axisLabel: {
-                formatter: '{value} °C'
-              }
-            }
-          ],
+          yAxis: [{
+            type: 'value',
+          }],
           series: [
             {
-              name: 'Evaporation',
+              name: 'In',
               type: 'bar',
-              data: [
-                2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
-              ]
+              data: arIn,
             },
             {
-              name: 'Precipitation',
+              name: 'Out',
               type: 'bar',
-              data: [
-                2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
-              ]
+              data: arOut,
             },
             {
-              name: 'Temperature',
+              name: 'Balance',
               type: 'line',
               yAxisIndex: 1,
-              data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+              data: arBal,
             }
           ]
         };
       },
-      error: err => {
+      error: (err: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering TranTypeMonthOnMonthReportComponent refreshData failed ${err}`,
           ConsoleLogTypeEnum.error);
 
