@@ -609,7 +609,9 @@
     "ChangeDate": "修改日期",
     "ChangeDesp": "修改描述",
     "TranTypeMonthOnMonth": "交易类型月度环比",
-    "DetailReport": "详细报表"
+    "DetailReport": "详细报表",
+    "AccountMonthOnMonth": "账户月度环比",
+    "ControlCenterMonthOnMonth": "控制中心月度环比"
   },
   "Library": {
     "BookCategories": "图书种类",

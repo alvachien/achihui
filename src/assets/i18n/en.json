@@ -609,7 +609,9 @@
     "ChangeDate": "Change Date",
     "ChangeDesp": "Change Description",
     "TranTypeMonthOnMonth": "Transaction Type Month on Month",
-    "DetailReport": "Detail Report"
+    "DetailReport": "Detail Report",
+    "AccountMonthOnMonth": "Account Month on Month",
+    "ControlCenterMonthOnMonth": "Control Center Month on Month"
   },
   "Library": {
     "BookCategories": "Book Categories",

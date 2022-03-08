@@ -14,12 +14,11 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, FinanceReportByOrder, Order, FinanceReportEntryByTransactionType, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
+import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report.component';
 
-describe('TranTypeMonthOnMonthReportComponent', () => {
-  let component: TranTypeMonthOnMonthReportComponent;
-  let fixture: ComponentFixture<TranTypeMonthOnMonthReportComponent>;
-
+describe('AccountMonthOnMonthReportComponent', () => {
+  let component: AccountMonthOnMonthReportComponent;
+  let fixture: ComponentFixture<AccountMonthOnMonthReportComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
   let fetchReportByTransactionTypeSpy: any;
@@ -56,7 +55,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ TranTypeMonthOnMonthReportComponent ],
+      declarations: [ AccountMonthOnMonthReportComponent ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -69,7 +68,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TranTypeMonthOnMonthReportComponent);
+    fixture = TestBed.createComponent(AccountMonthOnMonthReportComponent);
     component = fixture.componentInstance;
     //fixture.detectChanges();
   });

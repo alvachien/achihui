@@ -7,8 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { lastValueFrom } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
-import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  momentDateFormat, TranType, FinanceReportEntryByTransactionType, FinanceReportEntryByTransactionTypeMoM, } from '../../../../model';
+import { LogLevel, ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM, } from '../../../../model';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
@@ -100,7 +99,8 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   }
 
   onChanges(event: any): void {
-    console.log(this.selectedTranTypes, this.selectedPeriod);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent onChanges with ${this.selectedTranTypes}, ${this.selectedPeriod}`,
+      ConsoleLogTypeEnum.debug);
   }
 
   refreshData(): void {
