@@ -2836,6 +2836,18 @@ export class FinanceReportByControlCenter extends FinanceReportBase {
   }
 }
 
+export class FinanceReportByControlCenterMOM extends FinanceReportByControlCenter {
+  public Month: number = 0;
+  
+  public override onSetData(val: any) {
+    super.onSetData(val);
+
+    if (val && val.Month) {
+      this.Month = val.Month;
+    }
+  }
+}
+
 /**
  * Order report
  */

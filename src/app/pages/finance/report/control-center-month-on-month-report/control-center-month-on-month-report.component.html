@@ -12,7 +12,7 @@
 
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
-    <nz-select [(ngModel)]="selectedCCID" nzAllowClear>
+    <nz-select style="width: 100%" [(ngModel)]="selectedCCID" nzAllowClear>
       <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
     </nz-select>
   </div>
@@ -26,4 +26,8 @@
   <div nz-col nzXs="12" nzSm="12" nzMd="8" nzLg="4" nzXl="4">
     <button nz-button nzType="primary" (click)="refreshData()" [disabled]="isGoButtonDisabled">{{'Common.Refresh' | transloco}}</button>
   </div>
+</div>
+
+<div nz-col [nzSpan]="24" style="margin-top: 12px;">
+  <div echarts [options]="chartOption!" style="height: 600px;"></div>
 </div>

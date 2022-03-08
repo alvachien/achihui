@@ -14,7 +14,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
-  FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, 
+  FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM, 
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -2205,8 +2205,9 @@ export class FinanceOdataService {
     }
   }
 
-  /** Get report by account
-   * @param forceReload force to reload data from server
+  /** Get report by account, month on month
+   * @param acntid Account ID
+   * @param period Period
    */
   public fetchReportByAccountMoM(acntid: number, period: string): Observable<FinanceReportByAccountMOM[]> {
     let headers: HttpHeaders = new HttpHeaders();
@@ -2290,6 +2291,53 @@ export class FinanceOdataService {
     } else {
       return of(this.listReportByControlCenter);
     }
+  }
+
+  /** Get report by Control Center, month on month
+   * @param ccid Control Center ID
+   * @param period Period
+   * @param includeChild Include child
+   */
+  public fetchReportByControlCenterMoM(ccid: number, period: string, includeChild?: boolean): Observable<FinanceReportByControlCenterMOM[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: any = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      ControlCenterID: ccid,
+      Period: period,
+    };
+    if (includeChild) {
+      jdata.IncludeChildren = includeChild;
+    }
+
+    return this.http.post(`${this.reportAPIUrl}/GetReportByControlCenterMOM`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByControlCenterMoM succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        const reportdata: FinanceReportByControlCenterMOM[] = [];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportByControlCenterMOM = new FinanceReportByControlCenterMOM();
+            rst.onSetData(si);
+            reportdata.push(rst);
+          }
+        }
+
+        return reportdata;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByControlCenterMoM failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));  
   }
 
   /** Get report by order
