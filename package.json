@@ -38,7 +38,7 @@
     "monaco-editor": "^0.31.1",
     "ng-zorro-antd": "^13.1.1",
     "ngx-echarts": "^8.0.1",
-    "ngx-markdown": "^13.1.0-beta.0",
+    "ngx-markdown": "^13.1.0",
     "oidc-client": "^1.11.5",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",

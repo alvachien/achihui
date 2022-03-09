@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
+import { NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { ConsoleLogTypeEnum, ControlCenter, FinanceReportByControlCenterMOM, ModelUtility } from 'src/app/model';
@@ -21,13 +22,18 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   }
 
   arControlCenters: ControlCenter[] = [];
-  selectedCCID: number | null = null;
+  availableControlCenters: NzCascaderOption[] = [];
+  selectedControlCenters: number[] | null = null;
+  // selectedCCID: number | null = null;
   selectedPeriod = '3';
   chartOption: EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {
-    if (this.selectedCCID === null) {
+    if (this.selectedControlCenters === null) {
       return true;
+    }
+    if (this.selectedControlCenters.length <= 0) {
+      return false;
     }
 
     return false;
@@ -40,6 +46,46 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
     this.odataService.fetchAllControlCenters().subscribe({
       next: (val: ControlCenter[]) => {
         this.arControlCenters = val.slice();
+        this.availableControlCenters = [];
+
+        val.forEach(tt => {
+          if (!tt.ParentId) {
+            // Root
+            this.availableControlCenters.push({
+              value: tt.Id,
+              label: tt.Name,
+              children: [],
+              isLeaf: true,
+            });
+          }
+        });
+
+        this.availableControlCenters.forEach(root => {          
+          val.forEach(tt => {
+            if (tt.ParentId === root.value) {
+              let level2node: NzCascaderOption = {
+                value: tt.Id,
+                label: tt.Name,
+                children: [],
+                isLeaf: false
+              };
+              val.forEach(tt2 => {
+                if (tt2.ParentId === tt.Id) {
+                  level2node.children?.push({
+                    value: tt2.Id,
+                    label: tt2.Name,
+                    isLeaf: true,
+                  });
+                }
+              });
+              if (level2node.children?.length === 0) {
+                level2node.isLeaf = true;
+              }
+              root.children?.push(level2node);
+              root.isLeaf = false;
+            }
+          });
+        });
       },
       error: err => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters failed ${err}`,
@@ -55,18 +101,19 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   }
 
   onChanges(event: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent onChanges with ${this.selectedCCID}, ${this.selectedPeriod}`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent onChanges with ${this.selectedControlCenters}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug);
   }
 
   refreshData(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent refreshData`,
       ConsoleLogTypeEnum.debug);
-    if (this.selectedCCID === null) {
+    if (this.isGoButtonDisabled) {
       return;
     }
 
-    this.odataService.fetchReportByControlCenterMoM(this.selectedCCID, this.selectedPeriod, true).subscribe({
+    let selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
+    this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).subscribe({
       next: (val: FinanceReportByControlCenterMOM[]) => {
         // Fetch out data
         const arAxis: string[] = [];
@@ -107,7 +154,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
 
             let ccname = this.arControlCenters.find(p => p.Id === ccid)?.Name;
             arSeries.push({
-              name: ccname,
+              name: ccname + 'In',
               type: 'bar',
               stack: 'IN',
               emphasis: {
@@ -116,7 +163,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arIn,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Out',
               type: 'bar',
               stack: 'OUT',
               emphasis: {
@@ -125,7 +172,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arOut,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Bal',
               type: 'bar',
               stack: 'BAL',
               emphasis: {
@@ -153,7 +200,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
                 arOut.push(val[validx].CreditBalance)
-                arOut.push(val[validx].DebitBalance + val[validx].CreditBalance)
+                arBal.push(val[validx].DebitBalance + val[validx].CreditBalance)
               } else {
                 arIn.push(0);
                 arOut.push(0);
@@ -163,7 +210,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
 
             let ccname = this.arControlCenters.find(p => p.Id === ccid)?.Name;
             arSeries.push({
-              name: ccname,
+              name: ccname + 'In',
               type: 'bar',
               stack: 'IN',
               emphasis: {
@@ -172,7 +219,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arIn,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Out',
               type: 'bar',
               stack: 'OUT',
               emphasis: {
@@ -181,7 +228,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arOut,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Bal',
               type: 'bar',
               stack: 'BAL',
               emphasis: {
@@ -209,7 +256,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
                 arOut.push(val[validx].CreditBalance)
-                arOut.push(val[validx].DebitBalance + val[validx].CreditBalance)
+                arBal.push(val[validx].DebitBalance + val[validx].CreditBalance)
               } else {
                 arIn.push(0);
                 arOut.push(0);
@@ -219,7 +266,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
 
             let ccname = this.arControlCenters.find(p => p.Id === ccid)?.Name;
             arSeries.push({
-              name: ccname,
+              name: ccname + 'In',
               type: 'bar',
               stack: 'IN',
               emphasis: {
@@ -228,7 +275,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arIn,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Out',
               type: 'bar',
               stack: 'OUT',
               emphasis: {
@@ -237,7 +284,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               data: arOut,
             });
             arSeries.push({
-              name: ccname,
+              name: ccname + 'Bal',
               type: 'bar',
               stack: 'BAL',
               emphasis: {

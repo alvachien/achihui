@@ -50,6 +50,7 @@ module.exports = function (config) {
     },
         
     singleRun: false,
+    verboseDeprecations: true,
     restartOnFileChange: true
   });
 };
