@@ -5,7 +5,6 @@ import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuick
   IAccountCategoryFilter,
   financeAccountCategoryLendTo, } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
-import { EnPOSEnum } from './learnmodel';
 import * as moment from 'moment';
 
 /**
@@ -103,7 +102,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum
+  | RepaymentMethodEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum
   | HomeMemberRelationEnum | PlanTypeEnum;
 
 /**
@@ -227,22 +226,22 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getEnPOSStrings(): UIDisplayString[] {
-    const arrst: UIDisplayString[] = [];
+  // public static getEnPOSStrings(): UIDisplayString[] {
+  //   const arrst: UIDisplayString[] = [];
 
-    for (const pe in EnPOSEnum) {
-      // if (Number.isNaN(+pe)) {
-      // } else {
-      arrst.push({
-        value: +pe,
-        i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(pe as EnPOSEnum),
-        displaystring: '',
-      });
-      // }
-    }
+  //   for (const pe in EnPOSEnum) {
+  //     // if (Number.isNaN(+pe)) {
+  //     // } else {
+  //     arrst.push({
+  //       value: +pe,
+  //       i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(pe as EnPOSEnum),
+  //       displaystring: '',
+  //     });
+  //     // }
+  //   }
 
-    return arrst;
-  }
+  //   return arrst;
+  // }
 
   public static getRepeatFrequencyDisplayStrings(): UIDisplayString[] {
     const arrst: UIDisplayString[] = [];
@@ -493,23 +492,23 @@ export class UIDisplayStringUtil {
     }
   }
 
-  public static getEnPOSDisplayString(ep: EnPOSEnum): string {
-    switch (ep) {
-      case EnPOSEnum.n: return 'Sys.EnPOS.n';
-      case EnPOSEnum.pron: return 'Sys.EnPOS.pron';
-      case EnPOSEnum.adj: return 'Sys.EnPOS.adj';
-      case EnPOSEnum.adv: return 'Sys.EnPOS.adv';
-      case EnPOSEnum.v: return 'Sys.EnPOS.v';
-      case EnPOSEnum.num: return 'Sys.EnPOS.num';
-      case EnPOSEnum.art: return 'Sys.EnPOS.art';
-      case EnPOSEnum.prep: return 'Sys.EnPOS.prep';
-      case EnPOSEnum.conj: return 'Sys.EnPOS.conj';
-      case EnPOSEnum.interj: return 'Sys.EnPOS.interj';
-      case EnPOSEnum.vt: return 'Sys.EnPOS.vt';
-      case EnPOSEnum.vi: return 'Sys.EnPOS.vi';
-      default: return '';
-    }
-  }
+  // public static getEnPOSDisplayString(ep: EnPOSEnum): string {
+  //   switch (ep) {
+  //     case EnPOSEnum.n: return 'Sys.EnPOS.n';
+  //     case EnPOSEnum.pron: return 'Sys.EnPOS.pron';
+  //     case EnPOSEnum.adj: return 'Sys.EnPOS.adj';
+  //     case EnPOSEnum.adv: return 'Sys.EnPOS.adv';
+  //     case EnPOSEnum.v: return 'Sys.EnPOS.v';
+  //     case EnPOSEnum.num: return 'Sys.EnPOS.num';
+  //     case EnPOSEnum.art: return 'Sys.EnPOS.art';
+  //     case EnPOSEnum.prep: return 'Sys.EnPOS.prep';
+  //     case EnPOSEnum.conj: return 'Sys.EnPOS.conj';
+  //     case EnPOSEnum.interj: return 'Sys.EnPOS.interj';
+  //     case EnPOSEnum.vt: return 'Sys.EnPOS.vt';
+  //     case EnPOSEnum.vi: return 'Sys.EnPOS.vi';
+  //     default: return '';
+  //   }
+  // }
 
   public static getRepeatFrequencyDisplayString(frq: RepeatFrequencyEnum): string {
     switch (frq) {

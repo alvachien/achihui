@@ -30,12 +30,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/blog/blog.module').then(m => m.BlogModule)
   },
 
-  {
-    path: 'learn',
-    canActivate: [HomeChoseGuardService],
-    loadChildren: () => import('./pages/learn/learn.module').then(m => m.LearnModule)
-  },
-
   { path: 'fatalerror', loadChildren: () => import('./pages/fatal-error/fatal-error.module').then(m => m.FatalErrorModule) },
 
   {

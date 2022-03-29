@@ -22,8 +22,7 @@ import * as echarts from 'echarts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
-import { AuthService, AuthGuardService,
-  HomeChoseGuardService, LearnOdataService, BlogOdataService,
+import { AuthService, AuthGuardService, HomeChoseGuardService, BlogOdataService,
   CanDeactivateGuardService, UIStatusService, TagsService,
   FinanceOdataService, HomeDefOdataService, LanguageOdataService,
 } from './services';
@@ -80,7 +79,6 @@ registerLocaleData(en);
     UIStatusService,
     LanguageOdataService,
     HomeDefOdataService,
-    LearnOdataService,
     FinanceOdataService,
     NzModalService,
     BlogOdataService,

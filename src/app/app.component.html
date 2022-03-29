@@ -61,16 +61,6 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="'Nav.LearningTrace' | transloco" nzIcon="project">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'learn', 'category']">{{'Learning.LearningCategory' | transloco}}</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'learn', 'object']">{{'Learning.LearningObjects' | transloco}}</a>
-          </li>
-        </ul>
-      </li>
       <li nz-submenu [nzTitle]="'Common.Help' | transloco" nzIcon="question-circle">
         <ul>
           <li nz-menu-item nzMatchRouter>

@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 
-import { QuestionBankItem, TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, } from '../model';
+import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
@@ -65,16 +65,16 @@ export class UIStatusService {
    * Generate form group for Questions
    * @param questions Questions
    */
-  public generateLearnQuestionFormGroup(questions: QuestionBankItem[]): FormGroup {
-    const group: any = {};
+  // public generateLearnQuestionFormGroup(questions: QuestionBankItem[]): FormGroup {
+  //   const group: any = {};
 
-    questions.forEach((question: any) => {
-      group[question.ID] = question ? new FormControl(question.Question || '', Validators.required)
-                                    : new FormControl(question.Question || '');
-    });
+  //   questions.forEach((question: any) => {
+  //     group[question.ID] = question ? new FormControl(question.Question || '', Validators.required)
+  //                                   : new FormControl(question.Question || '');
+  //   });
 
-    return new FormGroup(group);
-  }
+  //   return new FormGroup(group);
+  // }
 
   private onLanguageChanged(): void {
     // this._tranService.get(arstrings).subscribe((x: any) => {
