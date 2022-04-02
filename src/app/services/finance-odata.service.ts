@@ -14,7 +14,9 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   Plan, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
-  FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM, 
+  FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
+  FinanceReportEntry,
+  FinanceReportEntryMoM, 
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -48,7 +50,7 @@ export class FinanceOdataService {
   private isReportByOrderLoaded: boolean = false;
   private listReportByOrder: FinanceReportByOrder[] = [];
   private isOverviewKeyfigureLoaded: boolean = false;
-  private overviewKeyfigure: FinanceOverviewKeyfigure = new FinanceOverviewKeyfigure();  
+  private overviewKeyfigure: FinanceOverviewKeyfigure = new FinanceOverviewKeyfigure();
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
@@ -2448,6 +2450,88 @@ export class FinanceOdataService {
     } else {
       return of(this.overviewKeyfigure);
     }    
+  }
+
+  /** Get cash report
+   * @param period Period for cash report
+   */
+  public fetchCashReport(period: string): Observable<FinanceReportEntry[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      Period: period,
+    };
+
+    return this.http.post(`${this.reportAPIUrl}/GetCashReport`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchCashReport succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        let listCashReport: FinanceReportEntry[] = [];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportEntry = new FinanceReportEntry();
+            rst.onSetData(si);
+            listCashReport.push(rst);
+          }
+        }
+
+        return listCashReport;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchCashReport failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));  
+  }
+
+  /** Get cash report, month on month
+   * @param period Period
+   */
+  public fetchCashReportMoM(period: string): Observable<FinanceReportEntryMoM[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const jdata: any = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      Period: period,
+    };
+
+    return this.http.post(`${this.reportAPIUrl}/GetCashReportMOM`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchCashReportMoM succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response;
+        const reportdata: FinanceReportEntryMoM[] = [];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: FinanceReportEntryMoM = new FinanceReportEntryMoM();
+            rst.onSetData(si);
+            reportdata.push(rst);
+          }
+        }
+
+        return reportdata;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchCashReportMoM failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));  
   }
   
   /**

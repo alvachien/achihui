@@ -94,10 +94,15 @@
 
     <!-- Items -->
     <form nz-form [formGroup]="itemFormGroup" [hidden]="currentStep !== 1">
-      <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
-        [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccount" [arControlCenters]="arControlCenters"
-        [arTranType]="arTranTypes" [arUIOrders]="arUIOrder" [docType]="curDocType">
-      </hih-fin-document-items>
+      <div *ngIf="!IsLegacyAsset">
+        <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
+          [arCurrencies]="arCurrencies" [arUIAccounts]="arUIAccount" [arControlCenters]="arControlCenters"
+          [arTranType]="arTranTypes" [arUIOrders]="arUIOrder" [docType]="curDocType">
+        </hih-fin-document-items>
+      </div>
+      <div *ngIf="IsLegacyAsset">
+        <p>{{'Finance.LegacyAsset' | transloco}}</p>
+      </div>
     </form>
 
     <!-- Review and Confirm -->

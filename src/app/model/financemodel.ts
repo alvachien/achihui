@@ -908,7 +908,9 @@ export class AccountExtraAsset extends AccountExtra {
     rstobj.CategoryID = this.CategoryID;
     rstobj.Name = this.Name;
     rstobj.Comment = this.Comment;
-    rstobj.RefenceBuyDocumentID = this.RefDocForBuy;
+    if (this.RefDocForBuy) {
+      rstobj.RefenceBuyDocumentID = this.RefDocForBuy;
+    }
     if (this.RefDocForSold) {
       rstobj.RefenceSoldDocumentID = this.RefDocForSold;
     }
@@ -3338,6 +3340,16 @@ export class FinanceReportEntry {
     }
     if (val && val.OutAmount) {
       this.OutAmount = val.OutAmount;
+    }
+  }
+}
+
+export class FinanceReportEntryMoM extends FinanceReportEntry {
+  public Month: number = 0;
+  public override onSetData(val: any) {
+    super.onSetData(val);
+    if (val && val.Month) {
+      this.Month = val.Month;
     }
   }
 }
