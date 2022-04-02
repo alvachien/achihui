@@ -56,15 +56,15 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    // For testing
-    this.odataService.fetchCashReport('3').subscribe({
-      next: val => {
-        console.log(val);
-      },
-      error: err => {
-        console.error(err);
-      }
-    })
+    // // For testing
+    // this.odataService.fetchCashReport('3').subscribe({
+    //   next: val => {
+    //     console.log(val);
+    //   },
+    //   error: err => {
+    //     console.error(err);
+    //   }
+    // })
 
     if (this.isChildMode) {
       // Child mode, do nothing.
