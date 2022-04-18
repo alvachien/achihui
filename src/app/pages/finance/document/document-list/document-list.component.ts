@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewContainerRef, } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate } from '@ngneat/transloco';
@@ -319,7 +319,32 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/edit/', docid]);
   }
   public onDelete(docid: number): void {
-    this.msgService.error('This functionality is still under construction', { nzDuration: 2500 });
+    this.odataService.deleteDocument(docid).subscribe({
+      next: val => {
+        // Show dialog.
+        const ref: NzModalRef = this.modalService.success({
+          nzTitle: translate('Common.Success'),
+          nzContent: translate('Finance.DeleteDocumentSuccessfully'),
+        });
+        setTimeout(() => {
+          ref.close();
+          ref.destroy();
+        }, 1000);
+
+        // Need refresh
+        this.fetchData();
+      },
+      error: err => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent onDelete, failed ${err}...`,
+        ConsoleLogTypeEnum.error);
+
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
+      }
+    });
   }
   public onChangeDate(docid: number, docdate: moment.Moment): void {
     // Change the account name
@@ -333,9 +358,9 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-    // Return a result when closed
-    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+    modal.afterClose.subscribe(result => {
+      this.fetchData();
+    });
   }
   public onChangeDesp(docid: number, docdesp: string): void {
     // Change the account name
@@ -349,9 +374,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });
-    const instance = modal.getContentComponent();
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-    // Return a result when closed
-    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));    
+    modal.afterClose.subscribe(result => {
+      this.fetchData();
+    });
   }
 }

@@ -1677,7 +1677,7 @@ export class FinanceOdataService {
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }),
-      );
+    );
   }
 
   /**

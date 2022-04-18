@@ -596,6 +596,7 @@
     "Out": "Out",
     "EditDocumentNotAllowed": "Document change is not allowed",
     "EditDocumentSuccessfully": "Document changed successfully",
+    "DeleteDocumentSuccessfully": "Document deleted successfully",
     "IncomeInCurrentMonth": "Incomes in current month",
     "OutgoInCurrentMonth": "Outgos in current month",
     "IncomeInLastMonth": "Incomes in last month",

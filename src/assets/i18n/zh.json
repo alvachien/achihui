@@ -596,6 +596,7 @@
     "Out": "流出",
     "EditDocumentNotAllowed": "该凭证不能被修改",
     "EditDocumentSuccessfully": "凭证修改成功",
+    "DeleteDocumentSuccessfully": "凭证已经删除成功",
     "IncomeInCurrentMonth": "本月总流入",
     "OutgoInCurrentMonth": "本月总流出",
     "IncomeInLastMonth": "上月总流入",
