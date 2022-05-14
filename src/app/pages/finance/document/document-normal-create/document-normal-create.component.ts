@@ -10,7 +10,7 @@ import { UIMode, } from 'actslib';
 
 import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
   UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection,
+  BuildupAccountForSelection, BuildupOrderForSelection, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
@@ -45,6 +45,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public itemsForm: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
+  public arDocItem: DocumentItemView[] = [];  
   // Step: Result
   public isDocPosting = false;
   public docIdCreated?: number;
@@ -209,10 +210,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         this.doccur2 = detailObject.TranCurr2;
         break;
       }
-      case 1: {
+      case 1: {        
         this._updateConfirmInfo();
 
-        this.currentStep ++;
         break;
       }
       case 2: {
@@ -241,8 +241,21 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.tranCurrency = doc.TranCurr;
     this.confirmInfo.inAmount = 0;
     this.confirmInfo.outAmount = 0;
+    const filters: GeneralFilterItem[] = [];
+    filters.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: doc.TranDate.format(momentDateFormat),
+      valueType: GeneralFilterValueType.date,
+    } as GeneralFilterItem);
 
+    let aracntid: number[] = [];
     doc.Items.forEach((val: DocumentItem) => {
+      if (val.AccountId) {
+        if (aracntid.findIndex(p => p === val.AccountId!) !== -1) {
+          aracntid.push(val.AccountId);
+        }
+      }
       const ttid: number = this.arTranType.findIndex((tt: TranType) => {
         return tt.Id === val.TranType;
       });
@@ -254,6 +267,38 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         }
       }
     });
+    aracntid.forEach(acntid => {
+      filters.push({
+        fieldName: 'AccountID',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: acntid,
+        valueType: GeneralFilterValueType.number,
+        highValue: 0,
+      });  
+    })
+
+    this.confirmInfo.warningExist = false;
+    this.confirmInfo.duplicatedItems = [];
+    this.odataService.searchDocItem(filters).pipe(finalize(
+      () => this.currentStep ++
+    )).subscribe({
+      next: val => {
+        this.arDocItem = val.contentList;
+        // Check whether same amount exist
+        doc.Items.forEach(di => {
+          this.arDocItem.forEach(di2 => {
+            if (di.AccountId! === di2.AccountID!
+              && di.TranAmount === di2.Amount
+              && di.TranType === di2.TransactionType ) {
+                this.confirmInfo.warningExist = true;
+                this.confirmInfo.duplicatedItems.push("Account: " + di.AccountId.toString() + "; Amount: " + di.TranAmount.toString() +"; Tran. type: " + di.TranType?.toString());                
+              }
+          })
+        });
+      },
+      error: err => {
+      }
+    });    
   }
   private _generateDocObject(): Document {
     const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;

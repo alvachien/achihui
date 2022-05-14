@@ -28,6 +28,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   private _filterDocItem: GeneralFilterItem[] = [];
   private _isInitialized = false;
   isLoadingResults = false;
+  shortcutDocID?: number;
 
   mapOfExpandData: { [key: string]: boolean } = {};
   public arCurrencies: Currency[] = [];
@@ -42,7 +43,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public selectedRange: any[] = [];
   // Table
   pageIndex = 1;
-  pageSize = 10;
+  pageSize = 20;
   listOfDocs: Document[] = [];
   totalDocumentCount = 1;
   listCurrencyFilters: ITableFilterValues[] = [];
@@ -304,7 +305,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/createloanrepay']);
   }
   public onDisplayDocument(doc: Document): void {
-    this.router.navigate(['/finance/document/display', doc.Id]);
+    this.onDisplay(doc.Id!);
   }
   public onMassCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/masscreatenormal']);
@@ -377,5 +378,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       this.fetchData();
     });
+  }
+  public onOpenShortCutDocID(): void {
+    if (this.shortcutDocID) {
+      this.onDisplay(this.shortcutDocID!);
+    }
   }
 }

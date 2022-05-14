@@ -231,7 +231,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             nzClosable: true,
           });
         }
-      })
+      });
     }
   }
 
@@ -270,7 +270,43 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             nzClosable: true,
           });
         }
-      });  
+      });
+    }
+  }
+
+  onChangeToEditMode(): void {
+    if (this.routerID) {
+      this.odataService.isDocumentChangable(this.routerID).subscribe({
+        next: val => {
+          if (val) {
+            this.router.navigate(['/finance/document/edit/', this.routerID]);
+          } else {
+            const ref: NzModalRef = this.modalService.info({
+              nzTitle: translate('Common.Error'),
+              nzContent: translate('Finance.EditDocumentNotAllowed'),
+              nzClosable: false
+            });
+            setTimeout(() => {
+              ref.close();
+              ref.destroy();
+            }, 1000);
+
+            setTimeout(() => {
+              this.uiMode = UIMode.Display;
+              this.docFormGroup.disable();  
+            });
+          }
+        },
+        error: err => {
+          this.uiMode = UIMode.Display;
+          this.docFormGroup.disable();
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
     }
   }
 }
