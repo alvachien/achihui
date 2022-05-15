@@ -83,7 +83,8 @@
                 <i nz-icon nzType="down"></i>
               </a>
               <nz-divider nzType="vertical"></nz-divider>  
-              <button nz-button nzType="link" (click)="onDelete(data.Id!)">{{'Common.Delete' | transloco}}</button>
+              <button nz-button nzType="link" nz-popconfirm [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
+                (nzOnConfirm)="onDelete(data.Id!)">{{'Common.Delete' | transloco}}</button>
               <nz-dropdown-menu #menuForChange="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</li>

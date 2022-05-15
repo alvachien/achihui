@@ -188,13 +188,14 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   onReset(): void {
-    this.currentStep = 0;
-    this.itemsForm.reset();
-    this.headerForm.reset();
-    this.confirmInfo = {};
-    this.isDocPosting = false;
-    this.docIdCreated = undefined;
-    this.docPostingFailed = '';
+    this.router.navigate(['/finance/document/createnormal']);
+    // this.currentStep = 0;
+    // this.itemsForm.reset();
+    // this.headerForm.reset();
+    // this.confirmInfo = {};
+    // this.isDocPosting = false;
+    // this.docIdCreated = undefined;
+    // this.docPostingFailed = '';
   }
 
   pre(): void {
@@ -288,7 +289,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         doc.Items.forEach(di => {
           this.arDocItem.forEach(di2 => {
             if (di.AccountId! === di2.AccountID!
-              && di.TranAmount === di2.Amount
+              && Math.abs(di.TranAmount) === Math.abs(di2.Amount)
               && di.TranType === di2.TransactionType ) {
                 this.confirmInfo.warningExist = true;
                 this.confirmInfo.duplicatedItems.push("Account: " + di.AccountId.toString() + "; Amount: " + di.TranAmount.toString() +"; Tran. type: " + di.TranType?.toString());                
@@ -297,6 +298,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         });
       },
       error: err => {
+        // Simply discard it.
       }
     });    
   }
