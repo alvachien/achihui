@@ -7,7 +7,7 @@
     <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <input nz-input class="shotcut-id" placeholder="Shortcut" [(ngModel)]="shortcutDocID" />
+      <input nz-input class="shotcut-id" placeholder="{{'Common.ShortcutID' | transloco}}" [(ngModel)]="shortcutDocID" />
       <button nz-button nzType="text" [disabled]="!shortcutDocID" (click)="onOpenShortCutDocID()">
         <i nz-icon nzType="folder-open" nzTheme="outline"></i>
       </button>

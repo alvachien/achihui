@@ -214,7 +214,8 @@
     "Loading": "Loading",
     "Latest12Months": "Latest 12 Months",
     "Latest6Months": "Latest 6 Months",
-    "Latest3Months": "Latest 3 Months"
+    "Latest3Months": "Latest 3 Months",
+    "ShortcutID": "Shortcut ID"
   },
   "Sys": {
     "Currency": {

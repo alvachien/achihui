@@ -214,7 +214,8 @@
     "Loading": "装载中",
     "Latest12Months": "最近12个月",
     "Latest6Months": "最近6个月",
-    "Latest3Months": "最近3个月"
+    "Latest3Months": "最近3个月",
+    "ShortcutID": "快捷访问"
   },
   "Sys": {
     "Currency": {

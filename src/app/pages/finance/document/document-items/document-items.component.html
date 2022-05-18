@@ -1,8 +1,8 @@
-<ng-container *transloco="let t">
+<ng-container>
   <div *ngIf="controlError" style="text-align: left;">
     <nz-alert nzType="error"
-      [nzMessage]="t(controlError.value)"
-      [nzDescription]="t(controlError.value)"
+      [nzMessage]="controlError.value | transloco"
+      [nzDescription]="controlError.value | transloco"
       nzShowIcon>
     </nz-alert>
   </div>

@@ -36,7 +36,7 @@
     <!-- Review and Confirm -->
     <div [hidden]="currentStep !== 2">
       <div>
-        <nz-alert *ngIf="confirmInfo?.warningExist" nzType="warning" nzMessage="Warning"
+        <nz-alert *ngIf="confirmInfo?.warningExist" nzType="warning" [nzMessage]="'Common.Warning' | transloco"
           nzDescription="{{ confirmInfo?.duplicatedItems.length }} items found same amount and same tran. type posted to same account on same date."
           nzShowIcon>
         </nz-alert>

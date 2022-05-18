@@ -337,7 +337,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       error: err => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentListComponent onDelete, failed ${err}...`,
-        ConsoleLogTypeEnum.error);
+          ConsoleLogTypeEnum.error);
 
         this.modalService.error({
           nzTitle: translate('Common.Error'),
