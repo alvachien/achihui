@@ -25,7 +25,7 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
     <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-table #incomeTable [nzData]="reportIncome">
+      <nz-table #incomeTable nzSize="small" [nzData]="reportIncome" [nzFooter]="incomeFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
@@ -44,13 +44,16 @@
               </button>
               <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
-            <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
+            <td><nz-progress [nzPercent]="data.Precentage" nzSize="small" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>
         </tbody>
-      </nz-table>    
+      </nz-table>
+      <ng-template #incomeFooterTemplate>
+        <div><span>{{'Common.Total' | transloco}}: </span>{{totalIncome | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
+      </ng-template>
     </div>
     <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-table #expenseTable [nzData]="reportExpense">
+      <nz-table #expenseTable nzSize="small" [nzData]="reportExpense" [nzFooter]="outgoFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
@@ -69,10 +72,13 @@
               </button>
               <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
-            <td><nz-progress [nzPercent]="data.Precentage" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
+            <td><nz-progress [nzPercent]="data.Precentage" nzSize="small" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress></td>
           </tr>
         </tbody>
-      </nz-table>    
+      </nz-table>
+      <ng-template #outgoFooterTemplate>
+        <div><span>{{'Common.Total' | transloco}}: </span>{{totalExpense | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
+      </ng-template>
     </div>
   </div>
 </nz-spin>

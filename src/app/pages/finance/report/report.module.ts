@@ -17,6 +17,8 @@ import { DocumentItemViewModule } from '../document-item-view/document-item-view
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report';
 import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report';
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report';
+import { CashReportComponent } from './cash-report';
+import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { ControlCenterMonthOnMonthReportComponent } from './control-center-month
     TranTypeMonthOnMonthReportComponent,
     AccountMonthOnMonthReportComponent,
     ControlCenterMonthOnMonthReportComponent,
+    CashReportComponent,
+    CashMonthOnMonthReportComponent,
   ],
   imports: [
     CommonModule,

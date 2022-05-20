@@ -183,6 +183,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -206,6 +207,12 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
   onDrillDownToTranType(): void {
     this.router.navigate(['finance', 'report', 'trantype']);
+  }
+  onDrillDownToCash(): void {
+    this.router.navigate(['finance', 'report', 'cash']);
+  }
+  onDrillDownToCashMoM(): void {
+    this.router.navigate(['finance', 'report', 'cashmom']);
   }
 
   private buildInfo() {

@@ -613,7 +613,9 @@
     "TranTypeMonthOnMonth": "Transaction Type Month on Month",
     "DetailReport": "Detail Report",
     "AccountMonthOnMonth": "Account Month on Month",
-    "ControlCenterMonthOnMonth": "Control Center Month on Month"
+    "ControlCenterMonthOnMonth": "Control Center Month on Month",
+    "Cash": "Cash",
+    "CashMonthOnMonth": "Cash Month on Month"
   },
   "Library": {
     "BookCategories": "Book Categories",

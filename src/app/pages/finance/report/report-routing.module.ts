@@ -9,6 +9,8 @@ import { TranTypeReportComponent  } from './tran-type-report';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report';
 import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report';
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report';
+import { CashReportComponent } from './cash-report';
+import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
 
 const routes: Routes = [
   { path: '', component: ReportComponent },
@@ -19,6 +21,8 @@ const routes: Routes = [
   { path: 'order', component: OrderReportComponent },
   { path: 'trantype', component: TranTypeReportComponent },
   { path: 'trantypemom', component: TranTypeMonthOnMonthReportComponent },
+  { path: 'cash', component: CashReportComponent },
+  { path: 'cashmom', component: CashMonthOnMonthReportComponent },
 ];
 
 @NgModule({
