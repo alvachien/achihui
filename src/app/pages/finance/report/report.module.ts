@@ -19,6 +19,8 @@ import { AccountMonthOnMonthReportComponent } from './account-month-on-month-rep
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report';
 import { CashReportComponent } from './cash-report';
 import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
+import { StatementOfIncomeExpenseComponent } from './statement-of-income-expense';
+import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
     ControlCenterMonthOnMonthReportComponent,
     CashReportComponent,
     CashMonthOnMonthReportComponent,
+    StatementOfIncomeExpenseComponent,
+    StatementOfIncomeExpenseMonthOnMonthComponent,
   ],
   imports: [
     CommonModule,

@@ -11,11 +11,12 @@
     </button>
     <nz-dropdown-menu #detailReports="nzDropdownMenu">
       <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="onDrillDownToStatementOfIncomeExpenseMoM()">{{'Finance.StatementOfIncomeAndExpenseMonthOnMonth' | transloco}}</li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="onDrillDownToCashMoM()">{{'Finance.CashMonthOnMonth' | transloco}}</li>
+        <li nz-menu-divider></li>
         <li nz-menu-item (click)="onDrillDownToTranType()">{{'Finance.TransactionTypes' | transloco}}</li>
         <li nz-menu-item (click)="onDrillDownToTranTypeMoM()">{{'Finance.TranTypeMonthOnMonth' | transloco}}</li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToCash()">{{'Finance.Cash' | transloco}}</li>
-        <li nz-menu-item (click)="onDrillDownToCashMoM()">{{'Finance.CashMonthOnMonth' | transloco}}</li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="onDrillDownToAccount()">{{'Finance.Accounts' | transloco}}</li>
         <li nz-menu-item (click)="onDrillDownToAccountMoM()">{{'Finance.AccountMonthOnMonth' | transloco}}</li>

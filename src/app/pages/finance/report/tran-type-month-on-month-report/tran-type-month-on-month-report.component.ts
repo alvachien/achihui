@@ -266,7 +266,6 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           nzContent: err,
           nzClosable: true,
         });
-
       }
     });
   }

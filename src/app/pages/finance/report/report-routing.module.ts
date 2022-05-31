@@ -11,6 +11,8 @@ import { AccountMonthOnMonthReportComponent } from './account-month-on-month-rep
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report';
 import { CashReportComponent } from './cash-report';
 import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
+import { StatementOfIncomeExpenseComponent } from './statement-of-income-expense';
+import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month';
 
 const routes: Routes = [
   { path: '', component: ReportComponent },
@@ -23,6 +25,8 @@ const routes: Routes = [
   { path: 'trantypemom', component: TranTypeMonthOnMonthReportComponent },
   { path: 'cash', component: CashReportComponent },
   { path: 'cashmom', component: CashMonthOnMonthReportComponent },
+  { path: 'statementofincexp', component: StatementOfIncomeExpenseComponent },
+  { path: 'statementofincexpmom', component: StatementOfIncomeExpenseMonthOnMonthComponent },
 ];
 
 @NgModule({

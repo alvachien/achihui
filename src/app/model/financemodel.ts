@@ -47,6 +47,11 @@ export const financeTranTypeAssetSoldoutIncome = 93;
 export const financeTranTypeInsuranceReturn = 36;
 export const financeTranTypeInsurancePay = 34;
 
+// Finance reports: period for months
+export const financePeriodLast12Months  = '1';
+export const financePeriodLast6Months   = '2';
+export const financePeriodLast3Months   = '3';
+
 /**
  * Finance quick access type
  */

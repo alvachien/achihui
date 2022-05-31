@@ -214,6 +214,9 @@ export class ReportComponent implements OnInit, OnDestroy {
   onDrillDownToCashMoM(): void {
     this.router.navigate(['finance', 'report', 'cashmom']);
   }
+  onDrillDownToStatementOfIncomeExpenseMoM(): void {
+    this.router.navigate(['finance', 'report', 'statementofincexpmom']);
+  }
 
   private buildInfo() {
     // Account

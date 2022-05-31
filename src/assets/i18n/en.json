@@ -528,6 +528,8 @@
     "CloseAccount": "Close Account",
     "FreezeAccount": "Freeze Account",
     "IncomeAndExpenses": "Income and expenses",
+    "Income": "Income",
+    "Expense": "Expense",
     "IncomeTendencyChart": "Tendency Chart of Income",
     "ExpenseTendencyChart": "Tendency Chart of Expense",
     "PayingAccount": "Paying Account",
@@ -615,7 +617,9 @@
     "AccountMonthOnMonth": "Account Month on Month",
     "ControlCenterMonthOnMonth": "Control Center Month on Month",
     "Cash": "Cash",
-    "CashMonthOnMonth": "Cash Month on Month"
+    "CashMonthOnMonth": "Cash Month on Month",
+    "StatementOfIncomeAndExpense": "Statement of Income and Expense",
+    "StatementOfIncomeAndExpenseMonthOnMonth": "Statement of Income and Expense Month On Month"
   },
   "Library": {
     "BookCategories": "Book Categories",

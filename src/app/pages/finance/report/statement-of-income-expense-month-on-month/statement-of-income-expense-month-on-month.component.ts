@@ -10,25 +10,26 @@ import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'hih-cash-month-on-month-report',
-  templateUrl: './cash-month-on-month-report.component.html',
-  styleUrls: ['./cash-month-on-month-report.component.less'],
+  selector: 'hih-statement-of-income-expense-month-on-month',
+  templateUrl: './statement-of-income-expense-month-on-month.component.html',
+  styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
 })
-export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
+export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
+  excludeTransfer = false;
   selectedPeriod = financePeriodLast3Months;
   reportData: FinanceReportEntryMoM[] = [];
   chartOption: EChartsOption | null = null;
 
   constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent ngOnInit...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
     // Load data
@@ -37,7 +38,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent OnDestroy...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent OnDestroy...',
       ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
@@ -47,12 +48,12 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     }
   }
   onLoadData(forceReload?: boolean) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountReportComponent onLoadData(${forceReload})...`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onLoadData(${forceReload})...`,
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = true;
 
-    this.odataService.fetchCashReportMoM(this.selectedPeriod, forceReload)
+    this.odataService.fetchStatementOfIncomeAndExposeMoM(this.selectedPeriod, this.excludeTransfer, forceReload)
       .pipe(takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false))
       .subscribe({
@@ -61,7 +62,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
           this.buildChart();
         },
         error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CashMonthOnMonthReportComponent onLoadData fetchCashReportMoM failed ${err}`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onLoadData fetchStatementOfIncomeAndExposeMoM failed ${err}`,
             ConsoleLogTypeEnum.error);
 
           this.modalService.error({
@@ -74,7 +75,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   }
 
   onChanges(event: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChanges with ${this.selectedPeriod}`,
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onChanges with ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug);
     this.onLoadData(true);
   }
@@ -202,4 +203,3 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     };
   }
 }
-

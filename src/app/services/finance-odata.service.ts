@@ -5,7 +5,8 @@ import { catchError, map, startWith, switchMap, mergeAll } from 'rxjs/operators'
 import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
-import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
+import {
+  LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
   DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, RepeatedDatesWithAmountAPIInput,
   RepeatedDatesWithAmountAPIOutput, RepeatFrequencyEnum, financeAccountCategoryAdvancePayment,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
@@ -15,7 +16,7 @@ import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, 
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
   FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
-  FinanceReportEntry, FinanceReportEntryMoM, 
+  FinanceReportEntry, FinanceReportEntryMoM,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -52,6 +53,15 @@ export class FinanceOdataService {
   private overviewKeyfigure: FinanceOverviewKeyfigure = new FinanceOverviewKeyfigure();
   private isCashOverviewKeyfigureLoaded: boolean = false;
   private cashOverviewKeyfigure: FinanceReportEntry = new FinanceReportEntry();
+  private isStatementOfIncomeAndExpenseMOMWithTransferLoaded: boolean = false;
+  private statementOfIncomeAndExpenseMOMWithTransferPeriod = '';
+  private statementOfIncomeAndExpenseMOMWithTransfer: FinanceReportEntryMoM[] = [];
+  private isStatementOfIncomeAndExpenseMOMWOTransferLoaded: boolean = false;
+  private statementOfIncomeAndExpenseMOMWOTransferPeriod = '';
+  private statementOfIncomeAndExpenseMOMWOTransfer: FinanceReportEntryMoM[] = [];
+  private isCashReportMoMLoaded: boolean = false;
+  private cashReportMOMPeriod = '';
+  private cashReportMoM: FinanceReportEntryMoM[] = [];
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
@@ -497,12 +507,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readAccount failed: ${error}.`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readAccount failed: ${error}.`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -528,12 +538,12 @@ export class FinanceOdataService {
         this.listAccount.push(hd);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -572,12 +582,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -616,12 +626,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccountByPatch failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeAccountByPatch failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -650,12 +660,12 @@ export class FinanceOdataService {
 
         return true;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /* Close an account
@@ -684,17 +694,17 @@ export class FinanceOdataService {
           });
           if (extidx !== -1) {
             this.listAccount[extidx].Status = AccountStatusEnum.Closed;
-          }  
+          }
         }
 
         return isSucc;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService closeAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService closeAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /** Settle an account with initial amount
@@ -720,16 +730,16 @@ export class FinanceOdataService {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService settleAccount succeed',
           ConsoleLogTypeEnum.debug);
 
-          const isSucc = response.value as boolean;
- 
-          return isSucc;
-        }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService settleAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        const isSucc = response.value as boolean;
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+        return isSucc;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService settleAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -748,9 +758,9 @@ export class FinanceOdataService {
       params = params.append('$filter', `HomeID eq ${hid}`);
 
       return this.http.get<any>(this.controlCenterAPIUrl, {
-          headers,
-          params,
-        })
+        headers,
+        params,
+      })
         // .retry(3)
         .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllControlCenters, map.`,
@@ -770,15 +780,15 @@ export class FinanceOdataService {
           this.isConctrolCenterListLoaded = true;
           return this.listControlCenter;
         }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService fetchAllControlCenters.`,
-            ConsoleLogTypeEnum.error);
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in FinanceOdataService fetchAllControlCenters.`,
+              ConsoleLogTypeEnum.error);
 
-          this.isConctrolCenterListLoaded = false;
-          this.listControlCenter = [];
+            this.isConctrolCenterListLoaded = false;
+            this.listControlCenter = [];
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.ControlCenters);
     }
@@ -804,7 +814,7 @@ export class FinanceOdataService {
     })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService readControlCenter`,
-         ConsoleLogTypeEnum.debug);
+          ConsoleLogTypeEnum.debug);
 
         const resdata = response as any;
         const hd: ControlCenter = new ControlCenter();
@@ -823,12 +833,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readControlCenter failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readControlCenter failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -855,12 +865,12 @@ export class FinanceOdataService {
         this.listControlCenter.push(hd);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createControlCenter, failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createControlCenter, failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -903,12 +913,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenter failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenter failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -948,12 +958,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenterByPatch failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeControlCenterByPatch failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -981,12 +991,12 @@ export class FinanceOdataService {
         }
         return true;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteControlCenter failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteControlCenter failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1078,12 +1088,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceStorageService readOrder failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceStorageService readOrder failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1111,12 +1121,12 @@ export class FinanceOdataService {
         this.listOrder.push(hd);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createOrder failed: ${error}.`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createOrder failed: ${error}.`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1155,12 +1165,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrder failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrder failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1199,12 +1209,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrderByPatch failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeOrderByPatch failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1234,12 +1244,12 @@ export class FinanceOdataService {
 
         return true;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteOrder failed ${error}.`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteOrder failed ${error}.`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1312,12 +1322,12 @@ export class FinanceOdataService {
         hd.onSetData(response);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createPlan failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createPlan failed: ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1354,12 +1364,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readPlan, failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readPlan, failed: ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1414,12 +1424,12 @@ export class FinanceOdataService {
 
         return rstObj;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDocuments failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDocuments failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1448,12 +1458,12 @@ export class FinanceOdataService {
 
         return rst;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readDocument, failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readDocument, failed: ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1480,10 +1490,10 @@ export class FinanceOdataService {
     if (filter.AccountID) {
       filterstrs.push(`AccountID eq ${filter.AccountID}`);
     }
-    
+
     const apiurl: string = environment.ApiUrl + '/FinanceTmpDPDocuments';
     let params: HttpParams = new HttpParams();
-    
+
     params = params.append('$filter', filterstrs.join(' and '));
 
     return this.http.get(apiurl, {
@@ -1506,13 +1516,13 @@ export class FinanceOdataService {
 
         return docADP;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDPTmpDocs failed ${errresp}`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDPTmpDocs failed ${errresp}`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
       );
   }
 
@@ -1555,9 +1565,9 @@ export class FinanceOdataService {
     params = params.append('$filter', filterstrs.join(' and '));
 
     return this.http.get(apiurl, {
-        headers,
-        params,
-      })
+      headers,
+      params,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAllLoanTmpDocs.`,
           ConsoleLogTypeEnum.debug);
@@ -1574,13 +1584,13 @@ export class FinanceOdataService {
 
         return docLoan;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllLoanTmpDocs failed ${errresp}`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllLoanTmpDocs failed ${errresp}`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
       );
   }
 
@@ -1596,8 +1606,8 @@ export class FinanceOdataService {
 
     const jdata: string = objDetail.writeJSONString();
     return this.http.post(this.documentAPIUrl, jdata, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createDocument, map.`,
           ConsoleLogTypeEnum.debug);
@@ -1606,12 +1616,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocument failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocument failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1641,13 +1651,13 @@ export class FinanceOdataService {
         ndoc.onSetData(response as any);
         return ndoc;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocumentFromDPTemplate failed: ${errresp}`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, createDocumentFromDPTemplate failed: ${errresp}`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
       );
   }
 
@@ -1663,21 +1673,21 @@ export class FinanceOdataService {
 
     const apiurl: string = this.documentAPIUrl + '(' + docid.toString() + ')';
     return this.http.delete(apiurl, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, deleteDocument, map.`,
           ConsoleLogTypeEnum.debug);
 
         return response as any;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, deleteDocument failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, deleteDocument failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }),
-    );
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }),
+      );
   }
 
   /**
@@ -1725,12 +1735,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createADPDocument in FinanceStorageService.`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createADPDocument in FinanceStorageService.`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1762,12 +1772,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceOdataService.`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1788,8 +1798,8 @@ export class FinanceOdataService {
       LoanTemplateDocumentID: tmpdocid,
       HomeID: this.homeService.ChosedHome!.ID,
     }, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, createLoanRepayDoc`,
           ConsoleLogTypeEnum.debug);
@@ -1799,12 +1809,12 @@ export class FinanceOdataService {
 
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc, failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc, failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -1832,13 +1842,13 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc failed`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService createLoanRepayDoc failed`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
       );
   }
 
@@ -1857,8 +1867,8 @@ export class FinanceOdataService {
     const jdata: string = JSON && JSON.stringify(jobj);
 
     return this.http.post(apiurl, jdata, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
@@ -1867,14 +1877,14 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-    );
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
+      );
   }
 
   /**
@@ -1892,8 +1902,8 @@ export class FinanceOdataService {
     const jdata: string = JSON && JSON.stringify(jinfo);
 
     return this.http.post(apiurl, jdata, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceOdataService: ' + response,
           ConsoleLogTypeEnum.debug);
@@ -1902,14 +1912,14 @@ export class FinanceOdataService {
         ndoc.onSetData(response as any);
         return ndoc;
       }),
-      catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
-          ConsoleLogTypeEnum.error);
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
 
-        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-        return throwError(errmsg);
-      }),
-    );
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
+      );
   }
 
   /**
@@ -1926,20 +1936,20 @@ export class FinanceOdataService {
 
     const apiurl: string = `${this.documentAPIUrl}(${docid})/IsChangable()`;
     return this.http.get(apiurl, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, isDocumentChangable, map.`,
           ConsoleLogTypeEnum.debug);
 
         return response.value as boolean;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, isDocumentChangable failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, isDocumentChangable failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      }),
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }),
       );
   }
 
@@ -1956,8 +1966,8 @@ export class FinanceOdataService {
     const targetUrl = `${this.documentAPIUrl}/${objDetail.Id}`;
     const jdata: string = objDetail.writeJSONString();
     return this.http.put(targetUrl, jdata, {
-        headers,
-      })
+      headers,
+    })
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, changeDocument, map.`,
           ConsoleLogTypeEnum.debug);
@@ -1966,12 +1976,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, changeDocument failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, changeDocument failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      }));
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }));
   }
 
   /**
@@ -1998,12 +2008,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDateViaPatch failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDateViaPatch failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -2030,12 +2040,12 @@ export class FinanceOdataService {
         hd.onSetData(response as any);
         return hd;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDespViaPatch failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService changeDocumentDespViaPatch failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -2045,7 +2055,7 @@ export class FinanceOdataService {
    *  The succeed one with documentId filled
    *  The failed one with documentId is null
    */
-  public massCreateNormalDocument(items: Document[]): Observable<{PostedDocuments: Document[], FailedDocuments: Document[]}> {
+  public massCreateNormalDocument(items: Document[]): Observable<{ PostedDocuments: Document[], FailedDocuments: Document[] }> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2108,12 +2118,12 @@ export class FinanceOdataService {
 
         return result;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionType failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionType failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /** Get monthly report by transaction type, Month on Month
@@ -2155,12 +2165,12 @@ export class FinanceOdataService {
 
         return result;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionTypeMoM failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByTransactionTypeMoM failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /** Get report by account
@@ -2172,18 +2182,18 @@ export class FinanceOdataService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-  
+
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
       };
-  
+
       return this.http.post(`${this.reportAPIUrl}/GetReportByAccount`, jdata, {
         headers
       })
         .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByAccount succeed',
             ConsoleLogTypeEnum.debug);
-  
+
           const rjs: any = response;
           this.listReportByAccount = [];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2194,15 +2204,15 @@ export class FinanceOdataService {
             }
           }
           this.isReportByAccountLoaded = true;
-  
+
           return this.listReportByAccount;
         }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccount failed ${error}`,
-            ConsoleLogTypeEnum.error);
-  
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));  
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccount failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listReportByAccount);
     }
@@ -2243,14 +2253,14 @@ export class FinanceOdataService {
 
         return reportdata;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccount failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByAccount failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));  
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
-  
+
   /** Get report by control center
    * @param forceReload force to reload data from server
    */
@@ -2260,18 +2270,18 @@ export class FinanceOdataService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-  
+
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
       };
-  
+
       return this.http.post(`${this.reportAPIUrl}/GetReportByControlCenter`, jdata, {
         headers
       })
         .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByControlCenter succeed',
             ConsoleLogTypeEnum.debug);
-  
+
           const rjs: any = response;
           this.listReportByControlCenter = [];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2282,15 +2292,15 @@ export class FinanceOdataService {
             }
           }
           this.isReportByControlCenterLoaded = true;
-  
+
           return this.listReportByControlCenter;
         }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByControlCenter failed ${error}`,
-            ConsoleLogTypeEnum.error);
-  
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));  
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByControlCenter failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listReportByControlCenter);
     }
@@ -2335,12 +2345,12 @@ export class FinanceOdataService {
 
         return reportdata;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByControlCenterMoM failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByControlCenterMoM failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));  
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /** Get report by order
@@ -2353,21 +2363,21 @@ export class FinanceOdataService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-  
-      const jdata: { HomeID: number, OrderID?: number} = {
+
+      const jdata: { HomeID: number, OrderID?: number } = {
         HomeID: this.homeService.ChosedHome?.ID!,
       };
       if (orderid !== undefined) {
         jdata.OrderID = orderid;
       }
-  
+
       return this.http.post(`${this.reportAPIUrl}/GetReportByOrder`, jdata, {
         headers
       })
         .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchReportByOrder succeed',
             ConsoleLogTypeEnum.debug);
-  
+
           const rjs: any = response;
           if (orderid !== undefined) {
             let returnData: FinanceReportByOrder[] = [];
@@ -2378,8 +2388,8 @@ export class FinanceOdataService {
                 returnData.push(rst);
               }
             }
-    
-            return returnData;  
+
+            return returnData;
           } else {
             this.listReportByOrder = [];
             if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2390,16 +2400,16 @@ export class FinanceOdataService {
               }
             }
             this.isReportByOrderLoaded = true;
-    
-            return this.listReportByOrder;  
+
+            return this.listReportByOrder;
           }
         }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByOrder failed ${error}`,
-            ConsoleLogTypeEnum.error);
-  
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));  
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchReportByOrder failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listReportByOrder);
     }
@@ -2419,18 +2429,18 @@ export class FinanceOdataService {
 
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
-        Year: today.year(), 
+        Year: today.year(),
         Month: today.month() + 1,
         ExcludeTransfer: excludeTransfer
       };
-  
+
       return this.http.post(`${this.reportAPIUrl}/GetFinanceOverviewKeyFigure`, jdata, {
         headers
       })
         .pipe(map((response: any) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchOverviewKeyfigure succeed',
             ConsoleLogTypeEnum.debug);
-  
+
           const rjs: any = response;
 
           if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2439,106 +2449,162 @@ export class FinanceOdataService {
             }
           }
           this.isOverviewKeyfigureLoaded = true;
-  
+
           return this.overviewKeyfigure;
         }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchOverviewKeyfigure failed ${error}`,
-            ConsoleLogTypeEnum.error);
-  
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));  
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchOverviewKeyfigure failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.overviewKeyfigure);
-    }    
+    }
   }
-
-  /** Get cash report
-   * @param forceReloaad forece reload the data
-   */
-  // public fetchCashReport(forceReload?: boolean): Observable<FinanceReportEntry[]> {
-  //   if(!isCashOverviewKeyfigureLoaded || reload) {
-  //     let headers: HttpHeaders = new HttpHeaders();
-  //     headers = headers.append('Content-Type', 'application/json')
-  //       .append('Accept', 'application/json')
-  //       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-  
-  //     const jdata = {
-  //       HomeID: this.homeService.ChosedHome?.ID,
-  //       Period: period,
-  //     };
-  
-  //     return this.http.post(`${this.reportAPIUrl}/GetCashReport`, jdata, {
-  //       headers
-  //     })
-  //       .pipe(map((response: any) => {
-  //         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchCashReport succeed',
-  //           ConsoleLogTypeEnum.debug);
-  
-  //         const rjs: any = response;
-  //         let listCashReport: FinanceReportEntry[] = [];
-  //         if (rjs.value instanceof Array && rjs.value.length > 0) {
-  //           for (const si of rjs.value) {
-  //             const rst: FinanceReportEntry = new FinanceReportEntry();
-  //             rst.onSetData(si);
-  //             listCashReport.push(rst);
-  //           }
-  //         }
-  
-  //         return listCashReport;
-  //       }),
-  //       catchError((error: HttpErrorResponse) => {
-  //         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchCashReport failed ${error}`,
-  //           ConsoleLogTypeEnum.error);
-  
-  //         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-  //       }));  
-  //   } else {
-  //     return of(this.cashOverviewKeyfigure);
-  //   }
-  // }
 
   /** Get cash report, month on month
    * @param period Period
    */
-  public fetchCashReportMoM(period: string): Observable<FinanceReportEntryMoM[]> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+  public fetchCashReportMoM(period: string, forceReload?: boolean): Observable<FinanceReportEntryMoM[]> {
+    if (!(this.isOverviewKeyfigureLoaded && this.cashReportMOMPeriod === period) || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const jdata: any = {
-      HomeID: this.homeService.ChosedHome?.ID,
-      Period: period,
-    };
+      const jdata: any = {
+        HomeID: this.homeService.ChosedHome?.ID,
+        Period: period,
+      };
 
-    return this.http.post(`${this.reportAPIUrl}/GetCashReportMOM`, jdata, {
-      headers
-    })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchCashReportMoM succeed',
-          ConsoleLogTypeEnum.debug);
+      return this.http.post(`${this.reportAPIUrl}/GetCashReportMOM`, jdata, {
+        headers
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchCashReportMoM succeed',
+            ConsoleLogTypeEnum.debug);
 
-        const rjs: any = response;
-        const reportdata: FinanceReportEntryMoM[] = [];
-        if (rjs.value instanceof Array && rjs.value.length > 0) {
-          for (const si of rjs.value) {
-            const rst: FinanceReportEntryMoM = new FinanceReportEntryMoM();
-            rst.onSetData(si);
-            reportdata.push(rst);
+          const rjs: any = response;
+
+          this.cashReportMOMPeriod = period;
+          this.cashReportMoM = [];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: FinanceReportEntryMoM = new FinanceReportEntryMoM();
+              rst.onSetData(si);
+              this.cashReportMoM.push(rst);
+            }
           }
-        }
 
-        return reportdata;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchCashReportMoM failed ${error}`,
-          ConsoleLogTypeEnum.error);
+          return this.cashReportMoM;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchCashReportMoM failed ${error}`,
+              ConsoleLogTypeEnum.error);
 
-        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      }));  
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          }));
+    } else {
+      return of(this.cashReportMoM);
+    }
   }
-  
+
+  /** Get statement of income and expense, month on month
+   * @param period Period
+   */
+  public fetchStatementOfIncomeAndExposeMoM(period: string, excludeTransfer = false, forceReload?: boolean): Observable<FinanceReportEntryMoM[]> {
+    if (excludeTransfer) {
+      // Without transfer
+      if (!(this.isStatementOfIncomeAndExpenseMOMWOTransferLoaded && this.statementOfIncomeAndExpenseMOMWOTransferPeriod === period) || forceReload) {
+        let headers: HttpHeaders = new HttpHeaders();
+        headers = headers.append('Content-Type', 'application/json')
+          .append('Accept', 'application/json')
+          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        const jdata: any = {
+          HomeID: this.homeService.ChosedHome?.ID,
+          ExcludeTransfer: true,
+          Period: period,
+        };
+
+        return this.http.post(`${this.reportAPIUrl}/GetStatementOfIncomeAndExpenseMOM`, jdata, {
+          headers
+        })
+          .pipe(map((response: any) => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchStatementOfIncomeAndExposeMoM succeed',
+              ConsoleLogTypeEnum.debug);
+
+            const rjs: any = response;
+
+            this.statementOfIncomeAndExpenseMOMWOTransferPeriod = period;
+            this.statementOfIncomeAndExpenseMOMWOTransfer = [];
+            if (rjs.value instanceof Array && rjs.value.length > 0) {
+              for (const si of rjs.value) {
+                const rst: FinanceReportEntryMoM = new FinanceReportEntryMoM();
+                rst.onSetData(si);
+                this.statementOfIncomeAndExpenseMOMWOTransfer.push(rst);
+              }
+            }
+
+            return this.statementOfIncomeAndExpenseMOMWOTransfer;
+          }),
+            catchError((error: HttpErrorResponse) => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchStatementOfIncomeAndExposeMoM failed ${error}`,
+                ConsoleLogTypeEnum.error);
+
+              return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            }));
+      } else {
+        return of(this.statementOfIncomeAndExpenseMOMWOTransfer);
+      }
+    } else {
+      // With transfer
+      if (!(this.isStatementOfIncomeAndExpenseMOMWithTransferLoaded && this.statementOfIncomeAndExpenseMOMWithTransferPeriod === period) || forceReload) {
+        let headers: HttpHeaders = new HttpHeaders();
+        headers = headers.append('Content-Type', 'application/json')
+          .append('Accept', 'application/json')
+          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        const jdata: any = {
+          HomeID: this.homeService.ChosedHome?.ID,
+          ExcludeTransfer: false,
+          Period: period,
+        };
+
+        return this.http.post(`${this.reportAPIUrl}/GetStatementOfIncomeAndExpenseMOM`, jdata, {
+          headers
+        })
+          .pipe(map((response: any) => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchStatementOfIncomeAndExposeMoM succeed',
+              ConsoleLogTypeEnum.debug);
+
+            const rjs: any = response;
+
+            this.statementOfIncomeAndExpenseMOMWithTransferPeriod = period;
+            this.statementOfIncomeAndExpenseMOMWithTransfer = [];
+            if (rjs.value instanceof Array && rjs.value.length > 0) {
+              for (const si of rjs.value) {
+                const rst: FinanceReportEntryMoM = new FinanceReportEntryMoM();
+                rst.onSetData(si);
+                this.statementOfIncomeAndExpenseMOMWithTransfer.push(rst);
+              }
+            }
+
+            return this.statementOfIncomeAndExpenseMOMWithTransfer;
+          }),
+            catchError((error: HttpErrorResponse) => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchStatementOfIncomeAndExposeMoM failed ${error}`,
+                ConsoleLogTypeEnum.error);
+
+              return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            }));
+      } else {
+        return of(this.statementOfIncomeAndExpenseMOMWithTransfer);
+      }
+    }
+  }
+
   /**
    * Utility part
    */
@@ -2583,12 +2649,12 @@ export class FinanceOdataService {
         }
         return results;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceOdataService: ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceOdataService: ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   // Calculate loan tmp. docs
@@ -2650,12 +2716,12 @@ export class FinanceOdataService {
         }
         return results;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceOdataService: ${error}`,
-          ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceOdataService: ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   // get repeated dates
@@ -2695,12 +2761,12 @@ export class FinanceOdataService {
         }
         return results;
       }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService GetRepeatedDates, failed ${error}`,
-         ConsoleLogTypeEnum.error);
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService GetRepeatedDates, failed ${error}`,
+            ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
   }
 
   /**
@@ -2858,7 +2924,7 @@ export class FinanceOdataService {
    * search document item
    */
   public searchDocItem(filters: GeneralFilterItem[], top?: number, skip?: number, orderby?: { field: string, order: string })
-    : Observable<{totalCount: number, contentList: DocumentItemView[]}> {
+    : Observable<{ totalCount: number, contentList: DocumentItemView[] }> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2902,13 +2968,13 @@ export class FinanceOdataService {
         contentList: ardi,
       };
     }),
-    catchError((errresp: HttpErrorResponse) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService searchDocItem failed ${errresp}`,
-        ConsoleLogTypeEnum.error);
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService searchDocItem failed ${errresp}`,
+          ConsoleLogTypeEnum.error);
 
-      const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-      return throwError(errmsg);
-    }),
+        const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
     );
   }
 

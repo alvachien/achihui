@@ -7,7 +7,7 @@ import { forkJoin, lastValueFrom } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
 import { ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM,
-  UIAccountForSelection, Account, AccountCategory, BuildupAccountForSelection, FinanceReportByAccountMOM, } from '../../../../model';
+  UIAccountForSelection, Account, AccountCategory, BuildupAccountForSelection, FinanceReportByAccountMOM, financePeriodLast12Months, financePeriodLast6Months, financePeriodLast3Months, } from '../../../../model';
 
 @Component({
   selector: 'hih-account-month-on-month-report',
@@ -80,7 +80,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
         const arIn: any[] = [];
         const arOut: any[] = [];
         const arBal: any[] = [];
-        if (this.selectedPeriod === '1') {
+        if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for(let imonth = 11; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -100,7 +100,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
               arBal.push(0);
             }
           }
-        } else if (this.selectedPeriod === '2') {
+        } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for(let imonth = 5; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -120,7 +120,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
               arBal.push(0);
             }
           }
-        } else if (this.selectedPeriod === '3') {
+        } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for(let imonth = 2; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -172,21 +172,21 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
             type: 'value',
           }],
           series: [{
-            name: 'IN',
+            name: translate('Finance.Income'),
             type: 'bar',
             emphasis: {
               focus: 'series'
             },
             data: arIn,
           }, {
-            name: 'OUT',
+            name: translate('Finance.Expense'),
             type: 'bar',
             emphasis: {
               focus: 'series'
             },
             data: arOut,
           }, {
-            name: 'BALANCE',
+            name: translate('Finance.Total'),
             type: 'bar',
             emphasis: {
               focus: 'series'
