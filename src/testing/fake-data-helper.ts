@@ -3,7 +3,6 @@ import {
   AccountCategory, TranType, AssetCategory, Account, AccountJson,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
-  LearnCategory, LearnCategoryJson,
   BookCategory, BookCategoryJson,
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
@@ -13,8 +12,7 @@ import {
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
-  financeAccountCategoryAdvancePayment, LearnObject, LearnHistory,
-  SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
+  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
   Location, LocationJson, financeTranTypeInterestOut,
   BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost,
 } from '../app/model';
@@ -49,9 +47,6 @@ export class FakeDataHelper {
   private _currUser: UserAuthInfo = new UserAuthInfo();
   private _appLanguages: AppLanguage[] = [];
   private _appLanguagesFromAPI: AppLanguageJson[] = [];
-  private _learnCategoriesFromAPI: LearnCategoryJson[] = [];
-  private _learnCategories: LearnCategory[] = [];
-  private _learnObjects: LearnObject[] = [];
   private _libBookCategories: BookCategory[] = [];
   private _libBookCategoriesFromAPI: BookCategoryJson[] = [];
   private _libMovieGenres: MovieGenre[] = [];
@@ -216,24 +211,6 @@ export class FakeDataHelper {
   get appLanguagesFromAPI(): any[] {
     if (this._appLanguagesFromAPI) {
       return this._appLanguagesFromAPI;
-    }
-    return [];
-  }
-  get learnCategoriesFromAPI(): LearnCategoryJson[] {
-    if (this._learnCategoriesFromAPI) {
-      return this._learnCategoriesFromAPI;
-    }
-    return [];
-  }
-  get learnCategories(): LearnCategory[] {
-    if (this._learnCategories) {
-      return this._learnCategories;
-    }
-    return [];
-  }
-  get learnObjects(): LearnObject[] {
-    if (this._learnObjects) {
-      return this._learnObjects;
     }
     return [];
   }
@@ -1224,59 +1201,6 @@ export class FakeDataHelper {
         Desp: 'desp of asset 1',
       };
       this._finAssetCategoriesFromAPI.push(asc1 as AssetCategoryJson);
-    }
-  }
-  public buildLearnCategoriesFromAPI(): void {
-    this._learnCategoriesFromAPI = [];
-    const c1: LearnCategoryJson = {
-      ID: 1,
-      Name: 'Category 1',
-    };
-    this._learnCategoriesFromAPI.push(c1);
-    const c2: LearnCategoryJson = {
-      ID: 2,
-      Name: 'Category 2',
-    };
-    this._learnCategoriesFromAPI.push(c2);
-    const c11: LearnCategoryJson = {
-      ID: 11,
-      Name: 'Category 1.Child',
-      ParentID: 1,
-    };
-    this._learnCategoriesFromAPI.push(c11);
-  }
-  public buildLearnCategories(): void {
-    this._learnCategories = [];
-    let ctgy: LearnCategory;
-    ctgy = new LearnCategory();
-    ctgy.Id = 1;
-    ctgy.Name = 'Cat. 1';
-    ctgy.SysFlag = true;
-    ctgy.Comment = 'Category 1';
-    this._learnCategories.push(ctgy);
-    ctgy = new LearnCategory();
-    ctgy.Id = 2;
-    ctgy.Name = 'Cat. 2';
-    ctgy.SysFlag = true;
-    ctgy.Comment = 'Category 2';
-    this._learnCategories.push(ctgy);
-    ctgy = new LearnCategory();
-    ctgy.Id = 11;
-    ctgy.Name = 'Cat. 1-1';
-    ctgy.ParentId = 1;
-    ctgy.SysFlag = true;
-    ctgy.Comment = 'Category 1.1';
-    this._learnCategories.push(ctgy);
-  }
-  public buildLearnObjects(): void {
-    this._learnObjects = [];
-    for (let i = 0; i < 10; i ++) {
-      const obj1: LearnObject = new LearnObject();
-      obj1.HID = this._chosedHome ? this._chosedHome.ID : 0;
-      obj1.Id = 11 + i;
-      obj1.Name = `test-${i + 1}`;
-      obj1.Content = 'test';
-      this._learnObjects.push(obj1);
     }
   }
   public buildLibBookCategories(): void {

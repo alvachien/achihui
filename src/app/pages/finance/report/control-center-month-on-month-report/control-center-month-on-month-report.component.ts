@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { translate } from '@ngneat/transloco';
+import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { ConsoleLogTypeEnum, ControlCenter, FinanceReportByControlCenterMOM, ModelUtility } from 'src/app/model';
+import { ConsoleLogTypeEnum, ControlCenter, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportByControlCenterMOM, ModelUtility } from 'src/app/model';
 import { FinanceOdataService } from 'src/app/services';
 
 @Component({
@@ -125,7 +126,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
         });
 
         const arSeries: any[] = [];
-        if (this.selectedPeriod === '1') {
+        if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -143,8 +144,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               let validx = val.findIndex(p => p.ControlCenterId === ccid && p.Month === (monthinuse.month() + 1));
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance)
-                arBal.push(val[validx].DebitBalance + val[validx].CreditBalance)
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
               } else {
                 arIn.push(0);
                 arOut.push(0);
@@ -156,7 +157,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'In',
               type: 'bar',
-              stack: 'IN',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Income'),
               emphasis: {
                 focus: 'series'
               },
@@ -165,7 +171,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Out',
               type: 'bar',
-              stack: 'OUT',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Expense'),
               emphasis: {
                 focus: 'series'
               },
@@ -174,14 +185,19 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Bal',
               type: 'bar',
-              stack: 'BAL',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Common.Total'),
               emphasis: {
                 focus: 'series'
               },
               data: arBal,
             });
           });
-        } else if (this.selectedPeriod === '2') {
+        } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for (let imonth = 5; imonth >= 0; imonth--) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -199,8 +215,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               let validx = val.findIndex(p => p.ControlCenterId === ccid && p.Month === (monthinuse.month() + 1));
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance)
-                arBal.push(val[validx].DebitBalance + val[validx].CreditBalance)
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
               } else {
                 arIn.push(0);
                 arOut.push(0);
@@ -212,7 +228,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'In',
               type: 'bar',
-              stack: 'IN',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Income'),
               emphasis: {
                 focus: 'series'
               },
@@ -221,7 +242,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Out',
               type: 'bar',
-              stack: 'OUT',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Expense'),
               emphasis: {
                 focus: 'series'
               },
@@ -230,14 +256,19 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Bal',
               type: 'bar',
-              stack: 'BAL',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Common.Total'),
               emphasis: {
                 focus: 'series'
               },
               data: arBal,
             });
           });
-        } else if (this.selectedPeriod === '3') {
+        } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for (let imonth = 2; imonth >= 0; imonth--) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -255,8 +286,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
               let validx = val.findIndex(p => p.ControlCenterId === ccid && p.Month === (monthinuse.month() + 1));
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance)
-                arBal.push(val[validx].DebitBalance + val[validx].CreditBalance)
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
               } else {
                 arIn.push(0);
                 arOut.push(0);
@@ -268,7 +299,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'In',
               type: 'bar',
-              stack: 'IN',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Income'),
               emphasis: {
                 focus: 'series'
               },
@@ -277,7 +313,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Out',
               type: 'bar',
-              stack: 'OUT',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Finance.Expense'),
               emphasis: {
                 focus: 'series'
               },
@@ -286,7 +327,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
             arSeries.push({
               name: ccname + 'Bal',
               type: 'bar',
-              stack: 'BAL',
+              label: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 16,
+              },
+              stack: translate('Common.Total'),
               emphasis: {
                 focus: 'series'
               },

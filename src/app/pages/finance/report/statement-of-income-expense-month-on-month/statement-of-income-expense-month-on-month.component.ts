@@ -8,6 +8,7 @@ import { FinanceOdataService } from 'src/app/services';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
+import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-statement-of-income-expense-month-on-month',
@@ -100,7 +101,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(this.reportData[validx].InAmount + this.reportData[validx].OutAmount);
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -120,7 +121,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(this.reportData[validx].InAmount + this.reportData[validx].OutAmount);
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -140,7 +141,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(this.reportData[validx].InAmount + this.reportData[validx].OutAmount);
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -162,9 +163,13 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       toolbox: {
         feature: {
           dataView: { show: true, readOnly: false },
+          magicType: { show: true, type: ['line', 'bar'] },
           restore: { show: true },
           saveAsImage: { show: true }
         }
+      },
+      legend: {
+        data: [translate('Finance.Income'), translate('Finance.Expense'), translate('Common.Total')]
       },
       xAxis: [
         {
@@ -181,6 +186,11 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       series: [{
         name: translate('Finance.Income'),
         type: 'bar',
+        label: {
+          show: true,
+          formatter: '{c}',
+          fontSize: 16,
+        },
         emphasis: {
           focus: 'series'
         },
@@ -188,13 +198,23 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       }, {
         name: translate('Finance.Expense'),
         type: 'bar',
+        label: {
+          show: true,
+          formatter: '{c}',
+          fontSize: 16,
+        },
         emphasis: {
           focus: 'series'
         },
         data: arOut,
       }, {
-        name: translate('Finance.Total'),
-        type: 'bar',
+        name: translate('Common.Total'),
+        type: 'line',
+        label: {
+          show: true, 
+          formatter: '{c}',
+          fontSize: 16,
+        },
         emphasis: {
           focus: 'series'
         },

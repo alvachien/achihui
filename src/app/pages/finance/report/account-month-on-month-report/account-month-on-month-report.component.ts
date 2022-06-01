@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { translate } from '@ngneat/transloco';
+import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -63,6 +64,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
   onChanges(event: any): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent onChanges with ${this.selectedAccountID}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug);
+    this.refreshData();
   }
 
   refreshData(): void {
@@ -93,7 +95,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);
-              arBal.push(val[validx].DebitBalance + val[validx].CreditBalance);
+              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
             } else {
               arIn.push(0);
               arOut.push(0);
@@ -113,7 +115,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);
-              arBal.push(val[validx].DebitBalance + val[validx].CreditBalance);
+              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
             } else {
               arIn.push(0);
               arOut.push(0);
@@ -133,7 +135,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);
-              arBal.push(val[validx].DebitBalance + val[validx].CreditBalance);
+              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
             } else {
               arIn.push(0);
               arOut.push(0);
@@ -174,6 +176,11 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
           series: [{
             name: translate('Finance.Income'),
             type: 'bar',
+            label: {
+              show: true,
+              formatter: '{c}',
+              fontSize: 16,
+            },
             emphasis: {
               focus: 'series'
             },
@@ -181,13 +188,23 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
           }, {
             name: translate('Finance.Expense'),
             type: 'bar',
+            label: {
+              show: true,
+              formatter: '{c}',
+              fontSize: 16,
+            },
             emphasis: {
               focus: 'series'
             },
             data: arOut,
           }, {
-            name: translate('Finance.Total'),
+            name: translate('Common.Total'),
             type: 'bar',
+            label: {
+              show: true,
+              formatter: '{c}',
+              fontSize: 16,
+            },
             emphasis: {
               focus: 'series'
             },

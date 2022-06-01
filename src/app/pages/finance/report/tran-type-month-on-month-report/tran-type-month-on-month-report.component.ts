@@ -4,10 +4,10 @@ import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { lastValueFrom } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
-import { LogLevel, ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM, } from '../../../../model';
+import { ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM, financePeriodLast12Months, 
+  financePeriodLast6Months, financePeriodLast3Months, } from '../../../../model';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
@@ -101,6 +101,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   onChanges(event: any): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent onChanges with ${this.selectedTranTypes}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug);
+    this.refreshData();
   }
 
   refreshData(): void {
@@ -124,7 +125,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
         });
 
         const arSeries: any[] = [];
-        if (this.selectedPeriod === '1') {
+        if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for(let imonth = 11; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -154,7 +155,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
               data: ardata,
             });
           });
-        } else if (this.selectedPeriod === '2') {
+        } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for(let imonth = 5; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -184,7 +185,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
               data: ardata,
             });
           });
-        } else if (this.selectedPeriod === '3') {
+        } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for(let imonth = 2; imonth >= 0; imonth --) {
             let monthinuse = moment().subtract(imonth, 'month');
@@ -208,6 +209,11 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
               name: ttname,
               type: 'bar',
               stack: 'stack',
+              label: {
+                show: true, 
+                formatter: '{c}',
+                fontSize: 16,
+              },      
               emphasis: {
                 focus: 'series'
               },
@@ -269,10 +275,4 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       }
     });
   }
-
-  // handleAreaClick(e: Event, label: string, option: NzCascaderOption): void {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   console.log('clicked "', label, '"', option);
-  // }
 }
