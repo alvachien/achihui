@@ -619,7 +619,8 @@
     "Cash": "Cash",
     "CashMonthOnMonth": "Cash Month on Month",
     "StatementOfIncomeAndExpense": "Statement of Income and Expense",
-    "StatementOfIncomeAndExpenseMonthOnMonth": "Statement of Income and Expense Month On Month"
+    "StatementOfIncomeAndExpenseMonthOnMonth": "Statement of Income and Expense Month On Month",
+    "InitialBalance": "Initial Balance"
   },
   "Library": {
     "BookCategories": "Book Categories",

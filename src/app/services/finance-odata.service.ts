@@ -5,8 +5,7 @@ import { catchError, map, startWith, switchMap, mergeAll } from 'rxjs/operators'
 import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
-import {
-  LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
+import { Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
   DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, RepeatedDatesWithAmountAPIInput,
   RepeatedDatesWithAmountAPIOutput, RepeatFrequencyEnum, financeAccountCategoryAdvancePayment,
   RepeatedDatesAPIInput, RepeatedDatesAPIOutput, RepeatDatesWithAmountAndInterestAPIInput, financeAccountCategoryAdvanceReceived,
@@ -16,7 +15,7 @@ import {
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
   FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
-  FinanceReportEntry, FinanceReportEntryMoM,
+  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -59,9 +58,21 @@ export class FinanceOdataService {
   private isStatementOfIncomeAndExpenseMOMWOTransferLoaded: boolean = false;
   private statementOfIncomeAndExpenseMOMWOTransferPeriod = '';
   private statementOfIncomeAndExpenseMOMWOTransfer: FinanceReportEntryMoM[] = [];
-  private isCashReportMoMLoaded: boolean = false;
+  private isDailyStatementOfIncomeAndExpenseWithTransferLoaded: boolean = false;
+  private dailyStatementOfIncomeAndExpenseWithTransferYear: number = 0;
+  private dailyStatementOfIncomeAndExpenseWithTransferMonth: number = 0;
+  private dailyStatementOfIncomeAndExpenseWithTransfer: FinanceReportEntryPerDate[] = [];
+  private isDailyStatementOfIncomeAndExpenseWOTransferLoaded: boolean = false;
+  private dailyStatementOfIncomeAndExpenseWOTransferYear: number = 0;
+  private dailyStatementOfIncomeAndExpenseWOTransferMonth: number = 0;
+  private dailyStatementOfIncomeAndExpenseWOTransfer: FinanceReportEntryPerDate[] = [];
+  private isCashReportMOMLoaded: boolean = false;
   private cashReportMOMPeriod = '';
   private cashReportMoM: FinanceReportEntryMoM[] = [];
+  private isDailyCashReportLoaed: boolean = false;
+  private dailyCashReportYear: number = 0;
+  private dailyCashReportMonth: number = 0;
+  private dailyCashReport: FinanceReportEntryPerDate[] = [];
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenters';
@@ -2465,9 +2476,10 @@ export class FinanceOdataService {
 
   /** Get cash report, month on month
    * @param period Period
+   * @param forceReload Force to reload
    */
   public fetchCashReportMoM(period: string, forceReload?: boolean): Observable<FinanceReportEntryMoM[]> {
-    if (!(this.isOverviewKeyfigureLoaded && this.cashReportMOMPeriod === period) || forceReload) {
+    if (!(this.isCashReportMOMLoaded && this.cashReportMOMPeriod === period) || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -2487,6 +2499,7 @@ export class FinanceOdataService {
 
           const rjs: any = response;
 
+          this.isCashReportMOMLoaded= true;
           this.cashReportMOMPeriod = period;
           this.cashReportMoM = [];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2510,6 +2523,58 @@ export class FinanceOdataService {
     }
   }
 
+    /** Get statement of income and expense, on daily base
+   * @param year Year
+   * @param month Month
+   * @param forceReload Force to realod
+   */
+  public fetchDailyCashReport(year: number, month: number, forceReload?: boolean): Observable<FinanceReportEntryPerDate[]> {
+    if (!(this.isDailyCashReportLoaed && this.dailyCashReportYear === year && this.dailyCashReportMonth === month) || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+      const jdata: any = {
+        HomeID: this.homeService.ChosedHome?.ID,
+        Year: year,
+        Month: month,
+      };
+
+      return this.http.post(`${this.reportAPIUrl}/GetDailyCashReport`, jdata, {
+        headers
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchDailyCashReport succeed',
+            ConsoleLogTypeEnum.debug);
+
+          const rjs: any = response;
+
+          this.isDailyCashReportLoaed = true;
+          this.dailyCashReportYear = year;
+          this.dailyCashReportMonth = month;
+          this.dailyCashReport = [];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: FinanceReportEntryPerDate = new FinanceReportEntryPerDate();
+              rst.onSetData(si);
+              this.dailyCashReport.push(rst);
+            }
+          }
+
+          return this.dailyCashReport;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchDailyCashReport failed ${error}`,
+              ConsoleLogTypeEnum.error);
+
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          }));
+    } else {
+      return of(this.dailyCashReport);
+    }
+  }
+  
   /** Get statement of income and expense, month on month
    * @param period Period
    */
@@ -2537,6 +2602,7 @@ export class FinanceOdataService {
 
             const rjs: any = response;
 
+            this.isStatementOfIncomeAndExpenseMOMWOTransferLoaded = true;
             this.statementOfIncomeAndExpenseMOMWOTransferPeriod = period;
             this.statementOfIncomeAndExpenseMOMWOTransfer = [];
             if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2581,6 +2647,7 @@ export class FinanceOdataService {
 
             const rjs: any = response;
 
+            this.isStatementOfIncomeAndExpenseMOMWithTransferLoaded = true;
             this.statementOfIncomeAndExpenseMOMWithTransferPeriod = period;
             this.statementOfIncomeAndExpenseMOMWithTransfer = [];
             if (rjs.value instanceof Array && rjs.value.length > 0) {
@@ -2601,6 +2668,112 @@ export class FinanceOdataService {
             }));
       } else {
         return of(this.statementOfIncomeAndExpenseMOMWithTransfer);
+      }
+    }
+  }
+
+  /** Get statement of income and expense, on daily base
+   * @param year Year
+   * @param month Month
+   * @param excludeTransfer Exclude the transfer records
+   * @param forceReload Force to realod
+   */
+   public fetchDailyStatementOfIncomeAndExpense(year: number, month: number, excludeTransfer = false, forceReload?: boolean): Observable<FinanceReportEntryPerDate[]> {
+    if (excludeTransfer) {
+      // Without transfer
+      if (!(this.isDailyStatementOfIncomeAndExpenseWOTransferLoaded && this.dailyStatementOfIncomeAndExpenseWOTransferYear === year
+        && this.dailyStatementOfIncomeAndExpenseWOTransferMonth === month) || forceReload) {
+        let headers: HttpHeaders = new HttpHeaders();
+        headers = headers.append('Content-Type', 'application/json')
+          .append('Accept', 'application/json')
+          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        const jdata: any = {
+          HomeID: this.homeService.ChosedHome?.ID,
+          ExcludeTransfer: true,
+          Year: year,
+          Month: month,
+        };
+
+        return this.http.post(`${this.reportAPIUrl}/GetDailyStatementOfIncomeAndExpense`, jdata, {
+          headers
+        })
+          .pipe(map((response: any) => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchDailyStatementOfIncomeAndExpense succeed',
+              ConsoleLogTypeEnum.debug);
+
+            const rjs: any = response;
+
+            this.isDailyStatementOfIncomeAndExpenseWOTransferLoaded = true;
+            this.dailyStatementOfIncomeAndExpenseWOTransferYear = year;
+            this.dailyStatementOfIncomeAndExpenseWOTransferMonth = month;
+            this.dailyStatementOfIncomeAndExpenseWOTransfer = [];
+            if (rjs.value instanceof Array && rjs.value.length > 0) {
+              for (const si of rjs.value) {
+                const rst: FinanceReportEntryPerDate = new FinanceReportEntryPerDate();
+                rst.onSetData(si);
+                this.dailyStatementOfIncomeAndExpenseWOTransfer.push(rst);
+              }
+            }
+
+            return this.dailyStatementOfIncomeAndExpenseWOTransfer;
+          }),
+            catchError((error: HttpErrorResponse) => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchDailyStatementOfIncomeAndExpense failed ${error}`,
+                ConsoleLogTypeEnum.error);
+
+              return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            }));
+      } else {
+        return of(this.dailyStatementOfIncomeAndExpenseWOTransfer);
+      }
+    } else {
+      // With transfer
+      if (!(this.isDailyStatementOfIncomeAndExpenseWithTransferLoaded && this.dailyStatementOfIncomeAndExpenseWithTransferYear === year
+        && this.dailyStatementOfIncomeAndExpenseWithTransferMonth === month ) || forceReload) {
+        let headers: HttpHeaders = new HttpHeaders();
+        headers = headers.append('Content-Type', 'application/json')
+          .append('Accept', 'application/json')
+          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        const jdata: any = {
+          HomeID: this.homeService.ChosedHome?.ID,
+          ExcludeTransfer: false,
+          Year: year,
+          Month: month,
+        };
+
+        return this.http.post(`${this.reportAPIUrl}/GetDailyStatementOfIncomeAndExpense`, jdata, {
+          headers
+        })
+          .pipe(map((response: any) => {
+            ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchDailyStatementOfIncomeAndExpense succeed',
+              ConsoleLogTypeEnum.debug);
+
+            const rjs: any = response;
+
+            this.isDailyStatementOfIncomeAndExpenseWithTransferLoaded = true;
+            this.dailyStatementOfIncomeAndExpenseWithTransferYear = year;
+            this.dailyStatementOfIncomeAndExpenseWithTransferMonth = month;
+            this.dailyStatementOfIncomeAndExpenseWithTransfer = [];
+            if (rjs.value instanceof Array && rjs.value.length > 0) {
+              for (const si of rjs.value) {
+                const rst: FinanceReportEntryPerDate = new FinanceReportEntryPerDate();
+                rst.onSetData(si);
+                this.dailyStatementOfIncomeAndExpenseWithTransfer.push(rst);
+              }
+            }
+
+            return this.dailyStatementOfIncomeAndExpenseWithTransfer;
+          }),
+            catchError((error: HttpErrorResponse) => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchDailyStatementOfIncomeAndExpense failed ${error}`,
+                ConsoleLogTypeEnum.error);
+
+              return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            }));
+      } else {
+        return of(this.dailyStatementOfIncomeAndExpenseWithTransfer);
       }
     }
   }

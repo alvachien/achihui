@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { UIMode, isUIEditable } from 'actslib';
+import * as moment from 'moment';
 
 import { Account, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
@@ -13,13 +14,19 @@ import { Account, getUIModeString, financeAccountCategoryAsset,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
   financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, ConsoleLogTypeEnum, AssetCategory,
-  UIAccountForSelection, TranType, HomeMember,
+  UIAccountForSelection, TranType, HomeMember, financeAccountCategoryCash, financeAccountCategoryDeposit, 
+  financeAccountCategoryCreditCard, financeAccountCategoryAccountPayable, financeAccountCategoryAccountReceivable,
+  financeAccountCategoryVirtual, Document, financeDocTypeNormal, DocumentItem, ControlCenter, UIOrderForSelection, 
+  BuildupOrderForSelection,
+  financeTranTypeOpeningAsset,
+  financeTranTypeOpeningLiability,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
+import { costObjectValidator } from 'src/app/uimodel';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -39,6 +46,11 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   arAssetCategories: AssetCategory[] = [];
   // Header forum
   public headerFormGroup: FormGroup;
+  // Amount form
+  public isInitAmountRequired: boolean = false;
+  public amountFormGroup: FormGroup;
+  private _arControlCenters: ControlCenter[] = [];
+  private _arUIOrders: UIOrderForSelection[] = [];
   // Extra form group
   public extraADPFormGroup: FormGroup;
   public extraAssetFormGroup: FormGroup;
@@ -90,9 +102,14 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     return false;
   }
+  get arControlCenters(): ControlCenter[] {
+    return this._arControlCenters;
+  }
+  get arUIOrders(): UIOrderForSelection[] {
+    return this._arUIOrders;
+  }
 
-  constructor(
-    private odataService: FinanceOdataService,
+  constructor(private odataService: FinanceOdataService,
     private activateRoute: ActivatedRoute,
     private homeSevice: HomeDefOdataService,
     private modalService: NzModalService,
@@ -107,14 +124,18 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.headerFormGroup = new FormGroup({
       idControl: new FormControl(),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      ctgyControl: new FormControl(undefined, [
-        Validators.required,
-        this.categoryValidator,
-      ]),
+      ctgyControl: new FormControl(financeAccountCategoryCash, [Validators.required], // this.categoryValidator],
+      ),
       cmtControl: new FormControl('', Validators.maxLength(45)),
-      statusControl: new FormControl(),
-      ownerControl: new FormControl(),
+      statusControl: new FormControl(AccountStatusEnum.Normal),
+      ownerControl: new FormControl()
     });
+    this.amountFormGroup = new FormGroup({
+      dateControl: new FormControl(new Date(), Validators.required),
+      amountControl: new FormControl(undefined, Validators.required),
+      ccControl: new FormControl(),
+      orderControl: new FormControl(),
+    }, [costObjectValidator]);
 
     this.extraADPFormGroup = new FormGroup({
       extADPControl: new FormControl()
@@ -199,7 +220,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
                   }
                 });
               } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
-                //let dtbgn = moment().st
                 this.odataService.fetchAllLoanTmpDocs({ AccountID: this.routerID }).subscribe({
                   next: val => {
                     (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
@@ -270,11 +290,16 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
         case UIMode.Create:
         default: {
-          this.odataService.fetchAllAccountCategories()
-            .pipe(takeUntil(this._destroyed$!))
+          forkJoin([
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllControlCenters(),
+            this.odataService.fetchAllOrders(),
+          ]).pipe(takeUntil(this._destroyed$!))
             .subscribe({
               next: rst => {
-                this.arAccountCategories = rst;
+                this.arAccountCategories = rst[0];
+                this._arControlCenters = rst[1];
+                this._arUIOrders = BuildupOrderForSelection(rst[2]);
               },
               error: err => {
                 ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
@@ -315,7 +340,30 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     return false;
   }
-
+  get canEnterInitialAmount(): boolean {
+    let ctgyid = this.currentCategory;
+    if (this.uiMode === UIMode.Create && (
+      ctgyid === financeAccountCategoryCash
+      || ctgyid === financeAccountCategoryDeposit
+      || ctgyid === financeAccountCategoryCreditCard
+      || ctgyid === financeAccountCategoryAccountPayable
+      || ctgyid === financeAccountCategoryAccountReceivable
+      || ctgyid === financeAccountCategoryVirtual) ) {
+      return true;
+    }
+    return false;
+  }
+  get isSaveEnabled(): boolean {
+    if (this.canEnterInitialAmount) {
+      if (!this.headerFormGroup.valid) {
+        return false;
+      }
+      if (this.isInitAmountRequired) {
+        return this.amountFormGroup.valid;
+      }
+    }
+    return false;
+  }
   public onSave(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`,
       ConsoleLogTypeEnum.debug);
@@ -343,8 +391,53 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: val => {
-          // Navigate to display mode
-          this.router.navigate(['/finance/account/display', val.Id]);
+          let nacntid = val.Id;
+          if (this.isInitAmountRequired) {
+            // Create a document for initial amount.
+            let doc: Document = new Document();
+            doc.Desp = val.Name!;
+            doc.DocType = financeDocTypeNormal;
+            doc.HID = this.homeSevice.ChosedHome?.ID;
+            doc.TranCurr = this.homeSevice.ChosedHome?.BaseCurrency!;
+            doc.TranDate = moment(this.amountFormGroup.get('dateControl')?.value as Date);
+            let docitem: DocumentItem = new DocumentItem();
+            docitem.AccountId = nacntid;
+            docitem.Desp = doc.Desp;
+            docitem.ItemId = 1;
+            docitem.TranAmount = this.amountFormGroup.get('amountControl')?.value;
+            let assetflag = false;
+            this.arAccountCategories.find(ctgy => {
+              if (ctgy.ID === val.CategoryId) {
+                assetflag = ctgy.AssetFlag;
+              }
+            });
+            if (assetflag) {
+              docitem.TranType = financeTranTypeOpeningAsset;
+            } else {
+              docitem.TranType = financeTranTypeOpeningLiability;
+            }            
+            docitem.ControlCenterId = this.amountFormGroup.get('ccControl')?.value;
+            docitem.OrderId = this.amountFormGroup.get('orderControl')?.value;
+            doc.Items.push(docitem);
+
+            this.odataService.createDocument(doc)
+              .subscribe({
+                next: crtdoc => {
+                  // Navigate to display mode
+                  this.router.navigate(['/finance/document/display', crtdoc.Id]);
+                },
+                error: err2 => {
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err2,
+                    nzClosable: true
+                  });        
+                }
+              });
+          } else {
+            // Navigate to display mode
+            this.router.navigate(['/finance/account/display', val.Id]);
+          }
         },
         error: err => {
           this.modalService.error({
@@ -458,15 +551,15 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     return acntObj;
   }
-  private categoryValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    const ctgy: any = group.get('ctgyControl');
-    if (ctgy && this.isFieldChangable) {
-      if (this.isCategoryDisabled(ctgy.value)) {
-        return { invalidcategory: true };
-      }
-    } else {
-      return { invalidcategory: true };
-    }
-    return null;
-  }
+  // private categoryValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  //   const ctgy: any = group.get('ctgyControl');
+  //   if (ctgy && this.isFieldChangable) {
+  //     if (this.isCategoryDisabled(ctgy.value)) {
+  //       return { invalidcategory: true };
+  //     }
+  //   } else {
+  //     return { invalidcategory: true };
+  //   }
+  //   return null;
+  // }
 }

@@ -55,26 +55,14 @@ export class UIStatusService {
     this._fatalError = err;
   }
 
+  // Document list page
+  docListDateRange: Date[] = [];
+
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
   constructor(private _tranService: TranslocoService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService constructor...`, ConsoleLogTypeEnum.debug);
   }
-
-  /**
-   * Generate form group for Questions
-   * @param questions Questions
-   */
-  // public generateLearnQuestionFormGroup(questions: QuestionBankItem[]): FormGroup {
-  //   const group: any = {};
-
-  //   questions.forEach((question: any) => {
-  //     group[question.ID] = question ? new FormControl(question.Question || '', Validators.required)
-  //                                   : new FormControl(question.Question || '');
-  //   });
-
-  //   return new FormGroup(group);
-  // }
 
   private onLanguageChanged(): void {
     // this._tranService.get(arstrings).subscribe((x: any) => {

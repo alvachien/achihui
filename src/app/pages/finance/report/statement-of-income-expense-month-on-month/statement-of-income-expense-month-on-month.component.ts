@@ -184,6 +184,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         type: 'value',
       }],
       series: [{
+        id: 'income',
         name: translate('Finance.Income'),
         type: 'bar',
         label: {
@@ -196,6 +197,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         },
         data: arIn,
       }, {
+        id: 'expense',
         name: translate('Finance.Expense'),
         type: 'bar',
         label: {
@@ -208,6 +210,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         },
         data: arOut,
       }, {
+        id: 'total',
         name: translate('Common.Total'),
         type: 'line',
         label: {
@@ -221,5 +224,25 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         data: arBal,
       }],
     };
+  }
+
+  onChartClick(data: any) {
+    // console.log(data.seriesId); 
+    // console.log(data.name);
+    // console.log(data.value);
+    // Drill down
+    // Split the name as Year.Month
+    let words = data.name.split('.');
+    let year = Number.parseInt(words[0]);
+    let month = Number.parseInt(words[1]);
+    this.odataService.fetchDailyStatementOfIncomeAndExpense(year, month, this.excludeTransfer).subscribe({
+      next: val => {
+        console.log(val);
+
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 }

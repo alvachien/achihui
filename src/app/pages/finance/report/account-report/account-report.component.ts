@@ -12,6 +12,7 @@ import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStri
   GeneralFilterOperatorEnum, } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import { NumberUtility } from 'actslib';
 
 @Component({
   selector: 'hih-finance-report-account',
@@ -292,6 +293,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         }
       }
     });
+    namevalues.forEach(val => {
+      val.value = NumberUtility.Round2Two(val.value);
+    });
 
     this.chartAssetOption = {
       tooltip: {
@@ -354,6 +358,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         }
       }
     });
+    namevalues.forEach(val => {
+      val.value = NumberUtility.Round2Two(val.value);
+    });
 
     this.chartLiabilitiesOption = {
       tooltip: {
@@ -403,6 +410,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });  
       }
     });
+    namevalues.forEach(val => {
+      val.value = NumberUtility.Round2Two(val.value);
+    });
 
     this.chartAssetAccountOption = {
       tooltip: {
@@ -451,6 +461,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           value: -1 * rpt.Balance,
         });  
       }
+    });
+    namevalues.forEach(val => {
+      val.value = NumberUtility.Round2Two(val.value);
     });
 
     this.chartLiabilitiesAccountOption = {

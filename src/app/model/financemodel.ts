@@ -6,6 +6,9 @@ import * as moment from 'moment';
 export const financeAccountCategoryCash             = 1;
 export const financeAccountCategoryDeposit          = 2;
 export const financeAccountCategoryCreditCard       = 3;
+export const financeAccountCategoryAccountPayable   = 4;
+export const financeAccountCategoryAccountReceivable = 5;
+export const financeAccountCategoryVirtual          = 6;
 export const financeAccountCategoryAsset            = 7;
 export const financeAccountCategoryAdvancePayment   = 8; // Advance payment
 export const financeAccountCategoryBorrowFrom       = 9;
@@ -589,8 +592,8 @@ export class Account extends hih.BaseModel {
     const rstObj: any = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
-    // rstObj.Status = AccountStatusEnum[this.Status];
-    rstObj.Status = +this.Status;
+    rstObj.Status = AccountStatusEnum[this.Status];
+    //rstObj.Status = +this.Status;
     rstObj.CategoryID = this.CategoryId;
     rstObj.Name = this.Name;
     rstObj.Comment = this.Comment;
@@ -3355,6 +3358,16 @@ export class FinanceReportEntryMoM extends FinanceReportEntry {
     super.onSetData(val);
     if (val && val.Month) {
       this.Month = val.Month;
+    }
+  }
+}
+
+export class FinanceReportEntryPerDate extends FinanceReportEntry {
+  public transactionDate: moment.Moment = moment();
+  public override onSetData(val: any): void {
+    super.onSetData(val);
+    if (val && val.TransactionDate) {
+      this.transactionDate = moment(val.TransactionDate, hih.momentDateFormat);
     }
   }
 }

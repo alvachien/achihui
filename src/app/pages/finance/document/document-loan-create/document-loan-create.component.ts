@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { UIMode, isUIEditable } from 'actslib';
@@ -83,9 +81,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
 
     this.firstFormGroup = new FormGroup({
-      headerControl: new FormControl(undefined, Validators.required),
+      headerControl: new FormControl(undefined, Validators.required),      
       amountControl: new FormControl(undefined, Validators.required),
-      accountControl: new FormControl(undefined, Validators.required),
+      accountControl: new FormControl(undefined),
       ccControl: new FormControl(undefined),
       orderControl: new FormControl(undefined),
     }, [costObjectValidator]);
@@ -165,6 +163,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -274,6 +273,10 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         this.docPostingFailed = error;
       },
     });
+  }
+
+  onIsLegacyChecked(data: any): void {
+
   }
 
   private _generateDocument(): Document {

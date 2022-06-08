@@ -4,7 +4,7 @@
       <nz-breadcrumb-item><a routerLink="/homedef">{{'Nav.HomeList' | transloco}}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{'Nav.Home' | transloco}}</nz-page-header-title>
-    <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <button nz-button nzType="primary" [disabled]="!isSaveAllowed"
         (click)="onSave()">{{'Common.Save' | transloco}}</button>
