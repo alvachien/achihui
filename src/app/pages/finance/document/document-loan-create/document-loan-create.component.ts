@@ -83,7 +83,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.firstFormGroup = new FormGroup({
       headerControl: new FormControl(undefined, Validators.required),      
       amountControl: new FormControl(undefined, Validators.required),
-      accountControl: new FormControl(undefined),
+      accountControl: new FormControl(undefined, Validators.required),
       ccControl: new FormControl(undefined),
       orderControl: new FormControl(undefined),
     }, [costObjectValidator]);

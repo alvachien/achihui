@@ -29,6 +29,8 @@ describe('AccountDetailComponent', () => {
   let readAccountSpy: any;
   let fetchAllAssetCategoriesSpy: any;
   let fetchAllTranTypesSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let fetchAllOrdersSpy: any;
   let activatedRouteStub: any;
   const homeServiceStub: Partial<HomeDefOdataService> = {};
   const authServiceStub: Partial<AuthService> = {};
@@ -47,11 +49,15 @@ describe('AccountDetailComponent', () => {
       'readAccount',
       'fetchAllAssetCategories',
       'fetchAllTranTypes',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     readAccountSpy = storageService.readAccount.and.returnValue(of({}));
     fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
@@ -173,6 +179,8 @@ describe('AccountDetailComponent', () => {
       readAccountSpy.and.returnValue(asyncData(fakeData.finAccounts[0]));
       fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
     it('change mode init without error', fakeAsync(() => {
@@ -197,6 +205,8 @@ describe('AccountDetailComponent', () => {
       readAccountSpy.and.returnValue(asyncData(fakeData.finAccounts[0]));
       fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
     it('display mode init without error', fakeAsync(() => {

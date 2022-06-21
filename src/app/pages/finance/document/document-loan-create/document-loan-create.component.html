@@ -1,4 +1,4 @@
-<div *transloco="let t">
+<div>
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
@@ -13,10 +13,10 @@
   </nz-page-header>
 
   <nz-steps [nzCurrent]="currentStep">
-    <nz-step [nzTitle]="t('Common.Header')"></nz-step>
-    <nz-step [nzTitle]="t(documentTitle)"></nz-step>
-    <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
-    <nz-step [nzTitle]="t('Common.Result')"></nz-step>
+    <nz-step [nzTitle]="'Common.Header' | transloco"></nz-step>
+    <nz-step [nzTitle]="documentTitle | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
 
   <div class="steps-content">
