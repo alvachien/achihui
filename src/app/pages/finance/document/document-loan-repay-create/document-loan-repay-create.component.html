@@ -1,4 +1,4 @@
-<div *transloco="let t">
+<div>
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
@@ -13,10 +13,10 @@
   </nz-page-header>
 
   <nz-steps [nzCurrent]="currentStep">
-    <nz-step [nzTitle]="t('Common.GenericInfo')"></nz-step>
-    <nz-step [nzTitle]="t('Finance.Items')"></nz-step>
-    <nz-step [nzTitle]="t('Common.ReviewForSubmit')"></nz-step>
-    <nz-step [nzTitle]="t('Common.Result')"></nz-step>
+    <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
+    <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
 
   <div class="steps-content">
@@ -96,8 +96,8 @@
         <div nz-row>
           <div nz-col [nzSpan]="24" class="search-button-area">
             <button nz-button [nzType]="'primary'" [disabled]="!searchFormGroup.valid"
-              (click)="onSearchLoanTmp()">Search</button>
-            <button nz-button (click)="resetSearchForm()">Clear</button>
+              (click)="onSearchLoanTmp()">{{'Common.Search' | transloco}}</button>
+            <button nz-button (click)="resetSearchForm()">{{'Common.Clear' | transloco}}</button>
           </div>
         </div>
       </form>
@@ -111,7 +111,7 @@
               <th>{{'Common.Date' | transloco}}</th>
               <th>{{'Finance.Account' | transloco}}</th>
               <th>{{'Finance.Amount' | transloco}}</th>
-              <th>Interest</th>
+              <th>{{'Finance.Interest' | transloco}}</th>
               <th>{{'Finance.ControlCenter' | transloco}}</th>
               <th>{{'Finance.Activity' | transloco}}</th>
             </tr>
