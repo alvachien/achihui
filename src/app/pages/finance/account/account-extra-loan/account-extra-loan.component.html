@@ -1,23 +1,46 @@
-<ng-container *transloco="let t">
+<ng-container>
   <div *ngIf="controlError">
     <nz-alert nzType="error"
-      [nzMessage]="t(controlError.value)"
-      [nzDescription]="t(controlError.value)"
+      [nzMessage]="controlError.value | transloco"
+      [nzDescription]="controlError.value | transloco"
       nzShowIcon>
     </nz-alert>
   </div>
   
   <div [formGroup]="loanInfoForm">
-    <!-- Date range -->
+    <!-- Repay. method -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepaymentMethod' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
+        <nz-select formControlName="repayMethodControl" (ngModelChange)="onChange()">
+          <nz-option *ngFor="let rt of arRepaymentMethods" [nzValue]='rt.value' [nzLabel]="rt.i18nterm | transloco"></nz-option>
+        </nz-select>
+        <ng-template #repaymethodErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Start Date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.StartDate' | transloco}}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
-        <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+        <nz-date-picker formControlName="startDateControl"></nz-date-picker>
         <ng-template #dateRangeErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
             {{'Common.FieldIsMandatory' | transloco}}
           </ng-container>
         </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- End Date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.EndDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
+        <nz-date-picker formControlName="endDateControl"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
@@ -83,20 +106,6 @@
       </nz-form-control>
     </nz-form-item>
 
-    <!-- Repay. method -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.RepaymentMethod' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
-        <nz-select formControlName="repayMethodControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of arRepaymentMethods" [nzValue]='rt.value' [nzLabel]="t(rt.i18nterm)"></nz-option>
-        </nz-select>
-        <ng-template #repaymethodErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
 
     <!-- Paying Account -->
     <nz-form-item>

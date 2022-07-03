@@ -41,18 +41,22 @@
         </nz-form-control>
       </nz-form-item>
 
+      <!-- Legacy asset -->
+      <nz-form-item>
+        <nz-form-control [nzSpan]="12" [nzOffset]="7">
+          <label nz-checkbox formControlName="legacyControl" (ngModelChange)="onIsLegacyChecked($event)">
+            {{'Finance.LegacyLoan' | transloco}}
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+      
       <!-- Account -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Account' | transloco}}</nz-form-label>
-        <nz-form-control [nzSpan]="12" [nzErrorTip]="accountErrorTpl">
+        <nz-form-control [nzSpan]="12">
           <nz-select formControlName="accountControl">
             <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
           </nz-select>
-          <ng-template #accountErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{'Common.FieldIsMandatory' | transloco}}
-            </ng-container>
-          </ng-template>
         </nz-form-control>
       </nz-form-item>
 
@@ -75,6 +79,21 @@
           </nz-select>
         </nz-form-control>
       </nz-form-item>
+
+      <div *ngIf="firstFormGroup.errors">
+        <nz-alert nzType="error" *ngIf="firstFormGroup.hasError('dateisinvalid')" [nzMessage]="'Common.InvalidDate' | transloco" 
+          [nzDescription]="'Finance.InvalidDateInLegacyAsset' | transloco" nzShowIcon>
+        </nz-alert>
+        <nz-alert nzType="error" *ngIf="firstFormGroup.hasError('accountisinvalid')" [nzMessage]="'Finance.InvalidAccount' | transloco" 
+          [nzDescription]="'Finance.AccountIsMust' | transloco" nzShowIcon>
+        </nz-alert>
+        <nz-alert nzType="error" *ngIf="firstFormGroup.hasError('costobjectoverassign')" [nzMessage]="'Finance.DualInputFound' | transloco" 
+          [nzDescription]="'Finance.EitherControlCenterOrOrder' | transloco" nzShowIcon>
+        </nz-alert>
+        <nz-alert nzType="error" *ngIf="firstFormGroup.hasError('nocostobject')" [nzMessage]="'Finance.EitherControlCenterOrOrder' | transloco" 
+          [nzDescription]="'Finance.EitherControlCenterOrOrder' | transloco" nzShowIcon>
+        </nz-alert>
+      </div>
     </form>
 
     <!-- Step 1: Extra info for Loan Account -->

@@ -155,6 +155,9 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
     return err;
   }
+  get repaymentMethod(): RepaymentMethodEnum {
+    return this.loanInfoForm && this.loanInfoForm.get('repayMethodControl') && this.loanInfoForm.get('repayMethodControl')?.value;
+  }
 
   constructor(
     public odataService: FinanceOdataService,
@@ -166,13 +169,14 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     this.loanInfoForm = new FormGroup({
-      dateRangeControl: new FormControl([new Date(), new Date()], [Validators.required]),
+      repayMethodControl: new FormControl(RepaymentMethodEnum.Informal, Validators.required),
+      startDateControl: new FormControl(new Date(), Validators.required),
+      endDateControl: new FormControl(),
       totalMonthControl: new FormControl(12, [Validators.required]),
       repayDayControl: new FormControl(),
       firstRepayDateControl: new FormControl(),
       interestFreeControl: new FormControl(true),
       annualRateControl: new FormControl(),
-      repayMethodControl: new FormControl(undefined, Validators.required),
       payingAccountControl: new FormControl(),
       partnerControl: new FormControl(''),
       cmtControl: new FormControl('', [Validators.required]),

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
@@ -17,6 +17,7 @@ import { Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
 import { costObjectValidator, } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import * as moment from 'moment';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -81,12 +82,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
 
     this.firstFormGroup = new FormGroup({
-      headerControl: new FormControl(undefined, Validators.required),      
-      amountControl: new FormControl(undefined, Validators.required),
-      accountControl: new FormControl(undefined, Validators.required),
+      headerControl: new FormControl(new Document(), Validators.required),      
+      amountControl: new FormControl(0, [Validators.required]),
+      legacyControl: new FormControl(false),
+      accountControl: new FormControl(undefined),
       ccControl: new FormControl(undefined),
       orderControl: new FormControl(undefined),
-    }, [costObjectValidator]);
+    }, [costObjectValidator, this._legacyDateValidator, this._accountValidator]);
     this.extraFormGroup = new FormGroup({
       loanAccountControl: new FormControl(),
     });
@@ -215,6 +217,35 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         break;
     }
   }
+  private _legacyDateValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _legacyDateValidator',
+      ConsoleLogTypeEnum.debug);
+
+    if (this.isLegacyLoan) {
+      const datBuy: any = group.get('headerControl')?.value.TranDate;
+      if (!datBuy) {
+        return { dateisinvalid: true};
+      }
+      if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
+        return { dateisinvalid: true };
+      }
+    }
+
+    return null;
+  }
+  private _accountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _accountValidator',
+      ConsoleLogTypeEnum.debug);
+
+    if (!this.isLegacyLoan) {
+      const acntid: any = group.get('accountControl')?.value;
+      if (acntid === undefined) {
+        return { accountisinvalid: true };
+      }
+    }
+
+    return null;
+  }
 
   onSubmit(): void {
     // Do the real submit
@@ -275,8 +306,19 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  onIsLegacyChecked(data: any): void {
+  get isLegacyLoan(): boolean {
+    return this.firstFormGroup && this.firstFormGroup.get('legacyControl')?.value;
+  }
+  onIsLegacyChecked(checked: any): void {
+    const chked = checked as boolean;
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onIsLegacyChecked: ${checked}`,
+      ConsoleLogTypeEnum.error);
 
+    if (chked) {
+      this.firstFormGroup.get('accountControl')?.disable();
+    } else {
+      this.firstFormGroup.get('accountControl')?.enable();
+    }
   }
 
   private _generateDocument(): Document {

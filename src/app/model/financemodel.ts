@@ -81,6 +81,7 @@ export enum RepaymentMethodEnum {
   EqualPrincipalAndInterset = 1,  // Equal principal & interest
   EqualPrincipal            = 2,  // Equal principal
   DueRepayment              = 3,  // Due repayment
+  Informal                  = 4,  // Informal
 }
 
 /**

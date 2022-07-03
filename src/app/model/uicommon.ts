@@ -488,6 +488,7 @@ export class UIDisplayStringUtil {
       case RepaymentMethodEnum.EqualPrincipal: return 'Finance.EqualPrincipal';
       case RepaymentMethodEnum.EqualPrincipalAndInterset: return 'Finance.EqualPrincipalAndInterest';
       case RepaymentMethodEnum.DueRepayment: return 'Finance.DueRepayment';
+      case RepaymentMethodEnum.Informal: return 'Finance.Unspecified';
       default: return '';
     }
   }
