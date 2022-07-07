@@ -259,9 +259,9 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
       return null;
+    } else {
+      return this.headerForm.errors;
     }
-
-    return { invalidForm: {valid: false, message: 'Header fields are invalid'} };
   }
 
   onCurrencyChange(event: any): void {

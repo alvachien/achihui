@@ -22,9 +22,16 @@
   <div class="steps-content">
     <!-- Step 0: Generial info -->
     <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
-      <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
-        [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
-      </hih-fin-document-header>
+      <nz-form-control [nzErrorTip]="headerErrorTpl">
+        <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"
+          [arDocTypes]="arDocTypes" [arCurrencies]="arCurrencies" [baseCurrency]="baseCurrency">
+        </hih-fin-document-header>
+        <ng-template #headerErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{'Common.FieldIsMandatory' | transloco}}
+          </ng-container>
+        </ng-template>  
+      </nz-form-control>
 
       <nz-divider></nz-divider>
 

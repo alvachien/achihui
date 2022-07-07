@@ -9,8 +9,7 @@ import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import {
-  AccountExtraLoan, UIAccountForSelection, ConsoleLogTypeEnum, ModelUtility, IAccountCategoryFilter,
+import { AccountExtraLoan, UIAccountForSelection, ConsoleLogTypeEnum, ModelUtility, IAccountCategoryFilter,
   TemplateDocLoan, RepeatDatesWithAmountAndInterestAPIInput, RepaymentMethodEnum, UIDisplayStringUtil,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
@@ -221,6 +220,48 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
+  public onRepaymentMethodChanged(selectedOption: any) {
+    switch(selectedOption) {
+      case RepaymentMethodEnum.Informal:
+        this.loanInfoForm.get('endDateControl')?.disable();
+        this.loanInfoForm.get('totalMonthControl')?.disable();
+        this.loanInfoForm.get('repayDayControl')?.disable();
+        this.loanInfoForm.get('firstRepayDateControl')?.disable();
+        break;
+      case RepaymentMethodEnum.EqualPrincipal:
+        this.loanInfoForm.get('endDateControl')?.enable();
+        this.loanInfoForm.get('totalMonthControl')?.enable();
+        this.loanInfoForm.get('repayDayControl')?.enable();
+        this.loanInfoForm.get('firstRepayDateControl')?.enable();
+        break;
+      case RepaymentMethodEnum.EqualPrincipalAndInterset:
+        this.loanInfoForm.get('endDateControl')?.enable();
+        this.loanInfoForm.get('totalMonthControl')?.enable();
+        this.loanInfoForm.get('repayDayControl')?.enable();
+        this.loanInfoForm.get('firstRepayDateControl')?.enable();
+        break;
+      case RepaymentMethodEnum.DueRepayment:
+        this.loanInfoForm.get('endDateControl')?.enable();
+        this.loanInfoForm.get('totalMonthControl')?.disable();
+        this.loanInfoForm.get('repayDayControl')?.disable();
+        this.loanInfoForm.get('firstRepayDateControl')?.disable();
+        break;
+      default:
+        break;
+    }
+    this.onChange();
+  }
+
+  public onInterestFreeChange(checked: boolean) {
+    if (checked) {
+      this.loanInfoForm.get('annualRateControl')?.disable();
+    } else {
+      this.loanInfoForm.get('annualRateControl')?.enable();
+    }
+
+    this.onChange();
+  }
+
   public onRefDocClick(rid: number) {
     this.router.navigate([`/finance/document/display/${rid}`]);
   }
@@ -376,8 +417,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         return { invalidForm: {valid: false, message: 'genrated object is invalid'} };
       }
       return null;
+    } else {
+      return this.loanInfoForm.errors;
     }
-
-    return { invalidForm: {valid: false, message: 'Loan fields are invalid'} };
   }
 }
