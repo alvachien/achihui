@@ -256,6 +256,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       return null;
     }
 
+    this.headerForm.updateValueAndValidity();
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
       return null;

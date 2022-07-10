@@ -39,6 +39,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   private _refDocID?: number;
 
   isLoadingTmpDocs =  false;
+  isLegalLoan = false;
   public listTmpDocs: TemplateDocLoan[] = [];
   public arRepaymentMethods = UIDisplayStringUtil.getRepaymentMethodStrings();
 
@@ -119,6 +120,10 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       return false;
     }
 
+    if (this.isLegalLoan) {
+      return false; // Don't need template docs in legacy
+    }
+
     if (!this.value.isAccountValid) {
       return false;
     }
@@ -146,6 +151,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         return { value: 'Finance.EitherControlCenterOrOrder' };
       } else if (err['itemwithoutdesp']) {
         return { value: 'Finance.DespIsMust' };
+      } else if (err['invalidObject']) {
+        return { value: err['invalidObject'].message };
       } else if (err['invalidForm']) {
         return { value: err['invalidForm'].message };
       } else {
@@ -168,10 +175,10 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug);
 
     this.loanInfoForm = new FormGroup({
-      repayMethodControl: new FormControl(RepaymentMethodEnum.Informal, Validators.required),
+      repayMethodControl: new FormControl(RepaymentMethodEnum.Informal),
       startDateControl: new FormControl(new Date(), Validators.required),
       endDateControl: new FormControl(),
-      totalMonthControl: new FormControl(12, [Validators.required]),
+      totalMonthControl: new FormControl(0),
       repayDayControl: new FormControl(),
       firstRepayDateControl: new FormControl(),
       interestFreeControl: new FormControl(true),
@@ -264,6 +271,22 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   public onRefDocClick(rid: number) {
     this.router.navigate([`/finance/document/display/${rid}`]);
+  }
+
+  public setLegacyLoanMode(loanDate: Date): void {
+    this.isLegalLoan = true;
+
+    this.loanInfoForm.get('repayMethodControl')?.setValue(RepaymentMethodEnum.Informal);
+    this.loanInfoForm.get('repayMethodControl')?.disable();
+    this.loanInfoForm.get('startDateControl')?.setValue(loanDate);
+    this.loanInfoForm.get('startDateControl')?.disable();
+    this.loanInfoForm.get('endDateControl')?.disable();
+    this.loanInfoForm.get('totalMonthControl')?.disable();
+    this.loanInfoForm.get('repayDayControl')?.disable();
+    this.loanInfoForm.get('firstRepayDateControl')?.disable();
+    this.loanInfoForm.get('interestFreeControl')?.setValue(true);
+    this.loanInfoForm.get('interestFreeControl')?.disable();
+    this.loanInfoForm.get('annualRateControl')?.disable();
   }
 
   public onGenerateTmpDocs(): void {
@@ -408,17 +431,18 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   }
 
   validate(): ValidationErrors | null {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent validate`,
-      ConsoleLogTypeEnum.debug);
+    // ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent validate`,
+    //   ConsoleLogTypeEnum.debug);
 
+    this.loanInfoForm.updateValueAndValidity();
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks
       if (!this.value.isValid) {
-        return { invalidForm: {valid: false, message: 'genrated object is invalid'} };
+        return { invalidObject: {valid: false, message: 'Finance.InvalidObject'} };
       }
       return null;
     } else {
-      return this.loanInfoForm.errors;
+      return { invalidForm: {valid: false, message: 'Common.InvalidForm' }};
     }
   }
 }

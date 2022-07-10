@@ -449,6 +449,11 @@ export abstract class AccountExtra {
     return this.accountID;
   }
 
+  private validatedMessages: string[] = [];
+  get ValidatedMessages(): string[] {
+    return this.validatedMessages;
+  }
+
   public writeJSONObject(): AccountExtraBaseJson {
     if (this.accountID) {
       return {
@@ -1044,6 +1049,8 @@ export class AccountExtraLoan extends AccountExtra {
       if (!this.endDate) {
         return false;
       }
+    } else if (this.RepayMethod === RepaymentMethodEnum.Informal) {
+      // Do nothing
     } else {
       return false;
     }
@@ -1063,10 +1070,6 @@ export class AccountExtraLoan extends AccountExtra {
       if (!this.FirstRepayDate.isBetween(bgndate, enddate)) {
         return false;
       }
-    }
-
-    if (this.TotalMonths === null || this.TotalMonths <= 0) {
-      return false;
     }
 
     return true;

@@ -18,6 +18,7 @@ import { costObjectValidator, } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import * as moment from 'moment';
+import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -47,6 +48,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra Info
+  @ViewChild(AccountExtraLoanComponent, {static: true}) accountExtraLoanCtrl: AccountExtraLoanComponent | null = null;
   public extraFormGroup: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -199,6 +201,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
+        if (this.accountExtraLoanCtrl) {
+          this.accountExtraLoanCtrl.setLegacyLoanMode(this.firstFormGroup.get('headerControl')?.get('dateControl')?.value as Date);
+        }
         this.currentStep ++;
         break;
       }

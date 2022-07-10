@@ -1,23 +1,8 @@
 <ng-container>
   <div *ngIf="controlError">
-    <nz-alert nzType="error"
-      [nzMessage]="controlError.value | transloco"
+    <nz-alert nzType="error" [nzMessage]="controlError.value | transloco"
       [nzDescription]="controlError.value | transloco"
       nzShowIcon>
-    </nz-alert>
-  </div>
-  <div *ngIf="loanInfoForm.errors">
-    <nz-alert nzType="error" *ngIf="loanInfoForm.hasError('dateisinvalid')" [nzMessage]="'Common.InvalidDate' | transloco" 
-      [nzDescription]="'Finance.InvalidDateInLegacyAsset' | transloco" nzShowIcon>
-    </nz-alert>
-    <nz-alert nzType="error" *ngIf="loanInfoForm.hasError('accountisinvalid')" [nzMessage]="'Finance.InvalidAccount' | transloco" 
-      [nzDescription]="'Finance.AccountIsMust' | transloco" nzShowIcon>
-    </nz-alert>
-    <nz-alert nzType="error" *ngIf="loanInfoForm.hasError('costobjectoverassign')" [nzMessage]="'Finance.DualInputFound' | transloco" 
-      [nzDescription]="'Finance.EitherControlCenterOrOrder' | transloco" nzShowIcon>
-    </nz-alert>
-    <nz-alert nzType="error" *ngIf="loanInfoForm.hasError('nocostobject')" [nzMessage]="'Finance.EitherControlCenterOrOrder' | transloco" 
-      [nzDescription]="'Finance.EitherControlCenterOrOrder' | transloco" nzShowIcon>
     </nz-alert>
   </div>
 

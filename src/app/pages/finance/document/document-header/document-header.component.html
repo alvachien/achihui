@@ -36,7 +36,7 @@
         <ng-container *ngIf="control.hasError('maxlength')">
           {{'Common.FieldMaxLength' | transloco}}
         </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
+        <ng-container *ngIf="control.hasError('minlength') || control.hasError('required')">
           {{'Common.FieldIsMandatory' | transloco}}
         </ng-container>
       </ng-template>
