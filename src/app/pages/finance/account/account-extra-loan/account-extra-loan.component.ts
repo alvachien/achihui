@@ -437,8 +437,14 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     this.loanInfoForm.updateValueAndValidity();
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks
-      if (!this.value.isValid) {
-        return { invalidObject: {valid: false, message: 'Finance.InvalidObject'} };
+      if (this.isLegalLoan) {
+        if (!this.value.isAccountValid) {
+          return { invalidObject: {valid: false, message: 'Finance.InvalidObject'} };
+        }
+      } else {
+        if (!this.value.isValid) {
+          return { invalidObject: {valid: false, message: 'Finance.InvalidObject'} };
+        }
       }
       return null;
     } else {

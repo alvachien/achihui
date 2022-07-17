@@ -6,7 +6,7 @@
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>{{ 'Sys.DocTy.Repay' | transloco}}</nz-page-header-title>
+    <nz-page-header-title>{{'Sys.DocTy.Repay' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
     </nz-page-header-extra>
@@ -91,7 +91,7 @@
               </nz-form-control>
             </nz-form-item>
           </div>
-      </div>
+        </div>
 
         <div nz-row>
           <div nz-col [nzSpan]="24" class="search-button-area">
@@ -134,6 +134,14 @@
 
     <!-- Step 1. Document items -->
     <div [hidden]="currentStep !== 1">
+      <nz-descriptions [nzTitle]="'Finance.Amount' | transloco" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+        <nz-descriptions-item *ngIf="!legacyLoan" [nzTitle]="'Finance.Principal' | transloco">{{amountSelectedItem}}</nz-descriptions-item>
+        <nz-descriptions-item *ngIf="!legacyLoan" [nzTitle]="'Finance.Interest' | transloco">{{interestAmountSelectedItem}}</nz-descriptions-item>
+        <nz-descriptions-item *ngIf="legacyLoan" [nzTitle]="'Finance.Principal' | transloco">{{amountTotal}}</nz-descriptions-item>
+      </nz-descriptions>
+
+      <nz-divider>{{'Common.GenericInfo' | transloco}}</nz-divider>
+
       <form [formGroup]="headerFormGroup">
         <!-- Date -->
         <nz-form-item>
@@ -148,13 +156,89 @@
           </nz-form-control>
         </nz-form-item>
       </form>
-      <nz-divider></nz-divider>
-      <nz-descriptions [nzTitle]="'Finance.Amount' | transloco" nzBordered [nzColumn]="4">
-        <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="4">
-          {{ amountOpen | number:'1.2-2' }} ({{baseCurrency}})
-        </nz-descriptions-item>
-      </nz-descriptions>
-      
+
+      <nz-divider [nzText]="capitalline">
+        <ng-template #capitalline>
+          <i nz-icon nzType="minus"></i>
+          {{'Finance.Principal' | transloco}}
+        </ng-template>
+      </nz-divider>
+
+      <nz-table #orgItemsTable nzBordered [nzData]="listOrgItems">
+        <thead>
+          <tr>
+            <th nz-width="30">#</th>
+            <th nz-width="150">{{'Finance.Account' | transloco}}</th>
+            <th nz-width="150">{{'Finance.TransactionType' | transloco}}</th>
+            <th nz-width="200">{{'Finance.Amount' | transloco}}</th>
+            <th nz-width="150">{{'Finance.ControlCenter' | transloco}}</th>
+            <th nz-width="150">{{'Finance.Activity' | transloco}}</th>
+            <th nz-width="150">{{'Common.Comment' | transloco}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of orgItemsTable.data; index as itemIdx">
+            <td>{{ itemIdx + 1 }}</td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="orgAccountTpl">
+                  <nz-select [(ngModel)]="data.AccountId">
+                    <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                  </nz-select>
+                  <ng-template #orgAccountTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td>{{ 'Finance.Principal' | transloco }}</td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="orgAmountTpl">
+                  <nz-input-number [(ngModel)]="data.TranAmount" [nzPrecision]="2"></nz-input-number>
+                  <ng-template #orgAmountTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
+                <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
+                <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="orgDespTpl">
+                  <input nz-input [(ngModel)]="data.Comment">
+                  <ng-template #orgDespTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+      <nz-divider [nzText]="repayline">
+        <ng-template #repayline>
+          <i nz-icon nzType="plus"></i>
+          {{'Sys.DocTy.Repay' | transloco}}
+        </ng-template>
+      </nz-divider>
+
       <div class="item_toolbar">
         <button nz-button nzType="primary" (click)="onCreateItem()">{{'Finance.CreateItem' | transloco}}</button>
       </div>
@@ -162,9 +246,13 @@
       <nz-table #itemsTable nzBordered [nzData]="listItems">
         <thead>
           <tr>
-            <th nz-width="50">#</th>
+            <th nz-width="30">#</th>
             <th nz-width="200">{{'Finance.Account' | transloco}}</th>
+            <th nz-width="200">{{'Finance.TransactionType' | transloco}}</th>
             <th nz-width="200">{{'Finance.Amount' | transloco}}</th>
+            <th nz-width="150">{{'Finance.ControlCenter' | transloco}}</th>
+            <th nz-width="150">{{'Finance.Activity' | transloco}}</th>
+            <th nz-width="150">{{'Common.Comment' | transloco}}</th>
           </tr>
         </thead>
         <tbody>
@@ -186,9 +274,46 @@
             </td>
             <td>
               <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="tranTypeTpl">
+                  <nz-select style="width: 100%" [(ngModel)]="data.TranType">
+                    <nz-option [nzValue]="1" [nzLabel]="'Finance.RepaymentOfPrincipal' | transloco"></nz-option>
+                    <nz-option [nzValue]="2" [nzLabel]="'Finance.InterestExpense' | transloco"></nz-option>
+                  </nz-select>
+                    <ng-template #tranTypeTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td>
+              <nz-form-item>
                 <nz-form-control nzHasFeedback [nzErrorTip]="amountTpl">
-                  <input nz-input [(ngModel)]="data.TranAmount" (ngModelChange)="onItemAmountChange()">
+                  <nz-input-number [(ngModel)]="data.TranAmount" [nzPrecision]="2"></nz-input-number>
                   <ng-template #amountTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
+                <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
+                <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="tt.Name"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <nz-form-item>
+                <nz-form-control nzHasFeedback [nzErrorTip]="despTpl">
+                  <input nz-input [(ngModel)]="data.Comment">
+                  <ng-template #despTpl let-control>
                     <ng-container *ngIf="control.hasError('required')">
                       {{'Common.FieldIsMandatory' | transloco}}
                     </ng-container>

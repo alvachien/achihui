@@ -10,7 +10,7 @@ import { UserAuthInfo } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
-describe('LibraryStorageService', () => {
+xdescribe('LibraryStorageService', () => {
   // let httpClient: HttpClient;
   // let httpTestingController: HttpTestingController;
   // let fakeData: FakeDataHelper;

@@ -624,7 +624,10 @@
     "StatementOfIncomeAndExpenseMonthOnMonth": "Statement of Income and Expense Month On Month",
     "InitialBalance": "Initial Balance",
     "Unspecified": "Unspecified",
-    "InvalidObject": "Invalid object"
+    "InvalidObject": "Invalid object",
+    "RepaymentOfPrincipal": "Repayment of Principal",
+    "InterestExpense": "Interest Expense",
+    "Principal": "Principal"
   },
   "Library": {
     "BookCategories": "Book Categories",

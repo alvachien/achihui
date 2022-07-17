@@ -624,7 +624,10 @@
     "StatementOfIncomeAndExpenseMonthOnMonth": "收支汇总月度环比表",
     "InitialBalance": "初始账户余额",
     "Unspecified": "未指定",
-    "InvalidObject": "无效对象"
+    "InvalidObject": "无效对象",
+    "RepaymentOfPrincipal": "偿付本金",
+    "InterestExpense": "利息支出",
+    "Principal": "本金"
   },
   "Library": {
     "BookCategories": "图书种类",

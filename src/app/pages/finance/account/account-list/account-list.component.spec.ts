@@ -160,7 +160,7 @@ describe('AccountListComponent', () => {
     }));
   });
 
-  describe('3. shall display error dialog for exception', () => {
+  xdescribe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 

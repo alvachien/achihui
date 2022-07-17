@@ -1538,6 +1538,45 @@ export class FinanceOdataService {
   }
 
   /**
+   * Get Loan tmp docs count for specified account
+   * @param accountid Account ID
+   */
+  public fetchLoanTmpDocCountForAccount(accountid: number): Observable<number> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+  
+    const hid = this.homeService.ChosedHome!.ID;
+    const filterstrs: string[] = [];
+    filterstrs.push(`HomeID eq ${hid}`);
+    filterstrs.push(`AccountID eq ${accountid}`);
+  
+    const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', filterstrs.join(' and '));
+    params = params.append('$count', `true`);
+  
+    return this.http.get(apiurl, {
+      headers,
+      params,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService fetchLoanTmpDocCountForAccount.`,
+          ConsoleLogTypeEnum.debug);
+
+        return response[`@odata.count`];
+      }),
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchLoanTmpDocCountForAccount failed ${errresp}`,
+            ConsoleLogTypeEnum.error);
+
+          return throwError(() => new Error(`${errresp.status} (${errresp.statusText}) - ${errresp.error}`));
+        }),
+      );
+    }
+  
+  /**
    * Get Loan tmp docs: for document item overview page
    */
   public fetchAllLoanTmpDocs(filter: FinanceTmpLoanDocFilter): Observable<TemplateDocLoan[]> {
@@ -1758,9 +1797,10 @@ export class FinanceOdataService {
    * Create Loan document
    * @param docObj Instance of document
    * @param acntObj Instance of Account (with Loan info)
+   * @param isLegacyLoan Is a legacy loan
    * @returns An observable of Document
    */
-  public createLoanDocument(docObj: Document, acntObj: Account): Observable<Document> {
+  public createLoanDocument(docObj: Document, acntObj: Account, isLegacyLoan = false, legacyAmount: number = 0, legacyControlCenterID?: number, legacyOrderID?: number): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1771,6 +1811,16 @@ export class FinanceOdataService {
     const sobj: any = {};
     sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
     sobj.AccountInfo = acntObj.writeJSONObject();
+    if (isLegacyLoan) {
+      sobj.IsLegacy = isLegacyLoan;
+      sobj.LegacyAmount = legacyAmount;
+      if (legacyControlCenterID) {
+        sobj.ControlCenterID = legacyControlCenterID;
+      }
+      if (legacyOrderID) {
+        sobj.OrderID = legacyOrderID;
+      }
+    }
 
     return this.http.post(apiurl, sobj, {
       headers,
@@ -2426,6 +2476,41 @@ export class FinanceOdataService {
     }
   }
 
+  /** fetch account balance
+   * @param accountid Account ID
+   * @output Output of account balance
+   */
+  public fetchAccountBalance(accountid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    let today = moment();
+
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      AccountID: accountid,
+    };
+
+    return this.http.post(`${this.reportAPIUrl}/GetAccountBalance`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAccountBalance succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response['value'];
+
+        return +rjs;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAccountBalance failed ${error}`,
+            ConsoleLogTypeEnum.error);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }));
+  }
+  
   /** fetch finance overview key figure
    * @param forceReload force to reload data from server
    */

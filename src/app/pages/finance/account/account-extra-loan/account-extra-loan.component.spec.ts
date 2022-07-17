@@ -105,7 +105,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  it('shall work with data 2: input start date', fakeAsync(() => {
+  xit('shall work with data 2: input start date', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -129,7 +129,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  it('shall work with data 3: input start date, total months', fakeAsync(() => {
+  xit('shall work with data 3: input start date, total months', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -154,7 +154,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  it('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
+  xit('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();

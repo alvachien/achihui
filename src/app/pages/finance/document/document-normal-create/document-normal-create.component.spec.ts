@@ -118,7 +118,7 @@ describe('DocumentNormalCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('3. working with data', () => {
+  xdescribe('3. working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 

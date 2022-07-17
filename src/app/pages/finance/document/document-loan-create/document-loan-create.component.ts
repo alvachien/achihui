@@ -257,20 +257,22 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     const docObj: Document = this._generateDocument();
 
     // Check!
-    if (!docObj.onVerify({
-      ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranTypes,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
-    })) {
-      // Show a dialog for error details
-      popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
-      this.isDocPosting = false;
+    if (!this.isLegacyLoan) {
+      if (!docObj.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranTypes,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+      })) {
+        // Show a dialog for error details
+        popupDialog(this.modalService, translate('Common.Error'), docObj.VerifiedMsgs);
+        this.isDocPosting = false;
 
-      return;
+        return;
+      }
     }
 
     const acntobj: Account = new Account();
@@ -286,7 +288,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl')?.value as AccountExtraLoan;
 
-    this.odataService.createLoanDocument(docObj, acntobj)
+    this.odataService.createLoanDocument(docObj, acntobj, this.isLegacyLoan, this.tranAmount, this.controlCenterID, this.orderID)
       .pipe(takeUntil(this._destroyed$!),
       finalize(() => {
         this.currentStep = 3;
@@ -316,8 +318,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
   onIsLegacyChecked(checked: any): void {
     const chked = checked as boolean;
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onIsLegacyChecked: ${checked}`,
-      ConsoleLogTypeEnum.error);
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onIsLegacyChecked: ${checked}`,
+      ConsoleLogTypeEnum.debug);
 
     if (chked) {
       this.firstFormGroup.get('accountControl')?.disable();
@@ -332,19 +334,21 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     doc.DocType = this.curDocType;
     doc.Items = [];
 
-    const fitem: DocumentItem = new DocumentItem();
-    fitem.ItemId = 1;
-    fitem.AccountId = this.firstFormGroup.get('accountControl')?.value;
-    fitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
-    fitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
-    if (this.curDocType === financeDocTypeLendTo) {
-      fitem.TranType = financeTranTypeLendTo;
-    } else {
-      fitem.TranType = financeTranTypeBorrowFrom;
+    if (!this.isLegacyLoan) {
+      const fitem: DocumentItem = new DocumentItem();
+      fitem.ItemId = 1;
+      fitem.AccountId = this.firstFormGroup.get('accountControl')?.value;
+      fitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
+      fitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
+      if (this.curDocType === financeDocTypeLendTo) {
+        fitem.TranType = financeTranTypeLendTo;
+      } else {
+        fitem.TranType = financeTranTypeBorrowFrom;
+      }
+      fitem.TranAmount = this.firstFormGroup.get('amountControl')?.value;
+      fitem.Desp = doc.Desp;
+      doc.Items.push(fitem);  
     }
-    fitem.TranAmount = this.firstFormGroup.get('amountControl')?.value;
-    fitem.Desp = doc.Desp;
-    doc.Items.push(fitem);
 
     return doc;
   }
