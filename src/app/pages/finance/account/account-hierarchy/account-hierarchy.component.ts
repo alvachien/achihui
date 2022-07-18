@@ -91,6 +91,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+      this._destroyed$ = null;
     }
   }
 
@@ -225,7 +226,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.odataService.fetchAllAccounts(),
           this.odataService.fetchAllControlCenters(),
         ])
-          .subscribe((rst: any) => {
+        .subscribe({
+          next: rst => {
             // Accounts
             let arAcnts = rst[1] as Account[];
             let acntidx = arAcnts.findIndex(acnt => acnt.Id === acntid);
@@ -248,14 +250,16 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
               Amount: 0,
               Currency: this.homeService.ChosedHome!.BaseCurrency,
             };
-            this.isAccountSettleDlgVisible = true;    
-          }, (error: any) => {
+            this.isAccountSettleDlgVisible = true;
+          },
+          error: err => {
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: error,
+              nzContent: err,
               nzClosable: true,
             });
-          });    
+          }
+        });
       } else {
         this.modalService.warning({
           nzTitle: translate('Common.Warning'),

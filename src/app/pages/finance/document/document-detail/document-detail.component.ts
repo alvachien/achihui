@@ -205,6 +205,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         next: val => {
           if (val) {
             this.docFormGroup.enable();
+            this.docFormGroup.get('idControl')?.disable();
           } else {
             const ref: NzModalRef = this.modalService.info({
               nzTitle: translate('Common.Error'),
