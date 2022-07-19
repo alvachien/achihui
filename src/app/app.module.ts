@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,7 +14,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US, zh_CN, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
@@ -71,7 +71,22 @@ registerLocaleData(en);
     }),
   ],
   providers: [
-    { provide: NZ_I18N, useValue: en_US },
+    //{ provide: NZ_I18N, useValue: en_US },
+    {
+      provide: NZ_I18N,
+      useFactory: (localId: string) => {
+        switch (localId) {
+          case 'en':
+            return en_US;
+          /** 与 angular.json i18n/locales 配置一致 **/
+          case 'zh':
+            return zh_CN;
+          default:
+            return en_US;
+        }
+      },
+      deps: [LOCALE_ID] 
+    },
     AuthService,
     AuthGuardService,
     HomeChoseGuardService,

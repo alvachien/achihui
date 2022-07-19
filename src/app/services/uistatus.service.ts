@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators, } from '@angular/forms';
 
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, } from '../model';
 import { TranslocoService } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UIStatusService {
@@ -60,11 +61,13 @@ export class UIStatusService {
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
-  constructor(private _tranService: TranslocoService) {
+  constructor(private _tranService: TranslocoService,
+    private _router: Router) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService constructor...`, ConsoleLogTypeEnum.debug);
   }
 
   private onLanguageChanged(): void {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService onLanguageChanged...`, ConsoleLogTypeEnum.debug);
     // this._tranService.get(arstrings).subscribe((x: any) => {
     //   for (let attr in x) {
     //     for (let lab of this.arrLabels) {
@@ -74,5 +77,13 @@ export class UIStatusService {
     //     }
     //   }
     // });
+  }
+
+  // Navigation: Documents
+  displayFinanceDocument(docid: number): void {
+    this._router.navigate(['/finance/document/display/', docid]);
+  }
+  editFinanceDocument(docid: number): void {
+    this._router.navigate(['/finance/document/edit/', docid]);
   }
 }
