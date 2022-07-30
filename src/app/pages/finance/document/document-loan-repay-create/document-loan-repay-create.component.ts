@@ -33,7 +33,6 @@ interface PayingAccountItem {
   OrderId?: number;
 }
 
-
 @Component({
   selector: 'hih-document-loan-repay-create',
   templateUrl: './document-loan-repay-create.component.html',
@@ -514,13 +513,13 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         di.ItemId = curItemIdx++;
         di.AccountId = this.listItems[idx].AccountId;
         if (this.selectedLoanAccount!.CategoryId === financeAccountCategoryBorrowFrom) {
-          if (this.listItems[idx].TranType === BorrowFromRepayType.Principal) {
+          if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
             di.TranType = financeTranTypeRepaymentOut;
           } else if (this.listItems[idx].TranType === BorrowFromRepayType.InterestOut) {
             di.TranType = financeTranTypeInterestOut;
           }
         } else {
-          if (this.listItems[idx].TranType === BorrowFromRepayType.Principal) {
+          if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
             di.TranType = financeTranTypeRepaymentIn;
           } else if (this.listItems[idx].TranType === BorrowFromRepayType.InterestOut) {
             di.TranType = financeTranTypeInterestIn;
