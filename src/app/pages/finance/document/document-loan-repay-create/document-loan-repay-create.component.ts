@@ -514,15 +514,15 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         di.ItemId = curItemIdx++;
         di.AccountId = this.listItems[idx].AccountId;
         if (this.selectedLoanAccount!.CategoryId === financeAccountCategoryBorrowFrom) {
-          if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
+          if (this.listItems[idx].TranType === BorrowFromRepayType.Principal) {
             di.TranType = financeTranTypeRepaymentOut;
-          } else if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
+          } else if (this.listItems[idx].TranType === BorrowFromRepayType.InterestOut) {
             di.TranType = financeTranTypeInterestOut;
           }
         } else {
-          if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
+          if (this.listItems[idx].TranType === BorrowFromRepayType.Principal) {
             di.TranType = financeTranTypeRepaymentIn;
-          } else if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
+          } else if (this.listItems[idx].TranType === BorrowFromRepayType.InterestOut) {
             di.TranType = financeTranTypeInterestIn;
           }
         }
