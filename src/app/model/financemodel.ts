@@ -867,6 +867,9 @@ export interface AccountExtraAssetJson extends AccountExtraBaseJson {
   CategoryID: number;
   Name: string;
   Comment: string;
+  BoughtDate?: string;
+  ExpiredDate?: string;
+  ResidualValue?: number;
   RefenceBuyDocumentID: number;
   RefenceSoldDocumentID?: number;
 }
@@ -878,6 +881,9 @@ export class AccountExtraAsset extends AccountExtra {
   private _name: string = '';
   private _comment: string = '';
   public CategoryID: number | null = null;
+  public BoughtDate: moment.Moment | null = null;
+  public ExpiredDate: moment.Moment | null = null;
+  public ResidualValue: number | null = null;
   public RefDocForBuy: number | null = null;
   public RefDocForSold: number | null = null;
 
@@ -895,13 +901,16 @@ export class AccountExtraAsset extends AccountExtra {
   }
   constructor() {
     super();
-  }
+  }  
 
   public override onInit(): void {
     super.onInit();
     this._name = '';
     this._comment = '';
     this.CategoryID = null;
+    this.BoughtDate = null;
+    this.ExpiredDate = null;
+    this.ResidualValue = null;
     this.RefDocForBuy = null;
     this.RefDocForSold = null;
   }
@@ -911,6 +920,9 @@ export class AccountExtraAsset extends AccountExtra {
     aobj.CategoryID = this.CategoryID;
     aobj.Name = this.Name;
     aobj.Comment = this.Comment;
+    aobj.BoughtDate = this.BoughtDate;
+    aobj.ExpiredDate = this.ExpiredDate;
+    aobj.ResidualValue = this.ResidualValue;
     aobj.RefDocForBuy = this.RefDocForBuy;
     aobj.RefDocForSold = this.RefDocForSold;
 
@@ -922,6 +934,15 @@ export class AccountExtraAsset extends AccountExtra {
     rstobj.CategoryID = this.CategoryID;
     rstobj.Name = this.Name;
     rstobj.Comment = this.Comment;
+    if (this.BoughtDate) {
+      rstobj.BoughtDate = this.BoughtDate.format(hih.momentDateFormat);
+    }
+    if (this.ExpiredDate) {
+      rstobj.ExpiredDate = this.ExpiredDate.format(hih.momentDateFormat);
+    }
+    if (this.ResidualValue) {
+      rstobj.ResidualValue = this.ResidualValue;
+    }
     if (this.RefDocForBuy) {
       rstobj.RefenceBuyDocumentID = this.RefDocForBuy;
     }
@@ -943,6 +964,15 @@ export class AccountExtraAsset extends AccountExtra {
     }
     if (data && data.Comment) {
       this.Comment = data.Comment;
+    }
+    if (data && data.BoughtDate) {
+      this.BoughtDate = moment(data.BoughtDate);
+    }
+    if (data && data.ExpiredDate) {
+      this.ExpiredDate = moment(data.ExpiredDate);
+    }
+    if (data && data.ResidualValue) {
+      this.ResidualValue = data.ResidualValue;
     }
     if (data && data.RefenceBuyDocumentID) {
       this.RefDocForBuy = +data.RefenceBuyDocumentID;

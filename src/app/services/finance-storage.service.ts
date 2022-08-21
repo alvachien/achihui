@@ -9,9 +9,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
-  ReportTrendExData, DocumentCreatedFrequenciesByUser,
-  Plan, DocumentWithPlanExgRate, BalanceSheetReport,
-  FinanceNormalDocItemMassCreate,
+  ReportTrendExData, DocumentCreatedFrequenciesByUser, Plan, DocumentWithPlanExgRate, BalanceSheetReport, FinanceNormalDocItemMassCreate,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';

@@ -522,7 +522,7 @@ export class FinanceOdataService {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readAccount failed: ${error}.`,
             ConsoleLogTypeEnum.error);
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
   }
 
@@ -3232,6 +3232,48 @@ export class FinanceOdataService {
 
         const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
+      }),
+    );
+  }
+
+  /**
+   * Get asset depreciation list
+   * @param year Year
+   * @param month Month
+   * @returns 
+   */
+  public getAssetDepreciationResult(year: number, month: number): Observable<{ totalCount: number, contentList: DocumentItemView[] }> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    
+    const hid = this.homeService.ChosedHome!.ID;
+    var jdata = {
+      HomeID: hid,
+      Year: year,
+      Month: month,
+    };
+
+    return this.http.post(`${this.documentAPIUrl}/GetAssetDepreciationResult`, 
+      jdata, {
+      headers,
+    }).pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService getAssetDepreciationResult.`, ConsoleLogTypeEnum.debug);
+
+      const data: any = response as any;
+      const amt = data['@odata.count'];
+      const ardi: DocumentItemView[] = [];
+      return {
+        totalCount: amt,
+        contentList: ardi,
+      };
+    }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService searchDocItem failed ${errresp}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
       }),
     );
   }

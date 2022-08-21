@@ -257,7 +257,8 @@
       "LendTo": "借出",
       "Repay": "还款",
       "AssetValChg": "资产估值变动",
-      "Insurance": "保险"
+      "Insurance": "保险",
+      "AssetDeprec": "资产折旧"
     },
     "AssCtgy": {
       "Apartment": "公寓",
@@ -627,7 +628,10 @@
     "InvalidObject": "无效对象",
     "RepaymentOfPrincipal": "偿付本金",
     "InterestExpense": "利息支出",
-    "Principal": "本金"
+    "Principal": "本金",
+    "BoughtDate": "购买日",
+    "ExpiredDate": "过期日",
+    "ResidualValue": "预期残值"
   },
   "Library": {
     "BookCategories": "图书种类",

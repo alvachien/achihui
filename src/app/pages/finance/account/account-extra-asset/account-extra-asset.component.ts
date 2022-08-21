@@ -2,6 +2,7 @@ import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListene
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset
 } from '../../../../model';
@@ -55,6 +56,18 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     if (controlVal) {
       insobj.Comment = controlVal as string;
     }
+    controlVal = this.assetInfoFormGroup.get('boughtDateControl')?.value;
+    if (controlVal) {
+      insobj.BoughtDate = moment(controlVal);
+    }
+    controlVal = this.assetInfoFormGroup.get('expiredDateControl')?.value;
+    if (controlVal) {
+      insobj.ExpiredDate = moment(controlVal);
+    }
+    controlVal = this.assetInfoFormGroup.get('residualValueControl')?.value;
+    if (controlVal) {
+      insobj.ResidualValue = controlVal;
+    }
 
     if (this.refBuyDocID) {
       insobj.RefDocForBuy = this.refBuyDocID;
@@ -106,6 +119,9 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       ctgyControl: new FormControl(undefined, [Validators.required]),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       commentControl: new FormControl('', Validators.maxLength(100)),
+      boughtDateControl: new FormControl(),
+      expiredDateControl: new FormControl(),
+      residualValueControl: new FormControl(),
     });
   }
 
@@ -127,6 +143,15 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       this.assetInfoFormGroup.get('ctgyControl')?.setValue(val.CategoryID);
       this.assetInfoFormGroup.get('nameControl')?.setValue(val.Name);
       this.assetInfoFormGroup.get('commentControl')?.setValue(val.Comment);
+      if (val.BoughtDate) {
+        this.assetInfoFormGroup.get('boughtDateControl')?.setValue(val.BoughtDate.toDate());
+      }
+      if (val.ExpiredDate) {
+        this.assetInfoFormGroup.get('expiredDateControl')?.setValue(val.ExpiredDate.toDate());
+      }
+      if (val.ResidualValue) {
+        this.assetInfoFormGroup.get('residualValueControl')?.setValue(val.ResidualValue);
+      }
       if (val.RefDocForBuy) {
         this._refBuyDocID = val.RefDocForBuy;
       } else {

@@ -257,7 +257,8 @@
       "LendTo": "Lend to",
       "Repay": "Repayment",
       "AssetValChg": "Asset Value Change",
-      "Insurance": "Insurance"
+      "Insurance": "Insurance",
+      "AssetDeprec": "Asset Depreciation"
     },
     "AssCtgy": {
       "Apartment": "Apartment",
@@ -627,7 +628,10 @@
     "InvalidObject": "Invalid object",
     "RepaymentOfPrincipal": "Repayment of Principal",
     "InterestExpense": "Interest Expense",
-    "Principal": "Principal"
+    "Principal": "Principal",
+    "BoughtDate": "Bought Date",
+    "ExpiredDate": "Expired Date",
+    "ResidualValue": "Residual Value"
   },
   "Library": {
     "BookCategories": "Book Categories",

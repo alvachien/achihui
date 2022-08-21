@@ -4,6 +4,7 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{'Common.Overview' | transloco}}</nz-page-header-title>
   <nz-page-header-extra>
+    <button *ngIf="!isChildMode" nz-button nzType="text" (click)="onAssetDeprec()">{{'Sys.DocTy.AssetDeprec' | transloco}}</button>
     <nz-switch *ngIf="!isChildMode" [(ngModel)]="excludeTransfer" [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco" [nzUnCheckedChildren]="'Common.All' | transloco" 
       (ngModelChange)="fetchData(true)"></nz-switch>
   </nz-page-header-extra>

@@ -122,6 +122,21 @@ export class FinanceComponent implements OnInit, OnDestroy {
     // Do nothing so far.
   }
 
+  onAssetDeprec(): void {
+    const ment = moment();
+    const year = ment.year();
+    const month = ment.month() + 1;
+
+    this.odataService.getAssetDepreciationResult(year, month).subscribe({
+      next: val => {
+        console.log(val);
+      },
+      error: err => {
+
+      }
+    });
+  }
+
   fetchData(forceReload = false): void {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
