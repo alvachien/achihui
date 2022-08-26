@@ -29,6 +29,7 @@ import { AuthService, AuthGuardService, HomeChoseGuardService, BlogOdataService,
 import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
 import { MessageDialogComponent } from './pages/message-dialog';
+import { AppInitializerProvider } from './app-initializer.service';
 
 registerLocaleData(zh);
 registerLocaleData(en);
@@ -72,6 +73,7 @@ registerLocaleData(en);
   ],
   providers: [
     //{ provide: NZ_I18N, useValue: en_US },
+    AppInitializerProvider,
     {
       provide: NZ_I18N,
       useFactory: (localId: string) => {

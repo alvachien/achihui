@@ -5,7 +5,9 @@ import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, 
 import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UIStatusService {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _currLang: string | null = null;

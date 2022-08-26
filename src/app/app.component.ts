@@ -5,12 +5,12 @@ import { Router } from '@angular/router';
 
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, UIStatusEnum, HomeDef, ModelUtility, ConsoleLogTypeEnum } from './model';
-import { AuthService, UIStatusService, HomeDefOdataService } from './services';
+import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
 
 @Component({
   selector: 'hih-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.less'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -27,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public _homeService: HomeDefOdataService,
     private uiService: UIStatusService,
     private router: Router,
+    private themeService: ThemeService,
     private _zone: NgZone) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor',
       ConsoleLogTypeEnum.debug);
@@ -75,7 +76,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.translocoService.setActiveLang('zh');
     }
   }
-
+  toggleTheme(): void {
+    this.themeService.toggleTheme().then();
+  }
   public onLogon(): void {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon',
       ConsoleLogTypeEnum.log);

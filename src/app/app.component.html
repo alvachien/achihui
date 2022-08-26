@@ -6,7 +6,7 @@
         <h1>H.I.H.</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen [nzTitle]="t('Common.Dashboard')" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
@@ -85,7 +85,7 @@
         <ul class="app-header-nav">
           <li>
             <div class="app-header-nav-item">
-              <i class="app-header-trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+              <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
                 style="font-size: 24px;" (click)="isCollapsed = !isCollapsed"></i>
             </div>
           </li>
@@ -98,6 +98,13 @@
         </div> -->
         <ul class="app-header-nav">
           <li class="app-header-nav-container">
+            <div class="app-header-nav-item">
+              <a class="header-nav-item" (click)="toggleTheme()">
+                <i nz-icon nzType="skin" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+            </div>
+          </li>
+          <li >
             <div class="app-header-nav-item">
               <a class="header-nav-item" href="https://www.alvachien.com" target="_blank">
                 <i nz-icon nzType="home" nzTheme="outline" class="app-header-icon"></i>

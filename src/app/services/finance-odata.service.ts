@@ -15,7 +15,7 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, 
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
   FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
-  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate,
+  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate, FinanceAssetDepreicationResult,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -3242,7 +3242,7 @@ export class FinanceOdataService {
    * @param month Month
    * @returns 
    */
-  public getAssetDepreciationResult(year: number, month: number): Observable<{ totalCount: number, contentList: DocumentItemView[] }> {
+  public getAssetDepreciationResult(year: number, month: number): Observable<FinanceAssetDepreicationResult[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -3262,15 +3262,11 @@ export class FinanceOdataService {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService getAssetDepreciationResult.`, ConsoleLogTypeEnum.debug);
 
       const data: any = response as any;
-      const amt = data['@odata.count'];
-      const ardi: DocumentItemView[] = [];
-      return {
-        totalCount: amt,
-        contentList: ardi,
-      };
+      const arrst: FinanceAssetDepreicationResult[] = data['value'];
+      return arrst;
     }),
       catchError((errresp: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService searchDocItem failed ${errresp}`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService getAssetDepreciationResult failed ${errresp}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));

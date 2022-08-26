@@ -1,13 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService, } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
-import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan, FinanceOverviewKeyfigure } from '../../model';
+import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan, FinanceOverviewKeyfigure, 
+  UIOrderForSelection, ControlCenter, FinanceAssetDepreciationCreationItem, Account, BuildupOrderForSelection } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
@@ -43,6 +44,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     private uiService: UIStatusService,
     private homeService: HomeDefOdataService,
     private router: Router,
+    private modal: NzModalService,
+    private viewContainerRef: ViewContainerRef,
     private messageService: NzMessageService) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
       ConsoleLogTypeEnum.debug);
@@ -127,14 +130,72 @@ export class FinanceComponent implements OnInit, OnDestroy {
     const year = ment.year();
     const month = ment.month() + 1;
 
-    this.odataService.getAssetDepreciationResult(year, month).subscribe({
-      next: val => {
-        console.log(val);
+    forkJoin([
+      this.odataService.fetchAllAccountCategories(),
+      this.odataService.fetchAllAssetCategories(),
+      this.odataService.fetchAllDocTypes(),
+      this.odataService.fetchAllTranTypes(),
+      this.odataService.fetchAllAccounts(),
+      this.odataService.fetchAllControlCenters(),
+      this.odataService.fetchAllOrders(),
+      this.odataService.fetchAllCurrencies(),
+      this.odataService.getAssetDepreciationResult(year, month)
+    ]).subscribe({
+      next: returnResults => {
+        let arItems:FinanceAssetDepreciationCreationItem[] = [];
+        returnResults[8].forEach(rst => {
+          arItems.push({
+            AssetAccountId: rst.AssetAccountID,
+            TranAmount: rst.TranAmount!,
+            TranCurr: rst.TranCurr!,
+            TranDate: moment(rst.TranDate),
+            HomeID: rst.HomeID,
+            Desp: '',
+          })
+        });
+        this.createAssetDepreciationDlg(arItems, returnResults[4], returnResults[5], BuildupOrderForSelection(returnResults[6], true));
       },
       error: err => {
 
       }
     });
+  }
+
+  createAssetDepreciationDlg(item: FinanceAssetDepreciationCreationItem[],
+    accounts: Account[],
+    controlCenters: ControlCenter[],
+    orders: UIOrderForSelection[],
+    ): void {
+    const modal = this.modal.create({
+      nzTitle: 'Create Asset Depreciation',
+      nzWidth: 900,
+      nzContent: FinanceAssetDepreciationDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        listItems: item,
+        arUIOrders: orders,
+        arControlCenters: controlCenters,
+        accounts: accounts
+      },
+      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+      // nzFooter: [
+      //   {
+      //     label: 'Create Docs',
+      //     onClick: componentInstance => {
+      //       componentInstance!.onCreate(); // componentInstance!.title = 'title in inner component is changed';
+      //     }
+      //   }
+      // ]
+    });
+    const instance = modal.getContentComponent();
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+    // Return a result when closed
+    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+
+    // delay until modal instance created
+    // setTimeout(() => {
+    //   instance.subtitle = 'sub title is changed';
+    // }, 2000);
   }
 
   fetchData(forceReload = false): void {
@@ -240,5 +301,41 @@ export class FinanceComponent implements OnInit, OnDestroy {
     let mt = moment(this.selectedDate);
     this._selectedYear = mt.year();
     this._selectedMonth = mt.month();
+  }
+}
+
+@Component({
+  selector: 'hih-finance-asset-deprec-dlg',
+  templateUrl: './finance-asset-deprec.dlg.html',
+  styleUrls: ['./finance-asset-deprec.dlg.less'],
+})
+export class FinanceAssetDepreciationDlgComponent {
+  @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];
+  @Input() arUIOrders: UIOrderForSelection[] = [];
+  @Input() arControlCenters: ControlCenter[] = [];
+  @Input() accounts: Account[] = [];
+
+  constructor(private modal: NzModalRef,
+    private odataSrv: FinanceOdataService) {}
+
+  destroyModal(): void {
+    this.modal.destroy({ data: 'this the result data' });
+  }
+
+  getAccountNmae(accountid: number): string {
+    let acntname = '';
+    let bfound = false;
+    this.accounts.forEach(acnt => {
+      if (!bfound) {
+        if (acnt.Id === accountid) {
+          bfound = true;
+          acntname = acnt.Name!;
+        }
+      }
+    })
+    return acntname;
+  }
+  createDoc(docitem: FinanceAssetDepreciationCreationItem): void {
+
   }
 }

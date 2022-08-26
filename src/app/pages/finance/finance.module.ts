@@ -4,12 +4,13 @@ import { FinanceUIModule } from './finance-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { FinanceRoutingModule } from './finance-routing.module';
-import { FinanceComponent } from '../finance/finance.component';
+import { FinanceAssetDepreciationDlgComponent, FinanceComponent } from '../finance/finance.component';
 import { CurrencyComponent } from './currency';
 
 @NgModule({
   declarations: [
     FinanceComponent,
+    FinanceAssetDepreciationDlgComponent,
     CurrencyComponent,
   ],
   imports: [
