@@ -178,7 +178,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     orders: UIOrderForSelection[],
     ): void {
     const modal: NzModalRef = this.modal.create({
-      nzTitle: 'Create Asset Depreciation',
+      nzTitle: translate('Sys.DocTy.AssetDeprec'),
       nzWidth: 900,
       nzContent: FinanceAssetDepreciationDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -191,7 +191,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
       nzFooter: [
         {
-          label: 'Close',
+          label: translate('Common.Close'),
           shape: 'round',
           onClick: () => modal.destroy()
         },        

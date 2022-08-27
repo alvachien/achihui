@@ -409,6 +409,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.currentAccountBalance = val;
         },
         error: err => {
+          console.error(err);
         }
       })
     } else {
