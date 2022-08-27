@@ -53,9 +53,7 @@
                     </nz-select>
                 </td>
                 <td>
-                    <a (click)="createDoc(data)">
-                        <i nz-icon nzType="send" nzTheme="outline"></i>
-                    </a>        
+                    <button nz-button nzType="default" nzShape="circle" [disabled]="!isValid(data)" (click)="createDoc(data)"><span nz-icon nzType="send"></span></button>
                 </td>
             </tr>            
         </tbody>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum, TemplateDocADP, TemplateDocLoan, FinanceOverviewKeyfigure, 
-  UIOrderForSelection, ControlCenter, FinanceAssetDepreciationCreationItem, Account, BuildupOrderForSelection } from '../../model';
+  UIOrderForSelection, ControlCenter, FinanceAssetDepreciationCreationItem, Account, BuildupOrderForSelection, momentDateFormat } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
@@ -109,6 +109,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     return dpdocs;
   }
+  isLastDateInMonth(seledDate: Date): boolean {
+    const mdate = moment(seledDate);
+    return mdate.daysInMonth() === mdate.date();
+  }
 
   onSelectChange(event: any) {
     // Check
@@ -125,8 +129,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     // Do nothing so far.
   }
 
-  onAssetDeprec(): void {
-    const ment = moment();
+  onAssetDeprec(seldate: Date): void {
+    const ment = moment(seldate);
     const year = ment.year();
     const month = ment.month() + 1;
 
@@ -148,15 +152,22 @@ export class FinanceComponent implements OnInit, OnDestroy {
             AssetAccountId: rst.AssetAccountID,
             TranAmount: rst.TranAmount!,
             TranCurr: rst.TranCurr!,
-            TranDate: moment(rst.TranDate),
-            HomeID: rst.HomeID,
+            TranDate: moment(rst.TranDate).format(momentDateFormat),
+            HID: rst.HID,
             Desp: '',
           })
         });
         this.createAssetDepreciationDlg(arItems, returnResults[4], returnResults[5], BuildupOrderForSelection(returnResults[6], true));
       },
       error: err => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceComponent onAssetDeprec forkJoin failed ${err}...`,
+          ConsoleLogTypeEnum.error);
 
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
       }
     });
   }
@@ -166,7 +177,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     controlCenters: ControlCenter[],
     orders: UIOrderForSelection[],
     ): void {
-    const modal = this.modal.create({
+    const modal: NzModalRef = this.modal.create({
       nzTitle: 'Create Asset Depreciation',
       nzWidth: 900,
       nzContent: FinanceAssetDepreciationDlgComponent,
@@ -178,19 +189,24 @@ export class FinanceComponent implements OnInit, OnDestroy {
         accounts: accounts
       },
       nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
-      // nzFooter: [
+      nzFooter: [
+        {
+          label: 'Close',
+          shape: 'round',
+          onClick: () => modal.destroy()
+        },        
       //   {
       //     label: 'Create Docs',
       //     onClick: componentInstance => {
       //       componentInstance!.onCreate(); // componentInstance!.title = 'title in inner component is changed';
       //     }
       //   }
-      // ]
+      ]
     });
     const instance = modal.getContentComponent();
     modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
+    modal.afterClose.subscribe((result: any) => console.log('[afterClose] The result is:', result));
 
     // delay until modal instance created
     // setTimeout(() => {
@@ -316,7 +332,10 @@ export class FinanceAssetDepreciationDlgComponent {
   @Input() accounts: Account[] = [];
 
   constructor(private modal: NzModalRef,
-    private odataSrv: FinanceOdataService) {}
+    private odataSrv: FinanceOdataService,
+    private messageService: NzMessageService,
+    private changeDetectRef: ChangeDetectorRef,
+    ) {}
 
   destroyModal(): void {
     this.modal.destroy({ data: 'this the result data' });
@@ -335,7 +354,37 @@ export class FinanceAssetDepreciationDlgComponent {
     })
     return acntname;
   }
+  isValid(docitem: FinanceAssetDepreciationCreationItem): boolean {
+    if (docitem.TranAmount <= 0) {
+      return false;
+    }
+    if ((docitem.ControlCenterId !== undefined && docitem.OrderId !== undefined)
+      || (docitem.ControlCenterId === undefined && docitem.OrderId === undefined)) {
+      return false;
+    }
+    if (docitem.Desp === undefined || docitem.Desp.length === 0) {
+      return false;
+    }
+    return true;
+  }
   createDoc(docitem: FinanceAssetDepreciationCreationItem): void {
+    if (this.isValid(docitem)) {
+      this.odataSrv.createAssetDepreciationDoc(docitem).subscribe({
+        next: val => {
+          this.messageService.success(translate('Finance.DocumentPosted'));
+          let idx = this.listItems.findIndex(p => p.AssetAccountId === docitem.AssetAccountId);
+          if (idx !== -1) {
+            this.listItems.splice(idx, 1);
+            this.changeDetectRef.detectChanges();
+          }
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceAssetDepreciationDlgComponent createDoc failed ${err}...`,
+            ConsoleLogTypeEnum.error);
 
+          this.messageService.error(err);
+        }
+      });
+    }
   }
 }

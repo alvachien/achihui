@@ -15,7 +15,7 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, 
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
   FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
-  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate, FinanceAssetDepreicationResult,
+  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate, FinanceAssetDepreicationResult, FinanceAssetDepreciationCreationItem,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -3236,6 +3236,39 @@ export class FinanceOdataService {
     );
   }
 
+  /**
+   * Post asset depreciation doc
+   */
+  public createAssetDepreciationDoc(dprecdoc: FinanceAssetDepreciationCreationItem): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.documentAPIUrl + '/PostAssetDepreciationDocument';
+    const jdata: string = JSON && JSON.stringify(dprecdoc);
+
+    return this.http.post(apiurl, jdata, {
+      headers,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetDepreciationDoc in FinanceOdataService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        const ndoc = new Document();
+        ndoc.onSetData(response as any);
+        return ndoc;
+      }),
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createAssetDepreciationDoc in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
+
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(errmsg);
+        }),
+      );
+
+  }
   /**
    * Get asset depreciation list
    * @param year Year

@@ -3533,7 +3533,7 @@ export interface FinanceTmpLoanDocFilter {
 }
 
 export interface FinanceAssetDepreicationResult {
-  HomeID: number;
+  HID: number;
   AssetAccountID: number;
   TranDate?: moment.Moment;
   TranAmount?: number;
@@ -3541,9 +3541,9 @@ export interface FinanceAssetDepreicationResult {
 }
 
 export interface FinanceAssetDepreciationCreationItem {
-  HomeID: number;
+  HID: number;
   AssetAccountId: number;
-  TranDate: moment.Moment;
+  TranDate: string;
   TranAmount: number;
   TranCurr: string;
   ControlCenterId?: number;

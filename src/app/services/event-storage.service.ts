@@ -10,7 +10,9 @@ import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import * as moment from 'moment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EventStorageService {
   readonly eventHabitUrl: string = environment.ApiUrl + '/eventhabit';
   readonly recurEventUrl: string = environment.ApiUrl + '/recurevent';

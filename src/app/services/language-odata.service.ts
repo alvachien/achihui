@@ -6,7 +6,9 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LanguageOdataService {
   // Buffer
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
