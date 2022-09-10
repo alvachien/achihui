@@ -498,7 +498,7 @@ export class AppLanguage {
 export class MultipleNamesObject extends BaseModel {
   private _nativeName?: string;
   private _englishName?: string;
-  private _englishIsNative?: boolean;
+  private _chineseIsNative?: boolean;
 
   get NativeName(): string | undefined {
     return this._nativeName;
@@ -512,11 +512,11 @@ export class MultipleNamesObject extends BaseModel {
   set EnglishName(en: string | undefined) {
     this._englishName = en;
   }
-  get EnglishIsNative(): boolean | undefined {
-    return this._englishIsNative;
+  get ChineseIsNative(): boolean | undefined {
+    return this._chineseIsNative;
   }
-  set EnglishIsNative(ein: boolean | undefined) {
-    this._englishIsNative = ein;
+  set ChineseIsNative(ein: boolean | undefined) {
+    this._chineseIsNative= ein;
   }
 
   constructor() {
@@ -538,8 +538,8 @@ export class MultipleNamesObject extends BaseModel {
     if (this.EnglishName) {
       rstobj.englishName = this.EnglishName;
     }
-    if (this.EnglishIsNative) {
-      rstobj.englishIsNative = this.EnglishIsNative;
+    if (this.ChineseIsNative) {
+      rstobj.ChineseIsNative = this.ChineseIsNative;
     }
 
     return rstobj;
@@ -554,8 +554,8 @@ export class MultipleNamesObject extends BaseModel {
     if (data && data.englishName) {
       this.EnglishName = data.englishName;
     }
-    if (data && data.englishIsNative) {
-      this.EnglishIsNative = data.englishIsNative;
+    if (data && data.ChineseIsNative) {
+      this.ChineseIsNative = data.ChineseIsNative;
     }
   }
 }

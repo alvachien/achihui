@@ -4,6 +4,25 @@ import * as hih from './common';
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
 /**
+ * Person role
+ */
+ export class PersonRole extends hih.BaseModel {
+  private _id: number = 0;
+  private _hid: number | null = null;
+  private _name: string = '';
+  private _cmt: string = '';
+
+  get ID(): number { return this._id; }
+  set ID(id: number) { this._id = id; }
+  get HomeID(): number | null { return this._hid; }
+  set HomeID(hid: number | null) { this._hid = hid; }
+  get Name(): string { return this._name; }
+  set Name(name: string) { this._name = name; }
+  get Comment(): string { return this._cmt; }
+  set Comment(cmt: string) { this._cmt = cmt; }
+}
+
+/**
  * Gender
  */
 export enum GenderEnum {
