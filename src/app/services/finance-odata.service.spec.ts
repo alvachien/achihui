@@ -919,14 +919,14 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.readAccount(21).subscribe(
-        (data: any) => {
+      service.readAccount(21).subscribe({
+        next: data => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.accountAPIUrl && requrl.params.has('$filter');

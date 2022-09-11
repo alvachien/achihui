@@ -3,8 +3,7 @@ import {
   AccountCategory, TranType, AssetCategory, Account, AccountJson,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
-  BookCategory, BookCategoryJson,
-  Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
+  BookCategory, Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
   ControlCenter, ControlCenterJson, Order, OrderJson, Plan, PlanTypeEnum,
   Document, DocumentItem, AccountExtraAdvancePayment,
@@ -48,7 +47,6 @@ export class FakeDataHelper {
   private _appLanguages: AppLanguage[] = [];
   private _appLanguagesFromAPI: AppLanguageJson[] = [];
   private _libBookCategories: BookCategory[] = [];
-  private _libBookCategoriesFromAPI: BookCategoryJson[] = [];
   private _libMovieGenres: MovieGenre[] = [];
   private _libMovieGenresFromAPI: MovieGenreJson[] = [];
   private _libLocations: Location[] = [];
@@ -219,20 +217,6 @@ export class FakeDataHelper {
       return this._libBookCategories;
     }
     return [];
-  }
-  get libBookCategoriesFromAPI(): BookCategoryJson[] {
-    if (this._libBookCategoriesFromAPI) {
-      return this._libBookCategoriesFromAPI;
-    }
-    return [];
-  }
-  get libBookCategoriesFullReplyFromAPI(): any {
-    if (this._libBookCategoriesFromAPI) {
-      return {
-        totalCount: this._libBookCategoriesFromAPI.length,
-        contentList: this._libBookCategoriesFromAPI,
-      };
-    }
   }
   get libMovieGenres(): MovieGenre[] {
     if (this._libMovieGenres) {
@@ -1211,16 +1195,6 @@ export class FakeDataHelper {
       ctgy.ID = i + 1;
       ctgy.Name = `Category ${i + 1}`;
       this._libBookCategories.push(ctgy);
-    }
-  }
-  public buildLibBookCategoriesFromAPI(): void {
-    this._libBookCategoriesFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: BookCategoryJson = {
-        id: i + 1,
-        name: `category ${i + 1}`,
-      };
-      this._libBookCategoriesFromAPI.push(ct1);
     }
   }
   public buildLibMovieGenres(): void {

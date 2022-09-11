@@ -641,7 +641,11 @@
     "Books": "书籍",
     "Book": "书籍",
     "Movies": "影视剧",
-    "Movie": "影视剧"
+    "Movie": "影视剧",
+    "PersonRole": "人物角色",
+    "PersonRoles": "人物角色",
+    "OrganizationType": "组织属性",
+    "OrganizationTypes": "组织属性"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

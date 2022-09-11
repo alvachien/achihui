@@ -641,7 +641,11 @@
     "Books": "Books",
     "Book": "Book",
     "Movies": "Movies",
-    "Movie": "Movie"
+    "Movie": "Movie",
+    "PersonRole": "Person Role",
+    "PersonRoles": "Person Roles",
+    "OrganizationType": "Organization Type",
+    "OrganizationTypes": "Organization Types"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

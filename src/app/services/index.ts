@@ -14,5 +14,6 @@ export * from './language-odata.service';
 export * from './home-def-odata.service';
 export * from './finance-odata.service';
 export * from './blog-odata.service';
+export * from './library-storage.service';
 
 export * from './theme.service';
