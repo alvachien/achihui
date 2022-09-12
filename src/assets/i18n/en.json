@@ -644,8 +644,14 @@
     "Movie": "Movie",
     "PersonRole": "Person Role",
     "PersonRoles": "Person Roles",
+    "Person": "Person",
+    "Persons": "Persons",
     "OrganizationType": "Organization Type",
-    "OrganizationTypes": "Organization Types"
+    "OrganizationTypes": "Organization Types",
+    "Organization": "Organization",
+    "Organizations": "Organizations",
+    "Location": "Location",
+    "Locations": "Locations"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

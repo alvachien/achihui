@@ -26,9 +26,41 @@ describe('MultipleNamesObject', () => {
     testobj = new MultipleNamesObject();
   });
 
+  it('onInit', () => {
+    testobj.ChineseName = 'aaa';
+    expect(testobj.ChineseName.length).toBeGreaterThan(0);
+
+    testobj.onInit();
+    expect(testobj.ChineseName.length).toEqual(0);
+  });
+
+  it('onVerify', () => {
+    testobj.ChineseName = 'aaa';
+    let vrst = testobj.onVerify();
+    expect(vrst).toBeTrue();
+
+    testobj.onInit();
+    vrst = testobj.onVerify();
+    expect(vrst).toBeFalse();
+
+    testobj.NativeName = 'aaa';
+    vrst = testobj.onVerify();
+    expect(vrst).toBeTrue();
+  });
+
   it('writeObject shall work', () => {
+    testobj.ChineseName = 'aaa';
+    testobj.NativeName = 'bbb';
     const writeobj = testobj.writeJSONObject();
     expect(writeobj).toBeTruthy();
+    expect(writeobj.ChineseName).toEqual(testobj.ChineseName);
+    expect(writeobj.NativeName).toEqual(testobj.NativeName);
+    expect(writeobj.ChineseIsNative).toBeFalse();
+
+    let testobj2: MultipleNamesObject = new MultipleNamesObject();
+    testobj2.onSetData(writeobj);
+    expect(testobj2.ChineseName).toEqual(testobj.ChineseName);
+    expect(testobj2.NativeName).toEqual(testobj.NativeName);
   });
 });
 

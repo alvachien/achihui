@@ -644,8 +644,14 @@
     "Movie": "影视剧",
     "PersonRole": "人物角色",
     "PersonRoles": "人物角色",
+    "Person": "人物",
+    "Persons": "人物",
     "OrganizationType": "组织属性",
-    "OrganizationTypes": "组织属性"
+    "OrganizationTypes": "组织属性",
+    "Organization": "组织",
+    "Organizations": "组织",
+    "Location": "存储地点",
+    "Locations": "存储地点"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

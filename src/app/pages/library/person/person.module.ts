@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { PersonRoutingModule } from './person-routing.module';
-import { PersonListComponent } from './person-list/person-list.component';
-import { PersonDetailComponent } from './person-detail/person-detail.component';
-
+import { PersonListComponent } from './person-list';
+import { PersonDetailComponent } from './person-detail';
+import { LibraryUIModule } from '../library-ui.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,8 @@ import { PersonDetailComponent } from './person-detail/person-detail.component';
   ],
   imports: [
     CommonModule,
+    LibraryUIModule,
+    TranslocoModule,
     PersonRoutingModule
   ]
 })

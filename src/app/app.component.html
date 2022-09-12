@@ -53,9 +53,21 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'config']">{{'Finance.ConfigObjects' | transloco}}</a>
           </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'person']">{{'Library.Persons' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'organization']">{{'Library.Organizations' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'location']">{{'Library.Locations' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'book']">{{'Library.Books' | transloco}}</a>
+          </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="book">
+      <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="file">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'blog', 'setting']">{{'Common.Setting' | transloco}}</a>

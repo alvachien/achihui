@@ -11,8 +11,8 @@ import {
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
-  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
-  Location, LocationJson, financeTranTypeInterestOut,
+  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal,
+  financeTranTypeInterestOut,
   BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost,
 } from '../app/model';
 import { User } from 'oidc-client';
@@ -47,10 +47,6 @@ export class FakeDataHelper {
   private _appLanguages: AppLanguage[] = [];
   private _appLanguagesFromAPI: AppLanguageJson[] = [];
   private _libBookCategories: BookCategory[] = [];
-  private _libMovieGenres: MovieGenre[] = [];
-  private _libMovieGenresFromAPI: MovieGenreJson[] = [];
-  private _libLocations: Location[] = [];
-  private _libLocationsFromAPI: LocationJson[] = [];
   private _tags: Tag[] = [];
   private _tagsFromAPI: TagJson[] = [];
   private _tagsCount: TagCount[] = [];
@@ -217,46 +213,6 @@ export class FakeDataHelper {
       return this._libBookCategories;
     }
     return [];
-  }
-  get libMovieGenres(): MovieGenre[] {
-    if (this._libMovieGenres) {
-      return this._libMovieGenres;
-    }
-    return [];
-  }
-  get libMovieGenresFromAPI(): MovieGenreJson[] {
-    if (this._libMovieGenresFromAPI) {
-      return this._libMovieGenresFromAPI;
-    }
-    return [];
-  }
-  get libMovieGenresFullReplyFromAPI(): any {
-    if (this._libMovieGenresFromAPI) {
-      return {
-        totalCount: this._libMovieGenresFromAPI.length,
-        contentList: this._libMovieGenresFromAPI,
-      };
-    }
-  }
-  get libLocations(): Location[] {
-    if (this._libLocations) {
-      return this._libLocations;
-    }
-    return [];
-  }
-  get libLocationsFromAPI(): LocationJson[] {
-    if (this._libLocationsFromAPI) {
-      return this._libLocationsFromAPI;
-    }
-    return [];
-  }
-  get libLocationsFullReplyFromAPI(): any {
-    if (this._libLocationsFromAPI) {
-      return {
-        totalCount: this._libLocationsFromAPI.length,
-        contentList: this._libLocationsFromAPI,
-      };
-    }
   }
   get tags(): Tag[] {
     if (this._tags) {
@@ -1195,49 +1151,6 @@ export class FakeDataHelper {
       ctgy.ID = i + 1;
       ctgy.Name = `Category ${i + 1}`;
       this._libBookCategories.push(ctgy);
-    }
-  }
-  public buildLibMovieGenres(): void {
-    this._libMovieGenres = [];
-    let ctgy: MovieGenre;
-    for (let i = 0; i < 2; i++) {
-      ctgy = new MovieGenre();
-      ctgy.ID = i + 1;
-      ctgy.Name = `Genre ${i + 1}`;
-      this._libMovieGenres.push(ctgy);
-    }
-  }
-  public buildLibMovieGenresFromAPI(): void {
-    this._libMovieGenresFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: MovieGenreJson = {
-        id: i + 1,
-        name: `genre ${i + 1}`,
-      };
-      this._libMovieGenresFromAPI.push(ct1);
-    }
-  }
-  public buildLibLocations(): void {
-    this._libLocations = [];
-    let loc: Location;
-    for (let i = 0; i < 2; i++) {
-      loc = new Location();
-      loc.ID = i + 1;
-      loc.Name = `Loc ${i + 1}`;
-      loc.IsDevice = true;
-      loc.Desp = `desp ${i + 1}`;
-      this._libLocations.push(loc);
-    }
-  }
-  public buildLibLocationsFromAPI(): void {
-    this._libLocationsFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: any = {
-        id: i + 1,
-        name: `loc ${i + 1}`,
-        desp: `desp ${i + 1}`,
-      };
-      this._libLocationsFromAPI.push(ct1 as LocationJson);
     }
   }
   public buildTags(): void {

@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LocationRoutingModule } from './location-routing.module';
-import { LocationListComponent } from './location-list/location-list.component';
-import { LocationDetailComponent } from './location-detail/location-detail.component';
-
+import { LocationListComponent } from './location-list';
+import { LocationDetailComponent } from './location-detail';
+import { LibraryUIModule } from '../library-ui.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,8 @@ import { LocationDetailComponent } from './location-detail/location-detail.compo
   ],
   imports: [
     CommonModule,
+    LibraryUIModule,
+    TranslocoModule,
     LocationRoutingModule
   ]
 })

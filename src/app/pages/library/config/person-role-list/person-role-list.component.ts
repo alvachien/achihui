@@ -10,7 +10,7 @@ import { LibraryStorageService, UIStatusService } from 'src/app/services';
 @Component({
   selector: 'hih-person-role-list',
   templateUrl: './person-role-list.component.html',
-  styleUrls: ['./person-role-list.component.less']
+  styleUrls: ['./person-role-list.component.less'],
 })
 export class PersonRoleListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -2,7 +2,8 @@
 // Unit test for librarymodel.ts
 //
 
-import { Location, BookCategory, MovieGenre, PersonRole, OrganizationType } from './librarymodel';
+import { Location, BookCategory, MovieGenre, PersonRole, OrganizationType, 
+  LocationTypeEnum } from './librarymodel';
 
 describe('PersonRole', () => {
   let objtbt: PersonRole;
@@ -105,14 +106,22 @@ describe('Location', () => {
     objloc = new Location();
   });
 
-  it('init', () => {
+  it('onInit', () => {
     expect(objloc).toBeTruthy();
+
+    objloc.Name = 'test1';
+    objloc.LocType = LocationTypeEnum.EBook;
+    objloc.Comment = 'desp';
+    expect(objloc.Name).toBeTruthy();
+    objloc.onInit();
+    expect(objloc.Name.length).toEqual(0);
+    //expect(objloc.LocType).toEqual(LocationTypeEnum.PaperBook);
   });
 
   it('writeJSONobject and onSetdata', () => {
     objloc.Name = 'test1';
-    objloc.IsDevice = false;
-    objloc.Desp = 'desp';
+    objloc.LocType = LocationTypeEnum.EBook;
+    objloc.Comment = 'desp';
     const jdata = objloc.writeJSONObject();
     expect(jdata).toBeTruthy();
 

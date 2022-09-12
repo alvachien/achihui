@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrganizationRoutingModule } from './organization-routing.module';
-import { OrganizationListComponent } from './organization-list/organization-list.component';
-import { OrganizationDetailComponent } from './organization-detail/organization-detail.component';
-
+import { OrganizationListComponent } from './organization-list';
+import { OrganizationDetailComponent } from './organization-detail';
+import { LibraryUIModule } from '../library-ui.module';
+import { TranslocoModule } from '@ngneat/transloco';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,8 @@ import { OrganizationDetailComponent } from './organization-detail/organization-
   ],
   imports: [
     CommonModule,
+    LibraryUIModule,
+    TranslocoModule,
     OrganizationRoutingModule
   ]
 })

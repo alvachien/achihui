@@ -85,17 +85,17 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return expected currencies (called once)', () => {
-      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+      expect(service.Currencies.length).withContext('should not buffered yet').toEqual(0);
 
-      service.fetchAllCurrencies().subscribe(
-        (curries: any) => {
-          expect(curries.length).toEqual(fakeData.currenciesFromAPI.length, 'should return expected currencies');
-          expect(service.Currencies.length).toEqual(fakeData.currenciesFromAPI.length, 'should have buffered');
+      service.fetchAllCurrencies().subscribe({
+        next: (curries: any) => {
+          expect(curries.length).withContext('should return expected currencies').toEqual(fakeData.currenciesFromAPI.length);
+          expect(service.Currencies.length).withContext('should have buffered').toEqual(fakeData.currenciesFromAPI.length);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Empty
         },
-      );
+      });
 
       // Service should have made one request to GET currencies from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -113,16 +113,16 @@ describe('FinanceOdataService', () => {
     });
 
     it('should be OK returning no currencies', () => {
-      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
-      service.fetchAllCurrencies().subscribe(
-        (curries: any) => {
-          expect(curries.length).toEqual(0, 'should have empty currencies array');
-          expect(service.Currencies.length).toEqual(0, 'should buffered nothing');
+      expect(service.Currencies.length).withContext('should not buffered yet').toEqual(0);
+      service.fetchAllCurrencies().subscribe({
+        next: (curries: any) => {
+          expect(curries.length).withContext('should have empty currencies array').toEqual(0);
+          expect(service.Currencies.length).withContext('should buffered nothing').toEqual(0);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Empty
         },
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'

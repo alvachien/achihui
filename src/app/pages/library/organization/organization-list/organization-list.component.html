@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>{{'Common.NativeName' | transloco}}</th>
                 <th>{{'Common.Name' | transloco}}</th>
                 <th>{{'Common.Comment' | transloco}}</th>
             </tr>
@@ -10,8 +11,9 @@
         <tbody>
             <tr *ngFor="let data of basicTable.data">
                 <td>{{data.ID}}</td>
-                <td>{{data.Name | transloco}}</td>
-                <td>{{data.Comment}}</td>
+                <td>{{data.NativeName}}</td>
+                <td>{{data.ChineseName}}</td>
+                <td>{{data.Detail}}</td>
             </tr>
         </tbody>
     </nz-table>

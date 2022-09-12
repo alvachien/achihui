@@ -46,7 +46,7 @@ export class PersonRole extends hih.BaseModel {
     if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
       return false;
     }
-    if (this._cmt && (this._cmt.length <= 0 || this._cmt.length > 100)) {
+    if (this._cmt && this._cmt.length > 100) {
       return false;
     }
 
@@ -123,7 +123,7 @@ export class OrganizationType extends hih.BaseModel {
     if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
       return false;
     }
-    if (this._cmt && (this._cmt.length <= 0 || this._cmt.length > 100)) {
+    if (this._cmt && this._cmt.length > 100) {
       return false;
     }
 
@@ -178,28 +178,122 @@ export enum GenderEnum {
 export class Person extends hih.MultipleNamesObject {
   private _id: number = 0;
   private _hid: number | null = null;
-  private _gend: GenderEnum | null = null;
-  private _shrtintro: string = '';
-  private _ext1link: string = '';
+  // private _gend: GenderEnum | null = null;
+  // private _shrtintro: string = '';
+  // private _ext1link: string = '';
+  private _detail: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
   get HID(): number | null { return this._hid; }
   set HID(hid: number | null) { this._hid = hid; }
-  get Gender(): GenderEnum | null { return this._gend; }
-  set Gender(gen: GenderEnum | null) { this._gend = gen; }
-  get ShortIntro(): string { return this._shrtintro; }
-  set ShortIntro(si: string) { this._shrtintro = si; }
-  get Ext1Link(): string { return this._ext1link; }
-  set Ext1Link(el: string) { this._ext1link = el; }
+  // get Gender(): GenderEnum | null { return this._gend; }
+  // set Gender(gen: GenderEnum | null) { this._gend = gen; }
+  // get ShortIntro(): string { return this._shrtintro; }
+  // set ShortIntro(si: string) { this._shrtintro = si; }
+  // get Ext1Link(): string { return this._ext1link; }
+  // set Ext1Link(el: string) { this._ext1link = el; }
+  get Detail(): string { return this._detail; }
+  set Detail(dtl: string) { this._detail = dtl; }
+
+  public override onInit(): void {
+    super.onInit();
+    this._id = 0;
+    this._hid = null;
+    this.Detail = '';
+  }
+
+  public override onVerify(context?: any): boolean {
+    let vrst = super.onVerify(context);
+    return vrst;
+  }
+
+  public override writeJSONObject(): any {
+    let rst = super.writeJSONObject();
+    if (this._id > 0) {
+      rst.Id = this.ID;
+    }
+    if (this._hid !== null) {
+      rst.HomeID = this.HID;
+    }
+    if (this._detail.length > 0) {
+      rst.Detail = this._detail;
+    }
+
+    return rst;
+  }
+  public override onSetData(data: any): void {
+    super.onSetData(data);
+    if (data && data.Id) {
+      this.ID = data.Id;
+    }
+    if (data && data.HomeID) {
+      this.HID = data.HomeID;
+    }
+    if (data && data.Detail) {
+      this.Detail = data.Detail;
+    }
+  }
 }
 
-export interface LocationJson extends hih.BaseModelJson {
-  id: number;
-  hid?: number;
-  name: string;
-  isDevice: boolean;
-  desp: string;
+/**
+ * Organization
+ */
+export class Organization extends hih.MultipleNamesObject {
+  private _id: number = 0;
+  private _hid: number | null = null;
+  private _detail: string = '';
+
+  get ID(): number { return this._id; }
+  set ID(id: number) { this._id = id; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
+  get Detail(): string { return this._detail; }
+  set Detail(dtl: string) { this._detail = dtl; }
+
+  public override onInit(): void {
+    super.onInit();
+    this._id = 0;
+    this._hid = null;
+    this.Detail = '';
+  }
+
+  public override onVerify(context?: any): boolean {
+    let vrst = super.onVerify(context);
+    return vrst;
+  }
+
+  public override writeJSONObject(): any {
+    let rst = super.writeJSONObject();
+    if (this._id > 0) {
+      rst.Id = this.ID;
+    }
+    if (this._hid !== null) {
+      rst.HomeID = this.HID;
+    }
+    if (this._detail.length > 0) {
+      rst.Detail = this._detail;
+    }
+
+    return rst;
+  }
+  public override onSetData(data: any): void {
+    super.onSetData(data);
+    if (data && data.Id) {
+      this.ID = data.Id;
+    }
+    if (data && data.HomeID) {
+      this.HID = data.HomeID;
+    }
+    if (data && data.Detail) {
+      this.Detail = data.Detail;
+    }
+  }
+}
+
+export enum LocationTypeEnum {
+  PaperBook = 0,
+  EBook = 1,
 }
 
 /**
@@ -209,8 +303,8 @@ export class Location extends hih.BaseModel {
   private _id: number = 0;
   private _hid: number | null;
   private _name: string = '';
-  private _isdevice: boolean | null = null;
-  private _desp: string = '';
+  private _loctype: LocationTypeEnum = LocationTypeEnum.PaperBook;
+  private _cmt: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
@@ -218,15 +312,28 @@ export class Location extends hih.BaseModel {
   set HID(hid: number | null) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
-  get IsDevice(): boolean | null { return this._isdevice; }
-  set IsDevice(id: boolean | null) { this._isdevice = id; }
-  get Desp(): string { return this._desp; }
-  set Desp(dsp: string) { this._desp = dsp; }
+  get LocType(): LocationTypeEnum { return this._loctype; }
+  set LocType(lt: LocationTypeEnum) { this._loctype = lt; }
+  get Comment(): string { return this._cmt; }
+  set Comment(dsp: string) { this._cmt = dsp; }
 
   constructor() {
     super();
 
+    this._id = 0;
     this._hid = null;
+    this._name = '';
+    this._loctype = LocationTypeEnum.PaperBook;
+    this._cmt = '';
+  }
+
+  public override onInit() {
+    super.onInit();
+    this._id = 0;
+    this._hid = null;
+    this._name = '';
+    this._loctype = LocationTypeEnum.PaperBook;
+    this._cmt = '';
   }
 
   public override onVerify(context?: any): boolean {
@@ -240,31 +347,35 @@ export class Location extends hih.BaseModel {
 
   public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
-    rstobj.id = this.ID;
-    rstobj.hid = this.HID;
-    rstobj.name = this.Name;
-    rstobj.desp = this.Desp;
+    rstobj.Id = this.ID;
+    rstobj.HomeID = this.HID;
+    rstobj.Name = this.Name;
+    let ntypeid = +this._loctype;
+    rstobj.LocationType = ntypeid;
+    rstobj.Comment = this.Comment;
 
     return rstobj;
   }
 
-  public override onSetData(data: LocationJson): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this._id = +data.id;
+    if (data && data.Id) {
+      this.ID = +data.Id;
     }
-    if (data && data.hid) {
-      this._hid = data.hid;
+    if (data && data.HomeID) {
+      this.HID = data.HomeID;
     }
-    if (data && data.name) {
-      this._name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.isDevice) {
-      this._isdevice = data.isDevice;
+    if (data && data.LocationType) {
+      if (typeof data.LocationType === 'number') {
+        this._loctype = data.LocationType as LocationTypeEnum;
+      }
     }
-    if (data && data.desp) {
-      this._desp = data.desp;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
   }
 }
@@ -440,10 +551,3 @@ export class MovieGenre extends hih.BaseModel {
   }
 }
 
-export class Movie extends hih.MultipleNamesObject {
-  public Genres: MovieGenre[] = [];
-  public Directors: Person[] = [];
-  public Actors: Person[] = [];
-  public PublishDate: moment.Moment = moment();
-  public Locations: Location[] = [];
-}

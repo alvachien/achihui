@@ -1,1 +1,18 @@
-<p>organization-type-list works!</p>
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
+    <nz-table #basicTable [nzData]="dataSet">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>{{'Common.Name' | transloco}}</th>
+                <th>{{'Common.Comment' | transloco}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{data.ID}}</td>
+                <td>{{data.Name | transloco}}</td>
+                <td>{{data.Comment}}</td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-spin>

@@ -5,8 +5,8 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 
-import { LogLevel, BookCategory, Book, Location, momentDateFormat, PersonRole, OrganizationType, ModelUtility, ConsoleLogTypeEnum,
-  Person, } from '../model';
+import { LogLevel, BookCategory, Book, momentDateFormat, PersonRole, OrganizationType, ModelUtility, ConsoleLogTypeEnum,
+  Person, Organization, Location, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -21,15 +21,15 @@ export class LibraryStorageService {
   private _listOrganizationType: OrganizationType[] = [];
   private _isBookCtgyListLoaded: boolean = false;
   private _listBookCategories: BookCategory[] = [];
-  // private _isMovieGenreListLoaded: boolean;
-  // private _listMovieGenres: MovieGenre[];
-  // private _isLocationListLoaded: boolean;
-  // private _listLocation: Location[];
+  private _isLocationListLoaded: boolean = false;
+  private _listLocation: Location[] = [];
 
   // private _isBookListLoaded: boolean;
   // private _isMovieListLoaded: boolean;
   private _isPersonLoaded: boolean = false;
   private _listPerson: Person[] = [];
+  private _isOrganizationLoaded: boolean = false;
+  private _listOrganization: Organization[] = [];
 
   get PersonRoles(): PersonRole[] {
     return this._listPersonRole;
@@ -40,12 +40,15 @@ export class LibraryStorageService {
   get BookCategories(): BookCategory[] {
     return this._listBookCategories;
   }
-  // get MovieGenres(): MovieGenre[] {
-  //   return this._listMovieGenres;
-  // }
-  // get Locations(): Location[] {
-  //   return this._listLocation;
-  // }
+  get Persons(): Person[] {
+    return this._listPerson;
+  }
+  get Organizations(): Organization[] {
+    return this._listOrganization;
+  }
+  get Locations(): Location[] {
+    return this._listLocation;
+  }
 
   // listBookChange: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   // get Books(): Book[] {
@@ -59,29 +62,30 @@ export class LibraryStorageService {
   readonly personRoleAPIURL: any = environment.ApiUrl + '/LibraryPersonRoles';
   readonly orgTypeAPIURL: any = environment.ApiUrl + '/LibraryOrganizationTypes';
   readonly bookCategoryAPIURL: any = environment.ApiUrl + '/LibraryBookCategories';
+  readonly personAPIURL: any = environment.ApiUrl + '/LibraryPersons';
+  readonly organizationAPIURL: any = environment.ApiUrl + '/LibraryOrganizations';
+  readonly bookAPIURL: any = environment.ApiUrl + '/LibraryBooks';
   // readonly movieGenreAPIURL: any = environment.ApiUrl + '/LibMovieGenre';
-  // readonly locationAPIURL: string = environment.ApiUrl + '/LibLocation';
+  readonly locationAPIURL: string = environment.ApiUrl + '/LibraryBookLocations';
 
   constructor(private _http: HttpClient,
-     private _authService: AuthService,
-     private _homeService: HomeDefOdataService) {
-     if (environment.LoggingLevel >= LogLevel.Debug) {
-       console.debug('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
-     }
-     this._isPersonRoleLoaded = false;
-     this._listPersonRole = [];
-     this._isOrganizationTypeLoaded = false;
-     this._listOrganizationType = [];
-   
-  //   this._isBookCtgyListLoaded = false;
-  //   this._listBookCategories = [];
-  //   this._isMovieGenreListLoaded = false;
-  //   this._listMovieGenres = [];
-  //   this._isLocationListLoaded = false;
-  //   this._listLocation = [];
-
-  //   this._isBookListLoaded = false;
-  //   this._isMovieListLoaded = false;
+    private _authService: AuthService,
+    private _homeService: HomeDefOdataService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
+    }
+    this._isPersonRoleLoaded = false;
+    this._listPersonRole = [];
+    this._isOrganizationTypeLoaded = false;
+    this._listOrganizationType = [];     
+    this._isBookCtgyListLoaded = false;
+    this._listBookCategories = [];
+    this._isPersonLoaded = false;
+    this._listPerson = [];
+    this._isOrganizationLoaded = false;
+    this._listOrganization = [];
+    this._isLocationListLoaded = false;
+    this._listLocation = [];
   }
 
   ///
@@ -185,7 +189,7 @@ export class LibraryStorageService {
   }
 
   // Book Categories
-  public fetchAllBookCategories(forceReload?: boolean): Observable<any> {
+  public fetchAllBookCategories(forceReload?: boolean): Observable<BookCategory[]> {
     if (!this._isBookCtgyListLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -193,6 +197,7 @@ export class LibraryStorageService {
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
       params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
       return this._http.get(this.bookCategoryAPIURL, {
         headers: headers,
@@ -236,110 +241,143 @@ export class LibraryStorageService {
     }
   }
 
-  // // Movie Genres
-  // public fetchAllMovieGenres(forceReload?: boolean): Observable<any> {
-  //   if (!this._isMovieGenreListLoaded || forceReload) {
-  //     let headers: HttpHeaders = new HttpHeaders();
-  //     headers = headers.append('Content-Type', 'application/json')
-  //       .append('Accept', 'application/json')
-  //       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  // Person
+  public fetchAllPersons(forceReload?: boolean): Observable<Person[]> {
+    if (!this._isPersonLoaded || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-  //     let params: HttpParams = new HttpParams();
-  //     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-  //     return this._http.get(this.movieGenreAPIURL, {
-  //       headers: headers,
-  //       params: params,
-  //     })
-  //       .pipe(map((response: HttpResponse<any>) => {
-  //         if (environment.LoggingLevel >= LogLevel.Debug) {
-  //           console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllMovieGenres in LibraryStorageService`);
-  //         }
+      let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
+      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      return this._http.get(this.personAPIURL, {
+        headers: headers,
+        params: params,
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllPersons in LibraryStorageService`, ConsoleLogTypeEnum.debug);
 
-  //         const rjs: any = <any>response;
-  //         this._listMovieGenres = [];
+          const rjs: any = <any>response;
+          this._listPerson = [];
 
-  //         if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-  //           for (const si of rjs.contentList) {
-  //             const rst: MovieGenre = new MovieGenre();
-  //             rst.onSetData(si);
-  //             this._listMovieGenres.push(rst);
-  //           }
-  //         }
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: Person = new Person();
+              rst.onSetData(si);
+              this._listPerson.push(rst);
+            }
+          }
 
-  //         // Prepare for the hierarchy
-  //         this._buildMovieGenreHierarchy(this._listMovieGenres);
-  //         // Sort it
-  //         this._listMovieGenres.sort((a: any, b: any) => {
-  //           return a.FullDisplayText.localeCompare(b.FullDisplayText);
-  //         });
+          this._isPersonLoaded = true;
 
-  //         this._isMovieGenreListLoaded = true;
+          return this._listPerson;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllPersons, failed with: ${error}`, ConsoleLogTypeEnum.error);
 
-  //         return this._listMovieGenres;
-  //       }),
-  //         catchError((error: HttpErrorResponse) => {
-  //           if (environment.LoggingLevel >= LogLevel.Error) {
-  //             console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllMovieGenres, failed with: ${error}`);
-  //           }
+            this._isPersonLoaded = false;
+            this._listPerson = [];
 
-  //           this._isMovieGenreListLoaded = false;
-  //           this._listMovieGenres = [];
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          }));
+    } else {
+      return of(this._listPerson);
+    }
+  }
 
-  //           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-  //         }));
-  //   } else {
-  //     return of(this._listMovieGenres);
-  //   }
-  // }
+  // Organization
+  public fetchAllOrganizations(forceReload?: boolean): Observable<Organization[]> {
+    if (!this._isOrganizationLoaded || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-  // // Location
-  // public fetchAllLocations(forceReload?: boolean): Observable<any> {
-  //   if (!this._isLocationListLoaded || forceReload) {
-  //     let headers: HttpHeaders = new HttpHeaders();
-  //     headers = headers.append('Content-Type', 'application/json')
-  //       .append('Accept', 'application/json')
-  //       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
+      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      return this._http.get(this.organizationAPIURL, {
+        headers: headers,
+        params: params,
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrganizations in LibraryStorageService`, ConsoleLogTypeEnum.debug);
 
-  //     let params: HttpParams = new HttpParams();
-  //     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-  //     return this._http.get(this.locationAPIURL, {
-  //       headers: headers,
-  //       params: params,
-  //     })
-  //       .pipe(map((response: HttpResponse<any>) => {
-  //         if (environment.LoggingLevel >= LogLevel.Debug) {
-  //           console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService`);
-  //         }
+          const rjs: any = <any>response;
+          this._listOrganization = [];
 
-  //         const rjs: any = <any>response;
-  //         this._listLocation = [];
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: Organization = new Organization();
+              rst.onSetData(si);
+              this._listOrganization.push(rst);
+            }
+          }
 
-  //         if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-  //           for (const si of rjs.contentList) {
-  //             const rst: Location = new Location();
-  //             // rst.onSetData(si);
-  //             this._listLocation.push(rst);
-  //           }
-  //         }
+          this._isOrganizationLoaded = true;
 
-  //         this._isLocationListLoaded = true;
+          return this._listOrganization;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllOrganizations, failed with: ${error}`, ConsoleLogTypeEnum.error);
 
-  //         return this._listLocation;
-  //       }),
-  //         catchError((error: HttpErrorResponse) => {
-  //           if (environment.LoggingLevel >= LogLevel.Error) {
-  //             console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchAllLocations failed with: ${error}`);
-  //           }
+            this._isPersonLoaded = false;
+            this._listOrganization = [];
 
-  //           this._isLocationListLoaded = false;
-  //           this._listLocation = [];
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          }));
+    } else {
+      return of(this._listOrganization);
+    }
+  }
 
-  //           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-  //         }));
-  //   } else {
-  //     return of(this._listLocation);
-  //   }
-  // }
+  // Location
+  public fetchAllLocations(forceReload?: boolean): Observable<any> {
+    if (!this._isLocationListLoaded || forceReload) {
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('$count', 'true');
+      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      return this._http.get(this.locationAPIURL, {
+        headers: headers,
+        params: params,
+      })
+        .pipe(map((response: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchAllLocations, map `, ConsoleLogTypeEnum.debug);
+
+          const rjs: any = <any>response;
+          this._listLocation = [];
+
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: Location = new Location();
+              rst.onSetData(si);
+              this._listLocation.push(rst);
+            }
+          }
+
+          this._isLocationListLoaded = true;
+
+          return this._listLocation;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchAllLocations failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+            this._isLocationListLoaded = false;
+            this._listLocation = [];
+
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          }));
+    } else {
+      return of(this._listLocation);
+    }
+  }
 
   // // Book
   // public fetchAllBooks(forceReload?: boolean): Observable<any> {
