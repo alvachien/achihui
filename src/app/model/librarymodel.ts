@@ -468,10 +468,217 @@ export class BookCategory extends hih.BaseModel {
  * Book
  */
 export class Book extends hih.MultipleNamesObject {
+  private _id: number = 0;
+  private _hid: number | null;
+  private _isbn: string | null;
+  private _publishedYear: number | null;
+  private _detail: string | null;
+  private _orgLangID: number | null;
+  private _bookLangID: number | null;
+  private _pageCount: number | null;
+
   public Authors: Person[] = [];
+  public Translators: Person[] = [];
   public Categories: BookCategory[] = [];
-  public PublishDate: moment.Moment = moment();
   public Locations: Location[] = [];
+  public Presses: Organization[] = [];
+
+  get ID(): number { return this._id; }
+  set ID(id: number) { this._id = id; }
+  get HID(): number | null { return this._hid; }
+  set HID(hid: number | null) { this._hid = hid; }
+  get ISBN(): string | null { return this._isbn; }
+  set ISBN(isbn: string | null) { this._isbn = isbn; }
+  get PublishedYear(): number | null { return this._publishedYear; }
+  set PublishedYear(pyear: number | null) { this._publishedYear = pyear; }
+  get Detail(): string | null { return this._detail; }
+  set Detail(dtl: string | null) { this._detail = dtl; }
+  get OriginLangID(): number | null { return this._orgLangID; }
+  set OriginLangID(lid: number | null) { this._orgLangID = lid; }
+  get BookLangID(): number | null { return this._bookLangID; }
+  set BookLangeID(lid: number | null) { this._bookLangID = lid; }
+  get PageCount(): number | null { return this._pageCount; }
+  set PageCount(pcnt: number | null) { this._pageCount = pcnt; }
+
+  constructor() {
+    super();
+
+    this._id = 0;
+    this._hid = null;
+    this._isbn = null;
+    this._publishedYear = null;
+    this._detail = null;
+    this._orgLangID = null;
+    this._bookLangID = null;
+    this._pageCount = null;
+  }
+  public override onInit() {
+    super.onInit();
+    this._id = 0;
+    this._hid = null;
+    this._isbn = null;
+    this._publishedYear = null;
+    this._detail = null;
+    this._orgLangID = null;
+    this._bookLangID = null;
+    this._pageCount = null;
+    this.Authors = [];
+    this.Translators = [];
+    this.Categories = [];
+    this.Locations = [];
+    this.Presses = [];
+  }
+  public override onVerify(context?: any): boolean {
+    let vrst = super.onVerify(context);
+    return vrst;
+  }
+  public override writeJSONObject(): any {
+    const rstobj: any = super.writeJSONObject();
+    if (this._id > 0) {
+      rstobj.Id = this._id;
+    }
+    if (this._hid !== null && this._hid > 0) {
+      rstobj.HomeID = this._hid;
+    }
+    if (this._isbn !== null && this._isbn.length > 0) {
+      rstobj.ISBN = this._isbn;
+    }
+    if (this._publishedYear !== null && this._publishedYear > 0) {
+      rstobj.PublishedYear = this._publishedYear;
+    }
+    if (this._detail && this._detail.length > 0) {
+      rstobj.Detail = this._detail;
+    }
+    if (this._orgLangID !== null && this._orgLangID > 0) {
+      rstobj.OriginLangID = this._orgLangID;
+    }
+    if (this._bookLangID !== null && this._bookLangID > 0) {
+      rstobj.BookLangID = this._bookLangID;
+    }
+    if (this._pageCount !== null && this._pageCount > 0) {
+      rstobj.PageCount = this._pageCount;
+    }
+    if (this.Authors.length > 0) {
+      rstobj.BookAuthors = [];
+      this.Authors.forEach((val: Person) => {
+        if (this._id > 0) {
+          rstobj.BookAuthors.push({ AuthorId: val.ID, BookID: this._id });
+        } else {
+          rstobj.BookAuthors.push({ AuthorId: val.ID });
+        }  
+      });
+    }
+    if (this.Translators.length > 0) {
+      rstobj.BookTranslators = [];
+      this.Translators.forEach((val: Person) => {
+        if (this._id > 0) {
+          rstobj.BookTranslators.push({ TranslatorId: val.ID, BookID: this._id });
+        } else {
+          rstobj.BookTranslators.push({ TranslatorId: val.ID });
+        }  
+      });
+    }
+    if(this.Categories.length > 0) {
+      rstobj.BookCategories = [];
+      this.Categories.forEach((val: BookCategory) => {
+        if (this._id > 0) {
+          rstobj.BookCategories.push({ CategoryId: val.ID, BookID: this._id });
+        } else {
+          rstobj.BookCategories.push({ CategoryId: val.ID });
+        }  
+      });
+    }
+    if(this.Locations.length > 0) {
+      rstobj.BookLocations = [];
+      this.Locations.forEach((val: Location) => {
+        if (this._id > 0) {
+          rstobj.BookLocations.push({ LocationId: val.ID, BookID: this._id });
+        } else {
+          rstobj.BookLocations.push({ LocationId: val.ID });
+        }  
+      });
+    }
+    if(this.Presses.length > 0) {
+      rstobj.BookPresses = [];
+      this.Presses.forEach((val: Organization) => {
+        if (this._id > 0) {
+          rstobj.BookPresses.push({ PressId: val.ID, BookID: this._id });
+        } else {
+          rstobj.BookPresses.push({ PressId: val.ID });
+        }  
+      });
+    }
+
+    return rstobj;
+  }
+  public override onSetData(data: any): void {
+    super.onSetData(data);
+
+    if (data && data.Id) {
+      this._id = data.Id;
+    }
+    if (data && data.HomeID) {
+      this._hid = data.HomeID;
+    }
+    if (data && data.ISBN) {
+      this._isbn = data.ISBN;
+    }
+    if (data && data.PublishedYear) {
+      this._publishedYear = data.PublishedYear;
+    }
+    if (data && data.Detail) {
+      this._detail = data.Detail;
+    }
+    if (data && data.OriginLangID) {
+      this._orgLangID = data.OriginLangID;
+    }
+    if(data && data.BookLangID) {
+      this._bookLangID = data.BookLangID;
+    }
+    if (data && data.PageCount) {
+      this._pageCount = data.PageCount;
+    }
+    this.Authors = [];
+    if (data && data.Authors instanceof Array && data.Authors.length > 0) {
+      for(let auth of data.Authors) {
+        let objauth: Person = new Person();
+        objauth.onSetData(auth);
+        this.Authors.push(objauth);
+      }
+    }
+    this.Translators = [];
+    if (data && data.Translators instanceof Array && data.Translators.length > 0) {
+      for(let auth of data.Translators) {
+        let objauth: Person = new Person();
+        objauth.onSetData(auth);
+        this.Translators.push(objauth);
+      }
+    }
+    this.Categories = [];
+    if (data && data.Categories instanceof Array && data.Categories.length > 0) {
+      for(let ctg of data.Categories) {
+        let objctgy: BookCategory = new BookCategory();
+        objctgy.onSetData(ctg);
+        this.Categories.push(objctgy);
+      }
+    }
+    this.Locations = [];
+    if (data && data.Locations instanceof Array && data.Locations.length > 0) {
+      for(let ctg of data.Locations) {
+        let objloc: Location = new Location();
+        objloc.onSetData(ctg);
+        this.Locations.push(objloc);
+      }
+    }
+    this.Presses = [];
+    if (data && data.Presses instanceof Array && data.Presses.length > 0) {
+      for(let ctg of data.Presses) {
+        let objorg: Organization = new Organization();
+        objorg.onSetData(ctg);
+        this.Presses.push(objorg);
+      }
+    }
+  }
 }
 
 export interface MovieGenreJson {

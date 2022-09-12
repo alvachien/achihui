@@ -3,7 +3,7 @@
 //
 
 import { Location, BookCategory, MovieGenre, PersonRole, OrganizationType, 
-  LocationTypeEnum } from './librarymodel';
+  LocationTypeEnum, Book, Person, Organization} from './librarymodel';
 
 describe('PersonRole', () => {
   let objtbt: PersonRole;
@@ -205,5 +205,158 @@ describe('MovieGenre', () => {
     const mvgen2: MovieGenre = new MovieGenre();
     mvgen2.onSetData(jdata);
     expect(mvgen2).toBeTruthy();
+  });
+});
+
+describe('Book', () => {
+  let objtbt: Book;
+
+  beforeEach(() => {
+    objtbt = new Book();
+  });
+
+  it('onInit', () => {
+    objtbt.onInit();
+    expect(objtbt.ID).toEqual(0);
+    expect(objtbt.HID).toBeNull();
+  });
+
+  it('writeJSONObject', () => {
+    objtbt.HID = 2;
+    objtbt.NativeName = 'Test Book 1';
+    objtbt.ChineseIsNative = true;
+    objtbt.PageCount = 500;
+    let ctgy = new BookCategory();
+    ctgy.ID = 2;
+    objtbt.Categories.push(ctgy);
+    let loc = new Location();
+    loc.ID = 1;
+    objtbt.Locations.push(loc);
+    let auth = new Person();
+    auth.ID = 1;
+    objtbt.Authors.push(auth);
+    let tran = new Person();
+    tran.ID = 2;
+    objtbt.Translators.push(tran);
+    let prs = new Organization();
+    prs.ID = 1;
+    objtbt.Presses.push(prs);
+
+    let objdata = objtbt.writeJSONObject();
+    expect(objdata.HomeID).toEqual(2);
+    expect(objdata.NativeName).toEqual('Test Book 1');
+    expect(objdata.NativeIsChinese).toBeTrue();
+    expect(objdata.PageCount).toEqual(500);
+    expect(objdata.BookCategories).toBeInstanceOf(Array);
+    expect(objdata.BookCategories.length).toEqual(1);
+    expect(objdata.BookCategories[0].CategoryId).toEqual(2);
+    expect(objdata.BookLocations).toBeInstanceOf(Array);
+    expect(objdata.BookLocations.length).toEqual(1);
+    expect(objdata.BookLocations[0].LocationId).toEqual(1);
+    expect(objdata.BookAuthors).toBeInstanceOf(Array);
+    expect(objdata.BookAuthors.length).toEqual(1);
+    expect(objdata.BookAuthors[0].AuthorId).toEqual(1);
+    expect(objdata.BookTranslators).toBeInstanceOf(Array);
+    expect(objdata.BookTranslators.length).toEqual(1);
+    expect(objdata.BookTranslators[0].TranslatorId).toEqual(2);
+    expect(objdata.BookPresses).toBeInstanceOf(Array);
+    expect(objdata.BookPresses.length).toEqual(1);
+    expect(objdata.BookPresses[0].PressId).toEqual(1);
+  });
+
+  it('onSetData', () => {
+    let objdata = {
+      "Id": 2,
+      "HomeID": 2,
+      "NativeName": "Test Book 1",
+      "ChineseName": null,
+      "NativeIsChinese": true,
+      "ISBN": null,
+      "PublishedYear": null,
+      "Detail": null,
+      "OriginLangID": null,
+      "BookLangID": null,
+      "PageCount": 500,
+      "CreatedAt": "2022-09-10T00:00:00+08:00",
+      "Createdby": null,
+      "UpdatedAt": "2022-09-10T00:00:00+08:00",
+      "Updatedby": null,
+      "Categories": [
+          {
+              "Id": 2,
+              "HomeID": 2,
+              "Name": "现代小说",
+              "Comment": null,
+              "ParentID": null,
+              "CreatedAt": "2022-09-10T00:00:00+08:00",
+              "Createdby": null,
+              "UpdatedAt": "2022-09-10T00:00:00+08:00",
+              "Updatedby": null
+          }
+      ],
+      "Locations": [
+          {
+              "Id": 1,
+              "HomeID": 2,
+              "Name": "书房",
+              "LocationType": 0,
+              "Comment": null,
+              "CreatedAt": "2022-09-10T00:00:00+08:00",
+              "Createdby": null,
+              "UpdatedAt": "2022-09-10T00:00:00+08:00",
+              "Updatedby": null
+          }
+      ],
+      "Authors": [
+          {
+              "Id": 1,
+              "HomeID": 2,
+              "NativeName": "User 1",
+              "ChineseName": null,
+              "NativeIsChinese": true,
+              "Detail": null,
+              "CreatedAt": null,
+              "Createdby": null,
+              "UpdatedAt": null,
+              "Updatedby": null
+          }
+      ],
+      "Translators": [
+        {
+            "Id": 2,
+            "HomeID": 2,
+            "NativeName": "User 2",
+            "ChineseName": null,
+            "NativeIsChinese": true,
+            "Detail": null,
+            "CreatedAt": null,
+            "Createdby": null,
+            "UpdatedAt": null,
+            "Updatedby": null
+        }
+      ],
+      "Presses": [
+          {
+              "Id": 1,
+              "HomeID": 2,
+              "NativeName": "人民文学出版社",
+              "ChineseName": null,
+              "NativeIsChinese": true,
+              "Detail": null,
+              "CreatedAt": "2022-09-10T00:00:00+08:00",
+              "Createdby": null,
+              "UpdatedAt": "2022-09-10T00:00:00+08:00",
+              "Updatedby": null
+          }
+      ]
+    };
+
+    objtbt.onSetData(objdata);
+    // Check data
+    expect(objtbt).toBeTruthy();
+    expect(objtbt.Authors.length).toEqual(1);
+    expect(objtbt.Translators.length).toEqual(1);
+    expect(objtbt.Presses.length).toEqual(1);
+    expect(objtbt.Categories.length).toEqual(1);
   });
 });

@@ -540,7 +540,7 @@ export class MultipleNamesObject extends BaseModel {
     if (this.ChineseName.length > 0) {
       rstobj.ChineseName = this.ChineseName;
     }
-    rstobj.ChineseIsNative = this.ChineseIsNative;
+    rstobj.NativeIsChinese = this.ChineseIsNative;
 
     return rstobj;
   }
@@ -554,8 +554,8 @@ export class MultipleNamesObject extends BaseModel {
     if (data && data.ChineseName) {
       this.ChineseName = data.ChineseName;
     }
-    if (data && data.ChineseIsNative) {
-      this.ChineseIsNative = data.ChineseIsNative;
+    if (data && data.NativeIsChinese) {
+      this.ChineseIsNative = data.NativeIsChinese;
     }
   }
 }

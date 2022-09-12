@@ -55,7 +55,7 @@ describe('MultipleNamesObject', () => {
     expect(writeobj).toBeTruthy();
     expect(writeobj.ChineseName).toEqual(testobj.ChineseName);
     expect(writeobj.NativeName).toEqual(testobj.NativeName);
-    expect(writeobj.ChineseIsNative).toBeFalse();
+    expect(writeobj.NativeIsChinese).toBeFalse();
 
     let testobj2: MultipleNamesObject = new MultipleNamesObject();
     testobj2.onSetData(writeobj);
