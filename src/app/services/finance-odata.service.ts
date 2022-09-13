@@ -180,7 +180,7 @@ export class FinanceOdataService {
             this.isCurrencylistLoaded = false;
             this.listCurrency = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.Currencies);
@@ -235,7 +235,7 @@ export class FinanceOdataService {
             this.isAcntCtgyListLoaded = false;
             this.listAccountCategory = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.AccountCategories);
@@ -290,7 +290,7 @@ export class FinanceOdataService {
             this.isDocTypeListLoaded = false;
             this.listDocType = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.DocumentTypes);
@@ -368,7 +368,7 @@ export class FinanceOdataService {
             this.isTranTypeListLoaded = false;
             this.listTranType = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.TranTypes);
@@ -421,7 +421,7 @@ export class FinanceOdataService {
             this.isAsstCtgyListLoaded = false;
             this.listAssetCategory = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.AssetCategories);

@@ -6,13 +6,12 @@ import { BehaviorSubject } from 'rxjs';
 import { LibraryStorageService } from './library-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-import { BookCategory, Location, LocationTypeEnum, Organization, OrganizationType, Person, PersonRole, UserAuthInfo } from '../model';
+import { Book, BookCategory, Location, LocationTypeEnum, Organization, OrganizationType, Person, PersonRole, UserAuthInfo } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
 describe('LibraryStorageService', () => {
   let httpTestingController: HttpTestingController;
-  const dataAPIURL: any = environment.ApiUrl + '/Languages';
   let fakeData: FakeDataHelper;
   let service: LibraryStorageService;
 
@@ -818,6 +817,226 @@ describe('LibraryStorageService', () => {
     });
   });
   
+  describe('fetchBooks', () => {
+    let arData: Book[] = [];
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+
+      arData = [];
+      let nitem: Book = new Book();
+      nitem.ID = 1;
+      nitem.HID = 2;
+      nitem.NativeName = 'test1';
+      arData.push(nitem);
+      nitem = new Book();
+      nitem.ID = 2;
+      nitem.HID = 2;
+      nitem.NativeName = 'test2';
+      arData.push(nitem);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.fetchBooks(100, 0).subscribe({
+        next: data => {
+          expect(data.length).withContext('should return expected data').toEqual(arData.length);
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({ '@odata.count': arData.length, value: arData});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.fetchBooks().subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('readBoook', () => {
+    let objdata: Book;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+
+      objdata = new Book();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test1';
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.readBook(2).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(objdata.ID);
+          expect(data.HID).toEqual(objdata.HID);
+          expect(data.NativeName).toEqual(objdata.NativeName);
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({ value: [objdata.writeJSONObject()]});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.readBook(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('createBook', () => {
+    let objdata: Book;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Book();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test1';
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.createBook(objdata).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(objdata.ID);
+          expect(data.HID).toEqual(objdata.HID);
+          expect(data.NativeName).toEqual(objdata.NativeName);
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(objdata.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.createBook(objdata).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('deleteBook', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.deleteBook(2).subscribe({
+        next: data => {
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+      });
+
+      // Respond with the mock data
+      req.flush({});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.deleteBook(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
   // describe('fetchAllMovieGenres', () => {
   //   beforeEach(() => {
   //     service = TestBed.inject(LibraryStorageService);

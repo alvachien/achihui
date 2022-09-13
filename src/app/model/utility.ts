@@ -120,7 +120,7 @@ export class ModelUtility {
   public static hasDuplicatesInStringArray(strarray: string): boolean {
     const valuesSoFar: any = Object.create(null);
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < strarray.length; ++i) {
+    for (let i = 0; i < strarray.length; i++) {
       const value: any = strarray[i];
       if (value in valuesSoFar) {
         return true;

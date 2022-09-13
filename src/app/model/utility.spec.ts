@@ -2,12 +2,18 @@
 // Unit test for utility.ts
 //
 
+import { DocumentItem } from './financemodel';
 import { ModelUtility } from './utility';
 
 describe('Unit test for ModelUtility in Model', () => {
 
   beforeEach(() => {
     // Do nothing here
+  });
+
+  it('#1. Utility.Round2Two()', () => {
+    let rst = ModelUtility.Round2Two(12.342);
+    expect(rst).toEqual(12.34);
   });
 
   it('#3. Utility.getYearMonthDisplayString()', () => {
@@ -37,6 +43,10 @@ describe('Unit test for ModelUtility in Model', () => {
 
     nrst = ModelUtility.GetPasswordStrengthLevel('1234');
     expect(nrst).toEqual(0);
+
+    const str2 = 'ABCEDEFGabcdefg_123456790123456790';
+    nrst = ModelUtility.GetPasswordStrengthLevel(str2);
+    expect(nrst).toBeGreaterThan(0);
   });
 
   it('#7. CheckStringLength', () => {
@@ -46,12 +56,22 @@ describe('Unit test for ModelUtility in Model', () => {
     expect(ModelUtility.CheckStringLength(str, 1, 3)).toBeFalse();
   });
 
-  xit('#8. hasDuplicatesInStringArray', () => {
+  it('#8. hasDuplicatesInStringArray', () => {
     expect(ModelUtility.hasDuplicatesInStringArray('adsdae')).toBeTrue();
     expect(ModelUtility.hasDuplicatesInStringArray('abcewf')).toBeFalse();
   });
 
   it('#9. prefixInteger', () => {
     expect(ModelUtility.prefixInteger(2, 3)).toEqual('002');
+  });
+
+  it('#10. Utility.getFinanceNextItemID', () => {
+    let items: DocumentItem[] = [];
+    let nitem: DocumentItem = new DocumentItem();
+    nitem.ItemId = 2;
+    items.push(nitem);
+
+    let nextid = ModelUtility.getFinanceNextItemID(items);
+    expect(nextid).toEqual(3);
   });
 });

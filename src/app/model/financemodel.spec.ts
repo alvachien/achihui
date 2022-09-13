@@ -7,7 +7,9 @@ import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, 
   AccountExtraAsset, AccountExtraLoan, ControlCenter, Order, SettlementRule,
   Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum,
   RepaymentMethodEnum, IAccountVerifyContext, financeDocTypeCurrencyExchange, financeTranTypeTransferOut,
-  financeTranTypeTransferIn, } from './financemodel';
+  financeTranTypeTransferIn, FinanceOverviewKeyfigure, FinanceReportEntryByAccountAndExpense,
+  FinanceReportEntryByTransactionTypeMoM,
+} from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
@@ -1439,3 +1441,67 @@ describe('FinanceReportBase', () => {
     expect(instance2).toBeTruthy();
   });
 });
+
+describe('FinanceOverviewKeyfigure', () => {
+  let objtbt: FinanceOverviewKeyfigure;
+
+  beforeEach(() => {
+    objtbt = new FinanceOverviewKeyfigure();
+  });
+  afterEach(() => {
+    // Do nothing now.
+  });
+  it('#1. onSetData', () => {
+    objtbt.onSetData({
+      HomeID: 1,
+      Currency: 'CNY',
+      CurrentMonthIncome: 100,
+      CurrentMonthOutgo: 20,
+      LastMonthIncome: 90,
+      LastMonthOutgo: 50,
+      IncomeYTD: 1500,
+      OutgoYTD: 300,
+      CurrentMonthIncomePrecentage: 0.3,
+      CurrentMonthOutgoPrecentage: 0.2,
+    });
+    expect(objtbt.BaseCurrency).toEqual('CNY');
+    expect(objtbt.CurrentMonthOutgo).toEqual(20);
+    expect(objtbt.OutgoYTD).toEqual(300);
+  });
+});
+
+describe('FinanceReportEntryByAccountAndExpense', () => {
+  let objtbt: FinanceReportEntryByAccountAndExpense;
+
+  beforeEach(() => {
+    objtbt = new FinanceReportEntryByAccountAndExpense();
+  });
+  afterEach(() => {
+    // do nothing now.
+  });
+  it('#1. onSetData', () => {
+    objtbt.onSetData({
+      HomeID: 1,
+      AccountID: 2,
+      IsExpense: false,
+      Balance: 100,
+    });
+    expect(objtbt.IsExpense).toBeFalse();
+    expect(objtbt.Balance).toEqual(100);
+  });
+});
+
+describe('FinanceReportEntryByTransactionTypeMoM', () => {
+  let objtbt: FinanceReportEntryByTransactionTypeMoM;
+
+  beforeEach(() => {
+    objtbt = new FinanceReportEntryByTransactionTypeMoM();
+  });
+  afterEach(() => {
+    // do nothing now.
+  });
+  it('#1. onSetData', () => {
+    expect(objtbt).toBeTruthy();
+  });
+});
+

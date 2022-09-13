@@ -14,6 +14,10 @@ describe('PersonRole', () => {
 
   it('init', () => {
     expect(objtbt).toBeTruthy();
+    objtbt.Name = 'test';
+    expect(objtbt.Name.length).toBeGreaterThan(0);
+    objtbt.onInit();
+    expect(objtbt.Name.length).toEqual(0);
   });
 
   it('case without homeid and comment', () => {
@@ -61,6 +65,14 @@ describe('OrganizationType', () => {
 
   it('init', () => {
     expect(objtbt).toBeTruthy();
+    objtbt.Name = 'test';
+    objtbt.Comment = 'test';
+    expect(objtbt.Name.length).toBeGreaterThan(0);
+    expect(objtbt.Comment.length).toBeGreaterThan(0);
+
+    objtbt.onInit();
+    expect(objtbt.Name.length).toEqual(0);
+    expect(objtbt.Comment.length).toEqual(0);
   });
 
   it('case without homeid and comment', () => {
@@ -205,6 +217,52 @@ describe('MovieGenre', () => {
     const mvgen2: MovieGenre = new MovieGenre();
     mvgen2.onSetData(jdata);
     expect(mvgen2).toBeTruthy();
+  });
+});
+
+describe('Person', () => {
+  let objtbt: Person;
+
+  beforeEach(() => {
+    objtbt = new Person();
+  });
+
+  it('init', () => {
+    expect(objtbt).toBeTruthy();
+    objtbt.NativeName = 'test';
+    expect(objtbt.NativeName.length).toBeGreaterThan(0);
+    objtbt.onInit();
+    expect(objtbt.NativeName.length).toEqual(0);
+  });
+
+  it('case without homeid and comment', () => {
+    objtbt.ID = 1;
+    objtbt.NativeName = 'test1';
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+  });
+  it('case for verify', () => {
+    objtbt.ID = 1;
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    objtbt.NativeName = 'test2';
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+  });
+  it('case for onSetData', () => {
+    objtbt.ID = 2;
+    objtbt.HID = 10;
+    objtbt.NativeName = 'test1';
+    objtbt.Detail = 'test1';
+    let genobj = objtbt.writeJSONObject();
+
+    let objtbt2 = new Person();
+    objtbt2.onSetData(genobj);
+    expect(objtbt2.ID).toEqual(objtbt.ID);
+    expect(objtbt2.HID).toEqual(objtbt.HID);
+    expect(objtbt2.NativeName).toEqual(objtbt.NativeName);
+    expect(objtbt2.Detail).toEqual(objtbt.Detail);
   });
 });
 

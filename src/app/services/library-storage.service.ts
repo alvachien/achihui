@@ -24,12 +24,11 @@ export class LibraryStorageService {
   private _isLocationListLoaded: boolean = false;
   private _listLocation: Location[] = [];
 
-  // private _isBookListLoaded: boolean;
   // private _isMovieListLoaded: boolean;
   private _isPersonLoaded: boolean = false;
   private _listPerson: Person[] = [];
   private _isOrganizationLoaded: boolean = false;
-  private _listOrganization: Organization[] = [];
+  private _listOrganization: Organization[] = [];  
 
   get PersonRoles(): PersonRole[] {
     return this._listPersonRole;
@@ -50,10 +49,6 @@ export class LibraryStorageService {
     return this._listLocation;
   }
 
-  // listBookChange: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
-  // get Books(): Book[] {
-  //   return this.listBookChange.value;
-  // }
   // listMovieChange: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
   // get Movies(): Movie[] {
   //   return this.listMovieChange.value;
@@ -334,7 +329,7 @@ export class LibraryStorageService {
   }
 
   // Location
-  public fetchAllLocations(forceReload?: boolean): Observable<any> {
+  public fetchAllLocations(forceReload?: boolean): Observable<Location[]> {
     if (!this._isLocationListLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -379,7 +374,134 @@ export class LibraryStorageService {
     }
   }
 
-  // // Book
+  // Book
+  public fetchBooks(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<Book[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
+    // params = params.append('$filter', filterstr);
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    params = params.append('$count', `true`);
+    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    return this._http.get(this.bookAPIURL, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchBooks, map `, ConsoleLogTypeEnum.debug);
+
+        const rjs: any = <any>response;
+        const books: Book[] = [];
+
+        if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: Book = new Book();
+            rst.onSetData(si);
+            books.push(rst);
+          }
+        }
+
+        return books;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchBooks failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }));
+  }
+
+  public readBook(bid: number): Observable<Book> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${bid}`);
+    params = params.append('$expand', `Authors,Translators,Presses,Categories,Locations`);
+    
+    return this._http.get(this.bookAPIURL, {
+      headers: headers,
+      params: params,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, readBook, map `, ConsoleLogTypeEnum.debug);
+
+      const rjs: any = <any>response;
+      const rst: Book = new Book();
+      if (rjs.value instanceof Array && rjs.value.length === 1) {
+        rst.onSetData(rjs.value[0]);
+      }
+
+      return rst;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService readBook failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public createBook(objtbc: Book): Observable<Book> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const jdata = objtbc.writeJSONObject();
+
+    return this._http.post(this.bookAPIURL, jdata, {
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, createBook, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: Book = new Book();
+      hd.onSetData(response as any);
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, createBook failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public deleteBook(bkid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.bookAPIURL}/${bkid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBook, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBook failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+
   // public fetchAllBooks(forceReload?: boolean): Observable<any> {
   //   if (!this._isBookListLoaded || forceReload) {
   //     const apiurl: string = environment.ApiUrl + '/LibBook';
