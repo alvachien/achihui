@@ -21,7 +21,7 @@ describe('BookListComponent', () => {
   let fixture: ComponentFixture<BookListComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let fetchBookSpy: any;
+  let fetchBooksSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -33,9 +33,9 @@ describe('BookListComponent', () => {
     fakeData.buildChosedHome();
 
     storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchBook',
+      'fetchBooks',
     ]);
-    // fetchBookSpy = storageService.fetchBook.and.returnValue(of([]));
+    fetchBooksSpy = storageService.fetchBooks.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,

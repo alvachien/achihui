@@ -1,1 +1,44 @@
-<p>book-detail works!</p>
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+    <form nz-form [formGroup]="detailFormGroup">
+        <!-- ID -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input nz-input formControlName="idControl" />
+            </nz-form-control>
+        </nz-form-item>
+
+        <!-- Native Name -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>{{'Common.NativeName' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+                <input nz-input formControlName="nnameControl" maxlength="100" required />
+                <ng-template #nameTpl let-control>
+                    <ng-container *ngIf="control.hasError('maxlength')">
+                        {{'Common.FieldMaxLength' | transloco}}
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+    <nz-tabset>
+        <nz-tab [nzTitle]="'Authors'">
+            <div>Author</div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'Translators'">
+            <div>Translators</div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'Presses'">
+            <div>Presses</div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'Categories'">
+            <div>Categories</div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'Locations'">
+            <div>Locations</div>
+        </nz-tab>
+    </nz-tabset>
+</nz-spin>

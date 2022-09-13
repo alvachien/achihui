@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 // import { NzConfigService, } from 'ng-zorro-antd';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
@@ -100,13 +100,15 @@ describe('MarkdownEditorComponent', () => {
     expect(testingComponent).toBeTruthy();
   });
 
-  xdescribe('edit mode', () => {
+  describe('edit mode', () => {
     it('edit mode init without error', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
+      discardPeriodicTasks();
+      flush();
     }));
 
     it('edit mode for code coverage', fakeAsync(() => {
@@ -154,6 +156,9 @@ describe('MarkdownEditorComponent', () => {
         // Value setter
         testingComponent.editorComponent.value = ctent;
       }
+
+      discardPeriodicTasks();
+      flush();
     }));
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized

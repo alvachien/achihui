@@ -35,7 +35,7 @@ describe('BookDetailComponent', () => {
     storageService = jasmine.createSpyObj('LibraryStorageService', [
       'readBook',
     ]);
-    // readBookSpy = storageService.readBook.and.returnValue(of([]));
+    readBookSpy = storageService.readBook.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,

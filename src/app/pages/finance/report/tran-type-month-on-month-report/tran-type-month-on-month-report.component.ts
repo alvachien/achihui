@@ -25,7 +25,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   availableTranTypes: NzCascaderOption[] = [];
   selectedTranTypes: number[] | null = null;
   arTranType: TranType[] = [];
-  selectedPeriod = '3';
+  selectedPeriod = financePeriodLast3Months;
   chartOption: EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {

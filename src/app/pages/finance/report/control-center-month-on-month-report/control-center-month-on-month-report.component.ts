@@ -6,7 +6,8 @@ import * as moment from 'moment';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { ConsoleLogTypeEnum, ControlCenter, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportByControlCenterMOM, ModelUtility } from 'src/app/model';
+import { ConsoleLogTypeEnum, ControlCenter, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, 
+  FinanceReportByControlCenterMOM, ModelUtility } from 'src/app/model';
 import { FinanceOdataService } from 'src/app/services';
 
 @Component({
@@ -25,8 +26,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   arControlCenters: ControlCenter[] = [];
   availableControlCenters: NzCascaderOption[] = [];
   selectedControlCenters: number[] | null = null;
-  // selectedCCID: number | null = null;
-  selectedPeriod = '3';
+  selectedPeriod = financePeriodLast3Months;
   chartOption: EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {
@@ -99,11 +99,6 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
         });
       }
     });
-  }
-
-  onChanges(event: any): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent onChanges with ${this.selectedControlCenters}, ${this.selectedPeriod}`,
-      ConsoleLogTypeEnum.debug);
   }
 
   refreshData(): void {

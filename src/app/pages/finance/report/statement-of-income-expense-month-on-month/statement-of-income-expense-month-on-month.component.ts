@@ -227,9 +227,6 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   }
 
   onChartClick(data: any) {
-    // console.log(data.seriesId); 
-    // console.log(data.name);
-    // console.log(data.value);
     // Drill down
     // Split the name as Year.Month
     let words = data.name.split('.');
@@ -237,11 +234,10 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     let month = Number.parseInt(words[1]);
     this.odataService.fetchDailyStatementOfIncomeAndExpense(year, month, this.excludeTransfer).subscribe({
       next: val => {
-        console.log(val);
-
+        // console.log(val);
       },
       error: err => {
-        console.log(err);
+        // console.log(err);
       }
     });
   }
