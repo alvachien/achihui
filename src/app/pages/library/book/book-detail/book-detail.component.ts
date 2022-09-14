@@ -8,15 +8,15 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  BlogCollection, momentDateFormat, getUIModeString, } from '../../../../model';
-import { BlogOdataService, LibraryStorageService, UIStatusService, } from '../../../../services';
+  Book, momentDateFormat, getUIModeString, } from '../../../../model';
+import { LibraryStorageService, UIStatusService, } from '../../../../services';
 
 @Component({
   selector: 'hih-book-detail',
   templateUrl: './book-detail.component.html',
   styleUrls: ['./book-detail.component.less'],
 })
-export class BookDetailComponent implements OnInit {
+export class BookDetailComponent implements OnInit, OnDestroy {
 
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean = false;
@@ -24,12 +24,12 @@ export class BookDetailComponent implements OnInit {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
+  currentObject?: Book;
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
     private router: Router,
-    private modalService: NzModalService,
-    ) {
+    private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -74,7 +74,8 @@ export class BookDetailComponent implements OnInit {
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
-            next: e => {
+            next: (e: Book) => {
+              this.currentObject = e;
               this.detailFormGroup.get('idControl')?.setValue(e.ID);
               this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
 
@@ -100,6 +101,7 @@ export class BookDetailComponent implements OnInit {
 
         case UIMode.Create:
         default: {
+          this.currentObject = new Book();
           // Do nothing
           this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;

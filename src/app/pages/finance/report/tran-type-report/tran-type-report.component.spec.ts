@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
@@ -50,6 +51,7 @@ describe('TranTypeReportComponent', () => {
       imports: [
         HttpClientTestingModule,
         FinanceUIModule,
+        NzProgressModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,

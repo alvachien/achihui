@@ -26,19 +26,106 @@
     </form>
     <nz-tabset>
         <nz-tab [nzTitle]="'Authors'">
-            <div>Author</div>
+            <div>
+                <nz-table #authorTable [nzData]="currentObject?.Authors">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                            <th>{{'Common.NativeName' | transloco}}</th>
+                            <th>{{'Common.Comment' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of authorTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.NativeName}}</td>
+                            <td>{{data.ChineseName}}</td>
+                            <td>{{data.Detail}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
         <nz-tab [nzTitle]="'Translators'">
-            <div>Translators</div>
+            <div>
+                <nz-table #tranTable [nzData]="currentObject?.Translators">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                            <th>{{'Common.NativeName' | transloco}}</th>
+                            <th>{{'Common.Comment' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of tranTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.NativeName}}</td>
+                            <td>{{data.ChineseName}}</td>
+                            <td>{{data.Detail}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
         <nz-tab [nzTitle]="'Presses'">
-            <div>Presses</div>
+            <div>
+                <nz-table #pressTable [nzData]="currentObject?.Presses">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                            <th>{{'Common.NativeName' | transloco}}</th>
+                            <th>{{'Common.Comment' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of pressTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.NativeName}}</td>
+                            <td>{{data.ChineseName}}</td>
+                            <td>{{data.Detail}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
         <nz-tab [nzTitle]="'Categories'">
-            <div>Categories</div>
+            <div>
+                <nz-table #ctgyTable [nzData]="currentObject?.Categories">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of ctgyTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.Name}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
         <nz-tab [nzTitle]="'Locations'">
-            <div>Locations</div>
+            <div>
+                <nz-table #locTable [nzData]="currentObject?.Locations">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of locTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.Name}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
     </nz-tabset>
 </nz-spin>

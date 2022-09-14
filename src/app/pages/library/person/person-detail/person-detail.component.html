@@ -1,1 +1,25 @@
-<p>person-detail works!</p>
+<form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+            <input nz-input formControlName="idControl" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Native Name -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.NativeName' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+            <input nz-input formControlName="nnameControl" maxlength="100" required />
+            <ng-template #nameTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                    {{'Common.FieldMaxLength' | transloco}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+</form>

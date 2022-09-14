@@ -9,6 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 import { FinanceUIModule } from '../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
@@ -76,6 +77,7 @@ describe('ReportComponent', () => {
         HttpClientTestingModule,
         NgxEchartsModule.forRoot({ echarts }),
         FinanceUIModule,
+        NzProgressModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,

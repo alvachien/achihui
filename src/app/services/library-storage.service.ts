@@ -281,6 +281,37 @@ export class LibraryStorageService {
       return of(this._listPerson);
     }
   }
+  public readPerson(pid: number): Observable<Person> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${pid}`);
+    params = params.append('$expand', `Roles`);
+    
+    return this._http.get(this.personAPIURL, {
+      headers: headers,
+      params: params,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, readPerson, map `, ConsoleLogTypeEnum.debug);
+
+      const rjs: any = <any>response;
+      const rst: Person = new Person();
+      if (rjs.value instanceof Array && rjs.value.length === 1) {
+        rst.onSetData(rjs.value[0]);
+      }
+
+      return rst;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService readPerson failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
 
   // Organization
   public fetchAllOrganizations(forceReload?: boolean): Observable<Organization[]> {
