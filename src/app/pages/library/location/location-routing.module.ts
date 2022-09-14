@@ -6,6 +6,7 @@ import { LocationDetailComponent } from './location-detail';
 const routes: Routes = [
   { path: '', component: LocationListComponent },
   { path: 'create', component: LocationDetailComponent },
+  { path: 'display/:id', component: LocationDetailComponent },
 ];
 
 @NgModule({

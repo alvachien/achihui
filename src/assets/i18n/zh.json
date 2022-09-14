@@ -124,6 +124,8 @@
     "PageLackAuthorityContent": "你没有权限访问该页面",
     "EnglishName": "英文名字",
     "NativeName": "本地名称",
+    "ChineseName": "中文名称",
+    "ChineseIsNative": "中文是本地语言",
     "LanguageSupportedInApp": "程序支持",
     "Host": "户主",
     "Todo": "待处理事项",

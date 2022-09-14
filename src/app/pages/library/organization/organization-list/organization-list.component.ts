@@ -3,6 +3,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
 import { ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
@@ -19,6 +20,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   constructor(public odataService: LibraryStorageService,
     public uiStatusService: UIStatusService,
+    public router: Router,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -64,5 +66,15 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  public onDisplay(pid: number) {
+    this.router.navigate(['/library/organization/display/' + pid.toString()]);
+  }
+  public onEdit(pid: number) {
+    
+  }
+  public onDelete(pid: number) {
+    
   }
 }

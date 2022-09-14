@@ -561,6 +561,170 @@ describe('LibraryStorageService', () => {
     });
   });
 
+  // readPerson
+  describe('readPerson', () => {
+    let objdata: any;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+
+      objdata = {
+        "Id": 2,
+        "HomeID": 2,
+        "NativeName": "User 2",
+      };
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.readPerson(2).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(2);
+          expect(data.HID).toEqual(2);
+          expect(data.NativeName).toEqual('User 2');
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({ value: [objdata]});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.readPerson(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // createPerson
+  describe('createPerson', () => {
+    let objdata: Person;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Person();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test1';
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.createPerson(objdata).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(1);
+          expect(data.HID).toEqual(2);
+          expect(data.NativeName).toEqual('test1');
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.personAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(objdata.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.createPerson(objdata).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.personAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // deletePerson
+  describe('deletePerson', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.deletePerson(2).subscribe({
+        next: data => {
+          expect(data).toBeTruthy();
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+      });
+
+      // Respond with the mock data
+      req.flush({});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.deletePerson(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
   // fetchAllOrganizations
   describe('fetchAllOrganizations', () => {
     let arData: Organization[] = [];
@@ -689,6 +853,170 @@ describe('LibraryStorageService', () => {
     });
   });
 
+  // readOrganization
+  describe('readOrganization', () => {
+    let objdata: any;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+
+      objdata = {
+        "Id": 2,
+        "HomeID": 2,
+        "NativeName": "User 2",
+      };
+    });
+  
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+  
+    it('should return expected data', () => {
+      service.readOrganization(2).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(2);
+          expect(data.HID).toEqual(2);
+          expect(data.NativeName).toEqual('User 2');
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({ value: [objdata]});
+    });
+  
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.readOrganization(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
+      });
+  
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+  
+  // createOrganization
+  describe('createOrganization', () => {
+    let objdata: Organization;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Organization();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test1';
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+  
+    it('should return expected data', () => {
+      service.createOrganization(objdata).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(1);
+          expect(data.HID).toEqual(2);
+          expect(data.NativeName).toEqual('test1');
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.organizationAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush(objdata.writeJSONObject());
+    });
+  
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.createOrganization(objdata).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.organizationAPIURL;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+  
+  // deleteOrganization
+  describe('deleteOrganization', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+  
+    it('should return expected data', () => {
+      service.deleteOrganization(2).subscribe({
+        next: data => {
+          expect(data).toBeTruthy();
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+      });
+
+      // Respond with the mock data
+      req.flush({});
+    });
+  
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.deleteOrganization(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+      });
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+  
   // fetchAllLocations
   describe('fetchAllLocations', () => {
     let arData: Location[] = [];

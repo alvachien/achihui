@@ -8,7 +8,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  Book, momentDateFormat, getUIModeString, } from '../../../../model';
+  Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, } from '../../../../model';
 import { LibraryStorageService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -24,7 +24,11 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
-  currentObject?: Book;
+  listAuthors: Person[] = [];
+  listTranslators: Person[] = [];
+  listPresses: Organization[] = [];
+  listCategories: BookCategory[] = [];
+  listLocations: Location[] = [];
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
@@ -75,9 +79,13 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             )
           .subscribe({
             next: (e: Book) => {
-              this.currentObject = e;
               this.detailFormGroup.get('idControl')?.setValue(e.ID);
               this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+              this.listAuthors = e.Authors;
+              this.listCategories = e.Categories;
+              this.listLocations = e.Locations;
+              this.listPresses = e.Presses;
+              this.listTranslators = e.Translators;
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -101,7 +109,6 @@ export class BookDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          this.currentObject = new Book();
           // Do nothing
           this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;

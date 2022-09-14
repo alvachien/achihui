@@ -1,4 +1,14 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
+    <nz-page-header nzBackIcon>
+        <nz-breadcrumb nz-page-header-breadcrumb>
+            <nz-breadcrumb-item>Library</nz-breadcrumb-item>
+        </nz-breadcrumb>
+        <nz-page-header-title>Book</nz-page-header-title>
+        <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+        <nz-page-header-extra>
+            <a nz-button nzType="link" routerLink="/library/book/create">{{'Common.Create' | transloco}}</a>
+        </nz-page-header-extra>
+    </nz-page-header>    
     <nz-table #basicTable [nzData]="dataSet">
         <thead>
             <tr>

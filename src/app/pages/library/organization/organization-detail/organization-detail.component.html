@@ -1,1 +1,36 @@
-<p>organization-detail works!</p>
+<nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>Library</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>Organization</nz-page-header-title>
+    <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+        <a nz-button nzType="link" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+    </nz-page-header-extra>
+</nz-page-header>
+
+<form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+            <input nz-input formControlName="idControl" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Native Name -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.NativeName' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+            <input nz-input formControlName="nnameControl" maxlength="100" required />
+            <ng-template #nameTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                    {{'Common.FieldMaxLength' | transloco}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+</form>

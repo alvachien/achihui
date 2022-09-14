@@ -312,6 +312,54 @@ export class LibraryStorageService {
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
+  public createPerson(objtbc: Person): Observable<Person> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const jdata = objtbc.writeJSONObject();
+
+    return this._http.post(this.personAPIURL, jdata, {
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, createPerson, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: Person = new Person();
+      hd.onSetData(response as any);
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, createPerson failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public deletePerson(pid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.personAPIURL}/${pid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deletePerson, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deletePerson failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
 
   // Organization
   public fetchAllOrganizations(forceReload?: boolean): Observable<Organization[]> {
@@ -357,6 +405,85 @@ export class LibraryStorageService {
     } else {
       return of(this._listOrganization);
     }
+  }
+  public readOrganization(pid: number): Observable<Organization> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${pid}`);
+    params = params.append('$expand', `Types`);
+    
+    return this._http.get(this.organizationAPIURL, {
+      headers: headers,
+      params: params,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, readOrganization, map `, ConsoleLogTypeEnum.debug);
+
+      const rjs: any = <any>response;
+      const rst: Organization = new Organization();
+      if (rjs.value instanceof Array && rjs.value.length === 1) {
+        rst.onSetData(rjs.value[0]);
+      }
+
+      return rst;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService readOrganization failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public createOrganization(objtbc: Organization): Observable<Organization> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const jdata = objtbc.writeJSONObject();
+
+    return this._http.post(this.organizationAPIURL, jdata, {
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, createOrganization, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: Organization = new Organization();
+      hd.onSetData(response as any);
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, createOrganization failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public deleteOrganization(pid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.organizationAPIURL}/${pid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteOrganization, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deleteOrganization failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
   }
 
   // Location

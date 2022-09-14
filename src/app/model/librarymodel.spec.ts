@@ -2,7 +2,7 @@
 // Unit test for librarymodel.ts
 //
 
-import { Location, BookCategory, MovieGenre, PersonRole, OrganizationType, 
+import { Location, BookCategory, PersonRole, OrganizationType, 
   LocationTypeEnum, Book, Person, Organization} from './librarymodel';
 
 describe('PersonRole', () => {
@@ -24,7 +24,7 @@ describe('PersonRole', () => {
     objtbt.ID = 1;
     objtbt.Name = 'test1';
     let genobj = objtbt.writeJSONObject();
-    expect(genobj.ID).toEqual(objtbt.ID);
+    expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.Name).toEqual(objtbt.Name);
     expect(genobj.HomeID).toBeUndefined();
     expect(genobj.Comment).toBeUndefined();
@@ -79,7 +79,7 @@ describe('OrganizationType', () => {
     objtbt.ID = 1;
     objtbt.Name = 'test1';
     let genobj = objtbt.writeJSONObject();
-    expect(genobj.ID).toEqual(objtbt.ID);
+    expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.Name).toEqual(objtbt.Name);
     expect(genobj.HomeID).toBeUndefined();
     expect(genobj.Comment).toBeUndefined();
@@ -193,33 +193,6 @@ describe('BookCategory', () => {
   });
 });
 
-describe('MovieGenre', () => {
-  let mvgen: MovieGenre;
-
-  beforeEach(() => {
-    mvgen = new MovieGenre();
-  });
-
-  it('init', () => {
-    expect(mvgen).toBeTruthy();
-
-    expect(mvgen.ID).toBeFalsy();
-    expect(mvgen.HID).toBeFalsy();
-    expect(mvgen.Name).toBeFalsy();
-    expect(mvgen.Others).toBeFalsy();
-  });
-  it('writeJSONobject and onSetdata', () => {
-    mvgen.Name = 'test1';
-    mvgen.Others = 'others';
-    const jdata = mvgen.writeJSONObject();
-    expect(jdata).toBeTruthy();
-
-    const mvgen2: MovieGenre = new MovieGenre();
-    mvgen2.onSetData(jdata);
-    expect(mvgen2).toBeTruthy();
-  });
-});
-
 describe('Person', () => {
   let objtbt: Person;
 
@@ -250,20 +223,207 @@ describe('Person', () => {
     vrst = objtbt.onVerify();
     expect(vrst).toBeTrue();
   });
-  it('case for onSetData', () => {
-    objtbt.ID = 2;
-    objtbt.HID = 10;
-    objtbt.NativeName = 'test1';
-    objtbt.Detail = 'test1';
-    let genobj = objtbt.writeJSONObject();
+  it('case for onSetData without roles', () => {
+    let genobj = {
+      "Id": 22,
+      "HomeID": 2,
+      "NativeName": "User 2",
+      "ChineseName": null,
+      "NativeIsChinese": true,
+      "Detail": "Details",
+      "CreatedAt": null,
+      "Createdby": null,
+      "UpdatedAt": null,
+      "Updatedby": null,
+      "Roles": []
+    };
 
-    let objtbt2 = new Person();
-    objtbt2.onSetData(genobj);
-    expect(objtbt2.ID).toEqual(objtbt.ID);
-    expect(objtbt2.HID).toEqual(objtbt.HID);
-    expect(objtbt2.NativeName).toEqual(objtbt.NativeName);
-    expect(objtbt2.Detail).toEqual(objtbt.Detail);
+    objtbt.onSetData(genobj);
+    expect(objtbt.ID).toEqual(objtbt.ID);
+    expect(objtbt.HID).toEqual(objtbt.HID);
+    expect(objtbt.NativeName).toEqual(objtbt.NativeName);
+    expect(objtbt.Detail).toEqual('Details');
+    expect(objtbt.Roles.length).toEqual(0);
   });
+  it('case for onSetData with roles', () => {
+    let genobj = {
+      "Id": 22,
+      "HomeID": 2,
+      "NativeName": "User 2",
+      "ChineseName": null,
+      "NativeIsChinese": true,
+      "Detail": null,
+      "CreatedAt": null,
+      "Createdby": null,
+      "UpdatedAt": null,
+      "Updatedby": null,
+      "Roles": [
+        {
+          "Id": 11,
+          "HomeID": null,
+          "Name": "Author",
+          "Comment": "Author of book",
+          "CreatedAt": null,
+          "Createdby": null,
+          "UpdatedAt": null,
+          "Updatedby": null
+        }
+      ]
+    };
+
+    objtbt.onSetData(genobj);
+    expect(objtbt.ID).toEqual(22);
+    expect(objtbt.HID).toEqual(2);
+    expect(objtbt.NativeName).toEqual('User 2');
+    expect(objtbt.Roles.length).toEqual(1);
+    expect(objtbt.Roles[0].ID).toEqual(11);
+    expect(objtbt.Roles[0].Name).toEqual('Author');
+  });
+  it('case for writeJSONObject without role', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.NativeName = 'test';
+    objtbt.ChineseIsNative = true;
+    objtbt.Roles = [];
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+    expect(genobj.NativeIsChinese).toBeTrue();
+  });
+  it('case for writeJSONObject with role', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.NativeName = 'test';
+    objtbt.ChineseIsNative = true;
+    objtbt.Roles = [];
+    let role: PersonRole = new PersonRole();
+    role.ID = 2;
+    role.Name = 'test2';
+    objtbt.Roles.push(role);
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.PersonRoles.length).toEqual(1);
+    expect(genobj.PersonRoles[0].RoleId).toEqual(2);
+  });
+});
+
+describe('Organization', () => {
+  let objtbt: Organization;
+
+  beforeEach(() => {
+    objtbt = new Organization();
+  });
+
+  it('init', () => {
+    expect(objtbt).toBeTruthy();
+    objtbt.NativeName = 'test';
+    expect(objtbt.NativeName.length).toBeGreaterThan(0);
+    objtbt.onInit();
+    expect(objtbt.NativeName.length).toEqual(0);
+  });
+
+  it('case without homeid and comment', () => {
+    objtbt.ID = 1;
+    objtbt.NativeName = 'test1';
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+  });
+  it('case for verify', () => {
+    objtbt.ID = 1;
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    objtbt.NativeName = 'test2';
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+  });
+  it('case for onSetData without types', () => {
+    let genobj = {
+      "Id": 22,
+      "HomeID": 2,
+      "NativeName": "User 2",
+      "ChineseName": null,
+      "NativeIsChinese": true,
+      "Detail": "Details",
+      "CreatedAt": null,
+      "Createdby": null,
+      "UpdatedAt": null,
+      "Updatedby": null,
+      "Types": []
+    };
+
+    objtbt.onSetData(genobj);
+    expect(objtbt.ID).toEqual(objtbt.ID);
+    expect(objtbt.HID).toEqual(objtbt.HID);
+    expect(objtbt.NativeName).toEqual(objtbt.NativeName);
+    expect(objtbt.Detail).toEqual('Details');
+    expect(objtbt.Types.length).toEqual(0);
+  });
+  it('case for onSetData with types', () => {
+    let genobj = {
+      "Id": 22,
+      "HomeID": 2,
+      "NativeName": "User 2",
+      "ChineseName": null,
+      "NativeIsChinese": true,
+      "Detail": null,
+      "CreatedAt": null,
+      "Createdby": null,
+      "UpdatedAt": null,
+      "Updatedby": null,
+      "Types": [
+        {
+          "Id": 11,
+          "HomeID": null,
+          "Name": "Author",
+          "Comment": "Author of book",
+          "CreatedAt": null,
+          "Createdby": null,
+          "UpdatedAt": null,
+          "Updatedby": null
+        }
+      ]
+    };
+
+    objtbt.onSetData(genobj);
+    expect(objtbt.ID).toEqual(22);
+    expect(objtbt.HID).toEqual(2);
+    expect(objtbt.NativeName).toEqual('User 2');
+    expect(objtbt.Types.length).toEqual(1);
+    expect(objtbt.Types[0].ID).toEqual(11);
+    expect(objtbt.Types[0].Name).toEqual('Author');
+  });
+  it('case for writeJSONObject without type', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.NativeName = 'test';
+    objtbt.ChineseIsNative = true;
+    objtbt.Types = [];
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+    expect(genobj.NativeIsChinese).toBeTrue();
+  });
+  it('case for writeJSONObject with role', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.NativeName = 'test';
+    objtbt.ChineseIsNative = true;
+    objtbt.Types = [];
+    let role: OrganizationType = new OrganizationType();
+    role.ID = 2;
+    role.Name = 'test2';
+    objtbt.Types.push(role);
+    let genobj = objtbt.writeJSONObject();
+    expect(genobj.Id).toEqual(objtbt.ID);
+    expect(genobj.NativeName).toEqual(objtbt.NativeName);
+    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.OrganizationTypes.length).toEqual(1);
+    expect(genobj.OrganizationTypes[0].TypeId).toEqual(2);
+  });
+
 });
 
 describe('Book', () => {

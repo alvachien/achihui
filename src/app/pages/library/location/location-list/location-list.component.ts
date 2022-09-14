@@ -3,6 +3,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
 import { BookCategory, ConsoleLogTypeEnum, Location, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
@@ -10,7 +11,7 @@ import { LibraryStorageService, UIStatusService } from 'src/app/services';
 @Component({
   selector: 'hih-location-list',
   templateUrl: './location-list.component.html',
-  styleUrls: ['./location-list.component.less']
+  styleUrls: ['./location-list.component.less'],
 })
 export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -19,6 +20,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
 
   constructor(public odataService: LibraryStorageService,
     public uiStatusService: UIStatusService,
+    public router: Router,
     public modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -64,5 +66,15 @@ export class LocationListComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  public onDisplay(pid: number) {
+    this.router.navigate(['/library/location/display/' + pid.toString()]);
+  }
+  public onEdit(pid: number) {
+    
+  }
+  public onDelete(pid: number) {
+    
   }
 }

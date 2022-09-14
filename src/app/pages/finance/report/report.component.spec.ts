@@ -292,4 +292,48 @@ describe('ReportComponent', () => {
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/controlcentermom']);
   });
 
+  it('drilldown to order', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToOrder();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/order']);
+  });
+
+  it('drilldown to tran type', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToTranType();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'trantype']);
+  });
+
+  it('drilldown to cash', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToCash();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cash']);
+  });
+
+  it('drilldown to cash MOM', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToCashMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cashmom']);
+  });
+
+  it('drilldown to income statement', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToStatementOfIncomeExpenseMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'statementofincexpmom']);
+  });
 });

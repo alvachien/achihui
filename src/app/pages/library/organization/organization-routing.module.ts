@@ -6,6 +6,7 @@ import { OrganizationDetailComponent } from './organization-detail';
 const routes: Routes = [  
   { path: '', component: OrganizationListComponent },
   { path: 'create', component: OrganizationDetailComponent },
+  { path: 'display/:id', component: OrganizationDetailComponent },
 ];
 
 @NgModule({

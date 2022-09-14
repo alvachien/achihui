@@ -56,7 +56,7 @@ export class PersonRole extends hih.BaseModel {
   public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     if (this.ID > 0) {
-      rstObj.ID = this.ID;
+      rstObj.Id = this.ID;
     }
     if (this.HomeID !== null) {
       rstObj.HomeID = this.HomeID;
@@ -71,8 +71,8 @@ export class PersonRole extends hih.BaseModel {
   public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.ID) {
-      this.ID = data.ID;
+    if (data && data.Id) {
+      this.ID = data.Id;
     }
     if (data && data.HomeID) {
       this.HomeID = data.HomeID;
@@ -133,7 +133,7 @@ export class OrganizationType extends hih.BaseModel {
   public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
     if (this.ID > 0) {
-      rstObj.ID = this.ID;
+      rstObj.Id = this.ID;
     }
     if (this.HomeID !== null) {
       rstObj.HomeID = this.HomeID;
@@ -148,8 +148,8 @@ export class OrganizationType extends hih.BaseModel {
   public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.ID) {
-      this.ID = data.ID;
+    if (data && data.Id) {
+      this.ID = data.Id;
     }
     if (data && data.HomeID) {
       this.HomeID = data.HomeID;
@@ -195,12 +195,14 @@ export class Person extends hih.MultipleNamesObject {
   // set Ext1Link(el: string) { this._ext1link = el; }
   get Detail(): string { return this._detail; }
   set Detail(dtl: string) { this._detail = dtl; }
+  public Roles: PersonRole[] = [];
 
   public override onInit(): void {
     super.onInit();
     this._id = 0;
     this._hid = null;
     this.Detail = '';
+    this.Roles = [];
   }
 
   public override onVerify(context?: any): boolean {
@@ -219,6 +221,16 @@ export class Person extends hih.MultipleNamesObject {
     if (this._detail.length > 0) {
       rst.Detail = this._detail;
     }
+    if (this.Roles.length > 0) {
+      rst.PersonRoles = [];
+      this.Roles.forEach((val: PersonRole) => {
+        if (this._id > 0) {
+          rst.PersonRoles.push({ RoleId: val.ID, PersonId: this._id });
+        } else {
+          rst.PersonRoles.push({ RoleId: val.ID });
+        }  
+      });
+    }
 
     return rst;
   }
@@ -232,6 +244,14 @@ export class Person extends hih.MultipleNamesObject {
     }
     if (data && data.Detail) {
       this.Detail = data.Detail;
+    }
+    this.Roles = [];
+    if (data && data.Roles instanceof Array && data.Roles.length > 0) {
+      for(let pr of data.Roles) {
+        let objrule: PersonRole = new PersonRole();
+        objrule.onSetData(pr);
+        this.Roles.push(objrule);
+      }
     }
   }
 }
@@ -250,12 +270,14 @@ export class Organization extends hih.MultipleNamesObject {
   set HID(hid: number | null) { this._hid = hid; }
   get Detail(): string { return this._detail; }
   set Detail(dtl: string) { this._detail = dtl; }
+  public Types: OrganizationType[] = [];
 
   public override onInit(): void {
     super.onInit();
     this._id = 0;
     this._hid = null;
     this.Detail = '';
+    this.Types = [];
   }
 
   public override onVerify(context?: any): boolean {
@@ -274,6 +296,16 @@ export class Organization extends hih.MultipleNamesObject {
     if (this._detail.length > 0) {
       rst.Detail = this._detail;
     }
+    if (this.Types.length > 0) {
+      rst.OrganizationTypes = [];
+      this.Types.forEach((val: OrganizationType) => {
+        if (this._id > 0) {
+          rst.OrganizationTypes.push({ TypeId: val.ID, OrganizationId: this._id });
+        } else {
+          rst.OrganizationTypes.push({ TypeId: val.ID });
+        }  
+      });
+    }
 
     return rst;
   }
@@ -287,6 +319,14 @@ export class Organization extends hih.MultipleNamesObject {
     }
     if (data && data.Detail) {
       this.Detail = data.Detail;
+    }
+    this.Types = [];
+    if (data && data.Types instanceof Array && data.Types.length > 0) {
+      for(let pr of data.Types) {
+        let objrule: OrganizationType = new OrganizationType();
+        objrule.onSetData(pr);
+        this.Types.push(objrule);
+      }
     }
   }
 }
@@ -687,74 +727,5 @@ export interface MovieGenreJson {
   name: string;
   parid?: number;
   others?: string;
-}
-
-/**
- * Movie genre
- */
-export class MovieGenre extends hih.BaseModel {
-  private _id: number = 0;
-  private _hid: number | null = null;
-  private _name: string = '';
-  private _parid: number | null = null;
-  private _others: string = '';
-
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
-  get ParentID(): number | null { return this._parid; }
-  set ParentID(pid: number | null) { this._parid = pid; }
-  get Others(): string { return this._others; }
-  set Others(oth: string) { this._others = oth; }
-
-  public HierLevel: number | null = null;
-  public FullDisplayText: string = '';
-
-  constructor() {
-    super();
-
-    this._hid = null;
-    this._parid = null;
-  }
-
-  public override onVerify(context?: any): boolean {
-    this.VerifiedMsgs = [];
-    if (!super.onVerify(context)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
-    rstobj.id = this.ID;
-    rstobj.hid = this.HID;
-    rstobj.name = this.Name;
-    return rstobj;
-  }
-
-  public override onSetData(data: MovieGenreJson): void {
-    super.onSetData(data);
-
-    if (data && data.id) {
-      this._id = +data.id;
-    }
-    if (data && data.hid) {
-      this._hid = data.hid;
-    }
-    if (data && data.name) {
-      this._name = data.name;
-    }
-    if (data && data.parid) {
-      this._parid = +data.parid;
-    }
-    if (data && data.others) {
-      this._others = data.others;
-    }
-  }
 }
 

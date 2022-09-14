@@ -24,7 +24,6 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
-  currentObject?: Person;
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
@@ -36,6 +35,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true}),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     });
   }
 
@@ -68,40 +68,39 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
         case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
-          // this.storageService.readPerson(this.routerID)
-          // .pipe(
-          //   takeUntil(this._destroyed$!),
-          //   finalize(() => this.isLoadingResults = false)
-          //   )
-          // .subscribe({
-          //   next: (e: Person) => {
-          //     this.currentObject = e;
-          //     this.detailFormGroup.get('idControl')?.setValue(e.ID);
-          //     this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+          this.storageService.readPerson(this.routerID)
+          .pipe(
+            takeUntil(this._destroyed$!),
+            finalize(() => this.isLoadingResults = false)
+            )
+          .subscribe({
+            next: (e: Person) => {
+              this.detailFormGroup.get('idControl')?.setValue(e.ID);
+              this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+              this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
 
-          //     if (this.uiMode === UIMode.Display) {
-          //       this.detailFormGroup.disable();
-          //     } else if (this.uiMode === UIMode.Update) {
-          //       this.detailFormGroup.enable();
-          //       this.detailFormGroup.get('idControl')?.disable();
-          //     }
-          //   },
-          //   error: err => {
-          //     ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit readBook failed ${err}...`,
-          //       ConsoleLogTypeEnum.error);
-          //     this.modalService.error({
-          //       nzTitle: translate('Common.Error'),
-          //       nzContent: err,
-          //       nzClosable: true,
-          //     });
-          //   }
-          // });
+              if (this.uiMode === UIMode.Display) {
+                this.detailFormGroup.disable();
+              } else if (this.uiMode === UIMode.Update) {
+                this.detailFormGroup.enable();
+                this.detailFormGroup.get('idControl')?.disable();
+              }
+            },
+            error: err => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit readBook failed ${err}...`,
+                ConsoleLogTypeEnum.error);
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
+            }
+          });
           break;
         }
 
         case UIMode.Create:
         default: {
-          this.currentObject = new Person();
           // Do nothing
           this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;

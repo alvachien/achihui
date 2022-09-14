@@ -124,6 +124,8 @@
     "PageLackAuthorityContent": "The page which you aim to visit are banned due to lack of authority",
     "EnglishName": "English Name",
     "NativeName": "Native Name",
+    "ChineseName": "Chinese Name",
+    "ChineseIsNative": "Chinese is Native",
     "LanguageSupportedInApp": "Supported",
     "Host": "Host",
     "Todo": "Todo",
