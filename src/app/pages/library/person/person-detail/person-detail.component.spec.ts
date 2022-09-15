@@ -21,6 +21,7 @@ describe('PersonDetailComponent', () => {
   let fixture: ComponentFixture<PersonDetailComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
+  let fetchAllPersonRolesSpy: any;
   let readPersonSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -33,8 +34,10 @@ describe('PersonDetailComponent', () => {
     fakeData.buildChosedHome();
 
     storageService = jasmine.createSpyObj('LibraryStorageService', [
+      'fetchAllPersonRoles',
       'readPerson',
     ]);
+    fetchAllPersonRolesSpy = storageService.fetchAllPersonRoles.and.returnValue(of([]));
     readPersonSpy = storageService.readPerson.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,

@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  Book, momentDateFormat, getUIModeString, Person, Organization, Location, } from '../../../../model';
+  Book, momentDateFormat, getUIModeString, Person, Organization, OrganizationType, } from '../../../../model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
@@ -23,6 +23,8 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
+  listTypes: OrganizationType[] = [];
+  allTypes: OrganizationType[] = [];
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
@@ -34,7 +36,13 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true}),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new FormControl('', [Validators.maxLength(100)]),
+      chnIsNativeControl: new FormControl(false),
     });
+  }
+
+  get isEditable(): boolean {
+    return isUIEditable(this.uiMode);
   }
 
   ngOnInit() {
@@ -66,15 +74,23 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
         case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
-          this.storageService.readOrganization(this.routerID)
+          forkJoin([
+            this.storageService.fetchAllOrganizationTypes(),
+            this.storageService.readOrganization(this.routerID)
+          ])          
           .pipe(
             takeUntil(this._destroyed$!),
             finalize(() => this.isLoadingResults = false)
             )
           .subscribe({
-            next: (e: Organization) => {
-              this.detailFormGroup.get('idControl')?.setValue(e.ID);
-              this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+            next: (e: any) => {
+              this.allTypes = e[0];
+
+              this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
+              this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
+              this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
+              this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
+              this.listTypes = e[1].Types.slice();
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -98,9 +114,26 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          // Do nothing
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-          break;
+          this.storageService.fetchAllOrganizationTypes().pipe(
+            takeUntil(this._destroyed$!),
+            finalize(() => this.isLoadingResults = false)
+          ).subscribe({
+            next: rtndata => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
+                ConsoleLogTypeEnum.debug);
+              this.allTypes = rtndata;
+              this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+            },
+            error: err => {
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes ${err}...`,
+                ConsoleLogTypeEnum.error);
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err,
+                nzClosable: true,
+              });
+            }
+          });
         }
       }
     });
@@ -114,6 +147,12 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onAssignType(): void {    
+  }
+  onRemoveTypeAssignment(tid: number): void {
+    
   }
 
   onSave(): void {

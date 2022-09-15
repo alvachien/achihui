@@ -57,12 +57,11 @@
           </label>
         </nz-form-control>
     </nz-form-item>
-
 </form>
 
 <div>
     <div class="toolbar_buttons">
-        <button nz-button nzType="primary" (click)="onAssignRole()">{{'Finance.CreateItem' | transloco}}</button>
+        <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignRole()">{{'Finance.CreateItem' | transloco}}</button>
     </div>
     <nz-table #roleTable [nzData]="listRoles">
         <thead>
@@ -72,8 +71,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let data of authorTable.data">
-                <td>{{data.ID}}</td>
+            <tr *ngFor="let data of roleTable.data">
+                <td>
+                    <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
+                        <nz-option *ngFor="let coll of allRoles" [nzLabel]="coll.Name" [nzValue]="coll.ID"></nz-option>
+                    </nz-select>
+                              
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveRoleAssignment(data.ID)">{{'Common.Delete' | transloco}}</button>
+                </td>
                 <td>{{data.Name}}</td>
             </tr>
         </tbody>
