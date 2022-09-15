@@ -48,4 +48,34 @@
             </ng-template>
         </nz-form-control>
     </nz-form-item>
+
+    <!-- Chinese is native -->
+    <nz-form-item>
+        <nz-form-control [nzSpan]="12" [nzOffset]="7">
+          <label nz-checkbox formControlName="chnIsNativeControl">
+            {{'Common.ChineseIsNative' | transloco}}
+          </label>
+        </nz-form-control>
+    </nz-form-item>
+
 </form>
+
+<div>
+    <div class="toolbar_buttons">
+        <button nz-button nzType="primary" (click)="onAssignRole()">{{'Finance.CreateItem' | transloco}}</button>
+    </div>
+    <nz-table #roleTable [nzData]="listRoles">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>{{'Common.Name' | transloco}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of authorTable.data">
+                <td>{{data.ID}}</td>
+                <td>{{data.Name}}</td>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>

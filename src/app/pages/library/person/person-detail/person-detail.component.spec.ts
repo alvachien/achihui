@@ -35,7 +35,7 @@ describe('PersonDetailComponent', () => {
     storageService = jasmine.createSpyObj('LibraryStorageService', [
       'readPerson',
     ]);
-    //readPersonSpy = storageService.readPerson.and.returnValue(of([]));
+    readPersonSpy = storageService.readPerson.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -71,7 +71,7 @@ describe('PersonDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PersonDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    //fixture.detectChanges();
   });
 
   it('should create', () => {

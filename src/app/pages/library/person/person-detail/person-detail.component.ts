@@ -8,7 +8,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  Book, momentDateFormat, getUIModeString, Person, } from '../../../../model';
+  Book, momentDateFormat, getUIModeString, Person, PersonRole, } from '../../../../model';
 import { LibraryStorageService, UIStatusService, } from '../../../../services';
 
 @Component({
@@ -24,6 +24,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
+  listRoles: PersonRole[] = [];
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
@@ -35,7 +36,8 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true}),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-      cnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new FormControl('', [Validators.maxLength(100)]),
+      chnIsNativeControl: new FormControl(false)
     });
   }
 
@@ -78,6 +80,8 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
               this.detailFormGroup.get('idControl')?.setValue(e.ID);
               this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
               this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
+              this.detailFormGroup.get('chnIsNativeControl')?.setValue(e.ChineseIsNative);
+              this.listRoles = e.Roles.slice();
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -117,6 +121,10 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onAssignRole(): void {
+    
   }
 
   onSave(): void {
