@@ -223,6 +223,39 @@ describe('Person', () => {
     vrst = objtbt.onVerify();
     expect(vrst).toBeTrue();
   });
+  it('case for verify with roles', () => {
+    objtbt.ID = 1;
+    objtbt.NativeName = 'test2';
+    objtbt.Roles.push(new PersonRole());
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+
+    objtbt.Roles = [];
+    let ot: PersonRole = new PersonRole();
+    ot.ID = 1;
+    objtbt.Roles.push(ot);
+    ot = new PersonRole();
+    ot.ID = 2;
+    objtbt.Roles.push(ot);
+    ot = new PersonRole();
+    ot.ID = 2;
+    objtbt.Roles.push(ot);
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+
+    objtbt.Roles = [];
+    ot = new PersonRole();
+    ot.ID = 1;
+    objtbt.Roles.push(ot);
+    ot = new PersonRole();
+    ot.ID = 2;
+    objtbt.Roles.push(ot);
+    ot = new PersonRole();
+    ot.ID = 3;
+    objtbt.Roles.push(ot);
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+  });
   it('case for onSetData without roles', () => {
     let genobj = {
       "Id": 22,
@@ -339,6 +372,39 @@ describe('Organization', () => {
     vrst = objtbt.onVerify();
     expect(vrst).toBeTrue();
   });
+  it('case for verify with types', () => {
+    objtbt.ID = 1;
+    objtbt.NativeName = 'test2';
+    objtbt.Types.push(new OrganizationType());
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+
+    objtbt.Types = [];
+    let ot: OrganizationType = new OrganizationType();
+    ot.ID = 1;
+    objtbt.Types.push(ot);
+    ot = new OrganizationType();
+    ot.ID = 2;
+    objtbt.Types.push(ot);
+    ot = new OrganizationType();
+    ot.ID = 2;
+    objtbt.Types.push(ot);
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+
+    objtbt.Types = [];
+    ot = new OrganizationType();
+    ot.ID = 1;
+    objtbt.Types.push(ot);
+    ot = new OrganizationType();
+    ot.ID = 2;
+    objtbt.Types.push(ot);
+    ot = new OrganizationType();
+    ot.ID = 3;
+    objtbt.Types.push(ot);
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+  });
   it('case for onSetData without types', () => {
     let genobj = {
       "Id": 22,
@@ -423,7 +489,6 @@ describe('Organization', () => {
     expect(genobj.OrganizationTypes.length).toEqual(1);
     expect(genobj.OrganizationTypes[0].TypeId).toEqual(2);
   });
-
 });
 
 describe('Book', () => {

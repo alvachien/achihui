@@ -653,7 +653,17 @@
     "Organization": "组织",
     "Organizations": "组织",
     "Location": "存储地点",
-    "Locations": "存储地点"
+    "Locations": "存储地点",
+    "Authors": "作者",
+    "Author": "作者",
+    "Presses": "出版社",
+    "Press": "出版社",
+    "Translators": "译者",
+    "Translator": "译者",
+    "SelectAuthor": "选择作者",
+    "SelectTranslator": "选择译者",
+    "SelectPress": "选择出版社",
+    "SelectLocation": "选择存储地点"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

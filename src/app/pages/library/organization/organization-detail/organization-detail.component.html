@@ -33,9 +33,10 @@
             </ng-template>
         </nz-form-control>
     </nz-form-item>
+
     <!-- Chinese Name -->
     <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ChineseName' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{'Common.ChineseName' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
             <input nz-input formControlName="cnameControl" maxlength="100" required />
             <ng-template #nameTpl let-control>
@@ -69,12 +70,13 @@
             <tr>
                 <th>ID</th>
                 <th>{{'Common.Name' | transloco}}</th>
+                <th>{{'Common.Comment' | transloco}}</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let data of typeTable.data">
                 <td>
-                    <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
+                    <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
                         <nz-option *ngFor="let coll of allTypes" [nzLabel]="coll.Name" [nzValue]="coll.ID"></nz-option>
                     </nz-select>
 
@@ -82,6 +84,7 @@
                     <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveTypeAssignment(data.ID)">{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.Name}}</td>
+                <td>{{data.Comment}}</td>
             </tr>
         </tbody>
     </nz-table>

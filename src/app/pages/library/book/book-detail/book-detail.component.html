@@ -8,7 +8,8 @@
         <nz-page-header-extra>
             <a nz-button nzType="link" (click)="onSave()">{{'Common.Save' | transloco}}</a>
         </nz-page-header-extra>
-    </nz-page-header>    
+    </nz-page-header>
+    
     <form nz-form [formGroup]="detailFormGroup">
         <!-- ID -->
         <nz-form-item>
@@ -39,6 +40,9 @@
     <nz-tabset>
         <nz-tab [nzTitle]="'Authors'">
             <div>
+                <div class="toolbar_buttons">
+                    <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignAuthor()">{{'Library.SelectAuthor' | transloco}}</button>
+                </div>
                 <nz-table #authorTable [nzData]="listAuthors">
                     <thead>
                         <tr>
@@ -60,6 +64,9 @@
             </div>
         </nz-tab>
         <nz-tab [nzTitle]="'Translators'">
+            <div class="toolbar_buttons">
+                <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignTranslator()">{{'Library.SelectTranslator' | transloco}}</button>
+            </div>
             <div>
                 <nz-table #tranTable [nzData]="listTranslators">
                     <thead>

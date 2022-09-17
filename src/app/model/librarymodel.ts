@@ -1,3 +1,4 @@
+import { Dictionary } from 'actslib';
 import * as moment from 'moment';
 import * as hih from './common';
 
@@ -207,6 +208,27 @@ export class Person extends hih.MultipleNamesObject {
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
+    if (vrst) {
+      // Check types
+      if (this.Roles.length > 0) {
+        let tidx = this.Roles.findIndex(p => p.ID === 0);
+        if (tidx !== -1) {
+          vrst = false;
+        }
+        if (vrst) {
+          let dictID: Dictionary<number> = new Dictionary<number>();
+          this.Roles.forEach(ot => {
+            if (!dictID.has(ot.ID.toString())) {
+              dictID.set(ot.ID.toString(), ot.ID);
+            }
+          });
+          if (this.Roles.length !== dictID.size()) {
+            vrst = false;
+          }  
+        }
+      }
+    }
+
     return vrst;
   }
 
@@ -282,6 +304,26 @@ export class Organization extends hih.MultipleNamesObject {
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
+    if (vrst) {
+      // Check types
+      if (this.Types.length > 0) {
+        let tidx = this.Types.findIndex(p => p.ID === 0);
+        if (tidx !== -1) {
+          vrst = false;
+        }
+        if (vrst) {
+          let dictID: Dictionary<number> = new Dictionary<number>();
+          this.Types.forEach(ot => {
+            if (!dictID.has(ot.ID.toString())) {
+              dictID.set(ot.ID.toString(), ot.ID);
+            }
+          });
+          if (this.Types.length !== dictID.size()) {
+            vrst = false;
+          }  
+        }
+      }
+    }
     return vrst;
   }
 

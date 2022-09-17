@@ -338,7 +338,7 @@ export class FinanceAssetDepreciationDlgComponent {
     ) {}
 
   destroyModal(): void {
-    this.modal.destroy({ data: 'this the result data' });
+    this.modal.destroy({ data: '' });
   }
 
   getAccountNmae(accountid: number): string {

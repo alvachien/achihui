@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, } from '../../../../model';
 import { LibraryStorageService, UIStatusService, } from '../../../../services';
+import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
 
 @Component({
   selector: 'hih-book-detail',
@@ -33,6 +34,8 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
     private router: Router,
+    private modal: NzModalService,
+    private viewContainerRef: ViewContainerRef,
     private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -41,6 +44,10 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       idControl: new FormControl({value: undefined, disabled: true}),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
     });
+  }
+
+  get isEditable(): boolean {
+    return isUIEditable(this.uiMode);
   }
 
   ngOnInit() {
@@ -125,6 +132,33 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
+  }
+
+  onAssignAuthor(): void {
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate('Library.Author'),
+      nzWidth: 900,
+      nzContent: PersonSelectionDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        setOfCheckedId: new Set([1])
+      },
+      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+      nzFooter: [
+        {
+          label: translate('Common.Close'),
+          shape: 'round',
+          onClick: () => modal.destroy()
+        },
+      ]
+    });
+    const instance = modal.getContentComponent();
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+    // Return a result when closed
+    modal.afterClose.subscribe((result: any) => console.log('[afterClose] The result is:', result));
+  }
+  onAssignTranslator() {
+
   }
 
   onSave(): void {

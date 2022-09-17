@@ -9,6 +9,7 @@ import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, } from '../../../../model';
+import { LibraryStorageService } from 'src/app/services';
 
 @Component({
   selector: 'hih-location-detail',
@@ -22,8 +23,25 @@ export class LocationDetailComponent implements OnInit {
   public routerID = -1; // Current object ID in routing
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
+  detailFormGroup: FormGroup;
 
-  constructor() { }
+  get isEditable(): boolean {
+    return isUIEditable(this.uiMode);
+  }
+
+  constructor(private storageService: LibraryStorageService,
+    private activateRoute: ActivatedRoute,
+    private router: Router,
+    private modalService: NzModalService,) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
+      ConsoleLogTypeEnum.debug);
+
+    this.detailFormGroup = new FormGroup({
+      idControl: new FormControl({ value: undefined, disabled: true }),
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      cmtControl: new FormControl('', [Validators.maxLength(100)]),
+    });
+  }
 
   ngOnInit(): void {
   }

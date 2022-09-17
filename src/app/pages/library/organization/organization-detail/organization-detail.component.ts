@@ -149,21 +149,34 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAssignType(): void {    
+  onAssignType(): void {
+    this.listTypes = [...this.listTypes, new OrganizationType()];
   }
   onRemoveTypeAssignment(tid: number): void {
-    
+    let ntypeidx = this.listTypes.findIndex(p => p.ID === tid);
+    if (ntypeidx !== -1) {
+      this.listTypes.splice(ntypeidx, 1);
+      this.listTypes = [...this.listTypes];
+    }
+  }
+  onTypeModeChanged(tid: any) {
+    let tidx = this.allTypes.findIndex(p => p.ID === +tid);
+    if (tidx !== -1) {
+    } else {
+    }
   }
 
   onSave(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
 
-    // const objColl = new BlogCollection();
-    // objColl.name = this.detailFormGroup.get('nameControl')?.value;
-    // objColl.comment = this.detailFormGroup.get('commentControl')?.value;
+    const objtbo = new Organization();
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.Types = this.listTypes.slice();
 
-    // if (this.uiMode === UIMode.Create) {
+    if (this.uiMode === UIMode.Create) {
     //   this.odataService.createCollection(objColl)
     //   .pipe(takeUntil(this._destroyed$!))
     //   .subscribe({
@@ -181,6 +194,8 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     //       });
     //     }
     //   });
-    // }
+    } else if (this.uiMode === UIMode.Update) {
+      objtbo.ID = this.detailFormGroup.get('idControl')?.value;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
@@ -7,11 +7,10 @@ import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
+import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   Book, momentDateFormat, getUIModeString, Person, PersonRole,
 } from '../../../../model';
-import { LibraryStorageService, UIStatusService, } from '../../../../services';
+import { AuthService, HomeDefOdataService, LibraryStorageService, UIStatusService, } from '../../../../services';
 
 @Component({
   selector: 'hih-person-detail',
@@ -34,6 +33,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(private storageService: LibraryStorageService,
+    private homeService: HomeDefOdataService,
     private activateRoute: ActivatedRoute,
     private router: Router,
     private modalService: NzModalService,) {
@@ -44,7 +44,8 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
       idControl: new FormControl({ value: undefined, disabled: true }),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
       cnameControl: new FormControl('', [Validators.maxLength(100)]),
-      chnIsNativeControl: new FormControl(false)
+      chnIsNativeControl: new FormControl(false),
+      detailControl: new FormControl('', [Validators.maxLength(100)]),
     });
   }
 
@@ -95,6 +96,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
                 this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
+                this.detailFormGroup.get('detailControl')?.setValue(e[1].Detail);
                 this.listRoles = e[1].Roles.slice();
 
                 if (this.uiMode === UIMode.Display) {
@@ -156,38 +158,48 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   }
 
   onAssignRole(): void {
-
+    this.listRoles = [...this.listRoles, new PersonRole()];    
   }
   onRemoveRoleAssignment(rid: number): void {
-
+    let ntypeidx = this.listRoles.findIndex(p => p.ID === rid);
+    if (ntypeidx !== -1) {
+      this.listRoles.splice(ntypeidx, 1);
+      this.listRoles = [...this.listRoles];
+    }
   }
 
   onSave(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
 
-    // const objColl = new BlogCollection();
-    // objColl.name = this.detailFormGroup.get('nameControl')?.value;
-    // objColl.comment = this.detailFormGroup.get('commentControl')?.value;
+    const objtbo = new Person();
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.Roles = this.listRoles.slice();
 
-    // if (this.uiMode === UIMode.Create) {
-    //   this.odataService.createCollection(objColl)
-    //   .pipe(takeUntil(this._destroyed$!))
-    //   .subscribe({
-    //     next: e => {
-    //       // Succeed.
-    //       this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
-    //     },
-    //     error: err => {
-    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-    //         ConsoleLogTypeEnum.error);
-    //       this.modalService.error({
-    //         nzTitle: translate('Common.Error'),
-    //         nzContent: err,
-    //         nzClosable: true,
-    //       });
-    //     }
-    //   });
-    // }
+    if (this.uiMode === UIMode.Create) {
+      this.storageService.createPerson(objtbo)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: e => {
+          // Succeed.
+          this.router.navigate(['/library/person/display/' + e.ID.toString()]);
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PersonDetailComponent ngOnInit createPerson failed ${err}...`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
+    } else if (this.uiMode === UIMode.Update) {
+      objtbo.ID = this.routerID;
+      // TBD.
+    }
   }
 }

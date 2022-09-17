@@ -6,11 +6,13 @@ import { PersonListComponent } from './person-list';
 import { PersonDetailComponent } from './person-detail';
 import { LibraryUIModule } from '../library-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
+import { PersonSelectionDlgComponent } from './person-selection-dlg/person-selection-dlg.component';
 
 @NgModule({
   declarations: [
     PersonListComponent,
-    PersonDetailComponent
+    PersonDetailComponent,
+    PersonSelectionDlgComponent
   ],
   imports: [
     CommonModule,

@@ -653,7 +653,17 @@
     "Organization": "Organization",
     "Organizations": "Organizations",
     "Location": "Location",
-    "Locations": "Locations"
+    "Locations": "Locations",
+    "Authors": "Authors",
+    "Author": "Author",
+    "Presses": "Presses",
+    "Press": "Press",
+    "Translators": "Translators",
+    "Translator": "Translator",
+    "SelectAuthor": "Select Author",
+    "SelectTranslator": "Select Translator",
+    "SelectPress": "Select Press",
+    "SelectLocation": "Select Location"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",
