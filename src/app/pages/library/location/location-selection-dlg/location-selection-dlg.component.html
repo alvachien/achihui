@@ -1,20 +1,18 @@
 <div>
-    <nz-table #tablePerson nzShowPagination nzShowSizeChanger [nzData]="listAllPerson"
+    <nz-table #tableLocation nzShowPagination nzShowSizeChanger [nzData]="listAllLocation"
         (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
         <thead>
             <tr>
                 <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
                 <th>ID</th>
-                <th>Native Name</th>
-                <th>Chinese Name</th>
+                <th>Name</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let data of tablePerson.data">
+            <tr *ngFor="let data of tableLocation.data">
                 <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
                 <td>{{ data.ID }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>{{ data.ChineseName }}</td>
+                <td>{{ data.Name }}</td>
             </tr>
         </tbody>
     </nz-table>

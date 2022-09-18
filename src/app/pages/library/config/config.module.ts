@@ -8,6 +8,9 @@ import { BookCategoryListComponent } from './book-category-list/book-category-li
 import { ConfigComponent } from './config.component';
 import { LibraryUIModule } from '../library-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
+import { BookCategorySelectionDlgComponent } from './book-category-selection-dlg/book-category-selection-dlg.component';
+import { PersonRoleSelectionDlgComponent } from './person-role-selection-dlg/person-role-selection-dlg.component';
+import { OrganizationTypeSelectionDlgComponent } from './organization-type-selection-dlg/organization-type-selection-dlg.component';
 
 
 @NgModule({
@@ -15,7 +18,10 @@ import { TranslocoModule } from '@ngneat/transloco';
     PersonRoleListComponent,
     OrganizationTypeListComponent,
     BookCategoryListComponent,
-    ConfigComponent
+    ConfigComponent,
+    BookCategorySelectionDlgComponent,
+    PersonRoleSelectionDlgComponent,
+    OrganizationTypeSelectionDlgComponent
   ],
   imports: [
     CommonModule,

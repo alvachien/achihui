@@ -1,5 +1,5 @@
 <div>
-    <nz-table #tablePerson nzShowPagination nzShowSizeChanger [nzData]="listAllPerson"
+    <nz-table #tableOrg nzShowPagination nzShowSizeChanger [nzData]="listAllOrganization"
         (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
         <thead>
             <tr>
@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let data of tablePerson.data">
+            <tr *ngFor="let data of tableOrg.data">
                 <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>

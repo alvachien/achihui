@@ -34,11 +34,33 @@
                 </ng-template>
             </nz-form-control>
         </nz-form-item>
+
+        <!-- Chinese Name -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Common.ChineseName' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+                <input nz-input formControlName="cnameControl" maxlength="100" />
+                <ng-template #nameTpl let-control>
+                    <ng-container *ngIf="control.hasError('maxlength')">
+                        {{'Common.FieldMaxLength' | transloco}}
+                    </ng-container>
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+
+        <!-- Chinese is native -->
+        <nz-form-item>
+            <nz-form-control [nzSpan]="12" [nzOffset]="7">
+            <label nz-checkbox formControlName="chnIsNativeControl">
+                {{'Common.ChineseIsNative' | transloco}}
+            </label>
+            </nz-form-control>
+        </nz-form-item>
     </form>
 
     <nz-divider></nz-divider>
     <nz-tabset>
-        <nz-tab [nzTitle]="'Authors'">
+        <nz-tab [nzTitle]="'Library.Authors' | transloco">
             <div>
                 <div class="toolbar_buttons">
                     <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignAuthor()">{{'Library.SelectAuthor' | transloco}}</button>
@@ -63,7 +85,7 @@
                 </nz-table>
             </div>
         </nz-tab>
-        <nz-tab [nzTitle]="'Translators'">
+        <nz-tab [nzTitle]="'Library.Translators' | transloco">
             <div class="toolbar_buttons">
                 <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignTranslator()">{{'Library.SelectTranslator' | transloco}}</button>
             </div>
@@ -88,8 +110,32 @@
                 </nz-table>
             </div>
         </nz-tab>
-        <nz-tab [nzTitle]="'Presses'">
+        <nz-tab [nzTitle]="'Common.Categories' | transloco">
             <div>
+                <div class="toolbar_buttons">
+                    <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignCategory()">{{'Library.SelectCategory' | transloco}}</button>
+                </div>
+                <nz-table #ctgyTable [nzData]="listCategories">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{'Common.Name' | transloco}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of ctgyTable.data">
+                            <td>{{data.ID}}</td>
+                            <td>{{data.Name}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'Library.Presses' | transloco">
+            <div>
+                <div class="toolbar_buttons">
+                    <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignPress()">{{'Library.SelectPress' | transloco}}</button>
+                </div>
                 <nz-table #pressTable [nzData]="listPresses">
                     <thead>
                         <tr>
@@ -110,26 +156,11 @@
                 </nz-table>
             </div>
         </nz-tab>
-        <nz-tab [nzTitle]="'Categories'">
+        <nz-tab [nzTitle]="'Library.Locations' | transloco">
             <div>
-                <nz-table #ctgyTable [nzData]="listCategories">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>{{'Common.Name' | transloco}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of ctgyTable.data">
-                            <td>{{data.ID}}</td>
-                            <td>{{data.Name}}</td>
-                        </tr>
-                    </tbody>
-                </nz-table>
-            </div>
-        </nz-tab>
-        <nz-tab [nzTitle]="'Locations'">
-            <div>
+                <div class="toolbar_buttons">
+                    <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignLocation()">{{'Library.SelectLocation' | transloco}}</button>
+                </div>
                 <nz-table #locTable [nzData]="listLocations">
                     <thead>
                         <tr>

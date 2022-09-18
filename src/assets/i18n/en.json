@@ -663,7 +663,8 @@
     "SelectAuthor": "Select Author",
     "SelectTranslator": "Select Translator",
     "SelectPress": "Select Press",
-    "SelectLocation": "Select Location"
+    "SelectLocation": "Select Location",
+    "SelectCategory": "Select Category"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

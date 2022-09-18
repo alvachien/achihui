@@ -21,7 +21,8 @@ export class BookListComponent implements OnInit, OnDestroy {
   constructor(public odataService: LibraryStorageService,
     public uiStatusService: UIStatusService,
     public modalService: NzModalService,
-    private router: Router,) {
+    private router: Router,
+    private modal: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -46,12 +47,11 @@ export class BookListComponent implements OnInit, OnDestroy {
 
           this.dataSet = x;
         },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${error}`,
-            ConsoleLogTypeEnum.error);
+        error: (err: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${err}`, ConsoleLogTypeEnum.error);
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: err,
             nzClosable: true,
           });
         },
@@ -75,6 +75,39 @@ export class BookListComponent implements OnInit, OnDestroy {
     
   }
   onDelete(bid: number): void {
-    
+    this.modal.confirm({
+      nzTitle: 'Are you sure delete this book?',
+      nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService.deleteBook(bid).subscribe({
+          next: data => {
+            let sdlg = this.modalService.success({
+              nzTitle: translate('Common.Success')
+            });
+            sdlg.afterClose.subscribe(() => {
+              let dix = this.dataSet.findIndex(p => p.ID === bid);
+              if (dix !== -1) {
+                this.dataSet.splice(dix, 1);
+                this.dataSet = [...this.dataSet];
+              }  
+            });
+            setTimeout(() => sdlg.destroy(), 1000);
+          },
+          error: err => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`, ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          }
+        });            
+      },
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel')
+    });
   }
 }

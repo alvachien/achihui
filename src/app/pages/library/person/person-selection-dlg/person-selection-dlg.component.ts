@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+
 import { Person } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
   selector: 'hih-person-selection-dlg',
   templateUrl: './person-selection-dlg.component.html',
-  styleUrls: ['./person-selection-dlg.component.less']
+  styleUrls: ['./person-selection-dlg.component.less'],
 })
 export class PersonSelectionDlgComponent implements OnInit {
   checked = false;
@@ -16,6 +17,7 @@ export class PersonSelectionDlgComponent implements OnInit {
   listAllPerson: readonly Person[] = [];
   listOfCurrentPagePerson: readonly Person[] = [];
   @Input() setOfCheckedId = new Set<number>();
+  @Input() roleFilter?: number;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -62,7 +64,14 @@ export class PersonSelectionDlgComponent implements OnInit {
     })
   }
 
-  destroyModal(): void {
-    this.modal.destroy({ data: '' });
-  }
+  // destroyModal(): void {
+  //   this.modal.destroy({ data: '' });
+  // }
+
+  // handleOk(): void {
+  //   this.modal.triggerCancel();
+  // }
+  // handleCancel(): void {
+  //   this.modal.triggerCancel();
+  // }
 }

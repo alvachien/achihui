@@ -9,8 +9,11 @@ import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, } from '../../../../model';
-import { LibraryStorageService, UIStatusService, } from '../../../../services';
+import { HomeDefOdataService, LibraryStorageService, UIStatusService, } from '../../../../services';
 import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
+import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
+import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
 
 @Component({
   selector: 'hih-book-detail',
@@ -36,6 +39,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
+    private homeService: HomeDefOdataService,
     private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -43,6 +47,8 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({value: undefined, disabled: true}),
       nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new FormControl('', [Validators.maxLength(100)]),
+      chnIsNativeControl: new FormControl(false)
     });
   }
 
@@ -88,6 +94,8 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             next: (e: Book) => {
               this.detailFormGroup.get('idControl')?.setValue(e.ID);
               this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+              this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
+              this.detailFormGroup.get('chnIsNativeControl')?.setValue(e.ChineseIsNative);
               this.listAuthors = e.Authors;
               this.listCategories = e.Categories;
               this.listLocations = e.Locations;
@@ -135,58 +143,188 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   }
 
   onAssignAuthor(): void {
+    const setPerson: Set<number> = new Set<number>();
+    this.listAuthors.forEach(prn => {
+      setPerson.add(prn.ID);
+    });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate('Library.Author'),
+      nzTitle: translate('Library.SelectAuthor'),
       nzWidth: 900,
       nzContent: PersonSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzComponentParams: {
-        setOfCheckedId: new Set([1])
+        setOfCheckedId: setPerson,
       },
-      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
-      nzFooter: [
-        {
-          label: translate('Common.Close'),
-          shape: 'round',
-          onClick: () => modal.destroy()
-        },
-      ]
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, OK button...', ConsoleLogTypeEnum.debug);
+        this.listAuthors = [];
+        setPerson.forEach(pid => {
+          this.storageService.Persons.forEach(person => {
+            if (person.ID === pid) {
+              this.listAuthors.push(person);
+            }
+          });
+        });
+      },
+      nzOnCancel: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...', ConsoleLogTypeEnum.debug);
+          console.log("nzOnCancel");
+      }
     });
     const instance = modal.getContentComponent();
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => console.log('[afterClose] The result is:', result));
+    modal.afterClose.subscribe((result: any) => {
+      // Donothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...', ConsoleLogTypeEnum.debug);
+    });
   }
   onAssignTranslator() {
 
+  }
+  onAssignPress(): void {
+    const setPress: Set<number> = new Set<number>();
+    this.listPresses.forEach(prs => {
+      setPress.add(prs.ID);
+    });
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate('Library.SelectPress'),
+      nzWidth: 900,
+      nzContent: OrganizationSelectionDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        setOfCheckedId: setPress,
+      },
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...', ConsoleLogTypeEnum.debug);
+        this.listPresses = [];
+        setPress.forEach(pid => {
+          this.storageService.Organizations.forEach(org => {
+            if (org.ID === pid) {
+              this.listPresses.push(org);
+            }
+          });
+        });
+      },
+      nzOnCancel: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...', ConsoleLogTypeEnum.debug);
+          console.log("nzOnCancel");
+      }
+    });
+    const instance = modal.getContentComponent();
+    // Return a result when closed
+    modal.afterClose.subscribe((result: any) => {
+      // Donothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...', ConsoleLogTypeEnum.debug);
+    });
+  }
+  onAssignCategory(): void {
+    const setCategory: Set<number> = new Set<number>();
+    this.listCategories.forEach(ctg => {
+      setCategory.add(ctg.ID);
+    });
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate('Library.SelectCategory'),
+      nzWidth: 900,
+      nzContent: BookCategorySelectionDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        setOfCheckedId: setCategory,
+      },
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, OK button...', ConsoleLogTypeEnum.debug);
+        this.listCategories = [];
+        setCategory.forEach(pid => {
+          this.storageService.BookCategories.forEach(ctgy => {
+            if (ctgy.ID === pid) {
+              this.listCategories.push(ctgy);
+            }
+          });
+        });
+      },
+      nzOnCancel: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...', ConsoleLogTypeEnum.debug);
+          console.log("nzOnCancel");
+      }
+    });
+    const instance = modal.getContentComponent();
+    // Return a result when closed
+    modal.afterClose.subscribe((result: any) => {
+      // Donothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...', ConsoleLogTypeEnum.debug);
+    });
+  }
+  onAssignLocation(): void {
+    const setLocation: Set<number> = new Set<number>();
+    this.listLocations.forEach(loc => {
+      setLocation.add(loc.ID);
+    });
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate('Library.SelectLocation'),
+      nzWidth: 900,
+      nzContent: LocationSelectionDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        setOfCheckedId: setLocation,
+      },
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, OK button...', ConsoleLogTypeEnum.debug);
+        this.listLocations = [];
+        setLocation.forEach(pid => {
+          this.storageService.Locations.forEach(loc => {
+            if (loc.ID === pid) {
+              this.listLocations.push(loc);
+            }
+          });
+        });
+      },
+      nzOnCancel: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...', ConsoleLogTypeEnum.debug);
+          console.log("nzOnCancel");
+      }
+    });
+    const instance = modal.getContentComponent();
+    // Return a result when closed
+    modal.afterClose.subscribe((result: any) => {
+      // Donothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...', ConsoleLogTypeEnum.debug);
+    });
   }
 
   onSave(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSave...',
       ConsoleLogTypeEnum.debug);
 
-    // const objColl = new BlogCollection();
-    // objColl.name = this.detailFormGroup.get('nameControl')?.value;
-    // objColl.comment = this.detailFormGroup.get('commentControl')?.value;
+    const objtbo = new Book();
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.Authors = this.listAuthors.slice();
+    objtbo.Translators = this.listTranslators.slice();
+    objtbo.Categories = this.listCategories.slice();
+    objtbo.Locations = this.listLocations.slice();
+    objtbo.Presses = this.listPresses.slice();
 
-    // if (this.uiMode === UIMode.Create) {
-    //   this.odataService.createCollection(objColl)
-    //   .pipe(takeUntil(this._destroyed$!))
-    //   .subscribe({
-    //     next: e => {
-    //       // Succeed.
-    //       this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
-    //     },
-    //     error: err => {
-    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-    //         ConsoleLogTypeEnum.error);
-    //       this.modalService.error({
-    //         nzTitle: translate('Common.Error'),
-    //         nzContent: err,
-    //         nzClosable: true,
-    //       });
-    //     }
-    //   });
-    // }
+    if (this.uiMode === UIMode.Create) {
+      this.storageService.createBook(objtbo)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: e => {
+          // Succeed.
+          this.router.navigate(['/library/book/display/' + e.ID.toString()]);
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookDetailComponent onSave failed ${err}...`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
+    } else if(this.uiMode === UIMode.Update) {
+      // Do nothing for now.
+    }
   }
 }

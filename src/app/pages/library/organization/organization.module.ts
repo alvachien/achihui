@@ -6,11 +6,13 @@ import { OrganizationListComponent } from './organization-list';
 import { OrganizationDetailComponent } from './organization-detail';
 import { LibraryUIModule } from '../library-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
+import { OrganizationSelectionDlgComponent } from './organization-selection-dlg/organization-selection-dlg.component';
 
 @NgModule({
   declarations: [
     OrganizationListComponent,
-    OrganizationDetailComponent
+    OrganizationDetailComponent,
+    OrganizationSelectionDlgComponent
   ],
   imports: [
     CommonModule,

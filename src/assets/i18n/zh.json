@@ -663,7 +663,8 @@
     "SelectAuthor": "选择作者",
     "SelectTranslator": "选择译者",
     "SelectPress": "选择出版社",
-    "SelectLocation": "选择存储地点"
+    "SelectLocation": "选择存储地点",
+    "SelectCategory": "选择类型"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",
