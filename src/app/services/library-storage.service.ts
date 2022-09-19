@@ -531,6 +531,36 @@ export class LibraryStorageService {
       return of(this._listLocation);
     }
   }
+  public readLocation(lid: number): Observable<Location> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${lid}`);
+    
+    return this._http.get(this.locationAPIURL, {
+      headers: headers,
+      params: params,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, readLocation, map `, ConsoleLogTypeEnum.debug);
+
+      const rjs: any = <any>response;
+      const rst: Location = new Location();
+      if (rjs.value instanceof Array && rjs.value.length === 1) {
+        rst.onSetData(rjs.value[0]);
+      }
+
+      return rst;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService readLocation failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
 
   // Book
   public fetchBooks(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<Book[]> {
@@ -579,7 +609,6 @@ export class LibraryStorageService {
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
   }
-
   public readBook(bid: number): Observable<Book> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -659,56 +688,6 @@ export class LibraryStorageService {
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
-
-  // public fetchAllBooks(forceReload?: boolean): Observable<any> {
-  //   if (!this._isBookListLoaded || forceReload) {
-  //     const apiurl: string = environment.ApiUrl + '/LibBook';
-
-  //     let headers: HttpHeaders = new HttpHeaders();
-  //     headers = headers.append('Content-Type', 'application/json')
-  //       .append('Accept', 'application/json')
-  //       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-  //     let params: HttpParams = new HttpParams();
-  //     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-  //     return this._http.get(apiurl, {
-  //       headers: headers,
-  //       params: params,
-  //     })
-  //       .pipe(map((response: HttpResponse<any>) => {
-  //         if (environment.LoggingLevel >= LogLevel.Debug) {
-  //           console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService`);
-  //         }
-
-  //         const rjs: any = response as any;
-  //         const listRst: Book[] = [];
-
-  //         if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-  //           for (const si of rjs.contentList) {
-  //             const rst: Book = new Book();
-  //             // rst.onSetData(si);
-  //             listRst.push(rst);
-  //           }
-  //         }
-
-  //         this._isBookListLoaded = true;
-  //         this.listBookChange.next(listRst);
-  //         return listRst;
-  //       }),
-  //         catchError((error: HttpErrorResponse) => {
-  //           if (environment.LoggingLevel >= LogLevel.Error) {
-  //             console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllBooks failed with ${error}`);
-  //           }
-
-  //           this._isBookListLoaded = false;
-  //           this.listBookChange.next([]);
-
-  //           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-  //         }));
-  //   } else {
-  //     return of(this.listBookChange.value);
-  //   }
-  // }
 
   private _buildBookCategoryHierarchy(listCtgy: BookCategory[]): void {
     listCtgy.forEach((value: any, index: number) => {

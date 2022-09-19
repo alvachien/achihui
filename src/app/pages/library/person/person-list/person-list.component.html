@@ -22,8 +22,7 @@
             <tr *ngFor="let data of basicTable.data">
                 <td>{{data.ID}}
                     <nz-divider nzType="vertical"></nz-divider>
-                    <button nz-button nzType="link" (click)="onDisplay(data.ID)">{{'Common.Display' | transloco}}</button>
-                    <button nz-button nzType="link" (click)="onEdit(data.ID)">{{'Common.Edit' | transloco}}</button>
+                    <button nz-button nzType="link" (click)="onDisplay(data.ID)">{{'Common.Display' | transloco}}</button>                    
                     <button nz-button nzType="link" (click)="onDelete(data.ID)">{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.NativeName}}</td>

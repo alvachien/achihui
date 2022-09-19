@@ -19,8 +19,6 @@ describe('LibraryStorageService', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
-  //   fakeData.buildLibMovieGenresFromAPI();
-  //   fakeData.buildLibLocationsFromAPI();
   });
 
   beforeEach(() => {
@@ -1145,6 +1143,65 @@ describe('LibraryStorageService', () => {
     });
   });
   
+  // readOrganization
+  describe('readLocation', () => {
+    let objdata: any;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+
+      objdata = {
+        "Id": 2,
+        "HomeID": 2,
+        "Name": "User 2",
+      };
+    });
+  
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+  
+    it('should return expected data', () => {
+      service.readLocation(2).subscribe({
+        next: data => {
+          expect(data.ID).toEqual(2);
+          expect(data.HID).toEqual(2);
+          expect(data.Name).toEqual('User 2');
+        },
+        error: err => {
+          // Empty
+        }
+      });
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
+      });
+
+      // Respond with the mock data
+      req.flush({ value: [objdata]});
+    });
+  
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error 404';
+      service.readLocation(2).subscribe({
+        next: data => {
+          fail('expected to fail');
+        },
+        error: err => {
+          expect(err.toString()).toContain(msg);
+        }
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
+      });
+  
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
   describe('fetchBooks', () => {
     let arData: Book[] = [];
     beforeEach(() => {
@@ -1364,115 +1421,4 @@ describe('LibraryStorageService', () => {
       req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
   });
-
-  // describe('fetchAllMovieGenres', () => {
-  //   beforeEach(() => {
-  //     service = TestBed.inject(LibraryStorageService);
-  //   });
-  //   afterEach(() => {
-  //     // After every test, assert that there are no more pending requests.
-  //     httpTestingController.verify();
-  //   });
-
-  //   it('should return expected movie genres (called once)', () => {
-  //     expect(service.MovieGenres.length).toEqual(0, 'should not buffered yet');
-
-  //     service.fetchAllMovieGenres().subscribe(
-  //       (ctgies: any) => {
-  //         expect(ctgies.length).toEqual(fakeData.libMovieGenresFromAPI.length, 'should return expected movie genres');
-  //         expect(service.MovieGenres.length).toEqual(fakeData.libMovieGenresFromAPI.length, 'should have buffered');
-  //       },
-  //       (fail: any) => {
-  //         // Empty
-  //       },
-  //     );
-
-  //     // Service should have made one request to GET data from expected URL
-  //     const req: any = httpTestingController.expectOne((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-  //     expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-
-  //     // Respond with the mock bookCategories
-  //     req.flush(fakeData.libMovieGenresFullReplyFromAPI);
-  //   });
-
-  //   it('should be OK returning empty data', () => {
-  //     expect(service.MovieGenres.length).toEqual(0, 'should not buffered yet');
-  //     service.fetchAllMovieGenres().subscribe(
-  //       (curries: any) => {
-  //         expect(curries.length).toEqual(0, 'should have empty data array');
-  //         expect(service.MovieGenres.length).toEqual(0, 'should buffered nothing');
-  //       },
-  //       (fail: any) => {
-  //         // Empty
-  //       },
-  //     );
-
-  //     const req: any = httpTestingController.expectOne((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-  //     expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-  //     req.flush({}); // Respond with no data
-  //   });
-
-  //   it('should return error in case error appear', () => {
-  //     const msg: string = 'Deliberate 404';
-  //     service.fetchAllMovieGenres().subscribe(
-  //       (curries: any) => {
-  //         fail('expected to fail');
-  //       },
-  //       (error: any) => {
-  //         expect(error).toContain(msg);
-  //       },
-  //     );
-
-  //     const req: any = httpTestingController.expectOne((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-
-  //     // respond with a 404 and the error message in the body
-  //     req.flush(msg, { status: 404, statusText: 'Not Found' });
-  //   });
-
-  //   it('should return expected data (called multiple times)', () => {
-  //     expect(service.MovieGenres.length).toEqual(0, 'should not buffered yet');
-  //     service.fetchAllMovieGenres().subscribe(
-  //       (curries: any) => {
-  //         expect(curries.length).toEqual(fakeData.libMovieGenresFromAPI.length, 'should return expected data');
-  //         expect(curries.length).toEqual(service.MovieGenres.length, 'should have buffered');
-  //       },
-  //       (fail: any) => {
-  //         // Do nothing
-  //       },
-  //     );
-  //     const reqs: any = httpTestingController.match((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-  //     expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-  //     reqs[0].flush(fakeData.libMovieGenresFullReplyFromAPI);
-  //     httpTestingController.verify();
-
-  //     // Second call
-  //     service.fetchAllMovieGenres().subscribe();
-  //     const reqs2: any = httpTestingController.match((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-  //     expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
-
-  //     // Third call
-  //     service.fetchAllMovieGenres().subscribe(
-  //       (curries: any) => {
-  //         expect(curries.length).toEqual(fakeData.libMovieGenresFromAPI.length, 'should return expected data');
-  //       },
-  //       (fail: any) => {
-  //         // Do nothing
-  //       },
-  //     );
-  //     const reqs3: any = httpTestingController.match((requrl: any) => {
-  //       return requrl.method === 'GET' && requrl.url === service.movieGenreAPIURL && requrl.params.has('hid');
-  //      });
-  //     expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
-  //   });
-  // });
 });
