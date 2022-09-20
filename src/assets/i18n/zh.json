@@ -301,7 +301,9 @@
       "Fiction": "小说",
       "Thriller": "悬疑",
       "OutdoorSport": "户外运动",
-      "Reference": "参考书"
+      "Reference": "参考书",
+      "Accounting": "会计类",
+      "Finance": "金融财务类"
     },
     "MovGenre": {
       "ActAdv": "动作",

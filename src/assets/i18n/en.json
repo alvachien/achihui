@@ -301,7 +301,9 @@
       "Fiction": "Literature & Fiction",
       "Thriller": "Mystery, Thriller & Suspense",
       "OutdoorSport": "Sports & Outdoors",
-      "Reference": "Reference"
+      "Reference": "Reference",
+      "Accounting": "Accounting",
+      "Finance": "Finance"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",
