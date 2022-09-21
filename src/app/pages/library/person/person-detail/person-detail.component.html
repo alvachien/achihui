@@ -89,7 +89,7 @@
             <tr *ngFor="let data of roleTable.data">
                 <td>
                     <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
-                        <nz-option *ngFor="let coll of allRoles" [nzLabel]="coll.Name" [nzValue]="coll.ID"></nz-option>
+                        <nz-option *ngFor="let coll of allRoles" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
                     </nz-select>
                               
                     <nz-divider nzType="vertical"></nz-divider>

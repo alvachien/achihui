@@ -561,6 +561,54 @@ export class LibraryStorageService {
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
+  public createLocation(objtbc: Location): Observable<Location> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const jdata = objtbc.writeJSONObject();
+
+    return this._http.post(this.locationAPIURL, jdata, {
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, createLocation, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: Location = new Location();
+      hd.onSetData(response as any);
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, createLocation failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public deleteLocation(pid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.locationAPIURL}/${pid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteLocation, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deleteLocation failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
 
   // Book
   public fetchBooks(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<Book[]> {

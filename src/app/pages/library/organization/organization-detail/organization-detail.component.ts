@@ -9,7 +9,7 @@ import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   Book, momentDateFormat, getUIModeString, Person, Organization, OrganizationType, } from '../../../../model';
-import { LibraryStorageService } from 'src/app/services';
+import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 
 @Component({
   selector: 'hih-organization-detail',
@@ -29,6 +29,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
     private router: Router,
+    private homeService: HomeDefOdataService,
     private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -175,25 +176,26 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.Types = this.listTypes.slice();
-
+    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    
     if (this.uiMode === UIMode.Create) {
-    //   this.odataService.createCollection(objColl)
-    //   .pipe(takeUntil(this._destroyed$!))
-    //   .subscribe({
-    //     next: e => {
-    //       // Succeed.
-    //       this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
-    //     },
-    //     error: err => {
-    //       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-    //         ConsoleLogTypeEnum.error);
-    //       this.modalService.error({
-    //         nzTitle: translate('Common.Error'),
-    //         nzContent: err,
-    //         nzClosable: true,
-    //       });
-    //     }
-    //   });
+      this.storageService.createOrganization(objtbo)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: e => {
+          // Succeed.
+          this.router.navigate(['/library/organization/display/' + e.ID.toString()]);
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit createOrganization failed ${err}...`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
     } else if (this.uiMode === UIMode.Update) {
       objtbo.ID = this.detailFormGroup.get('idControl')?.value;
     }

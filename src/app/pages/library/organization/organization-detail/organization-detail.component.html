@@ -77,7 +77,7 @@
             <tr *ngFor="let data of typeTable.data">
                 <td>
                     <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
-                        <nz-option *ngFor="let coll of allTypes" [nzLabel]="coll.Name" [nzValue]="coll.ID"></nz-option>
+                        <nz-option *ngFor="let coll of allTypes" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
                     </nz-select>
 
                     <nz-divider nzType="vertical"></nz-divider>
