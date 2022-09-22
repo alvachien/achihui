@@ -1,9 +1,9 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
     <nz-page-header nzBackIcon>
         <nz-breadcrumb nz-page-header-breadcrumb>
-            <nz-breadcrumb-item>Library</nz-breadcrumb-item>
+            <nz-breadcrumb-item>{{'Nav.LibraryTrace' | transloco}}</nz-breadcrumb-item>
         </nz-breadcrumb>
-        <nz-page-header-title>Book</nz-page-header-title>
+        <nz-page-header-title>{{'Library.Books' | transloco}}</nz-page-header-title>
         <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
         <nz-page-header-extra>
             <a nz-button nzType="link" routerLink="/library/book/create">{{'Common.Create' | transloco}}</a>
@@ -14,6 +14,7 @@
             <tr>
                 <th>ID</th>
                 <th>{{'Common.NativeName' | transloco}}</th>
+                <th>{{'Common.ChineseName' | transloco}}</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,7 @@
                     <button nz-button nzType="link" (click)="onDelete(data.ID)">{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.NativeName}}</td>
+                <td>{{data.ChineseName}}</td>
             </tr>
         </tbody>
     </nz-table>

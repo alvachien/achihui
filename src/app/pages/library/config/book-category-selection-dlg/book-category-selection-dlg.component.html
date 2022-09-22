@@ -12,7 +12,7 @@
             <tr *ngFor="let data of tableCategory.data">
                 <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
                 <td>{{ data.ID }}</td>
-                <td>{{ data.Name }}</td>
+                <td>{{ data.Name | transloco }}</td>
             </tr>
         </tbody>
     </nz-table>

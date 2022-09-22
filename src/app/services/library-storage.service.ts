@@ -329,6 +329,11 @@ export class LibraryStorageService {
 
       const hd: Person = new Person();
       hd.onSetData(response as any);
+
+      let pidx = this._listPerson.findIndex(p => p.ID === hd.ID);
+      if (pidx !== -1) {
+        this._listPerson.push(hd);
+      }
       return hd;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -351,6 +356,11 @@ export class LibraryStorageService {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deletePerson, map.`,
         ConsoleLogTypeEnum.debug);
 
+      let pidx = this._listPerson.findIndex(p => p.ID === pid);
+      if (pidx !== -1) {
+        this._listPerson.splice(pidx, 1);
+      }
+  
       return true;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -454,6 +464,11 @@ export class LibraryStorageService {
 
       const hd: Organization = new Organization();
       hd.onSetData(response as any);
+      let pidx = this._listOrganization.findIndex(p => p.ID === hd.ID);
+      if (pidx !== -1) {
+        this._listOrganization.push(hd);
+      }
+
       return hd;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -475,7 +490,12 @@ export class LibraryStorageService {
     .pipe(map((response: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteOrganization, map.`,
         ConsoleLogTypeEnum.debug);
-
+      
+        let pidx = this._listOrganization.findIndex(p => p.ID === pid);
+      if (pidx !== -1) {
+        this._listOrganization.splice(pidx, 1);
+      }
+  
       return true;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -578,6 +598,13 @@ export class LibraryStorageService {
 
       const hd: Location = new Location();
       hd.onSetData(response as any);
+
+      // Add it to buffer
+      let lidx = this._listLocation.findIndex(p => p.ID === hd.ID);
+      if (lidx === -1) {
+        this._listLocation.push(hd);
+      }
+
       return hd;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -599,6 +626,12 @@ export class LibraryStorageService {
     .pipe(map((response: any) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteLocation, map.`,
         ConsoleLogTypeEnum.debug);
+
+      // Remove buffer
+      let lidx = this._listLocation.findIndex(p => p.ID === pid);
+      if (lidx === -1) {
+        this._listLocation.splice(lidx, 1);
+      }
 
       return true;
     }),

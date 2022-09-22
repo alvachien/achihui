@@ -666,7 +666,10 @@
     "SelectTranslator": "选择译者",
     "SelectPress": "选择出版社",
     "SelectLocation": "选择存储地点",
-    "SelectCategory": "选择类型"
+    "SelectCategory": "选择类型",
+    "PaperBook": "印刷图书",
+    "EBook": "电子图书",
+    "LocationType": "存储类型"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

@@ -666,7 +666,10 @@
     "SelectTranslator": "Select Translator",
     "SelectPress": "Select Press",
     "SelectLocation": "Select Location",
-    "SelectCategory": "Select Category"
+    "SelectCategory": "Select Category",
+    "PaperBook": "Paper Book",
+    "EBook": "Electronic Book",
+    "LocationType": "Location Type"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

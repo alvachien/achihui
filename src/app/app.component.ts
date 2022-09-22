@@ -41,7 +41,10 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.toggleTheme();
+    // Randomize the theme
+    if(Math.random() > 0.5) {
+      this.toggleTheme();
+    }
   }
 
   ngOnInit(): void {

@@ -6,6 +6,7 @@ import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuick
   financeAccountCategoryLendTo, } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
 import * as moment from 'moment';
+import { LocationTypeEnum } from './librarymodel';
 
 /**
  * UI Status
@@ -103,7 +104,7 @@ export class UINameValuePair<T> {
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
   | RepaymentMethodEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum
-  | HomeMemberRelationEnum | PlanTypeEnum;
+  | HomeMemberRelationEnum | PlanTypeEnum | LocationTypeEnum;
 
 /**
  * UI Display string
@@ -351,6 +352,24 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
+  public static getLocationTypeEnumDisplayStrings(): UIDisplayString[] {
+    const arrst: UIDisplayString[] = [];
+
+    for (const qat in LocationTypeEnum) {
+      if (Number.isNaN(+qat)) {
+        // Do nothing
+      } else {
+        arrst.push({
+          value: +qat,
+          i18nterm: UIDisplayStringUtil.getLocationTypeDisplayString(+qat as LocationTypeEnum),
+          displaystring: '',
+        } as UIDisplayString);
+      }
+    }
+
+    return arrst;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////
   // Get display string for each enum
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
@@ -426,6 +445,20 @@ export class UIDisplayStringUtil {
         return '';
     }
   }
+
+  public static getLocationTypeDisplayString(se: LocationTypeEnum): string {
+    switch (se) {
+      case LocationTypeEnum.PaperBook:
+        return 'Library.PaperBook';
+
+      case LocationTypeEnum.EBook:
+        return 'Library.EBook';
+
+      default:
+        return '';
+    }
+  }
+
 
   public static getTagTypeDisplayString(se: TagTypeEnum): string {
     switch (se) {

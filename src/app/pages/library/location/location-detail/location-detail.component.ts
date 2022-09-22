@@ -8,8 +8,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
-  Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, } from '../../../../model';
-import { LibraryStorageService } from 'src/app/services';
+  Book, momentDateFormat, getUIModeString, Person, Organization, BookCategory, Location, 
+  UIDisplayString, LocationTypeEnum, } from '../../../../model';
+import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 
 @Component({
   selector: 'hih-location-detail',
@@ -24,17 +25,21 @@ export class LocationDetailComponent implements OnInit {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: FormGroup;
+  arLocationStrings: UIDisplayString[] = [];
 
   constructor(private storageService: LibraryStorageService,
     private activateRoute: ActivatedRoute,
     private router: Router,
+    private homeService: HomeDefOdataService,
     private modalService: NzModalService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
+    this.arLocationStrings = UIDisplayStringUtil.getLocationTypeEnumDisplayStrings();
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({ value: undefined, disabled: true }),
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      locTypeControl: new FormControl(LocationTypeEnum.PaperBook, [Validators.required]),
       cmtControl: new FormControl('', [Validators.maxLength(100)]),
     });
   }
@@ -82,6 +87,7 @@ export class LocationDetailComponent implements OnInit {
               this.detailFormGroup.get('idControl')?.setValue(e.ID);
               this.detailFormGroup.get('nameControl')?.setValue(e.Name);
               this.detailFormGroup.get('cmtControl')?.setValue(e.Comment);
+              this.detailFormGroup.get('locTypeControl')?.setValue(e.LocType);
 
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
@@ -123,6 +129,38 @@ export class LocationDetailComponent implements OnInit {
     }
   }
 
-  onSave(): void {    
+  onSave(): void { 
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering LocationDetailComponent onSave...',
+      ConsoleLogTypeEnum.debug);
+
+    const objtbo = new Location();
+    objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
+    objtbo.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    objtbo.LocType = this.detailFormGroup.get('locTypeControl')?.value as LocationTypeEnum;
+    objtbo.HID = this.homeService.ChosedHome?.ID!;
+
+    if (this.uiMode === UIMode.Create) {
+      this.storageService.createLocation(objtbo)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: e => {
+          // Succeed.
+          this.router.navigate(['/library/location/display/' + e.ID.toString()]);
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LocationDetailComponent onSave createLocation failed ${err}...`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        }
+      });
+    } else if (this.uiMode === UIMode.Update) {
+      objtbo.ID = this.routerID;
+      // TBD.
+    }
+
   }
 }
