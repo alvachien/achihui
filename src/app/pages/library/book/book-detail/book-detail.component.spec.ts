@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
@@ -10,12 +10,15 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { LibraryUIModule } from '../../library-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ActivatedRouteUrlStub, } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
+import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, Book, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { BookDetailComponent } from './book-detail.component';
 import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
+import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
+import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
 
 describe('BookDetailComponent', () => {
   let component: BookDetailComponent;
@@ -23,6 +26,9 @@ describe('BookDetailComponent', () => {
   let fakeData: FakeDataHelper;
   let storageService: any;
   let readBookSpy: any;
+  let createBookSpy: any;
+  let fetchAllPersonsSpy: any;
+  let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -35,8 +41,12 @@ describe('BookDetailComponent', () => {
 
     storageService = jasmine.createSpyObj('LibraryStorageService', [
       'readBook',
+      'fetchAllPersons',
+      'createBook',
     ]);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
+    createBookSpy = storageService.createBook.and.returnValue(of({}));
+    fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -47,6 +57,8 @@ describe('BookDetailComponent', () => {
   });
 
   beforeEach(async () => {
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -58,10 +70,17 @@ describe('BookDetailComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ BookDetailComponent ],
+      declarations: [ 
+        BookDetailComponent,
+        PersonSelectionDlgComponent,
+        OrganizationSelectionDlgComponent,
+        BookCategorySelectionDlgComponent,
+        LocationSelectionDlgComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
@@ -81,10 +100,104 @@ describe('BookDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BookDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    //fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('create mode', () => {
+    beforeEach(() => {
+      let nrole = new Book();
+      nrole.ID = 2;
+      createBookSpy.and.returnValue(asyncData(nrole));
+    });
+
+    it('create mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isEditable).toBeTruthy();
+
+      discardPeriodicTasks();
+    }));
+
+    it('create mode with valid data: name and comment', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBeTrue();
+
+      // Submit
+      component.onSave();
+
+      const routerstub = TestBed.inject(Router);
+      spyOn(routerstub, 'navigate');
+
+      tick();
+      fixture.detectChanges();
+
+      expect(routerstub.navigate).toHaveBeenCalled();
+      expect(createBookSpy).toHaveBeenCalled();
+
+      discardPeriodicTasks();
+    }));
+
+    it('assign author', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+
+      component.onAssignAuthor();
+
+      discardPeriodicTasks();
+    }));
+  });
+
+  describe('display mode', () => {
+    let nbook: Book;
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      nbook = new Book();
+      nbook.ID = 2;
+      nbook.NativeName = 'test';
+
+      readBookSpy.and.returnValue(asyncData(nbook));
+    });
+
+    it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isEditable).toBeFalse();
+      let nname = component.detailFormGroup.get('nnameControl')?.value;
+      expect(nname).toEqual(nbook.NativeName);
+
+      discardPeriodicTasks();
+    }));
+  });
+
 });

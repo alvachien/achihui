@@ -1,5 +1,4 @@
-import {
-  Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
+import { Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
   AccountCategory, TranType, AssetCategory, Account, AccountJson,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
@@ -12,8 +11,8 @@ import {
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
   financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal,
-  financeTranTypeInterestOut,
-  BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost,
+  financeTranTypeInterestOut, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost, PersonRole,
+  OrganizationType,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -54,6 +53,8 @@ export class FakeDataHelper {
   private _blogCollection: BlogCollection[] = [];
   private _blogPostAPI: BlogPostAPIJson[] = [];
   private _blogPost: BlogPost[] = [];
+  private _personRoles: PersonRole[] = [];
+  private _organizationTypes: OrganizationType[] = [];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -63,31 +64,19 @@ export class FakeDataHelper {
   }
 
   get currencies(): Currency[] {
-    if (this._currencies) {
-      return this._currencies;
-    }
-    return [];
+    return this._currencies;
   }
   get currenciesFromAPI(): CurrencyJson[] {
-    if (this._currenciesFromAPI) {
-      return this._currenciesFromAPI;
-    }
-    return [];
+    return this._currenciesFromAPI;
   }
   get HomeDefs(): HomeDef[] {
-    if (this._homeDefs) {
-      return this._homeDefs;
-    }
-    return [];
+    return this._homeDefs;
   }
   get chosedHome(): HomeDef {
     return this._chosedHome;
   }
   get finDocTypes(): DocumentType[] {
-    if (this._finDocTypes) {
-      return this._finDocTypes;
-    }
-    return [];
+    return this._finDocTypes;
   }
   get finDocTypesFromAPI(): DocumentTypeJson[] {
     if (this._finDocTypesFromAPI) {
@@ -233,28 +222,22 @@ export class FakeDataHelper {
     return [];
   }
   get blogCollectionAPI(): BlogCollectionAPIJson[] {
-    if (this._blogCollectionAPI) {
-      return this._blogCollectionAPI;
-    }
-    return [];
+    return this._blogCollectionAPI;
   }
   get blogCollection(): BlogCollection[] {
-    if (this._blogCollection) {
-      return this._blogCollection;
-    }
-    return [];
+    return this._blogCollection;
   }
   get blogPostAPI(): BlogPostAPIJson[] {
-    if (this._blogPostAPI) {
-      return this._blogPostAPI;
-    }
-    return [];
+    return this._blogPostAPI;
   }
   get blogPost(): BlogPost[] {
-    if (this._blogPost) {
-      return this._blogPost;
-    }
-    return [];
+    return this._blogPost;
+  }
+  get personRoles(): PersonRole[] {
+    return this._personRoles;
+  }
+  get organizationTypes(): OrganizationType[] {
+    return this._organizationTypes;
   }
 
   public buildCurrencies(): void {
@@ -1449,5 +1432,13 @@ export class FakeDataHelper {
       content: 'test1',
       status: 1,
     } as BlogPost);
+  }
+  public buildPersonRoles() {
+    this._personRoles = [];
+    let pp: PersonRole = new PersonRole();
+    pp.ID = 1;
+    pp.Name = 'Test1';
+    pp.Comment = 'Test1';
+    this._personRoles.push(pp);
   }
 }

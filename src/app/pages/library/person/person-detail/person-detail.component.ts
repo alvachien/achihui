@@ -97,7 +97,9 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
                 this.detailFormGroup.get('detailControl')?.setValue(e[1].Detail);
-                this.listRoles = e[1].Roles.slice();
+                if (e[1].Roles) {
+                  this.listRoles = e[1].Roles.slice();
+                }
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -188,7 +190,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
           this.router.navigate(['/library/person/display/' + e.ID.toString()]);
         },
         error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PersonDetailComponent ngOnInit createPerson failed ${err}...`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PersonDetailComponent onSave createPerson failed ${err}...`,
             ConsoleLogTypeEnum.error);
           this.modalService.error({
             nzTitle: translate('Common.Error'),
