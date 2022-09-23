@@ -5,7 +5,7 @@
     <nz-page-header-title>{{'Library.Person' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-        <a nz-button nzType="link" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+        <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{'Common.Save' | transloco}}</a>
     </nz-page-header-extra>
 </nz-page-header>
 
