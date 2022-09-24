@@ -763,6 +763,27 @@ export class Book extends hih.MultipleNamesObject {
   }
 }
 
+/**
+ * Book borrow record
+ */
+export class BookBorrowRecord {
+  private _id: number = 0;
+  private _hid?: number;
+  private _name: string = '';
+  private _cmt: string = '';
+
+  get ID(): number { return this._id; }
+  set ID(id: number) { this._id = id; }
+  get HID(): number { return this._hid!; }
+  set HID(hid: number) { this._hid = hid; }
+  get Name(): string { return this._name; }
+  set Name(name: string) { this._name = name; }
+  get Comment(): string { return this._cmt; }
+  set Comment(dsp: string) { this._cmt = dsp; }
+
+}
+
+
 export interface MovieGenreJson {
   id: number;
   hid?: number;
