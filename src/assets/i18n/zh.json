@@ -303,7 +303,10 @@
       "OutdoorSport": "户外运动",
       "Reference": "参考书",
       "Accounting": "会计类",
-      "Finance": "金融财务类"
+      "Finance": "金融财务类",
+      "DetectiveStory": "侦探推理类",
+      "KungfuNovels": "武侠小说类",
+      "FantasyNovel": "玄幻小说"
     },
     "MovGenre": {
       "ActAdv": "动作",
@@ -669,7 +672,8 @@
     "SelectCategory": "选择类型",
     "PaperBook": "印刷图书",
     "EBook": "电子图书",
-    "LocationType": "存储类型"
+    "LocationType": "存储类型",
+    "Library": "图书馆"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

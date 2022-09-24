@@ -303,7 +303,10 @@
       "OutdoorSport": "Sports & Outdoors",
       "Reference": "Reference",
       "Accounting": "Accounting",
-      "Finance": "Finance"
+      "Finance": "Finance",
+      "DetectiveStory": "Detective Story",
+      "KungfuNovels": "Kung fu novels",
+      "FantasyNovel": "Fantasy novel"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",
@@ -669,7 +672,8 @@
     "SelectCategory": "Select Category",
     "PaperBook": "Paper Book",
     "EBook": "Electronic Book",
-    "LocationType": "Location Type"
+    "LocationType": "Location Type",
+    "Library": "Library"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",
