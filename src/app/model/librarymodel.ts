@@ -766,21 +766,116 @@ export class Book extends hih.MultipleNamesObject {
 /**
  * Book borrow record
  */
-export class BookBorrowRecord {
+export class BookBorrowRecord extends hih.BaseModel {
   private _id: number = 0;
   private _hid?: number;
-  private _name: string = '';
+  private _bookid?: number;
+  private _user: string = '';
+  private _from_org: number | null = null;
+  private _from_date: moment.Moment | null = null;
+  private _to_date: moment.Moment | null = null;
+  private _has_return: boolean = false;
   private _cmt: string = '';
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
   get HID(): number { return this._hid!; }
   set HID(hid: number) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
+  get BookID(): number { return this._bookid!; }
+  set BookID(bid: number) { this._bookid = bid; }
+  get User(): string { return this._user; }
+  set User(usr: string) { this._user = usr; }
+  get BorrowFrom(): number | null { return this._from_org; }
+  set BorrowFrom(bwf: number | null) { this._from_org = bwf; }
+  get FromDate(): moment.Moment | null { return this._from_date; }
+  set FromDate(fdt: moment.Moment | null) { this._from_date = fdt; }
+  get ToDate(): moment.Moment | null { return this._to_date; }
+  set ToDate(fdt: moment.Moment | null) { this._to_date = fdt; }
+  get HasReturned(): boolean { return this._has_return; }
+  set HasReturned(hr: boolean) { this._has_return = hr; }
   get Comment(): string { return this._cmt; }
   set Comment(dsp: string) { this._cmt = dsp; }
 
+  constructor() {
+    super();
+
+    this.initCore();
+  }
+  private initCore(): void {
+    this._from_org = null;
+    this._user = '';
+    this._from_date = null;
+    this._to_date = null;
+    this._has_return = false;
+  }
+  public override onInit() {
+    super.onInit();
+
+    this.initCore();
+  }
+
+  public override writeJSONObject(): any {
+    const rstobj: any = super.writeJSONObject();
+    if (this._id > 0) {
+      rstobj.Id = this._id;
+    }
+    if (this._hid) {
+      rstobj.HomeID = this._hid;
+    }
+    if (this._bookid) {
+      rstobj.BookId = this._bookid;
+    }
+    if (this._user) {
+      rstobj.User = this._user;
+    }
+    if (this._from_org) {
+      rstobj.FromOrganization = this._from_org;
+    }
+    if (this._from_date) {
+      rstobj.FromDate = this._from_date.format(hih.momentDateFormat);
+    }
+    if (this._to_date) {
+      rstobj.ToDate = this._to_date.format(hih.momentDateFormat);
+    }
+    rstobj.IsReturned = this._has_return;
+    if (this._cmt) {
+      rstobj.Comment = this._cmt;
+    }
+
+    return rstobj;
+  }
+  public override onSetData(data: any): void {
+    super.onSetData(data);
+    if (data && data.Id) {
+      this.ID = data.Id;
+    }
+    if (data && data.HomeID) {
+      this.HID = data.HomeID;
+    }
+    if (data && data.BookId) {
+      this.BookID = data.bookId;
+    }
+    if (data && data.User) {
+      this.User = data.User;
+    }
+    if (data && data.FromOrganization) {
+      this.BorrowFrom = data.FromOrganization;
+    }
+    if (data && data.FromDate) {
+      this.FromDate = moment(data.FromDate);
+    }
+    if (data && data.ToDate) {
+      this.ToDate = moment(data.ToDate);
+    }
+    if (data && data.IsReturned) {
+      this.HasReturned = true;
+    } else {
+      this.HasReturned = false;
+    }
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
+    }
+  }
 }
 
 

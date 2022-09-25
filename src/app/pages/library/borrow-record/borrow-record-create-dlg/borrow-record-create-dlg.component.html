@@ -1,0 +1,56 @@
+<div>
+    <form nz-form [formGroup]="detailFormGroup">
+        <!-- ID -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input nz-input formControlName="idControl" />
+            </nz-form-control>
+        </nz-form-item>
+    
+        <!-- Book -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7" nzRequired>{{'Library.Book' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="bookTpl">
+                <nz-input-number formControlName="bookControl" required></nz-input-number>
+                <ng-template #bookTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                        {{'Common.FieldIsMandatory' | transloco}}
+                    </ng-container>
+                </ng-template>
+            </nz-form-control>
+        </nz-form-item>
+
+        <!-- Borrow From -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Library.BorrowFrom' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <nz-input-number formControlName="fromOrgControl"></nz-input-number>
+            </nz-form-control>
+        </nz-form-item>
+    
+        <!-- Date range -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">Date Range</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+            </nz-form-control>
+        </nz-form-item>
+    
+        <!-- Has Returned -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Library.HasReturned' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12" nzHasFeedback>
+                <nz-switch formControlName="hasRtnedControl"></nz-switch> 
+            </nz-form-control>
+        </nz-form-item>
+
+        <!-- Comment -->
+        <nz-form-item>
+            <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+            <nz-form-control [nzSpan]="12">
+                <input nz-input formControlName="cmtControl" maxlength="50" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>    
+</div>

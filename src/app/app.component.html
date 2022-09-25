@@ -65,6 +65,9 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'book']">{{'Library.Books' | transloco}}</a>
           </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'borrowrecord']">{{'Library.BorrowRecords' | transloco}}</a>
+          </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="file">

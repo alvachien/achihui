@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 
 import { LogLevel, BookCategory, Book, momentDateFormat, PersonRole, OrganizationType, ModelUtility, ConsoleLogTypeEnum,
-  Person, Organization, Location, } from '../model';
+  Person, Organization, Location, BookBorrowRecord, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -62,6 +62,7 @@ export class LibraryStorageService {
   readonly bookAPIURL: any = environment.ApiUrl + '/LibraryBooks';
   // readonly movieGenreAPIURL: any = environment.ApiUrl + '/LibMovieGenre';
   readonly locationAPIURL: string = environment.ApiUrl + '/LibraryBookLocations';
+  readonly bookBorrowRecordAPIURL: string = environment.ApiUrl + '/LibraryBookBorrowRecords';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -764,6 +765,100 @@ export class LibraryStorageService {
     }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBook failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public fetchBookBorrowRecords(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<BookBorrowRecord[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'ID,HomeID,BookId,FromOrganization,FromDate,ToDate,Comment');
+    let filterstr = `HomeID eq ${this._homeService.ChosedHome!.ID}`;
+    params = params.append('$filter', filterstr);
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    params = params.append('$count', `true`);
+    return this._http.get(this.bookBorrowRecordAPIURL, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchBookBorrowRecords, map `, ConsoleLogTypeEnum.debug);
+
+        const rjs: any = <any>response;
+        const books: BookBorrowRecord[] = [];
+
+        if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
+            const rst: BookBorrowRecord = new BookBorrowRecord();
+            rst.onSetData(si);
+            books.push(rst);
+          }
+        }
+
+        return books;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchBookBorrowRecords failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }));
+  }
+  public createBookBorrowRecord(objtbc: BookBorrowRecord): Observable<BookBorrowRecord> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const jdata = objtbc.writeJSONObject();
+
+    return this._http.post(this.bookBorrowRecordAPIURL, jdata, {
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, createBookBorrowRecord, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: BookBorrowRecord = new BookBorrowRecord();
+      hd.onSetData(response as any);
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, createBookBorrowRecord failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+  public deleteBookBorrowRecord(bkid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.bookBorrowRecordAPIURL}/${bkid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBookBorrowRecord, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBookBorrowRecord failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));

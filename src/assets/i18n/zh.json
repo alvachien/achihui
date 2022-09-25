@@ -673,7 +673,12 @@
     "PaperBook": "印刷图书",
     "EBook": "电子图书",
     "LocationType": "存储类型",
-    "Library": "图书馆"
+    "Library": "图书馆",
+    "BorrowRecords": "图书借阅记录",
+    "BorrowRecord": "图书借阅记录",
+    "BorrowFrom": "借阅机构",
+    "CreateBorrowRecord": "新建借阅记录",
+    "HasReturned": "已归还"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

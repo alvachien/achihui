@@ -673,7 +673,12 @@
     "PaperBook": "Paper Book",
     "EBook": "Electronic Book",
     "LocationType": "Location Type",
-    "Library": "Library"
+    "Library": "Library",
+    "BorrowRecords": "Borrow Records",
+    "BorrowRecord": "Borrow Record",
+    "BorrowFrom": "Borrow From",
+    "CreateBorrowRecord": "Create Borrow Record",
+    "HasReturned": "Has Returned"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

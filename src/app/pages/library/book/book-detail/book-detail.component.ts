@@ -39,8 +39,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,) {
+    private homeService: HomeDefOdataService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -112,7 +111,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             error: err => {
               ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit readBook failed ${err}...`,
                 ConsoleLogTypeEnum.error);
-              this.modalService.error({
+              this.modal.error({
                 nzTitle: translate('Common.Error'),
                 nzContent: err,
                 nzClosable: true,
@@ -316,7 +315,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         error: err => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookDetailComponent onSave failed ${err}...`,
             ConsoleLogTypeEnum.error);
-          this.modalService.error({
+          this.modal.error({
             nzTitle: translate('Common.Error'),
             nzContent: err,
             nzClosable: true,
