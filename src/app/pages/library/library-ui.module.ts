@@ -38,6 +38,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzMessageModule,
     NzDrawerModule,
     NzEmptyModule,
+    NzSpaceModule,
     NzCascaderModule,
     NgxEchartsModule,
   ],
@@ -120,6 +122,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzPopconfirmModule,
     NzMessageModule,
     NzDrawerModule,
+    NzSpaceModule,
     NgxEchartsModule,
     NzModalModule,
   ]

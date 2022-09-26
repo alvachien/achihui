@@ -18,6 +18,7 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   listAllOrganization: readonly Organization[] = [];
   listOfOrganizationInCurrentPage: readonly Organization[] = [];
   @Input() setOfCheckedId = new Set<number>();
+  @Input() singleSelection: boolean = false;
   @Input() roleFilter?: number;
 
   updateCheckedSet(id: number, checked: boolean): void {
@@ -63,5 +64,4 @@ export class OrganizationSelectionDlgComponent implements OnInit {
       }
     })
   }
-
 }

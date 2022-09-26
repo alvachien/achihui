@@ -9,26 +9,35 @@
         </nz-form-item>
     
         <!-- Book -->
-        <nz-form-item>
-            <nz-form-label [nzSpan]="7" nzRequired>{{'Library.Book' | transloco}}</nz-form-label>
-            <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="bookTpl">
-                <nz-input-number formControlName="bookControl" required></nz-input-number>
-                <ng-template #bookTpl let-control>
-                    <ng-container *ngIf="control.hasError('required')">
-                        {{'Common.FieldIsMandatory' | transloco}}
-                    </ng-container>
-                </ng-template>
-            </nz-form-control>
-        </nz-form-item>
+        <div nz-row>
+            <label nz-col nzSpan="7" style="text-align: right;">{{'Library.Book' | transloco}}</label>
+            <div nz-col nzSpan="12">
+                <nz-space [nzSplit]="spaceSplit">
+                    <ng-template #spaceSplit>
+                      <nz-divider nzType="vertical"></nz-divider>
+                    </ng-template>
+              
+                    <a *nzSpaceItem nz-typography>{{selectedBookName}}</a>
+                    <a *nzSpaceItem nz-typography (click)="onChooseBook()">Choose Book</a>
+                </nz-space>
+            </div>
+        </div>
 
-        <!-- Borrow From -->
-        <nz-form-item>
-            <nz-form-label [nzSpan]="7">{{'Library.BorrowFrom' | transloco}}</nz-form-label>
-            <nz-form-control [nzSpan]="12" nzHasFeedback>
-                <nz-input-number formControlName="fromOrgControl"></nz-input-number>
-            </nz-form-control>
-        </nz-form-item>
-    
+        <!-- Borrow from -->
+        <div nz-row>
+            <label nz-col nzSpan="7" style="text-align: right;">{{'Library.BorrowFrom' | transloco}}</label>
+            <div nz-col nzSpan="12">
+                <nz-space [nzSplit]="spaceSplit">
+                    <ng-template #spaceSplit>
+                      <nz-divider nzType="vertical"></nz-divider>
+                    </ng-template>
+              
+                    <a *nzSpaceItem nz-typography>{{selectOrgName}}</a>
+                    <a *nzSpaceItem nz-typography (click)="onSelectOrganization()">Select Organization</a>
+                </nz-space>
+            </div>
+        </div>
+        
         <!-- Date range -->
         <nz-form-item>
             <nz-form-label [nzSpan]="7">Date Range</nz-form-label>
