@@ -20,6 +20,7 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   @Input() setOfCheckedId = new Set<number>();
   @Input() singleSelection: boolean = false;
   @Input() roleFilter?: number;
+  @Input() singleSelectedOrg: Organization | null = null;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -50,6 +51,14 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
+  get isSubmittedAllowed(): boolean {
+    if (this.singleSelection) {
+      return this.setOfCheckedId.size === 1;
+    }
+    
+    return this.setOfCheckedId.size >= 1;
+  }
+
   constructor(private modal: NzModalRef,
     private storageSrv: LibraryStorageService,
     private messageService: NzMessageService,) { }
@@ -63,5 +72,20 @@ export class OrganizationSelectionDlgComponent implements OnInit {
         // Error handling
       }
     })
+  }
+
+  handleCancel(): void {
+    this.modal.triggerCancel();
+  }
+
+  handleOk(): void {
+    if (this.singleSelection) {
+      this.listAllOrganization.forEach(ds => {
+        if (this.setOfCheckedId.has(ds.ID)) {
+          this.singleSelectedOrg = ds;
+        }
+      });
+    }
+    this.modal.triggerOk();
   }
 }

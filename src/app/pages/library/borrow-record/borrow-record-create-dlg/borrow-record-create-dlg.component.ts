@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { translate } from '@ngneat/transloco';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
+import { Book, ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
@@ -14,11 +14,13 @@ import { OrganizationSelectionDlgComponent } from '../../organization/organizati
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {
   detailFormGroup: FormGroup;
-  selectedBookId?: number;
-  selectedOrgId?: number;
+  @Input() selectedBook: Book | null = null;
+  selectedOrg: Organization | null = null;
 
-  constructor(private modal: NzModalService,
+  constructor(private modalService: NzModalService,
+    private modal: NzModalRef,
     private viewContainerRef: ViewContainerRef,
+    private changeDetect: ChangeDetectorRef,
     private storageService: LibraryStorageService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -34,13 +36,19 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   }
 
   get selectedBookName(): string {
-    if (this.selectedBookId) {
-
+    if (this.selectedBook) {
+      return this.selectedBook.NativeName;
     }
     return '';
   }
   get selectOrgName(): string {
+    if (this.selectedOrg) {
+      return this.selectedOrg.NativeName;
+    }
     return '';
+  }
+  get isSubmittedAllowed(): boolean {
+    return this.detailFormGroup.valid && this.selectedBook !== null && this.selectedOrg !== null;
   }
 
   ngOnInit(): void {
@@ -54,12 +62,13 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
 
   onSelectOrganization(): void {
     // Select an organization
-    const setPress: Set<number> = new Set<number>();
+    const setPress: Set<number> = new Set<number>();    
     if (this.detailFormGroup.get('fromOrgControl')?.value) {
       setPress.add(this.detailFormGroup.get('fromOrgControl')?.value);
     }
     const selectSingle = true;
-    const modal: NzModalRef = this.modal.create({
+    let selOrg: Organization | null = null;
+    const modal: NzModalRef = this.modalService.create({
       nzTitle: translate('Library.SelectPress'),
       nzWidth: 900,
       nzContent: OrganizationSelectionDlgComponent,
@@ -67,21 +76,14 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       nzComponentParams: {
         setOfCheckedId: setPress,
         singleSelection: selectSingle,
+        singleSelectedOrg: selOrg,
       },
       nzOnOk: () => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...', ConsoleLogTypeEnum.debug);
-        //this.listPresses = [];
-        setPress.forEach(pid => {
-          this.storageService.Organizations.forEach(org => {
-            if (org.ID === pid) {              
-              this.detailFormGroup.get('fromOrgControl')?.setValue(org.ID);
-              //this.listPresses.push(org);
-            }
-          });
-        });
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, OK button...', ConsoleLogTypeEnum.debug);
+        this.selectedOrg = selOrg;
       },
       nzOnCancel: () => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, cancelled...', ConsoleLogTypeEnum.debug);
           console.log("nzOnCancel");
       }
     });
@@ -89,7 +91,15 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     // Return a result when closed
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...', ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, dialog closed...', ConsoleLogTypeEnum.debug);
+      this.changeDetect.detectChanges();
     });
+  }
+
+  handleOk() {
+    this.modal.triggerOk();
+  }
+  handleCancel() {
+    this.modal.triggerCancel();
   }
 }

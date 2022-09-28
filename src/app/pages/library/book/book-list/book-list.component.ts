@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
 import { Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-record-create-dlg';
 
 @Component({
   selector: 'hih-book-list',
@@ -22,7 +23,8 @@ export class BookListComponent implements OnInit, OnDestroy {
     public uiStatusService: UIStatusService,
     public modalService: NzModalService,
     private router: Router,
-    private modal: NzModalService,) {
+    private modal: NzModalService,
+    private viewContainerRef: ViewContainerRef,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -73,6 +75,44 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
   onEdit(bid: number): void {
     
+  }
+  onCreateBorrowRecord(bid: number): void {
+    let bkobj: Book | null = null;
+    this.dataSet.forEach(ds => {
+      if (ds.ID === bid) {
+        bkobj = ds;
+      }
+    });
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate('Library.CreateBorrowRecord'),
+      nzWidth: 600,
+      nzContent: BorrowRecordCreateDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzComponentParams: {
+        selectedBook: bkobj,
+      },
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, OK button...', ConsoleLogTypeEnum.debug);
+        // this.listPresses = [];
+        // setPress.forEach(pid => {
+        //   this.storageService.Organizations.forEach(org => {
+        //     if (org.ID === pid) {
+        //       this.listPresses.push(org);
+        //     }
+        //   });
+        // });
+      },
+      nzOnCancel: () => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, cancelled...', ConsoleLogTypeEnum.debug);
+          console.log("nzOnCancel");
+      }
+    });
+    const instance = modal.getContentComponent();
+    // Return a result when closed
+    modal.afterClose.subscribe((result: any) => {
+      // Donothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...', ConsoleLogTypeEnum.debug);
+    });
   }
   onDelete(bid: number): void {
     this.modal.confirm({

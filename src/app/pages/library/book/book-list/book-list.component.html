@@ -23,6 +23,7 @@
                     <nz-divider nzType="vertical"></nz-divider>
                     <button nz-button nzType="link" (click)="onDisplay(data.ID)">{{'Common.Display' | transloco}}</button>                    
                     <button nz-button nzType="link" (click)="onDelete(data.ID)">{{'Common.Delete' | transloco}}</button>
+                    <button nz-button nzType="link" (click)="onCreateBorrowRecord(data.ID)">{{'Library.CreateBorrowRecord' | transloco}}</button>
                 </td>
                 <td>{{data.NativeName}}</td>
                 <td>{{data.ChineseName}}</td>

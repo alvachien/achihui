@@ -9,12 +9,12 @@
         </nz-form-item>
     
         <!-- Book -->
-        <div nz-row>
+        <div nz-row sytle="margin-bottom: 8px">
             <label nz-col nzSpan="7" style="text-align: right;">{{'Library.Book' | transloco}}</label>
             <div nz-col nzSpan="12">
                 <nz-space [nzSplit]="spaceSplit">
                     <ng-template #spaceSplit>
-                      <nz-divider nzType="vertical"></nz-divider>
+                        <nz-divider nzType="vertical"></nz-divider>
                     </ng-template>
               
                     <a *nzSpaceItem nz-typography>{{selectedBookName}}</a>
@@ -24,12 +24,12 @@
         </div>
 
         <!-- Borrow from -->
-        <div nz-row>
+        <div nz-row sytle="margin-bottom: 8px">
             <label nz-col nzSpan="7" style="text-align: right;">{{'Library.BorrowFrom' | transloco}}</label>
             <div nz-col nzSpan="12">
                 <nz-space [nzSplit]="spaceSplit">
                     <ng-template #spaceSplit>
-                      <nz-divider nzType="vertical"></nz-divider>
+                        <nz-divider nzType="vertical"></nz-divider>
                     </ng-template>
               
                     <a *nzSpaceItem nz-typography>{{selectOrgName}}</a>
@@ -62,4 +62,8 @@
             </nz-form-control>
         </nz-form-item>
     </form>    
+</div>
+<div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!isSubmittedAllowed">Submit</button>
 </div>
