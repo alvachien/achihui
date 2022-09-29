@@ -20,7 +20,7 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   @Input() setOfCheckedId = new Set<number>();
   @Input() singleSelection: boolean = false;
   @Input() roleFilter?: number;
-  @Input() singleSelectedOrg: Organization | null = null;
+  // @Input() singleSelectedOrg: Organization | null = null;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -79,13 +79,13 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   }
 
   handleOk(): void {
-    if (this.singleSelection) {
-      this.listAllOrganization.forEach(ds => {
-        if (this.setOfCheckedId.has(ds.ID)) {
-          this.singleSelectedOrg = ds;
-        }
-      });
-    }
+    // if (this.singleSelection) {
+    //   this.listAllOrganization.forEach(ds => {
+    //     if (this.setOfCheckedId.has(ds.ID)) {
+    //       this.singleSelectedOrg = ds;
+    //     }
+    //   });
+    // }
     this.modal.triggerOk();
   }
 }

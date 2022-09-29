@@ -330,11 +330,8 @@ export class LibraryStorageService {
 
       const hd: Person = new Person();
       hd.onSetData(response as any);
+      this._listPerson.push(hd);
 
-      let pidx = this._listPerson.findIndex(p => p.ID === hd.ID);
-      if (pidx !== -1) {
-        this._listPerson.push(hd);
-      }
       return hd;
     }),
       catchError((error: HttpErrorResponse) => {
@@ -465,10 +462,7 @@ export class LibraryStorageService {
 
       const hd: Organization = new Organization();
       hd.onSetData(response as any);
-      let pidx = this._listOrganization.findIndex(p => p.ID === hd.ID);
-      if (pidx !== -1) {
-        this._listOrganization.push(hd);
-      }
+      this._listOrganization.push(hd);
 
       return hd;
     }),
@@ -822,6 +816,8 @@ export class LibraryStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
+    objtbc.User = this._authService.authSubject.getValue().getUserId()!;
+    objtbc.HID = this._homeService.ChosedHome?.ID!;
     const jdata = objtbc.writeJSONObject();
 
     return this._http.post(this.bookBorrowRecordAPIURL, jdata, {

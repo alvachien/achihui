@@ -1,17 +1,9 @@
 <div>
     <form nz-form [formGroup]="detailFormGroup">
-        <!-- ID -->
-        <nz-form-item>
-            <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
-            <nz-form-control [nzSpan]="12">
-                <input nz-input formControlName="idControl" />
-            </nz-form-control>
-        </nz-form-item>
-    
         <!-- Book -->
-        <div nz-row sytle="margin-bottom: 8px">
+        <div nz-row class="line-item">
             <label nz-col nzSpan="7" style="text-align: right;">{{'Library.Book' | transloco}}</label>
-            <div nz-col nzSpan="12">
+            <div nz-col nzSpan="12" class="line-content">
                 <nz-space [nzSplit]="spaceSplit">
                     <ng-template #spaceSplit>
                         <nz-divider nzType="vertical"></nz-divider>
@@ -24,9 +16,9 @@
         </div>
 
         <!-- Borrow from -->
-        <div nz-row sytle="margin-bottom: 8px">
+        <div nz-row class="line-item">
             <label nz-col nzSpan="7" style="text-align: right;">{{'Library.BorrowFrom' | transloco}}</label>
-            <div nz-col nzSpan="12">
+            <div nz-col nzSpan="12" class="line-content">
                 <nz-space [nzSplit]="spaceSplit">
                     <ng-template #spaceSplit>
                         <nz-divider nzType="vertical"></nz-divider>

@@ -19,7 +19,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: BookBorrowRecord[] = [];
 
-  constructor(public odataService: LibraryStorageService,
+  constructor(public storageService: LibraryStorageService,
     public uiStatusService: UIStatusService,
     private router: Router,
     private modal: NzModalService,
@@ -30,23 +30,37 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
   }
 
+  getBorrowFromName(pid: number | null): string {
+    let orgname = '';
+    if (pid !== null) {
+      this.storageService.Organizations.forEach(org => {
+        if (org.ID === pid) {
+          orgname = org.NativeName;
+        }
+      })  
+    }
+    return orgname;
+  }
+
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit...',
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this.odataService.fetchBookBorrowRecords(20, 0)
-      .pipe(
+    forkJoin([
+      this.storageService.fetchAllOrganizationTypes(),
+      this.storageService.fetchBookBorrowRecords(100, 0)
+    ]).pipe(
         takeUntil(this._destroyed$),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
-        next: (x: BookBorrowRecord[]) => {
+        next: (x: any[]) => {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit fetchBookBorrowRecords...',
             ConsoleLogTypeEnum.debug);
 
-          this.dataSet = x;
+          this.dataSet = x[1];
         },
         error: (err: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BorrowRecordListComponent fetchBookBorrowRecords failed ${err}`, ConsoleLogTypeEnum.error);
@@ -114,7 +128,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.odataService.deleteBookBorrowRecord(bid).subscribe({
+        this.storageService.deleteBookBorrowRecord(bid).subscribe({
           next: data => {
             let sdlg = this.modal.success({
               nzTitle: translate('Common.Success')

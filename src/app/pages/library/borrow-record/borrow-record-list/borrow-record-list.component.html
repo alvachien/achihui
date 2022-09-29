@@ -7,7 +7,7 @@
         <nz-page-header-title>{{'Library.BorrowRecords' | transloco}}</nz-page-header-title>
         <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
         <nz-page-header-extra>
-            <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a>
+            <!-- <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a> -->
         </nz-page-header-extra>
     </nz-page-header>    
     <nz-table #basicTable [nzData]="dataSet">
@@ -15,8 +15,9 @@
             <tr>
                 <th>ID</th>
                 <th>{{'Library.Book' | transloco}}</th>
-                <th>{{'Common.From' | transloco}}</th>
-                <th>{{'Common.To' | transloco}}</th>
+                <th>{{'Library.BorrowFrom' | transloco}}</th>
+                <th>{{'Common.StartDate' | transloco}}</th>
+                <th>{{'Common.EndDate' | transloco}}</th>
                 <th>{{'Common.Comment' | transloco}}</th>
             </tr>
         </thead>
@@ -27,8 +28,9 @@
                     <button nz-button nzType="link" (click)="onDelete(data.ID)">{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.BookID}}</td>
-                <td>{{data.FromDate}}</td>
-                <td>{{data.ToDate}}</td>
+                <td>{{getBorrowFromName(data.BorrowFrom)}} (ID: {{data.BorrowFrom}})</td>
+                <td>{{data.FromDateString}}</td>
+                <td>{{data.ToDateString}}</td>
                 <td>{{data.Comment}}</td>
             </tr>
         </tbody>

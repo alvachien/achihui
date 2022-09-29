@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { Book, ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
+import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
@@ -26,7 +27,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       ConsoleLogTypeEnum.debug);
 
     this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
+      //idControl: new FormControl({value: undefined, disabled: true}),
       //bookControl: new FormControl({ value: undefined, disabled: true }, [Validators.required]),
       //fromOrgControl: new FormControl({ value: undefined, disabled: true },),
       dateRangeControl: new FormControl([new Date(), new Date()]),
@@ -62,12 +63,12 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
 
   onSelectOrganization(): void {
     // Select an organization
-    const setPress: Set<number> = new Set<number>();    
-    if (this.detailFormGroup.get('fromOrgControl')?.value) {
-      setPress.add(this.detailFormGroup.get('fromOrgControl')?.value);
-    }
+    const setPress: Set<number> = new Set<number>();
     const selectSingle = true;
-    let selOrg: Organization | null = null;
+    if (this.selectedOrg) {
+      setPress.add(this.selectedOrg.ID);
+    }
+    // let selorg: Organization | null = null;
     const modal: NzModalRef = this.modalService.create({
       nzTitle: translate('Library.SelectPress'),
       nzWidth: 900,
@@ -76,28 +77,48 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       nzComponentParams: {
         setOfCheckedId: setPress,
         singleSelection: selectSingle,
-        singleSelectedOrg: selOrg,
       },
       nzOnOk: () => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, OK button...', ConsoleLogTypeEnum.debug);
-        this.selectedOrg = selOrg;
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, OK button...', ConsoleLogTypeEnum.debug);
+        this.storageService.Organizations.forEach(org => {
+          if (setPress.has(org.ID)) {
+            this.selectedOrg = org;
+          }
+        });
+        this.changeDetect.detectChanges();
       },
       nzOnCancel: () => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, cancelled...', ConsoleLogTypeEnum.debug);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, cancelled...', ConsoleLogTypeEnum.debug);
           console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();
     // Return a result when closed
     modal.afterClose.subscribe((result: any) => {
-      // Donothing by now.
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSelectOrganization, dialog closed...', ConsoleLogTypeEnum.debug);
-      this.changeDetect.detectChanges();
+      // Do nothing by now.
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...', ConsoleLogTypeEnum.debug);
     });
   }
 
   handleOk() {
-    this.modal.triggerOk();
+    let record: BookBorrowRecord = new BookBorrowRecord();
+    record.BookID = this.selectedBook?.ID!;
+    record.BorrowFrom = this.selectedOrg?.ID!;
+    record.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    let [startdt, enddt] = this.detailFormGroup.get('dateRangeControl')?.value;
+    record.FromDate = moment(startdt);
+    record.ToDate = moment(enddt); 
+    record.HasReturned = this.detailFormGroup.get('hasRtnedControl')?.value;
+
+    this.storageService.createBookBorrowRecord(record).subscribe({
+      next: val => {
+
+        this.modal.triggerOk();
+      },
+      error: err => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...', ConsoleLogTypeEnum.error);
+      }
+    });
   }
   handleCancel() {
     this.modal.triggerCancel();

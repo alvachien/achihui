@@ -787,7 +787,7 @@ export class BookBorrowRecord extends hih.BaseModel {
   set User(usr: string) { this._user = usr; }
   get BorrowFrom(): number | null { return this._from_org; }
   set BorrowFrom(bwf: number | null) { this._from_org = bwf; }
-  get FromDate(): moment.Moment | null { return this._from_date; }
+  get FromDate(): moment.Moment | null { return this._from_date; }  
   set FromDate(fdt: moment.Moment | null) { this._from_date = fdt; }
   get ToDate(): moment.Moment | null { return this._to_date; }
   set ToDate(fdt: moment.Moment | null) { this._to_date = fdt; }
@@ -800,6 +800,19 @@ export class BookBorrowRecord extends hih.BaseModel {
     super();
 
     this.initCore();
+  }
+
+  get FromDateString(): string {
+    if(this._from_date) {
+      return this._from_date.format(hih.momentDateFormat);
+    }
+    return '';
+  }
+  get ToDateString(): string {
+    if(this._to_date) {
+      return this._to_date.format(hih.momentDateFormat);
+    }
+    return '';
   }
   private initCore(): void {
     this._from_org = null;
@@ -853,7 +866,7 @@ export class BookBorrowRecord extends hih.BaseModel {
       this.HID = data.HomeID;
     }
     if (data && data.BookId) {
-      this.BookID = data.bookId;
+      this.BookID = data.BookId;
     }
     if (data && data.User) {
       this.User = data.User;
