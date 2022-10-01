@@ -31,6 +31,10 @@ describe('GeneralEvent', () => {
     const instance2: GeneralEvent = new GeneralEvent();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
+    expect(instance2.HID).toEqual(1);
+    expect(instance2.ID).toEqual(1);
+    expect(instance2.Name).toEqual(instance.Name);
+    expect(instance2.Content).toEqual(instance.Content);
   });
 });
 

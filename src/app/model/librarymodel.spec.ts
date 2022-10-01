@@ -2,8 +2,9 @@
 // Unit test for librarymodel.ts
 //
 
+import * as moment from 'moment';
 import { Location, BookCategory, PersonRole, OrganizationType, 
-  LocationTypeEnum, Book, Person, Organization} from './librarymodel';
+  LocationTypeEnum, Book, Person, Organization, BookBorrowRecord} from './librarymodel';
 
 describe('PersonRole', () => {
   let objtbt: PersonRole;
@@ -128,6 +129,16 @@ describe('Location', () => {
     objloc.onInit();
     expect(objloc.Name.length).toEqual(0);
     //expect(objloc.LocType).toEqual(LocationTypeEnum.PaperBook);
+  });
+
+  it('onVerify', () => {
+    let vrst = objloc.onVerify();
+    expect(vrst).toBeFalse();
+
+    objloc.HID = 2;
+    objloc.Name = 'test';
+    vrst = objloc.onVerify();
+    expect(vrst).toBeTrue();
   });
 
   it('writeJSONobject and onSetdata', () => {
@@ -466,7 +477,9 @@ describe('Organization', () => {
     objtbt.HID = 2;
     objtbt.NativeName = 'test';
     objtbt.ChineseIsNative = true;
+    objtbt.Detail = 'test';
     objtbt.Types = [];
+
     let genobj = objtbt.writeJSONObject();
     expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.NativeName).toEqual(objtbt.NativeName);
@@ -502,6 +515,16 @@ describe('Book', () => {
     objtbt.onInit();
     expect(objtbt.ID).toEqual(0);
     expect(objtbt.HID).toBeNull();
+  });
+
+  it('onVerify', () => {
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+
+    objtbt.NativeName = 'test';
+    objtbt.HID = 2;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
   });
 
   it('writeJSONObject', () => {
@@ -641,5 +664,83 @@ describe('Book', () => {
     expect(objtbt.Translators.length).toEqual(1);
     expect(objtbt.Presses.length).toEqual(1);
     expect(objtbt.Categories.length).toEqual(1);
+  });
+});
+
+describe('BookBorrowRecord', () => {
+  let objtbt: BookBorrowRecord;
+
+  beforeEach(() => {
+    objtbt = new BookBorrowRecord();
+  });
+
+  it('onInit', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.User = 'test';
+    objtbt.BorrowFrom = 1;
+    objtbt.FromDate = moment();
+    objtbt.ToDate = moment().add(1, "month");
+    objtbt.onInit();
+    expect(objtbt.ID).toEqual(0);
+    expect(objtbt.HID).toBeFalsy();
+    expect(objtbt.User).toEqual('');
+    expect(objtbt.BorrowFrom).toBeFalsy();
+    expect(objtbt.FromDate).toBeFalsy();
+    expect(objtbt.ToDate).toBeFalsy();
+  });
+  it('onVerify', () => {
+    objtbt.ID = 1;
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+    
+    objtbt.HID = 2;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.BookID = 21;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.User = 'Test';
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+    expect(objtbt.VerifiedMsgs.length).toEqual(0);
+
+    objtbt.FromDate = moment();
+    objtbt.ToDate = moment().add(-2, "month");
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeFalse();
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.ToDate = moment().add(1, "days");
+    vrst = objtbt.onVerify();
+    expect(vrst).toBeTrue();
+    expect(objtbt.VerifiedMsgs.length).toEqual(0);
+  });
+
+  it('writeObject and onSetData', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.User = 'test';
+    objtbt.BorrowFrom = 1;
+    objtbt.FromDate = moment();
+    objtbt.ToDate = moment().add(1, "month");
+    objtbt.Comment = 'test';
+    objtbt.HasReturned = true;
+    let jsonobj = objtbt.writeJSONObject();
+    let objtbt2 = new BookBorrowRecord();
+    objtbt2.onSetData(jsonobj);
+    expect(objtbt2.ID).toEqual(objtbt.ID);
+    expect(objtbt2.HID).toEqual(objtbt.HID);
+    expect(objtbt2.User).toEqual(objtbt.User);
+    expect(objtbt2.BorrowFrom).toEqual(objtbt.BorrowFrom);
+    expect(objtbt2.FromDateString).toEqual(objtbt.FromDateString);
+    expect(objtbt2.ToDateString).toEqual(objtbt.ToDateString);
+    expect(objtbt2.HasReturned).toBeTrue();
+    expect(objtbt2.Comment).toEqual(objtbt.Comment);
   });
 });

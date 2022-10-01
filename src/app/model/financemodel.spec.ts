@@ -8,7 +8,11 @@ import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, 
   Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum,
   RepaymentMethodEnum, IAccountVerifyContext, financeDocTypeCurrencyExchange, financeTranTypeTransferOut,
   financeTranTypeTransferIn, FinanceOverviewKeyfigure, FinanceReportEntryByAccountAndExpense,
-  FinanceReportEntryByTransactionTypeMoM,
+  FinanceReportEntryByTransactionTypeMoM, FinanceNormalDocItemMassCreate,
+  FinanceReportEntryPerDate, FinanceReportEntryMoM,
+  FinanceDocumentMassCreateConfirm, DocumentCreatedFrequenciesByUser,
+  DocumentWithPlanExgRateForUpdate, DocumentWithPlanExgRate,  
+  DocumentItemWithBalance, ReportTrendExData, MonthOnMonthReport, TranTypeReport, FinanceReportByAccount, BalanceSheetReport,
 } from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
@@ -1422,6 +1426,47 @@ describe('Plan', () => {
   });
 });
 
+describe('FinanceNormalDocItemMassCreate', () => {
+  let objtbt: FinanceNormalDocItemMassCreate;
+  
+  beforeEach(() => {
+    objtbt = new FinanceNormalDocItemMassCreate();
+  });
+
+  it('isValid', () => {
+    let vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.desp = 'test';
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.accountID = 2;
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.tranType = 21;
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.tranAmount = 213;
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.tranCurrency = 'USD';
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+
+    objtbt.controlCenterID = 123;
+    vrst = objtbt.isValid;
+    expect(vrst).toBeTrue();
+
+    objtbt.orderID = 123;
+    vrst = objtbt.isValid;
+    expect(vrst).toBeFalse();
+  });
+});
+
 describe('FinanceReportBase', () => {
   let instance: FinanceReportBase;
 
@@ -1500,8 +1545,260 @@ describe('FinanceReportEntryByTransactionTypeMoM', () => {
   afterEach(() => {
     // do nothing now.
   });
-  it('#1. onSetData', () => {
+  it('#1. onSetData', () => {    
+    expect(objtbt).toBeTruthy();
+    objtbt.onSetData({
+      "Month": 2,
+      "TransactionType": 1,
+      "TransactionTypeName": "Test",
+      "HomeID": 2,
+      "InAmount": 100,
+      "OutAmount": 50
+    });
+    expect(objtbt.OutAmount).toEqual(50);
+    expect(objtbt.Month).toEqual(2);
+  });
+});
+
+describe('FinanceReportEntryPerDate', () => {
+  let objtbt: FinanceReportEntryPerDate;
+
+  beforeEach(() => {
+    objtbt = new FinanceReportEntryPerDate();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "HomeID": 2,
+      "InAmount": 100,
+      "OutAmount": 50,
+      "TransactionDate": "2022-07-01"
+    });
+    expect(objtbt.transactionDate).toBeTruthy();
+    expect(objtbt.InAmount).toEqual(100);
+  });
+});
+
+describe('FinanceReportEntryMoM', () => {
+  let objtbt: FinanceReportEntryMoM;
+
+  beforeEach(() => {
+    objtbt = new FinanceReportEntryMoM();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "HomeID": 2,
+      "InAmount": 300,
+      "OutAmount": 50,
+      "Month": 7
+    });
+    expect(objtbt.Month).toEqual(7);
+    expect(objtbt.InAmount).toEqual(300);    
+  });
+});
+
+describe('FinanceDocumentMassCreateConfirm', () => {
+  let objtbt: FinanceDocumentMassCreateConfirm;
+
+  beforeEach(() => {
+    objtbt = new FinanceDocumentMassCreateConfirm();
+  });
+
+  it('shall be create', () => {
+    expect(objtbt).toBeTruthy();
+    expect(objtbt.listDocByDate.length).toEqual(0);
+  });
+});
+
+describe('DocumentCreatedFrequenciesByUser', () => {
+  let objtbt: DocumentCreatedFrequenciesByUser;
+  
+  beforeEach(() => {
+    objtbt = new DocumentCreatedFrequenciesByUser();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "userID": "test1",
+      "year": 2022,
+      "month": 8,
+      "week": 24,
+      "amountOfDocuments": 20
+    });
+    expect(objtbt.userID).toEqual('test1');
+    expect(objtbt.year).toEqual(2022);
+  });
+});
+
+describe('DocumentWithPlanExgRateForUpdate', () => {
+  let objtbt: DocumentWithPlanExgRateForUpdate;
+  
+  beforeEach(() => {
+    objtbt = new DocumentWithPlanExgRateForUpdate();
+  });
+
+  it('it shall be created', () => {
+    objtbt.hid = 1;
+    objtbt.targetCurrency = 'USD';
+    objtbt.exchangeRate = 1;
     expect(objtbt).toBeTruthy();
   });
 });
 
+describe('DocumentWithPlanExgRate', () => {
+  let objtbt : DocumentWithPlanExgRate;
+
+  beforeEach(() => {
+    objtbt = new DocumentWithPlanExgRate();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "hid": 2,
+      "docID": 22,
+      "docType": 23,
+      "tranDate": "2022-07-03",
+      "desp": "test",
+      "tranCurr": "USD",
+      "exgRate": 2.3,
+      "exgRate_Plan": true,
+      "tranCurr2": "CNY",
+      "exgRate_Plan2": true
+    });
+    expect(objtbt.Desp).toEqual('test');
+    expect(objtbt.TranDateDisplayString).toEqual('2022-07-03');
+  });
+});
+
+describe('DocumentItemWithBalance', () => {
+  let objtbt: DocumentItemWithBalance;
+
+  beforeEach(() => {
+    objtbt = new DocumentItemWithBalance();
+  }); 
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "accountID": 12,
+      "tranType_Exp": true,
+      "tranCurr": "CNY",
+      "tranAmount_Org": 200,
+      "tranAmount_LC": 200,
+      "balance": 300,
+      "tranTypeName": "test",
+      "controlCenterName": "test1",
+      "orderName": "",
+      "tranDate": "2022-07-01",
+      "docDesp": "test",
+      "docID": 12,
+      "itemID": 3,
+      "tranType": 12,
+      "desp": "test"
+    });
+    expect(objtbt.TranDate).toBeTruthy();
+    expect(objtbt.TranDateFormatString).toEqual("2022-07-01");
+  });
+});
+
+describe('ReportTrendExData', () => {
+  let objtbt: ReportTrendExData;
+
+  beforeEach(() => {
+    objtbt = new ReportTrendExData();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "tranDate": "2022-07-01",
+      "tranWeek": 34,
+      "tranMonth": 7,
+      "tranYear": 2022,
+      "expense": true,
+      "tranAmount": 200
+    });
+    expect(objtbt.tranAmount).toEqual(200);
+  });
+});
+
+describe('MonthOnMonthReport', () => {
+  let objtbt: MonthOnMonthReport;
+
+  beforeEach(() => {
+    objtbt = new MonthOnMonthReport();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "year": 2022,
+      "month": 8,
+      "expense": true,
+      "tranAmount": 330
+    });
+    expect(objtbt.tranAmount).toEqual(330);
+  });
+});
+
+describe('TranTypeReport', () => {
+  let objtbt: TranTypeReport;
+
+  beforeEach(() => {
+    objtbt = new TranTypeReport();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      "tranType": 24,
+      "name": "Test",
+      "expenseFlag": true,
+      "tranDate": "2022-07-09",
+      "tranAmount": 330
+    });
+    expect(objtbt.TranAmount).toEqual(330);
+    expect(objtbt.ExpenseFlag).toBeTrue();
+    expect(objtbt.TranTypeName).toEqual("Test");
+    expect(objtbt.TranType).toEqual(24);
+  });
+});
+
+describe('FinanceReportByAccount', () => {
+  let objtbt: FinanceReportByAccount;
+  
+  beforeEach(() => {
+    objtbt = new FinanceReportByAccount();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      'AccountId': 24,
+      "DebiteBalance": 200,
+      "CreditBalance": 100,
+      "Balance": 100
+    });
+    expect(objtbt.Balance).toEqual(100);
+  });
+});
+
+describe('BalanceSheetReport', () => {
+  let objtbt: BalanceSheetReport;
+  
+  beforeEach(() => {
+    objtbt = new BalanceSheetReport();
+  });
+
+  it('onSetData', () => {
+    objtbt.onSetData({
+      'accountID': 24,
+      "DebiteBalance": 200,
+      "CreditBalance": 100,
+      "Balance": 100,
+      "accountName": 'test',
+      "accountCategoryID": 1,
+      "accountCategoryName": "Cash"
+    });
+    expect(objtbt.AccountId).toEqual(24);
+    expect(objtbt.AccountName).toEqual("test");
+    expect(objtbt.AccountCategoryId).toEqual(1);
+    expect(objtbt.AccountCategoryName).toEqual("Cash");
+  });
+});

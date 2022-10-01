@@ -41,17 +41,17 @@ export class PersonRole extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
-      return false;
-    }
-    if (this._cmt && this._cmt.length > 100) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+        vrst = false;
+      }
+      if (this._cmt && this._cmt.length > 100) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -118,17 +118,17 @@ export class OrganizationType extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
-      return false;
-    }
-    if (this._cmt && this._cmt.length > 100) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+        vrst = false;
+      }
+      if (this._cmt && this._cmt.length > 100) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -383,7 +383,7 @@ export enum LocationTypeEnum {
  */
 export class Location extends hih.BaseModel {
   private _id: number = 0;
-  private _hid: number | null;
+  private _hid: number | null = null;
   private _name: string = '';
   private _loctype: LocationTypeEnum = LocationTypeEnum.PaperBook;
   private _cmt: string = '';
@@ -401,16 +401,14 @@ export class Location extends hih.BaseModel {
 
   constructor() {
     super();
-
-    this._id = 0;
-    this._hid = null;
-    this._name = '';
-    this._loctype = LocationTypeEnum.PaperBook;
-    this._cmt = '';
   }
 
   public override onInit() {
     super.onInit();
+    this.initCore();
+  }
+
+  private initCore(): void {
     this._id = 0;
     this._hid = null;
     this._name = '';
@@ -419,12 +417,17 @@ export class Location extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    this.VerifiedMsgs = [];
-    if (!super.onVerify(context)) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (!this._hid) {
+        vrst = false;
+      }
+      if (!this._name) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -494,18 +497,17 @@ export class BookCategory extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    this.VerifiedMsgs = [];
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
-      return false;
-    }
-    if (this._comment && (this._comment.length <= 0 || this._comment.length > 100)) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+        vrst = false;
+      }
+      if (this._comment && (this._comment.length <= 0 || this._comment.length > 100)) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -551,13 +553,13 @@ export class BookCategory extends hih.BaseModel {
  */
 export class Book extends hih.MultipleNamesObject {
   private _id: number = 0;
-  private _hid: number | null;
-  private _isbn: string | null;
-  private _publishedYear: number | null;
-  private _detail: string | null;
-  private _orgLangID: number | null;
-  private _bookLangID: number | null;
-  private _pageCount: number | null;
+  private _hid: number | null = null;
+  private _isbn: string | null = null;
+  private _publishedYear: number | null = null;
+  private _detail: string | null = null;
+  private _orgLangID: number | null = null;
+  private _bookLangID: number | null = null;
+  private _pageCount: number | null = null;
 
   public Authors: Person[] = [];
   public Translators: Person[] = [];
@@ -584,18 +586,12 @@ export class Book extends hih.MultipleNamesObject {
 
   constructor() {
     super();
-
-    this._id = 0;
-    this._hid = null;
-    this._isbn = null;
-    this._publishedYear = null;
-    this._detail = null;
-    this._orgLangID = null;
-    this._bookLangID = null;
-    this._pageCount = null;
   }
   public override onInit() {
     super.onInit();
+    this.initCore();
+  }
+  private initCore(): void {
     this._id = 0;
     this._hid = null;
     this._isbn = null;
@@ -612,6 +608,11 @@ export class Book extends hih.MultipleNamesObject {
   }
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
+    if (vrst) {
+      if (!this._hid) {
+        vrst = false;
+      }
+    }
     return vrst;
   }
   public override writeJSONObject(): any {
@@ -815,6 +816,8 @@ export class BookBorrowRecord extends hih.BaseModel {
     return '';
   }
   private initCore(): void {
+    this._id = 0;
+    this._hid = undefined;
     this._from_org = null;
     this._user = '';
     this._from_date = null;
@@ -825,6 +828,38 @@ export class BookBorrowRecord extends hih.BaseModel {
     super.onInit();
 
     this.initCore();
+  }
+
+  public override onVerify(context?: any): boolean {
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (!this._hid) {
+        vrst = false;
+        let msg = new hih.InfoMessage(hih.MessageType.Error, 'HomeID is must', 'HomeID is must');        
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (!this._bookid) {
+        vrst = false;
+        let msg = new hih.InfoMessage(hih.MessageType.Error, 'BookID is must', 'BookID is must');        
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (!this._user) {
+        vrst = false;
+        let msg = new hih.InfoMessage(hih.MessageType.Error, 'User is must', 'User is must');        
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (this._from_date !== null && this._to_date !== null) {
+        if (this._from_date.isAfter(this._to_date)) {
+          vrst = false;
+          let msg = new hih.InfoMessage(hih.MessageType.Error, 'ToDate is must', 'ToDate is must');        
+          this.VerifiedMsgs.push(msg);
+        }
+      }
+    }
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -890,7 +925,6 @@ export class BookBorrowRecord extends hih.BaseModel {
     }
   }
 }
-
 
 export interface MovieGenreJson {
   id: number;

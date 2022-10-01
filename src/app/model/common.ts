@@ -496,9 +496,9 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  private _nativeName: string;
-  private _chineseName: string;
-  private _chineseIsNative: boolean;
+  private _nativeName: string = '';
+  private _chineseName: string = '';
+  private _chineseIsNative: boolean = false;
 
   get NativeName(): string    {  return this._nativeName;  }
   set NativeName(nn: string)  {  this._nativeName = nn;    }
@@ -509,9 +509,6 @@ export class MultipleNamesObject extends BaseModel {
 
   constructor() {
     super();
-    this._nativeName = '';
-    this._chineseName = '';
-    this._chineseIsNative = false;
   }
 
   public override onInit(): void {
@@ -524,8 +521,10 @@ export class MultipleNamesObject extends BaseModel {
   public override onVerify(context?: any): boolean {
     let rst = super.onVerify(context);
 
-    if (this.NativeName.length <= 0 && this.ChineseName.length <= 0) {
-      rst = false;
+    if (rst) {
+      if (this.NativeName.length <= 0 && this.ChineseName.length <= 0) {
+        rst = false;
+      }  
     }
 
     return rst;

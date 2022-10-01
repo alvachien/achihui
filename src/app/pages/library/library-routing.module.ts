@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { SearchComponent } from './search';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/book' },
@@ -9,6 +10,7 @@ const routes: Routes = [
   { path: 'location', loadChildren: () => import('./location/location.module').then(m => m.LocationModule)},
   { path: 'book', loadChildren: () => import('./book/book.module').then(m => m.BookModule)},
   { path: 'borrowrecord', loadChildren: () => import('./borrow-record/borrow-record.module').then(m => m.BorrowRecordModule) },
+  { path: 'search', component: SearchComponent }
 ];
 
 @NgModule({

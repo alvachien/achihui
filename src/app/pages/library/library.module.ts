@@ -5,11 +5,13 @@ import { LibraryRoutingModule } from './library-routing.module';
 import { LibraryUIModule } from './library-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
 import { LibraryComponent } from './library.component';
+import { SearchComponent } from './search/search.component';
 
 
 @NgModule({
   declarations: [
-    LibraryComponent
+    LibraryComponent,
+    SearchComponent
   ],
   imports: [
     CommonModule,

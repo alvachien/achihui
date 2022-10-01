@@ -132,23 +132,20 @@ export class Currency extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._curr === null
-      || this._curr.length <= 0) {
-      return false;
-    }
-    if (this._name === null
-      || this._name.length <= 0) {
-      return false;
-    }
-    if (this._symbol === null
-      || this._symbol.length <= 0) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._curr === null || this._curr.length <= 0) {
+        vrst = false;
+      }
+      if (this._name === null || this._name.length <= 0) {
+        vrst = false;
+      }
+      if (this._symbol === null || this._symbol.length <= 0) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): CurrencyJson {
@@ -220,15 +217,14 @@ export class AccountCategory extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null
-      || this._name.length <= 0) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length <= 0) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): AccountCategoryJson {
@@ -301,15 +297,14 @@ export class DocumentType extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null
-      || this._name.length <= 0) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length <= 0) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): DocumentTypeJson {
@@ -355,33 +350,14 @@ export class AssetCategory extends hih.BaseModel {
   private _name: string | null = null;
   private _desp: string | null = null;
 
-  get ID(): number | null {
-    return this._id;
-  }
-  set ID(id: number | null) {
-    this._id = id;
-  }
-
-  get HID(): number | null {
-    return this._hid;
-  }
-  set HID(hid: number | null) {
-    this._hid = hid;
-  }
-
-  get Name(): string | null {
-    return this._name;
-  }
-  set Name(nm: string | null) {
-    this._name = nm;
-  }
-
-  get Desp(): string | null {
-    return this._desp;
-  }
-  set Desp(cmt: string | null) {
-    this._desp = cmt;
-  }
+  get ID(): number | null     { return this._id;      }
+  set ID(id: number | null)   { this._id = id;        }
+  get HID(): number | null    { return this._hid;     }
+  set HID(hid: number | null) { this._hid = hid;      }
+  get Name(): string | null   { return this._name;    }
+  set Name(nm: string | null) { this._name = nm;      }
+  get Desp(): string | null   { return this._desp;    }
+  set Desp(cmt: string | null) {  this._desp = cmt;   }
 
   constructor() {
     super();
@@ -396,15 +372,14 @@ export class AssetCategory extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-    if (this._name === null
-      || this._name.length < 0) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (this._name === null || this._name.length < 0) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): AssetCategoryJson {
@@ -529,67 +504,53 @@ export class Account extends hih.BaseModel {
   }
 
   public override onVerify(context?: IAccountVerifyContext): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
+    let brst = super.onVerify(context);
 
-    let brst = true;
-
-    // HID
-    if (!this.HID) {
-      this._addMessage(hih.MessageType.Error,
-        'Common.HIDIsMust',
-        'Common.HIDIsMust');
-      brst = false;
-    }
-
-    // Name
-    if (this.Name) {
-      this.Name = this.Name.trim();
-    }
-    if (!this.Name) {
-      this._addMessage(hih.MessageType.Error,
-        'Common.NameIsMust',
-        'Common.NameIsMust');
-      brst = false;
-    }
-
-    // Category
-    if (this.CategoryId) {
-      if (context && context.Categories instanceof Array
-        && context.Categories.length > 0) {
-        let bCategory = false;
-        for (const ctgy of context.Categories) {
-          if (+ctgy.ID! === +this.CategoryId) {
-            bCategory = true;
-            break;
+    if (brst) {
+      if (!this.HID) {
+        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+        brst = false;
+      }
+  
+      // Name
+      if (this.Name) {
+        this.Name = this.Name.trim();
+      }
+      if (!this.Name) {
+        this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
+        brst = false;
+      }
+  
+      // Category
+      if (this.CategoryId) {
+        if (context && context.Categories instanceof Array && context.Categories.length > 0) {
+          let bCategory = false;
+          for (const ctgy of context.Categories) {
+            if (+ctgy.ID! === +this.CategoryId) {
+              bCategory = true;
+              break;
+            }
           }
-        }
-
-        if (!bCategory) {
-          this._addMessage(hih.MessageType.Error,
-            'Common.InvalidCategory',
-            'Common.InputtedCategoryIsInvalid');
+  
+          if (!bCategory) {
+            this._addMessage(hih.MessageType.Error, 'Common.InvalidCategory', 'Common.InputtedCategoryIsInvalid');
+            brst = false;
+          }
+        } else {
+          this._addMessage(hih.MessageType.Error, 'Common.CategoryFetchFailedOrNoOne', 'Common.CategoryFetchFailedOrNoOne');
           brst = false;
         }
       } else {
-        this._addMessage(hih.MessageType.Error,
-          'Common.CategoryFetchFailedOrNoOne',
-          'Common.CategoryFetchFailedOrNoOne');
+        this._addMessage(hih.MessageType.Error, 'Common.CategoryIsMust', 'Common.CategoryIsMust');
         brst = false;
       }
-    } else {
-      this._addMessage(hih.MessageType.Error,
-        'Common.CategoryIsMust',
-        'Common.CategoryIsMust');
-      brst = false;
+  
+      // Status
+      // TBD.
+  
+      // Extra
+      // TBD.  
     }
-
-    // Status
-    // TBD.
-
-    // Extra
-    // TBD.
 
     return brst;
   }
@@ -719,30 +680,14 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public DeferredDays: number | null = null;
   public dpTmpDocs: TemplateDocADP[] = [];
 
-  get StartDate(): moment.Moment {
-    return this._startDate;
-  }
-  set StartDate(sd: moment.Moment) {
-    this._startDate = sd;
-  }
-  get EndDate(): moment.Moment {
-    return this._endDate;
-  }
-  set EndDate(ed: moment.Moment) {
-    this._endDate = ed;
-  }
-  get RefDocId(): number | null {
-    return this._refDocId;
-  }
-  set RefDocId(rdocid: number | null) {
-    this._refDocId = rdocid;
-  }
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
+  get StartDate(): moment.Moment      { return this._startDate;           }
+  set StartDate(sd: moment.Moment)    { this._startDate = sd;             }
+  get EndDate(): moment.Moment        { return this._endDate;             }
+  set EndDate(ed: moment.Moment)      { this._endDate = ed;               }
+  get RefDocId(): number | null       { return this._refDocId;            }
+  set RefDocId(rdocid: number | null) { this._refDocId = rdocid;          }
+  get Comment(): string               { return this._comment;             }
+  set Comment(cmt: string)            { this._comment = cmt;              }
 
   constructor() {
     super();
@@ -780,14 +725,14 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     return true;
   }
   get isValid(): boolean {
-    if (!this.isAccountValid) {
-      return false;
-    }
-    if (this.dpTmpDocs.length <= 0) {
-      return false;
+    let vrst = this.isAccountValid;
+    if (vrst) {
+      if (this.dpTmpDocs.length <= 0) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public clone(): AccountExtraAdvancePayment {
@@ -887,18 +832,10 @@ export class AccountExtraAsset extends AccountExtra {
   public RefDocForBuy: number | null = null;
   public RefDocForSold: number | null = null;
 
-  get Name(): string {
-    return this._name;
-  }
-  set Name(name: string) {
-    this._name = name;
-  }
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
+  get Name(): string        { return this._name;      }
+  set Name(name: string)    { this._name = name;      }
+  get Comment(): string     { return this._comment;   }
+  set Comment(cmt: string)  { this._comment = cmt;    }
   constructor() {
     super();
   }  
@@ -1106,15 +1043,14 @@ export class AccountExtraLoan extends AccountExtra {
   }
 
   get isValid(): boolean {
-    if (!this.isAccountValid) {
-      return false;
+    let vrst = this.isAccountValid;
+    if (vrst) {
+      if (this.loanTmpDocs.length <= 0) {
+        vrst = false;
+      }
     }
 
-    if (this.loanTmpDocs.length <= 0) {
-      return false;
-    }
-
-    return true;
+    return vrst;
   }
 
   constructor() {
@@ -1292,44 +1228,41 @@ export class ControlCenter extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-
-    let bRst = true;
-
-    // HID
-    if (!this.HID) {
-      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
-      bRst = false;
-    }
-
-    if (this.Name && this.Name.length > 0) {
-      this.Name = this.Name.trim();
-    }
-    if (this.Name && this.Name.length > 0) {
-      // Empty
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidName', 'Common.NameIsMust');
-      bRst = false;
-    }
-    // Parent
-    if (this.ParentId) {
-      if (context && context.ControlCenters instanceof Array
-        && context.ControlCenters.length > 0) {
-        const pidx: number = context.ControlCenters.findIndex((val: ControlCenter) => {
-          return val.Id === this.ParentId;
-        });
-        if (pidx === -1) {
-          this._addMessage(hih.MessageType.Error, 'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
-          bRst = false;
-        }
-      } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
+    let bRst = super.onVerify(context);
+    if (bRst) {
+      // HID
+      if (!this.HID) {
+        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
         bRst = false;
       }
+
+      if (this.Name && this.Name.length > 0) {
+        this.Name = this.Name.trim();
+      }
+      if (this.Name && this.Name.length > 0) {
+        // Empty
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidName', 'Common.NameIsMust');
+        bRst = false;
+      }
+      // Parent
+      if (this.ParentId) {
+        if (context && context.ControlCenters instanceof Array
+          && context.ControlCenters.length > 0) {
+          const pidx: number = context.ControlCenters.findIndex((val: ControlCenter) => {
+            return val.Id === this.ParentId;
+          });
+          if (pidx === -1) {
+            this._addMessage(hih.MessageType.Error, 'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+            bRst = false;
+          }
+        } else {
+          this._addMessage(hih.MessageType.Error, 'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
+          bRst = false;
+        }
+      }
+      // Owner
     }
-    // Owner
 
     return bRst;
   }
@@ -1441,95 +1374,92 @@ export class Order extends hih.BaseModel {
   }
 
   public override onVerify(context?: IOrderVerifyContext): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
-
-    let chkrst = true;
-
-    // HID
-    if (!this.HID) {
-      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
-      chkrst = false;
-    }
-    // Name
-    if (this.Name && this.Name.length > 0) {
-      this.Name = this.Name.trim();
-    }
-    if (this.Name && this.Name.length > 0) {
-      // Allowed
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
-      chkrst = false;
-    }
-    // Valid from
-    if (this.ValidFrom) {
-      // Allowed
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidFrom', 'Common.ValidFromIsMust');
-      chkrst = false;
-    }
-    // Valid to
-    if (this.ValidTo) {
-      // Allowed
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidTo', 'Common.ValidToIsMust');
-      chkrst = false;
-    }
-    // Valid to > valid from
-    if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
-      // Allowed
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
-      chkrst = false;
-    }
-
-    // S. Rules
-    if (this.SRules.length > 0) {
-      // Check for duplicated IDs
-      let idMap: Map<number, any> = new Map();
-      this.SRules.forEach((val: SettlementRule) => {
-        if (val.RuleId && !idMap.has(val.RuleId)) {
-          idMap.set(val.RuleId, undefined);
-        }
-      });
-      if (idMap.size !== this.SRules.length) {
-        this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+    let chkrst = super.onVerify(context);
+    if (chkrst) {
+      // HID
+      if (!this.HID) {
+        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+        chkrst = false;
+      }
+      // Name
+      if (this.Name && this.Name.length > 0) {
+        this.Name = this.Name.trim();
+      }
+      if (this.Name && this.Name.length > 0) {
+        // Allowed
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
+        chkrst = false;
+      }
+      // Valid from
+      if (this.ValidFrom) {
+        // Allowed
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidFrom', 'Common.ValidFromIsMust');
+        chkrst = false;
+      }
+      // Valid to
+      if (this.ValidTo) {
+        // Allowed
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidTo', 'Common.ValidToIsMust');
+        chkrst = false;
+      }
+      // Valid to > valid from
+      if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
+        // Allowed
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
         chkrst = false;
       }
 
-      // Check for duplicated CC IDs
-      idMap = new Map();
-      this.SRules.forEach((val: SettlementRule) => {
-        if (val.ControlCenterId && !idMap.has(val.ControlCenterId)) {
-          idMap.set(val.ControlCenterId, undefined);
+      // S. Rules
+      if (this.SRules.length > 0) {
+        // Check for duplicated IDs
+        let idMap: Map<number, any> = new Map();
+        this.SRules.forEach((val: SettlementRule) => {
+          if (val.RuleId && !idMap.has(val.RuleId)) {
+            idMap.set(val.RuleId, undefined);
+          }
+        });
+        if (idMap.size !== this.SRules.length) {
+          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+          chkrst = false;
         }
-      });
-      if (idMap.size !== this.SRules.length) {
-        this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
-        chkrst = false;
-      }
 
-      let ntotal = 0;
-      for (const srobj of this.SRules) {
-        ntotal += +srobj.Precent;
+        // Check for duplicated CC IDs
+        idMap = new Map();
+        this.SRules.forEach((val: SettlementRule) => {
+          if (val.ControlCenterId && !idMap.has(val.ControlCenterId)) {
+            idMap.set(val.ControlCenterId, undefined);
+          }
+        });
+        if (idMap.size !== this.SRules.length) {
+          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+          chkrst = false;
+        }
 
-        srobj.onVerify(context);
-        for (const msg2 of srobj.VerifiedMsgs) {
-          this.VerifiedMsgs.push(msg2);
-          if (msg2.MsgType === hih.MessageType.Error) {
-            chkrst = false;
+        let ntotal = 0;
+        for (const srobj of this.SRules) {
+          ntotal += +srobj.Precent;
+
+          srobj.onVerify(context);
+          for (const msg2 of srobj.VerifiedMsgs) {
+            this.VerifiedMsgs.push(msg2);
+            if (msg2.MsgType === hih.MessageType.Error) {
+              chkrst = false;
+            }
           }
         }
-      }
 
-      if (ntotal !== 100) {
-        this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.SettlementRulePrecentSumNotCorrect');
+        if (ntotal !== 100) {
+          this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.SettlementRulePrecentSumNotCorrect');
+          chkrst = false;
+        }
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.NoSettlementRule');
         chkrst = false;
       }
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.NoSettlementRule');
-      chkrst = false;
     }
 
     return chkrst;
@@ -1745,11 +1675,14 @@ export class TranType extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (!this._name) {
+        vrst = false;
+      }
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): TranTypeJson {
@@ -1878,189 +1811,186 @@ export class Document extends hih.BaseModel {
   }
 
   public override onVerify(context?: DocumentVerifyContext): boolean {
-    if (!super.onVerify(context)) {
-      return false;
-    }
+    let chkrst = super.onVerify(context);
+    if (chkrst) {
+      // HID
+      if (!this.HID) {
+        this._addMessage(hih.MessageType.Error, 'Finance.HIDIsMust', 'Finance.HIDIsMust');
+        chkrst = false;
+      }
+      // Doc type
+      if (context && context.DocumentTypes
+        && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
+        if (this.DocType !== undefined) {
+          const dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
+            return dt.Id === this.DocType;
+          });
 
-    let chkrst = true;
-
-    // HID
-    if (!this.HID) {
-      this._addMessage(hih.MessageType.Error, 'Finance.HIDIsMust', 'Finance.HIDIsMust');
-      chkrst = false;
-    }
-    // Doc type
-    if (context && context.DocumentTypes
-      && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
-      if (this.DocType !== undefined) {
-        const dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
-          return dt.Id === this.DocType;
-        });
-
-        if (dtidx === -1) {
-          this._addMessage(hih.MessageType.Error, 'Finance.InvalidDocumentType', 'Finance.InvalidDocumentType');
+          if (dtidx === -1) {
+            this._addMessage(hih.MessageType.Error, 'Finance.InvalidDocumentType', 'Finance.InvalidDocumentType');
+            chkrst = false;
+          }
+        } else {
+          this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeIsMust', 'Finance.DocumentTypeIsMust');
           chkrst = false;
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeIsMust', 'Finance.DocumentTypeIsMust');
+        this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeFetchFailed', 'Finance.DocumentTypeFetchFailed');
         chkrst = false;
       }
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeFetchFailed', 'Finance.DocumentTypeFetchFailed');
-      chkrst = false;
-    }
-    // Desp
-    if (!this.Desp) {
-      this._addMessage(hih.MessageType.Error, 'Finance.DespIsMust', 'Finance.DespIsMust');
-      chkrst = false;
-    } else {
-      this.Desp = this.Desp.trim();
-      if (this.Desp.length > 44) {
-        this._addMessage(hih.MessageType.Error, 'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
+      // Desp
+      if (!this.Desp) {
+        this._addMessage(hih.MessageType.Error, 'Finance.DespIsMust', 'Finance.DespIsMust');
         chkrst = false;
-      }
-    }
-
-    // Currency check
-    if (context && context.Currencies
-      && context.Currencies instanceof Array && context.Currencies.length > 0) {
-      if (this.TranCurr) {
-        let bExist = false;
-        for (const cc of context.Currencies) {
-          if (cc.Currency === this.TranCurr) {
-            bExist = true;
-            break;
-          }
-        }
-
-        if (!bExist) {
-          this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
-          chkrst = false;
-        } else {
-          if (this.TranCurr !== context.BaseCurrency) {
-            if (!this.ExgRate) {
-              this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-              chkrst = false;
-            }
-          } else {
-            if (this.ExgRate) {
-              this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
-              chkrst = false;
-            }
-          }
-        }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.CurrencyIsMust', 'Finance.CurrencyIsMust');
-        chkrst = false;
+        this.Desp = this.Desp.trim();
+        if (this.Desp.length > 44) {
+          this._addMessage(hih.MessageType.Error, 'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
+          chkrst = false;
+        }
       }
 
-      if (this.TranCurr2) {
-        let bExist = false;
-        for (const cc of context.Currencies) {
-          if (cc.Currency === this.TranCurr) {
-            bExist = true;
-            break;
-          }
-        }
-
-        if (!bExist) {
-          this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
-          chkrst = false;
-        } else {
-          if (this.TranCurr2 !== context.BaseCurrency) {
-            if (!this.ExgRate2) {
-              this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-              chkrst = false;
+      // Currency check
+      if (context && context.Currencies
+        && context.Currencies instanceof Array && context.Currencies.length > 0) {
+        if (this.TranCurr) {
+          let bExist = false;
+          for (const cc of context.Currencies) {
+            if (cc.Currency === this.TranCurr) {
+              bExist = true;
+              break;
             }
+          }
+
+          if (!bExist) {
+            this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
+            chkrst = false;
           } else {
-            if (this.ExgRate2) {
-              this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
-              chkrst = false;
-            }
-          }
-        }
-      }
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Finance.CurrencyFetchFailed', 'Finance.CurrencyFetchFailed');
-      chkrst = false;
-    }
-
-    // Items
-    let amtTotal = 0;
-    if (this.Items instanceof Array && this.Items.length > 0) {
-      // Check for duplicated IDs
-      if (this.Items.length > 1) {
-        const idMap: Map<number, any> = new Map();
-        this.Items.forEach((val: DocumentItem) => {
-          if (val.ItemId && !idMap.has(val.ItemId)) {
-            idMap.set(val.ItemId, undefined);
-          }
-        });
-        if (idMap.size !== this.Items.length) {
-          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
-          chkrst = false;
-        }
-      }
-
-      for (const fit of this.Items) {
-        // amtTotal += fit.TranAmount;
-        if (!fit.onVerify(context)) {
-          for (const imsg of fit.VerifiedMsgs) {
-            this.VerifiedMsgs.push(imsg);
-          }
-          chkrst = false;
-        } else {
-          // Amount
-          let amtItem = 0;
-          for (const tt of context!.TransactionTypes) {
-            const ftt: TranType = tt as TranType;
-            if (ftt.Id === fit.TranType) {
-              if (ftt.Expense) {
-                amtItem = (-1) * fit.TranAmount;
-              } else {
-                amtItem = fit.TranAmount;
+            if (this.TranCurr !== context.BaseCurrency) {
+              if (!this.ExgRate) {
+                this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                chkrst = false;
+              }
+            } else {
+              if (this.ExgRate) {
+                this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                chkrst = false;
               }
             }
           }
+        } else {
+          this._addMessage(hih.MessageType.Error, 'Finance.CurrencyIsMust', 'Finance.CurrencyIsMust');
+          chkrst = false;
+        }
 
-          if (fit.UseCurr2) {
-            if (this.ExgRate2) {
-              amtTotal += Number.parseFloat((amtItem * this.ExgRate2 / 100).toFixed(3));
-            } else {
-              amtTotal += amtItem;
+        if (this.TranCurr2) {
+          let bExist = false;
+          for (const cc of context.Currencies) {
+            if (cc.Currency === this.TranCurr) {
+              bExist = true;
+              break;
             }
-            amtTotal = Number.parseFloat(amtTotal.toFixed(3));
-          } else {
-            if (this.ExgRate) {
-              amtTotal += Number.parseFloat((amtItem * this.ExgRate / 100).toFixed(3));
-            } else {
-              amtTotal += amtItem;
-            }
-            amtTotal = Number.parseFloat(amtTotal.toFixed(3));
           }
 
-          // Order valid check
-          if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
-            const vordidx: number = context.Orders.findIndex((ord: Order) => {
-              return (+fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
-            });
-
-            if (vordidx === -1) {
-              this._addMessage(hih.MessageType.Error, 'Finance.InvalidActivity', 'Finance.InvalidActivity');
-              chkrst = false;
+          if (!bExist) {
+            this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
+            chkrst = false;
+          } else {
+            if (this.TranCurr2 !== context.BaseCurrency) {
+              if (!this.ExgRate2) {
+                this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                chkrst = false;
+              }
+            } else {
+              if (this.ExgRate2) {
+                this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                chkrst = false;
+              }
             }
           }
         }
-      }
-    } else {
-      this._addMessage(hih.MessageType.Error, 'Finance.NoDocumentItem', 'Finance.NoDocumentItem');
-      chkrst = false;
-    }
-
-    if (this.DocType === financeDocTypeTransfer || this.DocType === financeDocTypeCurrencyExchange) {
-      if (Math.abs(amtTotal) >= 0.01) {
-        this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Finance.CurrencyFetchFailed', 'Finance.CurrencyFetchFailed');
         chkrst = false;
+      }
+
+      // Items
+      let amtTotal = 0;
+      if (this.Items instanceof Array && this.Items.length > 0) {
+        // Check for duplicated IDs
+        if (this.Items.length > 1) {
+          const idMap: Map<number, any> = new Map();
+          this.Items.forEach((val: DocumentItem) => {
+            if (val.ItemId && !idMap.has(val.ItemId)) {
+              idMap.set(val.ItemId, undefined);
+            }
+          });
+          if (idMap.size !== this.Items.length) {
+            this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+            chkrst = false;
+          }
+        }
+
+        for (const fit of this.Items) {
+          // amtTotal += fit.TranAmount;
+          if (!fit.onVerify(context)) {
+            for (const imsg of fit.VerifiedMsgs) {
+              this.VerifiedMsgs.push(imsg);
+            }
+            chkrst = false;
+          } else {
+            // Amount
+            let amtItem = 0;
+            for (const tt of context!.TransactionTypes) {
+              const ftt: TranType = tt as TranType;
+              if (ftt.Id === fit.TranType) {
+                if (ftt.Expense) {
+                  amtItem = (-1) * fit.TranAmount;
+                } else {
+                  amtItem = fit.TranAmount;
+                }
+              }
+            }
+
+            if (fit.UseCurr2) {
+              if (this.ExgRate2) {
+                amtTotal += Number.parseFloat((amtItem * this.ExgRate2 / 100).toFixed(3));
+              } else {
+                amtTotal += amtItem;
+              }
+              amtTotal = Number.parseFloat(amtTotal.toFixed(3));
+            } else {
+              if (this.ExgRate) {
+                amtTotal += Number.parseFloat((amtItem * this.ExgRate / 100).toFixed(3));
+              } else {
+                amtTotal += amtItem;
+              }
+              amtTotal = Number.parseFloat(amtTotal.toFixed(3));
+            }
+
+            // Order valid check
+            if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
+              const vordidx: number = context.Orders.findIndex((ord: Order) => {
+                return (+fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
+              });
+
+              if (vordidx === -1) {
+                this._addMessage(hih.MessageType.Error, 'Finance.InvalidActivity', 'Finance.InvalidActivity');
+                chkrst = false;
+              }
+            }
+          }
+        }
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Finance.NoDocumentItem', 'Finance.NoDocumentItem');
+        chkrst = false;
+      }
+
+      if (this.DocType === financeDocTypeTransfer || this.DocType === financeDocTypeCurrencyExchange) {
+        if (Math.abs(amtTotal) >= 0.01) {
+          this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
+          chkrst = false;
+        }
       }
     }
 
@@ -2469,11 +2399,11 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
+    let vrst = super.onVerify(context);
+    if (vrst) {
     }
 
-    return true;
+    return vrst;
   }
 
   public override writeJSONObject(): any {
@@ -2644,22 +2574,20 @@ export class Plan extends hih.BaseModel {
     this._targetDate = moment().add(1, 'y').startOf('day');
   }
   public override onVerify(context?: any): boolean {
-    if (!super.onVerify(context)) {
-      return false;
+    let bsuccess = super.onVerify(context);
+    if (bsuccess) {
+      // Check dates
+      const today: moment.Moment = moment();
+      if (today.isAfter(this.TargetDate)) {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+        bsuccess = false;
+      }
+      if (this.StartDate && this.StartDate.isSameOrAfter(this.TargetDate)) {
+        this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+        bsuccess = false;
+      }
+      // Check account! - TBD
     }
-
-    let bsuccess = true;
-    // Check dates
-    const today: moment.Moment = moment();
-    if (today.isAfter(this.TargetDate)) {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
-      bsuccess = false;
-    }
-    if (this.StartDate && this.StartDate.isSameOrAfter(this.TargetDate)) {
-      this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
-      bsuccess = false;
-    }
-    // Check account! - TBD
 
     return bsuccess;
   }

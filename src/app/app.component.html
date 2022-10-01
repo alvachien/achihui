@@ -48,7 +48,7 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="'Nav.LibraryTrace' | transloco" nzIcon="book">
+      <li nz-submenu [nzTitle]="'Nav.LibraryTrace' | transloco" nzIcon="read">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'config']">{{'Finance.ConfigObjects' | transloco}}</a>
@@ -67,6 +67,13 @@
           </li>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'borrowrecord']">{{'Library.BorrowRecords' | transloco}}</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu [nzTitle]="'Nav.EventTrace' | transloco" nzIcon="schedule">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'overview']">{{'Common.Overview' | transloco}}</a>
           </li>
         </ul>
       </li>
