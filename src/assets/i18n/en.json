@@ -305,8 +305,10 @@
       "Accounting": "Accounting",
       "Finance": "Finance",
       "DetectiveStory": "Detective Story",
-      "KungfuNovels": "Kung fu novels",
-      "FantasyNovel": "Fantasy novel"
+      "KungfuNovels": "Kung fu novel",
+      "FantasyNovel": "Fantasy novel",
+      "ChineseClassical": "Chinese classical book",
+      "WorldFamousBook": "World-famous book"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",

@@ -296,17 +296,19 @@
       "Transportation": "交通运输类",
       "GayLesbian": "同性恋",
       "Health": "健康、健身类",
-      "Romance": "浪漫、言情",
+      "Romance": "浪漫、言情类",
       "SciFiction": "科幻",
       "Fiction": "小说",
       "Thriller": "悬疑",
       "OutdoorSport": "户外运动",
       "Reference": "参考书",
       "Accounting": "会计类",
-      "Finance": "金融财务类",
+      "Finance": "财务经管类",
       "DetectiveStory": "侦探推理类",
       "KungfuNovels": "武侠小说类",
-      "FantasyNovel": "玄幻小说"
+      "FantasyNovel": "玄幻小说",
+      "ChineseClassical": "中国经典名著",
+      "WorldFamousBook": "世界名著"
     },
     "MovGenre": {
       "ActAdv": "动作",
