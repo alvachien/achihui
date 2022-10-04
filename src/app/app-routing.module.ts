@@ -31,7 +31,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'library',
+    path: 'event',
     canActivate: [HomeChoseGuardService],
     loadChildren: () => import('./pages/event/event.module').then(m => m.EventModule)
   },

@@ -75,6 +75,15 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'event', 'overview']">{{'Common.Overview' | transloco}}</a>
           </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'normal-event']">{{'Common.NormalEvents' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'recur-event']">{{'Common.RecurEvents' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'search']">{{'Common.Search' | transloco}}</a>
+          </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="file">

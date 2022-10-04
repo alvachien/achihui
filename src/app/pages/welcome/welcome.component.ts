@@ -102,18 +102,18 @@ export class WelcomeComponent {
     this.router.navigate(['library', 'borrowrecord']);
   }
   onNavigateToLibrarySearch(): void {
-    // DO nothing now.
+    this.router.navigate(['library', 'search']);
   }
   onNavigateToEventOverview(): void {
-    // DO nothing now.
+    this.router.navigate(['event', 'overview']);
   }
   onNavigateToEventList(): void {
-    // DO nothing now.
+    this.router.navigate(['event', 'normal-event']);
   }
   onNavigateToEventRecurList(): void {
-    // DO nothing now.
+    this.router.navigate(['event', 'recur-event']);
   }
   onNavigateToEventSearch(): void {
-    // DO nothing now.
+    this.router.navigate(['event', 'search']);
   }
 }

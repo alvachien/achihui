@@ -22,7 +22,7 @@
                 <td>{{data.ID}}
                     <nz-divider nzType="vertical"></nz-divider>
                     <button nz-button nzType="link" (click)="onDisplay(data.ID)">{{'Common.Display' | transloco}}</button>                    
-                    <button nz-button nzType="link" (click)="onDelete(data.ID)">{{'Common.Delete' | transloco}}</button>
+                    <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.Name | transloco}}</td>
                 <td>{{data.Comment}}</td>

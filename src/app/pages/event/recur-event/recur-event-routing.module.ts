@@ -4,7 +4,7 @@ import { RecurEventDetailComponent } from './recur-event-detail';
 import { RecurEventListComponent } from './recur-event-list';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/list' },
+  { path: '', component: RecurEventListComponent },
   { path: 'list', component: RecurEventListComponent },
   { path: 'create', component: RecurEventDetailComponent },
 ];

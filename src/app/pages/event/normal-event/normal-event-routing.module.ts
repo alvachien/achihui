@@ -4,7 +4,7 @@ import { NormalEventDetailComponent } from './normal-event-detail';
 import { NormalEventListComponent } from './normal-event-list';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/list' },
+  { path: '', component: NormalEventListComponent },
   { path: 'list', component: NormalEventListComponent },
   { path: 'create', component: NormalEventDetailComponent },
   { path: 'display/:id', component: NormalEventDetailComponent }
