@@ -1,5 +1,32 @@
-<nz-result nzStatus="404" nzTitle="404" nzSubTitle="Sorry, the page you visited still under construction.">
-    <div nz-result-extra>
-      <button nz-button nzType="primary">OK</button>
-    </div>
-</nz-result>
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
+  <nz-page-header nzBackIcon>
+      <nz-breadcrumb nz-page-header-breadcrumb>
+          <nz-breadcrumb-item>{{'Nav.EventTrace' | transloco}}</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <nz-page-header-title>{{'Common.RecurEvents' | transloco}}</nz-page-header-title>
+      <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+      <nz-page-header-extra>            
+      </nz-page-header-extra>
+  </nz-page-header>
+  <nz-table #basicTable [nzData]="dataSet" nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzTotal]="totalCount"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)">
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>{{'Common.Name' | transloco}}</th>
+              <th>{{'Common.Date' | transloco}}</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let data of basicTable.data">
+              <td>{{data.ID}}</td>
+              <td>{{data.Name | transloco}}</td>
+              <td>{{data.StartDateDisplayString}} - {{data.EndDateDisplayString}}</td>
+          </tr>
+      </tbody>
+  </nz-table>
+</nz-spin>

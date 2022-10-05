@@ -5,9 +5,10 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
-import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
+import { BaseListModel, Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
 import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'hih-borrow-record-list',
@@ -18,6 +19,9 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: BookBorrowRecord[] = [];
+  pageSize = 30;
+  pageIndex = 1;
+  totalCount = 0;
 
   constructor(public storageService: LibraryStorageService,
     public uiStatusService: UIStatusService,
@@ -47,12 +51,35 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
+    this.loadDataFromServer(this.pageIndex, this.pageSize, null, null, null);
+  }
+
+  ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
+  }
+
+  private loadDataFromServer(
+    pageIndex: number,
+    pageSize: number,
+    sortField: string | null,
+    sortOrder: string | null,
+    filter: Array<{ key: string; value: string[] }> | null
+  ): void {
+    this.isLoadingResults = true;
+
     this.isLoadingResults = true;
     forkJoin([
       this.storageService.fetchAllOrganizationTypes(),
-      this.storageService.fetchBookBorrowRecords(100, 0)
+      this.storageService.fetchBookBorrowRecords(pageSize,
+        pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0,)
     ]).pipe(
-        takeUntil(this._destroyed$),
+        takeUntil(this._destroyed$!),
         finalize(() => this.isLoadingResults = false)
       )
       .subscribe({
@@ -60,7 +87,8 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit fetchBookBorrowRecords...',
             ConsoleLogTypeEnum.debug);
 
-          this.dataSet = x[1];
+          this.totalCount = x[1].totalCount;
+          this.dataSet = x[1].contentList;
         },
         error: (err: any) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BorrowRecordListComponent fetchBookBorrowRecords failed ${err}`, ConsoleLogTypeEnum.error);
@@ -73,14 +101,12 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
+  onQueryParamsChange(params: NzTableQueryParams): void {
+    const { pageSize, pageIndex, sort, filter } = params;
+    const currentSort = sort.find(item => item.value !== null);
+    const sortField = (currentSort && currentSort.key) || null;
+    const sortOrder = (currentSort && currentSort.value) || null;
+    this.loadDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
 
   onCreate(): void {

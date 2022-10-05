@@ -10,7 +10,12 @@
             <!-- <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a> -->
         </nz-page-header-extra>
     </nz-page-header>    
-    <nz-table #basicTable [nzData]="dataSet">
+    <nz-table #basicTable [nzData]="dataSet" nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzTotal]="totalCount"
+        [nzPageSize]="pageSize"
+        [nzPageIndex]="pageIndex"
+        (nzQueryParams)="onQueryParamsChange($event)">
         <thead>
             <tr>
                 <th>ID</th>
@@ -28,7 +33,7 @@
                     <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>{{'Common.Delete' | transloco}}</button>
                 </td>
                 <td>{{data.BookID}}</td>
-                <td>{{getBorrowFromName(data.BorrowFrom)}} (ID: {{data.BorrowFrom}})</td>
+                <td>{{getBorrowFromName(data.BorrowFrom)}} ({{data.BorrowFrom}})</td>
                 <td>{{data.FromDateString}}</td>
                 <td>{{data.ToDateString}}</td>
                 <td>{{data.Comment}}</td>

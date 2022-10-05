@@ -5,9 +5,10 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
-import { Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
+import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-record-create-dlg';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'hih-book-list',
@@ -17,7 +18,10 @@ import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-recor
 export class BookListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
-  dataSet: Book[] = [];
+  pageSize = 30;
+  pageIndex = 1;
+  totalCount = 0;
+  listData: Book[] = [];
 
   constructor(public odataService: LibraryStorageService,
     public uiStatusService: UIStatusService,
@@ -25,39 +29,16 @@ export class BookListComponent implements OnInit, OnDestroy {
     private router: Router,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit...', ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = true;
-    this.odataService.fetchBooks(20, 0)
-      .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false)
-      )
-      .subscribe({
-        next: (x: Book[]) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit fetchBooks...',
-            ConsoleLogTypeEnum.debug);
-
-          this.dataSet = x;
-        },
-        error: (err: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${err}`, ConsoleLogTypeEnum.error);
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err,
-            nzClosable: true,
-          });
-        },
-      });
+    this.loadDataFromServer(this.pageIndex, this.pageSize, null, null, null);
   }
 
   ngOnDestroy() {
@@ -70,6 +51,46 @@ export class BookListComponent implements OnInit, OnDestroy {
     }
   }
 
+  loadDataFromServer(
+    pageIndex: number,
+    pageSize: number,
+    sortField: string | null,
+    sortOrder: string | null,
+    filter: Array<{ key: string; value: string[] }> | null
+  ): void {
+    this.isLoadingResults = true;
+    this.odataService.fetchBooks(
+      pageSize,
+      pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0,
+      ).pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => this.isLoadingResults = false)
+      ).subscribe({
+        next: (x: BaseListModel<Book>) => {
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit fetchBooks...',
+            ConsoleLogTypeEnum.debug);
+
+          this.totalCount = x.totalCount;
+          this.listData = x.contentList;
+        },
+        error: (err: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${err}`, ConsoleLogTypeEnum.error);
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err,
+            nzClosable: true,
+          });
+        },
+      });
+  }
+  onQueryParamsChange(params: NzTableQueryParams): void {
+    const { pageSize, pageIndex, sort, filter } = params;
+    const currentSort = sort.find(item => item.value !== null);
+    const sortField = (currentSort && currentSort.key) || null;
+    const sortOrder = (currentSort && currentSort.value) || null;
+    this.loadDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
+  }
+
   onDisplay(bid: number): void {
     this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
@@ -78,7 +99,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
   onCreateBorrowRecord(bid: number): void {
     let bkobj: Book | null = null;
-    this.dataSet.forEach(ds => {
+    this.listData.forEach(ds => {
       if (ds.ID === bid) {
         bkobj = ds;
       }
@@ -128,10 +149,10 @@ export class BookListComponent implements OnInit, OnDestroy {
               nzTitle: translate('Common.Success')
             });
             sdlg.afterClose.subscribe(() => {
-              let dix = this.dataSet.findIndex(p => p.ID === bid);
+              let dix = this.listData.findIndex(p => p.ID === bid);
               if (dix !== -1) {
-                this.dataSet.splice(dix, 1);
-                this.dataSet = [...this.dataSet];
+                this.listData.splice(dix, 1);
+                this.listData = [...this.listData];
               }  
             });
             setTimeout(() => sdlg.destroy(), 1000);

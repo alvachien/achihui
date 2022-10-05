@@ -92,9 +92,8 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock data
       req.flush({ '@odata.count': arRoles.length, value: arRoles});
@@ -113,9 +112,8 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush({}); // Respond with no data
     });
@@ -132,7 +130,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
        });
 
       // respond with a 404 and the error message in the body
@@ -151,16 +149,16 @@ describe('LibraryStorageService', () => {
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush({ '@odata.count': arRoles.length, value: arRoles });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllPersonRoles().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
       });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -175,7 +173,7 @@ describe('LibraryStorageService', () => {
       });
 
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
        });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -218,9 +216,8 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock data
       req.flush({ '@odata.count': arData.length, value: arData});
@@ -239,9 +236,8 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush({}); // Respond with no data
     });
@@ -258,7 +254,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
        });
 
       // respond with a 404 and the error message in the body
@@ -277,16 +273,16 @@ describe('LibraryStorageService', () => {
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush({ '@odata.count': arData.length, value: arData });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllOrganizationTypes().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
        });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -301,7 +297,7 @@ describe('LibraryStorageService', () => {
       });
 
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
        });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -344,9 +340,8 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET bookCategories from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock bookCategories
       req.flush({'@odata.count': arBookCtgy.length, value: arBookCtgy });
@@ -365,10 +360,10 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-      req.flush({}); // Respond with no data
+
+       req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -383,7 +378,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
        });
 
       // respond with a 404 and the error message in the body
@@ -402,7 +397,7 @@ describe('LibraryStorageService', () => {
         }
       });
       const reqs: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
        });
       expect(reqs.length).withContext('shall be only 1 calls to real API!').toEqual(1);
       reqs[0].flush({'@odata.count': arBookCtgy.length, value: arBookCtgy });
@@ -411,7 +406,7 @@ describe('LibraryStorageService', () => {
       // Second call
       service.fetchAllBookCategories().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
       });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -425,7 +420,7 @@ describe('LibraryStorageService', () => {
         }
       });
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
        });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -470,9 +465,8 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock data
       req.flush({ '@odata.count': arData.length, value: arData});
@@ -491,9 +485,8 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
        });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush({}); // Respond with no data
     });
@@ -510,7 +503,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
        });
 
       // respond with a 404 and the error message in the body
@@ -529,16 +522,16 @@ describe('LibraryStorageService', () => {
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush({ '@odata.count': arData.length, value: arData });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllPersons().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
       });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -553,7 +546,7 @@ describe('LibraryStorageService', () => {
       });
 
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.personAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
        });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -762,9 +755,8 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock data
       req.flush({ '@odata.count': arData.length, value: arData});
@@ -783,9 +775,8 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
         });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush({}); // Respond with no data
     });
@@ -802,7 +793,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
         });
 
       // respond with a 404 and the error message in the body
@@ -821,16 +812,16 @@ describe('LibraryStorageService', () => {
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush({ '@odata.count': arData.length, value: arData });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllOrganizations().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
       });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -845,7 +836,7 @@ describe('LibraryStorageService', () => {
       });
 
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
         });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -1039,7 +1030,7 @@ describe('LibraryStorageService', () => {
       httpTestingController.verify();
     });
 
-    it('should return expected fetchAllLocations (called once)', () => {
+    it('should return expected location (called once)', () => {
       expect(service.Locations.length).withContext('by default is empty').toEqual(0);
 
       service.fetchAllLocations().subscribe({
@@ -1054,15 +1045,14 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock data
       req.flush({ '@odata.count': arData.length, value: arData});
     });
 
-    it('should be OK returning no peron roles', () => {
+    it('should be OK returning no locations', () => {
       expect(service.Locations.length).withContext('should not buffered yet').toEqual(0);
       service.fetchAllLocations().subscribe({
         next: data => {
@@ -1075,9 +1065,8 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
         });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush({}); // Respond with no data
     });
@@ -1094,14 +1083,14 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
         });
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
 
-    it('should return expected perons (called multiple times)', () => {
+    it('should return expected locations (called multiple times)', () => {
       expect(service.Locations.length).withContext('should not buffered yet').toEqual(0);
       service.fetchAllLocations().subscribe({
         next: data => {
@@ -1113,16 +1102,16 @@ describe('LibraryStorageService', () => {
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
       });
-      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush({ '@odata.count': arData.length, value: arData });
       httpTestingController.verify();
 
       // Second call
       service.fetchAllLocations().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
       });
       expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
 
@@ -1137,7 +1126,7 @@ describe('LibraryStorageService', () => {
       });
 
       const reqs3: any = httpTestingController.match((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.locationAPIURL && requrl.params.has('hid');
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
         });
       expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
     });
@@ -1227,7 +1216,7 @@ describe('LibraryStorageService', () => {
     it('should return expected data', () => {
       service.fetchBooks(100, 0).subscribe({
         next: data => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
+          expect(data.contentList.length).withContext('should return expected data').toEqual(arData.length);
         },
         error: err => {
           // Empty

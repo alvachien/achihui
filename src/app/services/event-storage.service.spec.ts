@@ -47,7 +47,7 @@ describe('EventStorageService', () => {
   });
 
   /// EventStorageService method tests begin ///
-  describe('fetchAllGeneralEvents', () => {
+  describe('fetchGeneralEvents', () => {
     beforeEach(() => {
       service = TestBed.inject(EventStorageService);
     });
@@ -58,49 +58,37 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllGeneralEvents(100, 0, true, moment(), moment().add(1, 'y')).subscribe(
-        (data: any) => {
+      service.fetchGeneralEvents(100, 0).subscribe({
+        next: (data: any) => {
           expect(data.totalCount).toEqual(0);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Empty
         },
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.generalEventUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip')
-          && requrl.params.has('skipfinished')
-          && requrl.params.has('dtbgn')
-          && requrl.params.has('dtend');
+        return requrl.method === 'GET' && requrl.url === service.generalEventUrl;
        });
 
       // Respond with the mock data
-      req.flush({totalCount: 0, contentList: []});
+      req.flush({'@odata.count': 0, contentList: []});
     });
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllGeneralEvents(100, 0).subscribe(
-        (data: any) => {
+      service.fetchGeneralEvents(100, 0).subscribe({
+        next: (data: any) => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
         },
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.generalEventUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip')
-          && !requrl.params.has('skipfinished')
-          && !requrl.params.has('dtbgn')
-          && !requrl.params.has('dtend');
+        return requrl.method === 'GET' && requrl.url === service.generalEventUrl;
       });
 
       // respond with a 500 and the error message in the body
@@ -108,7 +96,7 @@ describe('EventStorageService', () => {
     });
   });
 
-  describe('fetchAllRecurEvents', () => {
+  describe('fetchRecurEvents', () => {
     beforeEach(() => {
       service = TestBed.inject(EventStorageService);
     });
@@ -119,43 +107,37 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllRecurEvents(100, 0).subscribe(
-        (data: any) => {
+      service.fetchRecurEvents(100, 0).subscribe({
+        next: (data: any) => {
           expect(data.totalCount).toEqual(0);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Empty
         },
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.recurEventUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip');
+        return requrl.method === 'GET' && requrl.url === service.recurEventUrl;
        });
 
       // Respond with the mock data
-      req.flush({totalCount: 0, contentList: []});
+      req.flush({'@odata.count': 0, value: []});
     });
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllRecurEvents(100, 0).subscribe(
-        (data: any) => {
+      service.fetchRecurEvents(100, 0).subscribe({
+        next: (data: any) => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
         },
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.recurEventUrl
-          && requrl.params.has('hid')
-          && requrl.params.has('top')
-          && requrl.params.has('skip');
+        return requrl.method === 'GET' && requrl.url === service.recurEventUrl;
       });
 
       // respond with a 500 and the error message in the body

@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 
 import { LogLevel, BookCategory, Book, momentDateFormat, PersonRole, OrganizationType, ModelUtility, ConsoleLogTypeEnum,
-  Person, Organization, Location, BookBorrowRecord, } from '../model';
+  Person, Organization, Location, BookBorrowRecord, BaseListModel, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -67,9 +67,8 @@ export class LibraryStorageService {
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefOdataService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
-    }
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`, ConsoleLogTypeEnum.debug);
+
     this._isPersonRoleLoaded = false;
     this._listPersonRole = [];
     this._isOrganizationTypeLoaded = false;
@@ -96,7 +95,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`);
       return this._http.get(this.personRoleAPIURL, {
         headers: headers,
         params: params,
@@ -120,9 +119,7 @@ export class LibraryStorageService {
           return this._listPersonRole;
         }),
           catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllPersonRoles, failed with: ${error}`);
-            }
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllPersonRoles, failed with: ${error}`, ConsoleLogTypeEnum.error);
 
             this._isPersonRoleLoaded = false;
             this._listPersonRole = [];
@@ -146,7 +143,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`);
       return this._http.get(this.orgTypeAPIURL, {
         headers: headers,
         params: params,
@@ -170,9 +167,7 @@ export class LibraryStorageService {
           return this._listOrganizationType;
         }),
           catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllOrganizationTypes, failed with: ${error}`);
-            }
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllOrganizationTypes, failed with: ${error}`, ConsoleLogTypeEnum.error);
 
             this._isOrganizationTypeLoaded = false;
             this._listOrganizationType = [];
@@ -194,7 +189,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`);
       return this._http.get(this.bookCategoryAPIURL, {
         headers: headers,
         params: params,
@@ -247,7 +242,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
       return this._http.get(this.personAPIURL, {
         headers: headers,
         params: params,
@@ -379,7 +374,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
       return this._http.get(this.organizationAPIURL, {
         headers: headers,
         params: params,
@@ -511,7 +506,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
       return this._http.get(this.locationAPIURL, {
         headers: headers,
         params: params,
@@ -639,7 +634,7 @@ export class LibraryStorageService {
   }
 
   // Book
-  public fetchBooks(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<Book[]> {
+  public fetchBooks(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -658,7 +653,7 @@ export class LibraryStorageService {
       params = params.append('$skip', `${skip}`);
     }
     params = params.append('$count', `true`);
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
     return this._http.get(this.bookAPIURL, {
       headers: headers,
       params: params,
@@ -677,7 +672,10 @@ export class LibraryStorageService {
           }
         }
 
-        return books;
+        return {
+          totalCount: rjs['@odata.count'],
+          contentList: books
+        };
       }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchBooks failed with: ${error}`, ConsoleLogTypeEnum.error);
@@ -764,7 +762,7 @@ export class LibraryStorageService {
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
-  public fetchBookBorrowRecords(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<BookBorrowRecord[]> {
+  public fetchBookBorrowRecords(top?: number, skip?: number, orderby?: { field: string, order: string }): Observable<BaseListModel<BookBorrowRecord>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -802,7 +800,10 @@ export class LibraryStorageService {
           }
         }
 
-        return books;
+        return {
+          totalCount: rjs['@odata.count'],
+          contentList: books
+        };
       }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchBookBorrowRecords failed with: ${error}`, ConsoleLogTypeEnum.error);

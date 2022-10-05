@@ -2,28 +2,32 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject, merge, of, throwError, } from 'rxjs';
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin,
-  EventHabitDetail, BaseListModel, } from '../model';
+  EventHabitDetail, BaseListModel, ModelUtility, ConsoleLogTypeEnum, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventStorageService {
+  private bufferedGeneralEvents: Map<number, GeneralEvent>;
+  private bufferedRecurEvents: Map<number, RecurEvent>;
+
   readonly eventHabitUrl: string = environment.ApiUrl + '/eventhabit';
-  readonly recurEventUrl: string = environment.ApiUrl + '/recurevent';
-  readonly generalEventUrl: string = environment.ApiUrl + '/event';
+  readonly recurEventUrl: string = environment.ApiUrl + '/RecurEvents';
+  readonly generalEventUrl: string = environment.ApiUrl + '/NormalEvents';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefOdataService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering EventStorageService constructor`);
-    }
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`, ConsoleLogTypeEnum.debug);
+
+    this.bufferedGeneralEvents = new Map<number, GeneralEvent>();
+    this.bufferedRecurEvents = new Map<number, RecurEvent>();
   }
 
   /**
@@ -32,50 +36,59 @@ export class EventStorageService {
    * @param skip Skip the records
    * @returns Observable of Event
    */
-  public fetchAllGeneralEvents(top: number, skip: number, skipfinished?: boolean,
+  public fetchGeneralEvents(top?: number, skip?: number, orderby?: { field: string, order: string }, skipfinished?: boolean,
     dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<BaseListModel<GeneralEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
-    params = params.append('top', top.toString());
-    params = params.append('skip', skip.toString());
-    if (skipfinished !== undefined) {
-      params = params.append('skipfinished', skipfinished.toString());
-    }
-    if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
-    }
-    if (dtend) {
-      params = params.append('dtend', dtend.format(momentDateFormat));
-    }
-
     headers = headers.append('Content-Type', 'application/json')
-                      .append('Accept', 'application/json')
-                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    // params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    params = params.append('$count', `true`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
+    // if (skipfinished !== undefined) {
+    //   params = params.append('skipfinished', skipfinished.toString());
+    // }
+    // if (dtbgn) {
+    //   params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    // }
+    // if (dtend) {
+    //   params = params.append('dtend', dtend.format(momentDateFormat));
+    // }
 
     return this._http.get<any>(this.generalEventUrl, {headers: headers, params: params })
       .pipe(map((data: any) => {
         let rslts: GeneralEvent[] = [];
-        if (data.contentList && data.contentList instanceof Array) {
-          for (let ci of data.contentList) {
+        if (data.value && data.value instanceof Array) {
+          for (let ci of data.value) {
             let rst: GeneralEvent = new GeneralEvent();
             rst.onSetData(ci);
+
+            this.bufferedGeneralEvents.set(+rst.ID!, rst);
 
             rslts.push(rst);
           }
         }
 
         return {
-          totalCount: data!.totalCount,
+          totalCount: data['@odata.count'],
           contentList: rslts,
         };
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllGeneralEvents failed ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService fetchGeneralEvents failed with: ${error}`, ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }),
       );
   }
@@ -141,7 +154,7 @@ export class EventStorageService {
    */
   public completeGeneralEvent(gevnt: GeneralEvent): Observable<any> {
     // Set complete time - now
-    gevnt.CompleteTime = moment();
+    gevnt.CompleteDate = moment();
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -152,7 +165,7 @@ export class EventStorageService {
     let jdata: any[] = [{
         'op': 'add',
         'path': '/completeTimePoint',
-        'value': gevnt.CompleteTimeFormatString,
+        'value': gevnt.CompleteDateDisplayString,
       },
     ];
 
@@ -169,39 +182,49 @@ export class EventStorageService {
    * @param top Amount of records to fetch
    * @param skip Skip the records
    */
-  fetchAllRecurEvents(top: number, skip: number): Observable<BaseListModel<RecurEvent>> {
+  fetchRecurEvents(top?: number, skip?: number, orderby?: { field: string, order: string },): Observable<BaseListModel<RecurEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
-    params = params.append('top', top.toString());
-    params = params.append('skip', skip.toString());
 
-    return this._http.get<any>(this.recurEventUrl, {headers: headers, params: params})
+    let params: HttpParams = new HttpParams();
+    // params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    params = params.append('$count', `true`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
+                  
+    return this._http.get(this.recurEventUrl, {headers: headers, params: params})
       .pipe(map((data: any) => {
         let rslts: RecurEvent[] = [];
-        if (data && data.contentList && data.contentList instanceof Array) {
-          for (let ci of data.contentList) {
+        if (data && data.value && data.value instanceof Array) {
+          for (let ci of data.value) {
             let rst: RecurEvent = new RecurEvent();
             rst.onSetData(ci);
+
+            this.bufferedRecurEvents.set(+rst.ID!, rst);
 
             rslts.push(rst);
           }
         }
 
         return {
-          totalCount: data.totalCount,
+          totalCount: data['@odata.count'],
           contentList: rslts,
         };
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllRecurEvents failed ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService fetchRecurEvents failed with: ${error}`, ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }),
       );
   }
@@ -290,8 +313,8 @@ export class EventStorageService {
     // let params: HttpParams = new HttpParams();
     // params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     let jdata: any = {
-      startTimePoint: reobj.StartTimeFormatString,
-      endTimePoint: reobj.EndTimeFormatString,
+      startTimePoint: reobj.StartDateDisplayString,
+      endTimePoint: reobj.EndDateDisplayString,
       rptType: <number>reobj.repeatType,
       name: reobj.Name,
     };

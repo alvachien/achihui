@@ -9,12 +9,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { BorrowRecordListComponent } from './borrow-record-list.component';
+import { LibraryUIModule } from '../../library-ui.module';
 
 describe('BorrowRecordListComponent', () => {
   let component: BorrowRecordListComponent;
@@ -38,7 +38,7 @@ describe('BorrowRecordListComponent', () => {
       'fetchBookBorrowRecords',
     ]);
     fetchAllOrganizationTypesSpy = storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
-    fetchBookBorrowRecordsSpy = storageService.fetchBookBorrowRecords.and.returnValue(of([]));
+    fetchBookBorrowRecordsSpy = storageService.fetchBookBorrowRecords.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -53,7 +53,7 @@ describe('BorrowRecordListComponent', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
-        EventUIModule,
+        LibraryUIModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
@@ -86,7 +86,8 @@ describe('BorrowRecordListComponent', () => {
 
   describe('2. shall work with data', () => {
     beforeEach(() => {
-      //fetchAllPlansSpy.and.returnValue(asyncData(fakeData.finPlans));
+      fetchAllOrganizationTypesSpy.and.returnValue(asyncData([]));
+      fetchBookBorrowRecordsSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
     });
 
     it('should show data after OnInit', fakeAsync(() => {
