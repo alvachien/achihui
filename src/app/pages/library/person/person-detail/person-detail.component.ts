@@ -37,7 +37,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     private activateRoute: ActivatedRoute,
     private router: Router,
     private modalService: NzModalService,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.detailFormGroup = new FormGroup({
@@ -50,13 +50,13 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug);
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {

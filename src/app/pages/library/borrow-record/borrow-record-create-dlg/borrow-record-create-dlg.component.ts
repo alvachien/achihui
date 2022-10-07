@@ -89,7 +89,6 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();

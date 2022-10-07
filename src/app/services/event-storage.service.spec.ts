@@ -96,6 +96,36 @@ describe('EventStorageService', () => {
     });
   });
 
+  describe('createGeneralEvent', () => {
+    beforeEach(() => {
+      service = TestBed.inject(EventStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('shall work with data', () => {
+
+    });
+  });
+
+  describe('deleteGeneralEvent', () => {
+    beforeEach(() => {
+      service = TestBed.inject(EventStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('shall work with data', () => {
+
+    });
+  });
+
   describe('fetchRecurEvents', () => {
     beforeEach(() => {
       service = TestBed.inject(EventStorageService);

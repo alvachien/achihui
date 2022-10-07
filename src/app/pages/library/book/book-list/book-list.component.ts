@@ -125,7 +125,6 @@ export class BookListComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();

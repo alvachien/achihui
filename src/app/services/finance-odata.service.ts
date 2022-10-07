@@ -3264,7 +3264,7 @@ export class FinanceOdataService {
             ConsoleLogTypeEnum.error);
 
           const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-          return throwError(errmsg);
+          return throwError(() => new Error(errmsg));
         }),
       );
 

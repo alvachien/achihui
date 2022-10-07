@@ -167,7 +167,6 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();
@@ -206,7 +205,6 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();
@@ -242,7 +240,6 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();
@@ -278,13 +275,12 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();
     // Return a result when closed
     modal.afterClose.subscribe((result: any) => {
-      // Donothing by now.
+      // Do nothing by now.
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...', ConsoleLogTypeEnum.debug);
     });
   }

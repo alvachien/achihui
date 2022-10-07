@@ -131,50 +131,98 @@ export class EventStorageService {
 
   /**
    * Create general event
-   * @param gevnt Event to  create
+   * @param objtbc Object to be created
    */
-  public createGeneralEvent(gevnt: GeneralEvent): Observable<any> {
+  public createGeneralEvent(objtbc: GeneralEvent): Observable<GeneralEvent> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let jdata: string = gevnt.writeJSONString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    const jdata = objtbc.writeJSONObject();
+
     return this._http.post(this.generalEventUrl, jdata, {
-        headers: headers,
-        params: params,
-      });
+      headers: headers,
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService, createGeneralEvent, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      const hd: GeneralEvent = new GeneralEvent();
+      hd.onSetData(response as any);
+
+      this.bufferedGeneralEvents.set(hd.ID!, hd);
+
+      return hd;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, createGeneralEvent failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
+  }
+
+  /**
+   * Delete general event
+   * @param eventid ID of event
+   */
+  public deleteGeneralEvent(eventid: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.delete(`${this.generalEventUrl}/${eventid}`, {
+      headers: headers
+    })
+    .pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService, deleteGeneralEvent, map.`,
+        ConsoleLogTypeEnum.debug);
+
+      return true;
+    }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, deleteGeneralEvent failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }));
   }
 
   /**
    * Complete general event
-   * @param gevnt Event to  create
+   * @param eventid ID of the normal event
    */
-  public completeGeneralEvent(gevnt: GeneralEvent): Observable<any> {
-    // Set complete time - now
-    gevnt.CompleteDate = moment();
-
+  public completeGeneralEvent(eventid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.generalEventUrl + '/' + gevnt.ID?.toString();
-    let jdata: any[] = [{
-        'op': 'add',
-        'path': '/completeTimePoint',
-        'value': gevnt.CompleteDateDisplayString,
-      },
-    ];
+    let apiurl: string = this.generalEventUrl + '/MarkAsCompleted';
+    const hid = this._homeService.ChosedHome!.ID;
+    var jdata = {
+      HomeID: hid,
+      EventID: eventid,
+    };
 
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
-    return this._http.patch(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-      });
+      }).pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService completeGeneralEvent.`, ConsoleLogTypeEnum.debug);
+  
+        return true;
+      }),
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService completeGeneralEvent failed ${errresp}`,
+            ConsoleLogTypeEnum.error);
+  
+          return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
+        }),
+      );
   }
 
   /**

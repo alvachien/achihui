@@ -130,7 +130,6 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, cancelled...', ConsoleLogTypeEnum.debug);
-          console.log("nzOnCancel");
       }
     });
     const instance = modal.getContentComponent();

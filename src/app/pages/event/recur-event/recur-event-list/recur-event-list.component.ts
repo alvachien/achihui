@@ -11,7 +11,7 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 @Component({
   selector: 'hih-recur-event-list',
   templateUrl: './recur-event-list.component.html',
-  styleUrls: ['./recur-event-list.component.less']
+  styleUrls: ['./recur-event-list.component.less'],
 })
 export class RecurEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
