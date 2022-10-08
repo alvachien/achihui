@@ -124,6 +124,8 @@
     "PageLackAuthorityContent": "The page which you aim to visit are banned due to lack of authority",
     "EnglishName": "English Name",
     "NativeName": "Native Name",
+    "ChineseName": "Chinese Name",
+    "ChineseIsNative": "Chinese is Native",
     "LanguageSupportedInApp": "Supported",
     "Host": "Host",
     "Todo": "Todo",
@@ -257,7 +259,8 @@
       "LendTo": "Lend to",
       "Repay": "Repayment",
       "AssetValChg": "Asset Value Change",
-      "Insurance": "Insurance"
+      "Insurance": "Insurance",
+      "AssetDeprec": "Asset Depreciation"
     },
     "AssCtgy": {
       "Apartment": "Apartment",
@@ -298,7 +301,14 @@
       "Fiction": "Literature & Fiction",
       "Thriller": "Mystery, Thriller & Suspense",
       "OutdoorSport": "Sports & Outdoors",
-      "Reference": "Reference"
+      "Reference": "Reference",
+      "Accounting": "Accounting",
+      "Finance": "Finance",
+      "DetectiveStory": "Detective Story",
+      "KungfuNovels": "Kung fu novel",
+      "FantasyNovel": "Fantasy novel",
+      "ChineseClassical": "Chinese classical book",
+      "WorldFamousBook": "World-famous book"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",
@@ -627,7 +637,10 @@
     "InvalidObject": "Invalid object",
     "RepaymentOfPrincipal": "Repayment of Principal",
     "InterestExpense": "Interest Expense",
-    "Principal": "Principal"
+    "Principal": "Principal",
+    "BoughtDate": "Bought Date",
+    "ExpiredDate": "Expired Date",
+    "ResidualValue": "Residual Value"
   },
   "Library": {
     "BookCategories": "Book Categories",
@@ -637,7 +650,37 @@
     "Books": "Books",
     "Book": "Book",
     "Movies": "Movies",
-    "Movie": "Movie"
+    "Movie": "Movie",
+    "PersonRole": "Person Role",
+    "PersonRoles": "Person Roles",
+    "Person": "Person",
+    "Persons": "Persons",
+    "OrganizationType": "Organization Type",
+    "OrganizationTypes": "Organization Types",
+    "Organization": "Organization",
+    "Organizations": "Organizations",
+    "Location": "Location",
+    "Locations": "Locations",
+    "Authors": "Authors",
+    "Author": "Author",
+    "Presses": "Presses",
+    "Press": "Press",
+    "Translators": "Translators",
+    "Translator": "Translator",
+    "SelectAuthor": "Select Author",
+    "SelectTranslator": "Select Translator",
+    "SelectPress": "Select Press",
+    "SelectLocation": "Select Location",
+    "SelectCategory": "Select Category",
+    "PaperBook": "Paper Book",
+    "EBook": "Electronic Book",
+    "LocationType": "Location Type",
+    "Library": "Library",
+    "BorrowRecords": "Borrow Records",
+    "BorrowRecord": "Borrow Record",
+    "BorrowFrom": "Borrow From",
+    "CreateBorrowRecord": "Create Borrow Record",
+    "HasReturned": "Has Returned"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",

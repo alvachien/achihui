@@ -1,0 +1,98 @@
+<nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>{{'Nav.EventTrace' | transloco}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{'Common.RecurEvent' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+        <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+    </nz-page-header-extra>
+</nz-page-header>
+
+<form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+            <input nz-input formControlName="idControl" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Name -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+            <input nz-input formControlName="nameControl" maxlength="100" required />
+            <ng-template #nameTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                    {{'Common.FieldMaxLength' | transloco}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Date range -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateTpl">
+            <nz-range-picker formControlName="dateControl" required></nz-range-picker>
+            <ng-template #dateTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Repeat frequency -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.RepeatFrequency' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
+            <nz-select formControlName="frqControl">
+                <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco">
+                </nz-option>
+            </nz-select>
+            <ng-template #frqTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Content -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Content' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+            <nz-textarea-count [nzMaxCharacterCount]="2000">
+                <textarea rows="4" formControlName="contentControl" nz-input></textarea>
+            </nz-textarea-count>
+        </nz-form-control>
+    </nz-form-item>
+</form>
+
+<!-- Toolbar -->
+<div class="toolbar_buttons">
+    <button nz-button nzType="primary" (click)="onSimulateGeneratedEvents()">Simulate Generated events</button>
+</div>
+
+<!-- Generated events -->
+<nz-table #basicTable [nzData]="dataSet" [nzPageSize]="20" >
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>{{'Common.Name' | transloco}}</th>
+            <th>{{'Common.Date' | transloco}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data">
+            <td>{{data.ID}}</td>
+            <td>{{data.Name}}</td>
+            <td>{{data.StartDateDisplayString}} - {{data.EndDateDisplayString}}</td>
+        </tr>
+    </tbody>
+</nz-table>

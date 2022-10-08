@@ -50,7 +50,7 @@
             <li nz-menu-item (click)="onDisplayAccount()">{{'Common.Display' | transloco}}</li>
             <li nz-menu-divider></li>
             <li nz-menu-item (click)="onChangeAccountName()">{{'Finance.ChangeAccountName' | transloco}}</li>
-            <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li>
+            <!-- <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li> -->
             <li nz-menu-divider></li>
             <li nz-submenu (nzOpenChange)="openAdvanceOperations()" [nzTitle]="'Common.AdvancedOperations' | transloco">
               <ul>
@@ -64,7 +64,10 @@
     </div>
   </div>
   <div nz-col [nzSpan]="24 - col">
-    <div style="margin-left: 8px;">
+    <div *ngIf="isAccountView" style="margin-left: 8px;">
+      <nz-descriptions [nzTitle]="'Finance.Balance' | transloco" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+        <nz-descriptions-item [nzTitle]="'Finance.Balance' | transloco">{{currentAccountBalance | number:'1.2-2'}} <span>{{baseCurrency}}</span></nz-descriptions-item>
+      </nz-descriptions>
     </div>
     <div style="margin-left: 8px;">
       <hih-fin-document-item-view [filterDocItem]="filterDocItem"></hih-fin-document-item-view>

@@ -1,10 +1,8 @@
-import {
-  Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
+import { Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
   AccountCategory, TranType, AssetCategory, Account, AccountJson,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
-  BookCategory, BookCategoryJson,
-  Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
+  BookCategory, Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
   ControlCenter, ControlCenterJson, Order, OrderJson, Plan, PlanTypeEnum,
   Document, DocumentItem, AccountExtraAdvancePayment,
@@ -12,9 +10,9 @@ import {
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
-  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
-  Location, LocationJson, financeTranTypeInterestOut,
-  BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost,
+  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal,
+  financeTranTypeInterestOut, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost, PersonRole,
+  OrganizationType,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -48,11 +46,6 @@ export class FakeDataHelper {
   private _appLanguages: AppLanguage[] = [];
   private _appLanguagesFromAPI: AppLanguageJson[] = [];
   private _libBookCategories: BookCategory[] = [];
-  private _libBookCategoriesFromAPI: BookCategoryJson[] = [];
-  private _libMovieGenres: MovieGenre[] = [];
-  private _libMovieGenresFromAPI: MovieGenreJson[] = [];
-  private _libLocations: Location[] = [];
-  private _libLocationsFromAPI: LocationJson[] = [];
   private _tags: Tag[] = [];
   private _tagsFromAPI: TagJson[] = [];
   private _tagsCount: TagCount[] = [];
@@ -60,6 +53,8 @@ export class FakeDataHelper {
   private _blogCollection: BlogCollection[] = [];
   private _blogPostAPI: BlogPostAPIJson[] = [];
   private _blogPost: BlogPost[] = [];
+  private _personRoles: PersonRole[] = [];
+  private _organizationTypes: OrganizationType[] = [];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -69,31 +64,19 @@ export class FakeDataHelper {
   }
 
   get currencies(): Currency[] {
-    if (this._currencies) {
-      return this._currencies;
-    }
-    return [];
+    return this._currencies;
   }
   get currenciesFromAPI(): CurrencyJson[] {
-    if (this._currenciesFromAPI) {
-      return this._currenciesFromAPI;
-    }
-    return [];
+    return this._currenciesFromAPI;
   }
   get HomeDefs(): HomeDef[] {
-    if (this._homeDefs) {
-      return this._homeDefs;
-    }
-    return [];
+    return this._homeDefs;
   }
   get chosedHome(): HomeDef {
     return this._chosedHome;
   }
   get finDocTypes(): DocumentType[] {
-    if (this._finDocTypes) {
-      return this._finDocTypes;
-    }
-    return [];
+    return this._finDocTypes;
   }
   get finDocTypesFromAPI(): DocumentTypeJson[] {
     if (this._finDocTypesFromAPI) {
@@ -220,60 +203,6 @@ export class FakeDataHelper {
     }
     return [];
   }
-  get libBookCategoriesFromAPI(): BookCategoryJson[] {
-    if (this._libBookCategoriesFromAPI) {
-      return this._libBookCategoriesFromAPI;
-    }
-    return [];
-  }
-  get libBookCategoriesFullReplyFromAPI(): any {
-    if (this._libBookCategoriesFromAPI) {
-      return {
-        totalCount: this._libBookCategoriesFromAPI.length,
-        contentList: this._libBookCategoriesFromAPI,
-      };
-    }
-  }
-  get libMovieGenres(): MovieGenre[] {
-    if (this._libMovieGenres) {
-      return this._libMovieGenres;
-    }
-    return [];
-  }
-  get libMovieGenresFromAPI(): MovieGenreJson[] {
-    if (this._libMovieGenresFromAPI) {
-      return this._libMovieGenresFromAPI;
-    }
-    return [];
-  }
-  get libMovieGenresFullReplyFromAPI(): any {
-    if (this._libMovieGenresFromAPI) {
-      return {
-        totalCount: this._libMovieGenresFromAPI.length,
-        contentList: this._libMovieGenresFromAPI,
-      };
-    }
-  }
-  get libLocations(): Location[] {
-    if (this._libLocations) {
-      return this._libLocations;
-    }
-    return [];
-  }
-  get libLocationsFromAPI(): LocationJson[] {
-    if (this._libLocationsFromAPI) {
-      return this._libLocationsFromAPI;
-    }
-    return [];
-  }
-  get libLocationsFullReplyFromAPI(): any {
-    if (this._libLocationsFromAPI) {
-      return {
-        totalCount: this._libLocationsFromAPI.length,
-        contentList: this._libLocationsFromAPI,
-      };
-    }
-  }
   get tags(): Tag[] {
     if (this._tags) {
       return this._tags;
@@ -293,28 +222,22 @@ export class FakeDataHelper {
     return [];
   }
   get blogCollectionAPI(): BlogCollectionAPIJson[] {
-    if (this._blogCollectionAPI) {
-      return this._blogCollectionAPI;
-    }
-    return [];
+    return this._blogCollectionAPI;
   }
   get blogCollection(): BlogCollection[] {
-    if (this._blogCollection) {
-      return this._blogCollection;
-    }
-    return [];
+    return this._blogCollection;
   }
   get blogPostAPI(): BlogPostAPIJson[] {
-    if (this._blogPostAPI) {
-      return this._blogPostAPI;
-    }
-    return [];
+    return this._blogPostAPI;
   }
   get blogPost(): BlogPost[] {
-    if (this._blogPost) {
-      return this._blogPost;
-    }
-    return [];
+    return this._blogPost;
+  }
+  get personRoles(): PersonRole[] {
+    return this._personRoles;
+  }
+  get organizationTypes(): OrganizationType[] {
+    return this._organizationTypes;
   }
 
   public buildCurrencies(): void {
@@ -1213,59 +1136,6 @@ export class FakeDataHelper {
       this._libBookCategories.push(ctgy);
     }
   }
-  public buildLibBookCategoriesFromAPI(): void {
-    this._libBookCategoriesFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: BookCategoryJson = {
-        id: i + 1,
-        name: `category ${i + 1}`,
-      };
-      this._libBookCategoriesFromAPI.push(ct1);
-    }
-  }
-  public buildLibMovieGenres(): void {
-    this._libMovieGenres = [];
-    let ctgy: MovieGenre;
-    for (let i = 0; i < 2; i++) {
-      ctgy = new MovieGenre();
-      ctgy.ID = i + 1;
-      ctgy.Name = `Genre ${i + 1}`;
-      this._libMovieGenres.push(ctgy);
-    }
-  }
-  public buildLibMovieGenresFromAPI(): void {
-    this._libMovieGenresFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: MovieGenreJson = {
-        id: i + 1,
-        name: `genre ${i + 1}`,
-      };
-      this._libMovieGenresFromAPI.push(ct1);
-    }
-  }
-  public buildLibLocations(): void {
-    this._libLocations = [];
-    let loc: Location;
-    for (let i = 0; i < 2; i++) {
-      loc = new Location();
-      loc.ID = i + 1;
-      loc.Name = `Loc ${i + 1}`;
-      loc.IsDevice = true;
-      loc.Desp = `desp ${i + 1}`;
-      this._libLocations.push(loc);
-    }
-  }
-  public buildLibLocationsFromAPI(): void {
-    this._libLocationsFromAPI = [];
-    for (let i = 0; i < 2; i++) {
-      const ct1: any = {
-        id: i + 1,
-        name: `loc ${i + 1}`,
-        desp: `desp ${i + 1}`,
-      };
-      this._libLocationsFromAPI.push(ct1 as LocationJson);
-    }
-  }
   public buildTags(): void {
     this._tags = [];
     let ntag: Tag;
@@ -1562,5 +1432,13 @@ export class FakeDataHelper {
       content: 'test1',
       status: 1,
     } as BlogPost);
+  }
+  public buildPersonRoles() {
+    this._personRoles = [];
+    let pp: PersonRole = new PersonRole();
+    pp.ID = 1;
+    pp.Name = 'Test1';
+    pp.Comment = 'Test1';
+    this._personRoles.push(pp);
   }
 }

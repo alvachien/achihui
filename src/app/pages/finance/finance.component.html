@@ -17,7 +17,7 @@
 </div>
 
 <div *ngIf="!isChildMode">
-  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+  <div *ngIf="keyfigure">
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
@@ -31,7 +31,7 @@
       </nz-col>
     </nz-row>
   </div>
-  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+  <div *ngIf="keyfigure">
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
@@ -52,7 +52,7 @@
       </ng-template>
     </nz-row>
   </div>
-  <div style="background: #ECECEC; padding: 30px;" *ngIf="keyfigure">
+  <div *ngIf="keyfigure">
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
@@ -86,10 +86,21 @@
           <span>{{item.Desp}}</span>
         </div>
       </li>
+      <li *ngIf="isLastDateInMonth(date)">
+        <div>
+          <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(date)">
+            <span nz-icon nzType="audit" nzTheme="outline"></span>
+            {{'Sys.DocTy.AssetDeprec' | transloco}}
+          </button>
+        </div>
+      </li>
     </ul>
     <ng-container *nzMonthCell="let month">
-      <div *ngIf="getMonthData(month) as monthData" class="notes-month">
-        <section>{{ monthData }}</section>
+      <div>
+        <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(month)">
+          <span nz-icon nzType="audit" nzTheme="outline"></span>
+          {{'Sys.DocTy.AssetDeprec' | transloco}}
+        </button>
       </div>
     </ng-container>
   </nz-calendar>

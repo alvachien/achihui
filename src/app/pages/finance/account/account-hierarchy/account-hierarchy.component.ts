@@ -52,6 +52,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   col = 8;
   id = -1;
   activatedNode?: NzTreeNode;
+  isAccountView = false;
+  currentAccountBalance = 0;
+  baseCurrency = '';
   // Settle dialog
   isAccountSettleDlgVisible = false;
   selectedAccountForSettle: ISettleAccountDetail | undefined;
@@ -75,6 +78,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.arrayScopes = UIDisplayStringUtil.getOverviewScopeStrings();
+    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
   }
 
   ngOnInit(): void {
@@ -86,7 +90,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug);
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -111,6 +115,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
 
     if (this.activatedNode) {
+      this.fetchAccountBalance();
       this.refreshDocumentItemView();
     }
   }
@@ -151,12 +156,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
               name: this.odataService.Accounts[acntidx].Name,
               comment: this.odataService.Accounts[acntidx].Comment,
             },
-            // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
           });
-          // const instance = modal.getContentComponent();
-          // modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-          // // Return a result when closed
-          // modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
         }
       }
     }
@@ -399,6 +399,22 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
 
     return data;
+  }
+  private fetchAccountBalance() {
+    if (this.activatedNode?.key.startsWith('a')) {
+      this.isAccountView = true;
+      const acntid = +this.activatedNode?.key.substring(1);
+      this.odataService.fetchAccountBalance(acntid).subscribe({
+        next: val => {
+          this.currentAccountBalance = val;
+        },
+        error: err => {
+          console.error(err);
+        }
+      })
+    } else {
+      this.isAccountView = false;
+    }
   }
   private refreshDocumentItemView(): void {
     const arFilters = [];

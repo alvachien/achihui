@@ -3,7 +3,7 @@
 //
 
 import { UIDisplayStringUtil, UIDisplayString, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
-  getSingleFilterString, getFilterString} from './uicommon';
+  getSingleFilterString, getFilterString, UIRadioButton, UIRadioButtonGroup, UIRouteLink} from './uicommon';
 
 describe('UIDisplayStringUtil', () => {
 
@@ -332,5 +332,55 @@ describe('getFilterString', () => {
 
     const fltstr = getFilterString(arfilters);
     expect(fltstr).toEqual(`fieldName1 eq 1 and fieldName2 eq 2 and fieldName3 eq 3`);
+  });
+});
+
+describe('UIRadioButton', () => {
+  let btn: UIRadioButton;
+  beforeEach(() => {
+    // Do nothing here
+    btn = new UIRadioButton();
+  });
+
+  afterEach(() => {
+    // Do nothing here
+  });
+
+  it('shall create successfully', () => {
+    expect(btn).toBeTruthy();
+  });
+});
+
+describe('UIRadioButtonGroup', () => {
+  let btn: UIRadioButtonGroup;
+
+  beforeEach(() => {
+    // Do nothing here
+    btn = new UIRadioButtonGroup();
+  });
+
+  afterEach(() => {
+    // Do nothing here
+  });
+
+  it('shall create successfully', () => {
+    expect(btn).toBeTruthy();
+  });
+});
+
+
+describe('UIRouteLink', () => {
+  let btn: UIRouteLink;
+  beforeEach(() => {
+    // Do nothing here
+    btn = new UIRouteLink();
+  });
+
+  afterEach(() => {
+    // Do nothing here
+  });
+
+  it('shall create successfully', () => {
+    expect(btn).toBeTruthy();
   });
 });

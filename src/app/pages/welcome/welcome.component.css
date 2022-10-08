@@ -3,7 +3,17 @@
   padding-bottom: 8px;
 }
 
+.components-overview-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
 .inner-box {
-  background: #0092ff;
-  padding: 8px 0;
+  padding-top: 12px;
+}
+
+.center-text {
+  text-align: left;
 }

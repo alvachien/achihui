@@ -36,7 +36,7 @@
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" (click)="onDisplay(data.ID!)">{{'Common.Display' | transloco}}</button>
           <button nz-button nzType="link" (click)="onEdit(data.ID!)">{{'Common.Edit' | transloco}}</button>
-          <button nz-button nzType="link" (click)="onDelete(data.ID!)">{{'Common.Delete' | transloco}}</button>
+          <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>{{'Common.Delete' | transloco}}</button>
         </td>
         <td>{{getPlanTypeDisplayString(data.PlanType) | transloco}}</td>
         <td>{{getDateDisplayString(data.StartDate!)}}</td>

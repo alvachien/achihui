@@ -1,0 +1,60 @@
+<nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>{{'Nav.LibraryTrace' | transloco}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{'Library.Location' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{currentMode | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+        <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{'Common.Save' | transloco}}</a>
+    </nz-page-header-extra>
+</nz-page-header>
+
+<form nz-form [formGroup]="detailFormGroup">
+    <!-- ID -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+            <input nz-input formControlName="idControl" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Name -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.NativeName' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+            <input nz-input formControlName="nameControl" maxlength="100" required />
+            <ng-template #nameTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                    {{'Common.FieldMaxLength' | transloco}}
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                    {{'Common.FieldIsMandatory' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Location type -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Library.LocationType' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+            <nz-select nzPlaceHolder="{{'Library.LocationType' | transloco}}" formControlName="locTypeControl">
+                <nz-option *ngFor="let lstr of arLocationStrings" [nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <!-- Comment -->
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Comment' | transloco}}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+            <input nz-input formControlName="cmtControl" maxlength="100" required />
+            <ng-template #nameTpl let-control>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                    {{'Common.FieldMaxLength' | transloco}}
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+</form>

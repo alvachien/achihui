@@ -8,7 +8,8 @@ import { forkJoin, lastValueFrom } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
 import { ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM,
-  UIAccountForSelection, Account, AccountCategory, BuildupAccountForSelection, FinanceReportByAccountMOM, financePeriodLast12Months, financePeriodLast6Months, financePeriodLast3Months, } from '../../../../model';
+  UIAccountForSelection, Account, AccountCategory, BuildupAccountForSelection, FinanceReportByAccountMOM, 
+  financePeriodLast12Months, financePeriodLast6Months, financePeriodLast3Months, } from '../../../../model';
 
 @Component({
   selector: 'hih-account-month-on-month-report',
@@ -25,7 +26,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
   
   arUIAccounts: UIAccountForSelection[] = [];
   selectedAccountID: number | null = null;
-  selectedPeriod = '3';
+  selectedPeriod = financePeriodLast3Months;
   chartOption: EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {

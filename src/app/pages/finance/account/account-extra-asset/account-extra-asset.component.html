@@ -43,15 +43,40 @@
         </ng-template>
       </nz-form-control>
     </nz-form-item>
+
+    <!-- Bought date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Finance.BoughtDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left;">
+        <nz-date-picker id="boughtDate" formControlName="boughtDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Expired date -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Finance.ExpiredDate' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left;">
+        <nz-date-picker id="expiredDate" formControlName="expiredDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{'Finance.ResidualValue' | transloco}}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left;">
+        <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="residualValueControl"
+          [nzPlaceHolder]="'Finance.ResidualValue' | transloco" (ngModelChange)="onChange()">
+        </nz-input-number>
+      </nz-form-control>
+    </nz-form-item>
   </div>
 
   <!-- Ref doc. ID -->
-  <div class="achih-control-full-width" *ngIf="refBuyDocID">
-    <label>{{'Finance.RefDoc' | transloco}}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">{{refBuyDocID}}</button>
+  <div nz-row class="achih-control-full-width" *ngIf="refBuyDocID">
+    <div nz-col nzSpan="2" nzOffset="5"><label>{{'Finance.RefDoc' | transloco}}</label></div>
+    <div nz-col><button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">{{refBuyDocID}}</button></div>
   </div>
-  <div class="achih-control-full-width" *ngIf="refSoldDocID">
-    <label>{{'Finance.RefDoc' | transloco}}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">{{refSoldDocID}}</button>
+  <div nz-row class="achih-control-full-width" *ngIf="refSoldDocID">
+    <div nz-col nzSpan="2" nzOffset="5"><label>{{'Finance.RefDoc' | transloco}}</label></div>
+    <div nz-col><button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">{{refSoldDocID}}</button></div>
   </div>
 </ng-container>

@@ -27,39 +27,39 @@ export class GeneralEvent extends hih.BaseModel {
   set Name(name: string | undefined)      { this._name = name;        }
   get Content(): string | undefined       { return this._content;     }
   set Content(cont: string | undefined)   { this._content = cont;     }
-  get StartTime(): moment.Moment | undefined {
+  get StartDate(): moment.Moment | undefined {
     return this._startTime;
   }
-  set StartTime(st: moment.Moment | undefined) {
+  set StartDate(st: moment.Moment | undefined) {
     this._startTime = st;
   }
-  get StartTimeFormatString(): string | undefined {
+  get StartDateDisplayString(): string | undefined {
     if (this._startTime) {
       return this._startTime.format(hih.momentDateFormat);
     }
 
     return '';
   }
-  get EndTime(): moment.Moment | undefined {
+  get EndDate(): moment.Moment | undefined {
     return this._endTime;
   }
-  set EndTime(et: moment.Moment | undefined) {
+  set EndDate(et: moment.Moment | undefined) {
     this._endTime = et;
   }
-  get EndTimeFormatString(): string {
+  get EndDateDisplayString(): string {
     if (this._endTime) {
       return this._endTime.format(hih.momentDateFormat);
     }
 
     return '';
   }
-  get CompleteTime(): moment.Moment | undefined {
+  get CompleteDate(): moment.Moment | undefined {
     return this._completeTime;
   }
-  set CompleteTime(ct: moment.Moment | undefined) {
+  set CompleteDate(ct: moment.Moment | undefined) {
     this._completeTime = ct;
   }
-  get CompleteTimeFormatString(): string {
+  get CompleteDateDisplayString(): string {
     if (this._completeTime) {
       return this._completeTime.format(hih.momentDateFormat);
     }
@@ -85,66 +85,74 @@ export class GeneralEvent extends hih.BaseModel {
   constructor() {
     super();
 
-    this.StartTime = moment();
+    this._startTime = moment();
     this._endTime = undefined;
     this._completeTime = undefined;
     this._ispublic = false;
   }
 
-  override onSetData(data: any): void {
+  public override onVerify(context?: any): boolean {
+    let vrst = super.onVerify(context);
+    if (vrst) {
+
+    }
+    return vrst;
+  }
+
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this._id = +data.id;
+    if (data && data.Id) {
+      this._id = +data.Id;
     }
-    if (data && data.hid) {
-      this._hid = +data.hid;
+    if (data && data.HomeID) {
+      this._hid = +data.HomeID;
     }
-    if (data && data.name) {
-      this._name = data.name;
+    if (data && data.Name) {
+      this._name = data.Name;
     }
-    if (data && data.assignee) {
-      this._assignee = data.assignee;
+    if (data && data.Assignee) {
+      this._assignee = data.Assignee;
     }
-    if (data && data.content) {
-      this._content = data.content;
+    if (data && data.Content) {
+      this._content = data.Content;
     }
-    if (data && data.startTimePoint) {
-      this._startTime = moment(data.startTimePoint, hih.momentDateFormat);
+    if (data && data.StartDate) {
+      this._startTime = moment(data.StartDate, hih.momentDateFormat);
     }
-    if (data && data.endTimePoint) {
-      this._endTime = moment(data.endTimePoint, hih.momentDateFormat);
+    if (data && data.EndDate) {
+      this._endTime = moment(data.EndDate, hih.momentDateFormat);
     }
-    if (data && data.completeTimePoint) {
-      this._completeTime = moment(data.completeTimePoint, hih.momentDateFormat);
+    if (data && data.CompleteDate) {
+      this._completeTime = moment(data.CompleteDate, hih.momentDateFormat);
     }
-    if (data && data.isPublic) {
-      this._ispublic = data.isPublic;
+    if (data && data.IsPublic) {
+      this._ispublic = data.IsPublic;
     }
-    if (data && data.refRecurrID) {
-      this._refRecurID = data.refRecurrID;
+    if (data && data.RefRecurrID) {
+      this._refRecurID = data.RefRecurrID;
     }
   }
 
-  override writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
-    robj.id = this._id;
-    robj.hid = this._hid;
-    robj.name = this._name;
+    robj.Id = this._id;
+    robj.HomeID = this._hid;
+    robj.Name = this._name;
     if (this._assignee) {
-      robj.assignee = this._assignee;
+      robj.Assignee = this._assignee;
     }
-    robj.content = this._content;
-    robj.startTimePoint = this.StartTimeFormatString;
+    robj.Content = this._content;
+    robj.StartDate = this._startTime?.format(hih.momentDateFormat);
     if (this._endTime) {
-      robj.endTimePoint = this.EndTimeFormatString;
+      robj.EndDate = this._endTime.format(hih.momentDateFormat);
     }
     if (this._completeTime) {
-      robj.completeTimePoint = this.CompleteTimeFormatString;
+      robj.CompleteDate = this._completeTime.format(hih.momentDateFormat);
     }
-    robj.isPublic = this._ispublic;
+    robj.IsPublic = this._ispublic;
     if (this._refRecurID) {
-      robj.refRecurrID = this._refRecurID;
+      robj.RefRecurrID = this._refRecurID;
     }
     return robj;
   }
@@ -162,8 +170,9 @@ export class RecurEvent extends hih.BaseModel {
   private _startTime?: moment.Moment;
   private _endTime?: moment.Moment;
   private _ispublic?: boolean;
+  private _listEvents: GeneralEvent[] = [];
 
-  public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Day;
+  public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Month;
   get ID(): number | undefined {
     return this._id;
   }
@@ -194,26 +203,26 @@ export class RecurEvent extends hih.BaseModel {
   set Content(content: string | undefined) {
     this._content = content;
   }
-  get StartTime(): moment.Moment | undefined {
+  get StartDate(): moment.Moment | undefined {
     return this._startTime;
   }
-  set StartTime(st: moment.Moment | undefined) {
+  set StartDate(st: moment.Moment | undefined) {
     this._startTime = st;
   }
-  get StartTimeFormatString(): string {
+  get StartDateDisplayString(): string {
     if (this._startTime) {
       return this._startTime.format(hih.momentDateFormat);
     }
 
     return '';
   }
-  get EndTime(): moment.Moment | undefined {
+  get EndDate(): moment.Moment | undefined {
     return this._endTime;
   }
-  set EndTime(et: moment.Moment | undefined) {
+  set EndDate(et: moment.Moment | undefined) {
     this._endTime = et;
   }
-  get EndTimeFormatString(): string {
+  get EndDateDisplayString(): string {
     if (this._endTime) {
       return this._endTime.format(hih.momentDateFormat);
     }
@@ -226,64 +235,75 @@ export class RecurEvent extends hih.BaseModel {
   set IsPublic(ip: boolean | undefined) {
     this._ispublic = ip;
   }
+  get EventList(): GeneralEvent[] {
+    return this._listEvents;
+  }
 
   constructor() {
     super();
 
-    this.StartTime = moment();
+    this._startTime = moment();
     this._endTime = undefined;
     this._ispublic = false;
   }
 
-  override onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this._id = +data.id;
+    if (data && data.Id) {
+      this._id = +data.Id;
     }
-    if (data && data.hid) {
-      this._hid = +data.hid;
+    if (data && data.HomeID) {
+      this._hid = +data.HomeID;
     }
-    if (data && data.name) {
-      this._name = data.name;
+    if (data && data.Name) {
+      this._name = data.Name;
     }
-    if (data && data.assignee) {
-      this._assignee = data.assignee;
+    if (data && data.Assignee) {
+      this._assignee = data.Assignee;
     }
-    if (data && data.content) {
-      this._content = data.content;
+    if (data && data.Content) {
+      this._content = data.Content;
     }
-    if (data && data.startTimePoint) {
-      this._startTime = moment(data.startTimePoint, hih.momentDateFormat);
+    if (data && data.StartDate) {
+      this._startTime = moment(data.StartDate, hih.momentDateFormat);
     }
-    if (data && data.endTimePoint) {
-      this._endTime = moment(data.endTimePoint, hih.momentDateFormat);
+    if (data && data.EndDate) {
+      this._endTime = moment(data.EndDate, hih.momentDateFormat);
     }
-    if (data && data.isPublic) {
-      this._ispublic = data.isPublic;
+    if (data && data.IsPublic) {
+      this._ispublic = data.IsPublic;
     }
-    if (data && data.rptType) {
-      this.repeatType = data.rptType;
+    if (data && data.RecurType) {
+      this.repeatType = data.RecurType;
     } else {
       this.repeatType = hih.RepeatFrequencyEnum.Month;
     }
+    this._listEvents = [];
+    if (data && data.RelatedEvents && data.RelatedEvents instanceof Array && data.RelatedEvents.length > 0) {
+      data.RelatedEvents.forEach((re: any) => {
+        let gevent: GeneralEvent = new GeneralEvent();
+        gevent.onSetData(re);
+        this._listEvents.push(gevent);
+      });
+    }
   }
 
-  override writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
-    robj.id = this._id;
-    robj.hid = this._hid;
-    robj.name = this._name;
+    robj.Id = this._id;
+    robj.HomeID = this._hid;
+    robj.Name = this._name;
     if (this._assignee) {
-      robj.assignee = this._assignee;
+      robj.Assignee = this._assignee;
     }
-    robj.content = this._content;
-    robj.startTimePoint = this.StartTimeFormatString;
+    robj.Content = this._content;
+    robj.StartDate = this._startTime?.format(hih.momentDateFormat);
     if (this._endTime) {
-      robj.endTimePoint = this.EndTimeFormatString;
+      robj.EndDate = this._endTime.format(hih.momentDateFormat);
     }
-    robj.isPublic = this._ispublic;
-    robj.rptType = this.repeatType;
+    robj.IsPublic = this._ispublic;
+    robj.RecurType = hih.RepeatFrequencyEnum[+this.repeatType];
     return robj;
   }
 }

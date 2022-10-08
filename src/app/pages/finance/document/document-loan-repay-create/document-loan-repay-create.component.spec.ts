@@ -38,6 +38,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
   let createLoanRepayDocSpy: any;
   let fetchAllLoanTmpDocsSpy: any;
   let readAccountSpy: any;
+  let fetchLoanTmpDocCountForAccountSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService>;
@@ -65,6 +66,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       'createLoanRepayDoc',
       'fetchAllLoanTmpDocs',
       'readAccount',
+      'fetchLoanTmpDocCountForAccount',
     ]);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
@@ -76,6 +78,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     createLoanRepayDocSpy = storageService.createLoanRepayDoc.and.returnValue(of({}));
     fetchAllLoanTmpDocsSpy = storageService.fetchAllLoanTmpDocs.and.returnValue(of([]));
     readAccountSpy = storageService.readAccount.and.returnValue(of({}));
+    fetchLoanTmpDocCountForAccountSpy = storageService.fetchLoanTmpDocCountForAccount.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -133,7 +136,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('Working with data', () => {
+  describe('Working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let loanTmpDoc: TemplateDocLoan;

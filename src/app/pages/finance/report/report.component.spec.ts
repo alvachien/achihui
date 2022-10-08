@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -9,12 +9,13 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 import { FinanceUIModule } from '../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
   ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../services';
-import { UserAuthInfo, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, } from '../../../model';
+import { UserAuthInfo, FinanceReportByAccount, FinanceReportByControlCenter, FinanceReportByOrder, FinanceReportEntryByTransactionType, } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { ReportComponent } from './report.component';
 
@@ -76,6 +77,7 @@ describe('ReportComponent', () => {
         HttpClientTestingModule,
         NgxEchartsModule.forRoot({ echarts }),
         FinanceUIModule,
+        NzProgressModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -201,26 +203,12 @@ describe('ReportComponent', () => {
     }));
   });
 
-  xdescribe('3. shall display error dialog for exception', () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    let arRptAccount: FinanceReportByAccount[] = [];
-    let arRptControlCenter: FinanceReportByControlCenter[] = [];
-    let arRptOrder: FinanceReportByOrder[] = [];
 
     beforeEach(() => {
-      arRptAccount = [];
-      arRptControlCenter = [];
-      arRptOrder = [];
-
-      // fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptAccount));
-      // fetchAllReportsByControlCenterSpy.and.returnValue(asyncData(arRptControlCenter));
-      // fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptOrder));
-
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      fetchReportByTransactionTypeSpy.and.returnValue([]);
     });
 
     beforeEach(inject([OverlayContainer],
@@ -233,14 +221,12 @@ describe('ReportComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Report by account Service fails', fakeAsync(() => {
+    it('should display error when Report by tran type Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      // fetchAllReportsByAccountSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchReportByTransactionTypeSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
       fixture.detectChanges();
 
       // Expect there is a dialog
@@ -248,7 +234,7 @@ describe('ReportComponent', () => {
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
@@ -256,163 +242,98 @@ describe('ReportComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
+      discardPeriodicTasks();
       flush();
     }));
+  });
 
-    it('should display error when Report by control center Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
+  it('drilldown to account', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToAccount();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/account']);
+  });
 
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
+  it('drilldown to accountmom', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToAccountMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/accountmom']);
+  });
 
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+  it('drilldown to tran type mom', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToTranTypeMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'trantypemom']);
+  });
 
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+  it('drilldown to control center', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToControlCenter();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/controlcenter']);
+  });
 
-      flush();
-    }));
+  it('drilldown to control center MOM', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToControlCenterMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/controlcentermom']);
+  });
 
-    it('should display error when Report by account Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      // fetchAllReportsByOrderSpy.and.returnValue(asyncError<string>('Service failed'));
+  it('drilldown to order', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToOrder();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/order']);
+  });
 
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
+  it('drilldown to tran type', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToTranType();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'trantype']);
+  });
 
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+  it('drilldown to cash', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToCash();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cash']);
+  });
 
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+  it('drilldown to cash MOM', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToCashMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cashmom']);
+  });
 
-      flush();
-    }));
-
-    it('should display error when account Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
-
-      flush();
-    }));
-
-    it('should display error when account category Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
-
-      flush();
-    }));
-
-    it('should display error when control center Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
-
-      flush();
-    }));
-
-    it('should display error when order Service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
-
-      fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
-
-      flush();
-    }));
+  it('drilldown to income statement', () => {
+    const routerstub = TestBed.inject(Router);
+    spyOn(routerstub, 'navigate');
+  
+    component.onDrillDownToStatementOfIncomeExpenseMoM();
+    expect(routerstub.navigate).toHaveBeenCalled();
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'statementofincexpmom']);
   });
 });

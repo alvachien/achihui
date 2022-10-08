@@ -6,7 +6,7 @@
         <h1>H.I.H.</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen [nzTitle]="t('Common.Dashboard')" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
@@ -48,7 +48,45 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="book">
+      <li nz-submenu [nzTitle]="'Nav.LibraryTrace' | transloco" nzIcon="read">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'config']">{{'Finance.ConfigObjects' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'person']">{{'Library.Persons' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'organization']">{{'Library.Organizations' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'location']">{{'Library.Locations' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'book']">{{'Library.Books' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'borrowrecord']">{{'Library.BorrowRecords' | transloco}}</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu [nzTitle]="'Nav.EventTrace' | transloco" nzIcon="schedule">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'overview']">{{'Common.Overview' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'normal-event']">{{'Common.NormalEvents' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'recur-event']">{{'Common.RecurEvents' | transloco}}</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'event', 'search']">{{'Common.Search' | transloco}}</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="file">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'blog', 'setting']">{{'Common.Setting' | transloco}}</a>
@@ -85,7 +123,7 @@
         <ul class="app-header-nav">
           <li>
             <div class="app-header-nav-item">
-              <i class="app-header-trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+              <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
                 style="font-size: 24px;" (click)="isCollapsed = !isCollapsed"></i>
             </div>
           </li>
@@ -98,6 +136,13 @@
         </div> -->
         <ul class="app-header-nav">
           <li class="app-header-nav-container">
+            <div class="app-header-nav-item">
+              <a class="header-nav-item" (click)="toggleTheme()">
+                <i nz-icon nzType="skin" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+            </div>
+          </li>
+          <li >
             <div class="app-header-nav-item">
               <a class="header-nav-item" href="https://www.alvachien.com" target="_blank">
                 <i nz-icon nzType="home" nzTheme="outline" class="app-header-icon"></i>
@@ -179,6 +224,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - 2022, Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - 2023, Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

@@ -15,7 +15,7 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, 
   GeneralFilterOperatorEnum, GeneralFilterValueType, FinanceNormalDocItemMassCreate, TemplateDocADP, TemplateDocLoan,
   getFilterString, AccountStatusEnum, FinanceReportEntryByTransactionType, FinanceOverviewKeyfigure, FinanceTmpDPDocFilter,
   FinanceTmpLoanDocFilter, FinanceReportEntryByTransactionTypeMoM, FinanceReportByAccountMOM, FinanceReportByControlCenterMOM,
-  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate,
+  FinanceReportEntry, FinanceReportEntryMoM, FinanceReportEntryPerDate, FinanceAssetDepreicationResult, FinanceAssetDepreciationCreationItem,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
@@ -180,7 +180,7 @@ export class FinanceOdataService {
             this.isCurrencylistLoaded = false;
             this.listCurrency = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.Currencies);
@@ -235,7 +235,7 @@ export class FinanceOdataService {
             this.isAcntCtgyListLoaded = false;
             this.listAccountCategory = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.AccountCategories);
@@ -290,7 +290,7 @@ export class FinanceOdataService {
             this.isDocTypeListLoaded = false;
             this.listDocType = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.DocumentTypes);
@@ -368,7 +368,7 @@ export class FinanceOdataService {
             this.isTranTypeListLoaded = false;
             this.listTranType = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.TranTypes);
@@ -421,7 +421,7 @@ export class FinanceOdataService {
             this.isAsstCtgyListLoaded = false;
             this.listAssetCategory = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.AssetCategories);
@@ -522,7 +522,7 @@ export class FinanceOdataService {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService readAccount failed: ${error}.`,
             ConsoleLogTypeEnum.error);
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
   }
 
@@ -3232,6 +3232,77 @@ export class FinanceOdataService {
 
         const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
         return throwError(errmsg);
+      }),
+    );
+  }
+
+  /**
+   * Post asset depreciation doc
+   */
+  public createAssetDepreciationDoc(dprecdoc: FinanceAssetDepreciationCreationItem): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = this.documentAPIUrl + '/PostAssetDepreciationDocument';
+    const jdata: string = JSON && JSON.stringify(dprecdoc);
+
+    return this.http.post(apiurl, jdata, {
+      headers,
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering Map of createAssetDepreciationDoc in FinanceOdataService: ' + response,
+          ConsoleLogTypeEnum.debug);
+
+        const ndoc = new Document();
+        ndoc.onSetData(response as any);
+        return ndoc;
+      }),
+        catchError((errresp: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in createAssetDepreciationDoc in FinanceOdataService.`,
+            ConsoleLogTypeEnum.error);
+
+          const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+          return throwError(() => new Error(errmsg));
+        }),
+      );
+
+  }
+  /**
+   * Get asset depreciation list
+   * @param year Year
+   * @param month Month
+   * @returns 
+   */
+  public getAssetDepreciationResult(year: number, month: number): Observable<FinanceAssetDepreicationResult[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    
+    const hid = this.homeService.ChosedHome!.ID;
+    var jdata = {
+      HomeID: hid,
+      Year: year,
+      Month: month,
+    };
+
+    return this.http.post(`${this.documentAPIUrl}/GetAssetDepreciationResult`, 
+      jdata, {
+      headers,
+    }).pipe(map((response: any) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService getAssetDepreciationResult.`, ConsoleLogTypeEnum.debug);
+
+      const data: any = response as any;
+      const arrst: FinanceAssetDepreicationResult[] = data['value'];
+      return arrst;
+    }),
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService getAssetDepreciationResult failed ${errresp}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
       }),
     );
   }

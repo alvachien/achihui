@@ -36,7 +36,6 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilterPipe, } from './pipes';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
@@ -84,7 +83,6 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzMessageModule,
     NzDrawerModule,
     NzEmptyModule,
-    NzCascaderModule,
     NgxEchartsModule,
   ],
   exports: [

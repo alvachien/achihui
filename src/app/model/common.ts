@@ -496,28 +496,16 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  private _nativeName?: string;
-  private _englishName?: string;
-  private _englishIsNative?: boolean;
+  private _nativeName: string = '';
+  private _chineseName: string = '';
+  private _chineseIsNative: boolean = false;
 
-  get NativeName(): string | undefined {
-    return this._nativeName;
-  }
-  set NativeName(nn: string | undefined) {
-    this._nativeName = nn;
-  }
-  get EnglishName(): string | undefined {
-    return this._englishName;
-  }
-  set EnglishName(en: string | undefined) {
-    this._englishName = en;
-  }
-  get EnglishIsNative(): boolean | undefined {
-    return this._englishIsNative;
-  }
-  set EnglishIsNative(ein: boolean | undefined) {
-    this._englishIsNative = ein;
-  }
+  get NativeName(): string    {  return this._nativeName;  }
+  set NativeName(nn: string)  {  this._nativeName = nn;    }
+  get ChineseName(): string   {  return this._chineseName; }
+  set ChineseName(en: string) {  this._chineseName = en;   }
+  get ChineseIsNative(): boolean    { return this._chineseIsNative;  }
+  set ChineseIsNative(ein: boolean) { this._chineseIsNative= ein;    }
 
   constructor() {
     super();
@@ -525,22 +513,33 @@ export class MultipleNamesObject extends BaseModel {
 
   public override onInit(): void {
     super.onInit();
+    this._nativeName = '';
+    this._chineseName = '';
+    this._chineseIsNative = false;
   }
 
   public override onVerify(context?: any): boolean {
-    return super.onVerify(context);
+    let rst = super.onVerify(context);
+
+    if (rst) {
+      if (this.NativeName.length <= 0 && this.ChineseName.length <= 0) {
+        rst = false;
+      }  
+    }
+
+    return rst;
   }
 
   public override writeJSONObject(): any {
     const rstobj: any = super.writeJSONObject();
 
-    rstobj.nativeName = this.NativeName;
-    if (this.EnglishName) {
-      rstobj.englishName = this.EnglishName;
+    if (this.NativeName.length > 0) {
+      rstobj.NativeName = this.NativeName;
     }
-    if (this.EnglishIsNative) {
-      rstobj.englishIsNative = this.EnglishIsNative;
+    if (this.ChineseName.length > 0) {
+      rstobj.ChineseName = this.ChineseName;
     }
+    rstobj.NativeIsChinese = this.ChineseIsNative;
 
     return rstobj;
   }
@@ -548,14 +547,14 @@ export class MultipleNamesObject extends BaseModel {
   public override onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.nativeName) {
-      this.NativeName = data.nativeName;
+    if (data && data.NativeName) {
+      this.NativeName = data.NativeName;
     }
-    if (data && data.englishName) {
-      this.EnglishName = data.englishName;
+    if (data && data.ChineseName) {
+      this.ChineseName = data.ChineseName;
     }
-    if (data && data.englishIsNative) {
-      this.EnglishIsNative = data.englishIsNative;
+    if (data && data.NativeIsChinese) {
+      this.ChineseIsNative = data.NativeIsChinese;
     }
   }
 }

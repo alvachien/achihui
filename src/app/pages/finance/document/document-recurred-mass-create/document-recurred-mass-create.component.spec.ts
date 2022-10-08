@@ -119,7 +119,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('Working with data', () => {
+  describe('Working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let ardates: RepeatedDatesAPIOutput[] = [];

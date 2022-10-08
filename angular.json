@@ -25,6 +25,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",
@@ -43,8 +44,21 @@
             ],
             "styles": [
               "src/styles.less",
-              "node_modules/katex/dist/katex.min.css"
+              "node_modules/katex/dist/katex.min.css",
+              {
+                "input": "src/styles/default.less",
+                "bundleName": "default",
+                "inject": false
+              },
+              {
+                "input": "src/styles/dark.less",
+                "bundleName": "dark",
+                "inject": false
+              }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles/themes"]
+            },
             "scripts": [
               "node_modules/marked/marked.min.js",
               "node_modules/katex/dist/katex.min.js"
@@ -112,7 +126,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "less",
             "assets": [
               "src/favicon.ico",
               "src/assets",
@@ -131,6 +144,9 @@
               "src/styles.less",
               "node_modules/katex/dist/katex.min.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles/themes"]
+            },
             "scripts": [
               "node_modules/marked/marked.min.js",
               "node_modules/katex/dist/katex.min.js"

@@ -32,6 +32,39 @@ export class WelcomeComponent {
   get configImage(): string {
     return `${environment.AppHost}/assets/img/Config.png`;
   }
+  get financeSearchImage(): string {
+    return `${environment.AppHost}/assets/img/Finance-search.png`;
+  }
+  get bookImage(): string {
+    return `${environment.AppHost}/assets/img/Book.png`;
+  }
+  get personImage(): string {
+    return `${environment.AppHost}/assets/img/Person.png`;
+  }
+  get locationImage(): string {
+    return `${environment.AppHost}/assets/img/Location.png`;
+  }
+  get organizationImage(): string {
+    return `${environment.AppHost}/assets/img/Organization.png`;
+  }
+  get borrowRecordsImage(): string {
+    return `${environment.AppHost}/assets/img/Borrow-records.png`;
+  }
+  get bookSearchImage(): string {
+    return `${environment.AppHost}/assets/img/Book-search.png`;
+  }
+  get eventOverviewImage(): string {
+    return `${environment.AppHost}/assets/img/Event-overview.png`;
+  }
+  get eventListImage(): string {
+    return `${environment.AppHost}/assets/img/Event.png`;
+  }
+  get eventRecurListImage(): string {
+    return `${environment.AppHost}/assets/img/Event-recur.png`;
+  }
+  get eventSearchImage(): string {
+    return `${environment.AppHost}/assets/img/Event-search.png`;
+  }
   onNavigateToOverview(): void {
     this.router.navigate(['finance', 'overview']);
   }
@@ -49,5 +82,38 @@ export class WelcomeComponent {
   }
   onNavigateToConfig(): void {
     this.router.navigate(['finance', 'config']);
+  }
+  onNavigateToFinanceSearch(): void {
+    this.router.navigate(['finance', 'search']);
+  }
+  onNavigateToLibraryPerson(): void {
+    this.router.navigate(['library', 'person']);
+  }
+  onNavigateToLibraryOrganization(): void {
+    this.router.navigate(['library', 'organization']);
+  }
+  onNavigateToLibraryLocation(): void {
+    this.router.navigate(['library', 'location']);
+  }
+  onNavigateToLibraryBooks(): void {
+    this.router.navigate(['library', 'book']);
+  }
+  onNavigateToLibraryBorrowRecord(): void {
+    this.router.navigate(['library', 'borrowrecord']);
+  }
+  onNavigateToLibrarySearch(): void {
+    this.router.navigate(['library', 'search']);
+  }
+  onNavigateToEventOverview(): void {
+    this.router.navigate(['event', 'overview']);
+  }
+  onNavigateToEventList(): void {
+    this.router.navigate(['event', 'normal-event']);
+  }
+  onNavigateToEventRecurList(): void {
+    this.router.navigate(['event', 'recur-event']);
+  }
+  onNavigateToEventSearch(): void {
+    this.router.navigate(['event', 'search']);
   }
 }

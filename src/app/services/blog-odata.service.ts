@@ -74,7 +74,7 @@ export class BlogOdataService {
           this.isSettingLoaded = false;
           this.setting = null;
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
     } else {
       return of(this.setting);
@@ -181,7 +181,7 @@ export class BlogOdataService {
             this.isCollectionlistLoaded = false;
             this.listCollection = [];
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.listCollection);

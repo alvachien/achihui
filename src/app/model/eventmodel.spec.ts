@@ -13,17 +13,40 @@ describe('GeneralEvent', () => {
     instance = new GeneralEvent();
   });
 
+  it('onSetData', () => {
+    instance.onSetData({
+      "Id": 1,
+      "HomeID": 1,
+      "Name": "Logon to elder mailbox | 1 / 29",
+      "StartDate": "2018-07-13",
+      "EndDate": "2018-07-13",
+      "CompleteDate": "2018-08-14",
+      "Content": "Logon elder mailbox",
+      "IsPublic": false,
+      "Assignee": "e8d92277-a682-4328-ba92-27b6e9627012",
+      "RefRecurrID": 1,
+      "CreatedAt": "2018-07-13T00:00:00+08:00",
+      "Createdby": "e8d92277-a682-4328-ba92-27b6e9627012",
+      "UpdatedAt": "2018-08-14T00:00:00+08:00",
+      "Updatedby": "e8d92277-a682-4328-ba92-27b6e9627012"      
+    });
+    expect(instance.ID).toEqual(1);
+    expect(instance.HID).toEqual(1);
+    expect(instance.Name).toEqual("Logon to elder mailbox | 1 / 29");
+
+  });
+
   it('writeJsonObject and onSetData', () => {
     instance.Name = 'test';
     instance.IsPublic = false;
     instance.ID = 1;
     instance.HID = 1;
-    instance.StartTime = moment();
+    instance.StartDate = moment();
     instance.Assignee = 'test';
     instance.Content = 'test_content';
 
-    expect(instance.StartTimeFormatString).toBeTruthy();
-    expect(instance.EndTimeFormatString).toEqual('');
+    expect(instance.StartDateDisplayString).toBeTruthy();
+    expect(instance.EndDateDisplayString).toEqual('');
 
     const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
@@ -31,6 +54,10 @@ describe('GeneralEvent', () => {
     const instance2: GeneralEvent = new GeneralEvent();
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
+    expect(instance2.HID).toEqual(1);
+    expect(instance2.ID).toEqual(1);
+    expect(instance2.Name).toEqual(instance.Name);
+    expect(instance2.Content).toEqual(instance.Content);
   });
 });
 
@@ -48,7 +75,7 @@ describe('RecurEvent', () => {
     instance.HID = 1;
     instance.Assignee = 'test';
     instance.Content = 'test_content';
-    expect(instance.EndTimeFormatString).toEqual('');
+    expect(instance.EndDateDisplayString).toEqual('');
 
     const jsondata: any = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
