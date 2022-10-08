@@ -170,6 +170,7 @@ export class RecurEvent extends hih.BaseModel {
   private _startTime?: moment.Moment;
   private _endTime?: moment.Moment;
   private _ispublic?: boolean;
+  private _listEvents: GeneralEvent[] = [];
 
   public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Month;
   get ID(): number | undefined {
@@ -234,6 +235,9 @@ export class RecurEvent extends hih.BaseModel {
   set IsPublic(ip: boolean | undefined) {
     this._ispublic = ip;
   }
+  get EventList(): GeneralEvent[] {
+    return this._listEvents;
+  }
 
   constructor() {
     super();
@@ -243,7 +247,7 @@ export class RecurEvent extends hih.BaseModel {
     this._ispublic = false;
   }
 
-  override onSetData(data: any): void {
+  public override onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -275,9 +279,17 @@ export class RecurEvent extends hih.BaseModel {
     } else {
       this.repeatType = hih.RepeatFrequencyEnum.Month;
     }
+    this._listEvents = [];
+    if (data && data.RelatedEvents && data.RelatedEvents instanceof Array && data.RelatedEvents.length > 0) {
+      data.RelatedEvents.forEach((re: any) => {
+        let gevent: GeneralEvent = new GeneralEvent();
+        gevent.onSetData(re);
+        this._listEvents.push(gevent);
+      });
+    }
   }
 
-  override writeJSONObject(): any {
+  public override writeJSONObject(): any {
     const robj: any = super.writeJSONObject();
     robj.Id = this._id;
     robj.HomeID = this._hid;
@@ -291,7 +303,7 @@ export class RecurEvent extends hih.BaseModel {
       robj.EndDate = this._endTime.format(hih.momentDateFormat);
     }
     robj.IsPublic = this._ispublic;
-    robj.RecurType = this.repeatType;
+    robj.RecurType = hih.RepeatFrequencyEnum[+this.repeatType];
     return robj;
   }
 }

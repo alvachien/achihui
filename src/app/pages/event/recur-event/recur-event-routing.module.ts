@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: '', component: RecurEventListComponent },
   { path: 'list', component: RecurEventListComponent },
   { path: 'create', component: RecurEventDetailComponent },
+  { path: 'display/:id', component: RecurEventDetailComponent },
 ];
 
 @NgModule({

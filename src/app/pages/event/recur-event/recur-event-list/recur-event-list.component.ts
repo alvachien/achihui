@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { translate } from '@ngneat/transloco';
 
 import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from 'src/app/model';
@@ -23,7 +24,8 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
 
   constructor(public odataService: EventStorageService,
     public uiStatusService: UIStatusService,
-    public modalService: NzModalService) {
+    public modalService: NzModalService,
+    private router: Router,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -88,5 +90,46 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     const sortField = (currentSort && currentSort.key) || null;
     const sortOrder = (currentSort && currentSort.value) || null;
     this.loadDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
+  }
+
+  onDisplay(eventid: number): void {
+    this.router.navigate(['/event/recur-event/display/' + eventid.toString()]);
+
+  }
+  onDelete(eventid: number): void {
+    this.modalService.confirm({
+      nzTitle: 'Are you sure delete this event?',
+      nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService.deleteRecurEvent(eventid).subscribe({
+          next: data => {
+            let sdlg = this.modalService.success({
+              nzTitle: translate('Common.Success')
+            });
+            sdlg.afterClose.subscribe(() => {
+              let dix = this.dataSet.findIndex(p => p.ID === eventid);
+              if (dix !== -1) {
+                this.dataSet.splice(dix, 1);
+                this.dataSet = [...this.dataSet];
+              }  
+            });
+            setTimeout(() => sdlg.destroy(), 1000);
+          },
+          error: err => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventListComponent onDelete failed ${err}`, ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          }
+        });            
+      },
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel')
+    });
   }
 }

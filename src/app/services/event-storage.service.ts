@@ -95,36 +95,29 @@ export class EventStorageService {
 
   /**
    * Read general event
-   * @param eid Event ID
+   * @param eventid ID of the Event
    */
-  public readGeneralEvent(eid: number): Observable<GeneralEvent> {
+  public readGeneralEvent(eventid: number): Observable<GeneralEvent> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.generalEventUrl + '/' + eid.toString();
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    let apiurl: string = this.generalEventUrl + '/' + eventid.toString();
     return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
+        headers,
       })
       .pipe(map((response: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering EventStorageService readGeneralEvents`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService readGeneralEvents`, ConsoleLogTypeEnum.debug);
 
         let hd: GeneralEvent = new GeneralEvent();
         hd.onSetData(response);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering EventStorageService readGeneralEvents failed ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService readGeneralEvents, failed ${error}`, ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }),
       );
   }
@@ -145,8 +138,7 @@ export class EventStorageService {
       headers: headers,
     })
     .pipe(map((response: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService, createGeneralEvent, map.`,
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService, createGeneralEvent.`, ConsoleLogTypeEnum.debug);
 
       const hd: GeneralEvent = new GeneralEvent();
       hd.onSetData(response as any);
@@ -155,12 +147,11 @@ export class EventStorageService {
 
       return hd;
     }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, createGeneralEvent failed ${error}`,
-          ConsoleLogTypeEnum.error);
+    catchError((error: HttpErrorResponse) => {
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, createGeneralEvent failed ${error}`, ConsoleLogTypeEnum.error);
 
-        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      }));
+      return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+    }));
   }
 
   /**
@@ -183,8 +174,7 @@ export class EventStorageService {
       return true;
     }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, deleteGeneralEvent failed ${error}`,
-          ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService, deleteGeneralEvent failed ${error}`, ConsoleLogTypeEnum.error);
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
@@ -216,13 +206,12 @@ export class EventStorageService {
   
         return true;
       }),
-        catchError((errresp: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService completeGeneralEvent failed ${errresp}`,
-            ConsoleLogTypeEnum.error);
-  
-          return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
-        }),
-      );
+      catchError((errresp: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService completeGeneralEvent failed ${errresp}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
+      }),
+    );
   }
 
   /**
@@ -248,6 +237,7 @@ export class EventStorageService {
       params = params.append('$skip', `${skip}`);
     }
     params = params.append('$count', `true`);
+    params = params.append('$expand', 'RelatedEvents');
     params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
                   
     return this._http.get(this.recurEventUrl, {headers: headers, params: params})
@@ -279,26 +269,24 @@ export class EventStorageService {
 
   /**
    * Read recur event
-   * @param eid Event ID
+   * @param eventid ID of Event
    */
-  public readRecurEvent(eid: number): Observable<any> {
+  public readRecurEvent(eventid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = this.recurEventUrl + '/' + eid.toString();
+    let apiurl: string = this.recurEventUrl + '/' + eventid.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('$expand', 'RelatedEvents');
 
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService readRecurEvent`, ConsoleLogTypeEnum.debug);
 
         let repdata: any = <any>response;
         let hd: RecurEvent = new RecurEvent();
@@ -309,6 +297,7 @@ export class EventStorageService {
           for (let evnt of repdata.eventList) {
             let gevnt: GeneralEvent = new GeneralEvent();
             gevnt.onSetData(evnt);
+
             listEvent.push(gevnt);
           }
         }
@@ -317,77 +306,45 @@ export class EventStorageService {
           Header: hd,
           Events: listEvent,
         };
-      }));
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService readRecurEvent failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }),
+    );
   }
 
   /**
    * Create recur event
+   * @param objtbc Object to be created
    */
-  public createRecurEvent(reobj: RecurEvent): Observable<RecurEvent> {
+  public createRecurEvent(objtbc: RecurEvent): Observable<RecurEvent> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
-    let jdata: string = reobj.writeJSONString();
+    let jdata: any = objtbc.writeJSONObject();
 
     return this._http.post(this.recurEventUrl, jdata, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService createRecurEvent`, ConsoleLogTypeEnum.debug);
 
         let hd: RecurEvent = new RecurEvent();
         hd.onSetData(response);
         return hd;
-      }));
-  }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService createRecurEvent failed with: ${error}`, ConsoleLogTypeEnum.error);
 
-  /**
-   * Calculate the recur events
-   */
-  public calcRecurEvents(reobj: RecurEvent): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + '/RecurEventSimulator';
-    // let params: HttpParams = new HttpParams();
-    // params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    let jdata: any = {
-      startTimePoint: reobj.StartDateDisplayString,
-      endTimePoint: reobj.EndDateDisplayString,
-      rptType: <number>reobj.repeatType,
-      name: reobj.Name,
-    };
-
-    return this._http.post(apiurl, jdata, {
-        headers: headers,
-        // params: params,
-      })
-      .pipe(map((response: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering calcRecurEvents in EventStorageService`);
-        }
-
-        let arRst: GeneralEvent[] = [];
-        if (response instanceof Array && response.length > 0) {
-          for (let rdata of response) {
-            let hd: GeneralEvent = new GeneralEvent();
-            hd.onSetData(rdata);
-
-            arRst.push(hd);
-          }
-        }
-
-        return arRst;
-      }));
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }),
+    );
   }
 
   /**
@@ -402,19 +359,22 @@ export class EventStorageService {
 
     let apiurl: string = this.recurEventUrl + '/' + rid.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
 
     return this._http.delete(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering EventStorageService deleteRecurEvent`, ConsoleLogTypeEnum.debug);
 
         return response.ok;
-      }));
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering EventStorageService deleteRecurEvent failed with: ${error}`, ConsoleLogTypeEnum.error);
+
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      }),
+      );
     }
 
   /**

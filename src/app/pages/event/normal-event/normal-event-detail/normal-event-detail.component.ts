@@ -6,18 +6,18 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import * as moment from 'moment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   GeneralEvent, momentDateFormat, getUIModeString, } from '../../../../model';
 import { AuthService, HomeDefOdataService, EventStorageService, UIStatusService, } from '../../../../services';
-import * as moment from 'moment';
 
 @Component({
   selector: 'hih-normal-event-detail',
   templateUrl: './normal-event-detail.component.html',
   styleUrls: ['./normal-event-detail.component.less'],
 })
-export class NormalEventDetailComponent implements OnInit {
+export class NormalEventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean = false;
   public routerID = -1; // Current object ID in routing
