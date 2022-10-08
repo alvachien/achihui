@@ -83,12 +83,14 @@
 <nz-table #basicTable [nzData]="dataSet" [nzPageSize]="20" >
     <thead>
         <tr>
+            <th>ID</th>
             <th>{{'Common.Name' | transloco}}</th>
             <th>{{'Common.Date' | transloco}}</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of basicTable.data">
+            <td>{{data.ID}}</td>
             <td>{{data.Name}}</td>
             <td>{{data.StartDateDisplayString}} - {{data.EndDateDisplayString}}</td>
         </tr>

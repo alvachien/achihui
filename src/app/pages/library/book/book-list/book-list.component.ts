@@ -136,9 +136,9 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
   onDelete(bid: number): void {
     this.modal.confirm({
-      nzTitle: 'Are you sure delete this book?',
-      nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
-      nzOkText: 'Yes',
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {

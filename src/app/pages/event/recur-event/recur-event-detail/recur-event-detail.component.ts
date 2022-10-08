@@ -37,8 +37,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
     private activateRoute: ActivatedRoute,
     private router: Router,
     private modalService: NzModalService,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventDetailComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.detailFormGroup = new FormGroup({
       idControl: new FormControl({ value: undefined, disabled: true }),
@@ -50,14 +49,12 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`, ConsoleLogTypeEnum.debug);
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
@@ -100,8 +97,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
                 }
               },
               error: err => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error);
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`, ConsoleLogTypeEnum.error);
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
                   nzContent: err,
@@ -155,7 +151,12 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
         }
       },
       error: err => {
-        console.error(err);
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSimulateGeneratedEvents, getRepeatedDates, failed ${err}`, ConsoleLogTypeEnum.error);
+        this.modalService.error({
+          nzTitle: translate('Common.Error'),
+          nzContent: err,
+          nzClosable: true,
+        });
       }
     })
   }
@@ -186,8 +187,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
           this.router.navigate(['/event/normal-event/display/' + e.ID!.toString()]);
         },
         error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSave failed ${err}...`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSave createRecurEvent failed ${err}...`, ConsoleLogTypeEnum.error);
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: err,

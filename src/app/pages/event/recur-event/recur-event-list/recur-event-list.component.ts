@@ -26,23 +26,20 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     public uiStatusService: UIStatusService,
     public modalService: NzModalService,
     private router: Router,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit...', ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this.loadDataFromServer(this.pageIndex, this.pageSize, null, null, null);
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -66,15 +63,14 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (x: BaseListModel<RecurEvent>) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit fetchGeneralEvents...',
-            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit fetchGeneralEvents...', ConsoleLogTypeEnum.debug);
 
           this.totalCount = x.totalCount;
           this.dataSet = x.contentList;
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventListComponent fetchGeneralEvents failed ${error}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventListComponent fetchGeneralEvents failed ${error}`, ConsoleLogTypeEnum.error);
+
           this.modalService.error({
             nzTitle: translate('Common.Error'),
             nzContent: error,
@@ -94,11 +90,10 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
 
   onDisplay(eventid: number): void {
     this.router.navigate(['/event/recur-event/display/' + eventid.toString()]);
-
   }
   onDelete(eventid: number): void {
     this.modalService.confirm({
-      nzTitle: 'Are you sure delete this event?',
+      nzTitle: translate('Common.DeleteConfirmation'),
       nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
       nzOkText: 'Yes',
       nzOkType: 'primary',

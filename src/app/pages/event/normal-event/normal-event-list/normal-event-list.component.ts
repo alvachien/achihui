@@ -109,7 +109,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   }
   onDelete(eventid: number): void {
     this.modalService.confirm({
-      nzTitle: 'Are you sure delete this event?',
+      nzTitle: translate('Common.DeleteConfirmation'),
       nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
       nzOkText: 'Yes',
       nzOkType: 'primary',

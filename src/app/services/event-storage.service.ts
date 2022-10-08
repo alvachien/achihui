@@ -17,6 +17,13 @@ export class EventStorageService {
   private bufferedGeneralEvents: Map<number, GeneralEvent>;
   private bufferedRecurEvents: Map<number, RecurEvent>;
 
+  get GeneralEventsInBuffer(): Map<number, GeneralEvent> {
+    return this.bufferedGeneralEvents;
+  }
+  get RecurEventsInBuffer(): Map<number, RecurEvent> {
+    return this.bufferedRecurEvents;
+  }
+
   readonly eventHabitUrl: string = environment.ApiUrl + '/eventhabit';
   readonly recurEventUrl: string = environment.ApiUrl + '/RecurEvents';
   readonly generalEventUrl: string = environment.ApiUrl + '/NormalEvents';

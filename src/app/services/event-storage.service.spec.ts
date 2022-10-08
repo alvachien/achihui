@@ -8,7 +8,7 @@ import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { HomeDefOdataService } from './home-def-odata.service';
-import { UserAuthInfo, EventHabit, EventHabitDetail, } from '../model';
+import { UserAuthInfo, EventHabit, EventHabitDetail, BaseListModel, GeneralEvent, } from '../model';
 import { FakeDataHelper, asyncData, asyncError, } from '../../testing';
 
 describe('EventStorageService', () => {
@@ -59,8 +59,9 @@ describe('EventStorageService', () => {
 
     it('should return data for success case', () => {
       service.fetchGeneralEvents(100, 0).subscribe({
-        next: (data: any) => {
-          expect(data.totalCount).toEqual(0);
+        next: (data: BaseListModel<GeneralEvent>) => {
+          expect(data.totalCount).toEqual(10);
+          expect(data.contentList.length).toEqual(1);          
         },
         error: (fail: any) => {
           // Empty
@@ -70,10 +71,16 @@ describe('EventStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.generalEventUrl;
-       });
+      });
 
       // Respond with the mock data
-      req.flush({'@odata.count': 0, contentList: []});
+      req.flush({'@odata.count': 10, value: [{
+        "Id": 10,
+        "HomeID": 1,
+        "Name": "Logon to elder mailbox | 1 / 29",
+        "StartDate": "2018-07-13",
+        "EndDate": "2018-07-13"        
+      }]});
     });
 
     it('should return error in case error appear', () => {
@@ -107,7 +114,84 @@ describe('EventStorageService', () => {
     });
 
     it('shall work with data', () => {
+      let objtbc: GeneralEvent = new GeneralEvent();
+      objtbc.ID = 11;
+      service.createGeneralEvent(objtbc).subscribe({
+        next: val => {
+          expect(service.GeneralEventsInBuffer.has(objtbc.ID!)).toBeTrue();
+        },
+        error: err => {
+          fail('Shall not reach here');
+        }
+      });
 
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.generalEventUrl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush({
+        "Id": 11,
+        "HomeID": 1,
+        "Name": "Logon to elder mailbox | 1 / 29",
+        "StartDate": "2018-07-13",
+        "EndDate": "2018-07-13"
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      let objtbc: GeneralEvent = new GeneralEvent();
+      objtbc.ID = 11;
+      service.createGeneralEvent(objtbc).subscribe({
+        next: (data: any) => {
+          fail('expected to fail');
+        },
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.generalEventUrl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readGeneralEvent', () => {
+    beforeEach(() => {
+      service = TestBed.inject(EventStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('shall work with data', () => {
+
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.readGeneralEvent(2).subscribe({
+        next: (data: any) => {
+          fail('expected to fail');
+        },
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.generalEventUrl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 
@@ -123,6 +207,25 @@ describe('EventStorageService', () => {
 
     it('shall work with data', () => {
 
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.deleteGeneralEvent(2).subscribe({
+        next: (data: any) => {
+          fail('expected to fail');
+        },
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.generalEventUrl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 
@@ -168,6 +271,40 @@ describe('EventStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.recurEventUrl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('deleteRecurEvent', () => {
+    beforeEach(() => {
+      service = TestBed.inject(EventStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('shall work with data', () => {
+
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.deleteRecurEvent(2).subscribe({
+        next: (data: any) => {
+          fail('expected to fail');
+        },
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.recurEventUrl + '/2';
       });
 
       // respond with a 500 and the error message in the body
