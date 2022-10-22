@@ -65,6 +65,15 @@ export class WelcomeComponent {
   get eventSearchImage(): string {
     return `${environment.AppHost}/assets/img/Event-search.png`;
   }
+  get homeImage(): string {
+    return `${environment.AppHost}/assets/img/Home.png`;
+  }
+  onNavigateToHomeList(): void {
+    this.router.navigate(['homedef']);
+  }
+  onNavigateToCurrentHome(): void {
+    this.router.navigate(['homedef']);
+  }
   onNavigateToOverview(): void {
     this.router.navigate(['finance', 'overview']);
   }

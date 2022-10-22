@@ -1,3 +1,17 @@
+<h3 nz-typography class="center-text">{{'Nav.HomeList' | transloco}}</h3>
+<div nz-row class="welcome-content-row" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+  <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
+    <a (click)="onNavigateToHomeList()">
+      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Nav.HomeList' | transloco" >
+        <div class="components-overview-img">
+          <img nz-image width="200px" height="200px" [nzSrc]="homeImage" nzDisablePreview="true" alt="" />
+        </div>
+      </nz-card>
+    </a>
+  </div>
+
+</div>
+
 <nz-divider></nz-divider>
 <h3 nz-typography class="center-text">{{'Nav.FinanceTrace' | transloco}}</h3>
 

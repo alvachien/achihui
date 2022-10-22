@@ -276,7 +276,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         .subscribe({
         next: val => {
           // Shall create successfully.
-          this.router.navigate(['/homedef/display/' + val.ID.toString()]);
+          this.router.navigate(['/homedef/display/' + hdobj.ID.toString()]);
         },
         error: err => {
           // Show error
