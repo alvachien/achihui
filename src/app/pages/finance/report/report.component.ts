@@ -75,6 +75,54 @@ export class ReportComponent implements OnInit, OnDestroy {
     // Load data
     this._destroyed$ = new ReplaySubject(1);
 
+    if (!this.isChildMode) {
+      this.buildData();
+    }
+  }
+
+  ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent OnDestroy...',
+      ConsoleLogTypeEnum.debug);
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+      this._destroyed$ = null;
+    }
+  }
+
+  onDrillDownToAccount(): void {
+    this.router.navigate(['/finance/report/account']);
+  }
+  onDrillDownToAccountMoM(): void {
+    this.router.navigate(['/finance/report/accountmom']);
+  }
+  onDrillDownToTranTypeMoM(): void {
+    this.router.navigate(['finance', 'report', 'trantypemom']);
+  }
+  onDrillDownToControlCenter(): void {
+    this.router.navigate(['/finance/report/controlcenter']);
+  }
+  onDrillDownToControlCenterMoM(): void {
+    this.router.navigate(['/finance/report/controlcentermom']);
+  }
+  onDrillDownToOrder(): void {
+    this.router.navigate(['/finance/report/order']);
+  }
+  onDrillDownToTranType(): void {
+    this.router.navigate(['finance', 'report', 'trantype']);
+  }
+  onDrillDownToCash(): void {
+    this.router.navigate(['finance', 'report', 'cash']);
+  }
+  onDrillDownToCashMoM(): void {
+    this.router.navigate(['finance', 'report', 'cashmom']);
+  }
+  onDrillDownToStatementOfIncomeExpenseMoM(): void {
+    this.router.navigate(['finance', 'report', 'statementofincexpmom']);
+  }
+
+  private buildData(): void {
     this.isLoadingResults = true;
     let today = moment();
     this.reportByMostIncomeInCurrentMonth = [];
@@ -174,177 +222,5 @@ export class ReportComponent implements OnInit, OnDestroy {
           });    
         }
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
-
-  onDrillDownToAccount(): void {
-    this.router.navigate(['/finance/report/account']);
-  }
-  onDrillDownToAccountMoM(): void {
-    this.router.navigate(['/finance/report/accountmom']);
-  }
-  onDrillDownToTranTypeMoM(): void {
-    this.router.navigate(['finance', 'report', 'trantypemom']);
-  }
-  onDrillDownToControlCenter(): void {
-    this.router.navigate(['/finance/report/controlcenter']);
-  }
-  onDrillDownToControlCenterMoM(): void {
-    this.router.navigate(['/finance/report/controlcentermom']);
-  }
-  onDrillDownToOrder(): void {
-    this.router.navigate(['/finance/report/order']);
-  }
-  onDrillDownToTranType(): void {
-    this.router.navigate(['finance', 'report', 'trantype']);
-  }
-  onDrillDownToCash(): void {
-    this.router.navigate(['finance', 'report', 'cash']);
-  }
-  onDrillDownToCashMoM(): void {
-    this.router.navigate(['finance', 'report', 'cashmom']);
-  }
-  onDrillDownToStatementOfIncomeExpenseMoM(): void {
-    this.router.navigate(['finance', 'report', 'statementofincexpmom']);
-  }
-
-  private buildInfo() {
-    // Account
-    this.reportAccountAsset = 0;
-    this.reportAccountLibility = 0;
-    this.arAccounts.forEach((val: Account) => {
-      const bal = this.dataReportByAccount.find((val3: FinanceReportByAccount) => {
-        return val.Id === val3.AccountId;
-      });
-      if (bal !== undefined) {
-        const ctgy = this.arAccountCategories.find((val2: AccountCategory) => {
-          return val.CategoryId === val2.ID;
-        });
-
-        if (ctgy) {
-          if (ctgy.AssetFlag) {
-            this.reportAccountAsset = bal.Balance + (+this.reportAccountAsset);
-          } else {
-            this.reportAccountLibility = bal.Balance + (+this.reportAccountLibility);
-          }  
-        }
-      }
-    });
-    // Echarts
-    this.chartAccountOption = {
-      xAxis: [{
-        type: 'value',
-        show: false,
-      }],
-      yAxis: [{
-        type: 'category',
-        show: false,
-      }],
-      series: [
-        {
-          name: 'Asset',
-          type: 'bar',
-          stack: '1',
-          itemStyle: {
-            color: 'green'
-          },
-          label: {
-            show: true,
-            position: 'right'
-          },
-          data: [this.reportAccountAsset]
-        },
-        {
-          name: 'Liability',
-          type: 'bar',
-          stack: '1',
-          itemStyle: {
-            color: 'red'
-          },
-          label: {
-            show: true,
-            position: 'left'
-          },
-          data: [this.reportAccountLibility]
-        }
-      ]
-    };
-
-    // Control center
-    const ccname: string[] = [];
-    const ccval: number[] = [];
-    this.arControlCenters.forEach((val: ControlCenter) => {
-      const bal = this.dataReportByControlCenter.find((val3: FinanceReportByControlCenter) => {
-        return val.Id === val3.ControlCenterId;
-      });
-
-      ccname.push(val.Name);
-      ccval.push(bal ? bal.Balance : 0);
-    });
-
-    this.chartControlCenterOption = {
-      xAxis: {
-        type: 'category',
-        data: ccname
-      },
-      yAxis: {
-        type: 'value'
-      },
-      toolbox: {
-        show: true,
-        feature: {
-          dataView: {show: true, readOnly: true},
-          restore: {show: true},
-          saveAsImage: {show: true},
-        }
-      },
-      series: [{
-        data: ccval,
-        type: 'bar'
-      }]
-    };
-
-    // Order
-    const ordname: string[] = [];
-    const ordval: number[] = [];
-    this.arOrders.forEach((val: Order) => {
-      const bal = this.dataReportByOrder.find((val3: FinanceReportByOrder) => {
-        return val.Id === val3.OrderId;
-      });
-
-      ordname.push(val.Name);
-      ordval.push(bal ? bal.Balance : 0);
-    });
-    this.chartOrderOption = {
-      xAxis: {
-        type: 'category',
-        data: ordname
-      },
-      yAxis: {
-        type: 'value'
-      },
-      toolbox: {
-        show: true,
-        feature: {
-          dataView: {show: true, readOnly: true},
-          restore: {show: true},
-          saveAsImage: {show: true},
-        }
-      },
-      series: [{
-        data: ordval,
-        type: 'bar'
-      }]
-    };
   }
 }

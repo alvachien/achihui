@@ -9,6 +9,14 @@
     </nz-page-header-extra>
 </nz-page-header>
 
+<div *ngIf="isChildMode">
+    <article nz-typography>
+      <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
+      <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
+    </article>
+</div>
+
+<div *ngIf="!isChildMode">
 <div class="control-full-width">
     <div nz-row *ngFor="let filter of filters; let idxfilter = index" class="control-full-width">
         <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both;">
@@ -84,4 +92,5 @@
 
 <div class="control-full-width">
   <hih-fin-document-item-view [filterDocItem]="realFilters"></hih-fin-document-item-view>
+</div>
 </div>

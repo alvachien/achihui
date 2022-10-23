@@ -29,7 +29,7 @@
               <nz-divider nzType="vertical"></nz-divider>
               <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">{{'Common.ChooseThisHome' | transloco}}</a>
               <a nz-button nzType="link" routerLink="/homedef/display/{{row.ID}}" *ngIf="IsCurrentHomeChosed">{{'Common.Display' | transloco}}</a>
-              <a nz-button nzType="link" routerLink="/homedef/edit/{{row.ID}}" *ngIf="IsCurrentHomeChosed">{{'Common.Edit' | transloco}}</a>
+              <a nz-button nzType="link" routerLink="/homedef/edit/{{row.ID}}" *ngIf="IsCurrentHomeChosed && !IsChildMode">{{'Common.Edit' | transloco}}</a>
             </td>
             <td>{{ row.Name }}</td>
             <td>{{ row.CreatorDisplayAs }}</td>

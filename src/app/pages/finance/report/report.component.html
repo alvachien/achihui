@@ -4,7 +4,7 @@
     <nz-breadcrumb-item>{{'Finance.Reports' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
-  <nz-page-header-extra>
+  <nz-page-header-extra *ngIf="!isChildMode">
     <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
       {{'Finance.DetailReport' | transloco}}
       <i nz-icon nzType="down"></i>

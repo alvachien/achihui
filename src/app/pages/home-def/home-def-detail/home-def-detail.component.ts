@@ -300,7 +300,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this.listMembers = memes;
   }
   onDeleteMember(idx: number) {
-    const memes = this.listMembers.splice(idx, 1);
+    const memes = this.listMembers.slice();
+    memes.splice(idx, 1);
     this.listMembers = memes;
   }
 }

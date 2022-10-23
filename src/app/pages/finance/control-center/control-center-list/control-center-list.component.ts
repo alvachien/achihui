@@ -98,7 +98,8 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
             return val2.Id === rid;
           });
           if (extidx !== -1) {
-            this.dataSet = extccs.splice(extidx, 1);
+            extccs.splice(extidx, 1);
+            this.dataSet = extccs;
           }
         },
         error: err => {

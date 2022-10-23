@@ -49,13 +49,13 @@
           <ul nz-menu>
             <li nz-menu-item (click)="onDisplayAccount()">{{'Common.Display' | transloco}}</li>
             <li nz-menu-divider></li>
-            <li nz-menu-item (click)="onChangeAccountName()">{{'Finance.ChangeAccountName' | transloco}}</li>
+            <li nz-menu-item [nzDisabled]="isChildMode" (click)="onChangeAccountName()">{{'Finance.ChangeAccountName' | transloco}}</li>
             <!-- <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li> -->
             <li nz-menu-divider></li>
             <li nz-submenu (nzOpenChange)="openAdvanceOperations()" [nzTitle]="'Common.AdvancedOperations' | transloco">
               <ul>
-                <li nz-menu-item (click)="onSettleAccount()">{{'Finance.SettleAccountWithInitialBalance' | transloco}}</li>
-                <li nz-menu-item (click)="onCloseAccount()">{{'Common.Close' | transloco}}</li>
+                <li nz-menu-item [nzDisabled]="isChildMode" (click)="onSettleAccount()">{{'Finance.SettleAccountWithInitialBalance' | transloco}}</li>
+                <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCloseAccount()">{{'Common.Close' | transloco}}</li>
               </ul>
             </li>
           </ul>
