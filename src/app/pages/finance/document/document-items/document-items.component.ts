@@ -278,6 +278,12 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   public onCreateDocItem(): void {
     const di: DocumentItem = new DocumentItem();
     di.ItemId = ModelUtility.getFinanceNextItemID(this.listItems);
+    if (this.arUIAccounts.length === 1) {
+      di.AccountId = this.arUIAccounts[0].Id;
+    }
+    if (this.arControlCenters.length === 1) {
+      di.ControlCenterId = this.arControlCenters[0].Id;
+    }
     this.listItems = [
       ...this.listItems,
       di

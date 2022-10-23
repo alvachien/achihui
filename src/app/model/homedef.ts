@@ -204,6 +204,7 @@ export class HomeDef extends hih.BaseModel {
     }
     let selfcnt = 0;
     let invalidmem = 0;
+    let invalidself = false;
     this.Members.forEach(mem => {
       if (!mem.isValid) {
         invalidmem ++;
@@ -211,8 +212,14 @@ export class HomeDef extends hih.BaseModel {
 
       if (mem.Relation === HomeMemberRelationEnum.Self) {
         selfcnt ++;
+        if (mem.IsChild) {
+          invalidself = true;
+        }
       }
     });
+    if (invalidself) {
+      return false; // Self must not a child!
+    }
     if (invalidmem > 0) {
       return false;
     }

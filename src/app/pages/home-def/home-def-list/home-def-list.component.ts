@@ -27,7 +27,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     return false;
   }
   get IsChildMode(): boolean {
-    if (this.homeService.ChosedHome) {
+    if (this.homeService.ChosedHome && this.homeService.CurrentMemberInChosedHome) {
       return this.homeService.CurrentMemberInChosedHome!.IsChild!;
     }
     return false;

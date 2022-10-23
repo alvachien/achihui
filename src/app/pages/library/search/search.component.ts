@@ -14,7 +14,7 @@ import { HomeDefOdataService, LibraryStorageService, UIStatusService, } from '..
 @Component({
   selector: 'hih-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.less']
+  styleUrls: ['./search.component.less'],
 })
 export class SearchComponent implements OnInit {
 

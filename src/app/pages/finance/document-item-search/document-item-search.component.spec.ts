@@ -13,7 +13,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogCloseButton, ElementClass_DialogContent } from '../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../services';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel, } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
@@ -35,6 +35,7 @@ describe('DocumentItemSearchComponent', () => {
   let fetchAllDocumentsSpy: any;
   let searchDocItemSpy: any;
   const authServiceStub: Partial<AuthService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -67,6 +68,12 @@ describe('DocumentItemSearchComponent', () => {
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
   });
 
   beforeEach(waitForAsync(() => {
@@ -92,6 +99,7 @@ describe('DocumentItemSearchComponent', () => {
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
+        { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
     })
