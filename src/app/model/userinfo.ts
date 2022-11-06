@@ -1,5 +1,3 @@
-import { User } from 'oidc-client';
-
 /**
  * User detail
  */
@@ -35,7 +33,6 @@ export class UserDetail {
  * User Auth Info
  */
 export class UserAuthInfo {
-  private currentUser?: User;
   private userName?: string;
   private userId?: string;
   private userMailbox?: string;
@@ -43,22 +40,24 @@ export class UserAuthInfo {
 
   public isAuthorized: boolean = false;
 
-  public setContent(user: User): void {
+  public setContent(user: {
+    userId?: string;
+    userName?: string;
+    accessToken?: string;  
+  }): void {
     if (user) {
-      this.currentUser = user;
       this.isAuthorized = true;
 
-      this.userName = user.profile.name;
-      this.userId = user.profile.sub;
-      this.userMailbox = user.profile['mail'];
-      this.accessToken = user.access_token;
+      this.userName = user.userName;
+      this.userId = user.userId;
+      // this.userMailbox = user.profile['mail'];
+      this.accessToken = user.accessToken;
     } else {
       this.cleanContent();
     }
   }
 
   public cleanContent(): void {
-    this.currentUser = undefined;
     this.isAuthorized = false;
     this.userName = undefined;
     this.userId = undefined;

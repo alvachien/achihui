@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.6.342",
+  "version": "1.6.350",
   "private": true,
   "description": "Web App for Home Information Hub.",
   "keywords": [
@@ -32,15 +32,14 @@
     "@ngneat/transloco": "^4.1.0",
     "actslib": "^0.5.55",
     "angular-auth-oidc-client": "14.1.5",
-    "echarts": "^5.3.3",
+    "echarts": "~5.3.3",
     "katex": "^0.16.0",
     "marked": "^4.0.10",
     "moment": "^2.29.4",
     "monaco-editor": "^0.33.0",
-    "ng-zorro-antd": "^13.4.0",
-    "ngx-echarts": "^8.0.1",
-    "ngx-markdown": "^13.1.0",
-    "oidc-client": "^1.11.5",
+    "ng-zorro-antd": "^14.1.1",
+    "ngx-echarts": "^14.0.0",
+    "ngx-markdown": "^14.0.1",
     "rxjs": "^7.4.0",
     "tslib": "^2.4.0",
     "zone.js": "^0.11.6"
@@ -54,7 +53,7 @@
     "@angular-eslint/template-parser": "^14.1.2",
     "@angular/cli": "^14.2.8",
     "@angular/compiler-cli": "^14.2.9",
-    "@types/echarts": "^4.9.10",
+    "@types/echarts": "^4.9.16",
     "@types/jasmine": "^4.0.3",
     "@types/node": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
@@ -66,6 +65,6 @@
     "karma-coverage": "^2.2.0",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.7.2"
   }
 }

@@ -25,12 +25,14 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "moment",
+              "flat"
+            ],
             "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/logincallback.html",
-              "src/silentrenewcallback.html",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
