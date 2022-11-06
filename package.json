@@ -33,7 +33,7 @@
     "actslib": "^0.5.55",
     "angular-auth-oidc-client": "14.1.5",
     "echarts": "~5.3.3",
-    "katex": "^0.16.0",
+    "katex": "^0.16.3",
     "marked": "^4.0.10",
     "moment": "^2.29.4",
     "monaco-editor": "^0.33.0",
