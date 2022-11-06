@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -45,9 +45,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public curDocType: number = financeDocTypeAdvancePayment;
   public baseCurrency: string = '';
   // Step: Header
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   // Step: Account Extra Info
-  public accountExtraInfoFormGroup: FormGroup;
+  public accountExtraInfoFormGroup: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   public isDocPosting = false;
@@ -94,16 +94,16 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     private modalService: NzModalService) {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
         ConsoleLogTypeEnum.debug);
-      this.headerFormGroup = new FormGroup({
-        headerControl: new FormControl('', Validators.required),
-        accountControl: new FormControl('', Validators.required),
-        tranTypeControl: new FormControl('', Validators.required),
-        amountControl: new FormControl('', Validators.required),
-        ccControl: new FormControl(''),
-        orderControl: new FormControl(''),
+      this.headerFormGroup = new UntypedFormGroup({
+        headerControl: new UntypedFormControl('', Validators.required),
+        accountControl: new UntypedFormControl('', Validators.required),
+        tranTypeControl: new UntypedFormControl('', Validators.required),
+        amountControl: new UntypedFormControl('', Validators.required),
+        ccControl: new UntypedFormControl(''),
+        orderControl: new UntypedFormControl(''),
       }, [costObjectValidator]);
-      this.accountExtraInfoFormGroup = new FormGroup({
-        infoControl: new FormControl()
+      this.accountExtraInfoFormGroup = new UntypedFormGroup({
+        infoControl: new UntypedFormControl()
       });
       this.currentStep = 0;
     }

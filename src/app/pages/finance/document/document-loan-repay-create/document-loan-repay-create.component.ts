@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
@@ -58,7 +58,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   // Form
   currentStep = 0;
   // Step 0: Search for loan
-  searchFormGroup: FormGroup;
+  searchFormGroup: UntypedFormGroup;
   acntCategoryFilter: IAccountCategoryFilterEx;
   acntFilterFilter: string;
   totalLoanTmpDocCount: number | null = null;
@@ -66,7 +66,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   listOfLoanTmpDoc: TemplateDocLoan[] = [];
   selectedLoanTmpDoc: TemplateDocLoan[] = [];
   // Step 1: items
-  headerFormGroup: FormGroup;
+  headerFormGroup: UntypedFormGroup;
   amountTotal = 0;
   amountSelectedItem = 0;
   interestAmountSelectedItem = 0;
@@ -89,12 +89,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     private modalService: NzModalService,
   ) {
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
-    this.searchFormGroup = new FormGroup({
-      docIDControl: new FormControl(),
-      dateRangeControl: new FormControl([new Date(), new Date()], Validators.required),
-      accountControl: new FormControl(undefined, Validators.required),
-      ccControl: new FormControl(undefined),
-      orderControl: new FormControl(undefined),
+    this.searchFormGroup = new UntypedFormGroup({
+      docIDControl: new UntypedFormControl(),
+      dateRangeControl: new UntypedFormControl([new Date(), new Date()], Validators.required),
+      accountControl: new UntypedFormControl(undefined, Validators.required),
+      ccControl: new UntypedFormControl(undefined),
+      orderControl: new UntypedFormControl(undefined),
     });
     this.acntCategoryFilter = {
       includedCategories: [
@@ -106,8 +106,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       ]
     };
     this.acntFilterFilter = 'Normal';
-    this.headerFormGroup = new FormGroup({
-      dateControl: new FormControl(new Date(), [Validators.required]),
+    this.headerFormGroup = new UntypedFormGroup({
+      dateControl: new UntypedFormControl(new Date(), [Validators.required]),
     });
     this.confirmInfo = new Document();
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, QueryList, ViewChild, ChangeDetectorRef, AfterViewInit, } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -45,16 +45,16 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   arAccountCategories: AccountCategory[] = [];
   arAssetCategories: AssetCategory[] = [];
   // Header forum
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   // Amount form
   public isInitAmountRequired: boolean = false;
-  public amountFormGroup: FormGroup;
+  public amountFormGroup: UntypedFormGroup;
   private _arControlCenters: ControlCenter[] = [];
   private _arUIOrders: UIOrderForSelection[] = [];
   // Extra form group
-  public extraADPFormGroup: FormGroup;
-  public extraAssetFormGroup: FormGroup;
-  public extraLoanFormGroup: FormGroup;
+  public extraADPFormGroup: UntypedFormGroup;
+  public extraAssetFormGroup: UntypedFormGroup;
+  public extraLoanFormGroup: UntypedFormGroup;
   // Additional binding info.
   public tranAmount: number = 0;
   public controlCenterID?: number;
@@ -121,30 +121,30 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.arStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
     this.arMembers = this.homeSevice.ChosedHome!.Members;
 
-    this.headerFormGroup = new FormGroup({
-      idControl: new FormControl(),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      ctgyControl: new FormControl(financeAccountCategoryCash, [Validators.required], // this.categoryValidator],
+    this.headerFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl(),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      ctgyControl: new UntypedFormControl(financeAccountCategoryCash, [Validators.required], // this.categoryValidator],
       ),
-      cmtControl: new FormControl('', Validators.maxLength(45)),
-      statusControl: new FormControl(AccountStatusEnum.Normal),
-      ownerControl: new FormControl()
+      cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
+      statusControl: new UntypedFormControl(AccountStatusEnum.Normal),
+      ownerControl: new UntypedFormControl()
     });
-    this.amountFormGroup = new FormGroup({
-      dateControl: new FormControl(new Date(), Validators.required),
-      amountControl: new FormControl(undefined, Validators.required),
-      ccControl: new FormControl(),
-      orderControl: new FormControl(),
+    this.amountFormGroup = new UntypedFormGroup({
+      dateControl: new UntypedFormControl(new Date(), Validators.required),
+      amountControl: new UntypedFormControl(undefined, Validators.required),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl(),
     }, [costObjectValidator]);
 
-    this.extraADPFormGroup = new FormGroup({
-      extADPControl: new FormControl()
+    this.extraADPFormGroup = new UntypedFormGroup({
+      extADPControl: new UntypedFormControl()
     });
-    this.extraAssetFormGroup = new FormGroup({
-      extAssetControl: new FormControl()
+    this.extraAssetFormGroup = new UntypedFormGroup({
+      extAssetControl: new UntypedFormControl()
     });
-    this.extraLoanFormGroup = new FormGroup({
-      extLoanControl: new FormControl()
+    this.extraLoanFormGroup = new UntypedFormGroup({
+      extLoanControl: new UntypedFormControl()
     });
   }
 

@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from 'src/app/services';
@@ -11,7 +11,7 @@ import { FinanceOdataService } from 'src/app/services';
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   @Input() accountid?: number;
   @Input() name?: string;
   @Input() comment?: string;
@@ -20,10 +20,10 @@ export class AccountChangeNameDialogComponent implements OnInit {
   constructor(private modal: NzModalRef,
     private _zone: NgZone,
     private odataService: FinanceOdataService) { 
-    this.headerFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      cmtControl: new FormControl('', Validators.maxLength(45)),
+    this.headerFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
     });
   }
 

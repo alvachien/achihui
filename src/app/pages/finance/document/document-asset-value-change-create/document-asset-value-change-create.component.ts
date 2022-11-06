@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -52,7 +52,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   isLoadingResults = false;
 
   // Step: Generic info
-  public firstFormGroup: FormGroup;
+  public firstFormGroup: UntypedFormGroup;
   public curDocType: number = financeDocTypeAssetValChg;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | null = null;
@@ -99,12 +99,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.arMembersInChosedHome = this._homeService.ChosedHome!.Members.slice();
     this.baseCurrency = this._homeService.ChosedHome!.BaseCurrency;
 
-    this.firstFormGroup = new FormGroup({
-      accountControl: new FormControl(undefined, Validators.required),
-      headerControl: new FormControl(new Document(), Validators.required),
-      amountControl: new FormControl(0, Validators.required),
-      ccControl: new FormControl(''),
-      orderControl: new FormControl(''),
+    this.firstFormGroup = new UntypedFormGroup({
+      accountControl: new UntypedFormControl(undefined, Validators.required),
+      headerControl: new UntypedFormControl(new Document(), Validators.required),
+      amountControl: new UntypedFormControl(0, Validators.required),
+      ccControl: new UntypedFormControl(''),
+      orderControl: new UntypedFormControl(''),
     }, [costObjectValidator, this._amountValidator]);
   }
 

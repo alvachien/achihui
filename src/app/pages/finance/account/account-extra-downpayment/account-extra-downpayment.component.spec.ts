@@ -2,7 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -392,7 +392,7 @@ describe('AccountExtraDownpaymentComponent', () => {
   `
 })
 export class FinanceAccountExtraDPTestFormComponent {
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public tranAmount = 0;
   public arTranTypes: TranType[] = [];
   public tranType = 100;
@@ -400,8 +400,8 @@ export class FinanceAccountExtraDPTestFormComponent {
   @ViewChild(AccountExtraDownpaymentComponent, {static: true}) extraComponent: AccountExtraDownpaymentComponent | undefined;
 
   constructor() {
-    this.formGroup = new FormGroup({
-      extraControl: new FormControl()
+    this.formGroup = new UntypedFormGroup({
+      extraControl: new UntypedFormControl()
     });
   }
 }

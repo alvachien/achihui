@@ -36,86 +36,82 @@ registerLocaleData(zh);
 registerLocaleData(en);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MessageDialogComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    IconsProviderModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslocoModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzIconModule,
-    NzInputModule,
-    NzDropDownModule,
-    NzTableModule,
-    NzModalModule,
-    NgxEchartsModule.forRoot({
-      echarts,
-    }),
-    MarkdownModule.forRoot({
-      markedOptions: {
-        provide: MarkedOptions,
-        useValue: {
-          gfm: true,
-          breaks: true,
-          pedantic: false,
-          smartLists: true,
-          smartypants: false,
+    declarations: [
+        AppComponent,
+        MessageDialogComponent,
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        IconsProviderModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        TranslocoModule,
+        NzLayoutModule,
+        NzMenuModule,
+        NzIconModule,
+        NzInputModule,
+        NzDropDownModule,
+        NzTableModule,
+        NzModalModule,
+        NgxEchartsModule.forRoot({
+            echarts,
+        }),
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    gfm: true,
+                    breaks: true,
+                    pedantic: false,
+                    smartLists: true,
+                    smartypants: false,
+                },
+            },
+        }),
+        AuthConfigModule,
+    ],
+    providers: [
+        //{ provide: NZ_I18N, useValue: en_US },
+        AppInitializerProvider,
+        {
+            provide: NZ_I18N,
+            useFactory: (localId: string) => {
+                switch (localId) {
+                    case 'en':
+                        return en_US;
+                    /** 与 angular.json i18n/locales 配置一致 **/
+                    case 'zh':
+                        return zh_CN;
+                    default:
+                        return en_US;
+                }
+            },
+            deps: [LOCALE_ID]
         },
-      },
-    }),
-    AuthConfigModule,
-  ],
-  providers: [
-    //{ provide: NZ_I18N, useValue: en_US },
-    AppInitializerProvider,
-    {
-      provide: NZ_I18N,
-      useFactory: (localId: string) => {
-        switch (localId) {
-          case 'en':
-            return en_US;
-          /** 与 angular.json i18n/locales 配置一致 **/
-          case 'zh':
-            return zh_CN;
-          default:
-            return en_US;
-        }
-      },
-      deps: [LOCALE_ID] 
-    },
-    AuthService,
-    AuthGuardService,
-    HomeChoseGuardService,
-    CanDeactivateGuardService,
-    UIStatusService,
-    LanguageOdataService,
-    HomeDefOdataService,
-    FinanceOdataService,
-    NzModalService,
-    BlogOdataService,
-    {
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
-        availableLangs: ['en', 'zh'],
-        defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
-        reRenderOnLangChange: true,
-        prodMode: environment.production,
-      })
-    },
-    translocoLoader,
-  ],
-  entryComponents: [
-    NzModalConfirmContainerComponent,
-    MessageDialogComponent,
-  ],
-  bootstrap: [AppComponent],
+        AuthService,
+        AuthGuardService,
+        HomeChoseGuardService,
+        CanDeactivateGuardService,
+        UIStatusService,
+        LanguageOdataService,
+        HomeDefOdataService,
+        FinanceOdataService,
+        NzModalService,
+        BlogOdataService,
+        {
+            provide: TRANSLOCO_CONFIG,
+            useValue: translocoConfig({
+                availableLangs: ['en', 'zh'],
+                defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
+                reRenderOnLangChange: true,
+                prodMode: environment.production,
+            })
+        },
+        translocoLoader,
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -23,7 +23,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
 
   constructor(private odataService: BlogOdataService,
               private activateRoute: ActivatedRoute,
@@ -33,10 +33,10 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      commentControl: new FormControl('', [Validators.required]),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      commentControl: new UntypedFormControl('', [Validators.required]),
     });
   }
 

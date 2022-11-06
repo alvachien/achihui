@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, UntypedFormGroup, UntypedFormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -48,7 +48,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   isLoadingTmpDocs: boolean = false;
   public listTmpDocs: TemplateDocADP[] = [];
 
-  public adpInfoFormGroup: FormGroup;
+  public adpInfoFormGroup: UntypedFormGroup;
 
   @Input() tranAmount: number = 0;
   @Input() tranType?: number;
@@ -106,11 +106,11 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.adpInfoFormGroup = new FormGroup({
-      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new FormControl(moment().add(1, 'y').toDate()),
-      frqControl: new FormControl(undefined, Validators.required),
-      cmtControl: new FormControl('', Validators.maxLength(30)),
+    this.adpInfoFormGroup = new UntypedFormGroup({
+      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate()),
+      frqControl: new UntypedFormControl(undefined, Validators.required),
+      cmtControl: new UntypedFormControl('', Validators.maxLength(30)),
     });
   }
 

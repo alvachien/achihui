@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, UntypedFormGroup, UntypedFormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
@@ -32,7 +32,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   private _refBuyDocID: number | null = null;
   private _refSoldDocID: number | null = null;
 
-  public assetInfoFormGroup: FormGroup;
+  public assetInfoFormGroup: UntypedFormGroup;
   get refBuyDocID(): number | null {
     return this._refBuyDocID;
   }
@@ -115,13 +115,13 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
-    this.assetInfoFormGroup = new FormGroup({
-      ctgyControl: new FormControl(undefined, [Validators.required]),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-      commentControl: new FormControl('', Validators.maxLength(100)),
-      boughtDateControl: new FormControl(),
-      expiredDateControl: new FormControl(),
-      residualValueControl: new FormControl(),
+    this.assetInfoFormGroup = new UntypedFormGroup({
+      ctgyControl: new UntypedFormControl(undefined, [Validators.required]),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(50)]),
+      commentControl: new UntypedFormControl('', Validators.maxLength(100)),
+      boughtDateControl: new UntypedFormControl(),
+      expiredDateControl: new UntypedFormControl(),
+      residualValueControl: new UntypedFormControl(),
     });
   }
 

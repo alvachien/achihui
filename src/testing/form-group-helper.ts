@@ -1,4 +1,4 @@
-import { FormGroup, ValidationErrors } from '@angular/forms';
+import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
 import { SequenceList } from 'actslib';
 
 export interface IFormGroupError {
@@ -8,7 +8,7 @@ export interface IFormGroupError {
 }
 
 export class FormGroupHelper {
-  public static getFormGroupError(formGroup: FormGroup): SequenceList<IFormGroupError> {
+  public static getFormGroupError(formGroup: UntypedFormGroup): SequenceList<IFormGroupError> {
     const listErrors = new SequenceList<IFormGroupError>();
     if (formGroup.errors !== null) {
       const controlErrors: ValidationErrors = formGroup.errors;

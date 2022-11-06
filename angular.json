@@ -57,7 +57,9 @@
               }
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles/themes"]
+              "includePaths": [
+                "src/styles/themes"
+              ]
             },
             "scripts": [
               "node_modules/marked/marked.min.js",
@@ -145,7 +147,9 @@
               "node_modules/katex/dist/katex.min.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles/themes"]
+              "includePaths": [
+                "src/styles/themes"
+              ]
             },
             "scripts": [
               "node_modules/marked/marked.min.js",
@@ -165,8 +169,9 @@
       }
     }
   },
-  "defaultProject": "achihui",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

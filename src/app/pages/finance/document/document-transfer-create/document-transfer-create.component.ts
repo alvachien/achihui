@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -43,11 +43,11 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public isDocPosting = false;
   public docPostingFailed: string | null = null;
   // Step: Header
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   // Step: From
-  public fromFormGroup: FormGroup;
+  public fromFormGroup: UntypedFormGroup;
   // Step: To
-  public toFormGroup: FormGroup;
+  public toFormGroup: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
 
@@ -59,21 +59,21 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     public router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
-    this.headerFormGroup = new FormGroup({
-      headerControl: new FormControl(new Document(), [Validators.required]),
-      amountControl: new FormControl(0, [Validators.required, Validators.min(0.01)])
+    this.headerFormGroup = new UntypedFormGroup({
+      headerControl: new UntypedFormControl(new Document(), [Validators.required]),
+      amountControl: new UntypedFormControl(0, [Validators.required, Validators.min(0.01)])
     });
-    this.fromFormGroup = new FormGroup({
-      accountControl: new FormControl('', [Validators.required]),
-      ccControl: new FormControl(),
-      orderControl: new FormControl()
+    this.fromFormGroup = new UntypedFormGroup({
+      accountControl: new UntypedFormControl('', [Validators.required]),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl()
     }, [
       costObjectValidator
     ]);
-    this.toFormGroup = new FormGroup({
-      accountControl: new FormControl('', [Validators.required]),
-      ccControl: new FormControl(),
-      orderControl: new FormControl()
+    this.toFormGroup = new UntypedFormGroup({
+      accountControl: new UntypedFormControl('', [Validators.required]),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl()
     }, [
       costObjectValidator,
       this._duplicateAccountValidator

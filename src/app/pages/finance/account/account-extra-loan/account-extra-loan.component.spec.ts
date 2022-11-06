@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -381,7 +381,7 @@ describe('AccountExtraLoanComponent', () => {
   `
 })
 export class AccountExtraLoanTestFormComponent {
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public tranAmount = 0;
   public controlCenterID?: number;
   public orderID?: number;
@@ -390,8 +390,8 @@ export class AccountExtraLoanTestFormComponent {
   @ViewChild(AccountExtraLoanComponent, {static: true}) extraComponent: AccountExtraLoanComponent | undefined;
 
   constructor() {
-    this.formGroup = new FormGroup({
-      extraControl: new FormControl()
+    this.formGroup = new UntypedFormGroup({
+      extraControl: new UntypedFormControl()
     });
   }
 }

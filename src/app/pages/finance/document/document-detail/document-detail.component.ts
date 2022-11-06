@@ -12,7 +12,7 @@ import { Account, Document, ControlCenter, AccountCategory, TranType,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   ModelUtility, ConsoleLogTypeEnum, getUIModeString, DocumentItem,
 } from '../../../../model';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'hih-fin-document-detail',
@@ -37,7 +37,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   arUIOrders: UIOrderForSelection[] = [];
   arCurrencies: Currency[] = [];
   // Form group
-  docFormGroup: FormGroup;
+  docFormGroup: UntypedFormGroup;
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -55,10 +55,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
     this.currentDocument = new Document();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
-    this.docFormGroup = new FormGroup({
-      idControl: new FormControl({ disabled: true} ),
-      headerControl: new FormControl(this.currentDocument, Validators.required),
-      itemsControl: new FormControl()
+    this.docFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({ disabled: true} ),
+      headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
+      itemsControl: new UntypedFormControl()
     });
   }
 
