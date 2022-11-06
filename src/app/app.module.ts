@@ -30,6 +30,7 @@ import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
 import { MessageDialogComponent } from './pages/message-dialog';
 import { AppInitializerProvider } from './app-initializer.service';
+import { AuthConfigModule } from './auth/auth-config.module';
 
 registerLocaleData(zh);
 registerLocaleData(en);
@@ -70,6 +71,7 @@ registerLocaleData(en);
         },
       },
     }),
+    AuthConfigModule,
   ],
   providers: [
     //{ provide: NZ_I18N, useValue: en_US },

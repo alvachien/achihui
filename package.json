@@ -31,6 +31,7 @@
     "@angular/router": "^13.3.11",
     "@ngneat/transloco": "^4.1.0",
     "actslib": "^0.5.55",
+    "angular-auth-oidc-client": "14.1.5",
     "echarts": "^5.3.3",
     "katex": "^0.16.0",
     "marked": "^4.0.10",
