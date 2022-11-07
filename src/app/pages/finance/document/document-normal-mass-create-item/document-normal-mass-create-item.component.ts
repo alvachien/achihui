@@ -1,5 +1,5 @@
 import { Component, Input, } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { UIAccountForSelection, UIOrderForSelection, Account, ControlCenter, Order, TranType,
 } from '../../../../model';
@@ -21,7 +21,7 @@ export class DocumentNormalMassCreateItemComponent {
   @Input()
   baseCurrency?: string;
   @Input()
-  public itemFormGroup?: FormGroup;
+  public itemFormGroup?: UntypedFormGroup;
 
   constructor() {
     // Empty

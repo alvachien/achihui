@@ -9,6 +9,7 @@ import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDispla
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import { translate } from '@ngneat/transloco';
+import { HomeDefOdataService } from 'src/app/services';
 
 @Component({
   selector: 'hih-document-item-search',
@@ -33,8 +34,12 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
+  get isChildMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+  }
 
-  constructor(private modalService: NzModalService) {
+  constructor(private modalService: NzModalService,
+    private homeService: HomeDefOdataService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();

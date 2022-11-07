@@ -222,12 +222,13 @@ export class HomeDefOdataService {
       .pipe(map((response: any) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
-        const hd: HomeDef = new HomeDef();
-        hd.parseJSONData(response as any);
+        // Empty result from API : 204
+        // const hd: HomeDef = new HomeDef();
+        // hd.parseJSONData(response as any);
 
-        this._listHomeDefList.push(hd);
+        // this._listHomeDefList.push(hd);
 
-        return hd;
+        return objhd;
       }),
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService changeHomeDef failed: ${error}`,

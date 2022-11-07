@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, FormBuilder, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, UntypedFormArray, UntypedFormBuilder, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
 import * as moment from 'moment';
@@ -55,15 +55,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step 0: Search Criteria
-  public searchFormGroup: FormGroup;
+  public searchFormGroup: UntypedFormGroup;
   // Step 1: Existing documents
   public isReadingExistingItem = false;
   public listDates: RepeatedDatesAPIOutput[] = [];
   public listExistingDocItems: DocumentCountByDateRange[] = [];
   // Step 2: Default value
-  public defaultValueFormGroup: FormGroup;
+  public defaultValueFormGroup: UntypedFormGroup;
   // Step 3: Items
-  public itemsFormGroup: FormGroup;
+  public itemsFormGroup: UntypedFormGroup;
   // Step 4: Confirm
   public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
@@ -76,7 +76,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -84,25 +84,25 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
-    this.searchFormGroup = new FormGroup({
-      dateRangeControl: new FormControl([new Date(), new Date()], [Validators.required]),
-      frqControl: new FormControl(undefined, [Validators.required]),
-      accountControl: new FormControl(undefined, [Validators.required]),
-      tranTypeControl: new FormControl(),
-      includSubTranTypeControl: new FormControl(),
-      ccControl: new FormControl(),
-      orderControl: new FormControl(),
+    this.searchFormGroup = new UntypedFormGroup({
+      dateRangeControl: new UntypedFormControl([new Date(), new Date()], [Validators.required]),
+      frqControl: new UntypedFormControl(undefined, [Validators.required]),
+      accountControl: new UntypedFormControl(undefined, [Validators.required]),
+      tranTypeControl: new UntypedFormControl(),
+      includSubTranTypeControl: new UntypedFormControl(),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl(),
     });
 
-    this.defaultValueFormGroup = new FormGroup({
-      dayOffsetControl: new FormControl(0),
-      accountControl: new FormControl(undefined, [Validators.required]),
-      tranTypeControl: new FormControl(undefined, [Validators.required]),
-      amountControl: new FormControl(0, [Validators.required]),
+    this.defaultValueFormGroup = new UntypedFormGroup({
+      dayOffsetControl: new UntypedFormControl(0),
+      accountControl: new UntypedFormControl(undefined, [Validators.required]),
+      tranTypeControl: new UntypedFormControl(undefined, [Validators.required]),
+      amountControl: new UntypedFormControl(0, [Validators.required]),
       // currControl: ['', Validators.required],
-      despControl: new FormControl('', [Validators.required]),
-      ccControl: new FormControl(),
-      orderControl: new FormControl(),
+      despControl: new UntypedFormControl('', [Validators.required]),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl(),
     }, [costObjectValidator]);
 
     this.itemsFormGroup = this.fb.group({
@@ -246,11 +246,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     return tranTypeObj ? tranTypeObj.Name : '';
   }
-  get getItemFormArray(): FormArray {
-    return this.itemsFormGroup?.controls['items'] as FormArray;
+  get getItemFormArray(): UntypedFormArray {
+    return this.itemsFormGroup?.controls['items'] as UntypedFormArray;
   }
-  get getItemControls(): FormGroup[] {
-    return this.getItemFormArray.controls as FormGroup[];
+  get getItemControls(): UntypedFormGroup[] {
+    return this.getItemFormArray.controls as UntypedFormGroup[];
   }
 
   // Step 1: Existing documents
@@ -378,7 +378,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
   // Step 3. Items
   private generateItems(): void {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     control.clear(); // Clear it
 
     const defval = this.defaultValueFormGroup.value;
@@ -403,7 +403,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       }
     });
   }
-  private initItem(): FormGroup {
+  private initItem(): UntypedFormGroup {
     return this.fb.group({
       dateControl: [new Date(), Validators.required],
       accountControl: [undefined, Validators.required],
@@ -441,15 +441,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   private createItem(): number {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
-    const newItem: FormGroup = this.initItem();
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+    const newItem: UntypedFormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
       newItem.get('dateControl')?.setValue(oldItem.dateControl);
@@ -466,13 +466,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return control.length - 1;
   }
   private removeItem(i: number): void {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     control.removeAt(i);
   }
   // Step 4: Confirm
   private generateMassDocumentItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+    const controlArrays: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];

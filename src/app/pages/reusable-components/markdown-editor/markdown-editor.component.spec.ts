@@ -11,7 +11,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -37,12 +37,12 @@ import { NzConfigService } from 'ng-zorro-antd/core/config';
     </form>`,
 })
 export class MarkdownEditorTestFormComponent {
-  public formGrp: FormGroup;
+  public formGrp: UntypedFormGroup;
   @ViewChild(MarkdownEditorComponent, {static: true}) editorComponent?: MarkdownEditorComponent;
 
   constructor() {
-    this.formGrp = new FormGroup({
-      infoControl: new FormControl()
+    this.formGrp = new UntypedFormGroup({
+      infoControl: new UntypedFormControl()
     });
   }
 }

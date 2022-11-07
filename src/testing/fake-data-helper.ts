@@ -14,7 +14,6 @@ import { Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
   financeTranTypeInterestOut, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost, PersonRole,
   OrganizationType,
 } from '../app/model';
-import { User } from 'oidc-client';
 import * as moment from 'moment';
 
 export class FakeDataHelper {
@@ -287,6 +286,7 @@ export class FakeDataHelper {
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
     hmem.DisplayAs = 'Creator in Home';
+    hmem.IsChild = false;
     this._chosedHome.Members.push(hmem);
   }
   public buildHomeDefs(): void {
@@ -1036,15 +1036,12 @@ export class FakeDataHelper {
   public buildCurrentUser(): void {
     this._currUser = new UserAuthInfo();
     const usr: any = {
-      profile: {
-        name: this.userID1,
-        sub: this.userID1Sub,
-        mail: 'usr@usr.com',
-        access_token: 'access_token',
-      },
+      userName: this.userID1,
+      userId: this.userID1Sub,
+      accessToken: 'access_token',
     };
 
-    this._currUser.setContent(usr as User);
+    this._currUser.setContent(usr);
   }
   public buildAppLanguage(): void {
     this._appLanguages = [];

@@ -233,6 +233,16 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       highValue: end.format(momentDateFormat),
       valueType: GeneralFilterValueType.number
     });
+    if (this.homeService.CurrentMemberInChosedHome!.IsChild) {
+      this._filterDocItem.push({
+        fieldName: 'Createdby',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: `${this.homeService.CurrentMemberInChosedHome!.User}`,
+        highValue: ``,
+        valueType: GeneralFilterValueType.string
+      });
+    }
+
     this.odataService.fetchAllDocuments(
       this._filterDocItem,
       this.pageSize,

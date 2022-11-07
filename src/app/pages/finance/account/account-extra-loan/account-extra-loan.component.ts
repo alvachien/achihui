@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, UntypedFormGroup, UntypedFormControl,
   Validator, Validators, AbstractControl, ValidationErrors
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -45,7 +45,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public loanInfoForm: FormGroup;
+  public loanInfoForm: UntypedFormGroup;
 
   get refDocId(): number | undefined {
     return this._refDocID;
@@ -174,18 +174,18 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
       ConsoleLogTypeEnum.debug);
 
-    this.loanInfoForm = new FormGroup({
-      repayMethodControl: new FormControl(RepaymentMethodEnum.Informal),
-      startDateControl: new FormControl(new Date(), Validators.required),
-      endDateControl: new FormControl(),
-      totalMonthControl: new FormControl(0),
-      repayDayControl: new FormControl(),
-      firstRepayDateControl: new FormControl(),
-      interestFreeControl: new FormControl(true),
-      annualRateControl: new FormControl(),
-      payingAccountControl: new FormControl(),
-      partnerControl: new FormControl(''),
-      cmtControl: new FormControl('', [Validators.required]),
+    this.loanInfoForm = new UntypedFormGroup({
+      repayMethodControl: new UntypedFormControl(RepaymentMethodEnum.Informal),
+      startDateControl: new UntypedFormControl(new Date(), Validators.required),
+      endDateControl: new UntypedFormControl(),
+      totalMonthControl: new UntypedFormControl(0),
+      repayDayControl: new UntypedFormControl(),
+      firstRepayDateControl: new UntypedFormControl(),
+      interestFreeControl: new UntypedFormControl(true),
+      annualRateControl: new UntypedFormControl(),
+      payingAccountControl: new UntypedFormControl(),
+      partnerControl: new UntypedFormControl(''),
+      cmtControl: new UntypedFormControl('', [Validators.required]),
     });
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, EventEmitter, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, UntypedFormGroup, UntypedFormControl,
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
 import * as moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
@@ -105,7 +105,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @Output()
   currency2Changed: EventEmitter<String> = new EventEmitter();
 
-  public headerForm: FormGroup;
+  public headerForm: UntypedFormGroup;
 
   get isTranDateEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
@@ -186,16 +186,16 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   constructor() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentHeaderComponent constructor...', ConsoleLogTypeEnum.debug);
 
-    this.headerForm = new FormGroup({
-      docTypeControl: new FormControl({value: this.docType, disabled: true}, [Validators.required]),
-      dateControl: new FormControl(new Date(), [Validators.required]),
-      despControl: new FormControl('', [Validators.required, Validators.maxLength(44)]),
-      currControl: new FormControl(undefined, [Validators.required]),
-      exgControl: new FormControl(undefined, [this.exchangeRateMissingValidator]),
-      exgpControl: new FormControl(undefined),
-      curr2Control: new FormControl(undefined, [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
-      exg2Control: new FormControl(undefined, [this.exchangeRate2MissingValidator]),
-      exgp2Control: new FormControl(undefined),
+    this.headerForm = new UntypedFormGroup({
+      docTypeControl: new UntypedFormControl({value: this.docType, disabled: true}, [Validators.required]),
+      dateControl: new UntypedFormControl(new Date(), [Validators.required]),
+      despControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(44)]),
+      currControl: new UntypedFormControl(undefined, [Validators.required]),
+      exgControl: new UntypedFormControl(undefined, [this.exchangeRateMissingValidator]),
+      exgpControl: new UntypedFormControl(undefined),
+      curr2Control: new UntypedFormControl(undefined, [this.curr2MissingValidator, this.currencyMustDiffForExchgValidator]),
+      exg2Control: new UntypedFormControl(undefined, [this.exchangeRate2MissingValidator]),
+      exgp2Control: new UntypedFormControl(undefined),
     });
   }
 

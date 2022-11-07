@@ -112,7 +112,8 @@ export class OrderListComponent implements OnInit, OnDestroy {
             return ext.Id === rid;
           });
           if (extidx !== -1) {
-            this.dataSet = exts.splice(extidx, 1);
+            exts.splice(extidx, 1);
+            this.dataSet = exts;
           }
         },
         error: err => {

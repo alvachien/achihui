@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -33,10 +33,10 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
   public detailObject: FinanceAssetSoldoutDocumentAPI | null = null;
   // Step: Generic info
-  public firstFormGroup: FormGroup;
+  public firstFormGroup: UntypedFormGroup;
   public curDocType: number = financeDocTypeAssetSoldOut;
   // Step: Items
-  public itemFormGroup: FormGroup;
+  public itemFormGroup: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   public isDocPosting = false;
@@ -77,15 +77,15 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this._docDate = moment();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
-    this.firstFormGroup = new FormGroup({
-      accountControl: new FormControl('', Validators.required),
-      headerControl: new FormControl('', Validators.required),
-      amountControl: new FormControl(0, Validators.required),
-      ccControl: new FormControl(''),
-      orderControl: new FormControl(''),
+    this.firstFormGroup = new UntypedFormGroup({
+      accountControl: new UntypedFormControl('', Validators.required),
+      headerControl: new UntypedFormControl('', Validators.required),
+      amountControl: new UntypedFormControl(0, Validators.required),
+      ccControl: new UntypedFormControl(''),
+      orderControl: new UntypedFormControl(''),
     }, [costObjectValidator, this._headerAmountValidator]);
-    this.itemFormGroup = new FormGroup({
-      itemControl: new FormControl(),
+    this.itemFormGroup = new UntypedFormGroup({
+      itemControl: new UntypedFormControl(),
     }, [this._itemAmountValidator]);
   }
 

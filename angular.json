@@ -25,12 +25,14 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "moment",
+              "flat"
+            ],
             "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/logincallback.html",
-              "src/silentrenewcallback.html",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -57,11 +59,14 @@
               }
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles/themes"]
+              "includePaths": [
+                "src/styles/themes"
+              ]
             },
             "scripts": [
               "node_modules/marked/marked.min.js",
-              "node_modules/katex/dist/katex.min.js"
+              "node_modules/katex/dist/katex.min.js",
+              "node_modules/katex/dist/contrib/auto-render.min.js"
             ]
           },
           "configurations": {
@@ -145,11 +150,14 @@
               "node_modules/katex/dist/katex.min.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles/themes"]
+              "includePaths": [
+                "src/styles/themes"
+              ]
             },
             "scripts": [
               "node_modules/marked/marked.min.js",
-              "node_modules/katex/dist/katex.min.js"
+              "node_modules/katex/dist/katex.min.js",
+              "node_modules/katex/dist/contrib/auto-render.min.js"
             ]
           }
         },
@@ -165,8 +173,10 @@
       }
     }
   },
-  "defaultProject": "achihui",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
   }
 }

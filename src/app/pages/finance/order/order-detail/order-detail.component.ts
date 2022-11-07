@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -27,7 +27,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public uiMode: UIMode = UIMode.Create;
   public arControlCenters: ControlCenter[] = [];
   // Form: detail
-  public detailFormGroup: FormGroup;
+  public detailFormGroup: UntypedFormGroup;
   public listRules: SettlementRule[] = [];
   private ruleChanged = false;
   // Submitting
@@ -64,12 +64,12 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl(),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new FormControl(moment().add(1, 'y').toDate(), [Validators.required]),
-      cmtControl: new FormControl(),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl(),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate(), [Validators.required]),
+      cmtControl: new UntypedFormControl(),
     }, [dateRangeValidator]);
   }
 

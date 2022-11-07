@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
@@ -24,7 +24,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
   public existedCC: ControlCenter[] = [];
-  public detailFormGroup: FormGroup;
+  public detailFormGroup: UntypedFormGroup;
   public arMembers: HomeMember[] = [];
 
   get isFieldChangable(): boolean {
@@ -47,12 +47,12 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this.isLoadingResults = false;
     this.arMembers = this.homeService.ChosedHome!.Members.slice();
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl(),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      cmtControl: new FormControl('', Validators.maxLength(45)),
-      parentControl: new FormControl(),
-      ownerControl: new FormControl(),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl(),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
+      parentControl: new UntypedFormControl(),
+      ownerControl: new UntypedFormControl(),
     });
   }
 

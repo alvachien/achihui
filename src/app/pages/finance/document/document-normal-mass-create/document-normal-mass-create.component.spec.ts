@@ -1,7 +1,7 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -312,7 +312,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
+      const control: UntypedFormArray = component.itemsFormGroup?.controls['items'] as UntypedFormArray;
       expect(control.length).toEqual(1);
 
       expect(component.currentStep).toEqual(0);
@@ -334,10 +334,10 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
+      const control: UntypedFormArray = component.itemsFormGroup?.controls['items'] as UntypedFormArray;
       expect(control.length).toEqual(1);
 
-      const newItem: FormGroup = control.controls[0] as FormGroup;
+      const newItem: UntypedFormGroup = control.controls[0] as UntypedFormGroup;
       expect(newItem).toBeTruthy();
       newItem.get('dateControl')?.setValue(new Date());
       newItem.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -363,10 +363,10 @@ describe('DocumentNormalMassCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const control: FormArray = component.itemsFormGroup?.controls['items'] as FormArray;
+      const control: UntypedFormArray = component.itemsFormGroup?.controls['items'] as UntypedFormArray;
       expect(control.length).toEqual(1);
 
-      const newItem: FormGroup = control.controls[0] as FormGroup;
+      const newItem: UntypedFormGroup = control.controls[0] as UntypedFormGroup;
       expect(newItem).toBeTruthy();
       newItem.get('dateControl')?.setValue(new Date());
       newItem.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);

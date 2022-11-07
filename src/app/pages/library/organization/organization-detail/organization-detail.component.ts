@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
   listTypes: OrganizationType[] = [];
   allTypes: OrganizationType[] = [];
 
@@ -34,11 +34,11 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      nnameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-      cnameControl: new FormControl('', [Validators.maxLength(100)]),
-      chnIsNativeControl: new FormControl(false),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
+      chnIsNativeControl: new UntypedFormControl(false),
     });
   }
 

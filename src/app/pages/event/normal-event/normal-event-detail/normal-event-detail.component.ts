@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -23,7 +23,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   public routerID = -1; // Current object ID in routing
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
 
   get isEditable(): boolean {
     return isUIEditable(this.uiMode);
@@ -37,11 +37,11 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering NormalEventDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({ value: undefined, disabled: true }),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-      dateControl: new FormControl(undefined, [Validators.required]),
-      contentControl: new FormControl('')
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({ value: undefined, disabled: true }),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      dateControl: new UntypedFormControl(undefined, [Validators.required]),
+      contentControl: new UntypedFormControl('')
     });
   }
 

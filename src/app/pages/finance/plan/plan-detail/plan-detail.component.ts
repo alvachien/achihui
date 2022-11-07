@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -35,7 +35,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   arUIAccounts: UIAccountForSelection[] = [];
   arCurrencies: Currency[] = [];
   // Form: detail
-  public detailFormGroup: FormGroup;
+  public detailFormGroup: UntypedFormGroup;
   // Submitting
   isObjectSubmitting = false;
   isObjectSubmitted = false;
@@ -96,18 +96,18 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
     this.arFinPlanTypes = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayStrings();
     this.isLoadingResults = false;
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      typeControl: new FormControl(undefined, [Validators.required]),
-      startDateControl: new FormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new FormControl(moment().add(1, 'y').toDate(), [Validators.required]),
-      despControl: new FormControl('', [Validators.required]),
-      accountControl: new FormControl({value: undefined, disabled: true}),
-      acntCtgyControl: new FormControl({value: undefined, disabled: true}),
-      tranTypeControl: new FormControl({value: undefined, disabled: true}),
-      controlCenterControl: new FormControl({value: undefined, disabled: true}),
-      amountControl: new FormControl(0, [Validators.required]),
-      currControl: new FormControl(this.homeService.ChosedHome!.BaseCurrency, [Validators.required]),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      typeControl: new UntypedFormControl(undefined, [Validators.required]),
+      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
+      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate(), [Validators.required]),
+      despControl: new UntypedFormControl('', [Validators.required]),
+      accountControl: new UntypedFormControl({value: undefined, disabled: true}),
+      acntCtgyControl: new UntypedFormControl({value: undefined, disabled: true}),
+      tranTypeControl: new UntypedFormControl({value: undefined, disabled: true}),
+      controlCenterControl: new UntypedFormControl({value: undefined, disabled: true}),
+      amountControl: new UntypedFormControl(0, [Validators.required]),
+      currControl: new UntypedFormControl(this.homeService.ChosedHome!.BaseCurrency, [Validators.required]),
     }, [dateRangeValidator]);
   }
 

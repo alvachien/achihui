@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { translate } from '@ngneat/transloco';
 import * as moment from 'moment';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -14,7 +14,7 @@ import { OrganizationSelectionDlgComponent } from '../../organization/organizati
   styleUrls: ['./borrow-record-create-dlg.component.less'],
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
   @Input() selectedBook: Book | null = null;
   selectedOrg: Organization | null = null;
 
@@ -26,13 +26,13 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
+    this.detailFormGroup = new UntypedFormGroup({
       //idControl: new FormControl({value: undefined, disabled: true}),
       //bookControl: new FormControl({ value: undefined, disabled: true }, [Validators.required]),
       //fromOrgControl: new FormControl({ value: undefined, disabled: true },),
-      dateRangeControl: new FormControl([new Date(), new Date()]),
-      hasRtnedControl: new FormControl(true),
-      cmtControl: new FormControl(''),
+      dateRangeControl: new UntypedFormControl([new Date(), new Date()]),
+      hasRtnedControl: new UntypedFormControl(true),
+      cmtControl: new UntypedFormControl(''),
     });
   }
 

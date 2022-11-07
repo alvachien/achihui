@@ -442,7 +442,11 @@ export class FinanceOdataService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,CategoryID,Status,Comment');
-      params = params.append('$filter', `HomeID eq ${hid}`);
+      if (this.homeService.CurrentMemberInChosedHome!.IsChild) {
+        params = params.append('$filter', `HomeID eq ${hid} and Owner eq '${this.homeService.CurrentMemberInChosedHome?.User}'`);
+      } else {
+        params = params.append('$filter', `HomeID eq ${hid}`);
+      }
 
       return this.http.get(this.accountAPIUrl, {
         headers,
@@ -766,7 +770,11 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
-      params = params.append('$filter', `HomeID eq ${hid}`);
+      if (this.homeService.CurrentMemberInChosedHome!.IsChild) {
+        params = params.append('$filter', `HomeID eq ${hid} and Owner eq '${this.homeService.CurrentMemberInChosedHome?.User}'`);
+      } else {
+        params = params.append('$filter', `HomeID eq ${hid}`);
+      }
 
       return this.http.get<any>(this.controlCenterAPIUrl, {
         headers,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class LocationDetailComponent implements OnInit {
   public routerID = -1; // Current object ID in routing
   public currentMode: string = '';
   public uiMode: UIMode = UIMode.Create;
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
   arLocationStrings: UIDisplayString[] = [];
 
   constructor(private storageService: LibraryStorageService,
@@ -36,11 +36,11 @@ export class LocationDetailComponent implements OnInit {
       ConsoleLogTypeEnum.debug);
 
     this.arLocationStrings = UIDisplayStringUtil.getLocationTypeEnumDisplayStrings();
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({ value: undefined, disabled: true }),
-      nameControl: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-      locTypeControl: new FormControl(LocationTypeEnum.PaperBook, [Validators.required]),
-      cmtControl: new FormControl('', [Validators.maxLength(100)]),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({ value: undefined, disabled: true }),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      locTypeControl: new UntypedFormControl(LocationTypeEnum.PaperBook, [Validators.required]),
+      cmtControl: new UntypedFormControl('', [Validators.maxLength(100)]),
     });
   }
 

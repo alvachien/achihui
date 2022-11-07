@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
   uiMode: UIMode = UIMode.Invalid;
 
   get isSaveButtonEnabled(): boolean {
@@ -33,14 +33,14 @@ export class UserSettingComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
-      userControl: new FormControl({value: undefined, disabled: true}, [Validators.required]),
-      deployControl: new FormControl({value: undefined, disable: true}, [Validators.required]),
-      titleControl: new FormControl('', [Validators.required]),
-      footerControl: new FormControl('', [Validators.required]),
-      authorControl: new FormControl(),
-      authorDespControl: new FormControl(),
-      authorImageControl: new FormControl(),
+    this.detailFormGroup = new UntypedFormGroup({
+      userControl: new UntypedFormControl({value: undefined, disabled: true}, [Validators.required]),
+      deployControl: new UntypedFormControl({value: undefined, disable: true}, [Validators.required]),
+      titleControl: new UntypedFormControl('', [Validators.required]),
+      footerControl: new UntypedFormControl('', [Validators.required]),
+      authorControl: new UntypedFormControl(),
+      authorDespControl: new UntypedFormControl(),
+      authorImageControl: new UntypedFormControl(),
     });
   }
 

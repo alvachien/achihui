@@ -2,7 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush
 import { Component, DebugElement, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -179,13 +179,13 @@ describe('AccountExtraAssetComponent', () => {
   `
 })
 export class FinanceAccountExtraAssetTestFormComponent {
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public arAssetCategories: AssetCategory[] = [];
   @ViewChild(AccountExtraAssetComponent, {static: true}) assetComponent: AccountExtraAssetComponent | undefined;
 
   constructor() {
-    this.formGroup = new FormGroup({
-      infoControl: new FormControl()
+    this.formGroup = new UntypedFormGroup({
+      infoControl: new UntypedFormControl()
     });
   }
 }

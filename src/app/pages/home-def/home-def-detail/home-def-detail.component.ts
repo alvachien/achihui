@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   public currentMode: string | null = null;
   public uiMode: UIMode = UIMode.Create;
   public arCurrencies: Currency[] = [];
-  public detailFormGroup: FormGroup;
+  public detailFormGroup: UntypedFormGroup;
   public listMembers: HomeMember[] = [];
   public listMemRel: UIDisplayString[] = [];
 
@@ -90,12 +90,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
     this.listMemRel = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true }),
-      nameControl: new FormControl('', Validators.required),
-      detailControl: new FormControl(),
-      baseCurrControl: new FormControl('', Validators.required),
-      hostControl: new FormControl({value: this.authService.authSubject.getValue().getUserId(), disabled: true }, Validators.required),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true }),
+      nameControl: new UntypedFormControl('', Validators.required),
+      detailControl: new UntypedFormControl(),
+      baseCurrControl: new UntypedFormControl('', Validators.required),
+      hostControl: new UntypedFormControl({value: this.authService.authSubject.getValue().getUserId(), disabled: true }, Validators.required),
     });
     this.isLoadingResults = false;
   }
@@ -276,7 +276,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         .subscribe({
         next: val => {
           // Shall create successfully.
-          this.router.navigate(['/homedef/display/' + val.ID.toString()]);
+          this.router.navigate(['/homedef/display/' + hdobj.ID.toString()]);
         },
         error: err => {
           // Show error
@@ -300,7 +300,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this.listMembers = memes;
   }
   onDeleteMember(idx: number) {
-    const memes = this.listMembers.splice(idx, 1);
+    const memes = this.listMembers.slice();
+    memes.splice(idx, 1);
     this.listMembers = memes;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -29,7 +29,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   instancePost: BlogPost | null = null;
   inputtedContent: string = '';
   contentFromChangedEvent: string = '';
-  detailFormGroup: FormGroup;
+  detailFormGroup: UntypedFormGroup;
   listOfCollection: BlogCollection[] = [];
   listOfTags: BlogPostTag[] = [];
 
@@ -40,14 +40,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.detailFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      titleControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
-      statusControl: new FormControl('Draft', [Validators.required]),
-      contentControl: new FormControl('', [Validators.required]),
-      collectionControl: new FormControl([]),
-      tagControl: new FormControl(null),
-      briefControl: new FormControl(''),
+    this.detailFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      titleControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      statusControl: new UntypedFormControl('Draft', [Validators.required]),
+      contentControl: new UntypedFormControl('', [Validators.required]),
+      collectionControl: new UntypedFormControl([]),
+      tagControl: new UntypedFormControl(null),
+      briefControl: new UntypedFormControl(''),
     });
   }
 

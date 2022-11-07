@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -38,11 +38,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step: Header
-  public headerForm: FormGroup;
+  public headerForm: UntypedFormGroup;
   // Step: Item
   public doccur: string = '';
   public doccur2?: string = '';
-  public itemsForm: FormGroup;
+  public itemsForm: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   public arDocItem: DocumentItemView[] = [];  
@@ -64,11 +64,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
     const docObj: Document = new Document();
     docObj.TranCurr = this.baseCurrency;
-    this.headerForm = new FormGroup({
-      headerControl: new FormControl(docObj, Validators.required),
+    this.headerForm = new UntypedFormGroup({
+      headerControl: new UntypedFormControl(docObj, Validators.required),
     });
-    this.itemsForm = new FormGroup({
-      itemControl: new FormControl([]),
+    this.itemsForm = new UntypedFormGroup({
+      itemControl: new UntypedFormControl([]),
     });
   }
 

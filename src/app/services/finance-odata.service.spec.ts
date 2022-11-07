@@ -52,6 +52,7 @@ describe('FinanceOdataService', () => {
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
     TestBed.configureTestingModule({
@@ -759,17 +760,16 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return expected account (called once)', () => {
-      expect(service.Accounts.length).toEqual(0, 'should not buffered yet');
+      expect(service.Accounts.length).withContext('should not buffered yet').toEqual(0);
 
-      service.fetchAllAccounts().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(fakeData.finAccountsFromAPI.length, 'should return expected account');
-          expect(service.Accounts.length).toEqual(fakeData.finAccountsFromAPI.length, 'should have buffered');
+      service.fetchAllAccounts().subscribe({
+        next: data => {
+          expect(data.length).withContext('should return expected account').toEqual(fakeData.finAccountsFromAPI.length);
+          expect(service.Accounts.length).withContext('should have buffered').toEqual(fakeData.finAccountsFromAPI.length);
         },
-        (fail: any) => {
-          // Empty
-        },
-      );
+        error: err => {
+        }
+      });
 
       // Service should have made one request to GET account from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {

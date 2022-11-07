@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { FinanceOdataService } from 'src/app/services';
@@ -12,7 +12,7 @@ import { FinanceOdataService } from 'src/app/services';
 export class DocumentChangeDespDialogComponent implements OnInit {
 
   // Header forum
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   @Input() documentid?: number;
   @Input() documentdesp?: string;
   isSubmitting = false;
@@ -20,9 +20,9 @@ export class DocumentChangeDespDialogComponent implements OnInit {
   constructor(private modal: NzModalRef,
     private _zone: NgZone,
     private odataService: FinanceOdataService) { 
-    this.headerFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      despControl: new FormControl('', [Validators.required]),
+    this.headerFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      despControl: new UntypedFormControl('', [Validators.required]),
     });
   }
 

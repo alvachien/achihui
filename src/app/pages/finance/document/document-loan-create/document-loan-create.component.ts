@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators, UntypedFormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
@@ -46,10 +46,10 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   baseCurrency: string = '';
   curMode: UIMode = UIMode.Create;
   // Step: Generic info
-  public firstFormGroup: FormGroup;
+  public firstFormGroup: UntypedFormGroup;
   // Step: Extra Info
   @ViewChild(AccountExtraLoanComponent, {static: true}) accountExtraLoanCtrl: AccountExtraLoanComponent | null = null;
-  public extraFormGroup: FormGroup;
+  public extraFormGroup: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   public isDocPosting = false;
@@ -83,16 +83,16 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.curDocType = financeDocTypeBorrowFrom;
     this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
 
-    this.firstFormGroup = new FormGroup({
-      headerControl: new FormControl(new Document(), Validators.required),      
-      amountControl: new FormControl(0, [Validators.required]),
-      legacyControl: new FormControl(false),
-      accountControl: new FormControl(undefined),
-      ccControl: new FormControl(undefined),
-      orderControl: new FormControl(undefined),
+    this.firstFormGroup = new UntypedFormGroup({
+      headerControl: new UntypedFormControl(new Document(), Validators.required),      
+      amountControl: new UntypedFormControl(0, [Validators.required]),
+      legacyControl: new UntypedFormControl(false),
+      accountControl: new UntypedFormControl(undefined),
+      ccControl: new UntypedFormControl(undefined),
+      orderControl: new UntypedFormControl(undefined),
     }, [costObjectValidator, this._legacyDateValidator, this._accountValidator]);
-    this.extraFormGroup = new FormGroup({
-      loanAccountControl: new FormControl(),
+    this.extraFormGroup = new UntypedFormGroup({
+      loanAccountControl: new UntypedFormControl(),
     });
   }
 

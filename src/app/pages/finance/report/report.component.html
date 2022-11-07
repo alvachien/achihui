@@ -4,7 +4,7 @@
     <nz-breadcrumb-item>{{'Finance.Reports' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
-  <nz-page-header-extra>
+  <nz-page-header-extra *ngIf="!isChildMode">
     <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
       {{'Finance.DetailReport' | transloco}}
       <i nz-icon nzType="down"></i>
@@ -31,10 +31,11 @@
 </nz-page-header>
 
 <div *ngIf="isChildMode">
-  <article nz-typography>
-    <h1 nz-typography>{{'Common.ChildMode' | transloco}}</h1>
-    <p nz-typography>{{'Common.ChildModeDetail' | transloco}}</p>
-  </article>
+  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+    <div nz-result-extra>
+      <button nz-button nzType="primary">OK</button>
+    </div>
+  </nz-result>
 </div>
 <div *ngIf="!isChildMode">
   <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">

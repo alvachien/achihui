@@ -9,6 +9,15 @@
     </nz-page-header-extra>
 </nz-page-header>
 
+<div *ngIf="isChildMode">
+    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+        <div nz-result-extra>
+          <button nz-button nzType="primary">OK</button>
+        </div>
+      </nz-result>
+</div>
+
+<div *ngIf="!isChildMode">
 <div class="control-full-width">
     <div nz-row *ngFor="let filter of filters; let idxfilter = index" class="control-full-width">
         <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both;">
@@ -84,4 +93,5 @@
 
 <div class="control-full-width">
   <hih-fin-document-item-view [filterDocItem]="realFilters"></hih-fin-document-item-view>
+</div>
 </div>

@@ -17,7 +17,6 @@ import { AppComponent } from './app.component';
 import { getTranslocoModule } from '../testing';
 import { AuthService, HomeDefOdataService, UIStatusService, } from '../app/services';
 import { UserAuthInfo } from './model';
-import { User } from 'oidc-client';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -26,21 +25,12 @@ describe('AppComponent', () => {
   const authinfo: UserAuthInfo = new UserAuthInfo();
 
   beforeAll(() => {
-    let usrvalue: Partial<User>;
-    usrvalue = {
-      profile: {
-        name: 'user1',
-        sub: 'user1_sub',
-        mail: 'user1_mail',
-        iss: '',
-        aud: '',
-        exp: 1440,
-        iat: 10,
-      },
-      access_token: 'user1_access_token',
-      id_token: 'user1_id_token',
+    let usrvalue = {
+      userId: 'user1_sub',
+      userName: 'user1',
+      accessToken: 'user1_access_token'
     };
-    authinfo.setContent(usrvalue as User);
+    authinfo.setContent(usrvalue);
     authServiceStub.authContent = new BehaviorSubject(authinfo);
     authServiceStub.doLogin = () => {};
     authServiceStub.doLogout = () => {};

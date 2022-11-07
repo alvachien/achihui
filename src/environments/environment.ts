@@ -6,16 +6,14 @@ export const environment = {
   production: false,
 
   LoginRequired: true,
-  CurrentVersion: '1.6.332',
+  CurrentVersion: '1.6.352',
   ReleasedDate: '2022.12.31',
   DefaultLanguage: 'en',
 
   DebugLogging: true,
   LoggingLevel: 4,
-  IDServerUrl: 'https://localhost:44353/',
-  AppLoginCallbackUrl: 'https://localhost:29521/logincallback.html',
+  IDServerUrl: 'https://localhost:44353',
   AppLogoutCallbackUrl: 'https://localhost:29521',
-  AppLoginSlientRevewCallbackUrl: 'https://localhost:29521/silentrenewcallback.html',
   AppHost: 'https://localhost:29521',
   ApiUrl: 'https://localhost:44360',
 

@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { FinanceOdataService } from 'src/app/services';
@@ -11,7 +11,7 @@ import { FinanceOdataService } from 'src/app/services';
 })
 export class DocumentChangeDateDialogComponent implements OnInit {
   // Header forum
-  public headerFormGroup: FormGroup;
+  public headerFormGroup: UntypedFormGroup;
   @Input() documentid?: number;
   @Input() documentdate?: Date;
   isSubmitting = false;
@@ -19,9 +19,9 @@ export class DocumentChangeDateDialogComponent implements OnInit {
   constructor(private modal: NzModalRef,
     private _zone: NgZone,
     private odataService: FinanceOdataService) { 
-    this.headerFormGroup = new FormGroup({
-      idControl: new FormControl({value: undefined, disabled: true}),
-      dateControl: new FormControl(new Date(), [Validators.required]),
+    this.headerFormGroup = new UntypedFormGroup({
+      idControl: new UntypedFormControl({value: undefined, disabled: true}),
+      dateControl: new UntypedFormControl(new Date(), [Validators.required]),
     });
   }
 

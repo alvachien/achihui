@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators, UntypedFormControl, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize, } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -30,11 +30,11 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
   private _docDate: moment.Moment;
 
   // Step: Generic info
-  public firstFormGroup: FormGroup;
+  public firstFormGroup: UntypedFormGroup;
   public curDocType: number = financeDocTypeAssetBuyIn;
   // public assetAccount: AccountExtraAsset;
   // Step: Items
-  public itemFormGroup: FormGroup;
+  public itemFormGroup: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
   public isDocPosting = false;
@@ -84,17 +84,17 @@ export class DocumentAssetBuyCreateComponent implements OnInit , OnDestroy {
     // this.assetAccount = new AccountExtraAsset();
     this.arMembers = this.homeService.ChosedHome!.Members.slice();
 
-    this.firstFormGroup = new FormGroup({
-      headerControl: new FormControl(new Document(), Validators.required),
-      assetAccountControl: new FormControl(new AccountExtraAsset(), Validators.required),
-      amountControl: new FormControl(0, Validators.required),
-      ownerControl: new FormControl(undefined, Validators.required),
-      legacyControl: new FormControl(false, Validators.required),
-      ccControl: new FormControl(),
-      orderControl: new FormControl(),
+    this.firstFormGroup = new UntypedFormGroup({
+      headerControl: new UntypedFormControl(new Document(), Validators.required),
+      assetAccountControl: new UntypedFormControl(new AccountExtraAsset(), Validators.required),
+      amountControl: new UntypedFormControl(0, Validators.required),
+      ownerControl: new UntypedFormControl(undefined, Validators.required),
+      legacyControl: new UntypedFormControl(false, Validators.required),
+      ccControl: new UntypedFormControl(),
+      orderControl: new UntypedFormControl(),
     }, [costObjectValidator, this._legacyDateValidator, this._amountValidator]);
-    this.itemFormGroup = new FormGroup({
-      itemControl: new FormControl(undefined),
+    this.itemFormGroup = new UntypedFormGroup({
+      itemControl: new UntypedFormControl(undefined),
     }, [this.amountEqualsValidator]);
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators, UntypedFormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
@@ -40,7 +40,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public baseCurrency: string;
   public currentStep = 0;
   // Step: Item
-  public itemsFormGroup?: FormGroup;
+  public itemsFormGroup?: UntypedFormGroup;
   // Step: Confirm
   public arItems: FinanceNormalDocItemMassCreate[] = [];
   public confirmInfo: Document[] = [];
@@ -54,7 +54,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private uiStatusService: UIStatusService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug);
@@ -171,7 +171,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      const controlArray: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+      const controlArray: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
       if (controlArray.length <= 0) {
         return false;
       }
@@ -209,7 +209,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
 
   // Step 0: Items
-  private initItem(): FormGroup {
+  private initItem(): UntypedFormGroup {
     return this.fb.group({
       dateControl: [new Date(), Validators.required],
       accountControl: [undefined, Validators.required],
@@ -224,15 +224,15 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     });
   }
   private createItem(): number {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: FormArray = this.itemsFormGroup?.controls['items'] as FormArray;
-    const newItem: FormGroup = this.initItem();
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+    const newItem: UntypedFormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
       newItem.get('dateControl')?.setValue(oldItem.dateControl);
@@ -247,19 +247,19 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     control.push(newItem);
     return control.length - 1;
   }
-  get getItemFormArray(): FormArray {
-    return this.itemsFormGroup?.controls['items'] as FormArray;
+  get getItemFormArray(): UntypedFormArray {
+    return this.itemsFormGroup?.controls['items'] as UntypedFormArray;
   }
-  get getItemControls(): FormGroup[] {
-    return this.getItemFormArray.controls as FormGroup[];
+  get getItemControls(): UntypedFormGroup[] {
+    return this.getItemFormArray.controls as UntypedFormGroup[];
   }
   private removeItem(i: number): void {
-    const control: FormArray = this.getItemFormArray;
+    const control: UntypedFormArray = this.getItemFormArray;
     control.removeAt(i);
   }
   private _generateItems(): void {
     this.arItems = [];
-    const controlArrays: FormArray = this.getItemFormArray;
+    const controlArrays: UntypedFormArray = this.getItemFormArray;
 
     for(var i = 0; i < controlArrays.length; i ++) {
       const control = controlArrays.value[i];

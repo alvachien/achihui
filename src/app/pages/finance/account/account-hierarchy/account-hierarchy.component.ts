@@ -443,15 +443,17 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         valueType: GeneralFilterValueType.number,
       });
     }
-    // Scope
-    let dats = getOverviewScopeRange(this.selectedScope);
-    arFilters.push({
-      fieldName: 'TransactionDate',
-      operator: GeneralFilterOperatorEnum.Between,
-      lowValue: dats.BeginDate.format(momentDateFormat),
-      highValue: dats.EndDate.format(momentDateFormat),
-      valueType: GeneralFilterValueType.date,
-    });
-    this.filterDocItem = arFilters;
+    if (arFilters.length > 0) {
+      // Scope
+      let dats = getOverviewScopeRange(this.selectedScope);
+      arFilters.push({
+        fieldName: 'TransactionDate',
+        operator: GeneralFilterOperatorEnum.Between,
+        lowValue: dats.BeginDate.format(momentDateFormat),
+        highValue: dats.EndDate.format(momentDateFormat),
+        valueType: GeneralFilterValueType.date,
+      });
+      this.filterDocItem = arFilters;
+    }
   }
 }
