@@ -23,7 +23,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private changeDetect: ChangeDetectorRef,
     private storageService: LibraryStorageService,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -53,8 +53,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent ngOnInit...', ConsoleLogTypeEnum.debug);
   }
 
   onChooseBook(): void {

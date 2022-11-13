@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.6.352",
+  "version": "1.6.360",
   "private": true,
   "description": "Web App for Home Information Hub.",
   "keywords": [
@@ -31,7 +31,7 @@
     "@angular/router": "^14.2.9",
     "@ngneat/transloco": "^4.1.0",
     "actslib": "^0.5.55",
-    "angular-auth-oidc-client": "14.1.5",
+    "angular-auth-oidc-client": "^14.1.5",
     "echarts": "~5.3.3",
     "katex": "^0.16.3",
     "marked": "^4.0.10",

@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
@@ -989,7 +989,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
     }));
   });
 
-  xdescribe('shall display error dialog when service failed', () => {
+  describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -1035,7 +1035,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when Asset Category fetched fails', fakeAsync(() => {

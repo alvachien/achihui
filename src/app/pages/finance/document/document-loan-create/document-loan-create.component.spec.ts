@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
@@ -770,7 +770,7 @@ describe('DocumentLoanCreateComponent', () => {
     }));
   });
 
-  xdescribe('shall display error dialog when service failed', () => {
+  describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -815,7 +815,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when Doc type fetched fails', fakeAsync(() => {
@@ -839,7 +839,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when Tran. type fetched fails', fakeAsync(() => {
@@ -863,7 +863,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when currency fetched fails', fakeAsync(() => {
@@ -887,7 +887,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when account fetched fails', fakeAsync(() => {
@@ -911,7 +911,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when control center fetched fails', fakeAsync(() => {
@@ -935,7 +935,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when order fetched fails', fakeAsync(() => {
@@ -959,7 +959,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
   });
 });

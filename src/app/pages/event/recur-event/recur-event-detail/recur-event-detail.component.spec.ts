@@ -12,16 +12,17 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { EventUIModule } from '../../event-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ActivatedRouteUrlStub, } from '../../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, Book, } from '../../../../model';
+import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, Book, RecurEvent, } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { RecurEventDetailComponent } from './recur-event-detail.component';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 
 describe('RecurEventDetailComponent', () => {
   let component: RecurEventDetailComponent;
   let fixture: ComponentFixture<RecurEventDetailComponent>;
   let fakeData: FakeDataHelper;
   let storageService: any;
-  let readGeneralEventSpy: any;
+  let readRecurEventSpy: any;
   let createGeneralEventSpy: any;
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
@@ -35,10 +36,10 @@ describe('RecurEventDetailComponent', () => {
     fakeData.buildChosedHome();
 
     storageService = jasmine.createSpyObj('EventStorageService', [
-      'readGeneralEvent',
+      'readRecurEvent',
       'createGeneralEvent',
     ]);
-    readGeneralEventSpy = storageService.readGeneralEvent.and.returnValue(of({}));
+    readRecurEventSpy = storageService.readRecurEvent.and.returnValue(of({}));
     createGeneralEventSpy = storageService.createGeneralEvent.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -71,6 +72,7 @@ describe('RecurEventDetailComponent', () => {
         { provide: EventStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
+        { provide: NZ_I18N, useValue: en_US },
       ]
     })
     .compileComponents();
@@ -84,5 +86,102 @@ describe('RecurEventDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('01. Create mode', () => {
+    let nobj: RecurEvent;
+    beforeEach(() => {
+      nobj = new RecurEvent();
+      nobj.ID = 2;
+      nobj.Name = 'test';
+
+      readRecurEventSpy.and.returnValue(asyncData(nobj));
+    });
+
+    it('create mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isEditable).toBeTruthy();
+
+      discardPeriodicTasks();
+    }));
+
+  });
+
+  // describe('02. Change mode', () => {
+  // });
+
+  describe('03. Display mode', () => {
+    let nobj: RecurEvent;
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+
+      nobj = new RecurEvent();
+      nobj.ID = 2;
+      nobj.Name = 'test';
+
+      readRecurEventSpy.and.returnValue(asyncData(nobj));
+    });
+
+    it('display mode init without error', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isEditable).toBeFalse();
+      let nname = component.detailFormGroup.get('nameControl')?.value;
+      expect(nname).toEqual(nobj.Name);
+
+      discardPeriodicTasks();
+    }));
+  });
+
+  describe('99. error cases', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      readRecurEventSpy.and.returnValue(asyncError('Failed'));
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall display error', fakeAsync(() => {
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+
+      discardPeriodicTasks();
+    }));
   });
 });

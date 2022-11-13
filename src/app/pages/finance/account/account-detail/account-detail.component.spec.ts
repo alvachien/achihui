@@ -130,13 +130,22 @@ describe('AccountDetailComponent', () => {
       expect(component.isCreateMode).toBeTruthy();
     }));
 
-    xit('category is a must', fakeAsync(() => {
+    it('category is a must', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
       component.headerFormGroup.get('nameControl')?.setValue('test');
       component.headerFormGroup.get('nameControl')?.markAsDirty();
+      tick();
+      fixture.detectChanges();
+
+      // Default value
+      expect(component.headerFormGroup.get('ctgyControl')?.value).toEqual(financeAccountCategoryCash);
+      expect(component.headerFormGroup.valid).toBeTruthy();
+
+      component.headerFormGroup.get('ctgyControl')?.setValue(undefined);
+      component.headerFormGroup.get('ctgyControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -150,15 +159,11 @@ describe('AccountDetailComponent', () => {
       flush();
     }));
 
-    xit('name is a must', fakeAsync(() => {
+    it('name is a must', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
-      component.headerFormGroup.get('ctgyControl')?.setValue(financeAccountCategoryCash);
-      component.headerFormGroup.get('ctgyControl')?.markAsDirty();
-      tick();
-      fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       component.headerFormGroup.get('nameControl')?.setValue('test');

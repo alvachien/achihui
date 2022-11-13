@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, inject, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, inject, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -114,7 +114,7 @@ describe('DocumentTransferCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('2. Exception case handling (async loading)', () => {
+  describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -164,7 +164,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('2. should display error when accont category service fails', fakeAsync(() => {
@@ -188,7 +188,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('3. should display error when doc type service fails', fakeAsync(() => {
@@ -213,7 +213,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('4. should display error when tran type service fails', fakeAsync(() => {
@@ -238,7 +238,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('5. should display error when accont service fails', fakeAsync(() => {
@@ -263,7 +263,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('6. should display error when control center service fails', fakeAsync(() => {
@@ -288,7 +288,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('7. should display error when order service fails', fakeAsync(() => {
@@ -313,7 +313,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
   });
 

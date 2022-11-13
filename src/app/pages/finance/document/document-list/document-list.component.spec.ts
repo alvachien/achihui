@@ -244,7 +244,7 @@ describe('DocumentListComponent', () => {
     });
   });
 
-  xdescribe('3. shall display error dialog for exception', () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -292,7 +292,7 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when currencies fails', fakeAsync(() => {
@@ -318,10 +318,10 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when doc type fails', fakeAsync(() => {
+    it('should display error when doc type fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -344,7 +344,7 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when tran type fails', fakeAsync(() => {
@@ -370,7 +370,7 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
     it('should display error when account fails', fakeAsync(() => {
@@ -396,10 +396,10 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when control center fails', fakeAsync(() => {
+    it('should display error when control center fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -422,10 +422,10 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when order fails', fakeAsync(() => {
+    it('should display error when order fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -448,10 +448,10 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when docs fails', fakeAsync(() => {
+    it('should display error when docs fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllDocumentsSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -474,7 +474,7 @@ describe('DocumentListComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
   });
 });

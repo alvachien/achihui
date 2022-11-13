@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
@@ -884,7 +884,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
     // expect(component._stepper.selectedIndex).toEqual(0); // At first page
   }));
 
-  xdescribe('shall display error dialog when service failed', () => {
+  describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -930,10 +930,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when Doc type fetched fails', fakeAsync(() => {
+    it('should display error when Doc type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -954,10 +954,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when Tran. type fetched fails', fakeAsync(() => {
+    it('should display error when Tran. type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -978,10 +978,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when currency fetched fails', fakeAsync(() => {
+    it('should display error when currency fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -1002,10 +1002,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when account fetched fails', fakeAsync(() => {
+    it('should display error when account fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -1026,10 +1026,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when control center fetched fails', fakeAsync(() => {
+    it('should display error when control center fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -1050,10 +1050,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
 
-    xit('should display error when order fetched fails', fakeAsync(() => {
+    it('should display error when order fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -1074,7 +1074,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
+      discardPeriodicTasks();
     }));
   });
 });
