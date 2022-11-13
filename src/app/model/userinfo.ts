@@ -63,7 +63,7 @@ export class UserAuthInfo {
     this.userId = undefined;
     this.userMailbox = undefined;
     this.accessToken = undefined;
-}
+  }
 
   public getUserName(): string | undefined {
     return this.userName;

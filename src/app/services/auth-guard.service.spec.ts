@@ -19,7 +19,7 @@ describe('AuthGuardService', () => {
     TestBed.configureTestingModule({
       providers: [
         AuthGuardService,
-        AuthService,
+        { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
       ],
     });

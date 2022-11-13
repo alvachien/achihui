@@ -23,14 +23,11 @@ describe('AuthService', () => {
   });
 
   beforeEach(() => {
-    const authServiceStub: Partial<OidcSecurityService> = {};
-    const eventServiceStub: Partial<PublicEventsService> = {};
-
     TestBed.configureTestingModule({
       providers: [
         AuthService,
-        { provide: OidcSecurityService, useValue: authServiceStub },
-        { provide: PublicEventsService, useValue: eventServiceStub },
+        { provide: OidcSecurityService, useValue: securService },
+        { provide: PublicEventsService, useValue: eventService },
       ],
     });
   });

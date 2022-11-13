@@ -8,8 +8,8 @@ import { environment } from 'src/environments/environment';
         config: {
             authority: environment.IDServerUrl,
 
-            redirectUrl: window.location.origin,
-            postLogoutRedirectUri: window.location.origin,
+            redirectUrl: environment.AppHost, // window.location.origin,
+            postLogoutRedirectUri: environment.AppHost,
             
             clientId: 'achihui.js',
             scope: 'openid profile api.hih offline_access', // 'openid profile ' + your scopes
