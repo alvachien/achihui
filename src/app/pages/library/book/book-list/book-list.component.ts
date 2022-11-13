@@ -166,8 +166,8 @@ export class BookListComponent implements OnInit, OnDestroy {
           }
         });            
       },
-      nzCancelText: 'No',
-      nzOnCancel: () => console.log('Cancel')
+      nzCancelText: translate('Common.No'),
+      nzOnCancel: () => ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering BookListComponent onDelete cancelled`, ConsoleLogTypeEnum.debug)
     });
   }
 }

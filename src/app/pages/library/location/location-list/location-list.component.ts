@@ -75,6 +75,39 @@ export class LocationListComponent implements OnInit, OnDestroy {
     
   }
   public onDelete(pid: number) {
-    
+    this.modalService.confirm({
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: '<b style="color: red;">' + translate('Common.ConfirmToDeleteSelectedItem') + '</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService.deleteLocation(pid).subscribe({
+          next: data => {
+            let sdlg = this.modalService.success({
+              nzTitle: translate('Common.Success')
+            });
+            sdlg.afterClose.subscribe(() => {
+              let dix = this.dataSet.findIndex(p => p.ID === pid);
+              if (dix !== -1) {
+                this.dataSet.splice(dix, 1);
+                this.dataSet = [...this.dataSet];
+              }  
+            });
+            setTimeout(() => sdlg.destroy(), 1000);
+          },
+          error: err => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering LocationList onDelete failed ${err}`, ConsoleLogTypeEnum.error);
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err,
+              nzClosable: true,
+            });
+          }
+        });            
+      },
+      nzCancelText: 'No',
+      nzOnCancel: () => ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LocationList onDelete cancelled`, ConsoleLogTypeEnum.debug)
+    });
   }
 }
