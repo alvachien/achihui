@@ -4,7 +4,7 @@ import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, UIStatusEnum, HomeDef, ModelUtility, ConsoleLogTypeEnum } from './model';
+import { ModelUtility, ConsoleLogTypeEnum } from './model';
 import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
 
 @Component({
@@ -29,8 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private themeService: ThemeService,
     private _zone: NgZone) {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
 
     this._authService.authContent.subscribe((x: any) => {
       this._zone.run(() => {
@@ -48,8 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit',
-      ConsoleLogTypeEnum.log);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit', ConsoleLogTypeEnum.debug);
 
     this._homeService.checkDBVersion().subscribe({
       next: val => {
@@ -65,13 +63,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnDestroy',
-      ConsoleLogTypeEnum.log);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnDestroy', ConsoleLogTypeEnum.debug);
   }
 
   switchLanguage(lang: string) {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage', ConsoleLogTypeEnum.debug);
 
     if (lang === 'en_US') {
       this.i18n.setLocale(en_US);
@@ -85,16 +81,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.themeService.toggleTheme().then();
   }
   public onLogon(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon',
-      ConsoleLogTypeEnum.log);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogon', ConsoleLogTypeEnum.debug);
 
     if (environment.LoginRequired) {
       this._authService.doLogin();
     }
   }
   public onLogout(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogout',
-      ConsoleLogTypeEnum.log);
+    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent onLogout', ConsoleLogTypeEnum.debug);
 
     if (environment.LoginRequired) {
       this._authService.doLogout();
