@@ -23,11 +23,10 @@ import { environment } from 'src/environments/environment';
             tokenRefreshInSeconds: 600,
 
             disableIdTokenValidation: true,
-            ignoreNonceAfterRefresh: true, // this is required if the id_token is not returned
-            // allowUnsafeReuseRefreshToken: true, // this is required if the refresh token is not rotated
-            triggerRefreshWhenIdTokenExpired: false, // required to refresh the browser if id_token is not updated after the first authentication
-            autoUserInfo: false, // if the user endpoint is not supported
-            logLevel: LogLevel.Debug,
+            // ignoreNonceAfterRefresh: true, // this is required if the id_token is not returned
+            // // allowUnsafeReuseRefreshToken: true, // this is required if the refresh token is not rotated
+            // triggerRefreshWhenIdTokenExpired: false, // required to refresh the browser if id_token is not updated after the first authentication
+            logLevel: environment.LoggingLevel === 2 ? LogLevel.Error : LogLevel.Debug,
           }
       })],
     exports: [AuthModule],

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
@@ -33,28 +33,24 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  constructor(
-    private authService: AuthService,
+  constructor(private authService: AuthService,
     private homeService: HomeDefOdataService,
     private router: Router,
     private modalService: NzModalService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this._fetchData();
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -63,10 +59,11 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onChooseHome(row: HomeDef): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...', ConsoleLogTypeEnum.debug);
     this.homeService.ChosedHome = row;
     // Set current home member
+    let usrid = this.authService.authSubject.value.getUserId();
+    console.debug(usrid);
     this.homeService.ChosedHome.Members.forEach(mem => {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
@@ -89,20 +86,22 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
 
     this.homeService.fetchAllHomeDef(forceLoad)
-      .pipe(takeUntil(this._destroyed$!))
-      .subscribe((arHomeDef: HomeDef[]) => {
-        this.dataSource = arHomeDef;
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefListComponent ngOnInit, fetchAllHomeDef failed: ${error}`,
-          ConsoleLogTypeEnum.error);
-
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
-      }, () => {
-        this.isLoadingResults = false;
+      .pipe(takeUntil(this._destroyed$!),
+        finalize(() => this.isLoadingResults = false))
+      .subscribe({
+        next: (arHomeDef: HomeDef[]) => {
+          this.dataSource = arHomeDef;
+        },
+        error: (err: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefListComponent ngOnInit, fetchAllHomeDef failed: ${err}`,
+            ConsoleLogTypeEnum.error);
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        }
       });
   }
 }

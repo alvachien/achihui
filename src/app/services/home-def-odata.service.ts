@@ -122,7 +122,7 @@ export class HomeDefOdataService {
           this._islistLoaded = false;
           this._listHomeDefList = [];
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
       } else {
         return of(this._listHomeDefList);
