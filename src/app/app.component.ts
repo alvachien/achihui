@@ -31,15 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private _zone: NgZone) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
 
-    this._authService.authContent.subscribe((x: any) => {
-      this._zone.run(() => {
-        this.isLoggedIn = x.isAuthorized;
-        if (this.isLoggedIn) {
-          this.titleLogin = x.getUserName();
-        }
-      });
-    });
-
     // Randomize the theme
     if(Math.random() > 0.5) {
       this.toggleTheme();
@@ -48,6 +39,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit', ConsoleLogTypeEnum.debug);
+
+    this._authService.authContent.subscribe((x: any) => {
+      ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent authService.authContent subscribe', ConsoleLogTypeEnum.debug);
+      this._zone.run(() => {
+        this.isLoggedIn = x.isAuthorized;
+        if (this.isLoggedIn) {
+          this.titleLogin = x.getUserName();
+        }
+      });
+    });
 
     this._homeService.checkDBVersion().subscribe({
       next: val => {

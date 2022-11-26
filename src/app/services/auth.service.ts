@@ -54,27 +54,31 @@ export class AuthService {
     this.authService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken, idToken }) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`, ConsoleLogTypeEnum.debug);
       if (isAuthenticated) {
-        this.authSubject.value.setContent({
+        let usrAuthInfo = this.authSubject.value;
+        usrAuthInfo.setContent({
           userId: userData.sub,
           userName: userData.name,
           accessToken: accessToken,
         });
+        this.authSubject.next(usrAuthInfo);
       } else {
-        this.authSubject.value.cleanContent();
+        let usrAuthInfo = this.authSubject.value;
+        usrAuthInfo.cleanContent();
+        this.authSubject.next(usrAuthInfo);
       }
     });
   }
 
   public doLogin(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService logon...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService logon...', ConsoleLogTypeEnum.debug);
     this.authService.authorize();
   }
   public doLogout(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...', ConsoleLogTypeEnum.debug);
     this.authService.logoffAndRevokeTokens().subscribe(() => {
-      this.authSubject.value.cleanContent();
+      let usrAuthInfo = this.authSubject.value;
+      usrAuthInfo.cleanContent();
+      this.authSubject.next(usrAuthInfo);
     });
   }  
 }
