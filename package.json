@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.6.368",
+  "version": "1.6.370",
   "private": true,
   "description": "Web App for Home Information Hub.",
   "keywords": [
@@ -37,7 +37,7 @@
     "marked": "^4.0.10",
     "moment": "^2.29.4",
     "monaco-editor": "^0.33.0",
-    "ng-zorro-antd": "^14.1.1",
+    "ng-zorro-antd": "^14.3.0",
     "ngx-echarts": "^14.0.0",
     "ngx-markdown": "^14.0.1",
     "rxjs": "^7.4.0",

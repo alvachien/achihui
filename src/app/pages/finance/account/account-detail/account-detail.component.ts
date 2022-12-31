@@ -352,15 +352,16 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return false;
   }
   get isSaveEnabled(): boolean {
-    if (this.canEnterInitialAmount) {
-      if (!this.headerFormGroup.valid) {
-        return false;
-      }
-      if (this.isInitAmountRequired) {
-        return this.amountFormGroup.valid;
-      }
+    if (!this.isFieldChangable) {
+      return false;
     }
-    return false;
+    if (!this.headerFormGroup.valid) {
+      return false;
+    }
+    if (this.canEnterInitialAmount && this.isInitAmountRequired) {
+      return this.amountFormGroup.valid;
+    }
+    return true;
   }
   public onSave(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`,
