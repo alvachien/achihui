@@ -26,6 +26,7 @@ import { AuthService, AuthGuardService, HomeChoseGuardService, BlogOdataService,
   CanDeactivateGuardService, UIStatusService, TagsService,
   FinanceOdataService, HomeDefOdataService, LanguageOdataService,
 } from './services';
+import { AccountFilterPipe } from './pipe';
 import { environment } from '../environments/environment';
 import { translocoLoader } from './transloco-loader';
 import { MessageDialogComponent } from './pages/message-dialog';
@@ -39,6 +40,7 @@ registerLocaleData(en);
     declarations: [
         AppComponent,
         MessageDialogComponent,
+        AccountFilterPipe,
     ],
     imports: [
         BrowserModule,
