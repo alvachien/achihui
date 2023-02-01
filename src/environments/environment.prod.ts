@@ -7,7 +7,7 @@ export const environment = {
   DefaultLanguage: 'zh',
 
   DebugLogging: false,
-  LoggingLevel: 2,
+  LoggingLevel: 4,
   IDServerUrl: 'https://www.alvachien.com/idserver',
   AppLogoutCallbackUrl: 'https://www.alvachien.com/hih',
   AppHost: 'https://www.alvachien.com/hih',
