@@ -110,7 +110,7 @@ export class BlogOdataService {
         this.isSettingLoaded = false;
         this.setting = null;
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
   public deploySetting(owner: string): Observable<string> {
@@ -119,7 +119,7 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${owner}')/deploy`;
+    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${owner}')/Deploy()`;
     return this.http.get(apiUrl, {
       headers,
     })
@@ -133,7 +133,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService deploySetting failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
   /**
@@ -216,7 +216,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService createCollection failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -264,7 +264,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readCollection failed ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -315,7 +315,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService fetchAllPosts failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -347,7 +347,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService createPost failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -379,7 +379,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService changePost failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
   public deployPost(postid: number): Observable<string> {
@@ -388,7 +388,7 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/Deploy';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/Deploy()';
     return this.http.get(apiUrl, {
       headers,
     })
@@ -402,7 +402,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService deployPost failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
   public revokeDeployPost(postid: number): Observable<string> {
@@ -411,7 +411,7 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/ClearDeploy';
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/ClearDeploy()';
     return this.http.get(apiUrl, {
       headers,
     })
@@ -425,7 +425,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService revokeDeployPost failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -465,7 +465,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService readPost failed ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 
@@ -514,7 +514,7 @@ export class BlogOdataService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BlogOdataService fetchAllPostTags failed: ${error}`,
           ConsoleLogTypeEnum.error);
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       }));
   }
 }

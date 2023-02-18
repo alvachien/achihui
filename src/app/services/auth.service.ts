@@ -35,6 +35,7 @@ export class AuthService {
             break;
           case EventTypes.NewAuthenticationResult:
             ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService: New authentication result...', ConsoleLogTypeEnum.debug);
+            this.checkAuth();
             break;
           case EventTypes.TokenExpired:
             ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService: Token expired...', ConsoleLogTypeEnum.debug);
@@ -51,7 +52,24 @@ export class AuthService {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AuthService: CheckSessionChanged with value: ${value}`, ConsoleLogTypeEnum.debug);
     });
     
-    this.authService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken, idToken }) => {
+    this.checkAuth();
+  }
+
+  public doLogin(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService logon...', ConsoleLogTypeEnum.debug);
+    this.authService.authorize();
+  }
+  public doLogout(): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...', ConsoleLogTypeEnum.debug);
+    this.authService.logoffAndRevokeTokens().subscribe(() => {
+      let usrAuthInfo = this.authSubject.value;
+      usrAuthInfo.cleanContent();
+      this.authSubject.next(usrAuthInfo);
+    });
+  }
+
+  public checkAuth() {
+    this.authService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`, ConsoleLogTypeEnum.debug);
       if (isAuthenticated) {
         let usrAuthInfo = this.authSubject.value;
@@ -68,17 +86,4 @@ export class AuthService {
       }
     });
   }
-
-  public doLogin(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService logon...', ConsoleLogTypeEnum.debug);
-    this.authService.authorize();
-  }
-  public doLogout(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...', ConsoleLogTypeEnum.debug);
-    this.authService.logoffAndRevokeTokens().subscribe(() => {
-      let usrAuthInfo = this.authSubject.value;
-      usrAuthInfo.cleanContent();
-      this.authSubject.next(usrAuthInfo);
-    });
-  }  
 }
