@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './statement-of-income-expense.component.html',
   styleUrls: ['./statement-of-income-expense.component.less']
 })
-export class StatementOfIncomeExpenseComponent implements OnInit {
+export class StatementOfIncomeExpenseComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

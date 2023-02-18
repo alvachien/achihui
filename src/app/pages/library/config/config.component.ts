@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.less']
 })
-export class ConfigComponent implements OnInit {
+export class ConfigComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

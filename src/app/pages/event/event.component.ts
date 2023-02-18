@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.less']
 })
-export class EventComponent implements OnInit {
+export class EventComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

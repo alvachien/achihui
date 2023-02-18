@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './organization-type-selection-dlg.component.html',
   styleUrls: ['./organization-type-selection-dlg.component.less']
 })
-export class OrganizationTypeSelectionDlgComponent implements OnInit {
+export class OrganizationTypeSelectionDlgComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

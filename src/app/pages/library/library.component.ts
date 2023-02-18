@@ -5,11 +5,9 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.less']
 })
-export class LibraryComponent implements OnInit {
+export class LibraryComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
 
 }

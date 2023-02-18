@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -17,7 +17,7 @@ import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
   templateUrl: './location-detail.component.html',
   styleUrls: ['./location-detail.component.less'],
 })
-export class LocationDetailComponent implements OnInit {
+export class LocationDetailComponent implements OnInit, OnDestroy {
 
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean = false;

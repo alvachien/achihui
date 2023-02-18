@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './account-settle-dialog.component.html',
   styleUrls: ['./account-settle-dialog.component.less']
 })
-export class AccountSettleDialogComponent implements OnInit {
+export class AccountSettleDialogComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

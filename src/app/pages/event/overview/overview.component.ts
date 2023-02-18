@@ -6,13 +6,10 @@ import { NzCalendarMode } from 'ng-zorro-antd/calendar';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.less'],
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-  
   selectedDate = new Date();
   mode: NzCalendarMode = 'month';
 
