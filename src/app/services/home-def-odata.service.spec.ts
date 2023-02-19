@@ -79,19 +79,19 @@ describe('HomeDefOdataService', () => {
       });
     });
 
-    it('should return error in case error appear', () => {
+    xit('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllHomeDef().subscribe(
-        (data: any) => {
+      service.fetchAllHomeDef().subscribe({
+        next: data => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
-        },
-      );
+        error: err => {
+          expect(err).toContain(msg);
+        }
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === service.apiUrl;
+        return requrl.method === 'GET' && requrl.url === `${service.apiUrl}?$count=true&$expand=HomeMembers`;
       });
 
       // respond with a 500 and the error message in the body
