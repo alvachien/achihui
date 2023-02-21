@@ -24,7 +24,7 @@ Ideally, **HIH** can be used in Cloud server, or runs on a NAS/Family Server wit
 
 ## Live Demo / Example
 
-***Live application***  hosted in [Azure Link (will be obseleted soon)](http://achihui.azurewebsites.net).   
+***Live application***  hosted in [AlvaChien.com](http://www.alvachien.com/hih).   
 
 ### Snapshots
 
