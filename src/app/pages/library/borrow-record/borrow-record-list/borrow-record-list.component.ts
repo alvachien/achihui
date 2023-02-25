@@ -94,7 +94,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BorrowRecordListComponent fetchBookBorrowRecords failed ${err}`, ConsoleLogTypeEnum.error);
           this.modal.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -171,7 +171,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BorrowRecordListComponent onDelete failed ${err}`, ConsoleLogTypeEnum.error);
             this.modal.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }

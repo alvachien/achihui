@@ -100,7 +100,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
                 ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`, ConsoleLogTypeEnum.error);
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
-                  nzContent: err,
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
               }
@@ -154,7 +154,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSimulateGeneratedEvents, getRepeatedDates, failed ${err}`, ConsoleLogTypeEnum.error);
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: err,
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }
@@ -190,7 +190,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSave createRecurEvent failed ${err}...`, ConsoleLogTypeEnum.error);
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

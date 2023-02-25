@@ -174,7 +174,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }
@@ -298,7 +298,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -426,7 +426,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

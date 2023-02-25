@@ -133,7 +133,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`, ConsoleLogTypeEnum.error);
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }

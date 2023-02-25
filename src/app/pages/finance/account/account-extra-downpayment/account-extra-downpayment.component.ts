@@ -189,7 +189,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

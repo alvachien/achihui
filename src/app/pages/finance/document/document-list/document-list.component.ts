@@ -351,7 +351,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
 
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: err,
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }

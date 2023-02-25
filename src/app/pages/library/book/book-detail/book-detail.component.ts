@@ -113,7 +113,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
                 ConsoleLogTypeEnum.error);
               this.modal.error({
                 nzTitle: translate('Common.Error'),
-                nzContent: err,
+                nzContent: err.toString(),
                 nzClosable: true,
               });
             }
@@ -313,7 +313,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error);
           this.modal.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

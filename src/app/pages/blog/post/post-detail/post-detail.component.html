@@ -52,9 +52,9 @@
           <nz-form-label [nzSpan]="7">{{'Common.Status' | transloco}}</nz-form-label>
           <nz-form-control [nzSpan]="12">
             <nz-radio-group formControlName="statusControl">
-              <label nz-radio-button [nzValue]="'Draft'">{{'Common.SaveAsDraft' | transloco}}</label>
-              <label nz-radio-button [nzValue]="'PublicPublish'">{{'Common.PublishAsPublic' | transloco}}</label>
-              <label nz-radio-button [nzValue]="'PrivatePublish'">{{'Common.PublishAsPrivate' | transloco}}</label>
+              <label nz-radio [nzValue]="'Draft'">{{'Common.SaveAsDraft' | transloco}}</label>
+              <label nz-radio [nzValue]="'PublicPublish'">{{'Common.PublishAsPublic' | transloco}}</label>
+              <label nz-radio [nzValue]="'PrivatePublish'">{{'Common.PublishAsPrivate' | transloco}}</label>
             </nz-radio-group>
           </nz-form-control>
         </nz-form-item>

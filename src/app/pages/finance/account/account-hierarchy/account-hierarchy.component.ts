@@ -202,7 +202,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           error: err => {
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }
@@ -255,7 +255,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           error: err => {
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }
@@ -297,7 +297,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             // Error occurs
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           },

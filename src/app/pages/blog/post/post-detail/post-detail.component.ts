@@ -136,7 +136,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
               this.modalService.error({
                 nzTitle: translate('Common.Error'),
-                nzContent: err,
+                nzContent: err.toString(),
                 nzClosable: true,
               });
             }
@@ -162,7 +162,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error);
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
-                  nzContent: err,
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
               }
@@ -255,8 +255,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                     error: derr => {
                       // Popup another dialog
                       this.modalService.error({
-                        nzTitle: 'Error',
-                        nzContent: derr,
+                        nzTitle: translate('Common.Error'),
+                        nzContent: derr.toString(),
                       });
                     }
                   });
@@ -274,7 +274,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error);
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }
@@ -312,8 +312,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                     error: derr => {
                       // Popup another dialog
                       this.modalService.error({
-                        nzTitle: 'Error',
-                        nzContent: derr,
+                        nzTitle: translate('Common.Error'),
+                        nzContent: derr.toString(),
                       });
                     }
                   });
@@ -331,7 +331,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error);
             this.modalService.error({
               nzTitle: translate('Common.Error'),
-              nzContent: err,
+              nzContent: err.toString(),
               nzClosable: true,
             });
           }

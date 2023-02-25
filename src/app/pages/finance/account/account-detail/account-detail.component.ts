@@ -212,7 +212,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
                   error: err => {
                     this.modalService.error({
                       nzTitle: translate('Common.Error'),
-                      nzContent: err,
+                      nzContent: err.toString(),
                       nzClosable: true,
                     });      
                   }
@@ -238,7 +238,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
                   error: err => {
                     this.modalService.error({
                       nzTitle: translate('Common.Error'),
-                      nzContent: err,
+                      nzContent: err.toString(),
                       nzClosable: true,
                     });      
                   }
@@ -278,7 +278,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
               this.uiMode = UIMode.Invalid;
               this.modalService.error({
                 nzTitle: translate('Common.Error'),
-                nzContent: err,
+                nzContent: err.toString(),
                 nzClosable: true,
               });
             }
@@ -305,7 +305,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
-                  nzContent: err,
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });  
               }
@@ -441,7 +441,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         error: err => {
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true
           });
         }
@@ -494,7 +494,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         error: err => {
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true
           });
         }

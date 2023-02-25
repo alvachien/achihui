@@ -246,7 +246,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           // Show error
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }
@@ -282,7 +282,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           // Show error
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

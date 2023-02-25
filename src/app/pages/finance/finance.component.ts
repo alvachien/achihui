@@ -165,7 +165,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: err,
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }
@@ -273,7 +273,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: err,
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }

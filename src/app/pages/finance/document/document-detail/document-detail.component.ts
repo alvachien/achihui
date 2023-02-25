@@ -152,7 +152,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                         this.uiMode = UIMode.Invalid;
                         this.modalService.create({
                           nzTitle: translate('Common.Error'),
-                          nzContent: err,
+                          nzContent: err.toString(),
                           nzClosable: true,
                         });
                       }
@@ -168,7 +168,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: err,
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
               }
@@ -228,7 +228,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.docFormGroup.disable();
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }
@@ -267,7 +267,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           console.error(err);
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }
@@ -303,7 +303,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.docFormGroup.disable();
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

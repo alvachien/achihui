@@ -150,7 +150,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error);
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }
@@ -350,7 +350,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error);
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: err,
+            nzContent: err.toString(),
             nzClosable: true,
           });
         }

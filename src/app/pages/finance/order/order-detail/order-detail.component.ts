@@ -138,7 +138,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               this.uiMode = UIMode.Invalid;
               this.modalService.create({
                 nzTitle: translate('Common.Error'),
-                nzContent: err,
+                nzContent: err.toString(),
                 nzClosable: true,
               });
             }
@@ -164,7 +164,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error);
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: err,
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });  
               }

@@ -123,8 +123,8 @@ export class PostListComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.modalService.error({
-          nzTitle: 'Error',
-          nzContent: err,
+          nzTitle: translate('Common.Error'),
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }
@@ -143,8 +143,8 @@ export class PostListComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.modalService.error({
-          nzTitle: 'Error',
-          nzContent: err,
+          nzTitle: translate('Common.Error'),
+          nzContent: err.toString(),
           nzClosable: true,
         });
       }
