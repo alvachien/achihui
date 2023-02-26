@@ -5,6 +5,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
 } from '@angular/forms';
 import { KatexOptions } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import * as moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
@@ -15,6 +16,7 @@ declare const monaco: any;
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -100,11 +102,12 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   constructor(private changeDetect: ChangeDetectorRef,
-              private authService: AuthService, ) {
+              private authService: AuthService,
+              private modalService: NzModalService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
-    this.uploadAPI = environment.ApiUrl + '/PhotoFile';
+    this.uploadAPI = environment.ApiUrl + 'api/PhotoFile';
   }
 
   ngOnInit() {
@@ -531,7 +534,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
   onToolbarPicture(filename?: string): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPicture...',
       ConsoleLogTypeEnum.debug);
 
     // Upload
@@ -605,8 +608,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     } else if (info.file.status === 'error') {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering MarkdownEditorComponent onToolbarPictureUpload, failed: ${info.file.response}`,
         ConsoleLogTypeEnum.error);
-      // TBD.
-      // this.msg.error(`${info.file.name} file upload failed.`);
+      this.modalService.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: `${info.file.name} file upload failed.`,
+        nzClosable: true,
+      });
     }
   }
   onToolbarDateTime(): void {
