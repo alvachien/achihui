@@ -19,10 +19,9 @@ import { popupDialog } from '../../../message-dialog';
 @Component({
   selector: 'hih-document-transfer-create',
   templateUrl: './document-transfer-create.component.html',
-  styleUrls: ['./document-transfer-create.component.less']
+  styleUrls: ['./document-transfer-create.component.less'],
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
-  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
 
   public curDocType: number = financeDocTypeTransfer;
@@ -108,34 +107,37 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDocTypes(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-        // Accounts
-        this.arAccounts = rst[2];
-        this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-        // this.uiAccountStatusFilter = undefined;
-        // this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arOrders = rst[4];
-        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-        // Tran. type
-        this.arTranType = rst[1];
-        // Control Centers
-        this.arControlCenters = rst[3];
-        // Currencies
-        this.arCurrencies = rst[5];
-        // Doc. type
-        this.arDocTypes = rst[6];
+      .subscribe({
+        next: rst => {
+          // Accounts
+          this.arAccounts = rst[2];
+          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          // this.uiAccountStatusFilter = undefined;
+          // this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arOrders = rst[4];
+          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          // Tran. type
+          this.arTranType = rst[1];
+          // Control Centers
+          this.arControlCenters = rst[3];
+          // Currencies
+          this.arCurrencies = rst[5];
+          // Doc. type
+          this.arDocTypes = rst[6];
 
-        // Set the default currency
-        this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent ngOnInit, forkJoin, ${error}`,
-          ConsoleLogTypeEnum.error);
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error,
-          nzClosable: true,
-        });
+          // Set the default currency
+          this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+        },
+        error: err => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent ngOnInit, forkJoin, ${err.toString()}`,
+            ConsoleLogTypeEnum.error);
+          this.modalService.create({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        }
       });
   }
 
