@@ -40,7 +40,7 @@
             <td>{{data.TransactionTypeName}}</td>
             <td>
               <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
-                {{data.Amount | number:'1.0-2'}}
+                {{data.Amount | number:'1.2-2'}}
               </button>
               <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
@@ -49,7 +49,7 @@
         </tbody>
       </nz-table>
       <ng-template #incomeFooterTemplate>
-        <div><span>{{'Common.Total' | transloco}}: </span>{{totalIncome | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
+        <div><span>{{'Common.Total' | transloco}}: </span>{{totalIncome | number:'1.2-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
       </ng-template>
     </div>
     <div nz-col style="margin-bottom: 8px;" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
@@ -68,7 +68,7 @@
             <td>{{data.TransactionTypeName}}</td>
             <td>
               <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
-                {{data.Amount | number:'1.0-2'}}
+                {{data.Amount | number:'1.2-2'}}
               </button>
               <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span>
             </td>
@@ -77,7 +77,7 @@
         </tbody>
       </nz-table>
       <ng-template #outgoFooterTemplate>
-        <div><span>{{'Common.Total' | transloco}}: </span>{{totalExpense | number:'1.0-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
+        <div><span>{{'Common.Total' | transloco}}: </span>{{totalExpense | number:'1.2-2'}} <span style="padding-left: 2px;"><small>{{baseCurrency}}</small></span></div>
       </ng-template>
     </div>
   </div>

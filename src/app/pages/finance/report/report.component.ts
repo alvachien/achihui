@@ -5,15 +5,17 @@ import { NzModalService, } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
+import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 import { FinanceReportByAccount, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil,
   momentDateFormat, Account, AccountCategory, FinanceReportByControlCenter, FinanceReportByOrder,
-  ControlCenter, Order, FinanceReportEntryByTransactionType, FinanceReportMostExpenseEntry,
+  ControlCenter, Order, FinanceReportEntryByTransactionType, FinanceReportMostExpenseEntry, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType,
 } from '../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService, } from '../../../services';
-import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
 import * as moment from 'moment';
 import { NumberUtility } from 'actslib';
+import { DocumentItemViewComponent } from '../document-item-view';
 
 @Component({
   selector: 'hih-finance-report',
@@ -21,7 +23,6 @@ import { NumberUtility } from 'actslib';
   styleUrls: ['./report.component.less'],
 })
 export class ReportComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   dataReportByAccount: FinanceReportByAccount[] = [];
@@ -60,7 +61,8 @@ export class ReportComponent implements OnInit, OnDestroy {
     public router: Router,
     public odataService: FinanceOdataService,
     private homeService: HomeDefOdataService,
-    private modalService: NzModalService) {
+    private modalService: NzModalService,
+    public drawerService: NzDrawerService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
 
@@ -222,5 +224,70 @@ export class ReportComponent implements OnInit, OnDestroy {
           });    
         }
       });
+  }
+
+  onShowDetail(ttid: number, monthDiff: number, isexp: boolean) {
+    let bgn = '';
+    let end = '';
+    if (monthDiff === 0) {
+      bgn = moment().startOf('M').format(momentDateFormat);
+      end = moment().endOf('M').format(momentDateFormat);
+    } else if(monthDiff < 0) {
+      bgn = moment().subtract(-1 * monthDiff, 'M').startOf('M').format(momentDateFormat);
+      end = moment().subtract(-1 * monthDiff, 'M').endOf('M').format(momentDateFormat);
+    } else if(monthDiff > 0) {
+      bgn = moment().add(monthDiff, 'M').startOf('M').format(momentDateFormat);
+      end = moment().add(monthDiff, 'M').endOf('M').format(momentDateFormat);
+    }
+
+    this.onDisplayDocItem(bgn, end, ttid, isexp);
+  }
+  onDisplayDocItem(beginDate: string, endDate: string, ttid: number, isexp: boolean) {
+    const fltrs: GeneralFilterItem[] = [];
+    fltrs.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: beginDate,
+      highValue: endDate,
+      valueType: GeneralFilterValueType.date,
+    });
+    fltrs.push({
+      fieldName: 'IsExpense',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: isexp,
+      highValue: isexp,
+      valueType: GeneralFilterValueType.boolean,
+    });
+    fltrs.push({
+      fieldName: 'TransactionType',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: ttid,
+      highValue: ttid,
+      valueType: GeneralFilterValueType.number,
+    });
+
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: translate('Finance.Documents'),
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
   }
 }

@@ -6,7 +6,6 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 import { DocumentItemViewComponent } from './';
 
-
 @NgModule({
   declarations: [
     DocumentItemViewComponent,

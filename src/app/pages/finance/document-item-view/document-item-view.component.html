@@ -6,6 +6,7 @@
   [nzTotal]="totalDocumentItemCount"
   [nzPageIndex]="pageIndex"
   [nzPageSize]="pageSize"
+  [nzFooter]="footerTpl"
   (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
     <tr>
@@ -30,9 +31,15 @@
       <td>{{ data.TransactionDate }}</td>
       <td>{{ getTranTypeName(data.TransactionType!) }}<small>({{data.TransactionType}})</small></td>
       <td>{{ getAccountName(data.AccountID!) }} <small>({{data.AccountID}})</small></td>
-      <td>{{ data.Amount | number: '1.0-2' }} <small>{{data.Currency}}</small></td>
+      <td>{{ data.Amount | number: '1.2-2' }} <small>{{data.Currency}}</small></td>
       <td>{{ getControlCenterName(data.ControlCenterID!) }}<small>({{data.ControlCenterID}})</small></td>
       <td>{{ getOrderName(data.OrderID!) }} <small>({{data.OrderID}})</small></td>
     </tr>
   </tbody>
 </nz-table>
+<ng-template #footerTpl let-control>
+  <div nz-row>
+    <div nz-col nzFlex="3">{{'Finance.In' | transloco}}: {{incomeAmount | number: '1.2-2'}} ({{incomeCurrency}})</div>
+    <div nz-col nzFlex="3">{{'Finance.Out' | transloco}}: {{outgoAmount | number: '1.2-2'}} ({{outgoCurrency}})</div>
+  </div>
+</ng-template>

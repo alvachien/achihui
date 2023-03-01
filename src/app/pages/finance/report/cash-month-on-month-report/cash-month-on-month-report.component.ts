@@ -3,12 +3,14 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
 
-import { ConsoleLogTypeEnum, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportEntryMoM, ModelUtility } from 'src/app/model';
+import { ConsoleLogTypeEnum, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportEntryMoM, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility, momentDateFormat } from 'src/app/model';
 import { FinanceOdataService } from 'src/app/services';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 import { NumberUtility } from 'actslib';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-cash-month-on-month-report',
@@ -23,7 +25,8 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   chartOption: EChartsOption | null = null;
 
   constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService,) {
+    private modalService: NzModalService,
+    public drawerService: NzDrawerService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
@@ -183,6 +186,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
         type: 'value',
       }],
       series: [{
+        id: 'in',
         name: translate('Finance.Income'),
         type: 'bar',
         label: {
@@ -195,6 +199,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
         },
         data: arIn,
       }, {
+        id: 'out',
         name: translate('Finance.Expense'),
         type: 'bar',
         label: {
@@ -207,6 +212,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
         },
         data: arOut,
       }, {
+        id: 'total',
         name: translate('Common.Total'),
         type: 'line',
         label: {
@@ -220,6 +226,78 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
         data: arBal,
       }],
     };
+  }
+
+  onChartClick(event: any) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChartClick`,
+      ConsoleLogTypeEnum.debug);
+    // $vars: (3) ['seriesName', 'name', 'value']
+    // componentIndex: 1
+    // componentSubType: "bar"
+    // componentType: "series"
+    // data: -200
+    // dataIndex: 2
+    // dataType: undefined
+    // dimensionNames: (2) ['x', 'y']
+    // event: {type: 'click', event: PointerEvent, target: Rect, topTarget: Rect, cancelBubble: false, …}
+    // name: "2023.03"
+    // seriesId: "\u0000Expense\u00000"
+    // seriesIndex: 1
+    // seriesName: "Expense"
+    // seriesType: "bar"
+    // type: "click"
+    // value: -200
+    let dtmonth = moment(event.name + '.01');
+    if (event.seriesId === "in") {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+    } else if (event.seriesId === "out") {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else if(event.seriesId === "total") {
+      // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else {
+      console.error(event.toString());
+    }
+  }
+  onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
+    const fltrs: GeneralFilterItem[] = [];
+    fltrs.push({
+      fieldName: 'IsExpense',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: isexp,
+      highValue: isexp,
+      valueType: GeneralFilterValueType.boolean,
+    });
+    fltrs.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: beginDate,
+      highValue: endDate,
+      valueType: GeneralFilterValueType.date,
+    });
+
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: translate('Finance.Documents'),
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
   }
 }
 

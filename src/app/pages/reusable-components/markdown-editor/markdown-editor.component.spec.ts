@@ -11,6 +11,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzConfigService } from 'ng-zorro-antd/core/config';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -18,13 +20,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MarkdownModule } from 'ngx-markdown';
 import { BehaviorSubject, interval } from 'rxjs';
 import { KatexOptions } from 'ngx-markdown';
-import { take, takeUntil, takeLast } from 'rxjs/operators';
 
 import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { AuthService } from '../../../services';
 import { UserAuthInfo } from '../../../../app/model';
-import { NzConfigService } from 'ng-zorro-antd/core/config';
 
 @Component({
   template: `
@@ -84,6 +84,7 @@ describe('MarkdownEditorComponent', () => {
       ],
       providers: [
         NzConfigService,
+        NzModalService,
         { provide: AuthService, useValue: authServiceStub },
       ]
     })

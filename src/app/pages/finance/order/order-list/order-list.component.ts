@@ -32,8 +32,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
     public router: Router,
     private homeService: HomeDefOdataService,
     public modalService: NzModalService,
-    public drawerService: NzDrawerService,
-    ) {
+    public drawerService: NzDrawerService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
       ConsoleLogTypeEnum.debug);
 

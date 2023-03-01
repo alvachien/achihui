@@ -43,16 +43,20 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arAccounts: Account[] = [];
   pageIndex = 1;
-  pageSize = 10;
+  pageSize = 20;
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
+  incomeAmount = 0;
+  outgoAmount = 0;
+  incomeCurrency = '';
+  outgoCurrency = '';
 
   constructor(private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private router: Router, ) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug);
-    if (this._destroyed$ == null) {
+    if (this._destroyed$ === null) {
       this._destroyed$ = new ReplaySubject(1);
     }
   }
@@ -61,7 +65,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug);
 
-    if (this._destroyed$ == null) {
+    if (this._destroyed$ === null) {
       this._destroyed$ = new ReplaySubject(1);
     }
   }
@@ -168,6 +172,10 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           this.arOrders = revdata[4];
 
           this.listDocItem = [];
+          this.incomeAmount = 0;
+          this.outgoAmount = 0;
+          this.incomeCurrency = '';
+          this.outgoCurrency = '';
           if (revdata[0]) {
             if (revdata[0].totalCount) {
               this.totalDocumentItemCount = +revdata[0].totalCount;
@@ -176,6 +184,27 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
             }
 
             this.listDocItem = revdata[0].contentList;
+            this.listDocItem.forEach(eachitem => {
+              if (eachitem.Amount < 0) {
+                if (this.outgoCurrency === '') {
+                  this.outgoCurrency = eachitem.Currency;
+                  this.outgoAmount += eachitem.Amount;
+                } else {
+                  if (this.outgoCurrency === eachitem.Currency) {
+                    this.outgoAmount += eachitem.Amount;  
+                  }
+                }
+              } else {
+                if (this.incomeCurrency === '') {
+                  this.incomeCurrency = eachitem.Currency;
+                  this.incomeAmount += eachitem.Amount;
+                } else {
+                  if (this.incomeCurrency === eachitem.Currency) {
+                    this.incomeAmount += eachitem.Amount;  
+                  }
+                }
+              }
+            });
           } else {
             this.totalDocumentItemCount = 0;
             this.listDocItem = [];

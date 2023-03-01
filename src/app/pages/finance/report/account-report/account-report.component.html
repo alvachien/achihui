@@ -71,19 +71,19 @@
           <td>{{data.CategoryName | transloco}}</td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayDebitData(data.AccountId)">
-              {{data.DebitBalance | number: '1.0-2'}}
+              {{data.DebitBalance | number: '1.2-2'}}
             </button>
             <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayCreditData(data.AccountId)">
-              {{data.CreditBalance | number: '1.0-2'}}
+              {{data.CreditBalance | number: '1.2-2'}}
             </button>
             <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayBalanceData(data.AccountId)">
-              {{data.Balance | number: '1.0-2'}}
+              {{data.Balance | number: '1.2-2'}}
             </button>
             <span style="padding-left: 5px;">{{baseCurrency}}</span>
           </td>

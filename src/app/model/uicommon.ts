@@ -681,6 +681,11 @@ export function getSingleFilterString(flt: GeneralFilterItem): string {
           subfilter = `${flt.fieldName} eq '${flt.lowValue}'`;
           break;
         case GeneralFilterValueType.boolean:
+          if (flt.lowValue) {
+            subfilter = `${flt.fieldName} eq true`;
+          } else {
+            subfilter = `${flt.fieldName} eq false`;
+          }
           break;
         case GeneralFilterValueType.date:
           subfilter = `${flt.fieldName} eq ${flt.lowValue}`;
