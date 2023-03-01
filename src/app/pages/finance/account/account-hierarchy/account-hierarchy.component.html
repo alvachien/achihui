@@ -34,7 +34,7 @@
           (nzDblClick)="onNodeClick($event)"
           [nzTreeTemplate]="tmplAccountHierarchy"></nz-tree>
         <ng-template #tmplAccountHierarchy let-node let-origin="origin">
-          <span class="custom-node">
+          <span [style.text-decoration]="node.isDisabled ? 'line-through' : 'none'">
             <span *ngIf="!node.isLeaf" (contextmenu)="onNodeContextMenu($event, treeMenu)">
               <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"></i>
               <span class="folder-name">{{ node.title }}</span>

@@ -34,7 +34,6 @@ interface ISettleAccountDetail {
   styleUrls: ['./account-hierarchy.component.less'],
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   filterDocItem: GeneralFilterItem[] = [];
 
@@ -352,7 +351,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: error.toString(),
             nzClosable: true,
           });
         }
@@ -392,6 +391,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             title: val.Name!,
             isLeaf: true
           };
+          //node['closed'] = val.isClosed;
+          node.disabled = val.isClosed;
 
           data.push(node);
         }

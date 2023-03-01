@@ -35,7 +35,7 @@
       <tbody>
         <tr *ngFor="let data of basicTable.data">
           <td>
-            {{data.Id}}
+            <span [ngClass]="{'closed-account': data.isClosed}">{{data.Id}}</span>
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplay(data.Id!)">{{'Common.Display' | transloco}}</button>
             <a nz-dropdown nz-dropdown [nzDropdownMenu]="menuForChange">
@@ -55,7 +55,7 @@
               </ul>
             </nz-dropdown-menu>
           </td>
-          <td>{{data.Name}}</td>
+          <td><span [ngClass]="{'closed-account': data.isClosed}">{{data.Name}}</span></td>
           <td>{{getCategoryName(data.CategoryId!) | transloco}}</td>
           <td>{{getStatusString(data.Status) | transloco}}</td>
           <td>{{data.Comment}}</td>

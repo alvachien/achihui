@@ -499,6 +499,10 @@ export class Account extends hih.BaseModel {
     this.Status = AccountStatusEnum.Normal;
   }
 
+  get isClosed(): boolean {
+    return this.Status === AccountStatusEnum.Closed;
+  }
+
   public override onInit(): void {
     super.onInit();
   }
