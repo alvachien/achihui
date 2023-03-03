@@ -52,7 +52,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: error.toString(),
             nzClosable: true,
           });
         },

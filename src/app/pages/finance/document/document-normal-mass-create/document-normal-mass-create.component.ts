@@ -108,7 +108,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
           ConsoleLogTypeEnum.error);
         this.modalService.create({
           nzTitle: translate('Common.Error'),
-          nzContent: error,
+          nzContent: error.toString(),
           nzClosable: true,
         });
       });

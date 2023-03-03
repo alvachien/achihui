@@ -10,6 +10,7 @@ import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,
   GeneralFilterOperatorEnum, GeneralFilterValueType, } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import * as moment from 'moment';
 
 @Component({
   selector: 'hih-fin-order-list',
@@ -24,6 +25,15 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+  }
+  invalidOrder(ord: Order): boolean {
+    if (ord) {
+      let cur: moment.Moment = moment();
+      if (ord.ValidFrom && ord.ValidFrom.isBefore(cur) && ord.ValidTo && ord.ValidTo.isAfter(cur)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   constructor(
@@ -58,7 +68,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: error.toString(),
             nzClosable: true,
           });
         },

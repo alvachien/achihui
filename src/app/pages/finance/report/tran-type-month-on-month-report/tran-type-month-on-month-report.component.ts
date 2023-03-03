@@ -3,11 +3,13 @@ import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from 'src/app/services';
 import { ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransactionTypeMoM, financePeriodLast12Months, 
-  financePeriodLast6Months, financePeriodLast3Months, } from '../../../../model';
+  financePeriodLast6Months, financePeriodLast3Months, momentDateFormat, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, } from '../../../../model';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
@@ -17,7 +19,8 @@ import { ModelUtility, ConsoleLogTypeEnum, TranType, FinanceReportEntryByTransac
 export class TranTypeMonthOnMonthReportComponent implements OnInit {
 
   constructor(private oDataService: FinanceOdataService,
-    private modalService: NzModalService) {
+    private modalService: NzModalService,
+    private drawerService: NzDrawerService) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
@@ -205,7 +208,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
               }
             }
             
-            arSeries.push({
+            arSeries.push({              
               name: ttname,
               type: 'bar',
               stack: 'stack',
@@ -273,6 +276,58 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           nzClosable: true,
         });
       }
+    });
+  }
+
+  onChartClick(event: any) {
+    console.log(event);
+    // Month
+    let dtmonth = moment(event.name + '.01');
+    this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), this.selectedTranTypes);
+  }
+  onDisplayDocItem(beginDate: string, endDate: string, ttypes: number[] | null) {
+    const fltrs: GeneralFilterItem[] = [];
+    fltrs.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: beginDate,
+      highValue: endDate,
+      valueType: GeneralFilterValueType.date,
+    });
+    if (ttypes) {
+      ttypes.forEach(tt => {
+        fltrs.push({
+          fieldName: 'TransactionType',
+          operator: GeneralFilterOperatorEnum.Equal,
+          lowValue: tt,
+          highValue: tt,
+          valueType: GeneralFilterValueType.number,
+        });  
+      });  
+    }
+
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: translate('Finance.Documents'),
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
     });
   }
 }

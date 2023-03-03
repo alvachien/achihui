@@ -72,7 +72,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: error.toString(),
             nzClosable: true,
           });
         }

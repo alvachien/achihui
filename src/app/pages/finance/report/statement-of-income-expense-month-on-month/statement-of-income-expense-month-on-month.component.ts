@@ -2,13 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, } from 'ng-zorro-antd/modal';
-
-import { ConsoleLogTypeEnum, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportEntryMoM, ModelUtility } from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
+
+import { ConsoleLogTypeEnum, financePeriodLast12Months, financePeriodLast3Months, financePeriodLast6Months, FinanceReportEntryMoM, 
+  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility, momentDateFormat } from 'src/app/model';
+import { FinanceOdataService } from 'src/app/services';
 import { NumberUtility } from 'actslib';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
   selector: 'hih-statement-of-income-expense-month-on-month',
@@ -24,7 +27,8 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   chartOption: EChartsOption | null = null;
 
   constructor(private odataService: FinanceOdataService,
-    private modalService: NzModalService,) {
+    private modalService: NzModalService,
+    private drawerService: NzDrawerService,) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
       ConsoleLogTypeEnum.debug);
   }
@@ -184,7 +188,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         type: 'value',
       }],
       series: [{
-        id: 'income',
+        id: 'in',
         name: translate('Finance.Income'),
         type: 'bar',
         label: {
@@ -197,7 +201,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         },
         data: arIn,
       }, {
-        id: 'expense',
+        id: 'out',
         name: translate('Finance.Expense'),
         type: 'bar',
         label: {
@@ -226,20 +230,57 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     };
   }
 
-  onChartClick(data: any) {
-    // Drill down
-    // Split the name as Year.Month
+  onChartClick(event: any) {
+    let dtmonth = moment(event.name + '.01');
+    if (event.seriesId === "in") {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+    } else if (event.seriesId === "out") {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else if(event.seriesId === "total") {
+      // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else {
+      console.error(event.toString());
+    }
+  }
+  onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
+    const fltrs: GeneralFilterItem[] = [];
+    fltrs.push({
+      fieldName: 'IsExpense',
+      operator: GeneralFilterOperatorEnum.Equal,
+      lowValue: isexp,
+      highValue: isexp,
+      valueType: GeneralFilterValueType.boolean,
+    });
+    fltrs.push({
+      fieldName: 'TransactionDate',
+      operator: GeneralFilterOperatorEnum.Between,
+      lowValue: beginDate,
+      highValue: endDate,
+      valueType: GeneralFilterValueType.date,
+    });
 
-    // let words = data.name.split('.');
-    // let year = Number.parseInt(words[0]);
-    // let month = Number.parseInt(words[1]);
-    // this.odataService.fetchDailyStatementOfIncomeAndExpense(year, month, this.excludeTransfer).subscribe({
-    //   next: val => {
-    //     // console.log(val);
-    //   },
-    //   error: err => {
-    //     // console.log(err);
-    //   }
-    // });
+    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
+      filterDocItem: GeneralFilterItem[],
+    }, string>({
+      nzTitle: translate('Finance.Documents'),
+      nzContent: DocumentItemViewComponent,
+      nzContentParams: {
+        filterDocItem: fltrs,
+      },
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
+    });
+
+    drawerRef.afterOpen.subscribe(() => {
+      // console.log('Drawer(Component) open');
+    });
+
+    drawerRef.afterClose.subscribe(data => {
+      // console.log(data);
+      // if (typeof data === 'string') {
+      //   this.value = data;
+      // }
+    });
   }
 }

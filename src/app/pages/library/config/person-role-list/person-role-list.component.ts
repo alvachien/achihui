@@ -49,7 +49,7 @@ export class PersonRoleListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error);
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error,
+            nzContent: error.toString(),
             nzClosable: true,
           });
         },

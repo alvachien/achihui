@@ -153,7 +153,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
         this.modalService.create({
           nzTitle: translate('Common.Error'),
-          nzContent: error,
+          nzContent: error.toString(),
           nzClosable: true,
         });
       }

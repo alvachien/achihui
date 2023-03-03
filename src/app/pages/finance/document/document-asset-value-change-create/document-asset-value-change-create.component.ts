@@ -156,7 +156,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
         this.modalService.create({
           nzTitle: translate('Common.Error'),
-          nzContent: error,
+          nzContent: error.toString(),
           nzClosable: true,
         });
       },

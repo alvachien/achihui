@@ -41,17 +41,17 @@
       <tbody>
         <tr *ngFor="let data of basicTable.data">
           <td>
-            {{data.Id}}
+            <span [ngClass]="{'closed-order': invalidOrder(data)}">{{data.Id}}</span>
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplay(data.Id!)">{{'Common.Display' | transloco}}</button>
-            <button nz-button nzType="link" (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onEdit(data.Id!)" [disabled]="invalidOrder(data)">{{'Common.Edit' | transloco}}</button>
             <a nz-button nz-popconfirm [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
               nzPopconfirmPlacement="bottom"
               (nzOnConfirm)="onDelete(data.Id!)" nzType="link" nzDanger>{{'Common.Delete' | transloco}}</a>
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">{{'Finance.Documents' | transloco}}</button>
           </td>
-          <td>{{data.Name}}</td>
+          <td><span [ngClass]="{'closed-order': invalidOrder(data)}">{{data.Name}}</span></td>
           <td>{{data.ValidFromFormatString}}</td>
           <td>{{data.ValidToFormatString}}</td>
           <td>{{data.Comment}}</td>

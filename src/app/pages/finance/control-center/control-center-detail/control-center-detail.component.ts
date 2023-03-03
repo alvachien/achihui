@@ -114,7 +114,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: error,
+                  nzContent: error.toString(),
                   nzClosable: true,
                 });
               },
@@ -144,7 +144,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
                   this.modalService.create({
                     nzTitle: translate('Common.Error'),
-                    nzContent: error,
+                    nzContent: error.toString(),
                     nzClosable: true,
                   });
                 },
@@ -248,7 +248,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         // Show error message
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: error,
+          nzContent: error.toString(),
           nzClosable: true,
         });
       });
@@ -269,7 +269,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         // Show error message
         this.modalService.error({
           nzTitle: translate('Common.Error'),
-          nzContent: error,
+          nzContent: error.toString(),
           nzClosable: true,
         });
       });
