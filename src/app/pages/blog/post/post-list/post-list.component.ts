@@ -114,8 +114,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.odataService.deployPost(rid).subscribe({
       next: val => {
         const modalRef = this.modalService.success({
-          nzTitle: 'Deploy completed without error',
-          nzContent: 'Closed in 1 second'
+          nzTitle: translate('Blog.DeploySuccess'),
+          nzContent: translate('Common.WillCloseIn1Second'),
         });
         setTimeout(() => {
           modalRef.close();
@@ -134,8 +134,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.odataService.revokeDeployPost(rid).subscribe({
       next: val => {
         const modalRef = this.modalService.success({
-          nzTitle: 'Deploy revoked completed without error',
-          nzContent: 'Closed in 1 second'
+          nzTitle: translate('Blog.RevokeDeploySuccess'),
+          nzContent: translate('Common.WillCloseIn1Second'),
         });
         setTimeout(() => {
           modalRef.close();

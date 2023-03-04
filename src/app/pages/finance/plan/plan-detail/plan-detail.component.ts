@@ -22,7 +22,6 @@ import { popupDialog } from '../../../message-dialog';
   styleUrls: ['./plan-detail.component.less'],
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing
@@ -201,25 +200,27 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._destroyed$!),
               finalize(() => this.isLoadingResults = false))
-            .subscribe((rsts: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
-              ConsoleLogTypeEnum.debug);
-
-            this.arCurrencies = rsts[0];
-            this.arTranType = rsts[1];
-            this.arAccountCategories = rsts[2];
-            this.arUIAccounts = BuildupAccountForSelection(rsts[3], rsts[2]);
-            this.arControlCenters = rsts[4];
-          }, (error: any) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin: ${error}`,
-              ConsoleLogTypeEnum.error);
-            this.modalService.create({
-              nzTitle: translate('Common.Error'),
-              nzContent: error.toString(),
-              nzClosable: true,
+            .subscribe({
+              next: rsts => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
+                  ConsoleLogTypeEnum.debug);
+    
+                this.arCurrencies = rsts[0];
+                this.arTranType = rsts[1];
+                this.arAccountCategories = rsts[2];
+                this.arUIAccounts = BuildupAccountForSelection(rsts[3], rsts[2]);
+                this.arControlCenters = rsts[4];  
+              },
+              error: err => {
+                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin: ${err}`,
+                  ConsoleLogTypeEnum.error);
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });  
+              }
             });
-          });
-
           break;
         }
       }

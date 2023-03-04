@@ -115,17 +115,17 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: next => {
           this.modalService.confirm({
-            nzTitle: 'Confirm',
-            nzContent: 'Deploy the setting now?',
+            nzTitle: translate('Common.Confirm'),
+            nzContent: translate('Blog.DeployContentNow'),
             nzOkText: 'OK',
-            nzCancelText: 'Cancel',
+            nzCancelText: translate('Comon.Cancel'),
             nzOnOk: okrst => {
               this.odataService.deploySetting(settings.owner).subscribe({
                 next: rst => {
                   // Show success dialog
                   const ref: NzModalRef = this.modalService.success({
-                    nzTitle: 'Deploy complete without error',
-                    nzContent: 'Closed in 1 sec',
+                    nzTitle: translate('Blog.DeploySuccess'),
+                    nzContent: translate('Common.WillCloseIn1Second'),
                   });
                   setTimeout(() => {
                     ref.close();

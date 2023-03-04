@@ -218,7 +218,8 @@
     "Latest6Months": "最近6个月",
     "Latest3Months": "最近3个月",
     "ShortcutID": "快捷访问",
-    "InvalidForm": "无效的表单"
+    "InvalidForm": "无效的表单",
+    "WillCloseIn1Second": "将在 1 秒后自动关闭"
   },
   "Sys": {
     "Currency": {
@@ -451,7 +452,10 @@
     "Collection": "集合",
     "Collections": "集合",
     "Post": "博文",
-    "Posts": "博文"
+    "Posts": "博文",
+    "DeployContentNow": "立刻发布当前内容？",
+    "DeploySuccess": "发布成功，未发现任何错误。",
+    "RevokeDeploySuccess": "发布已经成功撤回，未发现任何错误。"
   },
   "Finance": {
     "Accounts": "账户",

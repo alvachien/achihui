@@ -231,17 +231,17 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             // Succeed.
             if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
               this.modalService.confirm({
-                nzTitle: 'Confirm',
-                nzContent: 'Deploy the content now?',
+                nzTitle: translate('Common.Confirm'),
+                nzContent: translate('Blog.DeployContentNow'),
                 nzOkText: 'OK',
-                nzCancelText: 'Cancel',
+                nzCancelText: translate('Common.Cancel'),
                 nzOnOk: okrst => {
                   this.odataService.deployPost(e.id!).subscribe({
                     next: rst => {
                       // Show success dialog
                       const ref: NzModalRef = this.modalService.success({
-                        nzTitle: 'Deploy completed without any error',
-                        nzContent: 'Closed in 1 sec',
+                        nzTitle: translate('Blog.DeploySuccess'),
+                        nzContent: translate('Common.WillCloseIn1Second'),
                       });
                       ref.afterClose.subscribe({
                         next: next => {
@@ -288,17 +288,17 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             // Succeed.
             if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
               this.modalService.confirm({
-                nzTitle: 'Confirm',
-                nzContent: 'Deploy the content now?',
+                nzTitle: translate('Common.Confirm'),
+                nzContent: translate('Blog.DeployContentNow'),
                 nzOkText: 'OK',
-                nzCancelText: 'Cancel',
+                nzCancelText: translate('Common.Cancel'),
                 nzOnOk: okrst => {
                   this.odataService.deployPost(e.id!).subscribe({
                     next: rst => {
                       // Show success dialog
                       const ref: NzModalRef = this.modalService.success({
-                        nzTitle: 'Deploy completed without any error',
-                        nzContent: 'Closed in 1 sec',
+                        nzTitle: translate('Blog.DeploySuccess'),
+                        nzContent: translate('Common.WillCloseIn1Second'),
                       });
                       ref.afterClose.subscribe({
                         next: next => {

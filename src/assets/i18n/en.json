@@ -218,7 +218,8 @@
     "Latest6Months": "Latest 6 Months",
     "Latest3Months": "Latest 3 Months",
     "ShortcutID": "Shortcut ID",
-    "InvalidForm": "Invalid Form"
+    "InvalidForm": "Invalid Form",
+    "WillCloseIn1Second": "Will close in 1 second automatially"
   },
   "Sys": {
     "Currency": {
@@ -451,7 +452,10 @@
     "Collection": "Collection",
     "Collections": "Collection",
     "Post": "Post",
-    "Posts": "Posts"
+    "Posts": "Posts",
+    "DeployContentNow": "Deploy the content now?",
+    "DeploySuccess": "Deploy sucessfully without any error",
+    "RevokeDeploySuccess": "Deploy revoked sucessfully without any error"
   },
   "Finance": {
     "Accounts": "Accounts",
