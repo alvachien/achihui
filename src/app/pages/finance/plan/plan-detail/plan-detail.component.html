@@ -80,7 +80,7 @@
         <nz-form-label [nzSpan]="7">{{'Finance.Account' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
           <nz-select formControlName="accountControl">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+            <nz-option *ngFor="let acnt of arUIAccounts | uiAccountStatusFilter: 'Normal'" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
           </nz-select>
           <ng-template #accountTpl let-control>
             <ng-container *ngIf="control.hasError('required')">
