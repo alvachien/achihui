@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'overview', component: FinanceComponent },
   { path: 'currency', component: CurrencyComponent },
   { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
+  { path: 'account-reconcile', loadChildren: () => import('./account-reconcile/account-reconcile.module').then(m => m.AccountReconcileModule) },
   { path: 'document', loadChildren: () => import('./document/document.module').then(m => m.DocumentModule) },
   { path: 'config', loadChildren: () => import('./config/config.module').then(m => m.ConfigModule)},
   { path: 'controlcenter', loadChildren: () => import('./control-center/control-center.module').then(m => m.ControlCenterModule)},

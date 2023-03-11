@@ -160,6 +160,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       }
     }
   }
+  onAccountReconcile(): void {
+    this.router.navigate(['/finance/account-reconcile/bymonth']);
+  }
   openAdvanceOperations(): void {
     console.log('Entering openAdvanceOperations');
   }

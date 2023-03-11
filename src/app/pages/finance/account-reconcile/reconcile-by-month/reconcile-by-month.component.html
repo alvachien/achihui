@@ -1,0 +1,104 @@
+<nz-page-header nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.Accounts' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>Account Reconcile</nz-page-header-subtitle>
+  <nz-page-header-extra>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<nz-steps nzType="navigation" nzSize="small" [nzCurrent]="currentStep">
+  <nz-step nzTitle="Step 1" nzSubtitle="Select an account" nzDescription="Select an account to continue."></nz-step>
+  <nz-step nzTitle="Step 2" nzSubtitle="Input Result for Reconcile" nzDescription="Input a result."></nz-step>
+  <nz-step nzTitle="Step 3" nzSubtitle="Compare Data" nzDescription="This is a description."></nz-step>
+</nz-steps>
+
+<div class="steps-action">
+  <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0">
+    <span>Previous</span>
+  </button>
+  <button nz-button nzType="default" (click)="next()" [nzLoading]="processing" *ngIf="currentStep < 2">
+    <span>Next</span>
+  </button>
+  <button nz-button nzType="primary" (click)="done()" [nzLoading]="processing" *ngIf="currentStep === 2">
+    <span>Done</span>
+  </button>
+</div>
+
+<div class="steps-content">
+  <div [ngSwitch]="currentStep">
+    <!-- Step 1. Choose an account -->
+    <div *ngSwitchCase="0">
+      <div>Step 1. Choose an account </div>
+    </div>
+
+    <!-- Step 2. Input result -->
+    <div *ngSwitchCase="1">
+      <div>Step 2. Input result </div>
+      <button nz-button nzType="primary" (click)="showFastInputModal()">
+        <span>Fast Input</span>
+      </button>
+      <button nz-button nzType="default" (click)="onAddExpectResultRow()">Add Row</button>
+
+      <div>
+        <nz-table #expectDataTable nzBordered [nzData]="listExpectResult">
+          <thead>
+            <tr>
+              <th nzWidth="50%">Month</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of expectDataTable.data">
+              <td>
+                <nz-date-picker nzMode="month" [(ngModel)]="data.currentMonth"></nz-date-picker>
+              </td>
+              <td>
+                <nz-input-number [(ngModel)]="data.expectedAmount" [nzStep]="0.01"></nz-input-number>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+
+    <!-- Step 3. Compare result -->
+    <div *ngSwitchCase="2">
+      <div>Step 3. Compare result </div>
+    </div>
+  </div>
+</div>
+
+<nz-modal [(nzVisible)]="isFastInputDlgVisible" [nzTitle]="fastInputModalTitle" [nzContent]="fastInputModalContent"
+  [nzFooter]="fastInputModalFooter" (nzOnCancel)="handleFastInputModalCancel()">
+  <ng-template #fastInputModalTitle>Fast Input</ng-template>
+
+  <ng-template #fastInputModalContent>
+    <span nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip [nzTooltipTitle]="fastInputTooltipTemplate" [nzTooltipTitleContext]="{ $implicit: 'Fast Input' }"></span>
+    <ng-template #fastInputTooltipTemplate let-thing>
+      <span nz-icon nzType="file"></span>
+      <span>Format of {{ thing }}: </span>
+      <p>{{fastInputExample}}</p>
+    </ng-template>
+    <textarea rows="10" nz-input [(ngModel)]="expectResult"></textarea>
+  </ng-template>
+
+  <ng-template #fastInputModalFooter>
+    <button nz-button nzType="default" (click)="handleFastInputModalCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleFastInputModalSubmit()">Submit</button>
+  </ng-template>
+</nz-modal>
+
+<div class="steps-action">
+  <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0">
+    <span>Previous</span>
+  </button>
+  <button nz-button nzType="default" (click)="next()" [nzLoading]="processing" *ngIf="currentStep < 2">
+    <span>Next</span>
+  </button>
+  <button nz-button nzType="primary" (click)="done()" [nzLoading]="processing" *ngIf="currentStep === 2">
+    <span>Done</span>
+  </button>
+</div>

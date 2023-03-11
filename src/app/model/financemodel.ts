@@ -1180,6 +1180,33 @@ export class AccountExtraLoan extends AccountExtra {
   }
 }
 
+// Account reconcile: expect result
+export class AccountReconcileExpect {
+  currentMonth: Date;
+  expectedAmount: number;
+
+  constructor() {
+    this.currentMonth = new Date();
+    this.expectedAmount = 0;
+  }
+}
+
+// Account reconcile: compare between expect and actual
+export class AccountReconcileCompare extends AccountReconcileExpect {
+  actualAmount: number;
+
+  constructor() {
+    super();
+    this.actualAmount = 0;
+  }
+}
+
+// Account reconcile
+export class AccountReconcileResult {
+  listExpects: AccountReconcileExpect[] = [];
+  listCompare: AccountReconcileCompare[] = [];
+}
+
 // Json format to communicate with API
 export interface ControlCenterJson extends hih.BaseModelJson {
   HomeID: number;
