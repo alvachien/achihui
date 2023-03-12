@@ -32,15 +32,29 @@
     <!-- Step 1. Choose an account -->
     <div *ngSwitchCase="0">
       <div>Step 1. Choose an account </div>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="basecurr">Currency</nz-form-label>
+        <nz-form-control [nzSpan]="14">
+          <input nz-input name="basecurr" readonly type="text" id="basecurr" [value]="baseCurrency">
+        </nz-form-control>
+      </nz-form-item >
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzFor="selaccnt">Account</nz-form-label>
+        <nz-form-control [nzSpan]="14">
+          <nz-select style="width: 100%" name="selaccnt" id="selaccnt" [(ngModel)]="selectedAccountId">
+            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item >
     </div>
 
     <!-- Step 2. Input result -->
     <div *ngSwitchCase="1">
       <div>Step 2. Input result </div>
-      <button nz-button nzType="primary" (click)="showFastInputModal()">
+      <button nz-button nzType="primary" (click)="onAddExpectResultRow()">Add Row</button>
+      <button nz-button nzType="default" (click)="showFastInputModal()">
         <span>Fast Input</span>
       </button>
-      <button nz-button nzType="default" (click)="onAddExpectResultRow()">Add Row</button>
 
       <div>
         <nz-table #expectDataTable nzBordered [nzData]="listExpectResult">
@@ -54,6 +68,8 @@
             <tr *ngFor="let data of expectDataTable.data">
               <td>
                 <nz-date-picker nzMode="month" [(ngModel)]="data.currentMonth"></nz-date-picker>
+                <nz-divider nzType="vertical"></nz-divider>
+                <a nz-button nzType="link" nzDanger (click)="onDeleteRow(data)">Delete</a>
               </td>
               <td>
                 <nz-input-number [(ngModel)]="data.expectedAmount" [nzStep]="0.01"></nz-input-number>
@@ -82,7 +98,7 @@
       <span>Format of {{ thing }}: </span>
       <p>{{fastInputExample}}</p>
     </ng-template>
-    <textarea rows="10" nz-input [(ngModel)]="expectResult"></textarea>
+    <textarea rows="10" nz-input [(ngModel)]="fastInputResult"></textarea>
   </ng-template>
 
   <ng-template #fastInputModalFooter>

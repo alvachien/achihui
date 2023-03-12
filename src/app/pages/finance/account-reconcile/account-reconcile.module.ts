@@ -15,6 +15,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzElementPatchModule } from 'ng-zorro-antd/core/element-patch'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { AccountReconcileRoutingModule } from './account-reconcile-routing.module';
@@ -39,9 +41,11 @@ import { ReconcileByMonthComponent } from './reconcile-by-month';
     NzModalModule,
     NzToolTipModule,
     NzIconModule,
-    NzElementPatchModule,
-    
+    NzDividerModule, 
+    NzFormModule,
+    NzElementPatchModule,    
     NzDatePickerModule,
+    
     TranslocoModule,
 
     AccountReconcileRoutingModule
