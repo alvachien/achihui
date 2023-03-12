@@ -2518,6 +2518,43 @@ export class FinanceOdataService {
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
   }
+
+  /** fetch account balance, extend version
+   * @param accountid Account ID
+   * @param selectedDates Selected dates
+   * @output Output of account balance
+   */
+  public fetchAccountBalanceEx(accountid: number, selDates: string[]): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+  
+    let today = moment();
+  
+    const jdata = {
+      HomeID: this.homeService.ChosedHome?.ID,
+      AccountID: accountid,
+      SelectedDates: selDates,
+    };
+  
+    return this.http.post(`${this.reportAPIUrl}/GetAccountBalanceEx`, jdata, {
+      headers
+    })
+      .pipe(map((response: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService fetchAccountBalanceEx succeed',
+          ConsoleLogTypeEnum.debug);
+
+        const rjs: any = response['value'];
+
+        return +rjs;
+      }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAccountBalanceEx failed ${error}`,
+            ConsoleLogTypeEnum.error);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+        }));
+  }
   
   /** fetch finance overview key figure
    * @param forceReload force to reload data from server

@@ -50,6 +50,10 @@ export class ReconcileByMonthComponent implements OnInit, OnDestroy {
 
   next(): void {
     this.currentStep += 1;
+
+    if (this.currentStep === 2) {
+      // Show the compared result
+    }
   }
 
   done(): void {
