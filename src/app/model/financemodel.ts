@@ -1183,6 +1183,10 @@ export class AccountExtraLoan extends AccountExtra {
 // Account reconcile: expect result
 export class AccountReconcileExpect {
   currentMonth: Date;
+  get currentMonthStr(): string {
+    return moment(this.currentMonth).format(hih.momentDateFormat);
+  }
+
   expectedAmount: number;
 
   constructor() {
@@ -1199,12 +1203,6 @@ export class AccountReconcileCompare extends AccountReconcileExpect {
     super();
     this.actualAmount = 0;
   }
-}
-
-// Account reconcile
-export class AccountReconcileResult {
-  listExpects: AccountReconcileExpect[] = [];
-  listCompare: AccountReconcileCompare[] = [];
 }
 
 // Json format to communicate with API

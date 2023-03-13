@@ -2524,7 +2524,9 @@ export class FinanceOdataService {
    * @param selectedDates Selected dates
    * @output Output of account balance
    */
-  public fetchAccountBalanceEx(accountid: number, selDates: string[]): Observable<any> {
+  public fetchAccountBalanceEx(accountid: number, selDates: string[]): Observable<{
+    currentMonth: string, actualAmount: number
+  }[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2546,14 +2548,23 @@ export class FinanceOdataService {
           ConsoleLogTypeEnum.debug);
 
         const rjs: any = response['value'];
+        let listrst: {currentMonth: string, actualAmount: number}[] = [];
+        if (rjs instanceof Array && rjs.length > 0) {
+          rjs.forEach((data: any) => {
+            listrst.push({
+              currentMonth: moment(data.BalanceDate).format(momentDateFormat), 
+              actualAmount: data.Balance
+            })
+          });  
+        }
 
-        return +rjs;
+        return listrst;
       }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchAccountBalanceEx failed ${error}`,
             ConsoleLogTypeEnum.error);
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        }));
+      }));
   }
   
   /** fetch finance overview key figure
@@ -2597,7 +2608,7 @@ export class FinanceOdataService {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchOverviewKeyfigure failed ${error}`,
               ConsoleLogTypeEnum.error);
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.overviewKeyfigure);

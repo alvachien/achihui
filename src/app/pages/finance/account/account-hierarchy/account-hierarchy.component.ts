@@ -161,7 +161,18 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     }
   }
   onAccountReconcile(): void {
-    this.router.navigate(['/finance/account-reconcile/bymonth']);
+    if (this.activatedNode) {
+      if (this.activatedNode?.key.startsWith('a')) {
+        const acntid = +this.activatedNode?.key.substring(1);
+        this.router.navigate(['/finance/account-reconcile/bymonth/' + acntid.toString()]);
+      } else {
+        this.modalService.warning({
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
+          nzClosable: true
+        });
+      }
+    }    
   }
   openAdvanceOperations(): void {
     console.log('Entering openAdvanceOperations');

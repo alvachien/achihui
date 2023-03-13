@@ -245,4 +245,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
     }
   }
+  onAccountReconcile(acntid: number): void {
+    this.router.navigate(['/finance/account-reconcile/bymonth/' + acntid.toString()]);
+  }
 }
