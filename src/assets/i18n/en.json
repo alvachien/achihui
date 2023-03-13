@@ -219,7 +219,11 @@
     "Latest3Months": "Latest 3 Months",
     "ShortcutID": "Shortcut ID",
     "InvalidForm": "Invalid Form",
-    "WillCloseIn1Second": "Will close in 1 second automatially"
+    "WillCloseIn1Second": "Will close in 1 second automatially",
+    "FastInput": "Fast input",
+    "Step1": "Step 1",
+    "Step2": "Step 2",
+    "Step3": "Step 3"
   },
   "Sys": {
     "Currency": {
@@ -644,7 +648,14 @@
     "Principal": "Principal",
     "BoughtDate": "Bought Date",
     "ExpiredDate": "Expired Date",
-    "ResidualValue": "Residual Value"
+    "ResidualValue": "Residual Value",
+    "AccountReconcile": "Account Reconcile",
+    "TargetAccount": "Target Account",
+    "TargetAccountDesp": "Select an account to continue",
+    "ExpectedResult": "Expected result",
+    "ExpectedResultDesp": "Input the expected result at month end",
+    "CompareResults": "Compare Results",
+    "CompareResultsDesp": "Compare result between inputted one with actual ones"
   },
   "Library": {
     "BookCategories": "Book Categories",

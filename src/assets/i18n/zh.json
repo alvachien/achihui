@@ -219,7 +219,11 @@
     "Latest3Months": "最近3个月",
     "ShortcutID": "快捷访问",
     "InvalidForm": "无效的表单",
-    "WillCloseIn1Second": "将在 1 秒后自动关闭"
+    "WillCloseIn1Second": "将在 1 秒后自动关闭",
+    "FastInput": "快捷输入",
+    "Step1": "第一步",
+    "Step2": "第二步",
+    "Step3": "第三步"
   },
   "Sys": {
     "Currency": {
@@ -644,7 +648,14 @@
     "Principal": "本金",
     "BoughtDate": "购买日",
     "ExpiredDate": "过期日",
-    "ResidualValue": "预期残值"
+    "ResidualValue": "预期残值",
+    "AccountReconcile": "账户对账",
+    "TargetAccount": "目标账户",
+    "TargetAccountDesp": "选择一个账户进行后续操作",
+    "ExpectedResult": "预期结果",
+    "ExpectedResultDesp": "输入基于月份的预期月末账户余额",
+    "CompareResults": "结果对比",
+    "CompareResultsDesp": "对比预期账户余额与实际的账户余额"
   },
   "Library": {
     "BookCategories": "图书种类",

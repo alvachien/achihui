@@ -1,26 +1,26 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.Accounts' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/account">{{'Finance.Accounts' | transloco}}</a></nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>Account Reconcile</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{'Finance.AccountReconcile' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra>
   </nz-page-header-extra>
 </nz-page-header>
 
 <nz-steps nzType="navigation" nzSize="small" [nzCurrent]="currentStep">
-  <nz-step nzTitle="Step 1" nzSubtitle="Target account" nzDescription="Select an account to continue."></nz-step>
-  <nz-step nzTitle="Step 2" nzSubtitle="Expect Result" nzDescription="Input the expected result per Months."></nz-step>
-  <nz-step nzTitle="Step 3" nzSubtitle="Compare Result" nzDescription="Comparing result between inputted one with actual ones."></nz-step>
+  <nz-step [nzTitle]="'Common.Step1' | transloco" [nzSubtitle]="'Finance.TargetAccount' | transloco" [nzDescription]="'Finance.TargetAccountDesp' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Common.Step2' | transloco" [nzSubtitle]="'Finance.ExpectedResult' | transloco" [nzDescription]="'Finance.ExpectedResultDesp' | transloco"></nz-step>
+  <nz-step [nzTitle]="'Common.Step3' | transloco" [nzSubtitle]="'Finance.CompareResults' | transloco" [nzDescription]="'Finance.CompareResultsDesp' | transloco"></nz-step>
 </nz-steps>
 
 <div class="steps-action">
   <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0">
-    <span>Previous</span>
+    <span>{{'Common.PreviousButton' | transloco}}</span>
   </button>
   <button nz-button nzType="default" (click)="next()" [nzLoading]="processing" *ngIf="currentStep < 2">
-    <span>Next</span>
+    <span>{{'Common.NextButton' | transloco}}</span>
   </button>
   <button nz-button nzType="primary" (click)="done()" *ngIf="currentStep === 2">
     <span>Done</span>
@@ -31,15 +31,15 @@
   <div [ngSwitch]="currentStep">
     <!-- Step 1. Choose an account -->
     <div *ngSwitchCase="0">
-      <div>Step 1. Choose a target account </div>
+      <div><span>1. </span>{{'Finance.TargetAccountDesp' | transloco}} </div>
       <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzFor="basecurr">Currency</nz-form-label>
+        <nz-form-label [nzSpan]="6" nzFor="basecurr">{{'Finance.Currency' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="14">
           <input nz-input name="basecurr" readonly type="text" id="basecurr" [value]="baseCurrency">
         </nz-form-control>
       </nz-form-item >
       <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzFor="selaccnt">Account</nz-form-label>
+        <nz-form-label [nzSpan]="6" nzFor="selaccnt">{{'Finance.Account' | transloco}}</nz-form-label>
         <nz-form-control [nzSpan]="14">
           <nz-select style="width: 100%" name="selaccnt" id="selaccnt" [(ngModel)]="selectedAccountId">
             <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
@@ -50,18 +50,18 @@
 
     <!-- Step 2. Expect Result -->
     <div *ngSwitchCase="1">
-      <div>Step 2. Expect Result </div>
-      <button nz-button nzType="primary" (click)="onAddExpectResultRow()">Add Row</button>
+      <div><span>2. </span>{{'Finance.ExpectedResultDesp' | transloco}} </div>
+      <button nz-button nzType="primary" (click)="onAddExpectResultRow()">{{'Common.New' | transloco}}</button>
       <button nz-button nzType="default" (click)="showFastInputModal()">
-        <span>Fast Input</span>
+        <span>{{'Common.FastInput' | transloco}}</span>
       </button>
 
       <div>
         <nz-table #expectDataTable nzBordered [nzData]="listExpectResult">
           <thead>
             <tr>
-              <th nzWidth="50%">Month</th>
-              <th>Amount</th>
+              <th nzWidth="50%">{{'Common.CurrentMonth' | transloco}}</th>
+              <th>{{'Finance.Amount' | transloco}}</th>
             </tr>
           </thead>
           <tbody>
@@ -69,7 +69,7 @@
               <td>
                 <nz-date-picker nzMode="month" [(ngModel)]="data.currentMonth"></nz-date-picker>
                 <nz-divider nzType="vertical"></nz-divider>
-                <a nz-button nzType="link" nzDanger (click)="onDeleteRow(data)">Delete</a>
+                <a nz-button nzType="link" nzDanger (click)="onDeleteRow(data)">{{'Common.Delete' | transloco}}</a>
               </td>
               <td>
                 <nz-input-number-group [nzAddOnAfter]="baseCurrency">
@@ -84,12 +84,12 @@
 
     <!-- Step 3. Compare result -->
     <div *ngSwitchCase="2">
-      <div>Step 3. Compare result </div>
+      <div><span>3. </span>{{'Finance.CompareResultsDesp' | transloco}} </div>
       <div>
         <nz-table #compareDataTable nzBordered [nzData]="compareResult">
           <thead>
             <tr>
-              <th nzWidth="50%">Month</th>
+              <th nzWidth="50%">{{'Common.CurrentMonth' | transloco}}</th>
               <th>Expected Amount</th>
               <th>Actual Amount</th>
             </tr>
@@ -111,7 +111,7 @@
 
 <nz-modal [(nzVisible)]="isFastInputDlgVisible" [nzTitle]="fastInputModalTitle" [nzContent]="fastInputModalContent"
   [nzFooter]="fastInputModalFooter" (nzOnCancel)="handleFastInputModalCancel()">
-  <ng-template #fastInputModalTitle>Fast Input</ng-template>
+  <ng-template #fastInputModalTitle>{{'Common.FastInput' | transloco}}</ng-template>
 
   <ng-template #fastInputModalContent>
     <span nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip [nzTooltipTitle]="fastInputTooltipTemplate" [nzTooltipTitleContext]="{ $implicit: 'Fast Input' }"></span>
@@ -127,17 +127,17 @@
   </ng-template>
 
   <ng-template #fastInputModalFooter>
-    <button nz-button nzType="default" (click)="handleFastInputModalCancel()">Cancel</button>
-    <button nz-button nzType="primary" (click)="handleFastInputModalSubmit()">Submit</button>
+    <button nz-button nzType="default" (click)="handleFastInputModalCancel()">{{'Common.Cancel' | transloco}}</button>
+    <button nz-button nzType="primary" (click)="handleFastInputModalSubmit()">{{'Common.Submit' | transloco}}</button>
   </ng-template>
 </nz-modal>
 
 <div class="steps-action">
   <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0">
-    <span>Previous</span>
+    <span>{{'Common.PreviousButton' | transloco}}</span>
   </button>
   <button nz-button nzType="default" (click)="next()" [nzLoading]="processing" *ngIf="currentStep < 2">
-    <span>Next</span>
+    <span>{{'Common.NextButton' | transloco}}</span>
   </button>
   <button nz-button nzType="primary" (click)="done()" *ngIf="currentStep === 2">
     <span>Done</span>
