@@ -2608,7 +2608,7 @@ export class FinanceOdataService {
             ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService fetchOverviewKeyfigure failed ${error}`,
               ConsoleLogTypeEnum.error);
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
           }));
     } else {
       return of(this.overviewKeyfigure);

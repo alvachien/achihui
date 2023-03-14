@@ -223,7 +223,9 @@
     "FastInput": "Fast input",
     "Step1": "Step 1",
     "Step2": "Step 2",
-    "Step3": "Step 3"
+    "Step3": "Step 3",
+    "Example": "Example",
+    "Usage": "Usage"
   },
   "Sys": {
     "Currency": {
@@ -649,13 +651,15 @@
     "BoughtDate": "Bought Date",
     "ExpiredDate": "Expired Date",
     "ResidualValue": "Residual Value",
-    "AccountReconcile": "Account Reconcile",
+    "AccountReconcile": "Reconcile",
     "TargetAccount": "Target Account",
     "TargetAccountDesp": "Select an account to continue",
     "ExpectedResult": "Expected result",
     "ExpectedResultDesp": "Input the expected result at month end",
     "CompareResults": "Compare Results",
-    "CompareResultsDesp": "Compare result between inputted one with actual ones"
+    "CompareResultsDesp": "Compare result between inputted one with actual ones",
+    "Difference": "Difference",
+    "BackToDocumentListView": "Back to Document List"
   },
   "Library": {
     "BookCategories": "Book Categories",

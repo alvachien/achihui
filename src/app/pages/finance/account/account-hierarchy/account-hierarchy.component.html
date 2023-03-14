@@ -48,7 +48,7 @@
         <nz-dropdown-menu #treeMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="onDisplayAccount()">{{'Common.Display' | transloco}}</li>
-            <li nz-menu-item (click)="onAccountReconcile()">Account Reconcile</li>
+            <li nz-menu-item (click)="onAccountReconcile()">{{'Finance.AccountReconcile' | transloco}}</li>
             <li nz-menu-divider></li>
             <li nz-menu-item [nzDisabled]="isChildMode" (click)="onChangeAccountName()">{{'Finance.ChangeAccountName' | transloco}}</li>
             <!-- <li nz-menu-item (click)="onEditAccount()">{{'Common.Edit' | transloco}}</li> -->

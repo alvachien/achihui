@@ -3688,7 +3688,7 @@ describe('FinanceOdataService', () => {
           fail('Shall not occur');
         },
         error: err => {
-          expect(err).toContain(msg);
+          expect(err.toString()).toContain(msg);
         }
       });
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -3696,7 +3696,7 @@ describe('FinanceOdataService', () => {
       });
 
       // respond with a 500 and the error message in the body
-      req.flush(msg, { status: 500, statusText: 'Error occurred' });
+      req.flush(msg, { status: 500, statusText: msg });
     });
   });
 

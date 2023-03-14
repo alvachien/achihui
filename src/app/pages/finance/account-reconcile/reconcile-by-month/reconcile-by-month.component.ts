@@ -63,7 +63,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   done(): void {
-    console.log('done');
+    this.router.navigate(['/finance/document']);
   }
 
   ngOnInit(): void {
