@@ -1267,7 +1267,7 @@ export class FinanceOdataService {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService deleteOrder failed ${error}.`,
             ConsoleLogTypeEnum.error);
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         }));
   }
 
@@ -1313,7 +1313,7 @@ export class FinanceOdataService {
 
             this.isPlanListLoaded = false;
 
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           }));
     } else {
       return of(this.Plans);

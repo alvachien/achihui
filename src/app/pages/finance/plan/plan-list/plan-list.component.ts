@@ -20,6 +20,11 @@ export class PlanListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | undefined;
   isLoadingResults = false;
   dataSet: Plan[] = [];
+  // Progress dialog fields
+  isProgressDlgVisible = false;
+  progressModalTitle = '';
+  currentPlanActualBalance = 0;
+  currentPlan?: Plan;
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome!.IsChild!;
@@ -41,26 +46,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
-    this.odataService.fetchAllPlans()
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
-      .subscribe({
-        next: (x: Plan[]) => {
-          this.dataSet = x;
-        },
-        error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent ngOnInit, fetchAllPlans failed ${error}`,
-            ConsoleLogTypeEnum.error);
-
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
-            nzClosable: true,
-          });
-        },
-      });
+    this.onRefresh(false);
   }
 
   ngOnDestroy() {
@@ -86,6 +72,48 @@ export class PlanListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(rid: number): void {
+  }
+
+  onCheckProgress(planData: Plan): void {
+    if (planData && planData.AccountID ) {
+      this.currentPlan = planData;
+      this.isProgressDlgVisible = true;
+      this.odataService.fetchAccountBalance(this.currentPlan?.AccountID!).subscribe({
+        next: val => {
+          this.currentPlanActualBalance = +val;
+        }
+      });  
+    }
+  }
+
+  handleProgressModalCancel() {
+    this.isProgressDlgVisible = false;
+  }
+
+  onRefresh(refresh?: boolean) {
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent onRefresh`,
+      ConsoleLogTypeEnum.debug);
+
+    this.isLoadingResults = true;
+    this.odataService.fetchAllPlans(refresh)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => this.isLoadingResults = false))
+      .subscribe({
+        next: (x: Plan[]) => {
+          this.dataSet = x;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent onRefresh failed ${error}`,
+            ConsoleLogTypeEnum.error);
+
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: error.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   public getPlanTypeDisplayString(pt: PlanTypeEnum): string {
