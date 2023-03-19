@@ -1,19 +1,23 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
+import { BehaviorSubject } from "rxjs";
 
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { FakeDataHelper, getTranslocoModule } from 'src/testing';
-import { LibraryUIModule } from '../../library-ui.module';
+import { UserAuthInfo } from "src/app/model";
+import {
+  AuthService,
+  HomeDefOdataService,
+  UIStatusService,
+} from "src/app/services";
+import { FakeDataHelper, getTranslocoModule } from "src/testing";
+import { LibraryUIModule } from "../../library-ui.module";
 
-import { LocationSelectionDlgComponent } from './location-selection-dlg.component';
+import { LocationSelectionDlgComponent } from "./location-selection-dlg.component";
 
-describe('LocationSelectionDlgComponent', () => {
+describe("LocationSelectionDlgComponent", () => {
   let component: LocationSelectionDlgComponent;
   let fixture: ComponentFixture<LocationSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
@@ -21,7 +25,7 @@ describe('LocationSelectionDlgComponent', () => {
   let readBookSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
-  let homeService: Partial<HomeDefOdataService> = {};
+  const homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -49,7 +53,7 @@ describe('LocationSelectionDlgComponent', () => {
         ReactiveFormsModule,
         getTranslocoModule(),
       ],
-      declarations: [ LocationSelectionDlgComponent ],
+      declarations: [LocationSelectionDlgComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -57,15 +61,15 @@ describe('LocationSelectionDlgComponent', () => {
         NzModalService,
         {
           provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) => modalSvc.create({
-            nzClosable: true,
-            nzContent: 'test'
-          }),
-          deps: [NzModalService]
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: "test",
+            }),
+          deps: [NzModalService],
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -74,7 +78,7 @@ describe('LocationSelectionDlgComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

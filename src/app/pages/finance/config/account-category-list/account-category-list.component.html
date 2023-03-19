@@ -3,17 +3,17 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Finance.AssetFlag' | transloco}}</th>
-        <th>{{'Common.Comment' | transloco}}</th>
+        <th>{{ "Common.Name" | transloco }}</th>
+        <th>{{ "Finance.AssetFlag" | transloco }}</th>
+        <th>{{ "Common.Comment" | transloco }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.ID}}</td>
-        <td>{{data.Name | transloco}}</td>
+        <td>{{ data.ID }}</td>
+        <td>{{ data.Name | transloco }}</td>
         <td><nz-switch [(ngModel)]="data.AssetFlag" nzDisabled></nz-switch></td>
-        <td>{{data.Comment}}</td>
+        <td>{{ data.Comment }}</td>
       </tr>
     </tbody>
   </nz-table>

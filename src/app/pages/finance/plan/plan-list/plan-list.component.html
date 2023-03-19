@@ -1,19 +1,37 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Common.Plan' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{
+        "Common.Overview" | transloco
+      }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item>{{ "Common.Plan" | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{'Common.Plan' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ "Common.Plan" | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{
+    "Common.ListView" | transloco
+  }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <a nz-button nzType="link" (click)="onRefresh(true)">{{'Common.Refresh' | transloco}}</a>
+    <a nz-button nzType="link" (click)="onRefresh(true)">{{
+      "Common.Refresh" | transloco
+    }}</a>
     <nz-divider nzType="vertical"></nz-divider>
-    <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">{{'Common.Create' | transloco}}</button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="isChildMode"
+      (click)="onCreate()"
+    >
+      {{ "Common.Create" | transloco }}
+    </button>
   </nz-page-header-extra>
 </nz-page-header>
 
 <div *ngIf="isChildMode">
-  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+  <nz-result
+    [nzIcon]="'smile-twotone'"
+    [nzTitle]="'Common.ChildModeDetail' | transloco"
+  >
     <div nz-result-extra>
       <button nz-button nzType="primary">OK</button>
     </div>
@@ -21,47 +39,69 @@
 </div>
 
 <div *ngIf="!isChildMode">
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <nz-table #basicTable [nzData]="dataSet">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>{{'Common.Type' | transloco}}</th>
-        <th>{{'Common.Start' | transloco}}</th>
-        <th>{{'Common.Stop' | transloco}}</th>
-        <th>{{'Common.Description' | transloco}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{data.ID}}
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onCheckProgress(data)">{{'Common.Progress' | transloco}}</button>
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplay(data.ID!)">{{'Common.Display' | transloco}}</button>
-          <button nz-button nzType="link" (click)="onEdit(data.ID!)">{{'Common.Edit' | transloco}}</button>
-          <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>{{'Common.Delete' | transloco}}</button>
-        </td>
-        <td>{{getPlanTypeDisplayString(data.PlanType) | transloco}}</td>
-        <td>{{getDateDisplayString(data.StartDate!)}}</td>
-        <td>{{getDateDisplayString(data.TargetDate!)}}</td>
-        <td>{{data.Description}}</td>
-      </tr>
-    </tbody>
-  </nz-table>
-</nz-spin>
+  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+    <nz-table #basicTable [nzData]="dataSet">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ "Common.Type" | transloco }}</th>
+          <th>{{ "Common.Start" | transloco }}</th>
+          <th>{{ "Common.Stop" | transloco }}</th>
+          <th>{{ "Common.Description" | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>
+            {{ data.ID }}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onCheckProgress(data)">
+              {{ "Common.Progress" | transloco }}
+            </button>
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplay(data.ID!)">
+              {{ "Common.Display" | transloco }}
+            </button>
+            <button nz-button nzType="link" (click)="onEdit(data.ID!)">
+              {{ "Common.Edit" | transloco }}
+            </button>
+            <button
+              nz-button
+              nzType="link"
+              (click)="onDelete(data.ID!)"
+              nzDanger
+            >
+              {{ "Common.Delete" | transloco }}
+            </button>
+          </td>
+          <td>{{ getPlanTypeDisplayString(data.PlanType) | transloco }}</td>
+          <td>{{ getDateDisplayString(data.StartDate!) }}</td>
+          <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
+          <td>{{ data.Description }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-spin>
 </div>
 
-<nz-modal [(nzVisible)]="isProgressDlgVisible" [nzTitle]="progressModalTitle" [nzContent]="progressModalContent"
-  [nzFooter]="progressModalFooter" (nzOnCancel)="handleProgressModalCancel()">
-  <ng-template #progressModalTitle>{{'Common.Progress' | transloco}}</ng-template>
+<nz-modal
+  [(nzVisible)]="isProgressDlgVisible"
+  [nzTitle]="progressModalTitle"
+  [nzContent]="progressModalContent"
+  [nzFooter]="progressModalFooter"
+  (nzOnCancel)="handleProgressModalCancel()"
+>
+  <ng-template #progressModalTitle>{{
+    "Common.Progress" | transloco
+  }}</ng-template>
 
   <ng-template #progressModalContent>
     <div>
       <!-- ID -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ID' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7" nzRequired>{{
+          "Common.ID" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <input nz-input nzBorderless readonly [ngModel]="currentPlan?.ID" />
         </nz-form-control>
@@ -69,49 +109,90 @@
 
       <!-- Type -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Type' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7" nzRequired>{{
+          "Common.Type" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.PlanType" />
+          <input
+            nz-input
+            nzBorderless
+            readonly
+            [ngModel]="currentPlan?.PlanType"
+          />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Valid from -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ValidFrom' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7" nzRequired>{{
+          "Common.ValidFrom" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.StartDate" />
+          <input
+            nz-input
+            nzBorderless
+            readonly
+            [ngModel]="currentPlan?.StartDate"
+          />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Valid to -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7" nzRequired>{{'Common.ValidTo' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7" nzRequired>{{
+          "Common.ValidTo" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.TargetDate" />
+          <input
+            nz-input
+            nzBorderless
+            readonly
+            [ngModel]="currentPlan?.TargetDate"
+          />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Description -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7">{{'Common.Description' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{
+          "Common.Description" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.Description" />
+          <input
+            nz-input
+            nzBorderless
+            readonly
+            [ngModel]="currentPlan?.Description"
+          />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Account -->
       <nz-form-item>
-        <nz-form-label [nzSpan]="7">{{'Finance.Account' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{
+          "Finance.Account" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.AccountID" />
+          <input
+            nz-input
+            nzBorderless
+            readonly
+            [ngModel]="currentPlan?.AccountID"
+          />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="7">{{'Finance.ExpectedResult' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{
+          "Finance.ExpectedResult" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
-            <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlan?.TargetBalance"></nz-input-number>
+            <nz-input-number
+              nzBorderless
+              nzDisabled
+              [ngModel]="currentPlan?.TargetBalance"
+            ></nz-input-number>
           </nz-input-number-group>
         </nz-form-control>
       </nz-form-item>
@@ -119,10 +200,16 @@
       <nz-divider></nz-divider>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="7">{{'Finance.Amount' | transloco}}</nz-form-label>
+        <nz-form-label [nzSpan]="7">{{
+          "Finance.Amount" | transloco
+        }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
-            <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance"></nz-input-number>
+            <nz-input-number
+              nzBorderless
+              nzDisabled
+              [ngModel]="currentPlanActualBalance"
+            ></nz-input-number>
           </nz-input-number-group>
         </nz-form-control>
       </nz-form-item>
@@ -130,6 +217,8 @@
   </ng-template>
 
   <ng-template #progressModalFooter>
-    <button nz-button nzType="default" (click)="handleProgressModalCancel()">{{'Common.Close' | transloco}}</button>
+    <button nz-button nzType="default" (click)="handleProgressModalCancel()">
+      {{ "Common.Close" | transloco }}
+    </button>
   </ng-template>
 </nz-modal>

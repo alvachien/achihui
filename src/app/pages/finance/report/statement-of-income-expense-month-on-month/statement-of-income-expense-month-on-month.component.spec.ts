@@ -1,24 +1,51 @@
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of, } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { NgxEchartsModule } from 'ngx-echarts';
-import * as echarts from 'echarts';
+import {
+  ComponentFixture,
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  inject,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router } from "@angular/router";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { BehaviorSubject, of } from "rxjs";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { NgxEchartsModule } from "ngx-echarts";
+import * as echarts from "echarts";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
-  ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, FinanceReportByOrder, Order, FinanceReportEntryByTransactionType, FinanceReportEntryMoM, financePeriodLast6Months, financePeriodLast12Months, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month.component';
+import { FinanceUIModule } from "../../finance-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+  ElementClass_DialogContent,
+  ElementClass_DialogCloseButton,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  FinanceOdataService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  FinanceReportByOrder,
+  Order,
+  FinanceReportEntryByTransactionType,
+  FinanceReportEntryMoM,
+  financePeriodLast6Months,
+  financePeriodLast12Months,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { StatementOfIncomeExpenseMonthOnMonthComponent } from "./statement-of-income-expense-month-on-month.component";
 
-describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
+describe("StatementOfIncomeExpenseMonthOnMonthComponent", () => {
   let component: StatementOfIncomeExpenseMonthOnMonthComponent;
   let fixture: ComponentFixture<StatementOfIncomeExpenseMonthOnMonthComponent>;
 
@@ -39,12 +66,16 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
 
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchStatementOfIncomeAndExposeMoM',
-      'fetchDailyStatementOfIncomeAndExpense',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchStatementOfIncomeAndExposeMoM",
+      "fetchDailyStatementOfIncomeAndExpense",
     ]);
-    fetchStatementOfIncomeAndExposeMoMSpy = storageService.fetchStatementOfIncomeAndExposeMoM.and.returnValue(of([]));
-    fetchDailyStatementOfIncomeAndExpenseSpy = storageService.fetchDailyStatementOfIncomeAndExpense.and.returnValue(of([]));
+    fetchStatementOfIncomeAndExposeMoMSpy =
+      storageService.fetchStatementOfIncomeAndExposeMoM.and.returnValue(of([]));
+    fetchDailyStatementOfIncomeAndExpenseSpy =
+      storageService.fetchDailyStatementOfIncomeAndExpense.and.returnValue(
+        of([])
+      );
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -59,29 +90,30 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ StatementOfIncomeExpenseMonthOnMonthComponent ],
+      declarations: [StatementOfIncomeExpenseMonthOnMonthComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StatementOfIncomeExpenseMonthOnMonthComponent);
+    fixture = TestBed.createComponent(
+      StatementOfIncomeExpenseMonthOnMonthComponent
+    );
     component = fixture.componentInstance;
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     let arRptData: FinanceReportEntryMoM[] = [];
     beforeEach(() => {
       arRptData = [];
@@ -145,15 +177,17 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
         OutAmount: 10,
         Month: 12,
       } as FinanceReportEntryMoM);
-      fetchStatementOfIncomeAndExposeMoMSpy.and.returnValue(asyncData(arRptData));
+      fetchStatementOfIncomeAndExposeMoMSpy.and.returnValue(
+        asyncData(arRptData)
+      );
       fetchDailyStatementOfIncomeAndExpenseSpy.and.returnValue(asyncData([]));
     });
 
-    it('should not show data before OnInit', () => {
+    it("should not show data before OnInit", () => {
       expect(component.reportData.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -162,15 +196,15 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
 
       expect(component.reportData.length).toBeGreaterThan(0);
 
-      component.onChartClick({name: '2022.02'});
+      component.onChartClick({ name: "2022.02" });
       tick();
       fixture.detectChanges();
 
       discardPeriodicTasks();
       flush();
     }));
-    
-    it('should show data after period changed', fakeAsync(() => {
+
+    it("should show data after period changed", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -195,12 +229,11 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
       flush();
     }));
   });
-  
-  describe('3. shall popup dialog for exceptions', () => {
+
+  describe("3. shall popup dialog for exceptions", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -209,9 +242,11 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Report by account Service fails', fakeAsync(() => {
+    it("should display error when Report by account Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchStatementOfIncomeAndExposeMoMSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchStatementOfIncomeAndExposeMoMSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -220,17 +255,25 @@ describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));

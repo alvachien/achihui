@@ -1,1 +1,1 @@
-export * from './document-items.component';
+export * from "./document-items.component";

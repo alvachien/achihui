@@ -1,22 +1,47 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { LibraryUIModule } from '../../library-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ActivatedRouteUrlStub, } from '../../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, PersonRole, Person, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { PersonDetailComponent } from './person-detail.component';
+import { LibraryUIModule } from "../../library-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+  ActivatedRouteUrlStub,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  HomeDefOdataService,
+  LibraryStorageService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  financeAccountCategoryCash,
+  Account,
+  AccountStatusEnum,
+  PersonRole,
+  Person,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { PersonDetailComponent } from "./person-detail.component";
 
-describe('PersonDetailComponent', () => {
+describe("PersonDetailComponent", () => {
   let component: PersonDetailComponent;
   let fixture: ComponentFixture<PersonDetailComponent>;
   let fakeData: FakeDataHelper;
@@ -36,12 +61,14 @@ describe('PersonDetailComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildPersonRoles();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchAllPersonRoles',
-      'readPerson',
-      'createPerson'
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchAllPersonRoles",
+      "readPerson",
+      "createPerson",
     ]);
-    fetchAllPersonRolesSpy = storageService.fetchAllPersonRoles.and.returnValue(of([]));
+    fetchAllPersonRolesSpy = storageService.fetchAllPersonRoles.and.returnValue(
+      of([])
+    );
     readPersonSpy = storageService.readPerson.and.returnValue(of({}));
     createPersonSpy = storageService.createPerson.and.returnValue(of({}));
     homeService = {
@@ -54,7 +81,9 @@ describe('PersonDetailComponent', () => {
   });
 
   beforeEach(async () => {
-    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([
+      new UrlSegment("create", {}),
+    ] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -67,7 +96,7 @@ describe('PersonDetailComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ PersonDetailComponent ],
+      declarations: [PersonDetailComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -76,8 +105,7 @@ describe('PersonDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -86,19 +114,19 @@ describe('PersonDetailComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('create mode', () => {
+  describe("create mode", () => {
     beforeEach(() => {
-      let nrole = new Person();
+      const nrole = new Person();
       nrole.ID = 2;
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
       createPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it("create mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -112,15 +140,17 @@ describe('PersonDetailComponent', () => {
       flush();
     }));
 
-    it('create mode with valid data: name and comment', fakeAsync(() => {
+    it("create mode with valid data: name and comment", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
-      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
-      component.detailFormGroup.get('detailControl')?.setValue('Test 1 Comment');
+      component.detailFormGroup.get("nnameControl")?.setValue("Test 1");
+      component.detailFormGroup
+        .get("detailControl")
+        ?.setValue("Test 1 Comment");
       component.detailFormGroup.markAsDirty();
 
       expect(component.detailFormGroup.valid).toBeTrue();
@@ -129,7 +159,7 @@ describe('PersonDetailComponent', () => {
       component.onSave();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      spyOn(routerstub, "navigate");
 
       tick();
       fixture.detectChanges();
@@ -141,20 +171,23 @@ describe('PersonDetailComponent', () => {
     }));
   });
 
-  describe('display mode', () => {
+  describe("display mode", () => {
     let nperson: Person;
     beforeEach(() => {
-      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([
+        new UrlSegment("display", {}),
+        new UrlSegment("122", {}),
+      ] as UrlSegment[]);
 
       nperson = new Person();
       nperson.ID = 2;
-      nperson.NativeName = 'test';
+      nperson.NativeName = "test";
 
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
       readPersonSpy.and.returnValue(asyncData(nperson));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it("display mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -164,24 +197,27 @@ describe('PersonDetailComponent', () => {
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeFalse();
-      let nname = component.detailFormGroup.get('nnameControl')?.value;
+      const nname = component.detailFormGroup.get("nnameControl")?.value;
       expect(nname).toEqual(nperson.NativeName);
 
       flush();
     }));
   });
 
-  describe('edit mode', () => {
+  describe("edit mode", () => {
     beforeEach(() => {
-      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([
+        new UrlSegment("edit", {}),
+        new UrlSegment("122", {}),
+      ] as UrlSegment[]);
 
-      let nrole: Person = new Person();
+      const nrole: Person = new Person();
       nrole.ID = 2;
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
       readPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it("display mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -196,19 +232,18 @@ describe('PersonDetailComponent', () => {
     }));
   });
 
-  describe('4. shall display error dialog for exception', () => {
+  describe("4. shall display error dialog for exception", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      let nrole = new Person();
-      nrole.ID = 2;      
+      const nrole = new Person();
+      nrole.ID = 2;
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
       createPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -217,33 +252,41 @@ describe('PersonDetailComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails on fetch all roles', fakeAsync(() => {
+    it("should display error when Service fails on fetch all roles", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllPersonRolesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllPersonRolesSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ".ant-modal-close"
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should display error when create failed', fakeAsync(() => {
+    it("should display error when create failed", fakeAsync(() => {
       // tell spy to return an async error observable
-      createPersonSpy.and.returnValue(asyncError<string>('Service failed'));
+      createPersonSpy.and.returnValue(asyncError<string>("Service failed"));
 
       fixture.detectChanges();
       tick();
@@ -251,8 +294,10 @@ describe('PersonDetailComponent', () => {
       tick();
       fixture.detectChanges();
 
-      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
-      component.detailFormGroup.get('detailControl')?.setValue('Test 1 Comment');
+      component.detailFormGroup.get("nnameControl")?.setValue("Test 1");
+      component.detailFormGroup
+        .get("detailControl")
+        ?.setValue("Test 1 Comment");
       component.detailFormGroup.markAsDirty();
 
       expect(component.detailFormGroup.valid).toBeTrue();

@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PersonRoleSelectionDlgComponent } from './person-role-selection-dlg.component';
+import { PersonRoleSelectionDlgComponent } from "./person-role-selection-dlg.component";
 
-describe('PersonRoleSelectionDlgComponent', () => {
+describe("PersonRoleSelectionDlgComponent", () => {
   let component: PersonRoleSelectionDlgComponent;
   let fixture: ComponentFixture<PersonRoleSelectionDlgComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PersonRoleSelectionDlgComponent ]
-    })
-    .compileComponents();
+      declarations: [PersonRoleSelectionDlgComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('PersonRoleSelectionDlgComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,1 +1,1 @@
-export * from './uimodel';
+export * from "./uimodel";

@@ -1,32 +1,48 @@
-import { Dictionary } from 'actslib';
-import * as moment from 'moment';
-import * as hih from './common';
+import { Dictionary } from "actslib";
+import * as moment from "moment";
+import * as hih from "./common";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
 /**
  * Person role
  */
-export interface PersonRoleJSON  {
+export interface PersonRoleJSON {
   HomeID: number;
   Name: string;
   Comment?: string;
 }
 
 export class PersonRole extends hih.BaseModel {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
-  private _name: string = '';
-  private _cmt: string = '';
+  private _name = "";
+  private _cmt = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HomeID(): number | null { return this._hid; }
-  set HomeID(hid: number | null) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
-  get Comment(): string { return this._cmt; }
-  set Comment(cmt: string) { this._cmt = cmt; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HomeID(): number | null {
+    return this._hid;
+  }
+  set HomeID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(cmt: string) {
+    this._cmt = cmt;
+  }
 
   constructor() {
     super();
@@ -36,14 +52,18 @@ export class PersonRole extends hih.BaseModel {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this._name = '';
-    this._cmt  = '';
+    this._name = "";
+    this._cmt = "";
   }
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+      if (
+        this._name === null ||
+        this._name.length <= 0 ||
+        this._name.length > 30
+      ) {
         vrst = false;
       }
       if (this._cmt && this._cmt.length > 100) {
@@ -91,19 +111,35 @@ export class PersonRole extends hih.BaseModel {
  * Organization type
  */
 export class OrganizationType extends hih.BaseModel {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
-  private _name: string = '';
-  private _cmt: string = '';
+  private _name = "";
+  private _cmt = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HomeID(): number | null { return this._hid; }
-  set HomeID(hid: number | null) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
-  get Comment(): string { return this._cmt; }
-  set Comment(cmt: string) { this._cmt = cmt; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HomeID(): number | null {
+    return this._hid;
+  }
+  set HomeID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(cmt: string) {
+    this._cmt = cmt;
+  }
 
   constructor() {
     super();
@@ -113,14 +149,18 @@ export class OrganizationType extends hih.BaseModel {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this._name = '';
-    this._cmt  = '';
+    this._name = "";
+    this._cmt = "";
   }
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+      if (
+        this._name === null ||
+        this._name.length <= 0 ||
+        this._name.length > 30
+      ) {
         vrst = false;
       }
       if (this._cmt && this._cmt.length > 100) {
@@ -164,45 +204,56 @@ export class OrganizationType extends hih.BaseModel {
   }
 }
 
-
 /**
  * Gender
  */
 export enum GenderEnum {
-  Male    = 1,
-  Female  = 2,
+  Male = 1,
+  Female = 2,
 }
 
 /**
  * Person
  */
 export class Person extends hih.MultipleNamesObject {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
   // private _gend: GenderEnum | null = null;
   // private _shrtintro: string = '';
   // private _ext1link: string = '';
-  private _detail: string = '';
+  private _detail = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
   // get Gender(): GenderEnum | null { return this._gend; }
   // set Gender(gen: GenderEnum | null) { this._gend = gen; }
   // get ShortIntro(): string { return this._shrtintro; }
   // set ShortIntro(si: string) { this._shrtintro = si; }
   // get Ext1Link(): string { return this._ext1link; }
   // set Ext1Link(el: string) { this._ext1link = el; }
-  get Detail(): string { return this._detail; }
-  set Detail(dtl: string) { this._detail = dtl; }
+  get Detail(): string {
+    return this._detail;
+  }
+  set Detail(dtl: string) {
+    this._detail = dtl;
+  }
   public Roles: PersonRole[] = [];
 
   public override onInit(): void {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this.Detail = '';
+    this.Detail = "";
     this.Roles = [];
   }
 
@@ -211,20 +262,20 @@ export class Person extends hih.MultipleNamesObject {
     if (vrst) {
       // Check types
       if (this.Roles.length > 0) {
-        let tidx = this.Roles.findIndex(p => p.ID === 0);
+        const tidx = this.Roles.findIndex((p) => p.ID === 0);
         if (tidx !== -1) {
           vrst = false;
         }
         if (vrst) {
-          let dictID: Dictionary<number> = new Dictionary<number>();
-          this.Roles.forEach(ot => {
+          const dictID: Dictionary<number> = new Dictionary<number>();
+          this.Roles.forEach((ot) => {
             if (!dictID.has(ot.ID.toString())) {
               dictID.set(ot.ID.toString(), ot.ID);
             }
           });
           if (this.Roles.length !== dictID.size()) {
             vrst = false;
-          }  
+          }
         }
       }
     }
@@ -233,7 +284,7 @@ export class Person extends hih.MultipleNamesObject {
   }
 
   public override writeJSONObject(): any {
-    let rst = super.writeJSONObject();
+    const rst = super.writeJSONObject();
     if (this._id > 0) {
       rst.Id = this.ID;
     }
@@ -250,7 +301,7 @@ export class Person extends hih.MultipleNamesObject {
           rst.PersonRoles.push({ RoleId: val.ID, PersonId: this._id });
         } else {
           rst.PersonRoles.push({ RoleId: val.ID });
-        }  
+        }
       });
     }
 
@@ -269,8 +320,8 @@ export class Person extends hih.MultipleNamesObject {
     }
     this.Roles = [];
     if (data && data.Roles instanceof Array && data.Roles.length > 0) {
-      for(let pr of data.Roles) {
-        let objrule: PersonRole = new PersonRole();
+      for (const pr of data.Roles) {
+        const objrule: PersonRole = new PersonRole();
         objrule.onSetData(pr);
         this.Roles.push(objrule);
       }
@@ -282,23 +333,35 @@ export class Person extends hih.MultipleNamesObject {
  * Organization
  */
 export class Organization extends hih.MultipleNamesObject {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
-  private _detail: string = '';
+  private _detail = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
-  get Detail(): string { return this._detail; }
-  set Detail(dtl: string) { this._detail = dtl; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Detail(): string {
+    return this._detail;
+  }
+  set Detail(dtl: string) {
+    this._detail = dtl;
+  }
   public Types: OrganizationType[] = [];
 
   public override onInit(): void {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this.Detail = '';
+    this.Detail = "";
     this.Types = [];
   }
 
@@ -307,20 +370,20 @@ export class Organization extends hih.MultipleNamesObject {
     if (vrst) {
       // Check types
       if (this.Types.length > 0) {
-        let tidx = this.Types.findIndex(p => p.ID === 0);
+        const tidx = this.Types.findIndex((p) => p.ID === 0);
         if (tidx !== -1) {
           vrst = false;
         }
         if (vrst) {
-          let dictID: Dictionary<number> = new Dictionary<number>();
-          this.Types.forEach(ot => {
+          const dictID: Dictionary<number> = new Dictionary<number>();
+          this.Types.forEach((ot) => {
             if (!dictID.has(ot.ID.toString())) {
               dictID.set(ot.ID.toString(), ot.ID);
             }
           });
           if (this.Types.length !== dictID.size()) {
             vrst = false;
-          }  
+          }
         }
       }
     }
@@ -328,7 +391,7 @@ export class Organization extends hih.MultipleNamesObject {
   }
 
   public override writeJSONObject(): any {
-    let rst = super.writeJSONObject();
+    const rst = super.writeJSONObject();
     if (this._id > 0) {
       rst.Id = this.ID;
     }
@@ -342,10 +405,13 @@ export class Organization extends hih.MultipleNamesObject {
       rst.OrganizationTypes = [];
       this.Types.forEach((val: OrganizationType) => {
         if (this._id > 0) {
-          rst.OrganizationTypes.push({ TypeId: val.ID, OrganizationId: this._id });
+          rst.OrganizationTypes.push({
+            TypeId: val.ID,
+            OrganizationId: this._id,
+          });
         } else {
           rst.OrganizationTypes.push({ TypeId: val.ID });
-        }  
+        }
       });
     }
 
@@ -364,8 +430,8 @@ export class Organization extends hih.MultipleNamesObject {
     }
     this.Types = [];
     if (data && data.Types instanceof Array && data.Types.length > 0) {
-      for(let pr of data.Types) {
-        let objrule: OrganizationType = new OrganizationType();
+      for (const pr of data.Types) {
+        const objrule: OrganizationType = new OrganizationType();
         objrule.onSetData(pr);
         this.Types.push(objrule);
       }
@@ -382,22 +448,42 @@ export enum LocationTypeEnum {
  * Location
  */
 export class Location extends hih.BaseModel {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
-  private _name: string = '';
+  private _name = "";
   private _loctype: LocationTypeEnum = LocationTypeEnum.PaperBook;
-  private _cmt: string = '';
+  private _cmt = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
-  get LocType(): LocationTypeEnum { return this._loctype; }
-  set LocType(lt: LocationTypeEnum) { this._loctype = lt; }
-  get Comment(): string { return this._cmt; }
-  set Comment(dsp: string) { this._cmt = dsp; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get LocType(): LocationTypeEnum {
+    return this._loctype;
+  }
+  set LocType(lt: LocationTypeEnum) {
+    this._loctype = lt;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(dsp: string) {
+    this._cmt = dsp;
+  }
 
   constructor() {
     super();
@@ -411,9 +497,9 @@ export class Location extends hih.BaseModel {
   private initCore(): void {
     this._id = 0;
     this._hid = null;
-    this._name = '';
+    this._name = "";
     this._loctype = LocationTypeEnum.PaperBook;
-    this._cmt = '';
+    this._cmt = "";
   }
 
   public override onVerify(context?: any): boolean {
@@ -435,7 +521,7 @@ export class Location extends hih.BaseModel {
     rstobj.Id = this.ID;
     rstobj.HomeID = this.HID;
     rstobj.Name = this.Name;
-    let ntypeid = +this._loctype;
+    const ntypeid = +this._loctype;
     rstobj.LocationType = ntypeid;
     rstobj.Comment = this.Comment;
 
@@ -455,7 +541,7 @@ export class Location extends hih.BaseModel {
       this.Name = data.Name;
     }
     if (data && data.LocationType) {
-      if (typeof data.LocationType === 'number') {
+      if (typeof data.LocationType === "number") {
         this._loctype = data.LocationType as LocationTypeEnum;
       }
     }
@@ -469,25 +555,45 @@ export class Location extends hih.BaseModel {
  * Book Category
  */
 export class BookCategory extends hih.BaseModel {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
-  private _name: string = '';
+  private _name = "";
   private _parid: number | null = null;
-  private _comment: string = '';
+  private _comment = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
-  get Name(): string { return this._name; }
-  set Name(name: string) { this._name = name; }
-  get ParentID(): number | null { return this._parid; }
-  set ParentID(pid: number | null) { this._parid = pid; }
-  get Comment(): string { return this._comment; }
-  set Comment(oth: string) { this._comment = oth; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get ParentID(): number | null {
+    return this._parid;
+  }
+  set ParentID(pid: number | null) {
+    this._parid = pid;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(oth: string) {
+    this._comment = oth;
+  }
 
   public HierLevel: number | null = null;
-  public FullDisplayText: string = '';
+  public FullDisplayText = "";
 
   constructor() {
     super();
@@ -499,10 +605,17 @@ export class BookCategory extends hih.BaseModel {
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
+      if (
+        this._name === null ||
+        this._name.length <= 0 ||
+        this._name.length > 30
+      ) {
         vrst = false;
       }
-      if (this._comment && (this._comment.length <= 0 || this._comment.length > 100)) {
+      if (
+        this._comment &&
+        (this._comment.length <= 0 || this._comment.length > 100)
+      ) {
         vrst = false;
       }
     }
@@ -552,7 +665,7 @@ export class BookCategory extends hih.BaseModel {
  * Book
  */
 export class Book extends hih.MultipleNamesObject {
-  private _id: number = 0;
+  private _id = 0;
   private _hid: number | null = null;
   private _isbn: string | null = null;
   private _publishedYear: number | null = null;
@@ -567,22 +680,54 @@ export class Book extends hih.MultipleNamesObject {
   public Locations: Location[] = [];
   public Presses: Organization[] = [];
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
-  get ISBN(): string | null { return this._isbn; }
-  set ISBN(isbn: string | null) { this._isbn = isbn; }
-  get PublishedYear(): number | null { return this._publishedYear; }
-  set PublishedYear(pyear: number | null) { this._publishedYear = pyear; }
-  get Detail(): string | null { return this._detail; }
-  set Detail(dtl: string | null) { this._detail = dtl; }
-  get OriginLangID(): number | null { return this._orgLangID; }
-  set OriginLangID(lid: number | null) { this._orgLangID = lid; }
-  get BookLangID(): number | null { return this._bookLangID; }
-  set BookLangeID(lid: number | null) { this._bookLangID = lid; }
-  get PageCount(): number | null { return this._pageCount; }
-  set PageCount(pcnt: number | null) { this._pageCount = pcnt; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get ISBN(): string | null {
+    return this._isbn;
+  }
+  set ISBN(isbn: string | null) {
+    this._isbn = isbn;
+  }
+  get PublishedYear(): number | null {
+    return this._publishedYear;
+  }
+  set PublishedYear(pyear: number | null) {
+    this._publishedYear = pyear;
+  }
+  get Detail(): string | null {
+    return this._detail;
+  }
+  set Detail(dtl: string | null) {
+    this._detail = dtl;
+  }
+  get OriginLangID(): number | null {
+    return this._orgLangID;
+  }
+  set OriginLangID(lid: number | null) {
+    this._orgLangID = lid;
+  }
+  get BookLangID(): number | null {
+    return this._bookLangID;
+  }
+  set BookLangeID(lid: number | null) {
+    this._bookLangID = lid;
+  }
+  get PageCount(): number | null {
+    return this._pageCount;
+  }
+  set PageCount(pcnt: number | null) {
+    this._pageCount = pcnt;
+  }
 
   constructor() {
     super();
@@ -648,47 +793,50 @@ export class Book extends hih.MultipleNamesObject {
           rstobj.BookAuthors.push({ AuthorId: val.ID, BookID: this._id });
         } else {
           rstobj.BookAuthors.push({ AuthorId: val.ID });
-        }  
+        }
       });
     }
     if (this.Translators.length > 0) {
       rstobj.BookTranslators = [];
       this.Translators.forEach((val: Person) => {
         if (this._id > 0) {
-          rstobj.BookTranslators.push({ TranslatorId: val.ID, BookID: this._id });
+          rstobj.BookTranslators.push({
+            TranslatorId: val.ID,
+            BookID: this._id,
+          });
         } else {
           rstobj.BookTranslators.push({ TranslatorId: val.ID });
-        }  
+        }
       });
     }
-    if(this.Categories.length > 0) {
+    if (this.Categories.length > 0) {
       rstobj.BookCategories = [];
       this.Categories.forEach((val: BookCategory) => {
         if (this._id > 0) {
           rstobj.BookCategories.push({ CategoryId: val.ID, BookID: this._id });
         } else {
           rstobj.BookCategories.push({ CategoryId: val.ID });
-        }  
+        }
       });
     }
-    if(this.Locations.length > 0) {
+    if (this.Locations.length > 0) {
       rstobj.BookLocations = [];
       this.Locations.forEach((val: Location) => {
         if (this._id > 0) {
           rstobj.BookLocations.push({ LocationId: val.ID, BookID: this._id });
         } else {
           rstobj.BookLocations.push({ LocationId: val.ID });
-        }  
+        }
       });
     }
-    if(this.Presses.length > 0) {
+    if (this.Presses.length > 0) {
       rstobj.BookPresses = [];
       this.Presses.forEach((val: Organization) => {
         if (this._id > 0) {
           rstobj.BookPresses.push({ PressId: val.ID, BookID: this._id });
         } else {
           rstobj.BookPresses.push({ PressId: val.ID });
-        }  
+        }
       });
     }
 
@@ -715,7 +863,7 @@ export class Book extends hih.MultipleNamesObject {
     if (data && data.OriginLangID) {
       this._orgLangID = data.OriginLangID;
     }
-    if(data && data.BookLangID) {
+    if (data && data.BookLangID) {
       this._bookLangID = data.BookLangID;
     }
     if (data && data.PageCount) {
@@ -723,40 +871,48 @@ export class Book extends hih.MultipleNamesObject {
     }
     this.Authors = [];
     if (data && data.Authors instanceof Array && data.Authors.length > 0) {
-      for(let auth of data.Authors) {
-        let objauth: Person = new Person();
+      for (const auth of data.Authors) {
+        const objauth: Person = new Person();
         objauth.onSetData(auth);
         this.Authors.push(objauth);
       }
     }
     this.Translators = [];
-    if (data && data.Translators instanceof Array && data.Translators.length > 0) {
-      for(let auth of data.Translators) {
-        let objauth: Person = new Person();
+    if (
+      data &&
+      data.Translators instanceof Array &&
+      data.Translators.length > 0
+    ) {
+      for (const auth of data.Translators) {
+        const objauth: Person = new Person();
         objauth.onSetData(auth);
         this.Translators.push(objauth);
       }
     }
     this.Categories = [];
-    if (data && data.Categories instanceof Array && data.Categories.length > 0) {
-      for(let ctg of data.Categories) {
-        let objctgy: BookCategory = new BookCategory();
+    if (
+      data &&
+      data.Categories instanceof Array &&
+      data.Categories.length > 0
+    ) {
+      for (const ctg of data.Categories) {
+        const objctgy: BookCategory = new BookCategory();
         objctgy.onSetData(ctg);
         this.Categories.push(objctgy);
       }
     }
     this.Locations = [];
     if (data && data.Locations instanceof Array && data.Locations.length > 0) {
-      for(let ctg of data.Locations) {
-        let objloc: Location = new Location();
+      for (const ctg of data.Locations) {
+        const objloc: Location = new Location();
         objloc.onSetData(ctg);
         this.Locations.push(objloc);
       }
     }
     this.Presses = [];
     if (data && data.Presses instanceof Array && data.Presses.length > 0) {
-      for(let ctg of data.Presses) {
-        let objorg: Organization = new Organization();
+      for (const ctg of data.Presses) {
+        const objorg: Organization = new Organization();
         objorg.onSetData(ctg);
         this.Presses.push(objorg);
       }
@@ -768,34 +924,70 @@ export class Book extends hih.MultipleNamesObject {
  * Book borrow record
  */
 export class BookBorrowRecord extends hih.BaseModel {
-  private _id: number = 0;
+  private _id = 0;
   private _hid?: number;
   private _bookid?: number;
-  private _user: string = '';
+  private _user = "";
   private _from_org: number | null = null;
   private _from_date: moment.Moment | null = null;
   private _to_date: moment.Moment | null = null;
-  private _has_return: boolean = false;
-  private _cmt: string = '';
+  private _has_return = false;
+  private _cmt = "";
 
-  get ID(): number { return this._id; }
-  set ID(id: number) { this._id = id; }
-  get HID(): number { return this._hid!; }
-  set HID(hid: number) { this._hid = hid; }
-  get BookID(): number { return this._bookid!; }
-  set BookID(bid: number) { this._bookid = bid; }
-  get User(): string { return this._user; }
-  set User(usr: string) { this._user = usr; }
-  get BorrowFrom(): number | null { return this._from_org; }
-  set BorrowFrom(bwf: number | null) { this._from_org = bwf; }
-  get FromDate(): moment.Moment | null { return this._from_date; }  
-  set FromDate(fdt: moment.Moment | null) { this._from_date = fdt; }
-  get ToDate(): moment.Moment | null { return this._to_date; }
-  set ToDate(fdt: moment.Moment | null) { this._to_date = fdt; }
-  get HasReturned(): boolean { return this._has_return; }
-  set HasReturned(hr: boolean) { this._has_return = hr; }
-  get Comment(): string { return this._cmt; }
-  set Comment(dsp: string) { this._cmt = dsp; }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number {
+    return this._hid!;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+  get BookID(): number {
+    return this._bookid!;
+  }
+  set BookID(bid: number) {
+    this._bookid = bid;
+  }
+  get User(): string {
+    return this._user;
+  }
+  set User(usr: string) {
+    this._user = usr;
+  }
+  get BorrowFrom(): number | null {
+    return this._from_org;
+  }
+  set BorrowFrom(bwf: number | null) {
+    this._from_org = bwf;
+  }
+  get FromDate(): moment.Moment | null {
+    return this._from_date;
+  }
+  set FromDate(fdt: moment.Moment | null) {
+    this._from_date = fdt;
+  }
+  get ToDate(): moment.Moment | null {
+    return this._to_date;
+  }
+  set ToDate(fdt: moment.Moment | null) {
+    this._to_date = fdt;
+  }
+  get HasReturned(): boolean {
+    return this._has_return;
+  }
+  set HasReturned(hr: boolean) {
+    this._has_return = hr;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(dsp: string) {
+    this._cmt = dsp;
+  }
 
   constructor() {
     super();
@@ -804,22 +996,22 @@ export class BookBorrowRecord extends hih.BaseModel {
   }
 
   get FromDateString(): string {
-    if(this._from_date) {
+    if (this._from_date) {
       return this._from_date.format(hih.momentDateFormat);
     }
-    return '';
+    return "";
   }
   get ToDateString(): string {
-    if(this._to_date) {
+    if (this._to_date) {
       return this._to_date.format(hih.momentDateFormat);
     }
-    return '';
+    return "";
   }
   private initCore(): void {
     this._id = 0;
     this._hid = undefined;
     this._from_org = null;
-    this._user = '';
+    this._user = "";
     this._from_date = null;
     this._to_date = null;
     this._has_return = false;
@@ -835,26 +1027,42 @@ export class BookBorrowRecord extends hih.BaseModel {
     if (vrst) {
       if (!this._hid) {
         vrst = false;
-        let msg = new hih.InfoMessage(hih.MessageType.Error, 'HomeID is must', 'HomeID is must');        
+        const msg = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "HomeID is must",
+          "HomeID is must"
+        );
         this.VerifiedMsgs.push(msg);
       }
 
       if (!this._bookid) {
         vrst = false;
-        let msg = new hih.InfoMessage(hih.MessageType.Error, 'BookID is must', 'BookID is must');        
+        const msg = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "BookID is must",
+          "BookID is must"
+        );
         this.VerifiedMsgs.push(msg);
       }
 
       if (!this._user) {
         vrst = false;
-        let msg = new hih.InfoMessage(hih.MessageType.Error, 'User is must', 'User is must');        
+        const msg = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "User is must",
+          "User is must"
+        );
         this.VerifiedMsgs.push(msg);
       }
 
       if (this._from_date !== null && this._to_date !== null) {
         if (this._from_date.isAfter(this._to_date)) {
           vrst = false;
-          let msg = new hih.InfoMessage(hih.MessageType.Error, 'ToDate is must', 'ToDate is must');        
+          const msg = new hih.InfoMessage(
+            hih.MessageType.Error,
+            "ToDate is must",
+            "ToDate is must"
+          );
           this.VerifiedMsgs.push(msg);
         }
       }
@@ -933,4 +1141,3 @@ export interface MovieGenreJson {
   parid?: number;
   others?: string;
 }
-

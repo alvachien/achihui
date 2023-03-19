@@ -1,12 +1,16 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, Validators, } from '@angular/forms';
+import { Injectable, EventEmitter } from "@angular/core";
 
-import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum, } from '../model';
-import { TranslocoService } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import {
+  TemplateDocLoan,
+  CheckVersionResult,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+} from "../model";
+import { TranslocoService } from "@ngneat/transloco";
+import { Router } from "@angular/router";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UIStatusService {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -61,15 +65,22 @@ export class UIStatusService {
   // Document list page
   docListDateRange: Date[] = [];
 
-  public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
+  public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(
+    undefined
+  );
 
-  constructor(private _tranService: TranslocoService,
-    private _router: Router) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService constructor...`, ConsoleLogTypeEnum.debug);
+  constructor(private _tranService: TranslocoService, private _router: Router) {
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering UIStatusService constructor...`,
+      ConsoleLogTypeEnum.debug
+    );
   }
 
   private onLanguageChanged(): void {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering UIStatusService onLanguageChanged...`, ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering UIStatusService onLanguageChanged...`,
+      ConsoleLogTypeEnum.debug
+    );
     // this._tranService.get(arstrings).subscribe((x: any) => {
     //   for (let attr in x) {
     //     for (let lab of this.arrLabels) {
@@ -83,9 +94,9 @@ export class UIStatusService {
 
   // Navigation: Documents
   displayFinanceDocument(docid: number): void {
-    this._router.navigate(['/finance/document/display/', docid]);
+    this._router.navigate(["/finance/document/display/", docid]);
   }
   editFinanceDocument(docid: number): void {
-    this._router.navigate(['/finance/document/edit/', docid]);
+    this._router.navigate(["/finance/document/edit/", docid]);
   }
 }

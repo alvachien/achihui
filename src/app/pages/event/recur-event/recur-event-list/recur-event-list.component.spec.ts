@@ -1,22 +1,46 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+  discardPeriodicTasks,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { RecurEventListComponent } from './recur-event-list.component';
+import { EventUIModule } from "src/app/pages/event/event-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  LibraryStorageService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  financeAccountCategoryCash,
+  Account,
+  AccountStatusEnum,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { RecurEventListComponent } from "./recur-event-list.component";
 
-describe('RecurEventListComponent', () => {
+describe("RecurEventListComponent", () => {
   let component: RecurEventListComponent;
   let fixture: ComponentFixture<RecurEventListComponent>;
   let fakeData: FakeDataHelper;
@@ -32,10 +56,12 @@ describe('RecurEventListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchRecurEvents',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchRecurEvents",
     ]);
-    fetchRecurEventsSpy = storageService.fetchRecurEvents.and.returnValue(of({}));
+    fetchRecurEventsSpy = storageService.fetchRecurEvents.and.returnValue(
+      of({})
+    );
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -57,16 +83,15 @@ describe('RecurEventListComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ RecurEventListComponent ],
+      declarations: [RecurEventListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,16 +100,18 @@ describe('RecurEventListComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     beforeEach(() => {
-      fetchRecurEventsSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
+      fetchRecurEventsSpy.and.returnValue(
+        asyncData({ totalCount: 0, contentList: [] })
+      );
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();

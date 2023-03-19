@@ -1,22 +1,26 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { LibraryUIModule } from '../../library-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { OrganizationTypeListComponent } from './organization-type-list.component';
+import { LibraryUIModule } from "../../library-ui.module";
+import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  LibraryStorageService,
+  HomeDefOdataService,
+} from "../../../../services";
+import { UserAuthInfo } from "../../../../model";
+import { OrganizationTypeListComponent } from "./organization-type-list.component";
 
-describe('OrganizationTypeListComponent', () => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+describe("OrganizationTypeListComponent", () => {
   let component: OrganizationTypeListComponent;
   let fixture: ComponentFixture<OrganizationTypeListComponent>;
   let fakeData: FakeDataHelper;
@@ -32,10 +36,11 @@ describe('OrganizationTypeListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchAllOrganizationTypes',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchAllOrganizationTypes",
     ]);
-    fetchAllOrganizationTypesSpy = storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
+    fetchAllOrganizationTypesSpy =
+      storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -57,7 +62,7 @@ describe('OrganizationTypeListComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ OrganizationTypeListComponent ],
+      declarations: [OrganizationTypeListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -65,8 +70,7 @@ describe('OrganizationTypeListComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,7 +79,7 @@ describe('OrganizationTypeListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

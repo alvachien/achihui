@@ -1,16 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { BehaviorSubject } from 'rxjs';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { TestBed, inject } from "@angular/core/testing";
+import { BehaviorSubject } from "rxjs";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { HomeNotChildGuardService } from './home-notchild-guard.service';
-import { AuthService } from './auth.service';
-import { HomeDefOdataService } from './home-def-odata.service';
-import { UIStatusService } from './uistatus.service';
-import { UserAuthInfo } from '../model';
-import { FakeDataHelper } from '../../testing';
+import { HomeNotChildGuardService } from "./home-notchild-guard.service";
+import { AuthService } from "./auth.service";
+import { HomeDefOdataService } from "./home-def-odata.service";
+import { UIStatusService } from "./uistatus.service";
+import { UserAuthInfo } from "../model";
+import { FakeDataHelper } from "../../testing";
 
-describe('HomeNotChildGuardService', () => {
+describe("HomeNotChildGuardService", () => {
   const authServiceStub: Partial<AuthService> = {};
   const homeService: Partial<HomeDefOdataService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -28,9 +27,7 @@ describe('HomeNotChildGuardService', () => {
     homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
+      imports: [RouterTestingModule],
       providers: [
         HomeNotChildGuardService,
         { provide: AuthService, useValue: authServiceStub },
@@ -40,25 +37,34 @@ describe('HomeNotChildGuardService', () => {
     });
   });
 
-  it('should be created', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
-    expect(service).toBeTruthy();
-  }));
+  it("should be created", inject(
+    [HomeNotChildGuardService],
+    (service: HomeNotChildGuardService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 
-  it('checkLogin without login', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
-    expect(service).toBeTruthy();
+  it("checkLogin without login", inject(
+    [HomeNotChildGuardService],
+    (service: HomeNotChildGuardService) => {
+      expect(service).toBeTruthy();
 
-    const urInfo = new UserAuthInfo();
-    urInfo.isAuthorized = true;
-    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+      const urInfo = new UserAuthInfo();
+      urInfo.isAuthorized = true;
+      authServiceStub.authSubject = new BehaviorSubject(urInfo);
 
-    const isLogin = service.checkLogin();
-    expect(isLogin).toBeTruthy();
-  }));
+      const isLogin = service.checkLogin();
+      expect(isLogin).toBeTruthy();
+    }
+  ));
 
-  it('checkLogin with login', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
-    expect(service).toBeTruthy();
+  it("checkLogin with login", inject(
+    [HomeNotChildGuardService],
+    (service: HomeNotChildGuardService) => {
+      expect(service).toBeTruthy();
 
-    const isLogin = service.checkLogin();
-    expect(isLogin).toBeFalsy();
-  }));
+      const isLogin = service.checkLogin();
+      expect(isLogin).toBeFalsy();
+    }
+  ));
 });

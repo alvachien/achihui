@@ -1,22 +1,24 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { LibraryUIModule } from '../library-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService, } from '../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../model';
-import { MessageDialogComponent } from '../../message-dialog';
-import { SearchComponent } from './search.component';
+import { LibraryUIModule } from "../library-ui.module";
+import { getTranslocoModule, FakeDataHelper } from "../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  HomeDefOdataService,
+  LibraryStorageService,
+} from "../../../services";
+import { UserAuthInfo } from "../../../model";
+import { SearchComponent } from "./search.component";
 
-describe('SearchComponent', () => {
+describe("SearchComponent", () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
   let fakeData: FakeDataHelper;
@@ -32,8 +34,8 @@ describe('SearchComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchAllPersons',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchAllPersons",
     ]);
     fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
@@ -57,7 +59,7 @@ describe('SearchComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ SearchComponent ],
+      declarations: [SearchComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -65,8 +67,7 @@ describe('SearchComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,7 +76,7 @@ describe('SearchComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

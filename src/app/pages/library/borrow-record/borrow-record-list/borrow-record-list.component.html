@@ -1,43 +1,58 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
-    <nz-page-header nzBackIcon>
-        <nz-breadcrumb nz-page-header-breadcrumb>
-            <nz-breadcrumb-item>{{'Nav.LibraryTrace' | transloco}}</nz-breadcrumb-item>
-            <nz-breadcrumb-item>{{'Library.Books' | transloco}}</nz-breadcrumb-item>
-        </nz-breadcrumb>
-        <nz-page-header-title>{{'Library.BorrowRecords' | transloco}}</nz-page-header-title>
-        <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
-        <nz-page-header-extra>
-            <!-- <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a> -->
-        </nz-page-header-extra>
-    </nz-page-header>    
-    <nz-table #basicTable [nzData]="dataSet" nzShowSizeChanger
-        [nzFrontPagination]="false"
-        [nzTotal]="totalCount"
-        [nzPageSize]="pageSize"
-        [nzPageIndex]="pageIndex"
-        (nzQueryParams)="onQueryParamsChange($event)">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>{{'Library.Book' | transloco}}</th>
-                <th>{{'Library.BorrowFrom' | transloco}}</th>
-                <th>{{'Common.StartDate' | transloco}}</th>
-                <th>{{'Common.EndDate' | transloco}}</th>
-                <th>{{'Common.Comment' | transloco}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of basicTable.data">
-                <td>{{data.ID}}
-                    <nz-divider nzType="vertical"></nz-divider>
-                    <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>{{'Common.Delete' | transloco}}</button>
-                </td>
-                <td>{{data.BookID}}</td>
-                <td>{{getBorrowFromName(data.BorrowFrom)}} ({{data.BorrowFrom}})</td>
-                <td>{{data.FromDateString}}</td>
-                <td>{{data.ToDateString}}</td>
-                <td>{{data.Comment}}</td>
-            </tr>
-        </tbody>
-    </nz-table>
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>{{
+        "Nav.LibraryTrace" | transloco
+      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ "Library.Books" | transloco }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{
+      "Library.BorrowRecords" | transloco
+    }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{
+      "Common.ListView" | transloco
+    }}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <!-- <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a> -->
+    </nz-page-header-extra>
+  </nz-page-header>
+  <nz-table
+    #basicTable
+    [nzData]="dataSet"
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzTotal]="totalCount"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>{{ "Library.Book" | transloco }}</th>
+        <th>{{ "Library.BorrowFrom" | transloco }}</th>
+        <th>{{ "Common.StartDate" | transloco }}</th>
+        <th>{{ "Common.EndDate" | transloco }}</th>
+        <th>{{ "Common.Comment" | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>
+          {{ data.ID }}
+          <nz-divider nzType="vertical"></nz-divider>
+          <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
+            {{ "Common.Delete" | transloco }}
+          </button>
+        </td>
+        <td>{{ data.BookID }}</td>
+        <td>
+          {{ getBorrowFromName(data.BorrowFrom) }} ({{ data.BorrowFrom }})
+        </td>
+        <td>{{ data.FromDateString }}</td>
+        <td>{{ data.ToDateString }}</td>
+        <td>{{ data.Comment }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </nz-spin>

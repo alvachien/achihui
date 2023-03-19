@@ -1,29 +1,60 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { UntypedFormGroup, UntypedFormControl, Validators, ValidatorFn, ValidationErrors, AbstractControl, } from '@angular/forms';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { StepperSelectionEvent } from "@angular/cdk/stepper";
+import { Observable, forkJoin, merge, of, ReplaySubject } from "rxjs";
+import { takeUntil, finalize } from "rxjs/operators";
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+  ValidatorFn,
+  ValidationErrors,
+  AbstractControl,
+} from "@angular/forms";
+import * as moment from "moment";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { translate } from "@ngneat/transloco";
+import { UIMode, isUIEditable } from "actslib";
 
-import { Document, DocumentItem, getUIModeString, Account, financeAccountCategoryAsset,
-  AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, momentDateFormat, ModelUtility,
-  financeDocTypeAssetSoldOut, FinanceAssetSoldoutDocumentAPI, ConsoleLogTypeEnum,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, financeTranTypeAssetSoldoutIncome,
-} from '../../../../model';
-import { costObjectValidator, } from '../../../../uimodel';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
+import {
+  Document,
+  DocumentItem,
+  getUIModeString,
+  Account,
+  financeAccountCategoryAsset,
+  AccountExtraAsset,
+  RepeatFrequencyEnum,
+  UICommonLabelEnum,
+  BuildupAccountForSelection,
+  UIAccountForSelection,
+  BuildupOrderForSelection,
+  UIOrderForSelection,
+  IAccountCategoryFilterEx,
+  momentDateFormat,
+  ModelUtility,
+  financeDocTypeAssetSoldOut,
+  FinanceAssetSoldoutDocumentAPI,
+  ConsoleLogTypeEnum,
+  HomeMember,
+  ControlCenter,
+  TranType,
+  Order,
+  DocumentType,
+  Currency,
+  financeTranTypeAssetSoldoutIncome,
+} from "../../../../model";
+import { costObjectValidator } from "../../../../uimodel";
+import {
+  HomeDefOdataService,
+  FinanceOdataService,
+  UIStatusService,
+} from "../../../../services";
+import { popupDialog } from "../../../message-dialog";
 
 @Component({
-  selector: 'hih-fin-document-asset-sold-create',
-  templateUrl: './document-asset-sold-create.component.html',
-  styleUrls: ['./document-asset-sold-create.component.less'],
+  selector: "hih-fin-document-asset-sold-create",
+  templateUrl: "./document-asset-sold-create.component.html",
+  styleUrls: ["./document-asset-sold-create.component.less"],
 })
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -69,29 +100,40 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     private homeService: HomeDefOdataService,
     private _router: Router,
-    public modalService: NzModalService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor',
-      ConsoleLogTypeEnum.debug);
+    public modalService: NzModalService
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.arMembersInChosedHome = this.homeService.ChosedHome!.Members.slice();
     this._docDate = moment();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
-    this.firstFormGroup = new UntypedFormGroup({
-      accountControl: new UntypedFormControl('', Validators.required),
-      headerControl: new UntypedFormControl('', Validators.required),
-      amountControl: new UntypedFormControl(0, Validators.required),
-      ccControl: new UntypedFormControl(''),
-      orderControl: new UntypedFormControl(''),
-    }, [costObjectValidator, this._headerAmountValidator]);
-    this.itemFormGroup = new UntypedFormGroup({
-      itemControl: new UntypedFormControl(),
-    }, [this._itemAmountValidator]);
+    this.firstFormGroup = new UntypedFormGroup(
+      {
+        accountControl: new UntypedFormControl("", Validators.required),
+        headerControl: new UntypedFormControl("", Validators.required),
+        amountControl: new UntypedFormControl(0, Validators.required),
+        ccControl: new UntypedFormControl(""),
+        orderControl: new UntypedFormControl(""),
+      },
+      [costObjectValidator, this._headerAmountValidator]
+    );
+    this.itemFormGroup = new UntypedFormGroup(
+      {
+        itemControl: new UntypedFormControl(),
+      },
+      [this._itemAmountValidator]
+    );
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -104,53 +146,64 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
-    ]).pipe(takeUntil(this._destroyed$!)).subscribe({
-      next: (rst: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
-          ConsoleLogTypeEnum.debug);
+    ])
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (rst: any) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin",
+            ConsoleLogTypeEnum.debug
+          );
 
-        this.arDocTypes = rst[2];
-        this.arTranTypes = rst[3];
-        this.arAccounts = rst[4];
-        this.arControlCenters = rst[5];
-        this.arOrders = rst[6];
-        this.arCurrencies = rst[7];
+          this.arDocTypes = rst[2];
+          this.arTranTypes = rst[3];
+          this.arAccounts = rst[4];
+          this.arControlCenters = rst[5];
+          this.arOrders = rst[6];
+          this.arCurrencies = rst[7];
 
-        // Tran. type
-        // this.arTranTypes = this.arTranTypes.filter(val => {
-        //   val.Id === financeTranTypeAssetSoldoutIncome;
-        // });
-        // Accounts
-        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-        this.uiAccountStatusFilter = undefined;
-        this.uiAccountCtgyFilterEx = {
-          includedCategories: [ financeAccountCategoryAsset ],
-          excludedCategories: [],
-        };
-        this.uiRevAccountCtgyFilterEx = {
-          includedCategories: [],
-          excludedCategories: [ financeAccountCategoryAsset ],
-        };
-        // Orders
-        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-        this.uiOrderFilter = undefined;
-      },
-      error: (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+          // Tran. type
+          // this.arTranTypes = this.arTranTypes.filter(val => {
+          //   val.Id === financeTranTypeAssetSoldoutIncome;
+          // });
+          // Accounts
+          this.arUIAccount = BuildupAccountForSelection(
+            this.arAccounts,
+            rst[0]
+          );
+          this.uiAccountStatusFilter = undefined;
+          this.uiAccountCtgyFilterEx = {
+            includedCategories: [financeAccountCategoryAsset],
+            excludedCategories: [],
+          };
+          this.uiRevAccountCtgyFilterEx = {
+            includedCategories: [],
+            excludedCategories: [financeAccountCategoryAsset],
+          };
+          // Orders
+          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.uiOrderFilter = undefined;
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error.toString(),
-          nzClosable: true,
-        });
-      }
-    });
+          this.modalService.create({
+            nzTitle: translate("Common.Error"),
+            nzContent: error.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -188,11 +241,11 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
-        this.currentStep ++;
+        this.currentStep++;
         break;
       }
       case 1: {
-        this.currentStep ++;
+        this.currentStep++;
         this._updateConfirmInfo();
         break;
       }
@@ -204,26 +257,30 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       }
 
       default:
-      break;
+        break;
     }
   }
 
   onSubmit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent onSubmit',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent onSubmit",
+      ConsoleLogTypeEnum.debug
+    );
 
     // Generate the doc, and verify it
     const docobj: Document = this._generateDoc();
-    if (!docobj.onVerify({
-      ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranTypes,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
-    })) {
-      popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
+    if (
+      !docobj.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranTypes,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+      })
+    ) {
+      popupDialog(this.modalService, "Common.Error", docobj.VerifiedMsgs);
       this.isDocPosting = false;
       return;
     }
@@ -233,14 +290,16 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.detailObject.HID = this.homeService.ChosedHome!.ID;
     this.detailObject.TranDate = docobj.TranDate.format(momentDateFormat);
     this.detailObject.TranCurr = docobj.TranCurr;
-    this.detailObject.TranAmount = this.firstFormGroup.get('amountControl')?.value;
+    this.detailObject.TranAmount =
+      this.firstFormGroup.get("amountControl")?.value;
     this.detailObject.Desp = docobj.Desp;
-    this.detailObject.AssetAccountID = this.firstFormGroup.get('accountControl')?.value;
-    const ncc = this.firstFormGroup.get('ccControl')?.value;
+    this.detailObject.AssetAccountID =
+      this.firstFormGroup.get("accountControl")?.value;
+    const ncc = this.firstFormGroup.get("ccControl")?.value;
     if (ncc) {
       this.detailObject.ControlCenterID = ncc;
     }
-    const norder = this.firstFormGroup.get('orderControl')?.value;
+    const norder = this.firstFormGroup.get("orderControl")?.value;
     if (norder) {
       this.detailObject.OrderID = norder;
     }
@@ -248,73 +307,97 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.detailObject!.Items.push(val);
     });
 
-    this.odataService.createAssetSoldoutDocument(this.detailObject)
-      .pipe(takeUntil(this._destroyed$!),
-      finalize(() => {
-        this.currentStep = 3;
-        this.isDocPosting = false;
-      }))
-      .subscribe((ndoc: Document) => {
-      // New doc created with ID returned
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument',
-        ConsoleLogTypeEnum.debug);
+    this.odataService
+      .createAssetSoldoutDocument(this.detailObject)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => {
+          this.currentStep = 3;
+          this.isDocPosting = false;
+        })
+      )
+      .subscribe(
+        (ndoc: Document) => {
+          // New doc created with ID returned
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument",
+            ConsoleLogTypeEnum.debug
+          );
 
-      this.docIdCreated = ndoc.Id;
-      this.docPostingFailed = undefined;
-    }, (err: string) => {
-      // Handle the error
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
-        ConsoleLogTypeEnum.error);
+          this.docIdCreated = ndoc.Id;
+          this.docPostingFailed = undefined;
+        },
+        (err: string) => {
+          // Handle the error
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
+            ConsoleLogTypeEnum.error
+          );
 
-      this.docIdCreated = undefined;
-      this.docPostingFailed = err;
-    });
+          this.docIdCreated = undefined;
+          this.docPostingFailed = err;
+        }
+      );
   }
 
   private _updateConfirmInfo() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _updateConfirmInfo',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _updateConfirmInfo",
+      ConsoleLogTypeEnum.debug
+    );
 
-    const doc: Document = this.firstFormGroup.get('headerControl')?.value;
+    const doc: Document = this.firstFormGroup.get("headerControl")?.value;
     this._docDate = doc.TranDate;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
-    this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl')?.value;
+    this.confirmInfo.tranAmount =
+      this.firstFormGroup.get("amountControl")?.value;
     this.confirmInfo.tranCurrency = doc.TranCurr;
-    this.confirmInfo.soldoutAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
-    this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find((val: Account) => {
-      return val.Id === this.confirmInfo.soldoutAssetAccountID;
-    })!.Name;
+    this.confirmInfo.soldoutAssetAccountID =
+      this.firstFormGroup.get("accountControl")?.value;
+    this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find(
+      (val: Account) => {
+        return val.Id === this.confirmInfo.soldoutAssetAccountID;
+      }
+    )!.Name;
   }
 
   private _generateDoc(): Document {
-    const ndoc: Document = this.firstFormGroup.get('headerControl')?.value;
+    const ndoc: Document = this.firstFormGroup.get("headerControl")?.value;
     ndoc.HID = this.homeService.ChosedHome!.ID;
     ndoc.DocType = this.curDocType;
 
     ndoc.Items = [];
     // Add items
-    ndoc.Items = this.itemFormGroup.get('itemControl')?.value;
+    ndoc.Items = this.itemFormGroup.get("itemControl")?.value;
 
     return ndoc;
   }
-  private _headerAmountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _headerAmountValidator',
-      ConsoleLogTypeEnum.debug);
+  private _headerAmountValidator: ValidatorFn = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _headerAmountValidator",
+      ConsoleLogTypeEnum.debug
+    );
 
-    const amt: any = group.get('amountControl')?.value;
+    const amt: any = group.get("amountControl")?.value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }
 
     return null;
-  }
-  private _itemAmountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _itemAmountValidator',
-      ConsoleLogTypeEnum.debug);
+  };
+  private _itemAmountValidator: ValidatorFn = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _itemAmountValidator",
+      ConsoleLogTypeEnum.debug
+    );
 
-    const amt: any = this.firstFormGroup.get('amountControl')?.value;
-    const items: DocumentItem[] = group.get('itemControl')?.value;
+    const amt: any = this.firstFormGroup.get("amountControl")?.value;
+    const items: DocumentItem[] = group.get("itemControl")?.value;
 
     let totalAmt = 0;
     if (items) {
@@ -327,7 +410,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
             totalAmt -= item.TranAmount;
           } else {
             totalAmt += item.TranAmount;
-          }  
+          }
         }
       }
     }
@@ -337,11 +420,13 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     }
 
     return null;
-  }
+  };
 
   public onDisplayCreatedDoc(): void {
     if (this.docIdCreated) {
-      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
+      this._router.navigate([
+        "/finance/document/display/" + this.docIdCreated.toString(),
+      ]);
     }
   }
 }

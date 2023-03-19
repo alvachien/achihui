@@ -1,60 +1,67 @@
-import * as moment from 'moment';
-import { UIMode } from 'actslib';
+import * as moment from "moment";
+import { UIMode } from "actslib";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
-export const typeParentSplitter: string = ' > ';
-export const idSplitChar: string = ',';
+export const typeParentSplitter: string = " > ";
+export const idSplitChar: string = ",";
 
-export const dateSplitChar: string = '-';
+export const dateSplitChar: string = "-";
 
-export const languageEn: string = 'en';
-export const languageZh: string = 'zh';
-export const languageZhCN: string = 'zh-cn';
+export const languageEn: string = "en";
+export const languageZh: string = "zh";
+export const languageZhCN: string = "zh-cn";
 
-export const momentDateFormat: string = 'YYYY-MM-DD';
+export const momentDateFormat: string = "YYYY-MM-DD";
 
-export enum AuthorizeScope { All = 1, OnlyOwner = 2 }
-export enum MessageType { Info = 1, Warning = 2, Error = 3 }
+export enum AuthorizeScope {
+  All = 1,
+  OnlyOwner = 2,
+}
+export enum MessageType {
+  Info = 1,
+  Warning = 2,
+  Error = 3,
+}
 
 /**
  * Enum for Common Label
  */
 export enum UICommonLabelEnum {
-  DocumentPosted        = 1,
-  CreateAnotherOne      = 2,
-  CreatedSuccess        = 3,
-  Category              = 4,
-  User                  = 5,
-  Count                 = 6,
-  Total                 = 7,
-  DeleteConfirmTitle    = 8,
-  DeleteConfrimContent  = 9,
-  Error                 = 10,
-  ChartLegend           = 11,
-  UpdatedSuccess        = 12,
-  Incoming              = 13,
-  Outgoing              = 14,
-  DocumentUpdated       = 15,
-  OperConfirmTitle      = 16,
-  OperConfirmContent    = 17,
-  OperationCompleted    = 18,
+  DocumentPosted = 1,
+  CreateAnotherOne = 2,
+  CreatedSuccess = 3,
+  Category = 4,
+  User = 5,
+  Count = 6,
+  Total = 7,
+  DeleteConfirmTitle = 8,
+  DeleteConfrimContent = 9,
+  Error = 10,
+  ChartLegend = 11,
+  UpdatedSuccess = 12,
+  Incoming = 13,
+  Outgoing = 14,
+  DocumentUpdated = 15,
+  OperConfirmTitle = 16,
+  OperConfirmContent = 17,
+  OperationCompleted = 18,
 }
 
 /**
  * Enum for Question bank type
  */
 export enum QuestionBankTypeEnum {
-  EssayQuestion       = 1,
-  MultipleChoice      = 2,
+  EssayQuestion = 1,
+  MultipleChoice = 2,
 }
 
 /**
  * Enum for Tag type
  */
 export enum TagTypeEnum {
-  LearnQuestionBank     = 1,
+  LearnQuestionBank = 1,
   // EnglishWord         = 2,
   // EnglishSentence     = 3,
 
@@ -65,31 +72,31 @@ export enum TagTypeEnum {
  * Overview Scope
  */
 export enum OverviewScopeEnum {
-  CurrentMonth    = 1,
-  CurrentYear     = 2,
-  PreviousMonth   = 3,
-  PreviousYear    = 4,
-  CurrentQuarter  = 5,
+  CurrentMonth = 1,
+  CurrentYear = 2,
+  PreviousMonth = 3,
+  PreviousYear = 4,
+  CurrentQuarter = 5,
   PreviousQuarter = 6,
-  CurrentWeek     = 7,
-  PreviousWeek    = 8,
+  CurrentWeek = 7,
+  PreviousWeek = 8,
 
-  All             = 9,
+  All = 9,
 }
 
 export function getUIModeString(mode: UIMode): string {
   switch (mode) {
     case UIMode.Create:
-      return 'Common.Create';
+      return "Common.Create";
 
     case UIMode.Update:
-      return 'Common.Change';
+      return "Common.Change";
 
     case UIMode.Display:
-      return 'Common.Display';
+      return "Common.Display";
 
     default:
-      return '';
+      return "";
   }
 }
 
@@ -106,25 +113,25 @@ export interface IUIDetailPage {
  * Repeat frequency
  */
 export enum RepeatFrequencyEnum {
-  Month       = 0,
-  Fortnight   = 1,
-  Week        = 2,
-  Day         = 3,
-  Quarter     = 4,
-  HalfYear    = 5,
-  Year        = 6,
-  Manual      = 7,
+  Month = 0,
+  Fortnight = 1,
+  Week = 2,
+  Day = 3,
+  Quarter = 4,
+  HalfYear = 5,
+  Year = 6,
+  Manual = 7,
 }
 
 /**
  * Log Level enum
  */
 export enum LogLevel {
-  Crash     = 0,
-  Error     = 1,
-  Warning   = 2,
-  Info      = 3,
-  Debug     = 4,
+  Crash = 0,
+  Error = 1,
+  Warning = 2,
+  Info = 3,
+  Debug = 4,
 }
 
 /**
@@ -257,8 +264,7 @@ export class BaseModel {
   }
 
   public writeJSONObject(): any {
-    const rstobj: any = {
-    };
+    const rstobj: any = {};
 
     if (this._createdAt) {
       rstobj.CreatedAt = this._createdAt.format(momentDateFormat);
@@ -302,7 +308,8 @@ export class BaseModel {
   protected _addMessage(
     msgtype: MessageType,
     msgtitle: string,
-    msgcontent: string): void {
+    msgcontent: string
+  ): void {
     const msg: InfoMessage = new InfoMessage();
     msg.MsgType = msgtype;
     msg.MsgTitle = msgtitle;
@@ -360,7 +367,7 @@ export class Tag {
   get LinkTarget(): string {
     switch (this.TagType) {
       case TagTypeEnum.LearnQuestionBank:
-        return '/learn/questionbank/display/' + this.TagID?.toString();
+        return "/learn/questionbank/display/" + this.TagID?.toString();
 
       // case TagTypeEnum.EnglishWord:
       //   return '/learn/enword/display/' + this.TagID.toString();
@@ -369,10 +376,10 @@ export class Tag {
       //   return '/learn/ensent/display/' + this.TagID.toString();
 
       case TagTypeEnum.FinanceDocumentItem:
-        return '/finance/document/display/' + this.TagID?.toString();
+        return "/finance/document/display/" + this.TagID?.toString();
 
       default:
-        throw new Error('Unsupportted tag type');
+        throw new Error("Unsupportted tag type");
     }
   }
 
@@ -496,16 +503,28 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  private _nativeName: string = '';
-  private _chineseName: string = '';
+  private _nativeName: string = "";
+  private _chineseName: string = "";
   private _chineseIsNative: boolean = false;
 
-  get NativeName(): string    {  return this._nativeName;  }
-  set NativeName(nn: string)  {  this._nativeName = nn;    }
-  get ChineseName(): string   {  return this._chineseName; }
-  set ChineseName(en: string) {  this._chineseName = en;   }
-  get ChineseIsNative(): boolean    { return this._chineseIsNative;  }
-  set ChineseIsNative(ein: boolean) { this._chineseIsNative= ein;    }
+  get NativeName(): string {
+    return this._nativeName;
+  }
+  set NativeName(nn: string) {
+    this._nativeName = nn;
+  }
+  get ChineseName(): string {
+    return this._chineseName;
+  }
+  set ChineseName(en: string) {
+    this._chineseName = en;
+  }
+  get ChineseIsNative(): boolean {
+    return this._chineseIsNative;
+  }
+  set ChineseIsNative(ein: boolean) {
+    this._chineseIsNative = ein;
+  }
 
   constructor() {
     super();
@@ -513,8 +532,8 @@ export class MultipleNamesObject extends BaseModel {
 
   public override onInit(): void {
     super.onInit();
-    this._nativeName = '';
-    this._chineseName = '';
+    this._nativeName = "";
+    this._chineseName = "";
     this._chineseIsNative = false;
   }
 
@@ -524,7 +543,7 @@ export class MultipleNamesObject extends BaseModel {
     if (rst) {
       if (this.NativeName.length <= 0 && this.ChineseName.length <= 0) {
         rst = false;
-      }  
+      }
     }
 
     return rst;
@@ -567,55 +586,60 @@ export interface IOverviewScopeRange {
   EndDate: moment.Moment;
 }
 
-export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeRange {
+export function getOverviewScopeRange(
+  scope: OverviewScopeEnum
+): IOverviewScopeRange {
   let bgn: any = moment();
   let end: any = moment();
 
   if (scope === OverviewScopeEnum.CurrentMonth) {
-    bgn.startOf('month');
-    end.endOf('month');
+    bgn.startOf("month");
+    end.endOf("month");
   } else if (scope === OverviewScopeEnum.CurrentYear) {
-    bgn.startOf('year');
-    end.endOf('year');
+    bgn.startOf("year");
+    end.endOf("year");
   } else if (scope === OverviewScopeEnum.PreviousMonth) {
-    bgn.subtract(1, 'M');
-    bgn.startOf('month');
+    bgn.subtract(1, "M");
+    bgn.startOf("month");
 
     end = bgn.clone();
-    end.endOf('month');
+    end.endOf("month");
   } else if (scope === OverviewScopeEnum.PreviousYear) {
-    bgn.subtract(1, 'y');
-    bgn.startOf('year');
+    bgn.subtract(1, "y");
+    bgn.startOf("year");
 
     end = bgn.clone();
-    end.endOf('year');
+    end.endOf("year");
   } else if (scope === OverviewScopeEnum.CurrentQuarter) {
-    bgn.startOf('quarter');
-    end.endOf('quarter');
+    bgn.startOf("quarter");
+    end.endOf("quarter");
   } else if (scope === OverviewScopeEnum.PreviousQuarter) {
-    bgn.startOf('quarter');
-    bgn.subtract(1, 'Q');
+    bgn.startOf("quarter");
+    bgn.subtract(1, "Q");
 
     end = bgn.clone();
-    end.endOf('quarter');
+    end.endOf("quarter");
   } else if (scope === OverviewScopeEnum.CurrentWeek) {
-    bgn.startOf('week');
-    end.endOf('week');
+    bgn.startOf("week");
+    end.endOf("week");
   } else if (scope === OverviewScopeEnum.PreviousWeek) {
-    bgn.startOf('week');
-    bgn.subtract(1, 'w');
+    bgn.startOf("week");
+    bgn.subtract(1, "w");
 
     end = bgn.clone();
-    end.endOf('week');
+    end.endOf("week");
   } else if (scope === OverviewScopeEnum.All) {
-    bgn = moment('19710101');
-    end = moment('99991231');
+    bgn = moment("19710101");
+    end = moment("99991231");
   }
 
   return { BeginDate: bgn, EndDate: end };
 }
 
-export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnum): boolean {
+export function isOverviewDateInScope(
+  dt: moment.Moment,
+  scope: OverviewScopeEnum
+): boolean {
   const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
 
   if (dt.isBefore(end) && dt.isAfter(bgn)) {

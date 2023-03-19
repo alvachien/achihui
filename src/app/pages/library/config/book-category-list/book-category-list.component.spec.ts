@@ -1,22 +1,24 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { LibraryUIModule } from '../../library-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { BookCategoryListComponent } from './book-category-list.component';
+import { LibraryUIModule } from "../../library-ui.module";
+import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  LibraryStorageService,
+  HomeDefOdataService,
+} from "../../../../services";
+import { UserAuthInfo } from "../../../../model";
+import { BookCategoryListComponent } from "./book-category-list.component";
 
-describe('BookCategoryListComponent', () => {
+describe("BookCategoryListComponent", () => {
   let component: BookCategoryListComponent;
   let fixture: ComponentFixture<BookCategoryListComponent>;
   let fakeData: FakeDataHelper;
@@ -32,10 +34,11 @@ describe('BookCategoryListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchAllBookCategories',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchAllBookCategories",
     ]);
-    fetchAllBookCategoriesSpy = storageService.fetchAllBookCategories.and.returnValue(of([]));
+    fetchAllBookCategoriesSpy =
+      storageService.fetchAllBookCategories.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -57,7 +60,7 @@ describe('BookCategoryListComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ BookCategoryListComponent ],
+      declarations: [BookCategoryListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -65,8 +68,7 @@ describe('BookCategoryListComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,7 +77,7 @@ describe('BookCategoryListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

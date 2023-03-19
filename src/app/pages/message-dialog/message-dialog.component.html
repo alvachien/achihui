@@ -4,15 +4,15 @@
     <thead>
       <tr>
         <th>Type</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Common.Content' | transloco}}</th>
+        <th>{{ "Common.Name" | transloco }}</th>
+        <th>{{ "Common.Content" | transloco }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.MsgType}}</td>
-        <td>{{data.MsgTitle | transloco}}</td>
-        <td>{{data.MsgContent | transloco}}</td>
+        <td>{{ data.MsgType }}</td>
+        <td>{{ data.MsgTitle | transloco }}</td>
+        <td>{{ data.MsgContent | transloco }}</td>
       </tr>
     </tbody>
   </nz-table>

@@ -1,21 +1,32 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService, } from 'ng-zorro-antd/modal';
-import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { forkJoin, ReplaySubject } from "rxjs";
+import { takeUntil, finalize } from "rxjs/operators";
+import { Router } from "@angular/router";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { NzDrawerRef, NzDrawerService } from "ng-zorro-antd/drawer";
+import { translate } from "@ngneat/transloco";
 
-import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, GeneralFilterItem,
-  GeneralFilterOperatorEnum, GeneralFilterValueType, } from '../../../../model';
-import { FinanceOdataService, HomeDefOdataService, UIStatusService, } from '../../../../services';
-import { DocumentItemViewComponent } from '../../document-item-view';
-import * as moment from 'moment';
+import {
+  LogLevel,
+  Order,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  GeneralFilterItem,
+  GeneralFilterOperatorEnum,
+  GeneralFilterValueType,
+} from "../../../../model";
+import {
+  FinanceOdataService,
+  HomeDefOdataService,
+  UIStatusService,
+} from "../../../../services";
+import { DocumentItemViewComponent } from "../../document-item-view";
+import * as moment from "moment";
 
 @Component({
-  selector: 'hih-fin-order-list',
-  templateUrl: './order-list.component.html',
-  styleUrls: ['./order-list.component.less'],
+  selector: "hih-fin-order-list",
+  templateUrl: "./order-list.component.html",
+  styleUrls: ["./order-list.component.less"],
 })
 export class OrderListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -28,8 +39,13 @@ export class OrderListComponent implements OnInit, OnDestroy {
   }
   invalidOrder(ord: Order): boolean {
     if (ord) {
-      let cur: moment.Moment = moment();
-      if (ord.ValidFrom && ord.ValidFrom.isBefore(cur) && ord.ValidTo && ord.ValidTo.isAfter(cur)) {
+      const cur: moment.Moment = moment();
+      if (
+        ord.ValidFrom &&
+        ord.ValidFrom.isBefore(cur) &&
+        ord.ValidTo &&
+        ord.ValidTo.isAfter(cur)
+      ) {
         return false;
       }
     }
@@ -41,33 +57,43 @@ export class OrderListComponent implements OnInit, OnDestroy {
     public router: Router,
     private homeService: HomeDefOdataService,
     public modalService: NzModalService,
-    public drawerService: NzDrawerService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    public drawerService: NzDrawerService
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.isLoadingResults = false;
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent OnInit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this.odataService.fetchAllOrders()
-      .pipe(takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false))
+    this.odataService
+      .fetchAllOrders()
+      .pipe(
+        takeUntil(this._destroyed$),
+        finalize(() => (this.isLoadingResults = false))
+      )
       .subscribe({
         next: (x: Order[]) => {
           this.dataSet = x.slice();
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
           this.modalService.error({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -76,8 +102,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent OnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -90,33 +118,42 @@ export class OrderListComponent implements OnInit, OnDestroy {
   }
 
   onCreate(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onCreate...',
-      ConsoleLogTypeEnum.debug);
-    this.router.navigate(['/finance/order/create']);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent onCreate...",
+      ConsoleLogTypeEnum.debug
+    );
+    this.router.navigate(["/finance/order/create"]);
   }
 
   onDisplay(rid: number): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onDisplay...',
-      ConsoleLogTypeEnum.debug);
-    this.router.navigate(['/finance/order/display/' + rid.toString()]);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent onDisplay...",
+      ConsoleLogTypeEnum.debug
+    );
+    this.router.navigate(["/finance/order/display/" + rid.toString()]);
   }
 
   onEdit(rid: number): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onEdit...',
-      ConsoleLogTypeEnum.debug);
-    this.router.navigate(['/finance/order/edit/' + rid.toString()]);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent onEdit...",
+      ConsoleLogTypeEnum.debug
+    );
+    this.router.navigate(["/finance/order/edit/" + rid.toString()]);
   }
 
   onDelete(rid: number) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onDelete...',
-      ConsoleLogTypeEnum.debug);
-    this.odataService.deleteOrder(rid)
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderListComponent onDelete...",
+      ConsoleLogTypeEnum.debug
+    );
+    this.odataService
+      .deleteOrder(rid)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: val => {
+        next: (val) => {
           // Delete item from list
           const exts = this.dataSet.slice();
-          const extidx = exts.findIndex(ext => {
+          const extidx = exts.findIndex((ext) => {
             return ext.Id === rid;
           });
           if (extidx !== -1) {
@@ -124,43 +161,47 @@ export class OrderListComponent implements OnInit, OnDestroy {
             this.dataSet = exts;
           }
         },
-        error: err => {
+        error: (err) => {
           this.modalService.error({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
   }
 
   onDisplayDocItem(rid: number, rname: string) {
     const fltrs = [];
     fltrs.push({
-      fieldName: 'OrderID',
+      fieldName: "OrderID",
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: rid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
-    const drawerRef = this.drawerService.create<DocumentItemViewComponent, {
-      filterDocItem: GeneralFilterItem[],
-    }, string>({
-      nzTitle: 'Document Items',
+    const drawerRef = this.drawerService.create<
+      DocumentItemViewComponent,
+      {
+        filterDocItem: GeneralFilterItem[];
+      },
+      string
+    >({
+      nzTitle: "Document Items",
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: '100%',
-      nzHeight: '50%',
-      nzPlacement: 'bottom',
+      nzWidth: "100%",
+      nzHeight: "50%",
+      nzPlacement: "bottom",
     });
 
     drawerRef.afterOpen.subscribe(() => {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe(data => {
+    drawerRef.afterClose.subscribe((data) => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

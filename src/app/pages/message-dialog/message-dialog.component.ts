@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Component, Input } from "@angular/core";
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 
-import { InfoMessage } from '../../model';
+import { InfoMessage } from "../../model";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * Message dialog button type
@@ -24,16 +26,15 @@ export interface MessageDialogInfo {
 }
 
 @Component({
-  selector: 'hih-message-dialog',
-  templateUrl: './message-dialog.component.html',
-  styleUrls: ['./message-dialog.component.less'],
+  selector: "hih-message-dialog",
+  templateUrl: "./message-dialog.component.html",
+  styleUrls: ["./message-dialog.component.less"],
 })
 export class MessageDialogComponent {
-  @Input() title: string = '';
+  @Input() title = "";
   @Input() infoMessages: InfoMessage[] = [];
 
-  constructor(private modal: NzModalRef) {
-  }
+  constructor(private modal: NzModalRef) {}
 
   handleOk(): void {
     this.modal.destroy();
@@ -54,26 +55,33 @@ export function popupDialog(
   modalService: NzModalService,
   title: string,
   msgs: InfoMessage[],
-  buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok) {
+  buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok
+) {
   let footer: any = [];
   switch (buttons) {
     case MessageDialogButtonEnum.okcancel:
-      footer = [{
-        label: 'OK',
-        onClick: (componentInstance: any) => componentInstance!.handleOk()
-      }, {
-        label: 'Cancel',
-        onClick: (componentInstance: any) => componentInstance!.handleCancel()
-      }];
+      footer = [
+        {
+          label: "OK",
+          onClick: (componentInstance: any) => componentInstance!.handleOk(),
+        },
+        {
+          label: "Cancel",
+          onClick: (componentInstance: any) =>
+            componentInstance!.handleCancel(),
+        },
+      ];
       break;
 
     case MessageDialogButtonEnum.onlyok:
-      default:
-        footer = [{
-          label: 'OK',
-          onClick: (componentInstance: any) => componentInstance!.handleOk()
-        }];
-        break;
+    default:
+      footer = [
+        {
+          label: "OK",
+          onClick: (componentInstance: any) => componentInstance!.handleOk(),
+        },
+      ];
+      break;
   }
   const modal = modalService.create({
     nzTitle: title,
@@ -92,7 +100,7 @@ export function popupDialog(
   });
 
   // Return a result when closed
-  modal.afterClose.subscribe(result => {
+  modal.afterClose.subscribe((result) => {
     // console.log('[afterClose] The result is:', result);
   });
 

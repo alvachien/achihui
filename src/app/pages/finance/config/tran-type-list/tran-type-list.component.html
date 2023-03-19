@@ -3,19 +3,19 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Finance.IsExpense' | transloco}}</th>
-        <th>{{'Common.Parent' | transloco}}</th>
-        <th>{{'Common.Comment' | transloco}}</th>
+        <th>{{ "Common.Name" | transloco }}</th>
+        <th>{{ "Finance.IsExpense" | transloco }}</th>
+        <th>{{ "Common.Parent" | transloco }}</th>
+        <th>{{ "Common.Comment" | transloco }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.Id}}</td>
-        <td>{{data.Name}}</td>
+        <td>{{ data.Id }}</td>
+        <td>{{ data.Name }}</td>
         <td><nz-switch [(ngModel)]="data.Expense" nzDisabled></nz-switch></td>
-        <td>{{data.ParId}}</td>
-        <td>{{data.Comment}}</td>
+        <td>{{ data.ParId }}</td>
+        <td>{{ data.Comment }}</td>
       </tr>
     </tbody>
   </nz-table>

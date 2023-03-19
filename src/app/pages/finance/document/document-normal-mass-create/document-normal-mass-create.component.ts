@@ -1,26 +1,53 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators, UntypedFormArray, AbstractControl } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  UntypedFormBuilder,
+  FormControl,
+  UntypedFormGroup,
+  Validators,
+  UntypedFormArray,
+  AbstractControl,
+} from "@angular/forms";
+import { Router } from "@angular/router";
+import { ReplaySubject, forkJoin } from "rxjs";
+import * as moment from "moment";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { takeUntil, finalize } from "rxjs/operators";
+import { translate } from "@ngneat/transloco";
+import { UIMode, isUIEditable } from "actslib";
 
-import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
-  UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, UIDisplayStringUtil,
-  FinanceDocumentMassCreateConfirm, FinanceNormalDocItemMassCreate, momentDateFormat,
-} from '../../../../model';
-import { costObjectValidator, } from '../../../../uimodel';
-import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
+import {
+  financeDocTypeNormal,
+  Account,
+  Document,
+  DocumentItem,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  UIOrderForSelection,
+  Currency,
+  TranType,
+  ControlCenter,
+  Order,
+  UIAccountForSelection,
+  DocumentType,
+  BuildupAccountForSelection,
+  BuildupOrderForSelection,
+  UIDisplayStringUtil,
+  FinanceDocumentMassCreateConfirm,
+  FinanceNormalDocItemMassCreate,
+  momentDateFormat,
+} from "../../../../model";
+import { costObjectValidator } from "../../../../uimodel";
+import {
+  HomeDefOdataService,
+  UIStatusService,
+  FinanceOdataService,
+} from "../../../../services";
+import { popupDialog } from "../../../message-dialog";
 
 @Component({
-  selector: 'hih-document-normal-mass-create',
-  templateUrl: './document-normal-mass-create.component.html',
-  styleUrls: ['./document-normal-mass-create.component.less'],
+  selector: "hih-document-normal-mass-create",
+  templateUrl: "./document-normal-mass-create.component.html",
+  styleUrls: ["./document-normal-mass-create.component.less"],
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -55,9 +82,12 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private fb: UntypedFormBuilder,
-    private router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    private router: Router
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
@@ -65,8 +95,10 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._destroyed$ = new ReplaySubject(1);
     this.itemsFormGroup = this.fb.group({
@@ -83,40 +115,47 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDocTypes(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-        // Accounts
-        this.arAccounts = rst[2];
-        this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
-        // this.uiAccountStatusFilter = undefined;
-        // this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arOrders = rst[4];
-        this.arUIOrders = BuildupOrderForSelection(this.arOrders);
-        // Tran. type
-        this.arTranType = rst[1];
-        // Control Centers
-        this.arControlCenters = rst[3];
-        // Currencies
-        this.arCurrencies = rst[5];
-        // Doc. type
-        this.arDocTypes = rst[6];
+      .subscribe(
+        (rst: any) => {
+          // Accounts
+          this.arAccounts = rst[2];
+          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          // this.uiAccountStatusFilter = undefined;
+          // this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arOrders = rst[4];
+          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          // Tran. type
+          this.arTranType = rst[1];
+          // Control Centers
+          this.arControlCenters = rst[3];
+          // Currencies
+          this.arCurrencies = rst[5];
+          // Doc. type
+          this.arDocTypes = rst[6];
 
-        // Create first item
-        this.createItem();
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${error}`,
-          ConsoleLogTypeEnum.error);
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error.toString(),
-          nzClosable: true,
-        });
-      });
+          // Create first item
+          this.createItem();
+        },
+        (error: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${error}`,
+            ConsoleLogTypeEnum.error
+          );
+          this.modalService.create({
+            nzTitle: translate("Common.Error"),
+            nzContent: error.toString(),
+            nzClosable: true,
+          });
+        }
+      );
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -157,7 +196,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       case 0: {
         this._generateItems();
         this._updateConfirmInfo();
-        this.currentStep ++;
+        this.currentStep++;
         break;
       }
       case 1: {
@@ -171,7 +210,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      const controlArray: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+      const controlArray: UntypedFormArray = this.itemsFormGroup?.controls[
+        "items"
+      ] as UntypedFormArray;
       if (controlArray.length <= 0) {
         return false;
       }
@@ -183,72 +224,79 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find(acnt => {
+    const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name ? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : "";
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find(cc => {
+    const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : '';
+    return ccObj ? ccObj.Name : "";
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find(ord => {
+    const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : '';
+    return orderObj ? orderObj.Name : "";
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find(tt => {
+    const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : '';
+    return tranTypeObj ? tranTypeObj.Name : "";
   }
 
   // Step 0: Items
   private initItem(): UntypedFormGroup {
-    return this.fb.group({
-      dateControl: [new Date(), Validators.required],
-      accountControl: [undefined, Validators.required],
-      tranTypeControl: [undefined, Validators.required],
-      amountControl: [0, Validators.required],
-      // currControl: ['', Validators.required],
-      despControl: ['', Validators.required],
-      ccControl: [undefined],
-      orderControl: [undefined],
-    }, {
-      validators: [costObjectValidator],
-    });
+    return this.fb.group(
+      {
+        dateControl: [new Date(), Validators.required],
+        accountControl: [undefined, Validators.required],
+        tranTypeControl: [undefined, Validators.required],
+        amountControl: [0, Validators.required],
+        // currControl: ['', Validators.required],
+        despControl: ["", Validators.required],
+        ccControl: [undefined],
+        orderControl: [undefined],
+      },
+      {
+        validators: [costObjectValidator],
+      }
+    );
   }
   private createItem(): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls[
+      "items"
+    ] as UntypedFormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls[
+      "items"
+    ] as UntypedFormArray;
     const newItem: UntypedFormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
-      newItem.get('dateControl')?.setValue(oldItem.dateControl);
-      newItem.get('accountControl')?.setValue(oldItem.accountControl);
-      newItem.get('tranTypeControl')?.setValue(oldItem.tranTypeControl);
-      newItem.get('amountControl')?.setValue(oldItem.amountControl);
-      newItem.get('despControl')?.setValue(oldItem.despControl);
-      newItem.get('ccControl')?.setValue(oldItem.ccControl);
-      newItem.get('orderControl')?.setValue(oldItem.orderControl);
+      newItem.get("dateControl")?.setValue(oldItem.dateControl);
+      newItem.get("accountControl")?.setValue(oldItem.accountControl);
+      newItem.get("tranTypeControl")?.setValue(oldItem.tranTypeControl);
+      newItem.get("amountControl")?.setValue(oldItem.amountControl);
+      newItem.get("despControl")?.setValue(oldItem.despControl);
+      newItem.get("ccControl")?.setValue(oldItem.ccControl);
+      newItem.get("orderControl")?.setValue(oldItem.orderControl);
     }
 
     control.push(newItem);
     return control.length - 1;
   }
   get getItemFormArray(): UntypedFormArray {
-    return this.itemsFormGroup?.controls['items'] as UntypedFormArray;
+    return this.itemsFormGroup?.controls["items"] as UntypedFormArray;
   }
   get getItemControls(): UntypedFormGroup[] {
     return this.getItemFormArray.controls as UntypedFormGroup[];
@@ -261,7 +309,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.arItems = [];
     const controlArrays: UntypedFormArray = this.getItemFormArray;
 
-    for(var i = 0; i < controlArrays.length; i ++) {
+    for (let i = 0; i < controlArrays.length; i++) {
       const control = controlArrays.value[i];
 
       const docitem = new FinanceNormalDocItemMassCreate();
@@ -295,8 +343,10 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo = [];
 
     this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
-      let docObj = this.confirmInfo.find(val => {
-        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
+      let docObj = this.confirmInfo.find((val) => {
+        return (
+          val.TranDateFormatString === item.tranDate.format(momentDateFormat)
+        );
       });
 
       if (docObj !== undefined) {
@@ -309,7 +359,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         docitem.ControlCenterId = item.controlCenterID;
         docitem.OrderId = item.orderID;
 
-        docObj.Items.forEach(di => {
+        docObj.Items.forEach((di) => {
           if (docitem.ItemId < di.ItemId) {
             docitem.ItemId = di.ItemId;
           }
@@ -346,17 +396,19 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
 
     let errorOccur = false;
-    this.confirmInfo.forEach(doc => {
-      if (!doc.onVerify({
-        ControlCenters: this.arControlCenters,
-        Orders: this.arOrders,
-        Accounts: this.arAccounts,
-        DocumentTypes: this.arDocTypes,
-        TransactionTypes: this.arTranType,
-        Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
-      })) {
-        errorOccur = true;        
+    this.confirmInfo.forEach((doc) => {
+      if (
+        !doc.onVerify({
+          ControlCenters: this.arControlCenters,
+          Orders: this.arOrders,
+          Accounts: this.arAccounts,
+          DocumentTypes: this.arDocTypes,
+          TransactionTypes: this.arTranType,
+          Currencies: this.arCurrencies,
+          BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+        })
+      ) {
+        errorOccur = true;
       }
     });
     if (errorOccur) {
@@ -367,47 +419,65 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     this.currentStep = 2; // Jump to the result page
 
-    this.odataService.massCreateNormalDocument(this.confirmInfo)
-      .pipe(takeUntil(this._destroyed$!),
-      finalize(() => this.isDocPosting = false))
+    this.odataService
+      .massCreateNormalDocument(this.confirmInfo)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => (this.isDocPosting = false))
+      )
       .subscribe({
-        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...',
-            ConsoleLogTypeEnum.debug);
+        next: (rsts: {
+          PostedDocuments: Document[];
+          FailedDocuments: Document[];
+        }) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...",
+            ConsoleLogTypeEnum.debug
+          );
 
           this.docIdCreated = rsts.PostedDocuments;
           this.docIdFailed = rsts.FailedDocuments;
         },
         error: (err) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument failed: ${err}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error
+          );
         },
       });
   }
   // Step 3: Result
   public onBackToListView(): void {
-    this.router.navigate(['/finance/document/list']);
+    this.router.navigate(["/finance/document/list"]);
   }
   public onResubmitFailedItems(): void {
     this.isDocPosting = true;
-    this.odataService.massCreateNormalDocument(this.docIdFailed)
-      .pipe(takeUntil(this._destroyed$!),
-      finalize(() => this.isDocPosting = false))
+    this.odataService
+      .massCreateNormalDocument(this.docIdFailed)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => (this.isDocPosting = false))
+      )
       .subscribe({
-        next: (rsts: {PostedDocuments: Document[], FailedDocuments: Document[]}) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
-            ConsoleLogTypeEnum.debug);
+        next: (rsts: {
+          PostedDocuments: Document[];
+          FailedDocuments: Document[];
+        }) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...",
+            ConsoleLogTypeEnum.debug
+          );
 
           this.docIdCreated.push(...rsts.PostedDocuments);
           this.docIdFailed = rsts.FailedDocuments;
         },
         error: (err) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument failed: ${err}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument failed: ${err}`,
+            ConsoleLogTypeEnum.error
+          );
         },
       });
   }
-  public onDisplayCreatedDoc(docid: number): void {
-    
-  }
+  public onDisplayCreatedDoc(docid: number): void {}
 }

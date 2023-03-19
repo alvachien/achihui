@@ -1,30 +1,52 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, } from '@angular/core';
-import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
-import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
+import { ReplaySubject, forkJoin, of, ObservableInput } from "rxjs";
+import { takeUntil, catchError, map, finalize } from "rxjs/operators";
+import { Router, ActivatedRoute } from "@angular/router";
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
+import { translate } from "@ngneat/transloco";
+import { UIMode, isUIEditable } from "actslib";
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
-import { Account, Document, ControlCenter, AccountCategory, TranType,
-  OverviewScopeEnum, DocumentType, Currency, Order,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  ModelUtility, ConsoleLogTypeEnum, getUIModeString, DocumentItem,
-} from '../../../../model';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import {
+  FinanceOdataService,
+  HomeDefOdataService,
+  UIStatusService,
+} from "../../../../services";
+import {
+  Account,
+  Document,
+  ControlCenter,
+  AccountCategory,
+  TranType,
+  OverviewScopeEnum,
+  DocumentType,
+  Currency,
+  Order,
+  BuildupAccountForSelection,
+  UIAccountForSelection,
+  BuildupOrderForSelection,
+  UIOrderForSelection,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  getUIModeString,
+  DocumentItem,
+} from "../../../../model";
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
-  selector: 'hih-fin-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.less'],
+  selector: "hih-fin-document-detail",
+  templateUrl: "./document-detail.component.html",
+  styleUrls: ["./document-detail.component.less"],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean = false;
+  isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode: string = '';
+  public currentMode = "";
   public uiMode: UIMode = UIMode.Create;
   public currentDocument: Document;
   // Attributes
@@ -49,37 +71,47 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private router: Router,
-    private cd: ChangeDetectorRef) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    private cd: ChangeDetectorRef
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.currentDocument = new Document();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.docFormGroup = new UntypedFormGroup({
-      idControl: new UntypedFormControl({ disabled: true} ),
-      headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
-      itemsControl: new UntypedFormControl()
+      idControl: new UntypedFormControl({ disabled: true }),
+      headerControl: new UntypedFormControl(
+        this.currentDocument,
+        Validators.required
+      ),
+      itemsControl: new UntypedFormControl(),
     });
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
     this._destroyed$ = new ReplaySubject(1);
     this.cd.detectChanges();
 
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug
+      );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
+        if (x[0].path === "create") {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
+        } else if (x[0].path === "edit") {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
+        } else if (x[0].path === "display") {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -104,17 +136,22 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllOrders(),
             this.odataService.readDocument(this.routerID),
           ])
-          .pipe(takeUntil(this._destroyed$!),
-            finalize(() => {
-              this.isLoadingResults = false;
-            }))
+            .pipe(
+              takeUntil(this._destroyed$!),
+              finalize(() => {
+                this.isLoadingResults = false;
+              })
+            )
             .subscribe({
-              next: rsts => {
+              next: (rsts) => {
                 this.arCurrencies = rsts[0] as Currency[];
                 this.arDocTypes = rsts[1] as DocumentType[];
                 this.arTranType = rsts[2] as TranType[];
                 this.arAccountCategories = rsts[3] as AccountCategory[];
-                this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
+                this.arUIAccounts = BuildupAccountForSelection(
+                  rsts[4] as Account[],
+                  rsts[3] as AccountCategory[]
+                );
                 this.arControlCenters = rsts[5] as ControlCenter[];
                 const arorders = rsts[6] as Order[];
                 this.arUIOrders = BuildupOrderForSelection(arorders, true);
@@ -122,56 +159,68 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.currentDocument = rsts[7] as Document;
 
                 // Check the accounts in use
-                const listAcntIDs = this.currentDocument.Items.map(item => {
+                const listAcntIDs = this.currentDocument.Items.map((item) => {
                   return item.AccountId;
                 });
                 const listNIDs: number[] = [];
-                listAcntIDs.forEach(acntid => {
-                  if (this.arUIAccounts.findIndex(acnt => acnt.Id === acntid) === -1) {
+                listAcntIDs.forEach((acntid) => {
+                  if (
+                    this.arUIAccounts.findIndex(
+                      (acnt) => acnt.Id === acntid
+                    ) === -1
+                  ) {
                     listNIDs.push(acntid!);
                   }
                 });
-      
+
                 if (listNIDs.length > 0) {
                   const listRst: any = [];
-                  listNIDs.forEach(nid => {
+                  listNIDs.forEach((nid) => {
                     listRst.push(this.odataService.readAccount(nid));
                   });
-      
+
                   // Read the account
-                  forkJoin(listRst).pipe(takeUntil(this._destroyed$!),
-                    finalize(() => {
-                      this.onSetData();
-                    }))
+                  forkJoin(listRst)
+                    .pipe(
+                      takeUntil(this._destroyed$!),
+                      finalize(() => {
+                        this.onSetData();
+                      })
+                    )
                     .subscribe({
-                      next: acnts => {
+                      next: (acnts) => {
                         this.arUIAccounts = [];
-                        this.arUIAccounts = BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories);
+                        this.arUIAccounts = BuildupAccountForSelection(
+                          this.odataService.Accounts,
+                          this.odataService.AccountCategories
+                        );
                       },
-                      error: err => {
+                      error: (err) => {
                         this.uiMode = UIMode.Invalid;
                         this.modalService.create({
-                          nzTitle: translate('Common.Error'),
+                          nzTitle: translate("Common.Error"),
                           nzContent: err.toString(),
                           nzClosable: true,
                         });
-                      }
+                      },
                     });
                 } else {
                   this.onSetData();
                 }
               },
-              error: err => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
-                  ConsoleLogTypeEnum.error);
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
+                  ConsoleLogTypeEnum.error
+                );
 
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
-                  nzTitle: translate('Common.Error'),
+                  nzTitle: translate("Common.Error"),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
-              }
+              },
             });
           break;
         }
@@ -184,8 +233,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -194,23 +245,23 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   private onSetData() {
-    this.docFormGroup.get('idControl')?.setValue(this.currentDocument.Id);
-    this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
-    this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
+    this.docFormGroup.get("idControl")?.setValue(this.currentDocument.Id);
+    this.docFormGroup.get("headerControl")?.setValue(this.currentDocument);
+    this.docFormGroup.get("itemsControl")?.setValue(this.currentDocument.Items);
 
     if (this.uiMode === UIMode.Display) {
       this.docFormGroup.disable();
     } else {
       this.odataService.isDocumentChangable(this.routerID).subscribe({
-        next: val => {
+        next: (val) => {
           if (val) {
             this.docFormGroup.enable();
-            this.docFormGroup.get('idControl')?.disable();
+            this.docFormGroup.get("idControl")?.disable();
           } else {
             const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate('Common.Error'),
-              nzContent: translate('Finance.EditDocumentNotAllowed'),
-              nzClosable: false
+              nzTitle: translate("Common.Error"),
+              nzContent: translate("Finance.EditDocumentNotAllowed"),
+              nzClosable: false,
             });
             setTimeout(() => {
               ref.close();
@@ -219,58 +270,62 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
             setTimeout(() => {
               this.uiMode = UIMode.Display;
-              this.docFormGroup.disable();  
+              this.docFormGroup.disable();
             });
           }
         },
-        error: err => {
+        error: (err) => {
           this.uiMode = UIMode.Display;
           this.docFormGroup.disable();
           this.modalService.create({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
     }
   }
 
   onSave(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...",
+      ConsoleLogTypeEnum.debug
+    );
     if (this.uiMode === UIMode.Update) {
       // Update mode.
-      let detailObject = this.docFormGroup.get('headerControl')?.value as Document;
+      const detailObject = this.docFormGroup.get("headerControl")
+        ?.value as Document;
       detailObject.HID = this.currentDocument.HID;
       detailObject.Id = this.currentDocument.Id;
       detailObject.DocType = this.currentDocument.DocType;
-      detailObject.Items = this.docFormGroup.get('itemsControl')?.value as DocumentItem[];
-      detailObject.Items.forEach(item => {
+      detailObject.Items = this.docFormGroup.get("itemsControl")
+        ?.value as DocumentItem[];
+      detailObject.Items.forEach((item) => {
         item.DocId = detailObject.Id;
       });
 
       this.odataService.changeDocument(detailObject).subscribe({
-        next: val => {
+        next: (val) => {
           const ref: NzModalRef = this.modalService.success({
-            nzTitle: translate('Common.Success'),
-            nzContent: translate('Finance.EditDocumentSuccessfully')
+            nzTitle: translate("Common.Success"),
+            nzContent: translate("Finance.EditDocumentSuccessfully"),
           });
           setTimeout(() => {
             ref.close();
             ref.destroy();
           }, 1000);
 
-          this.router.navigate(['/finance/document/display', val.Id]);
+          this.router.navigate(["/finance/document/display", val.Id]);
         },
-        error: err => {
+        error: (err) => {
           console.error(err);
           this.modalService.create({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
     }
   }
@@ -278,14 +333,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   onChangeToEditMode(): void {
     if (this.routerID) {
       this.odataService.isDocumentChangable(this.routerID).subscribe({
-        next: val => {
+        next: (val) => {
           if (val) {
-            this.router.navigate(['/finance/document/edit/', this.routerID]);
+            this.router.navigate(["/finance/document/edit/", this.routerID]);
           } else {
             const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate('Common.Error'),
-              nzContent: translate('Finance.EditDocumentNotAllowed'),
-              nzClosable: false
+              nzTitle: translate("Common.Error"),
+              nzContent: translate("Finance.EditDocumentNotAllowed"),
+              nzClosable: false,
             });
             setTimeout(() => {
               ref.close();
@@ -294,19 +349,19 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
             setTimeout(() => {
               this.uiMode = UIMode.Display;
-              this.docFormGroup.disable();  
+              this.docFormGroup.disable();
             });
           }
         },
-        error: err => {
+        error: (err) => {
           this.uiMode = UIMode.Display;
           this.docFormGroup.disable();
           this.modalService.create({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
     }
   }

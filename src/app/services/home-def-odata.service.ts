@@ -1,20 +1,35 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse, } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
-import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { Injectable } from "@angular/core";
+import {
+  HttpParams,
+  HttpClient,
+  HttpHeaders,
+  HttpResponse,
+  HttpErrorResponse,
+} from "@angular/common/http";
+import { Observable, BehaviorSubject, of, throwError } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { environment } from "../../environments/environment";
 
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure,
-  ModelUtility, ConsoleLogTypeEnum, CheckVersionResult, } from '../model';
-import { AuthService } from './auth.service';
+import {
+  HomeDef,
+  HomeMember,
+  HomeDefJson,
+  HomeMsg,
+  HomeKeyFigure,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  CheckVersionResult,
+} from "../model";
+import { AuthService } from "./auth.service";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class HomeDefOdataService {
-  private _redirURL: string = '';
+  private _redirURL = "";
 
   // Buffer
   private _islistLoaded: boolean;
@@ -27,13 +42,16 @@ export class HomeDefOdataService {
   }
 
   // Subject for the selected HomeDef
-  curHomeSelected: BehaviorSubject<HomeDef | null> = new BehaviorSubject<HomeDef | null>(null);
+  curHomeSelected: BehaviorSubject<HomeDef | null> =
+    new BehaviorSubject<HomeDef | null>(null);
   get ChosedHome(): HomeDef | null {
     return this.curHomeSelected.value;
   }
   set ChosedHome(hd: HomeDef | null) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService ChosedHome setter: ${hd}`,
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering HomeDefOdataService ChosedHome setter: ${hd}`,
+      ConsoleLogTypeEnum.debug
+    );
 
     if (hd) {
       this.curHomeSelected.next(hd);
@@ -41,13 +59,16 @@ export class HomeDefOdataService {
   }
 
   // Subject for current home member
-  curHomeMember: BehaviorSubject<HomeMember | null> = new BehaviorSubject<HomeMember | null>(null);
+  curHomeMember: BehaviorSubject<HomeMember | null> =
+    new BehaviorSubject<HomeMember | null>(null);
   get CurrentMemberInChosedHome(): HomeMember | null {
     return this.curHomeMember.value;
   }
   set CurrentMemberInChosedHome(hm: HomeMember | null) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService CurrentMemberInChosedHome setter: ${hm}`,
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering HomeDefOdataService CurrentMemberInChosedHome setter: ${hm}`,
+      ConsoleLogTypeEnum.debug
+    );
 
     if (hm) {
       this.curHomeMember.next(hm);
@@ -70,10 +91,11 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure | null = null;
 
-  constructor(
-    private _http: HttpClient,
-    private _authService: AuthService) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
+  constructor(private _http: HttpClient, private _authService: AuthService) {
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`,
+      ConsoleLogTypeEnum.debug
+    );
 
     this._islistLoaded = false; // Performance improvement
     this._listHomeDefList = [];
@@ -84,49 +106,64 @@ export class HomeDefOdataService {
    */
   public fetchAllHomeDef(forceReload?: boolean): Observable<HomeDef[]> {
     if (!this._islistLoaded || forceReload) {
-
       let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                       .append('Accept', 'application/json')
-                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      headers = headers
+        .append("Content-Type", "application/json")
+        .append("Accept", "application/json")
+        .append(
+          "Authorization",
+          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+        );
       let params: HttpParams = new HttpParams();
-      params = params.append('$count', 'true');
-      params = params.append('$expand', 'HomeMembers');
+      params = params.append("$count", "true");
+      params = params.append("$expand", "HomeMembers");
 
-      return this._http.get(this.apiUrl, {
+      return this._http
+        .get(this.apiUrl, {
           headers,
           params,
         })
-        .pipe(map((response: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef...`,
-            ConsoleLogTypeEnum.debug);
+        .pipe(
+          map((response: any) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef...`,
+              ConsoleLogTypeEnum.debug
+            );
 
-          this._listHomeDefList = [];
-          const rjs: any = response;
+            this._listHomeDefList = [];
+            const rjs: any = response;
 
-          if (rjs.value instanceof Array && rjs.value.length > 0) {
-            for (const si of rjs.value) {
-              const hd: HomeDef = new HomeDef();
-              hd.parseJSONData(si);
-              this._listHomeDefList.push(hd);
+            if (rjs.value instanceof Array && rjs.value.length > 0) {
+              for (const si of rjs.value) {
+                const hd: HomeDef = new HomeDef();
+                hd.parseJSONData(si);
+                this._listHomeDefList.push(hd);
+              }
             }
-          }
 
-          this._islistLoaded = true;
-          return this._listHomeDefList;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef failed: ${error}`,
-            ConsoleLogTypeEnum.error);
+            this._islistLoaded = true;
+            return this._listHomeDefList;
+          }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef failed: ${error}`,
+              ConsoleLogTypeEnum.error
+            );
 
-          this._islistLoaded = false;
-          this._listHomeDefList = [];
+            this._islistLoaded = false;
+            this._listHomeDefList = [];
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        }));
-      } else {
-        return of(this._listHomeDefList);
-      }
+            return throwError(
+              () =>
+                new Error(
+                  error.statusText + "; " + error.error + "; " + error.message
+                )
+            );
+          })
+        );
+    } else {
+      return of(this._listHomeDefList);
+    }
   }
 
   /**
@@ -134,41 +171,57 @@ export class HomeDefOdataService {
    */
   public readHomeDef(hid: number): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
     let params: HttpParams = new HttpParams();
-    params = params.append('$expand', 'HomeMembers');
-    params = params.append('$filter', `ID eq ${hid}`);
+    params = params.append("$expand", "HomeMembers");
+    params = params.append("$filter", `ID eq ${hid}`);
 
-    return this._http.get(this.apiUrl, {
-      headers,
-      params, })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef.`,
-          ConsoleLogTypeEnum.debug);
+    return this._http
+      .get(this.apiUrl, {
+        headers,
+        params,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef.`,
+            ConsoleLogTypeEnum.debug
+          );
 
-        const hd: HomeDef = new HomeDef();
-        hd.parseJSONData((response as any).value[0]);
+          const hd: HomeDef = new HomeDef();
+          hd.parseJSONData((response as any).value[0]);
 
-        // Buffer it
-        const nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {
-          return val.ID === hd.ID;
-        });
-        if (nidx === -1) {
-          this._listHomeDefList.push(hd);
-        } else {
-          this._listHomeDefList.splice(nidx, 1, hd);
-        }
+          // Buffer it
+          const nidx: number = this._listHomeDefList.findIndex(
+            (val: HomeDef) => {
+              return val.ID === hd.ID;
+            }
+          );
+          if (nidx === -1) {
+            this._listHomeDefList.push(hd);
+          } else {
+            this._listHomeDefList.splice(nidx, 1, hd);
+          }
 
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`,
-          ConsoleLogTypeEnum.error);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(
+            error.statusText + "; " + error.error + "; " + error.message
+          );
+        })
+      );
   }
 
   /**
@@ -177,31 +230,45 @@ export class HomeDefOdataService {
    */
   public createHomeDef(objhd: HomeDef): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
-    return this._http.post(this.apiUrl, jdata, {
+    return this._http
+      .post(this.apiUrl, jdata, {
         headers,
       })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`, ConsoleLogTypeEnum.debug);
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`,
+            ConsoleLogTypeEnum.debug
+          );
 
-        const hd: HomeDef = new HomeDef();
-        hd.parseJSONData(response as any);
+          const hd: HomeDef = new HomeDef();
+          hd.parseJSONData(response as any);
 
-        this._listHomeDefList.push(hd);
+          this._listHomeDefList.push(hd);
 
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService createHomeDef failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService createHomeDef failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(
+            error.statusText + "; " + error.error + "; " + error.message
+          );
+        })
+      );
   }
   /**
    * Change a home def
@@ -209,33 +276,47 @@ export class HomeDefOdataService {
    */
   public changeHomeDef(objhd: HomeDef): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const apipath = `${this.apiUrl}(${objhd.ID})`;
     const jdata: any = JSON && JSON.stringify(data);
-    return this._http.put(apipath, jdata, {
+    return this._http
+      .put(apipath, jdata, {
         headers,
       })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`, ConsoleLogTypeEnum.debug);
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`,
+            ConsoleLogTypeEnum.debug
+          );
 
-        // Empty result from API : 204
-        // const hd: HomeDef = new HomeDef();
-        // hd.parseJSONData(response as any);
+          // Empty result from API : 204
+          // const hd: HomeDef = new HomeDef();
+          // hd.parseJSONData(response as any);
 
-        // this._listHomeDefList.push(hd);
+          // this._listHomeDefList.push(hd);
 
-        return objhd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService changeHomeDef failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+          return objhd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService changeHomeDef failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+          return throwError(
+            error.statusText + "; " + error.error + "; " + error.message
+          );
+        })
+      );
   }
 
   /**
@@ -243,17 +324,25 @@ export class HomeDefOdataService {
    * @param top Total messages to fetch
    * @param skip Skip the first X messages
    */
-  public getHomeMessages(sentbox: boolean, top: number, skip: number): Observable<any> {
-    const apiurl: string = environment.ApiUrl + '/homemsg';
+  public getHomeMessages(
+    sentbox: boolean,
+    top: number,
+    skip: number
+  ): Observable<any> {
+    const apiurl: string = environment.ApiUrl + "/homemsg";
     const curhid: number = this.ChosedHome!.ID;
     const requestUrl: any = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                      .append('Accept', 'application/json')
-                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
 
-    return this._http.get<any>(requestUrl, { headers, });
+    return this._http.get<any>(requestUrl, { headers });
   }
 
   /**
@@ -262,22 +351,32 @@ export class HomeDefOdataService {
    */
   public createHomeMessage(data: HomeMsg): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/homemsg';
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
+    const apiurl: string = environment.ApiUrl + "/homemsg";
 
     const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
-    return this._http.post(apiurl, jdata, {
+    return this._http
+      .post(apiurl, jdata, {
         headers,
       })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]:" + response,
+            ConsoleLogTypeEnum.debug
+          );
 
-        const hd: HomeMsg = new HomeMsg();
-        hd.onSetData(response as any);
-        return hd;
-      }));
+          const hd: HomeMsg = new HomeMsg();
+          hd.onSetData(response as any);
+          return hd;
+        })
+      );
   }
 
   /**
@@ -285,30 +384,41 @@ export class HomeDefOdataService {
    */
   public markHomeMessageHasRead(msg: HomeMsg): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
+    const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this.ChosedHome!.ID.toString());
-    const jdata: any[] = [{
-        op: 'replace',
-        path: '/readFlag',
+    params = params.append("hid", this.ChosedHome!.ID.toString());
+    const jdata: any[] = [
+      {
+        op: "replace",
+        path: "/readFlag",
         value: true,
       },
     ];
 
-    return this._http.patch(apiurl, jdata, {
+    return this._http
+      .patch(apiurl, jdata, {
         headers,
         params,
       })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]:" + response,
+            ConsoleLogTypeEnum.debug
+          );
 
-        const hd: HomeMsg = new HomeMsg();
-        hd.onSetData(response as any);
-        return hd;
-      }));
+          const hd: HomeMsg = new HomeMsg();
+          hd.onSetData(response as any);
+          return hd;
+        })
+      );
   }
 
   /**
@@ -316,60 +426,82 @@ export class HomeDefOdataService {
    */
   public deleteHomeMessage(msg: HomeMsg, senderdel?: boolean): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                     .append('Accept', 'application/json')
-                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
+    const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this.ChosedHome!.ID.toString());
-    const jdata: any[] = [{
-        op: 'replace',
-        path: senderdel ? '/senderDeletion' : '/receiverDeletion',
+    params = params.append("hid", this.ChosedHome!.ID.toString());
+    const jdata: any[] = [
+      {
+        op: "replace",
+        path: senderdel ? "/senderDeletion" : "/receiverDeletion",
         value: true,
       },
     ];
 
-    return this._http.patch(apiurl, jdata, {
+    return this._http
+      .patch(apiurl, jdata, {
         headers,
         params,
       })
-      .pipe(map((response: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]:" + response,
+            ConsoleLogTypeEnum.debug
+          );
 
-        const hd: HomeMsg = new HomeMsg();
-        hd.onSetData(response);
-        return hd;
-      }));
+          const hd: HomeMsg = new HomeMsg();
+          hd.onSetData(response);
+          return hd;
+        })
+      );
   }
 
   /**
    * Get Key Figure
    */
   public getHomeKeyFigure(): Observable<any> {
-    const apiurl: string = environment.ApiUrl + '/HomeKeyFigure';
+    const apiurl: string = environment.ApiUrl + "/HomeKeyFigure";
     const curhid: number = this.ChosedHome!.ID;
     const requestUrl: any = `${apiurl}?hid=${curhid}`;
 
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-                      .append('Accept', 'application/json')
-                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json")
+      .append(
+        "Authorization",
+        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
+      );
 
-    return this._http.get<any>(requestUrl, { headers, })
-      .pipe(map((x: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`,
-          ConsoleLogTypeEnum.debug);
+    return this._http.get<any>(requestUrl, { headers }).pipe(
+      map((x: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`,
+          ConsoleLogTypeEnum.debug
+        );
 
         this.keyFigure = new HomeKeyFigure();
         this.keyFigure.onSetData(x);
         return this.keyFigure;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`,
-          ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`,
+          ConsoleLogTypeEnum.error
+        );
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
+        return throwError(
+          error.statusText + "; " + error.error + "; " + error.message
+        );
+      })
+    );
   }
 
   /**
@@ -377,22 +509,37 @@ export class HomeDefOdataService {
    */
   public checkDBVersion(): Observable<CheckVersionResult> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json');
+    headers = headers
+      .append("Content-Type", "application/json")
+      .append("Accept", "application/json");
 
-    return this._http.post(environment.ApiUrl + '/DBVersions', {}, {
-      headers,
-    }).pipe(map((response: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
-        ConsoleLogTypeEnum.debug);
+    return this._http
+      .post(
+        environment.ApiUrl + "/DBVersions",
+        {},
+        {
+          headers,
+        }
+      )
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
+            ConsoleLogTypeEnum.debug
+          );
 
-      return (response as any) as CheckVersionResult;
-    }),
-    catchError((error: HttpErrorResponse) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, checkDBVersion, Failed ${error}`,
-        ConsoleLogTypeEnum.error);
+          return response as any as CheckVersionResult;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService, checkDBVersion, Failed ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
-      return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-    }));
+          return throwError(
+            error.statusText + "; " + error.error + "; " + error.message
+          );
+        })
+      );
   }
 }

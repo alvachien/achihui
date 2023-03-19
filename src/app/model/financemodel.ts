@@ -1,35 +1,35 @@
-import * as hih from './common';
-import * as moment from 'moment';
+import * as hih from "./common";
+import * as moment from "moment";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
-export const financeAccountCategoryCash             = 1;
-export const financeAccountCategoryDeposit          = 2;
-export const financeAccountCategoryCreditCard       = 3;
-export const financeAccountCategoryAccountPayable   = 4;
+export const financeAccountCategoryCash = 1;
+export const financeAccountCategoryDeposit = 2;
+export const financeAccountCategoryCreditCard = 3;
+export const financeAccountCategoryAccountPayable = 4;
 export const financeAccountCategoryAccountReceivable = 5;
-export const financeAccountCategoryVirtual          = 6;
-export const financeAccountCategoryAsset            = 7;
-export const financeAccountCategoryAdvancePayment   = 8; // Advance payment
-export const financeAccountCategoryBorrowFrom       = 9;
-export const financeAccountCategoryLendTo           = 10;
-export const financeAccountCategoryAdvanceReceived  = 11;
-export const financeAccountCategoryInsurance        = 12;
+export const financeAccountCategoryVirtual = 6;
+export const financeAccountCategoryAsset = 7;
+export const financeAccountCategoryAdvancePayment = 8; // Advance payment
+export const financeAccountCategoryBorrowFrom = 9;
+export const financeAccountCategoryLendTo = 10;
+export const financeAccountCategoryAdvanceReceived = 11;
+export const financeAccountCategoryInsurance = 12;
 
-export const financeDocTypeNormal           = 1;
-export const financeDocTypeTransfer         = 2; // Transfer doc
+export const financeDocTypeNormal = 1;
+export const financeDocTypeTransfer = 2; // Transfer doc
 export const financeDocTypeCurrencyExchange = 3; // Currency exchange
-export const financeDocTypeAdvancePayment   = 5;
+export const financeDocTypeAdvancePayment = 5;
 // export const FinanceDocType_CreditcardRepay: number = 6;
-export const financeDocTypeAssetBuyIn       = 7;
-export const financeDocTypeAssetSoldOut     = 8;
-export const financeDocTypeBorrowFrom       = 9;
-export const financeDocTypeLendTo           = 10;
-export const financeDocTypeRepay            = 11;
-export const financeDocTypeAdvanceReceived  = 12;
-export const financeDocTypeAssetValChg      = 13;
-export const financeDocTypeInsurance        = 14;
-export const financeDocTypeLoanPrepayment   = 15; // Prepayment to loan
+export const financeDocTypeAssetBuyIn = 7;
+export const financeDocTypeAssetSoldOut = 8;
+export const financeDocTypeBorrowFrom = 9;
+export const financeDocTypeLendTo = 10;
+export const financeDocTypeRepay = 11;
+export const financeDocTypeAdvanceReceived = 12;
+export const financeDocTypeAssetValChg = 13;
+export const financeDocTypeInsurance = 14;
+export const financeDocTypeLoanPrepayment = 15; // Prepayment to loan
 
 export const financeTranTypeOpeningAsset = 1;
 export const financeTranTypeOpeningLiability = 82;
@@ -51,18 +51,18 @@ export const financeTranTypeInsuranceReturn = 36;
 export const financeTranTypeInsurancePay = 34;
 
 // Finance reports: period for months
-export const financePeriodLast12Months  = '1';
-export const financePeriodLast6Months   = '2';
-export const financePeriodLast3Months   = '3';
+export const financePeriodLast12Months = "1";
+export const financePeriodLast6Months = "2";
+export const financePeriodLast3Months = "3";
 
 /**
  * Finance quick access type
  */
 export enum FinanceQuickAccessTypeEnum {
-  Account       = 1,
-  Document      = 2,
+  Account = 1,
+  Document = 2,
   ControlCenter = 3,
-  Order         = 4,
+  Order = 4,
 }
 
 /**
@@ -78,10 +78,10 @@ export enum AccountStatusEnum {
  * Repayment method
  */
 export enum RepaymentMethodEnum {
-  EqualPrincipalAndInterset = 1,  // Equal principal & interest
-  EqualPrincipal            = 2,  // Equal principal
-  DueRepayment              = 3,  // Due repayment
-  Informal                  = 4,  // Informal
+  EqualPrincipalAndInterset = 1, // Equal principal & interest
+  EqualPrincipal = 2, // Equal principal
+  DueRepayment = 3, // Due repayment
+  Informal = 4, // Informal
 }
 
 /**
@@ -192,16 +192,36 @@ export class AccountCategory extends hih.BaseModel {
   private _assetFlag = false;
   private _comment: string | null = null;
 
-  get ID(): number | null          { return this._id;        }
-  set ID(id: number | null)        { this._id = id;          }
-  get HID(): number  | null        { return this._hid;       }
-  set HID(hid: number | null)      { this._hid = hid;        }
-  get Name(): string | null        { return this._name;      }
-  set Name(nm: string | null)      { this._name = nm;        }
-  get AssetFlag(): boolean         { return this._assetFlag; }
-  set AssetFlag(af: boolean)       { this._assetFlag = af;   }
-  get Comment(): string | null     { return this._comment;   }
-  set Comment(cmt: string | null)  { this._comment = cmt;    }
+  get ID(): number | null {
+    return this._id;
+  }
+  set ID(id: number | null) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string | null {
+    return this._name;
+  }
+  set Name(nm: string | null) {
+    this._name = nm;
+  }
+  get AssetFlag(): boolean {
+    return this._assetFlag;
+  }
+  set AssetFlag(af: boolean) {
+    this._assetFlag = af;
+  }
+  get Comment(): string | null {
+    return this._comment;
+  }
+  set Comment(cmt: string | null) {
+    this._comment = cmt;
+  }
 
   constructor() {
     super();
@@ -275,14 +295,30 @@ export class DocumentType extends hih.BaseModel {
   private _name: string | null = null;
   private _comment: string | null = null;
 
-  get HID(): number | null       { return this._hid;   }
-  set HID(homeid: number | null) { this._hid = homeid; }
-  get Id(): number | null        { return this._id;    }
-  set Id(tid: number | null)     { this._id = tid;     }
-  get Name(): string | null      { return this._name;  }
-  set Name(tname: string | null) { this._name = tname; }
-  get Comment(): string | null   { return this._comment; }
-  set Comment(cmt: string | null){ this._comment = cmt;  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(homeid: number | null) {
+    this._hid = homeid;
+  }
+  get Id(): number | null {
+    return this._id;
+  }
+  set Id(tid: number | null) {
+    this._id = tid;
+  }
+  get Name(): string | null {
+    return this._name;
+  }
+  set Name(tname: string | null) {
+    this._name = tname;
+  }
+  get Comment(): string | null {
+    return this._comment;
+  }
+  set Comment(cmt: string | null) {
+    this._comment = cmt;
+  }
 
   constructor() {
     super();
@@ -350,14 +386,30 @@ export class AssetCategory extends hih.BaseModel {
   private _name: string | null = null;
   private _desp: string | null = null;
 
-  get ID(): number | null     { return this._id;      }
-  set ID(id: number | null)   { this._id = id;        }
-  get HID(): number | null    { return this._hid;     }
-  set HID(hid: number | null) { this._hid = hid;      }
-  get Name(): string | null   { return this._name;    }
-  set Name(nm: string | null) { this._name = nm;      }
-  get Desp(): string | null   { return this._desp;    }
-  set Desp(cmt: string | null) {  this._desp = cmt;   }
+  get ID(): number | null {
+    return this._id;
+  }
+  set ID(id: number | null) {
+    this._id = id;
+  }
+  get HID(): number | null {
+    return this._hid;
+  }
+  set HID(hid: number | null) {
+    this._hid = hid;
+  }
+  get Name(): string | null {
+    return this._name;
+  }
+  set Name(nm: string | null) {
+    this._name = nm;
+  }
+  get Desp(): string | null {
+    return this._desp;
+  }
+  set Desp(cmt: string | null) {
+    this._desp = cmt;
+  }
 
   constructor() {
     super();
@@ -432,11 +484,10 @@ export abstract class AccountExtra {
   public writeJSONObject(): AccountExtraBaseJson {
     if (this.accountID) {
       return {
-        AccountID: this.accountID
+        AccountID: this.accountID,
       };
     }
-    return {
-    };
+    return {};
   }
   public onInit(): void {
     // Empty
@@ -475,18 +526,42 @@ export class Account extends hih.BaseModel {
   private _comment?: string;
   private _ownerid?: string;
 
-  get Id(): number | undefined        { return this._id;    }
-  set Id(id: number | undefined)      { this._id = id;      }
-  get HID(): number | undefined       { return this._hid;   }
-  set HID(hid: number | undefined)    { this._hid = hid;    }
-  get CategoryId(): number | undefined    { return this._ctgyid;  }
-  set CategoryId(cid: number | undefined) { this._ctgyid = cid;   }
-  get Name(): string | undefined      { return this._name;        }
-  set Name(name: string | undefined)  { this._name = name;        }
-  get Comment(): string | undefined   { return this._comment;     }
-  set Comment(cmt: string | undefined)    { this._comment = cmt;  }
-  get OwnerId(): string | undefined   { return this._ownerid;     }
-  set OwnerId(oid: string | undefined)    { this._ownerid = oid;  }
+  get Id(): number | undefined {
+    return this._id;
+  }
+  set Id(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get CategoryId(): number | undefined {
+    return this._ctgyid;
+  }
+  set CategoryId(cid: number | undefined) {
+    this._ctgyid = cid;
+  }
+  get Name(): string | undefined {
+    return this._name;
+  }
+  set Name(name: string | undefined) {
+    this._name = name;
+  }
+  get Comment(): string | undefined {
+    return this._comment;
+  }
+  set Comment(cmt: string | undefined) {
+    this._comment = cmt;
+  }
+  get OwnerId(): string | undefined {
+    return this._ownerid;
+  }
+  set OwnerId(oid: string | undefined) {
+    this._ownerid = oid;
+  }
 
   public Status: AccountStatusEnum;
   public CategoryName?: string;
@@ -512,22 +587,34 @@ export class Account extends hih.BaseModel {
 
     if (brst) {
       if (!this.HID) {
-        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.HIDIsMust",
+          "Common.HIDIsMust"
+        );
         brst = false;
       }
-  
+
       // Name
       if (this.Name) {
         this.Name = this.Name.trim();
       }
       if (!this.Name) {
-        this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.NameIsMust",
+          "Common.NameIsMust"
+        );
         brst = false;
       }
-  
+
       // Category
       if (this.CategoryId) {
-        if (context && context.Categories instanceof Array && context.Categories.length > 0) {
+        if (
+          context &&
+          context.Categories instanceof Array &&
+          context.Categories.length > 0
+        ) {
           let bCategory = false;
           for (const ctgy of context.Categories) {
             if (+ctgy.ID! === +this.CategoryId) {
@@ -535,25 +622,37 @@ export class Account extends hih.BaseModel {
               break;
             }
           }
-  
+
           if (!bCategory) {
-            this._addMessage(hih.MessageType.Error, 'Common.InvalidCategory', 'Common.InputtedCategoryIsInvalid');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Common.InvalidCategory",
+              "Common.InputtedCategoryIsInvalid"
+            );
             brst = false;
           }
         } else {
-          this._addMessage(hih.MessageType.Error, 'Common.CategoryFetchFailedOrNoOne', 'Common.CategoryFetchFailedOrNoOne');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Common.CategoryFetchFailedOrNoOne",
+            "Common.CategoryFetchFailedOrNoOne"
+          );
           brst = false;
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.CategoryIsMust', 'Common.CategoryIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.CategoryIsMust",
+          "Common.CategoryIsMust"
+        );
         brst = false;
       }
-  
+
       // Status
       // TBD.
-  
+
       // Extra
-      // TBD.  
+      // TBD.
     }
 
     return brst;
@@ -570,14 +669,26 @@ export class Account extends hih.BaseModel {
     rstObj.Comment = this.Comment;
     rstObj.Owner = this.OwnerId;
 
-    if ((this.CategoryId === financeAccountCategoryAdvancePayment
-      || this.CategoryId === financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
+    if (
+      (this.CategoryId === financeAccountCategoryAdvancePayment ||
+        this.CategoryId === financeAccountCategoryAdvanceReceived) &&
+      this.ExtraInfo
+    ) {
       rstObj.ExtraDP = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === financeAccountCategoryAsset && this.ExtraInfo) {
+    } else if (
+      this.CategoryId === financeAccountCategoryAsset &&
+      this.ExtraInfo
+    ) {
       rstObj.ExtraAsset = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === financeAccountCategoryBorrowFrom && this.ExtraInfo) {
+    } else if (
+      this.CategoryId === financeAccountCategoryBorrowFrom &&
+      this.ExtraInfo
+    ) {
       rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === financeAccountCategoryLendTo && this.ExtraInfo) {
+    } else if (
+      this.CategoryId === financeAccountCategoryLendTo &&
+      this.ExtraInfo
+    ) {
       rstObj.ExtraLoan = this.ExtraInfo.writeJSONObject();
     }
 
@@ -606,26 +717,38 @@ export class Account extends hih.BaseModel {
       this.OwnerId = data.Owner;
     }
     if (data && data.Status) {
-      if (typeof data.Status === 'string') {
-        this.Status = AccountStatusEnum[data.Status as keyof typeof AccountStatusEnum];
-      } else if (typeof data.Status === 'number') {
+      if (typeof data.Status === "string") {
+        this.Status =
+          AccountStatusEnum[data.Status as keyof typeof AccountStatusEnum];
+      } else if (typeof data.Status === "number") {
         this.Status = data.Status as AccountStatusEnum;
       }
     }
 
-    if (data && this.CategoryId === financeAccountCategoryAdvancePayment && data.ExtraDP) {
+    if (
+      data &&
+      this.CategoryId === financeAccountCategoryAdvancePayment &&
+      data.ExtraDP
+    ) {
       const ei: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       ei.onSetData(data.ExtraDP);
 
       this.ExtraInfo = ei;
-    } else if (data && this.CategoryId === financeAccountCategoryAsset && data.ExtraAsset) {
+    } else if (
+      data &&
+      this.CategoryId === financeAccountCategoryAsset &&
+      data.ExtraAsset
+    ) {
       const ei: AccountExtraAsset = new AccountExtraAsset();
       ei.onSetData(data.ExtraAsset);
 
       this.ExtraInfo = ei;
-    } else if (data
-      && (this.CategoryId === financeAccountCategoryBorrowFrom || this.CategoryId === financeAccountCategoryLendTo)
-      && data.ExtraLoan) {
+    } else if (
+      data &&
+      (this.CategoryId === financeAccountCategoryBorrowFrom ||
+        this.CategoryId === financeAccountCategoryLendTo) &&
+      data.ExtraLoan
+    ) {
       const ei: AccountExtraLoan = new AccountExtraLoan();
       ei.onSetData(data.ExtraLoan);
 
@@ -678,34 +801,50 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
   private _refDocId: number | null = null;
-  private _comment: string = '';
-  public Direct: boolean = false;
+  private _comment = "";
+  public Direct = false;
   public RepeatType: hih.RepeatFrequencyEnum | null = null;
   public DeferredDays: number | null = null;
   public dpTmpDocs: TemplateDocADP[] = [];
 
-  get StartDate(): moment.Moment      { return this._startDate;           }
-  set StartDate(sd: moment.Moment)    { this._startDate = sd;             }
-  get EndDate(): moment.Moment        { return this._endDate;             }
-  set EndDate(ed: moment.Moment)      { this._endDate = ed;               }
-  get RefDocId(): number | null       { return this._refDocId;            }
-  set RefDocId(rdocid: number | null) { this._refDocId = rdocid;          }
-  get Comment(): string               { return this._comment;             }
-  set Comment(cmt: string)            { this._comment = cmt;              }
+  get StartDate(): moment.Moment {
+    return this._startDate;
+  }
+  set StartDate(sd: moment.Moment) {
+    this._startDate = sd;
+  }
+  get EndDate(): moment.Moment {
+    return this._endDate;
+  }
+  set EndDate(ed: moment.Moment) {
+    this._endDate = ed;
+  }
+  get RefDocId(): number | null {
+    return this._refDocId;
+  }
+  set RefDocId(rdocid: number | null) {
+    this._refDocId = rdocid;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
 
   constructor() {
     super();
 
     this._startDate = moment();
-    this._endDate = moment().add(1, 'y');
+    this._endDate = moment().add(1, "y");
   }
 
   public override onInit(): void {
     super.onInit();
 
     this._startDate = moment();
-    this._endDate = moment().add(1, 'y');
-    this._comment = '';
+    this._endDate = moment().add(1, "y");
+    this._comment = "";
     this.RepeatType = null;
     this.dpTmpDocs = [];
     this.DeferredDays = null;
@@ -713,7 +852,12 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   }
 
   get isAccountValid(): boolean {
-    if (!this.StartDate || !this.EndDate || !this.StartDate.isValid || !this.EndDate.isValid) {
+    if (
+      !this.StartDate ||
+      !this.EndDate ||
+      !this.StartDate.isValid ||
+      !this.EndDate.isValid
+    ) {
       return false;
     }
     if (this.StartDate.isSameOrAfter(this.EndDate)) {
@@ -827,8 +971,8 @@ export interface AccountExtraAssetJson extends AccountExtraBaseJson {
  * Extra info: Asset
  */
 export class AccountExtraAsset extends AccountExtra {
-  private _name: string = '';
-  private _comment: string = '';
+  private _name = "";
+  private _comment = "";
   public CategoryID: number | null = null;
   public BoughtDate: moment.Moment | null = null;
   public ExpiredDate: moment.Moment | null = null;
@@ -836,18 +980,26 @@ export class AccountExtraAsset extends AccountExtra {
   public RefDocForBuy: number | null = null;
   public RefDocForSold: number | null = null;
 
-  get Name(): string        { return this._name;      }
-  set Name(name: string)    { this._name = name;      }
-  get Comment(): string     { return this._comment;   }
-  set Comment(cmt: string)  { this._comment = cmt;    }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
   constructor() {
     super();
-  }  
+  }
 
   public override onInit(): void {
     super.onInit();
-    this._name = '';
-    this._comment = '';
+    this._name = "";
+    this._comment = "";
     this.CategoryID = null;
     this.BoughtDate = null;
     this.ExpiredDate = null;
@@ -953,47 +1105,85 @@ export class AccountExtraLoan extends AccountExtra {
   private _partner: string | null = null;
   private _interestFree: boolean | null = null;
   private _totalMonths: number | null = null;
-  private _comment: string = '';
+  private _comment = "";
   private _firstRepayDate: moment.Moment | null = null;
   private _repayDayInMonth: number | null = null;
   public RepayMethod: RepaymentMethodEnum = RepaymentMethodEnum.DueRepayment;
   public RefDocId: number | null = null;
   public loanTmpDocs: TemplateDocLoan[] = [];
 
-  get startDate(): moment.Moment | null       { return this._startDate;     }
-  set startDate(sd: moment.Moment | null)     { this._startDate = sd;       }
-  get StartDateFormatString(): string | null  { 
+  get startDate(): moment.Moment | null {
+    return this._startDate;
+  }
+  set startDate(sd: moment.Moment | null) {
+    this._startDate = sd;
+  }
+  get StartDateFormatString(): string | null {
     if (this._startDate !== null) {
       return this._startDate!.format(hih.momentDateFormat);
     }
     return null;
   }
-  get endDate(): moment.Moment | null         { return this._endDate;       }
-  set endDate(ed: moment.Moment | null)       { this._endDate = ed;         }
+  get endDate(): moment.Moment | null {
+    return this._endDate;
+  }
+  set endDate(ed: moment.Moment | null) {
+    this._endDate = ed;
+  }
   get EndDateFormatString(): string | null {
     if (this._endDate !== null) {
       return this._endDate.format(hih.momentDateFormat);
     }
     return null;
   }
-  get annualRate(): number | null             { return this._annualRate;    }
-  set annualRate(ar: number | null)           { this._annualRate = ar;      }
-  get PayingAccount(): number | null          { return this._payingAccount; }
-  set PayingAccount(paid: number | null)      { this._payingAccount = paid; }
-  get Partner(): string | null                { return this._partner;       }
-  set Partner(ptner: string | null)           { this._partner = ptner;      }
-  get InterestFree(): boolean | null          { return this._interestFree;  }
-  set InterestFree(ifree: boolean | null)     { this._interestFree = ifree; }
-  get TotalMonths(): number | null            { return this._totalMonths;   }
-  set TotalMonths(tmon: number | null)        { this._totalMonths = tmon;   }
-  get Comment(): string                       { return this._comment;       }
-  set Comment(cmt: string)                    { this._comment = cmt;        }
-  get FirstRepayDate(): moment.Moment | null  { return this._firstRepayDate; }
+  get annualRate(): number | null {
+    return this._annualRate;
+  }
+  set annualRate(ar: number | null) {
+    this._annualRate = ar;
+  }
+  get PayingAccount(): number | null {
+    return this._payingAccount;
+  }
+  set PayingAccount(paid: number | null) {
+    this._payingAccount = paid;
+  }
+  get Partner(): string | null {
+    return this._partner;
+  }
+  set Partner(ptner: string | null) {
+    this._partner = ptner;
+  }
+  get InterestFree(): boolean | null {
+    return this._interestFree;
+  }
+  set InterestFree(ifree: boolean | null) {
+    this._interestFree = ifree;
+  }
+  get TotalMonths(): number | null {
+    return this._totalMonths;
+  }
+  set TotalMonths(tmon: number | null) {
+    this._totalMonths = tmon;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
+  get FirstRepayDate(): moment.Moment | null {
+    return this._firstRepayDate;
+  }
   set FirstRepayDate(firstdate: moment.Moment | null) {
     this._firstRepayDate = firstdate;
   }
-  get RepayDayInMonth(): number | null        { return this._repayDayInMonth;}
-  set RepayDayInMonth(rdim: number | null)    { this._repayDayInMonth = rdim;}
+  get RepayDayInMonth(): number | null {
+    return this._repayDayInMonth;
+  }
+  set RepayDayInMonth(rdim: number | null) {
+    this._repayDayInMonth = rdim;
+  }
 
   get isAccountValid(): boolean {
     if (this.startDate === undefined || this.startDate === null) {
@@ -1007,12 +1197,14 @@ export class AccountExtraLoan extends AccountExtra {
       return false;
     }
     if (!this.InterestFree) {
-      if (this.annualRate === null ||  this.annualRate < 0) {
+      if (this.annualRate === null || this.annualRate < 0) {
         return false;
       }
     }
-    if (this.RepayMethod === RepaymentMethodEnum.EqualPrincipal
-      || this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset) {
+    if (
+      this.RepayMethod === RepaymentMethodEnum.EqualPrincipal ||
+      this.RepayMethod === RepaymentMethodEnum.EqualPrincipalAndInterset
+    ) {
       if (this.TotalMonths === null || this.TotalMonths <= 0) {
         return false;
       }
@@ -1036,8 +1228,8 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
     if (this.FirstRepayDate) {
-      const bgndate = this.startDate.add(30, 'days');
-      const enddate = this.startDate.add(60, 'days');
+      const bgndate = this.startDate.add(30, "days");
+      const enddate = this.startDate.add(60, "days");
       if (!this.FirstRepayDate.isBetween(bgndate, enddate)) {
         return false;
       }
@@ -1090,7 +1282,8 @@ export class AccountExtraLoan extends AccountExtra {
   }
 
   public override writeJSONObject(): AccountExtraLoanJson {
-    const rstobj: AccountExtraLoanJson = super.writeJSONObject() as AccountExtraLoanJson;
+    const rstobj: AccountExtraLoanJson =
+      super.writeJSONObject() as AccountExtraLoanJson;
     rstobj.StartDate = this._startDate!.format(hih.momentDateFormat);
     if (this._endDate) {
       rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
@@ -1103,7 +1296,7 @@ export class AccountExtraLoan extends AccountExtra {
     }
     if (this.TotalMonths) {
       rstobj.TotalMonths = this.TotalMonths;
-    }    
+    }
     rstobj.RepaymentMethod = +this.RepayMethod;
     if (this.RefDocId) {
       rstobj.RefDocID = this.RefDocId;
@@ -1221,23 +1414,47 @@ export interface ControlCenterJson extends hih.BaseModelJson {
 export class ControlCenter extends hih.BaseModel {
   private _id?: number;
   private _hid?: number;
-  private _name: string = '';
-  private _comment: string = '';
-  private _owner: string = '';
+  private _name = "";
+  private _comment = "";
+  private _owner = "";
   private _parid?: number;
 
-  get Id(): number | undefined            { return this._id;              }
-  set Id(id: number | undefined)          { this._id = id;                }
-  get HID(): number | undefined           { return this._hid;             }
-  set HID(hid: number | undefined)        { this._hid = hid;              }
-  get Name(): string                      { return this._name;            }
-  set Name(name: string)                  { this._name = name;            }
-  get Comment(): string                   { return this._comment;         }
-  set Comment(cmt: string)                { this._comment = cmt;          }
-  get Owner(): string                     { return this._owner;           }
-  set Owner(owner: string)                { this._owner = owner;          }
-  get ParentId(): number | undefined      { return this._parid;           }
-  set ParentId(pid: number | undefined)   { this._parid = pid;            }
+  get Id(): number | undefined {
+    return this._id;
+  }
+  set Id(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
+  get Owner(): string {
+    return this._owner;
+  }
+  set Owner(owner: string) {
+    this._owner = owner;
+  }
+  get ParentId(): number | undefined {
+    return this._parid;
+  }
+  set ParentId(pid: number | undefined) {
+    this._parid = pid;
+  }
 
   constructor() {
     super();
@@ -1247,11 +1464,11 @@ export class ControlCenter extends hih.BaseModel {
 
   public override onInit(): void {
     super.onInit();
-    this._name = '';
+    this._name = "";
     this._hid = undefined;
     this._id = undefined;
-    this._comment = '';
-    this._owner = '';
+    this._comment = "";
+    this._owner = "";
 
     this._parid = undefined;
   }
@@ -1261,7 +1478,11 @@ export class ControlCenter extends hih.BaseModel {
     if (bRst) {
       // HID
       if (!this.HID) {
-        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.HIDIsMust",
+          "Common.HIDIsMust"
+        );
         bRst = false;
       }
 
@@ -1271,22 +1492,39 @@ export class ControlCenter extends hih.BaseModel {
       if (this.Name && this.Name.length > 0) {
         // Empty
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidName', 'Common.NameIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidName",
+          "Common.NameIsMust"
+        );
         bRst = false;
       }
       // Parent
       if (this.ParentId) {
-        if (context && context.ControlCenters instanceof Array
-          && context.ControlCenters.length > 0) {
-          const pidx: number = context.ControlCenters.findIndex((val: ControlCenter) => {
-            return val.Id === this.ParentId;
-          });
+        if (
+          context &&
+          context.ControlCenters instanceof Array &&
+          context.ControlCenters.length > 0
+        ) {
+          const pidx: number = context.ControlCenters.findIndex(
+            (val: ControlCenter) => {
+              return val.Id === this.ParentId;
+            }
+          );
           if (pidx === -1) {
-            this._addMessage(hih.MessageType.Error, 'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidControlCenter",
+              "Finance.InvalidControlCenter"
+            );
             bRst = false;
           }
         } else {
-          this._addMessage(hih.MessageType.Error, 'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.ControlCenterFetchFailedOrNoCC",
+            "Finance.ControlCenterFetchFailedOrNoCC"
+          );
           bRst = false;
         }
       }
@@ -1359,28 +1597,52 @@ export interface OrderJson extends hih.BaseModelJson {
 export class Order extends hih.BaseModel {
   private _id?: number;
   private _hid?: number;
-  private _name: string = '';
-  private _cmt: string = '';
+  private _name = "";
+  private _cmt = "";
   private _validFrom?: moment.Moment;
   private _validTo?: moment.Moment;
 
-  get Id(): number | undefined        { return this._id;              }
-  set Id(id: number | undefined)      { this._id = id;                }
-  get HID(): number | undefined       { return this._hid;             }
-  set HID(hid: number | undefined)    { this._hid = hid;              }
-  get Name(): string                  { return this._name;            }
-  set Name(name: string)              { this._name = name;            }
-  get Comment(): string               { return this._cmt;             }
-  set Comment(cmt: string)            { this._cmt = cmt;              }
-  get ValidFrom(): moment.Moment | undefined     { return this._validFrom;       }
-  set ValidFrom(vf: moment.Moment | undefined)   { this._validFrom = vf;         }
-  get ValidTo(): moment.Moment | undefined       { return this._validTo;         }
-  set ValidTo(vt: moment.Moment | undefined)     { this._validTo = vt;           }
-  get ValidFromFormatString(): string {
-    return this._validFrom ? this._validFrom.format(hih.momentDateFormat) : '';
+  get Id(): number | undefined {
+    return this._id;
   }
-  get ValidToFormatString(): string   {
-    return this._validTo ? this._validTo.format(hih.momentDateFormat) : '';
+  set Id(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(cmt: string) {
+    this._cmt = cmt;
+  }
+  get ValidFrom(): moment.Moment | undefined {
+    return this._validFrom;
+  }
+  set ValidFrom(vf: moment.Moment | undefined) {
+    this._validFrom = vf;
+  }
+  get ValidTo(): moment.Moment | undefined {
+    return this._validTo;
+  }
+  set ValidTo(vt: moment.Moment | undefined) {
+    this._validTo = vt;
+  }
+  get ValidFromFormatString(): string {
+    return this._validFrom ? this._validFrom.format(hih.momentDateFormat) : "";
+  }
+  get ValidToFormatString(): string {
+    return this._validTo ? this._validTo.format(hih.momentDateFormat) : "";
   }
 
   public SRules: SettlementRule[] = [];
@@ -1394,11 +1656,11 @@ export class Order extends hih.BaseModel {
   public override onInit(): void {
     super.onInit();
     this._id = undefined;
-    this._name = '';
-    this._cmt = '';
+    this._name = "";
+    this._cmt = "";
 
     this._validFrom = moment();
-    this._validTo = this._validFrom.clone().add(1, 'M');
+    this._validTo = this._validFrom.clone().add(1, "M");
     this.SRules = [];
   }
 
@@ -1407,7 +1669,11 @@ export class Order extends hih.BaseModel {
     if (chkrst) {
       // HID
       if (!this.HID) {
-        this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.HIDIsMust",
+          "Common.HIDIsMust"
+        );
         chkrst = false;
       }
       // Name
@@ -1417,28 +1683,48 @@ export class Order extends hih.BaseModel {
       if (this.Name && this.Name.length > 0) {
         // Allowed
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.NameIsMust",
+          "Common.NameIsMust"
+        );
         chkrst = false;
       }
       // Valid from
       if (this.ValidFrom) {
         // Allowed
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidFrom', 'Common.ValidFromIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidValidFrom",
+          "Common.ValidFromIsMust"
+        );
         chkrst = false;
       }
       // Valid to
       if (this.ValidTo) {
         // Allowed
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidTo', 'Common.ValidToIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidValidTo",
+          "Common.ValidToIsMust"
+        );
         chkrst = false;
       }
       // Valid to > valid from
-      if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
+      if (
+        this.ValidTo &&
+        this.ValidFrom &&
+        this.ValidTo.startOf("day").isAfter(this.ValidFrom.startOf("day"))
+      ) {
         // Allowed
       } else {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidValidRange",
+          "Common.ValidToMustLaterThanValidFrom"
+        );
         chkrst = false;
       }
 
@@ -1452,7 +1738,11 @@ export class Order extends hih.BaseModel {
           }
         });
         if (idMap.size !== this.SRules.length) {
-          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Common.DuplicatedID",
+            "Common.DuplicatedID"
+          );
           chkrst = false;
         }
 
@@ -1464,7 +1754,11 @@ export class Order extends hih.BaseModel {
           }
         });
         if (idMap.size !== this.SRules.length) {
-          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Common.DuplicatedID",
+            "Common.DuplicatedID"
+          );
           chkrst = false;
         }
 
@@ -1482,11 +1776,19 @@ export class Order extends hih.BaseModel {
         }
 
         if (ntotal !== 100) {
-          this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.SettlementRulePrecentSumNotCorrect');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.InvalidSettlementRule",
+            "Finance.SettlementRulePrecentSumNotCorrect"
+          );
           chkrst = false;
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.NoSettlementRule');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.InvalidSettlementRule",
+          "Finance.NoSettlementRule"
+        );
         chkrst = false;
       }
     }
@@ -1558,21 +1860,41 @@ export interface SettlementRuleJson {
  */
 export class SettlementRule {
   private _orderid?: number;
-  private _ruleid: number = 0;
+  private _ruleid = 0;
   private _ccid?: number;
-  private _precent: number = 0;
-  private _cmt: string = '';
+  private _precent = 0;
+  private _cmt = "";
 
-  get OrdId(): number | undefined               { return this._orderid;       }
-  set OrdId(oi: number | undefined)             { this._orderid = oi;         }
-  get RuleId(): number                          { return this._ruleid;        }
-  set RuleId(rid: number)                       { this._ruleid = rid;         }
-  get ControlCenterId(): number | undefined     { return this._ccid;          }
-  set ControlCenterId(cid: number | undefined)  { this._ccid = cid;           }
-  get Precent(): number                         { return this._precent;       }
-  set Precent(precent: number)                  { this._precent = precent;    }
-  get Comment(): string                         { return this._cmt;           }
-  set Comment(cmt: string)                      { this._cmt = cmt;            }
+  get OrdId(): number | undefined {
+    return this._orderid;
+  }
+  set OrdId(oi: number | undefined) {
+    this._orderid = oi;
+  }
+  get RuleId(): number {
+    return this._ruleid;
+  }
+  set RuleId(rid: number) {
+    this._ruleid = rid;
+  }
+  get ControlCenterId(): number | undefined {
+    return this._ccid;
+  }
+  set ControlCenterId(cid: number | undefined) {
+    this._ccid = cid;
+  }
+  get Precent(): number {
+    return this._precent;
+  }
+  set Precent(precent: number) {
+    this._precent = precent;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(cmt: string) {
+    this._cmt = cmt;
+  }
 
   public VerifiedMsgs: hih.InfoMessage[] = [];
 
@@ -1587,28 +1909,43 @@ export class SettlementRule {
 
     // ID
     if (this.RuleId <= 0) {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.InvalidRuleID', 'Finance.InvalidRuleID');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.InvalidRuleID",
+        "Finance.InvalidRuleID"
+      );
       this.VerifiedMsgs.push(msg);
       brst = false;
     }
 
     // Control center
-    if (context !== undefined && context.ControlCenters && context.ControlCenters.length > 0) {
-      if (context.ControlCenters.findIndex((value: any) => {
-        return value.Id === this.ControlCenterId;
-      }) !== -1) {
+    if (
+      context !== undefined &&
+      context.ControlCenters &&
+      context.ControlCenters.length > 0
+    ) {
+      if (
+        context.ControlCenters.findIndex((value: any) => {
+          return value.Id === this.ControlCenterId;
+        }) !== -1
+      ) {
         // Allowed
       } else {
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.InvalidControlCenter",
+          "Finance.InvalidControlCenter"
+        );
         this.VerifiedMsgs.push(msg);
         brst = false;
       }
     } else {
       if (!this.ControlCenterId) {
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.InvalidControlCenter",
+          "Finance.InvalidControlCenter"
+        );
         this.VerifiedMsgs.push(msg);
         brst = false;
       }
@@ -1616,8 +1953,11 @@ export class SettlementRule {
 
     // Precent
     if (this.Precent <= 0 || this.Precent > 100) {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.InvalidPrecent', 'Finance.InvalidPrecent');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.InvalidPrecent",
+        "Finance.InvalidPrecent"
+      );
       this.VerifiedMsgs.push(msg);
       brst = false;
     }
@@ -1626,7 +1966,7 @@ export class SettlementRule {
   }
 
   public writeJSONObject(): SettlementRuleJson {
-    const rstObj: any = { };
+    const rstObj: any = {};
     rstObj.RuleID = this.RuleId;
     rstObj.ControlCenterID = this.ControlCenterId;
     rstObj.Precent = this.Precent;
@@ -1653,8 +1993,8 @@ export class SettlementRule {
 }
 
 export enum TranTypeLevelEnum {
-  TopLevel    = 0,
-  FirstLevel  = 1,
+  TopLevel = 0,
+  FirstLevel = 1,
   SecondLevel = 2,
 }
 
@@ -1673,27 +2013,51 @@ export interface TranTypeJson extends hih.BaseModelJson {
 export class TranType extends hih.BaseModel {
   private _id?: number;
   private _hid?: number;
-  private _name: string = '';
-  private _expense: boolean = false;
+  private _name = "";
+  private _expense = false;
   private _parid?: number;
-  private _cmt: string = '';
+  private _cmt = "";
 
-  get Id(): number | undefined        { return this._id;        }
-  set Id(id: number | undefined)      { this._id = id;          }
-  get HID(): number | undefined       { return this._hid;       }
-  set HID(hid: number | undefined)    { this._hid = hid;        }
-  get Name(): string                  { return this._name;      }
-  set Name(name: string)              { this._name = name;      }
-  get Expense(): boolean              { return this._expense;   }
-  set Expense(exp: boolean)           { this._expense = exp;    }
-  get ParId(): number | undefined     { return this._parid;     }
-  set ParId(pid: number | undefined)  { this._parid = pid;      }
-  get Comment(): string               { return this._cmt;       }
-  set Comment(cmt: string)            { this._cmt = cmt;        }
+  get Id(): number | undefined {
+    return this._id;
+  }
+  set Id(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Expense(): boolean {
+    return this._expense;
+  }
+  set Expense(exp: boolean) {
+    this._expense = exp;
+  }
+  get ParId(): number | undefined {
+    return this._parid;
+  }
+  set ParId(pid: number | undefined) {
+    this._parid = pid;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(cmt: string) {
+    this._cmt = cmt;
+  }
 
   // For UI display
   public HierLevel: TranTypeLevelEnum = TranTypeLevelEnum.TopLevel;
-  public FullDisplayText: string = '';
+  public FullDisplayText = "";
 
   constructor() {
     super();
@@ -1792,36 +2156,80 @@ export class Document extends hih.BaseModel {
   private _tranDate: moment.Moment = moment();
   private _hid?: number;
   private _doctype?: number;
-  private _trancurr: string = '';
-  private _desp: string = '';
+  private _trancurr = "";
+  private _desp = "";
   private _exgrate?: number;
   private _exgratePlan?: boolean;
   private _trancurr2?: string;
   private _exgrate2?: number;
   private _exgrate2Plan?: boolean;
 
-  get Id(): number | undefined                      { return this._id;            }
-  set Id(id: number | undefined)                    { this._id = id;              }
-  get HID(): number | undefined                     { return this._hid;           }
-  set HID(hid: number | undefined)                  { this._hid = hid;            }
-  get DocType(): number | undefined                 { return this._doctype;       }
-  set DocType(dt: number | undefined)               { this._doctype = dt;         }
-  get TranCurr(): string                            { return this._trancurr;      }
-  set TranCurr(curr: string)                        { this._trancurr = curr;      }
-  get Desp(): string                                { return this._desp;          }
-  set Desp(desp: string)                            { this._desp = desp;          }
-  get ExgRate(): number | undefined                 { return this._exgrate;       }
-  set ExgRate(exg: number | undefined)              { this._exgrate = exg;        }
-  get ExgRate_Plan(): boolean | undefined           { return this._exgratePlan;   }
-  set ExgRate_Plan(plan: boolean | undefined)       { this._exgratePlan = plan;   }
-  get TranCurr2(): string | undefined               { return this._trancurr2;     }
-  set TranCurr2(cr: string | undefined)             { this._trancurr2 = cr;       }
-  get ExgRate2(): number | undefined                { return this._exgrate2;      }
-  set ExgRate2(eg2: number | undefined)             { this._exgrate2 = eg2;       }
-  get ExgRate_Plan2(): boolean | undefined          { return this._exgrate2Plan;  }
-  set ExgRate_Plan2(pl: boolean | undefined)        { this._exgrate2Plan = pl;    }
-  get TranDate(): moment.Moment                     { return this._tranDate;      }
-  set TranDate(td: moment.Moment)                   { this._tranDate = td;        }
+  get Id(): number | undefined {
+    return this._id;
+  }
+  set Id(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get DocType(): number | undefined {
+    return this._doctype;
+  }
+  set DocType(dt: number | undefined) {
+    this._doctype = dt;
+  }
+  get TranCurr(): string {
+    return this._trancurr;
+  }
+  set TranCurr(curr: string) {
+    this._trancurr = curr;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(desp: string) {
+    this._desp = desp;
+  }
+  get ExgRate(): number | undefined {
+    return this._exgrate;
+  }
+  set ExgRate(exg: number | undefined) {
+    this._exgrate = exg;
+  }
+  get ExgRate_Plan(): boolean | undefined {
+    return this._exgratePlan;
+  }
+  set ExgRate_Plan(plan: boolean | undefined) {
+    this._exgratePlan = plan;
+  }
+  get TranCurr2(): string | undefined {
+    return this._trancurr2;
+  }
+  set TranCurr2(cr: string | undefined) {
+    this._trancurr2 = cr;
+  }
+  get ExgRate2(): number | undefined {
+    return this._exgrate2;
+  }
+  set ExgRate2(eg2: number | undefined) {
+    this._exgrate2 = eg2;
+  }
+  get ExgRate_Plan2(): boolean | undefined {
+    return this._exgrate2Plan;
+  }
+  set ExgRate_Plan2(pl: boolean | undefined) {
+    this._exgrate2Plan = pl;
+  }
+  get TranDate(): moment.Moment {
+    return this._tranDate;
+  }
+  set TranDate(td: moment.Moment) {
+    this._tranDate = td;
+  }
 
   public Items: DocumentItem[] = [];
 
@@ -1844,44 +2252,78 @@ export class Document extends hih.BaseModel {
     if (chkrst) {
       // HID
       if (!this.HID) {
-        this._addMessage(hih.MessageType.Error, 'Finance.HIDIsMust', 'Finance.HIDIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.HIDIsMust",
+          "Finance.HIDIsMust"
+        );
         chkrst = false;
       }
       // Doc type
-      if (context && context.DocumentTypes
-        && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
+      if (
+        context &&
+        context.DocumentTypes &&
+        context.DocumentTypes instanceof Array &&
+        context.DocumentTypes.length > 0
+      ) {
         if (this.DocType !== undefined) {
-          const dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
-            return dt.Id === this.DocType;
-          });
+          const dtidx: number = context.DocumentTypes.findIndex(
+            (dt: DocumentType) => {
+              return dt.Id === this.DocType;
+            }
+          );
 
           if (dtidx === -1) {
-            this._addMessage(hih.MessageType.Error, 'Finance.InvalidDocumentType', 'Finance.InvalidDocumentType');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidDocumentType",
+              "Finance.InvalidDocumentType"
+            );
             chkrst = false;
           }
         } else {
-          this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeIsMust', 'Finance.DocumentTypeIsMust');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.DocumentTypeIsMust",
+            "Finance.DocumentTypeIsMust"
+          );
           chkrst = false;
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeFetchFailed', 'Finance.DocumentTypeFetchFailed');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.DocumentTypeFetchFailed",
+          "Finance.DocumentTypeFetchFailed"
+        );
         chkrst = false;
       }
       // Desp
       if (!this.Desp) {
-        this._addMessage(hih.MessageType.Error, 'Finance.DespIsMust', 'Finance.DespIsMust');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.DespIsMust",
+          "Finance.DespIsMust"
+        );
         chkrst = false;
       } else {
         this.Desp = this.Desp.trim();
         if (this.Desp.length > 44) {
-          this._addMessage(hih.MessageType.Error, 'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.DespIsTooLong",
+            "Finance.DespIsTooLong"
+          );
           chkrst = false;
         }
       }
 
       // Currency check
-      if (context && context.Currencies
-        && context.Currencies instanceof Array && context.Currencies.length > 0) {
+      if (
+        context &&
+        context.Currencies &&
+        context.Currencies instanceof Array &&
+        context.Currencies.length > 0
+      ) {
         if (this.TranCurr) {
           let bExist = false;
           for (const cc of context.Currencies) {
@@ -1892,23 +2334,39 @@ export class Document extends hih.BaseModel {
           }
 
           if (!bExist) {
-            this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidCurrency",
+              "Finance.InvalidCurrency"
+            );
             chkrst = false;
           } else {
             if (this.TranCurr !== context.BaseCurrency) {
               if (!this.ExgRate) {
-                this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                this._addMessage(
+                  hih.MessageType.Error,
+                  "Finance.NoExchangeRate",
+                  "Finance.NoExchangeRate"
+                );
                 chkrst = false;
               }
             } else {
               if (this.ExgRate) {
-                this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                this._addMessage(
+                  hih.MessageType.Error,
+                  "Finance.UnnecessaryExchangeRate",
+                  "Finance.UnnecessaryExchangeRate"
+                );
                 chkrst = false;
               }
             }
           }
         } else {
-          this._addMessage(hih.MessageType.Error, 'Finance.CurrencyIsMust', 'Finance.CurrencyIsMust');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.CurrencyIsMust",
+            "Finance.CurrencyIsMust"
+          );
           chkrst = false;
         }
 
@@ -1922,24 +2380,40 @@ export class Document extends hih.BaseModel {
           }
 
           if (!bExist) {
-            this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidCurrency",
+              "Finance.InvalidCurrency"
+            );
             chkrst = false;
           } else {
             if (this.TranCurr2 !== context.BaseCurrency) {
               if (!this.ExgRate2) {
-                this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                this._addMessage(
+                  hih.MessageType.Error,
+                  "Finance.NoExchangeRate",
+                  "Finance.NoExchangeRate"
+                );
                 chkrst = false;
               }
             } else {
               if (this.ExgRate2) {
-                this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                this._addMessage(
+                  hih.MessageType.Error,
+                  "Finance.UnnecessaryExchangeRate",
+                  "Finance.UnnecessaryExchangeRate"
+                );
                 chkrst = false;
               }
             }
           }
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.CurrencyFetchFailed', 'Finance.CurrencyFetchFailed');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.CurrencyFetchFailed",
+          "Finance.CurrencyFetchFailed"
+        );
         chkrst = false;
       }
 
@@ -1955,7 +2429,11 @@ export class Document extends hih.BaseModel {
             }
           });
           if (idMap.size !== this.Items.length) {
-            this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+            this._addMessage(
+              hih.MessageType.Error,
+              "Common.DuplicatedID",
+              "Common.DuplicatedID"
+            );
             chkrst = false;
           }
         }
@@ -1974,7 +2452,7 @@ export class Document extends hih.BaseModel {
               const ftt: TranType = tt as TranType;
               if (ftt.Id === fit.TranType) {
                 if (ftt.Expense) {
-                  amtItem = (-1) * fit.TranAmount;
+                  amtItem = -1 * fit.TranAmount;
                 } else {
                   amtItem = fit.TranAmount;
                 }
@@ -1983,14 +2461,18 @@ export class Document extends hih.BaseModel {
 
             if (fit.UseCurr2) {
               if (this.ExgRate2) {
-                amtTotal += Number.parseFloat((amtItem * this.ExgRate2 / 100).toFixed(3));
+                amtTotal += Number.parseFloat(
+                  ((amtItem * this.ExgRate2) / 100).toFixed(3)
+                );
               } else {
                 amtTotal += amtItem;
               }
               amtTotal = Number.parseFloat(amtTotal.toFixed(3));
             } else {
               if (this.ExgRate) {
-                amtTotal += Number.parseFloat((amtItem * this.ExgRate / 100).toFixed(3));
+                amtTotal += Number.parseFloat(
+                  ((amtItem * this.ExgRate) / 100).toFixed(3)
+                );
               } else {
                 amtTotal += amtItem;
               }
@@ -1998,26 +2480,49 @@ export class Document extends hih.BaseModel {
             }
 
             // Order valid check
-            if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
+            if (
+              fit.OrderId &&
+              fit.OrderId > 0 &&
+              context &&
+              context.Orders.length > 0
+            ) {
               const vordidx: number = context.Orders.findIndex((ord: Order) => {
-                return (+fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
+                return (
+                  +fit.OrderId! === +ord!.Id! &&
+                  this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo)
+                );
               });
 
               if (vordidx === -1) {
-                this._addMessage(hih.MessageType.Error, 'Finance.InvalidActivity', 'Finance.InvalidActivity');
+                this._addMessage(
+                  hih.MessageType.Error,
+                  "Finance.InvalidActivity",
+                  "Finance.InvalidActivity"
+                );
                 chkrst = false;
               }
             }
           }
         }
       } else {
-        this._addMessage(hih.MessageType.Error, 'Finance.NoDocumentItem', 'Finance.NoDocumentItem');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Finance.NoDocumentItem",
+          "Finance.NoDocumentItem"
+        );
         chkrst = false;
       }
 
-      if (this.DocType === financeDocTypeTransfer || this.DocType === financeDocTypeCurrencyExchange) {
+      if (
+        this.DocType === financeDocTypeTransfer ||
+        this.DocType === financeDocTypeCurrencyExchange
+      ) {
         if (Math.abs(amtTotal) >= 0.01) {
-          this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
+          this._addMessage(
+            hih.MessageType.Error,
+            "Finance.AmountIsNotCorrect",
+            "Finance.AmountIsZeroInTransferDocument"
+          );
           chkrst = false;
         }
       }
@@ -2112,33 +2617,69 @@ export class Document extends hih.BaseModel {
  */
 export class DocumentItem {
   private _docid?: number;
-  private _itemid: number = 0;
+  private _itemid = 0;
   private _accountid?: number;
   private _trantype?: number;
-  private _tranamt: number = 0;
+  private _tranamt = 0;
   private _usecurr2?: boolean;
   private _ccid?: number;
   private _orderid?: number;
-  private _desp: string = '';
+  private _desp = "";
 
-  get DocId(): number | undefined             { return this._docid;       }
-  set DocId(docid: number | undefined)        { this._docid = docid;      }
-  get ItemId(): number                        { return this._itemid;      }
-  set ItemId(iid: number)                     { this._itemid = iid;       }
-  get AccountId(): number | undefined         { return this._accountid;   }
-  set AccountId(acntid: number | undefined)   { this._accountid = acntid; }
-  get TranType(): number | undefined          { return this._trantype;    }
-  set TranType(tt: number | undefined)        { this._trantype = tt;      }
-  get TranAmount(): number                    { return this._tranamt;     }
-  set TranAmount(tamt: number)                { this._tranamt = tamt;     }
-  get UseCurr2(): boolean | undefined         { return this._usecurr2;    }
-  set UseCurr2(ucur2: boolean | undefined)    { this._usecurr2 = ucur2;   }
-  get ControlCenterId(): number | undefined   { return this._ccid;        }
-  set ControlCenterId(cd: number | undefined) { this._ccid = cd;          }
-  get OrderId(): number | undefined           { return this._orderid;     }
-  set OrderId(oid: number | undefined)        { this._orderid = oid;      }
-  get Desp(): string                          { return this._desp;        }
-  set Desp(dsp: string)                       { this._desp = dsp;         }
+  get DocId(): number | undefined {
+    return this._docid;
+  }
+  set DocId(docid: number | undefined) {
+    this._docid = docid;
+  }
+  get ItemId(): number {
+    return this._itemid;
+  }
+  set ItemId(iid: number) {
+    this._itemid = iid;
+  }
+  get AccountId(): number | undefined {
+    return this._accountid;
+  }
+  set AccountId(acntid: number | undefined) {
+    this._accountid = acntid;
+  }
+  get TranType(): number | undefined {
+    return this._trantype;
+  }
+  set TranType(tt: number | undefined) {
+    this._trantype = tt;
+  }
+  get TranAmount(): number {
+    return this._tranamt;
+  }
+  set TranAmount(tamt: number) {
+    this._tranamt = tamt;
+  }
+  get UseCurr2(): boolean | undefined {
+    return this._usecurr2;
+  }
+  set UseCurr2(ucur2: boolean | undefined) {
+    this._usecurr2 = ucur2;
+  }
+  get ControlCenterId(): number | undefined {
+    return this._ccid;
+  }
+  set ControlCenterId(cd: number | undefined) {
+    this._ccid = cd;
+  }
+  get OrderId(): number | undefined {
+    return this._orderid;
+  }
+  set OrderId(oid: number | undefined) {
+    this._orderid = oid;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
 
   public VerifiedMsgs: hih.InfoMessage[];
   public Tags: string[];
@@ -2153,87 +2694,124 @@ export class DocumentItem {
 
     // Item Id
     if (this.ItemId === undefined || this.ItemId <= 0) {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.InvalidItemID', 'Finance.InvalidItemID');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.InvalidItemID",
+        "Finance.InvalidItemID"
+      );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
 
     // Account
-    if (context && context.Accounts
-      && context.Accounts instanceof Array && context.Accounts.length > 0) {
+    if (
+      context &&
+      context.Accounts &&
+      context.Accounts instanceof Array &&
+      context.Accounts.length > 0
+    ) {
       if (this.AccountId !== undefined && this.AccountId > 0) {
-        const acnt: Account | undefined = context.Accounts.find((val: Account) => {
-          return val.Id === this.AccountId;
-        });
+        const acnt: Account | undefined = context.Accounts.find(
+          (val: Account) => {
+            return val.Id === this.AccountId;
+          }
+        );
 
         if (!acnt || acnt.Status !== AccountStatusEnum.Normal) {
-          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.InvalidAccount',
-            'Finance.InvalidAccount',
+          const msg: hih.InfoMessage = new hih.InfoMessage(
+            hih.MessageType.Error,
+            "Finance.InvalidAccount",
+            "Finance.InvalidAccount"
           );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else {
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.AccountIsMust',
-          'Finance.AccountIsMust');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.AccountIsMust",
+          "Finance.AccountIsMust"
+        );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.AccountFetchFailed',
-        'Finance.AccountFetchFailed');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.AccountFetchFailed",
+        "Finance.AccountFetchFailed"
+      );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Transaction type
-    if (context && context.TransactionTypes
-      && context.TransactionTypes instanceof Array
-      && context.TransactionTypes.length > 0) {
+    if (
+      context &&
+      context.TransactionTypes &&
+      context.TransactionTypes instanceof Array &&
+      context.TransactionTypes.length > 0
+    ) {
       if (this.TranType !== undefined) {
-        const ttidx: number = context.TransactionTypes.findIndex((tt: TranType) => {
-          return tt.Id === this.TranType;
-        });
+        const ttidx: number = context.TransactionTypes.findIndex(
+          (tt: TranType) => {
+            return tt.Id === this.TranType;
+          }
+        );
 
         if (ttidx === -1) {
-          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.InvalidTransactionType', 'Finance.InvalidTransactionType');
+          const msg: hih.InfoMessage = new hih.InfoMessage(
+            hih.MessageType.Error,
+            "Finance.InvalidTransactionType",
+            "Finance.InvalidTransactionType"
+          );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else {
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.TransactionTypeIsMust', 'Finance.TransactionTypeIsMust');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.TransactionTypeIsMust",
+          "Finance.TransactionTypeIsMust"
+        );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.TransactionTypeFetchFailed', 'Finance.TransactionTypeFetchFailed');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.TransactionTypeFetchFailed",
+        "Finance.TransactionTypeFetchFailed"
+      );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Amount
     if (this.TranAmount <= 0) {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.AmountIsNotCorrect', 'Finance.AmountIsNotCorrect');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.AmountIsNotCorrect",
+        "Finance.AmountIsNotCorrect"
+      );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Desp
     if (!this.Desp) {
-      const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-        'Finance.DespIsMust', 'Finance.DespIsMust');
+      const msg: hih.InfoMessage = new hih.InfoMessage(
+        hih.MessageType.Error,
+        "Finance.DespIsMust",
+        "Finance.DespIsMust"
+      );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     } else {
       this.Desp = this.Desp.trim();
       if (this.Desp.length > 44) {
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.DespIsTooLong",
+          "Finance.DespIsTooLong"
+        );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
@@ -2245,8 +2823,11 @@ export class DocumentItem {
         // Both inputted
         bccord = false;
 
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.DualInputFound', 'Finance.EitherControlCenterOrOrder');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.DualInputFound",
+          "Finance.EitherControlCenterOrOrder"
+        );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       } else {
@@ -2259,8 +2840,11 @@ export class DocumentItem {
         // Neither inputted
         bccord = false;
 
-        const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-          'Finance.NoInputFound', 'Finance.EitherControlCenterOrOrder');
+        const msg: hih.InfoMessage = new hih.InfoMessage(
+          hih.MessageType.Error,
+          "Finance.NoInputFound",
+          "Finance.EitherControlCenterOrOrder"
+        );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
@@ -2268,41 +2852,63 @@ export class DocumentItem {
     if (bccord) {
       // Control center
       if (this.ControlCenterId) {
-        if (context && context.ControlCenters
-          && context.ControlCenters instanceof Array && context.ControlCenters.length > 0) {
-            const ccidx: number = context.ControlCenters.findIndex((cc: ControlCenter) => {
-            return cc.Id === this.ControlCenterId;
-        });
+        if (
+          context &&
+          context.ControlCenters &&
+          context.ControlCenters instanceof Array &&
+          context.ControlCenters.length > 0
+        ) {
+          const ccidx: number = context.ControlCenters.findIndex(
+            (cc: ControlCenter) => {
+              return cc.Id === this.ControlCenterId;
+            }
+          );
 
-            if (ccidx === -1) {
-          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
-          this.VerifiedMsgs.push(msg);
-          chkrst = false;
-        }
-      } else {
-          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
+          if (ccidx === -1) {
+            const msg: hih.InfoMessage = new hih.InfoMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidControlCenter",
+              "Finance.InvalidControlCenter"
+            );
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+          }
+        } else {
+          const msg: hih.InfoMessage = new hih.InfoMessage(
+            hih.MessageType.Error,
+            "Finance.ControlCenterFetchFailedOrNoCC",
+            "Finance.ControlCenterFetchFailedOrNoCC"
+          );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else if (this.OrderId) {
         // Order
-        if (context && context.Orders
-          && context.Orders instanceof Array && context.Orders.length > 0) {
+        if (
+          context &&
+          context.Orders &&
+          context.Orders instanceof Array &&
+          context.Orders.length > 0
+        ) {
           const ordidx: number = context.Orders.findIndex((ord: Order) => {
             return ord.Id === this.OrderId;
           });
 
           if (ordidx === -1) {
-            const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-              'Finance.InvalidActivity', 'Finance.InvalidActivity');
+            const msg: hih.InfoMessage = new hih.InfoMessage(
+              hih.MessageType.Error,
+              "Finance.InvalidActivity",
+              "Finance.InvalidActivity"
+            );
             this.VerifiedMsgs.push(msg);
             chkrst = false;
           }
         } else {
-          const msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.ActivityFetchFailedOrNoActivity', 'Finance.ActivityFetchFailedOrNoActivity');
+          const msg: hih.InfoMessage = new hih.InfoMessage(
+            hih.MessageType.Error,
+            "Finance.ActivityFetchFailedOrNoActivity",
+            "Finance.ActivityFetchFailedOrNoActivity"
+          );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
@@ -2376,44 +2982,84 @@ export class DocumentItem {
  */
 export abstract class TemplateDocBase extends hih.BaseModel {
   protected _tranDate?: moment.Moment;
-  protected _totalAmount: number = 0;
-  protected _tranAmount: number = 0;
+  protected _totalAmount = 0;
+  protected _tranAmount = 0;
   protected _tranType?: number;
   protected _accountId?: number;
   protected _controlCenterId?: number;
   protected _orderId?: number;
   protected _docId?: number;
-  protected _desp: string = '';
+  protected _desp = "";
   protected _refDocId?: number;
 
   public HID?: number;
 
-  get DocId(): number | undefined               { return this._docId;             }
-  set DocId(docid: number| undefined)           { this._docId = docid;            }
-  get RefDocId(): number  | undefined           { return this._refDocId;          }
-  set RefDocId(refdocid: number | undefined)    { this._refDocId = refdocid;      }
-  get AccountId(): number | undefined           { return this._accountId;         }
-  set AccountId(acntid: number | undefined)     { this._accountId = acntid;       }
-  get TranType(): number | undefined            { return this._tranType;          }
-  set TranType(ttype: number | undefined)       { this._tranType = ttype;         }
-  get TranAmount(): number                      { return this._tranAmount;        }
-  set TranAmount(tamt: number)                  { this._tranAmount = tamt;        }
-  get ControlCenterId(): number | undefined     { return this._controlCenterId;   }
-  set ControlCenterId(ccid: number | undefined) { this._controlCenterId = ccid;   }
-  get OrderId(): number | undefined             { return this._orderId;           }
-  set OrderId(ordid: number | undefined)        { this._orderId = ordid;          }
-  get Desp(): string                            { return this._desp;              }
-  set Desp(dsp: string)                         { this._desp = dsp;               }
-  get TranDate(): moment.Moment | undefined     { return this._tranDate;          }
-  set TranDate(td: moment.Moment | undefined)   { this._tranDate = td;            }
-  get TranDateFormatString(): string | null     {
+  get DocId(): number | undefined {
+    return this._docId;
+  }
+  set DocId(docid: number | undefined) {
+    this._docId = docid;
+  }
+  get RefDocId(): number | undefined {
+    return this._refDocId;
+  }
+  set RefDocId(refdocid: number | undefined) {
+    this._refDocId = refdocid;
+  }
+  get AccountId(): number | undefined {
+    return this._accountId;
+  }
+  set AccountId(acntid: number | undefined) {
+    this._accountId = acntid;
+  }
+  get TranType(): number | undefined {
+    return this._tranType;
+  }
+  set TranType(ttype: number | undefined) {
+    this._tranType = ttype;
+  }
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(tamt: number) {
+    this._tranAmount = tamt;
+  }
+  get ControlCenterId(): number | undefined {
+    return this._controlCenterId;
+  }
+  set ControlCenterId(ccid: number | undefined) {
+    this._controlCenterId = ccid;
+  }
+  get OrderId(): number | undefined {
+    return this._orderId;
+  }
+  set OrderId(ordid: number | undefined) {
+    this._orderId = ordid;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
+  get TranDate(): moment.Moment | undefined {
+    return this._tranDate;
+  }
+  set TranDate(td: moment.Moment | undefined) {
+    this._tranDate = td;
+  }
+  get TranDateFormatString(): string | null {
     if (this._tranDate !== null) {
       return this._tranDate!.format(hih.momentDateFormat);
     }
     return null;
   }
-  get TotalAmount(): number                     { return this._totalAmount;       }
-  set TotalAmount(tamt: number)                 { this._totalAmount = tamt;       }
+  get TotalAmount(): number {
+    return this._totalAmount;
+  }
+  set TotalAmount(tamt: number) {
+    this._totalAmount = tamt;
+  }
 
   constructor() {
     super();
@@ -2428,7 +3074,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   }
 
   public override onVerify(context?: any): boolean {
-    let vrst = super.onVerify(context);
+    const vrst = super.onVerify(context);
     if (vrst) {
     }
 
@@ -2519,9 +3165,13 @@ export class TemplateDocADP extends TemplateDocBase {
  * Tempalte doc for Loan
  */
 export class TemplateDocLoan extends TemplateDocBase {
-  private _amtInterest: number = 0;
-  get InterestAmount(): number      { return this._amtInterest;       }
-  set InterestAmount(amt: number)   { this._amtInterest = amt;        }
+  private _amtInterest = 0;
+  get InterestAmount(): number {
+    return this._amtInterest;
+  }
+  set InterestAmount(amt: number) {
+    this._amtInterest = amt;
+  }
 
   public override writeJSONObject(): any {
     const rstObj: any = super.writeJSONObject();
@@ -2544,10 +3194,10 @@ export class TemplateDocLoan extends TemplateDocBase {
  * Plan type
  */
 export enum PlanTypeEnum {
-  Account           = 0,
-  AccountCategory   = 1,
-  ControlCenter     = 2,
-  TranType          = 3,
+  Account = 0,
+  AccountCategory = 1,
+  ControlCenter = 2,
+  TranType = 3,
 }
 
 /**
@@ -2563,34 +3213,82 @@ export class Plan extends hih.BaseModel {
   private _tranTypeID?: number;
   private _startDate?: moment.Moment;
   private _targetDate?: moment.Moment;
-  private _tagetBalance: number = 0;
-  private _tranCurr: string = '';
-  private _description: string = '';
+  private _tagetBalance = 0;
+  private _tranCurr = "";
+  private _description = "";
 
-  get ID(): number | undefined                  { return this._id;                  }
-  set ID(id: number | undefined)                { this._id = id;                    }
-  get HID(): number | undefined                 { return this._hid;                 }
-  set HID(hid: number | undefined)              { this._hid = hid;                  }
-  get PlanType(): PlanTypeEnum                  { return this._planType;            }
-  set PlanType(pt: PlanTypeEnum)                { this._planType = pt;              }
-  get AccountID(): number | undefined           { return this._accountID;           }
-  set AccountID(acid: number | undefined)       { this._accountID = acid;           }
-  get AccountCategoryID(): number | undefined   { return this._accountCtgyID;       }
-  set AccountCategoryID(cd: number | undefined) { this._accountCtgyID = cd;         }
-  get ControlCenterID(): number | undefined     { return this._ccID;                }
-  set ControlCenterID(cd: number | undefined)   { this._ccID = cd;                  }
-  get TranTypeID(): number | undefined          { return this._tranTypeID;          }
-  set TranTypeID(ttid: number | undefined)      { this._tranTypeID = ttid;          }
-  get StartDate(): moment.Moment | undefined    { return this._startDate;           }
-  set StartDate(sd: moment.Moment | undefined)  { this._startDate = sd;             }
-  get TargetDate(): moment.Moment | undefined   { return this._targetDate;          }
-  set TargetDate(td: moment.Moment | undefined) { this._targetDate = td;            }
-  get TargetBalance(): number                   { return this._tagetBalance;        }
-  set TargetBalance(tb: number)                 { this._tagetBalance = tb;          }
-  get TranCurrency(): string                    { return this._tranCurr;            }
-  set TranCurrency(curr: string)                { this._tranCurr = curr;            }
-  get Description(): string                     { return this._description;         }
-  set Description(desp: string)                 { this._description = desp;         }
+  get ID(): number | undefined {
+    return this._id;
+  }
+  set ID(id: number | undefined) {
+    this._id = id;
+  }
+  get HID(): number | undefined {
+    return this._hid;
+  }
+  set HID(hid: number | undefined) {
+    this._hid = hid;
+  }
+  get PlanType(): PlanTypeEnum {
+    return this._planType;
+  }
+  set PlanType(pt: PlanTypeEnum) {
+    this._planType = pt;
+  }
+  get AccountID(): number | undefined {
+    return this._accountID;
+  }
+  set AccountID(acid: number | undefined) {
+    this._accountID = acid;
+  }
+  get AccountCategoryID(): number | undefined {
+    return this._accountCtgyID;
+  }
+  set AccountCategoryID(cd: number | undefined) {
+    this._accountCtgyID = cd;
+  }
+  get ControlCenterID(): number | undefined {
+    return this._ccID;
+  }
+  set ControlCenterID(cd: number | undefined) {
+    this._ccID = cd;
+  }
+  get TranTypeID(): number | undefined {
+    return this._tranTypeID;
+  }
+  set TranTypeID(ttid: number | undefined) {
+    this._tranTypeID = ttid;
+  }
+  get StartDate(): moment.Moment | undefined {
+    return this._startDate;
+  }
+  set StartDate(sd: moment.Moment | undefined) {
+    this._startDate = sd;
+  }
+  get TargetDate(): moment.Moment | undefined {
+    return this._targetDate;
+  }
+  set TargetDate(td: moment.Moment | undefined) {
+    this._targetDate = td;
+  }
+  get TargetBalance(): number {
+    return this._tagetBalance;
+  }
+  set TargetBalance(tb: number) {
+    this._tagetBalance = tb;
+  }
+  get TranCurrency(): string {
+    return this._tranCurr;
+  }
+  set TranCurrency(curr: string) {
+    this._tranCurr = curr;
+  }
+  get Description(): string {
+    return this._description;
+  }
+  set Description(desp: string) {
+    this._description = desp;
+  }
 
   constructor() {
     super();
@@ -2599,8 +3297,8 @@ export class Plan extends hih.BaseModel {
   public override onInit(): void {
     super.onInit();
 
-    this._startDate = moment().startOf('day');
-    this._targetDate = moment().add(1, 'y').startOf('day');
+    this._startDate = moment().startOf("day");
+    this._targetDate = moment().add(1, "y").startOf("day");
   }
   public override onVerify(context?: any): boolean {
     let bsuccess = super.onVerify(context);
@@ -2608,11 +3306,19 @@ export class Plan extends hih.BaseModel {
       // Check dates
       const today: moment.Moment = moment();
       if (today.isAfter(this.TargetDate)) {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidDate",
+          "Common.InvalidDate"
+        );
         bsuccess = false;
       }
       if (this.StartDate && this.StartDate.isSameOrAfter(this.TargetDate)) {
-        this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+        this._addMessage(
+          hih.MessageType.Error,
+          "Common.InvalidDate",
+          "Common.InvalidDate"
+        );
         bsuccess = false;
       }
       // Check account! - TBD
@@ -2658,9 +3364,10 @@ export class Plan extends hih.BaseModel {
       this.HID = +data.HID;
     }
     if (data && data.PlanType) {
-      if (typeof data.PlanType === 'string') {
-        this.PlanType = PlanTypeEnum[data.PlanType as keyof typeof PlanTypeEnum];
-      } else if (typeof data.Status === 'number') {
+      if (typeof data.PlanType === "string") {
+        this.PlanType =
+          PlanTypeEnum[data.PlanType as keyof typeof PlanTypeEnum];
+      } else if (typeof data.Status === "number") {
         this.PlanType = data.PlanType as PlanTypeEnum;
       }
     }
@@ -2699,20 +3406,20 @@ export class Plan extends hih.BaseModel {
  */
 export class DocumentItemView {
   public DocumentID?: number;
-  public ItemID: number = 0;
+  public ItemID = 0;
   public HomeID?: number;
   public TransactionDate?: moment.Moment;
-  public DocumentDesp: string = '';
+  public DocumentDesp = "";
   public AccountID?: number;
   public TransactionType?: number;
-  public IsExpense: boolean = false;
-  public Currency: string = '';
-  public OriginAmount: number = 0;
-  public Amount: number = 0;
-  public AmountInLocalCurrency: number = 0;
+  public IsExpense = false;
+  public Currency = "";
+  public OriginAmount = 0;
+  public Amount = 0;
+  public AmountInLocalCurrency = 0;
   public ControlCenterID?: number;
   public OrderID?: number;
-  public ItemDesp: string = '';
+  public ItemDesp = "";
 }
 
 /**
@@ -2720,18 +3427,34 @@ export class DocumentItemView {
  */
 export class FinanceReportBase {
   private hid?: number;
-  private _debitBalance: number = 0;
-  private _creditBalance: number = 0;
-  private _balance: number = 0;
+  private _debitBalance = 0;
+  private _creditBalance = 0;
+  private _balance = 0;
 
-  get HomeID(): number | undefined                  { return this.hid;                    }
-  set HomeID(hid: number | undefined)               { this.hid = hid;                     }
-  get DebitBalance(): number                        { return this._debitBalance;          }
-  set DebitBalance(db: number)                      { this._debitBalance = db;            }
-  get CreditBalance(): number                       { return this._creditBalance;         }
-  set CreditBalance(cb: number)                     { this._creditBalance = cb;           }
-  get Balance(): number                             { return this._balance;               }
-  set Balance(bal: number)                          { this._balance = bal;                }
+  get HomeID(): number | undefined {
+    return this.hid;
+  }
+  set HomeID(hid: number | undefined) {
+    this.hid = hid;
+  }
+  get DebitBalance(): number {
+    return this._debitBalance;
+  }
+  set DebitBalance(db: number) {
+    this._debitBalance = db;
+  }
+  get CreditBalance(): number {
+    return this._creditBalance;
+  }
+  set CreditBalance(cb: number) {
+    this._creditBalance = cb;
+  }
+  get Balance(): number {
+    return this._balance;
+  }
+  set Balance(bal: number) {
+    this._balance = bal;
+  }
 
   public onSetData(data: any): void {
     if (data && data.DebitBalance) {
@@ -2760,8 +3483,12 @@ export class FinanceReportBase {
 export class FinanceReportByAccount extends FinanceReportBase {
   private _accountID?: number;
 
-  get AccountId(): number | undefined       { return this._accountID;     }
-  set AccountId(acid: number | undefined)   { this._accountID = acid;     }
+  get AccountId(): number | undefined {
+    return this._accountID;
+  }
+  set AccountId(acid: number | undefined) {
+    this._accountID = acid;
+  }
   public override onSetData(data: any): void {
     super.onSetData(data);
 
@@ -2772,8 +3499,8 @@ export class FinanceReportByAccount extends FinanceReportBase {
 }
 
 export class FinanceReportByAccountMOM extends FinanceReportByAccount {
-  public Month: number = 0;
-  
+  public Month = 0;
+
   public override onSetData(val: any) {
     super.onSetData(val);
 
@@ -2787,19 +3514,35 @@ export class FinanceReportByAccountMOM extends FinanceReportByAccount {
  * Balance sheet
  */
 export class BalanceSheetReport extends FinanceReportBase {
-  private _accountID: number = 0;
-  private _accountName: string = '';
-  private _accountCtgyID: number = 0;
-  private _accountCtgyName: string = '';
+  private _accountID = 0;
+  private _accountName = "";
+  private _accountCtgyID = 0;
+  private _accountCtgyName = "";
 
-  get AccountId(): number                       { return this._accountID;           }
-  set AccountId(acid: number)                   { this._accountID = acid;           }
-  get AccountName(): string                     { return this._accountName;         }
-  set AccountName(acntname: string)             { this._accountName = acntname;     }
-  get AccountCategoryId(): number               { return this._accountCtgyID;       }
-  set AccountCategoryId(cd: number)             { this._accountCtgyID = cd;         }
-  get AccountCategoryName(): string             { return this._accountCtgyName;     }
-  set AccountCategoryName(ctgyName: string)     { this._accountCtgyName = ctgyName; }
+  get AccountId(): number {
+    return this._accountID;
+  }
+  set AccountId(acid: number) {
+    this._accountID = acid;
+  }
+  get AccountName(): string {
+    return this._accountName;
+  }
+  set AccountName(acntname: string) {
+    this._accountName = acntname;
+  }
+  get AccountCategoryId(): number {
+    return this._accountCtgyID;
+  }
+  set AccountCategoryId(cd: number) {
+    this._accountCtgyID = cd;
+  }
+  get AccountCategoryName(): string {
+    return this._accountCtgyName;
+  }
+  set AccountCategoryName(ctgyName: string) {
+    this._accountCtgyName = ctgyName;
+  }
 
   public override onSetData(data: any): void {
     super.onSetData(data);
@@ -2823,10 +3566,14 @@ export class BalanceSheetReport extends FinanceReportBase {
  * Control center report
  */
 export class FinanceReportByControlCenter extends FinanceReportBase {
-  private _ccID: number = 0;
+  private _ccID = 0;
 
-  get ControlCenterId(): number     { return this._ccID;        }
-  set ControlCenterId(ccid: number) { this._ccID = ccid;        }
+  get ControlCenterId(): number {
+    return this._ccID;
+  }
+  set ControlCenterId(ccid: number) {
+    this._ccID = ccid;
+  }
 
   public override onSetData(data: any): void {
     super.onSetData(data);
@@ -2838,8 +3585,8 @@ export class FinanceReportByControlCenter extends FinanceReportBase {
 }
 
 export class FinanceReportByControlCenterMOM extends FinanceReportByControlCenter {
-  public Month: number = 0;
-  
+  public Month = 0;
+
   public override onSetData(val: any) {
     super.onSetData(val);
 
@@ -2853,10 +3600,14 @@ export class FinanceReportByControlCenterMOM extends FinanceReportByControlCente
  * Order report
  */
 export class FinanceReportByOrder extends FinanceReportBase {
-  private _orderID: number = 0;
+  private _orderID = 0;
 
-  get OrderId(): number     { return this._orderID;     }
-  set OrderId(oid: number)  { this._orderID = oid;      }
+  get OrderId(): number {
+    return this._orderID;
+  }
+  set OrderId(oid: number) {
+    this._orderID = oid;
+  }
 
   public override onSetData(data: any): void {
     super.onSetData(data);
@@ -2871,20 +3622,36 @@ export class FinanceReportByOrder extends FinanceReportBase {
  * Tran type report
  */
 export class TranTypeReport {
-  private _tranType: number = 0;
-  private _tranTypeName: string = '';
-  private _expenseFlag: boolean = false;
-  private _tranAmount: number = 0;
+  private _tranType = 0;
+  private _tranTypeName = "";
+  private _expenseFlag = false;
+  private _tranAmount = 0;
 
-  get TranType(): number            { return this._tranType;        }
-  set TranType(tt: number)          { this._tranType = tt;          }
-  get TranTypeName(): string        { return this._tranTypeName;    }
-  set TranTypeName(ttname: string)  { this._tranTypeName = ttname;  }
-  get ExpenseFlag(): boolean        { return this._expenseFlag;     }
-  set ExpenseFlag(ef: boolean)      { this._expenseFlag = ef;       }
-  get TranAmount(): number          { return this._tranAmount;      }
-  set TranAmount(tamt: number)      { this._tranAmount = tamt;      }
-  
+  get TranType(): number {
+    return this._tranType;
+  }
+  set TranType(tt: number) {
+    this._tranType = tt;
+  }
+  get TranTypeName(): string {
+    return this._tranTypeName;
+  }
+  set TranTypeName(ttname: string) {
+    this._tranTypeName = ttname;
+  }
+  get ExpenseFlag(): boolean {
+    return this._expenseFlag;
+  }
+  set ExpenseFlag(ef: boolean) {
+    this._expenseFlag = ef;
+  }
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(tamt: number) {
+    this._tranAmount = tamt;
+  }
+
   public TranDate?: moment.Moment;
 
   public onSetData(data: any): void {
@@ -2910,10 +3677,10 @@ export class TranTypeReport {
  * Month on month report
  */
 export class MonthOnMonthReport {
-  public year: number = 0;
-  public month: number = 0;
-  public expense: boolean = false;
-  public tranAmount: number = 0;
+  public year = 0;
+  public month = 0;
+  public expense = false;
+  public tranAmount = 0;
 
   public onSetData(data: any): void {
     if (data && data.year) {
@@ -2932,9 +3699,9 @@ export class MonthOnMonthReport {
 }
 
 export enum ReportTrendExTypeEnum {
-  Daily       = 1,
-  Weekly      = 2,
-  Monthly     = 3,
+  Daily = 1,
+  Weekly = 2,
+  Monthly = 3,
 }
 
 export class ReportTrendExData {
@@ -2942,8 +3709,8 @@ export class ReportTrendExData {
   tranWeek?: number;
   tranMonth?: number;
   tranYear?: number;
-  expense: boolean = false;
-  tranAmount: number = 0;
+  expense = false;
+  tranAmount = 0;
 
   public onSetData(data: any): void {
     if (data && data.tranDate) {
@@ -2972,26 +3739,26 @@ export class ReportTrendExData {
  */
 export class DocumentItemWithBalance {
   private _tranDate: moment.Moment = moment();
-  public TranType_Exp: boolean = false;
-  public TranCurr: string = '';
-  public TranAmount: number = 0;
-  public TranAmount_Org: number = 0;
-  public TranAmount_LC: number = 0;
-  public Balance: number = 0;
-  public DocDesp: string = '';
-  public DocId: number = 0;
-  public ItemId: number = 0;
-  public AccountId: number = 0;
-  public TranType: number = 0;
-  public ControlCenterId: number = 0;
-  public OrderId: number = 0;
-  public UseCurr2: boolean = false;
-  public Desp: string = '';
+  public TranType_Exp = false;
+  public TranCurr = "";
+  public TranAmount = 0;
+  public TranAmount_Org = 0;
+  public TranAmount_LC = 0;
+  public Balance = 0;
+  public DocDesp = "";
+  public DocId = 0;
+  public ItemId = 0;
+  public AccountId = 0;
+  public TranType = 0;
+  public ControlCenterId = 0;
+  public OrderId = 0;
+  public UseCurr2 = false;
+  public Desp = "";
 
-  public AccountName: string = '';
-  public TranTypeName: string = '';
-  public ControlCenterName: string = '';
-  public OrderName: string = '';
+  public AccountName = "";
+  public TranTypeName = "";
+  public ControlCenterName = "";
+  public OrderName = "";
   get TranDate(): moment.Moment {
     return this._tranDate;
   }
@@ -3004,7 +3771,7 @@ export class DocumentItemWithBalance {
 
   public onSetData(data: any): void {
     if (data && data.accountID) {
-      this.AccountId = + data.accountID;
+      this.AccountId = +data.accountID;
     }
 
     if (data && data.tranType_Exp) {
@@ -3078,14 +3845,14 @@ export class DocumentWithPlanExgRate {
   get TranDateDisplayString(): string {
     return this.TranDate.format(hih.momentDateFormat);
   }
-  public Desp: string = '';
-  public TranCurr: string = '';
-  public ExgRate: number = 0;
-  public ExgRate_Plan: boolean = false;
+  public Desp = "";
+  public TranCurr = "";
+  public ExgRate = 0;
+  public ExgRate_Plan = false;
 
-  public TranCurr2: string = '';
-  public ExgRate2: number = 0;
-  public ExgRate_Plan2: boolean = false;
+  public TranCurr2 = "";
+  public ExgRate2 = 0;
+  public ExgRate_Plan2 = false;
 
   public onSetData(jdata: any): void {
     if (jdata && jdata.hid) {
@@ -3126,7 +3893,7 @@ export class DocumentWithPlanExgRate {
 
 // Update document's exchange rate
 export class DocumentWithPlanExgRateForUpdate {
-  public hid: number = -1;
+  public hid = -1;
   public targetCurrency: string | null = null;
   public exchangeRate: number | null = null;
   public docIDs: number[] = [];
@@ -3136,7 +3903,7 @@ export class DocumentWithPlanExgRateForUpdate {
  * Document created frequencies by user
  */
 export class DocumentCreatedFrequenciesByUser {
-  public userID: string = '';
+  public userID = "";
   public year: number | null = null;
   public month: string | null = null;
   public week: string | null = null;
@@ -3165,10 +3932,10 @@ export class DocumentCreatedFrequenciesByUser {
  * Basic API for Asset document
  */
 export abstract class FinanceAssetDocumentAPIBase {
-  public HID: number = 0;
-  public TranCurr: string = '';
-  public TranDate: string = '';
-  public Desp: string = '';
+  public HID = 0;
+  public TranCurr = "";
+  public TranDate = "";
+  public Desp = "";
   public ControlCenterID?: number;
   public OrderID?: number;
 
@@ -3188,7 +3955,7 @@ export abstract class FinanceAssetDocumentAPIBase {
       rst.OrderID = this.OrderID;
     }
     rst.Items = [];
-    this.Items.forEach(val => {
+    this.Items.forEach((val) => {
       rst.Items.push(val.writeJSONObject());
     });
     return rst;
@@ -3200,8 +3967,8 @@ export abstract class FinanceAssetDocumentAPIBase {
  */
 export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
   public IsLegacy?: boolean;
-  public TranAmount: number = 0;
-  public AccountOwner: string = '';
+  public TranAmount = 0;
+  public AccountOwner = "";
   public AccountAsset: AccountExtraAsset | null = null;
 
   public override writeJSONObject(): any {
@@ -3220,8 +3987,8 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
  * API for Asset Soldout document
  */
 export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public AssetAccountID: number = 0;
-  public TranAmount: number = 0;
+  public AssetAccountID = 0;
+  public TranAmount = 0;
 
   public override writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
@@ -3236,7 +4003,7 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
  * API for Asset ValChg document
  */
 export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
-  public AssetAccountID: number = 0;
+  public AssetAccountID = 0;
 
   public override writeJSONObject(): any {
     const rst: any = super.writeJSONObject();
@@ -3248,13 +4015,13 @@ export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
 // Normal document Mass Create
 export class FinanceNormalDocItemMassCreate {
   public tranDate: moment.Moment = moment();
-  public accountID: number = 0;
-  public tranType: number = 0;
-  public tranAmount: number = 0;
-  public tranCurrency: string = '';
+  public accountID = 0;
+  public tranType = 0;
+  public tranAmount = 0;
+  public tranCurrency = "";
   public controlCenterID?: number;
   public orderID?: number;
-  public desp: string = '';
+  public desp = "";
 
   // Tag
   public tagTerms: string[] = [];
@@ -3327,9 +4094,9 @@ export class FinanceDocumentMassCreateConfirm {
  * Finance Report Entry
  */
 export class FinanceReportEntry {
-  public HomeID: number = 0;
-  public InAmount: number = 0;
-  public OutAmount: number = 0;
+  public HomeID = 0;
+  public InAmount = 0;
+  public OutAmount = 0;
   public onSetData(val: any) {
     if (val && val.HomeID) {
       this.HomeID = val.HomeID;
@@ -3344,7 +4111,7 @@ export class FinanceReportEntry {
 }
 
 export class FinanceReportEntryMoM extends FinanceReportEntry {
-  public Month: number = 0;
+  public Month = 0;
   public override onSetData(val: any) {
     super.onSetData(val);
     if (val && val.Month) {
@@ -3364,8 +4131,8 @@ export class FinanceReportEntryPerDate extends FinanceReportEntry {
 }
 
 export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
-  public TransactionType: number = 0;
-  public TransactionTypeName: string = '';
+  public TransactionType = 0;
+  public TransactionTypeName = "";
 
   public override onSetData(val: any) {
     super.onSetData(val);
@@ -3380,7 +4147,7 @@ export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
 }
 
 export class FinanceReportEntryByTransactionTypeMoM extends FinanceReportEntryByTransactionType {
-  public Month: number = 0;
+  public Month = 0;
 
   public override onSetData(val: any) {
     super.onSetData(val);
@@ -3392,17 +4159,17 @@ export class FinanceReportEntryByTransactionTypeMoM extends FinanceReportEntryBy
 }
 
 export class FinanceReportMostExpenseEntry {
-  public Amount: number = 0;
-  public TransactionType: number = 0;
-  public TransactionTypeName: string = '';
-  public Precentage: number = 0;
+  public Amount = 0;
+  public TransactionType = 0;
+  public TransactionTypeName = "";
+  public Precentage = 0;
 }
 
 export class FinanceReportEntryByAccountAndExpense {
-  public HomeID: number = 0;
-  public AccountID: number = 0;
-  public IsExpense: boolean = false;
-  public Balance: number = 0;
+  public HomeID = 0;
+  public AccountID = 0;
+  public IsExpense = false;
+  public Balance = 0;
 
   public onSetData(val: any): void {
     if (val && val.HomeID) {
@@ -3423,16 +4190,16 @@ export class FinanceReportEntryByAccountAndExpense {
 }
 
 export class FinanceOverviewKeyfigure {
-  public HomeID: number = 0;
-  public BaseCurrency: string = '';
-  public CurrentMonthIncome: number = 0;
-  public CurrentMonthOutgo: number = 0;
-  public LastMonthIncome: number = 0;
-  public LastMonthOutgo: number = 0;
-  public IncomeYTD: number = 0;
-  public OutgoYTD: number = 0;
-  public CurrentMonthIncomePrecentage: number = 0;
-  public CurrentMonthOutgoPrecentage: number = 0;
+  public HomeID = 0;
+  public BaseCurrency = "";
+  public CurrentMonthIncome = 0;
+  public CurrentMonthOutgo = 0;
+  public LastMonthIncome = 0;
+  public LastMonthOutgo = 0;
+  public IncomeYTD = 0;
+  public OutgoYTD = 0;
+  public CurrentMonthIncomePrecentage = 0;
+  public CurrentMonthOutgoPrecentage = 0;
 
   public onSetData(val: any): void {
     if (val && val.HomeID) {
@@ -3507,4 +4274,3 @@ export interface FinanceAssetDepreciationCreationItem {
   OrderId?: number;
   Desp: string;
 }
-

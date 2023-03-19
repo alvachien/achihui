@@ -1,14 +1,25 @@
 <ng-container [formGroup]="headerForm" *transloco="let t">
   <!-- Doc type -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.DocumentType' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="doctypeErrorTpl">
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Finance.DocumentType" | transloco
+    }}</nz-form-label>
+    <nz-form-control
+      [nzSpan]="12"
+      nzHasFeedback
+      nzValidatingTip="Validating..."
+      [nzErrorTip]="doctypeErrorTpl"
+    >
       <nz-select id="idDocType" formControlName="docTypeControl">
-        <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name!)"></nz-option>
+        <nz-option
+          *ngFor="let dt of arDocTypes"
+          [nzValue]="dt.Id"
+          [nzLabel]="t(dt.Name!)"
+        ></nz-option>
       </nz-select>
       <ng-template #doctypeErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -16,12 +27,23 @@
 
   <!-- Tran date -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Date' | transloco}}</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left;">
-      <nz-date-picker id="idTranDate" formControlName="dateControl" (ngModelChange)="onChange()"></nz-date-picker>
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Common.Date" | transloco
+    }}</nz-form-label>
+    <nz-form-control
+      [nzSpan]="12"
+      nzHasFeedback
+      [nzErrorTip]="trandateErrorTpl"
+      style="text-align: left"
+    >
+      <nz-date-picker
+        id="idTranDate"
+        formControlName="dateControl"
+        (ngModelChange)="onChange()"
+      ></nz-date-picker>
       <ng-template #trandateErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -29,15 +51,25 @@
 
   <!-- Description -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Description' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Common.Description" | transloco
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="despTpl">
-      <input nz-input formControlName="despControl" maxlength="45" (ngModelChange)="onChange()" required />
+      <input
+        nz-input
+        formControlName="despControl"
+        maxlength="45"
+        (ngModelChange)="onChange()"
+        required
+      />
       <ng-template #despTpl let-control>
         <ng-container *ngIf="control.hasError('maxlength')">
-          {{'Common.FieldMaxLength' | transloco}}
+          {{ "Common.FieldMaxLength" | transloco }}
         </ng-container>
-        <ng-container *ngIf="control.hasError('minlength') || control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+        <ng-container
+          *ngIf="control.hasError('minlength') || control.hasError('required')"
+        >
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -45,14 +77,23 @@
 
   <!-- Currency -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Finance.Currency" | transloco
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
-      <nz-select formControlName="currControl" (ngModelChange)="onCurrencyChange($event)">
-        <nz-option *ngFor="let cr of arCurrencies" [nzValue]="cr.Currency" [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
+      <nz-select
+        formControlName="currControl"
+        (ngModelChange)="onCurrencyChange($event)"
+      >
+        <nz-option
+          *ngFor="let cr of arCurrencies"
+          [nzValue]="cr.Currency"
+          [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"
+        ></nz-option>
       </nz-select>
       <ng-template #currTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -60,13 +101,21 @@
 
   <!-- Exchange rate -->
   <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Finance.ExchangeRate" | transloco
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exgTpl">
-      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Finance.ExchangeRate' | transloco" [nzStep]="0.001" id="idexg" 
-        formControlName="exgControl" (ngModelChange)="onChange()"></nz-input-number>
+      <nz-input-number
+        [nzMin]="0.001"
+        [nzPlaceHolder]="'Finance.ExchangeRate' | transloco"
+        [nzStep]="0.001"
+        id="idexg"
+        formControlName="exgControl"
+        (ngModelChange)="onChange()"
+      ></nz-input-number>
       <ng-template #exgTpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -75,49 +124,81 @@
   <!-- Planned Exchange rate -->
   <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
     <nz-form-control [nzSpan]="12" [nzOffset]="7">
-      <label nz-checkbox formControlName="exgpControl" id="exgrate_plan" (ngModelChange)="onChange()">
-        {{'Finance.ProposedExchangeRate' | transloco}}
+      <label
+        nz-checkbox
+        formControlName="exgpControl"
+        id="exgrate_plan"
+        (ngModelChange)="onChange()"
+      >
+        {{ "Finance.ProposedExchangeRate" | transloco }}
       </label>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Currency 2 -->
   <nz-form-item *ngIf="isCurrencyExchangeDocument">
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Finance.Currency" | transloco
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="curr2Tpl">
-      <nz-select id="idCurrency2" formControlName="curr2Control" (ngModelChange)="onCurrency2Change($event)">
-        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
+      <nz-select
+        id="idCurrency2"
+        formControlName="curr2Control"
+        (ngModelChange)="onCurrency2Change($event)"
+      >
+        <nz-option
+          *ngFor="let cr of arCurrencies"
+          [nzValue]="cr.Currency"
+          [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"
+        ></nz-option>
       </nz-select>
       <ng-template #curr2Tpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
         <ng-container *ngIf="control.hasError('currencyMustDiff')">
-          {{'Finance.CurrencyMustDiff' | transloco}}
+          {{ "Finance.CurrencyMustDiff" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Exchange rate -->
-  <nz-form-item *ngIf="isCurrencyExchangeDocument && tranCurrency2 && isForeignCurrency2">
-    <nz-form-label [nzSpan]="7" nzRequired>{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+  <nz-form-item
+    *ngIf="isCurrencyExchangeDocument && tranCurrency2 && isForeignCurrency2"
+  >
+    <nz-form-label [nzSpan]="7" nzRequired>{{
+      "Finance.ExchangeRate" | transloco
+    }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="exg2Tpl">
-      <nz-input-number [nzMin]="0.001" [nzPlaceHolder]="'Finance.ExchangeRate' | transloco" [nzStep]="0.001" id="idexg2"
-       formControlName="exg2Control" (ngModelChange)="onChange()"></nz-input-number>
+      <nz-input-number
+        [nzMin]="0.001"
+        [nzPlaceHolder]="'Finance.ExchangeRate' | transloco"
+        [nzStep]="0.001"
+        id="idexg2"
+        formControlName="exg2Control"
+        (ngModelChange)="onChange()"
+      ></nz-input-number>
       <ng-template #exg2Tpl let-control>
         <ng-container *ngIf="control.hasError('required')">
-          {{'Common.FieldIsMandatory' | transloco}}
+          {{ "Common.FieldIsMandatory" | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <!-- Planned Exchange rate -->
-  <nz-form-item *ngIf="isCurrencyExchangeDocument && tranCurrency2 && isForeignCurrency2">
+  <nz-form-item
+    *ngIf="isCurrencyExchangeDocument && tranCurrency2 && isForeignCurrency2"
+  >
     <nz-form-control [nzSpan]="12" [nzOffset]="7">
-      <label nz-checkbox formControlName="exgp2Control" id="exgrate_plan2" (ngModelChange)="onChange()">
-        {{'Finance.ProposedExchangeRate' | transloco}}
+      <label
+        nz-checkbox
+        formControlName="exgp2Control"
+        id="exgrate_plan2"
+        (ngModelChange)="onChange()"
+      >
+        {{ "Finance.ProposedExchangeRate" | transloco }}
       </label>
     </nz-form-control>
   </nz-form-item>

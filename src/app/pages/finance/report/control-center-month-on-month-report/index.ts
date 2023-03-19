@@ -1,1 +1,1 @@
-export * from './control-center-month-on-month-report.component';
+export * from "./control-center-month-on-month-report.component";

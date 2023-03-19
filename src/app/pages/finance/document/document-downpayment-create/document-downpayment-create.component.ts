@@ -1,33 +1,58 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ReplaySubject, forkJoin } from "rxjs";
+import * as moment from "moment";
+import { takeUntil, finalize } from "rxjs/operators";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { translate } from "@ngneat/transloco";
+import { UIMode, isUIEditable } from "actslib";
 
-import { financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived, UIAccountForSelection,
-  IAccountCategoryFilter, UIOrderForSelection, Currency, ControlCenter, TranType, Order, ModelUtility,
-  ConsoleLogTypeEnum, BuildupAccountForSelection, Account, BuildupOrderForSelection,
-  Document, DocumentItem, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn,
-  AccountExtraAdvancePayment, DocumentVerifyContext, DocumentType,
-} from '../../../../model';
-import { costObjectValidator, } from '../../../../uimodel';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
+import {
+  financeDocTypeAdvancePayment,
+  financeDocTypeAdvanceReceived,
+  UIAccountForSelection,
+  IAccountCategoryFilter,
+  UIOrderForSelection,
+  Currency,
+  ControlCenter,
+  TranType,
+  Order,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  BuildupAccountForSelection,
+  Account,
+  BuildupOrderForSelection,
+  Document,
+  DocumentItem,
+  financeTranTypeAdvancePaymentOut,
+  financeTranTypeAdvanceReceiveIn,
+  AccountExtraAdvancePayment,
+  DocumentVerifyContext,
+  DocumentType,
+} from "../../../../model";
+import { costObjectValidator } from "../../../../uimodel";
+import {
+  FinanceOdataService,
+  UIStatusService,
+  HomeDefOdataService,
+} from "../../../../services";
+import { popupDialog } from "../../../message-dialog";
 
 @Component({
-  selector: 'hih-fin-document-downpayment-create',
-  templateUrl: './document-downpayment-create.component.html',
-  styleUrls: ['./document-downpayment-create.component.less'],
+  selector: "hih-fin-document-downpayment-create",
+  templateUrl: "./document-downpayment-create.component.html",
+  styleUrls: ["./document-downpayment-create.component.less"],
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _isADP: boolean = false;
+  private _isADP = false;
 
   public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -35,7 +60,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
-  public curTitle: string = '';
+  public curTitle = "";
   public arCurrencies: Currency[] = [];
   public arTranType: TranType[] = [];
   public arControlCenters: ControlCenter[] = [];
@@ -43,7 +68,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeAdvancePayment;
-  public baseCurrency: string = '';
+  public baseCurrency = "";
   // Step: Header
   public headerFormGroup: UntypedFormGroup;
   // Step: Account Extra Info
@@ -57,10 +82,18 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   currentStep = 0;
 
   get tranAmount(): number {
-    return this.headerFormGroup && this.headerFormGroup.get('amountControl') && this.headerFormGroup.get('amountControl')?.value;
+    return (
+      this.headerFormGroup &&
+      this.headerFormGroup.get("amountControl") &&
+      this.headerFormGroup.get("amountControl")?.value
+    );
   }
   get tranType(): TranType {
-    return this.headerFormGroup && this.headerFormGroup.get('tranTypeControl') && this.headerFormGroup.get('tranTypeControl')?.value;
+    return (
+      this.headerFormGroup &&
+      this.headerFormGroup.get("tranTypeControl") &&
+      this.headerFormGroup.get("tranTypeControl")?.value
+    );
   }
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
@@ -91,26 +124,34 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     private homeService: HomeDefOdataService,
     private _router: Router,
-    private modalService: NzModalService) {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
-        ConsoleLogTypeEnum.debug);
-      this.headerFormGroup = new UntypedFormGroup({
-        headerControl: new UntypedFormControl('', Validators.required),
-        accountControl: new UntypedFormControl('', Validators.required),
-        tranTypeControl: new UntypedFormControl('', Validators.required),
-        amountControl: new UntypedFormControl('', Validators.required),
-        ccControl: new UntypedFormControl(''),
-        orderControl: new UntypedFormControl(''),
-      }, [costObjectValidator]);
-      this.accountExtraInfoFormGroup = new UntypedFormGroup({
-        infoControl: new UntypedFormControl()
-      });
-      this.currentStep = 0;
-    }
+    private modalService: NzModalService
+  ) {
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
+      ConsoleLogTypeEnum.debug
+    );
+    this.headerFormGroup = new UntypedFormGroup(
+      {
+        headerControl: new UntypedFormControl("", Validators.required),
+        accountControl: new UntypedFormControl("", Validators.required),
+        tranTypeControl: new UntypedFormControl("", Validators.required),
+        amountControl: new UntypedFormControl("", Validators.required),
+        ccControl: new UntypedFormControl(""),
+        orderControl: new UntypedFormControl(""),
+      },
+      [costObjectValidator]
+    );
+    this.accountExtraInfoFormGroup = new UntypedFormGroup({
+      infoControl: new UntypedFormControl(),
+    });
+    this.currentStep = 0;
+  }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -123,66 +164,78 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
-    .pipe(takeUntil(this._destroyed$))
-      .subscribe((rst: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`,
-          ConsoleLogTypeEnum.debug);
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe(
+        (rst: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`,
+            ConsoleLogTypeEnum.debug
+          );
 
-        // Accounts
-        this.arAccounts = rst[3];
-        this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
-        this.uiAccountStatusFilter = undefined;
-        this.uiAccountCtgyFilter = undefined;
-        // Orders
-        this.arOrders = rst[5];
-        this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
-        this.uiOrderFilter = undefined;
-        // Currencies
-        this.arCurrencies = rst[6];
-        // Tran. type
-        this.arTranType = rst[2];
-        // Control Centers
-        this.arControlCenters = rst[4];
-        // Document type
-        this.arDocTypes = rst[1];
-        // Base currency
-        this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+          // Accounts
+          this.arAccounts = rst[3];
+          this.arUIAccount = BuildupAccountForSelection(
+            this.arAccounts,
+            rst[0]
+          );
+          this.uiAccountStatusFilter = undefined;
+          this.uiAccountCtgyFilter = undefined;
+          // Orders
+          this.arOrders = rst[5];
+          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.uiOrderFilter = undefined;
+          // Currencies
+          this.arCurrencies = rst[6];
+          // Tran. type
+          this.arTranType = rst[2];
+          // Control Centers
+          this.arControlCenters = rst[4];
+          // Document type
+          this.arDocTypes = rst[1];
+          // Base currency
+          this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
-        this._activateRoute.url.subscribe((x: any) => {
-          if (x instanceof Array && x.length > 0) {
-            if (x[0].path === 'createadp' || x[0].path === 'createadr') {
-              if (x[0].path === 'createadp') {
-                this._isADP = true;
-              } else {
-                this._isADP = false;
+          this._activateRoute.url.subscribe((x: any) => {
+            if (x instanceof Array && x.length > 0) {
+              if (x[0].path === "createadp" || x[0].path === "createadr") {
+                if (x[0].path === "createadp") {
+                  this._isADP = true;
+                } else {
+                  this._isADP = false;
+                }
+                this._updateCurrentTitle();
+                this.uiAccountStatusFilter = "Normal";
+                this.uiAccountCtgyFilter = {
+                  skipADP: true,
+                  skipLoan: true,
+                  skipAsset: true,
+                };
+                this.uiOrderFilter = true;
+
+                // this._cdr.detectChanges();
               }
-              this._updateCurrentTitle();
-              this.uiAccountStatusFilter = 'Normal';
-              this.uiAccountCtgyFilter = {
-                skipADP: true,
-                skipLoan: true,
-                skipAsset: true,
-              };
-              this.uiOrderFilter = true;
-
-              // this._cdr.detectChanges();
             }
-          }
-        });
-      }, (error: any) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
-          ConsoleLogTypeEnum.error);
-        this.modalService.create({
-          nzTitle: translate('Common.Error'),
-          nzContent: error.toString(),
-          nzClosable: true,
-        });
-      });
+          });
+        },
+        (error: any) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed",
+            ConsoleLogTypeEnum.error
+          );
+          this.modalService.create({
+            nzTitle: translate("Common.Error"),
+            nzContent: error.toString(),
+            nzClosable: true,
+          });
+        }
+      );
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -197,12 +250,12 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
-        this.currentStep ++;
+        this.currentStep++;
         break;
       }
       case 1: {
         // Show the dp docs
-        this.currentStep ++;
+        this.currentStep++;
         this._updateConfirmInfo();
         break;
       }
@@ -213,42 +266,50 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         break;
       }
       default:
-      break;
+        break;
     }
   }
 
   onSubmit(): void {
     // Save current document
     const docObj: Document = this._geneateDocument();
-    const accountExtra: AccountExtraAdvancePayment = this.accountExtraInfoFormGroup.get('infoControl')?.value;
+    const accountExtra: AccountExtraAdvancePayment =
+      this.accountExtraInfoFormGroup.get("infoControl")?.value;
     // accountExtra.dpTmpDocs = this.accountExtraInfoFormGroup.
 
     // Check!
-    if (!docObj.onVerify({
-      ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranType,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
-    } as DocumentVerifyContext)) {
-      popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
+    if (
+      !docObj.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranType,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+      } as DocumentVerifyContext)
+    ) {
+      popupDialog(this.modalService, "Common.Error", docObj.VerifiedMsgs);
       this.isDocPosting = false;
 
       return;
     }
 
-    this.odataService.createADPDocument(docObj, accountExtra, this._isADP)
-      .pipe(takeUntil(this._destroyed$!),
-      finalize(() => {
-        this.currentStep = 3;
-        this.isDocPosting = false;
-      }))
+    this.odataService
+      .createADPDocument(docObj, accountExtra, this._isADP)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => {
+          this.currentStep = 3;
+          this.isDocPosting = false;
+        })
+      )
       .subscribe({
         next: (ndoc: Document) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
-            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
+            ConsoleLogTypeEnum.debug
+          );
 
           this.docIdCreated = ndoc.Id;
           this.docPostingFailed = undefined;
@@ -257,47 +318,48 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
           // Show error message
           this.docIdCreated = undefined;
           this.docPostingFailed = error;
-        }
+        },
       });
   }
 
   private _updateCurrentTitle(): void {
     if (this._isADP) {
-      this.curTitle = 'Sys.DocTy.AdvancedPayment';
+      this.curTitle = "Sys.DocTy.AdvancedPayment";
       this.curDocType = financeDocTypeAdvancePayment;
     } else {
-      this.curTitle = 'Sys.DocTy.AdvancedRecv';
+      this.curTitle = "Sys.DocTy.AdvancedRecv";
       this.curDocType = financeDocTypeAdvanceReceived;
     }
   }
 
   private _geneateDocument(): Document {
-    const doc: Document = this.headerFormGroup.get('headerControl')?.value;
+    const doc: Document = this.headerFormGroup.get("headerControl")?.value;
     doc.HID = this.homeService.ChosedHome!.ID;
     doc.DocType = this.curDocType;
     doc.Items = [];
 
     const fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
-    fitem.AccountId = this.headerFormGroup.get('accountControl')?.value;
-    fitem.ControlCenterId = this.headerFormGroup.get('ccControl')?.value;
-    fitem.OrderId = this.headerFormGroup.get('orderControl')?.value;
+    fitem.AccountId = this.headerFormGroup.get("accountControl")?.value;
+    fitem.ControlCenterId = this.headerFormGroup.get("ccControl")?.value;
+    fitem.OrderId = this.headerFormGroup.get("orderControl")?.value;
     if (this._isADP) {
       fitem.TranType = financeTranTypeAdvancePaymentOut;
     } else {
       fitem.TranType = financeTranTypeAdvanceReceiveIn;
     }
-    fitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
+    fitem.TranAmount = this.headerFormGroup.get("amountControl")?.value;
     fitem.Desp = doc.Desp;
     doc.Items = [fitem];
 
     return doc;
   }
   private _updateConfirmInfo(): void {
-    const doc: Document = this.headerFormGroup.get('headerControl')?.value;
+    const doc: Document = this.headerFormGroup.get("headerControl")?.value;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
-    this.confirmInfo.tranAmount = this.headerFormGroup.get('amountControl')?.value;
+    this.confirmInfo.tranAmount =
+      this.headerFormGroup.get("amountControl")?.value;
     this.confirmInfo.tranCurrency = doc.TranCurr;
     if (this._isADP) {
       this.confirmInfo.tranType = financeTranTypeAdvancePaymentOut;
@@ -307,10 +369,10 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   }
   public onDisplayCreatedDoc(): void {
     if (this.docIdCreated) {
-      this._router.navigate(['/finance/document/display', this.docIdCreated]);
+      this._router.navigate(["/finance/document/display", this.docIdCreated]);
     }
   }
   public onCreateNewDoc(): void {
-    this._router.navigate(['/finance/document/create']);
+    this._router.navigate(["/finance/document/create"]);
   }
 }

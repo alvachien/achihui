@@ -1,1 +1,1 @@
-export * from './borrow-record-create-dlg.component';
+export * from "./borrow-record-create-dlg.component";

@@ -1,11 +1,24 @@
-<nz-page-header nzBackIcon [nzTitle]="t('Finance.ConfigObjects')" *transloco="let t">
+<nz-page-header
+  nzBackIcon
+  [nzTitle]="t('Finance.ConfigObjects')"
+  *transloco="let t"
+>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.ConfigObjects' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{
+        "Common.Overview" | transloco
+      }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item>{{
+      "Finance.ConfigObjects" | transloco
+    }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-content>
     <div *ngIf="isChildMode">
-      <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+      <nz-result
+        [nzIcon]="'smile-twotone'"
+        [nzTitle]="'Common.ChildModeDetail' | transloco"
+      >
         <div nz-result-extra>
           <button nz-button nzType="primary">OK</button>
         </div>
@@ -23,12 +36,20 @@
             <hih-fin-doc-type-list></hih-fin-doc-type-list>
           </ng-template>
         </nz-tab>
-        <nz-tab [nzTitle]="t('Finance.TransactionTypes') + ' - ' + t('Common.HierarchyView')">
+        <nz-tab
+          [nzTitle]="
+            t('Finance.TransactionTypes') + ' - ' + t('Common.HierarchyView')
+          "
+        >
           <ng-template nz-tab>
             <hih-fin-tran-type-hierarchy></hih-fin-tran-type-hierarchy>
           </ng-template>
         </nz-tab>
-        <nz-tab [nzTitle]="t('Finance.TransactionTypes') + ' - ' + t('Common.ListView')">
+        <nz-tab
+          [nzTitle]="
+            t('Finance.TransactionTypes') + ' - ' + t('Common.ListView')
+          "
+        >
           <ng-template nz-tab>
             <hih-fin-tran-type-list></hih-fin-tran-type-list>
           </ng-template>

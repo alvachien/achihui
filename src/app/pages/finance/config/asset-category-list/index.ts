@@ -1,1 +1,1 @@
-export * from './asset-category-list.component';
+export * from "./asset-category-list.component";

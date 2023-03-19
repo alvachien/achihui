@@ -1,1 +1,1 @@
-export * from './tran-type-month-on-month-report.component';
+export * from "./tran-type-month-on-month-report.component";

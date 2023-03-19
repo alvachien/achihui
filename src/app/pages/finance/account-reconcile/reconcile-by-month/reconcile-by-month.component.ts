@@ -1,25 +1,35 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { finalize, forkJoin, ReplaySubject, takeUntil } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { translate } from "@ngneat/transloco";
+import * as moment from "moment";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { finalize, forkJoin, ReplaySubject, takeUntil } from "rxjs";
 
-import { Account, AccountReconcileCompare, AccountReconcileExpect, BuildupAccountForSelection, ConsoleLogTypeEnum, 
-  ModelUtility, momentDateFormat, UIAccountForSelection } from 'src/app/model';
-import { FinanceOdataService, HomeDefOdataService } from 'src/app/services';
+import {
+  Account,
+  AccountReconcileCompare,
+  AccountReconcileExpect,
+  BuildupAccountForSelection,
+  ConsoleLogTypeEnum,
+  ModelUtility,
+  momentDateFormat,
+  UIAccountForSelection,
+} from "src/app/model";
+import { FinanceOdataService, HomeDefOdataService } from "src/app/services";
 
 interface FastInputExpectedResult {
-  Month: String;
+  Month: string;
   Amount: number;
 }
 
 @Component({
-  selector: 'hih-reconcile-by-month',
-  templateUrl: './reconcile-by-month.component.html',
-  styleUrls: ['./reconcile-by-month.component.less'],
+  selector: "hih-reconcile-by-month",
+  templateUrl: "./reconcile-by-month.component.html",
+  styleUrls: ["./reconcile-by-month.component.less"],
 })
-export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ReconcileByMonthComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   currentStep = 0;
   processing = false;
   public baseCurrency: string;
@@ -29,14 +39,17 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   public arUIAccounts: UIAccountForSelection[] = [];
   selectedAccountId?: number;
   // Step 1. Expect result
-  fastInputResult = '';
+  fastInputResult = "";
   isFastInputDlgVisible = false;
   listExpectResult: AccountReconcileExpect[] = [];
   fastInputSyntax = `[{"Month": month, "Amount": amount }]`;
   fastInputExample = `[{"Month": "2023-01", "Amount": 100}, {"Month": "2023-02", "Amount": 200}]`;
   // Step 2. Compare result
   // Previous sent info - avoid resending
-  prvSentInfo?: { SelectedAccount: number, inputtedExpectResult: AccountReconcileExpect[]};
+  prvSentInfo?: {
+    SelectedAccount: number;
+    inputtedExpectResult: AccountReconcileExpect[];
+  };
   compareResult: AccountReconcileCompare[] = [];
 
   constructor(
@@ -44,7 +57,8 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
     private activateRoute: ActivatedRoute,
-    private router: Router) {
+    private router: Router
+  ) {
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
   }
@@ -63,7 +77,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   done(): void {
-    this.router.navigate(['/finance/document']);
+    this.router.navigate(["/finance/document"]);
   }
 
   ngOnInit(): void {
@@ -75,40 +89,48 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: rst => {
+        next: (rst) => {
           // Accounts
           this.arAccounts = rst[1];
           this.arUIAccounts = BuildupAccountForSelection(rst[1], rst[0]);
         },
-        error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering ReconcileByMonthComponent ngOnInit, forkJoin, ${err}`,
-            ConsoleLogTypeEnum.error);
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering ReconcileByMonthComponent ngOnInit, forkJoin, ${err}`,
+            ConsoleLogTypeEnum.error
+          );
           this.modalService.create({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
   }
   ngAfterViewInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit...",
+      ConsoleLogTypeEnum.debug
+    );
     this.activateRoute.url.subscribe({
       next: (x: any) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'bymonth') {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit, set selected account ${x[1].path}...`,
-              ConsoleLogTypeEnum.debug);
+          if (x[0].path === "bymonth") {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit, set selected account ${x[1].path}...`,
+              ConsoleLogTypeEnum.debug
+            );
             this.selectedAccountId = +x[1].path;
           }
         }
-      }
+      },
     });
   }
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -122,19 +144,20 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   // Step 1. Expect result
   handleFastInputModalSubmit() {
     // Parse the format and insert into table
-    let results = JSON.parse(this.fastInputResult) as FastInputExpectedResult[];
+    const results = JSON.parse(
+      this.fastInputResult
+    ) as FastInputExpectedResult[];
     if (results) {
-      let results2: AccountReconcileExpect[] = results.map(origin => {
-        let rst = new AccountReconcileExpect();
-        rst.currentMonth = moment(origin.Month + "-01").endOf("M").toDate();
+      const results2: AccountReconcileExpect[] = results.map((origin) => {
+        const rst = new AccountReconcileExpect();
+        rst.currentMonth = moment(origin.Month + "-01")
+          .endOf("M")
+          .toDate();
         rst.expectedAmount = origin.Amount;
         return rst;
       });
-      // Remove duplicates - TBD.      
-      this.listExpectResult = [
-        ...this.listExpectResult,
-        ...results2,
-      ];
+      // Remove duplicates - TBD.
+      this.listExpectResult = [...this.listExpectResult, ...results2];
       this.isFastInputDlgVisible = false;
     }
   }
@@ -156,7 +179,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
       if (rst === row) {
         ridx = idx;
       }
-    })
+    });
 
     if (ridx !== -1) {
       this.listExpectResult.splice(ridx, 1);
@@ -167,38 +190,43 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   // Step 2. Compare the result
   fetchAccountBalanceInfo() {
     if (this.needFetchAccountBalanceInfo()) {
-      let ardates: string[] = this.listExpectResult.map(val => val.currentMonthStr);
+      const ardates: string[] = this.listExpectResult.map(
+        (val) => val.currentMonthStr
+      );
       this.processing = true;
-      this.odataService.fetchAccountBalanceEx(this.selectedAccountId!, ardates)
-        .pipe(finalize(() => this.processing = false))
+      this.odataService
+        .fetchAccountBalanceEx(this.selectedAccountId!, ardates)
+        .pipe(finalize(() => (this.processing = false)))
         .subscribe({
-          next: val => {
+          next: (val) => {
             this.compareResult = [];
             this.prvSentInfo = {
               SelectedAccount: this.selectedAccountId!,
               inputtedExpectResult: [],
             };
 
-            this.listExpectResult.forEach(rst => {
-              let cmprst = new AccountReconcileCompare();
+            this.listExpectResult.forEach((rst) => {
+              const cmprst = new AccountReconcileCompare();
               cmprst.currentMonth = moment(rst.currentMonthStr).toDate();
               cmprst.expectedAmount = rst.expectedAmount;
               cmprst.actualAmount = 0;
 
-              let actrst = val.find(p => p.currentMonth === rst.currentMonthStr);
+              const actrst = val.find(
+                (p) => p.currentMonth === rst.currentMonthStr
+              );
               cmprst.actualAmount = actrst ? actrst.actualAmount : 0;
               this.compareResult.push(cmprst);
 
-              let newexprst = new AccountReconcileExpect();
+              const newexprst = new AccountReconcileExpect();
               newexprst.currentMonth = moment(rst.currentMonthStr).toDate();
               newexprst.expectedAmount = rst.expectedAmount;
               this.prvSentInfo?.inputtedExpectResult.push(newexprst);
             });
           },
-          error: err => {
+          error: (err) => {
             console.error(err.toString());
-          }
-        })
+          },
+        });
     }
   }
 
@@ -210,12 +238,17 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
     if (this.prvSentInfo.SelectedAccount !== this.selectedAccountId) {
       return true;
     }
-    if (this.prvSentInfo.inputtedExpectResult.length !== this.listExpectResult.length) {
+    if (
+      this.prvSentInfo.inputtedExpectResult.length !==
+      this.listExpectResult.length
+    ) {
       return true;
     }
     let bdifffound = false;
-    this.listExpectResult.forEach(er => {
-      let prvexp = this.prvSentInfo?.inputtedExpectResult.find(p => p.currentMonth === er.currentMonth);
+    this.listExpectResult.forEach((er) => {
+      const prvexp = this.prvSentInfo?.inputtedExpectResult.find(
+        (p) => p.currentMonth === er.currentMonth
+      );
       if (prvexp === undefined) {
         bdifffound = true;
       } else {

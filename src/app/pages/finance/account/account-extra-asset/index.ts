@@ -1,1 +1,1 @@
-export * from './account-extra-asset.component';
+export * from "./account-extra-asset.component";

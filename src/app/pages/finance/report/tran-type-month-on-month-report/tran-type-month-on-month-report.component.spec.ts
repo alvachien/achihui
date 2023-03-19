@@ -1,26 +1,54 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of, } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { NgxEchartsModule } from 'ngx-echarts';
-import { NzCascaderModule } from 'ng-zorro-antd/cascader';
-import * as echarts from 'echarts';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+  discardPeriodicTasks,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router } from "@angular/router";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { BehaviorSubject, of } from "rxjs";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { NgxEchartsModule } from "ngx-echarts";
+import { NzCascaderModule } from "ng-zorro-antd/cascader";
+import * as echarts from "echarts";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError,
-  ElementClass_DialogContent, ElementClass_DialogCloseButton } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, FinanceReportByOrder, Order, FinanceReportEntryByTransactionType, FinanceReportEntryByTransactionTypeMoM, 
-  financePeriodLast3Months, financePeriodLast6Months, financePeriodLast12Months, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
+import { FinanceUIModule } from "../../finance-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+  ElementClass_DialogContent,
+  ElementClass_DialogCloseButton,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  FinanceOdataService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  FinanceReportByOrder,
+  Order,
+  FinanceReportEntryByTransactionType,
+  FinanceReportEntryByTransactionTypeMoM,
+  financePeriodLast3Months,
+  financePeriodLast6Months,
+  financePeriodLast12Months,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { TranTypeMonthOnMonthReportComponent } from "./tran-type-month-on-month-report.component";
 
-describe('TranTypeMonthOnMonthReportComponent', () => {
+describe("TranTypeMonthOnMonthReportComponent", () => {
   let component: TranTypeMonthOnMonthReportComponent;
   let fixture: ComponentFixture<TranTypeMonthOnMonthReportComponent>;
 
@@ -41,12 +69,15 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
     fakeData.buildFinOrders();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchReportByTransactionTypeMoM',
-      'fetchAllTranTypes',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchReportByTransactionTypeMoM",
+      "fetchAllTranTypes",
     ]);
-    fetchReportByTransactionTypeMoMSpy = storageService.fetchReportByTransactionTypeMoM.and.returnValue(of([]));
-    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchReportByTransactionTypeMoMSpy =
+      storageService.fetchReportByTransactionTypeMoM.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
+      of([])
+    );
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -62,16 +93,15 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ TranTypeMonthOnMonthReportComponent ],
+      declarations: [TranTypeMonthOnMonthReportComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -80,17 +110,18 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     let arRptData: FinanceReportEntryByTransactionTypeMoM[] = [];
 
     beforeEach(() => {
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       arRptData = [];
-      let ndata: FinanceReportEntryByTransactionTypeMoM = new FinanceReportEntryByTransactionTypeMoM();
+      let ndata: FinanceReportEntryByTransactionTypeMoM =
+        new FinanceReportEntryByTransactionTypeMoM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.InAmount = 100;
       ndata.OutAmount = 20;
@@ -156,11 +187,11 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       fetchReportByTransactionTypeMoMSpy.and.returnValue(asyncData(arRptData));
     });
 
-    it('should not show data before OnInit', () => {
+    it("should not show data before OnInit", () => {
       expect(component.arTranType.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -179,7 +210,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       flush();
     }));
 
-    it('should show data after period changed', fakeAsync(() => {
+    it("should show data after period changed", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -204,12 +235,11 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
     }));
   });
 
-  describe('3. shall popup dialog for exceptions', () => {
+  describe("3. shall popup dialog for exceptions", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -218,9 +248,11 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when get all tran type Service fails', fakeAsync(() => {
+    it("should display error when get all tran type Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllTranTypesSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -229,25 +261,35 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should display error when Report by tran type Service fails', fakeAsync(() => {
+    it("should display error when Report by tran type Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchReportByTransactionTypeMoMSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchReportByTransactionTypeMoMSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -262,20 +304,27 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
   });
 });
-

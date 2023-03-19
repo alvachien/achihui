@@ -1,20 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import * as moment from 'moment';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  Observable,
+  forkJoin,
+  merge,
+  of as observableOf,
+  BehaviorSubject,
+  ReplaySubject,
+} from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
+import * as moment from "moment";
 
-import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
-  GeneralFilterValueType, TranType, UICommonLabelEnum, Account,
-  ControlCenter, Order, DocumentItemView, ModelUtility, ConsoleLogTypeEnum, momentDateFormat,
-} from '../../../model';
-import { UITableColumnItem } from '../../../uimodel';
-import { translate } from '@ngneat/transloco';
-import { HomeDefOdataService } from 'src/app/services';
+import {
+  GeneralFilterOperatorEnum,
+  GeneralFilterItem,
+  UIDisplayString,
+  UIDisplayStringUtil,
+  GeneralFilterValueType,
+  TranType,
+  UICommonLabelEnum,
+  Account,
+  ControlCenter,
+  Order,
+  DocumentItemView,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  momentDateFormat,
+} from "../../../model";
+import { UITableColumnItem } from "../../../uimodel";
+import { translate } from "@ngneat/transloco";
+import { HomeDefOdataService } from "src/app/services";
 
 @Component({
-  selector: 'hih-document-item-search',
-  templateUrl: './document-item-search.component.html',
-  styleUrls: ['./document-item-search.component.less'],
+  selector: "hih-document-item-search",
+  templateUrl: "./document-item-search.component.html",
+  styleUrls: ["./document-item-search.component.less"],
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -38,141 +57,176 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome!.IsChild!;
   }
 
-  constructor(private modalService: NzModalService,
-    private homeService: HomeDefOdataService,) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug);
-    this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
-    this.allFields = [{
-      displayas: 'Finance.TransactionType',
-      value: 'TransactionType',
-      valueType: GeneralFilterValueType.number, // 1
-    }, {
-      displayas: 'Finance.IsExpense',
-      value: 'IsExpense',
-      valueType: GeneralFilterValueType.boolean, // 4
-    }, {
-      displayas: 'Finance.Currency',
-      value: 'Currency',
-      valueType: GeneralFilterValueType.string, // 2
-    }, {
-      displayas: 'Finance.Account',
-      value: 'AccountID',
-      valueType: GeneralFilterValueType.number, // 1
-    }, {
-      displayas: 'Finance.ControlCenter',
-      value: 'ControlCenterID',
-      valueType: GeneralFilterValueType.number, // 1
-    }, {
-      displayas: 'Finance.Activity',
-      value: 'OrderID',
-      valueType: GeneralFilterValueType.number, // 1
-    }, {
-      displayas: 'Finance.TransactionDate',
-      value: 'TransactionDate',
-      valueType: GeneralFilterValueType.date, // 3
-    },
+  constructor(
+    private modalService: NzModalService,
+    private homeService: HomeDefOdataService
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
+    this.allOperators =
+      UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
+    this.allFields = [
+      {
+        displayas: "Finance.TransactionType",
+        value: "TransactionType",
+        valueType: GeneralFilterValueType.number, // 1
+      },
+      {
+        displayas: "Finance.IsExpense",
+        value: "IsExpense",
+        valueType: GeneralFilterValueType.boolean, // 4
+      },
+      {
+        displayas: "Finance.Currency",
+        value: "Currency",
+        valueType: GeneralFilterValueType.string, // 2
+      },
+      {
+        displayas: "Finance.Account",
+        value: "AccountID",
+        valueType: GeneralFilterValueType.number, // 1
+      },
+      {
+        displayas: "Finance.ControlCenter",
+        value: "ControlCenterID",
+        valueType: GeneralFilterValueType.number, // 1
+      },
+      {
+        displayas: "Finance.Activity",
+        value: "OrderID",
+        valueType: GeneralFilterValueType.number, // 1
+      },
+      {
+        displayas: "Finance.TransactionDate",
+        value: "TransactionDate",
+        valueType: GeneralFilterValueType.date, // 3
+      },
     ];
-    this.listOfColumns = [{
-      name: 'Common.ID',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Finance.Items',
-      sortOrder: null,
-      sortFn: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false
-    }, {
-      name: 'Common.Description',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.ItemDesp.localeCompare(b.ItemDesp),
-    }, {
-      name: 'Common.Date',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,   
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        a.TransactionDate!.format(moment.HTML5_FMT.DATE).localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
-    }, {
-      name: 'Finance.TransactionType',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType! - b.TransactionType!
-    }, {
-      name: 'Finance.Amount',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => a.Amount - b.Amount
-    }, {
-      name: 'Finance.Account',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getAccountName(a.AccountID!).localeCompare(this.getAccountName(b.AccountID!))
-    }, {
-      name: 'Finance.ControlCenter',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) =>
-        this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!))
-    }, {
-      name: 'Finance.Activity',
-      sortOrder: null,
-      sortDirections: [],
-      listOfFilter: [],
-      filterFn: null,
-      filterMultiple: false,
-      sortFn: (a: DocumentItemView, b: DocumentItemView) => this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!))
-    }];
+    this.listOfColumns = [
+      {
+        name: "Common.ID",
+        sortOrder: null,
+        sortFn: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+      },
+      {
+        name: "Finance.Items",
+        sortOrder: null,
+        sortFn: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+      },
+      {
+        name: "Common.Description",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          a.ItemDesp.localeCompare(b.ItemDesp),
+      },
+      {
+        name: "Common.Date",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          a
+            .TransactionDate!.format(moment.HTML5_FMT.DATE)
+            .localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
+      },
+      {
+        name: "Finance.TransactionType",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          a.TransactionType! - b.TransactionType!,
+      },
+      {
+        name: "Finance.Amount",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          a.Amount - b.Amount,
+      },
+      {
+        name: "Finance.Account",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          this.getAccountName(a.AccountID!).localeCompare(
+            this.getAccountName(b.AccountID!)
+          ),
+      },
+      {
+        name: "Finance.ControlCenter",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          this.getControlCenterName(a.ControlCenterID!).localeCompare(
+            this.getControlCenterName(b.ControlCenterID!)
+          ),
+      },
+      {
+        name: "Finance.Activity",
+        sortOrder: null,
+        sortDirections: [],
+        listOfFilter: [],
+        filterFn: null,
+        filterMultiple: false,
+        sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          this.getOrderName(a.OrderID!).localeCompare(
+            this.getOrderName(b.OrderID!)
+          ),
+      },
+    ];
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find(acnt => {
+    const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : "";
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find(cc => {
+    const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : '';
+    return ccObj ? ccObj.Name : "";
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find(ord => {
+    const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : '';
+    return orderObj ? orderObj.Name : "";
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find(tt => {
+    const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : '';
+    return tranTypeObj ? tranTypeObj.Name : "";
   }
   trackByName(_: number, item: UITableColumnItem<DocumentItemView>): string {
     return item.name;
@@ -223,11 +277,11 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           val.fieldName = value.fieldName;
           val.operator = +value.operator;
           if (value.lowValue) {
-            val.lowValue = 'true';
+            val.lowValue = "true";
           } else {
-            val.lowValue = 'false';
+            val.lowValue = "false";
           }
-          val.highValue = '';
+          val.highValue = "";
           break;
         }
 
@@ -238,7 +292,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           if (value.operator === GeneralFilterOperatorEnum.Between) {
             val.highValue = moment(value.highValue).format(momentDateFormat);
           } else {
-            val.highValue = '';
+            val.highValue = "";
           }
           break;
         }
@@ -250,7 +304,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           if (value.operator === GeneralFilterOperatorEnum.Between) {
             val.highValue = +value.highValue;
           } else {
-            val.highValue = '';
+            val.highValue = "";
           }
           break;
         }
@@ -262,7 +316,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           if (value.operator === GeneralFilterOperatorEnum.Between) {
             val.highValue = value.highValue;
           } else {
-            val.highValue = '';
+            val.highValue = "";
           }
           break;
         }
@@ -276,7 +330,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
       this.realFilters = arRealFilter;
     } else {
       this.modalService.warning({
-        nzTitle: translate('Common.Warning'),
+        nzTitle: translate("Common.Warning"),
         nzContent: translate("Common.FilterIsMust"),
         nzClosable: true,
       });

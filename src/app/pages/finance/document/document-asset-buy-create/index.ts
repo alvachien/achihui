@@ -1,1 +1,1 @@
-export * from './document-asset-buy-create.component';
+export * from "./document-asset-buy-create.component";

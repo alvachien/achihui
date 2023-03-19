@@ -1,22 +1,24 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { BorrowRecordCreateDlgComponent } from './borrow-record-create-dlg.component';
+import { EventUIModule } from "src/app/pages/event/event-ui.module";
+import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  LibraryStorageService,
+  HomeDefOdataService,
+} from "../../../../services";
+import { UserAuthInfo } from "../../../../model";
+import { BorrowRecordCreateDlgComponent } from "./borrow-record-create-dlg.component";
 
-describe('BorrowRecordCreateDlgComponent', () => {
+describe("BorrowRecordCreateDlgComponent", () => {
   let component: BorrowRecordCreateDlgComponent;
   let fixture: ComponentFixture<BorrowRecordCreateDlgComponent>;
   let fakeData: FakeDataHelper;
@@ -32,10 +34,11 @@ describe('BorrowRecordCreateDlgComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'createBookBorrowRecord',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "createBookBorrowRecord",
     ]);
-    createBookBorrowRecordSpy = storageService.createBookBorrowRecord.and.returnValue(of({}));
+    createBookBorrowRecordSpy =
+      storageService.createBookBorrowRecord.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -57,7 +60,7 @@ describe('BorrowRecordCreateDlgComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ BorrowRecordCreateDlgComponent ],
+      declarations: [BorrowRecordCreateDlgComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -66,15 +69,15 @@ describe('BorrowRecordCreateDlgComponent', () => {
         NzModalService,
         {
           provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) => modalSvc.create({
-            nzClosable: true,
-            nzContent: 'test'
-          }),
-          deps: [NzModalService]
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: "test",
+            }),
+          deps: [NzModalService],
         },
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -83,7 +86,7 @@ describe('BorrowRecordCreateDlgComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,20 +1,27 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { NzModalService, } from 'ng-zorro-antd/modal';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { translate } from '@ngneat/transloco';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { NzTableQueryParams } from "ng-zorro-antd/table";
+import { translate } from "@ngneat/transloco";
+import { ReplaySubject, forkJoin } from "rxjs";
+import { takeUntil, finalize } from "rxjs/operators";
+import { Router } from "@angular/router";
 
-import { FinanceOdataService, UIStatusService } from '../../../services';
-import { Account, ModelUtility, ConsoleLogTypeEnum,
-  GeneralFilterItem, DocumentItemView, TranType, ControlCenter, Order,
-} from '../../../model';
+import { FinanceOdataService, UIStatusService } from "../../../services";
+import {
+  Account,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  GeneralFilterItem,
+  DocumentItemView,
+  TranType,
+  ControlCenter,
+  Order,
+} from "../../../model";
 
 @Component({
-  selector: 'hih-fin-document-item-view',
-  templateUrl: './document-item-view.component.html',
-  styleUrls: ['./document-item-view.component.less'],
+  selector: "hih-fin-document-item-view",
+  templateUrl: "./document-item-view.component.html",
+  styleUrls: ["./document-item-view.component.less"],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -22,8 +29,12 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
 
   @Input()
   set filterDocItem(flters: GeneralFilterItem[]) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemViewComponent filterDocItem setter: ${flters ? 'NOT NULL and length is ' + flters.length : 'NULL'}`,
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent filterDocItem setter: ${
+        flters ? "NOT NULL and length is " + flters.length : "NULL"
+      }`,
+      ConsoleLogTypeEnum.debug
+    );
     if (flters && flters.length > 0) {
       this._filterDocItem = flters;
 
@@ -48,22 +59,28 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   incomeAmount = 0;
   outgoAmount = 0;
-  incomeCurrency = '';
-  outgoCurrency = '';
+  incomeCurrency = "";
+  outgoCurrency = "";
 
-  constructor(private odataService: FinanceOdataService,
+  constructor(
+    private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private router: Router, ) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    private router: Router
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
     if (this._destroyed$ === null) {
       this._destroyed$ = new ReplaySubject(1);
     }
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$ === null) {
       this._destroyed$ = new ReplaySubject(1);
@@ -71,8 +88,10 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$ !== null) {
       this._destroyed$.next(true);
@@ -81,90 +100,123 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     }
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find(acnt => {
+    const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name? acntObj.Name : '';
+    return acntObj && acntObj.Name ? acntObj.Name : "";
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find(cc => {
+    const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : '';
+    return ccObj ? ccObj.Name : "";
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find(ord => {
+    const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : '';
+    return orderObj ? orderObj.Name : "";
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find(tt => {
+    const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : '';
+    return tranTypeObj ? tranTypeObj.Name : "";
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this.filterDocItem.length > 0) {
       const { pageSize, pageIndex, sort, filter } = params;
       this.pageIndex = pageIndex;
       this.pageSize = pageSize;
-      const currentSort = sort.find(item => item.value !== null);
+      const currentSort = sort.find((item) => item.value !== null);
       const sortField = (currentSort && currentSort.key) || null;
       const sortOrder = (currentSort && currentSort.value) || null;
-      let fieldName = '';
+      let fieldName = "";
       switch (sortField) {
-        case 'desp': fieldName = 'ItemDesp'; break;
-        case 'date': fieldName = 'TransactionDate'; break;
-        case 'trantype': fieldName = 'TransactionType'; break;
-        case 'amount': fieldName = 'Amount'; break;
-        case 'account': fieldName = 'AccountID'; break;
-        case 'controlcenter': fieldName = 'ControlCenterID'; break;
-        case 'order': fieldName = 'OrderID'; break;
-        default: break;
+        case "desp":
+          fieldName = "ItemDesp";
+          break;
+        case "date":
+          fieldName = "TransactionDate";
+          break;
+        case "trantype":
+          fieldName = "TransactionType";
+          break;
+        case "amount":
+          fieldName = "Amount";
+          break;
+        case "account":
+          fieldName = "AccountID";
+          break;
+        case "controlcenter":
+          fieldName = "ControlCenterID";
+          break;
+        case "order":
+          fieldName = "OrderID";
+          break;
+        default:
+          break;
       }
-      let fieldOrder = '';
+      let fieldOrder = "";
       switch (sortOrder) {
-        case 'ascend': fieldOrder = 'asc'; break;
-        case 'descend': fieldOrder = 'desc'; break;
-        default: break;
+        case "ascend":
+          fieldOrder = "asc";
+          break;
+        case "descend":
+          fieldOrder = "desc";
+          break;
+        default:
+          break;
       }
-      this.fetchDocItems((fieldName && fieldOrder) ? {
-        field: fieldName,
-        order: fieldOrder,
-      } : undefined);
+      this.fetchDocItems(
+        fieldName && fieldOrder
+          ? {
+              field: fieldName,
+              order: fieldOrder,
+            }
+          : undefined
+      );
     }
   }
-  fetchDocItems(orderby?: { field: string, order: string }): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
-      ConsoleLogTypeEnum.debug);
+  fetchDocItems(orderby?: { field: string; order: string }): void {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...",
+      ConsoleLogTypeEnum.debug
+    );
 
     // Not allow select all.
-    if (this.filterDocItem.length <= 0) 
-      return;
+    if (this.filterDocItem.length <= 0) return;
 
     this.isLoadingDocItems = true;
     forkJoin([
-      this.odataService.searchDocItem(this.filterDocItem,
+      this.odataService.searchDocItem(
+        this.filterDocItem,
         this.pageSize,
         this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
-        orderby),
+        orderby
+      ),
       this.odataService.fetchAllAccounts(),
       this.odataService.fetchAllTranTypes(),
       this.odataService.fetchAllControlCenters(),
       this.odataService.fetchAllOrders(),
     ])
-      .pipe(takeUntil(this._destroyed$!),
-        finalize(() => this.isLoadingDocItems = false))
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => (this.isLoadingDocItems = false))
+      )
       .subscribe({
         next: (revdata: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems succeed.`,
-            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems succeed.`,
+            ConsoleLogTypeEnum.debug
+          );
 
           this.arAccounts = revdata[1];
           this.arTranType = revdata[2];
@@ -174,8 +226,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           this.listDocItem = [];
           this.incomeAmount = 0;
           this.outgoAmount = 0;
-          this.incomeCurrency = '';
-          this.outgoCurrency = '';
+          this.incomeCurrency = "";
+          this.outgoCurrency = "";
           if (revdata[0]) {
             if (revdata[0].totalCount) {
               this.totalDocumentItemCount = +revdata[0].totalCount;
@@ -184,23 +236,23 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
             }
 
             this.listDocItem = revdata[0].contentList;
-            this.listDocItem.forEach(eachitem => {
+            this.listDocItem.forEach((eachitem) => {
               if (eachitem.Amount < 0) {
-                if (this.outgoCurrency === '') {
+                if (this.outgoCurrency === "") {
                   this.outgoCurrency = eachitem.Currency;
                   this.outgoAmount += eachitem.Amount;
                 } else {
                   if (this.outgoCurrency === eachitem.Currency) {
-                    this.outgoAmount += eachitem.Amount;  
+                    this.outgoAmount += eachitem.Amount;
                   }
                 }
               } else {
-                if (this.incomeCurrency === '') {
+                if (this.incomeCurrency === "") {
                   this.incomeCurrency = eachitem.Currency;
                   this.incomeAmount += eachitem.Amount;
                 } else {
                   if (this.incomeCurrency === eachitem.Currency) {
-                    this.incomeAmount += eachitem.Amount;  
+                    this.incomeAmount += eachitem.Amount;
                   }
                 }
               }
@@ -211,11 +263,13 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${error}...`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${error}...`,
+            ConsoleLogTypeEnum.error
+          );
 
           this.modalService.error({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -223,6 +277,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       });
   }
   public onDisplayDocument(docid: number) {
-    this.router.navigate(['/finance/document/display/' + docid.toString()]);
+    this.router.navigate(["/finance/document/display/" + docid.toString()]);
   }
 }

@@ -1,7 +1,11 @@
-import { OperatorFilterPipe } from './operator-filter.pipe';
-import { UIDisplayString, GeneralFilterValueType, GeneralFilterOperatorEnum, } from '../../../model';
+import { OperatorFilterPipe } from "./operator-filter.pipe";
+import {
+  UIDisplayString,
+  GeneralFilterValueType,
+  GeneralFilterOperatorEnum,
+} from "../../../model";
 
-describe('OperatorFilterPipe', () => {
+describe("OperatorFilterPipe", () => {
   const pipe: OperatorFilterPipe = new OperatorFilterPipe();
   let arUIString: UIDisplayString[];
 
@@ -10,63 +14,66 @@ describe('OperatorFilterPipe', () => {
 
     let uistr: UIDisplayString = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.Between;
-    uistr.i18nterm = 'between';
-    uistr.displaystring = 'between';
+    uistr.i18nterm = "between";
+    uistr.displaystring = "between";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.Equal;
-    uistr.i18nterm = 'equal';
-    uistr.displaystring = 'equal';
+    uistr.i18nterm = "equal";
+    uistr.displaystring = "equal";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.LargerEqual;
-    uistr.i18nterm = 'larger equal';
-    uistr.displaystring = 'larger equal';
+    uistr.i18nterm = "larger equal";
+    uistr.displaystring = "larger equal";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.LargerThan;
-    uistr.i18nterm = 'larger than';
-    uistr.displaystring = 'larger than';
+    uistr.i18nterm = "larger than";
+    uistr.displaystring = "larger than";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.LessEqual;
-    uistr.i18nterm = 'less equal';
-    uistr.displaystring = 'less equal';
+    uistr.i18nterm = "less equal";
+    uistr.displaystring = "less equal";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.LessThan;
-    uistr.i18nterm = 'less than';
-    uistr.displaystring = 'less than';
+    uistr.i18nterm = "less than";
+    uistr.displaystring = "less than";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.Like;
-    uistr.i18nterm = 'like';
-    uistr.displaystring = 'like';
+    uistr.i18nterm = "like";
+    uistr.displaystring = "like";
     arUIString.push(uistr);
 
     uistr = new UIDisplayString();
     uistr.value = GeneralFilterOperatorEnum.NotEqual;
-    uistr.i18nterm = 'not equal';
-    uistr.displaystring = 'not equal';
+    uistr.i18nterm = "not equal";
+    uistr.displaystring = "not equal";
     arUIString.push(uistr);
   });
 
-  it('1. create an instance', () => {
+  it("1. create an instance", () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('2. Test the empty array', () => {
+  it("2. Test the empty array", () => {
     expect(pipe.transform([])).toEqual([]);
   });
 
-  it('3. Test string', () => {
-    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.string);
+  it("3. Test string", () => {
+    const arrst: UIDisplayString[] = pipe.transform(
+      arUIString,
+      GeneralFilterValueType.string
+    );
     expect(arrst.length).toBeGreaterThan(0);
 
     // For string: like, equal
@@ -80,8 +87,11 @@ describe('OperatorFilterPipe', () => {
     expect(equalidx).not.toEqual(-1);
   });
 
-  it('4. Test boolean', () => {
-    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.boolean);
+  it("4. Test boolean", () => {
+    const arrst: UIDisplayString[] = pipe.transform(
+      arUIString,
+      GeneralFilterValueType.boolean
+    );
     expect(arrst.length).toBeGreaterThan(0);
 
     // For boolean: equal
@@ -91,8 +101,11 @@ describe('OperatorFilterPipe', () => {
     expect(equalidx).not.toEqual(-1);
   });
 
-  it('5. Test number', () => {
-    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.number);
+  it("5. Test number", () => {
+    const arrst: UIDisplayString[] = pipe.transform(
+      arUIString,
+      GeneralFilterValueType.number
+    );
     expect(arrst.length).toBeGreaterThan(0);
 
     // For number: like is NOT supported
@@ -102,8 +115,11 @@ describe('OperatorFilterPipe', () => {
     expect(likeidx).toEqual(-1);
   });
 
-  it('5. Test date', () => {
-    const arrst: UIDisplayString[] = pipe.transform(arUIString, GeneralFilterValueType.date);
+  it("5. Test date", () => {
+    const arrst: UIDisplayString[] = pipe.transform(
+      arUIString,
+      GeneralFilterValueType.date
+    );
     expect(arrst.length).toBeGreaterThan(0);
 
     // For number: like is NOT supported

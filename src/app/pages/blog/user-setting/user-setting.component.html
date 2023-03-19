@@ -1,8 +1,17 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{'Nav.Blogs' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Common.Setting' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ "Nav.Blogs" | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{
+    "Common.Setting" | transloco
+  }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button nzType="primary" [disabled]="!isSaveButtonEnabled" (click)="onSave()">{{'Common.Save' | transloco}}</button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!isSaveButtonEnabled"
+      (click)="onSave()"
+    >
+      {{ "Common.Save" | transloco }}
+    </button>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -10,7 +19,7 @@
   <form nz-form [formGroup]="detailFormGroup">
     <!-- User -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Login.User' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ "Login.User" | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input formControlName="userControl" />
       </nz-form-control>
@@ -26,7 +35,9 @@
 
     <!-- Title Folder -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Common.Title' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{
+        "Common.Title" | transloco
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input formControlName="titleControl" />
       </nz-form-control>

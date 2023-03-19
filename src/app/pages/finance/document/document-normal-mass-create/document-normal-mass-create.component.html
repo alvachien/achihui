@@ -1,12 +1,25 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{
+        "Common.Overview" | transloco
+      }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/document/list">{{
+        "Finance.Documents" | transloco
+      }}</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{
+      "Finance.FreelyMassCreateNormalDocs" | transloco
+    }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{'Finance.FreelyMassCreateNormalDocs' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-title>{{
+    "Finance.FreelyMassCreateNormalDocs" | transloco
+  }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{
+    "Common.Create" | transloco
+  }}</nz-page-header-subtitle>
 </nz-page-header>
 
 <div *transloco="let t">
@@ -22,20 +35,48 @@
       <form nz-form [formGroup]="itemsFormGroup!" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
-            <nz-collapse-panel *ngFor="let item of getItemControls; index as i; first as isFirst; last as isLast" 
-              [nzHeader]="headerTpl" [nzActive]="true">
-              <hih-document-normal-mass-create-item 
+            <nz-collapse-panel
+              *ngFor="
+                let item of getItemControls;
+                index as i;
+                first as isFirst;
+                last as isLast
+              "
+              [nzHeader]="headerTpl"
+              [nzActive]="true"
+            >
+              <hih-document-normal-mass-create-item
                 [itemFormGroup]="getItemControls[i]"
                 [arUIAccounts]="arUIAccounts"
                 [arUIOrders]="arUIOrders"
                 [arControlCenters]="arControlCenters"
                 [baseCurrency]="baseCurrency"
-                [arTranType]="arTranType">
+                [arTranType]="arTranType"
+              >
               </hih-document-normal-mass-create-item>
               <ng-template #headerTpl>
-                <button nz-button nzType="primary" (click)="onCopyItem($event, i)"><i nz-icon nzType="copy"></i></button>
-                <button nz-button nzType="default" (click)="onCreateNewItem($event)"><i nz-icon nzType="plus"></i></button>
-                <button nz-button nzDanger [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)"><i nz-icon nzType="minus"></i></button>
+                <button
+                  nz-button
+                  nzType="primary"
+                  (click)="onCopyItem($event, i)"
+                >
+                  <i nz-icon nzType="copy"></i>
+                </button>
+                <button
+                  nz-button
+                  nzType="default"
+                  (click)="onCreateNewItem($event)"
+                >
+                  <i nz-icon nzType="plus"></i>
+                </button>
+                <button
+                  nz-button
+                  nzDanger
+                  [disabled]="isFirst && isLast"
+                  (click)="onRemoveItem($event, i)"
+                >
+                  <i nz-icon nzType="minus"></i>
+                </button>
               </ng-template>
             </nz-collapse-panel>
           </nz-collapse>
@@ -45,84 +86,182 @@
 
     <!-- Step 1: Confirm -->
     <div nz-row [hidden]="currentStep !== 1">
-      <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex" style="width: 100%;">
-        <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
-          <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
-            {{docinfo.TranDateFormatString}}
+      <div
+        *ngFor="
+          let docinfo of confirmInfo;
+          last as isConfirmLast;
+          index as confirmIndex
+        "
+        style="width: 100%"
+      >
+        <nz-descriptions
+          [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)"
+          nzBordered
+          [nzColumn]="4"
+        >
+          <nz-descriptions-item
+            [nzTitle]="'Common.Date' | transloco"
+            [nzSpan]="4"
+          >
+            {{ docinfo.TranDateFormatString }}
           </nz-descriptions-item>
           <div *ngFor="let iteminfo of docinfo.Items">
             <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-              {{getAccountName(iteminfo.AccountId!)}} ({{iteminfo.AccountId}})
+              {{ getAccountName(iteminfo.AccountId!) }} ({{
+                iteminfo.AccountId
+              }})
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-              {{getTranTypeName(iteminfo.TranType!)}} ({{iteminfo.TranType}})
+            <nz-descriptions-item
+              [nzTitle]="'Finance.TransactionType' | transloco"
+            >
+              {{ getTranTypeName(iteminfo.TranType!) }} ({{
+                iteminfo.TranType
+              }})
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
-              {{iteminfo.TranAmount}} <span style="margin-left: 3px;">{{baseCurrency}}</span>
+            <nz-descriptions-item
+              [nzTitle]="'Finance.Amount' | transloco"
+              [nzSpan]="2"
+            >
+              {{ iteminfo.TranAmount }}
+              <span style="margin-left: 3px">{{ baseCurrency }}</span>
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-              {{getControlCenterName(iteminfo.ControlCenterId!)}} ({{iteminfo.ControlCenterId}})
-            </nz-descriptions-item>  
-            <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-              {{getOrderName(iteminfo.OrderId!)}} ({{iteminfo.OrderId}})
-            </nz-descriptions-item>  
+            <nz-descriptions-item
+              [nzTitle]="'Finance.ControlCenter' | transloco"
+            >
+              {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{
+                iteminfo.ControlCenterId
+              }})
+            </nz-descriptions-item>
+            <nz-descriptions-item
+              [nzTitle]="'Finance.Activity' | transloco"
+              [nzSpan]="3"
+            >
+              {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
+            </nz-descriptions-item>
           </div>
         </nz-descriptions>
-        <nz-divider *ngIf="!isConfirmLast"></nz-divider>  
+        <nz-divider *ngIf="!isConfirmLast"></nz-divider>
       </div>
     </div>
 
     <!-- Step 2: Result -->
     <div nz-row [hidden]="currentStep !== 2">
       <div *ngIf="docIdFailed.length <= 0">
-        <nz-result nzStatus="success" [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+        <nz-result
+          nzStatus="success"
+          [nzTitle]="'Finance.DocumentPosted' | transloco"
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco"
+        >
           <div nz-result-content>
-            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
-                  {{pdocinfo.TranDateFormatString}}
+            <div
+              *ngFor="
+                let pdocinfo of docIdCreated;
+                last as isPostDocLast;
+                index as postDocIndex
+              "
+            >
+              <nz-descriptions
+                [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id"
+                nzBordered
+                [nzColumn]="4"
+              >
+                <nz-descriptions-item
+                  [nzTitle]="'Common.Date' | transloco"
+                  [nzSpan]="3"
+                >
+                  {{ pdocinfo.TranDateFormatString }}
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">{{pdocinfo.Id}}</button>
+                  <button
+                    nz-button
+                    nzType="link"
+                    (click)="onDisplayCreatedDoc(pdocinfo.Id!)"
+                  >
+                    {{ pdocinfo.Id }}
+                  </button>
                 </nz-descriptions-item>
               </nz-descriptions>
-              <nz-divider *ngIf="!isPostDocLast"></nz-divider>  
+              <nz-divider *ngIf="!isPostDocLast"></nz-divider>
             </div>
           </div>
           <div nz-result-extra>
-            <button nz-button (click)="onBackToListView()">Back to List View</button>
+            <button nz-button (click)="onBackToListView()">
+              Back to List View
+            </button>
           </div>
         </nz-result>
       </div>
       <div *ngIf="docIdFailed.length > 0">
-        <nz-result [nzTitle]="'Common.SubmissionFailed' | transloco" nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+        <nz-result
+          [nzTitle]="'Common.SubmissionFailed' | transloco"
+          nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco"
+        >
           <div nz-result-content>
-            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
-                  {{pdocinfo.TranDateFormatString}}
+            <div
+              *ngFor="
+                let pdocinfo of docIdCreated;
+                last as isPostDocLast;
+                index as postDocIndex
+              "
+            >
+              <nz-descriptions
+                [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id"
+                nzBordered
+                [nzColumn]="4"
+              >
+                <nz-descriptions-item
+                  [nzTitle]="'Common.Date' | transloco"
+                  [nzSpan]="3"
+                >
+                  {{ pdocinfo.TranDateFormatString }}
                 </nz-descriptions-item>
                 <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">{{pdocinfo.Id}}</button>
+                  <button
+                    nz-button
+                    nzType="link"
+                    (click)="onDisplayCreatedDoc(pdocinfo.Id!)"
+                  >
+                    {{ pdocinfo.Id }}
+                  </button>
                 </nz-descriptions-item>
               </nz-descriptions>
-              <nz-divider *ngIf="!isPostDocLast"></nz-divider>  
+              <nz-divider *ngIf="!isPostDocLast"></nz-divider>
             </div>
             <nz-divider></nz-divider>
-            <div *ngFor="let fdocinfo of docIdFailed; last as isFailedDocLast; index as failDocIndex">
-              <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + failDocIndex" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
-                  {{fdocinfo.TranDateFormatString}}
+            <div
+              *ngFor="
+                let fdocinfo of docIdFailed;
+                last as isFailedDocLast;
+                index as failDocIndex
+              "
+            >
+              <nz-descriptions
+                [nzTitle]="t('Finance.Document') + ' #' + failDocIndex"
+                nzBordered
+                [nzColumn]="4"
+              >
+                <nz-descriptions-item
+                  [nzTitle]="'Common.Date' | transloco"
+                  [nzSpan]="4"
+                >
+                  {{ fdocinfo.TranDateFormatString }}
                 </nz-descriptions-item>
               </nz-descriptions>
-              <nz-divider *ngIf="!isFailedDocLast"></nz-divider>  
+              <nz-divider *ngIf="!isFailedDocLast"></nz-divider>
             </div>
           </div>
           <div nz-result-extra>
-            <button nz-button nzType="primary" (click)="onResubmitFailedItems()">Resent Failed Items</button>
-            <button nz-button (click)="onBackToListView()">Back to List View</button>
+            <button
+              nz-button
+              nzType="primary"
+              (click)="onResubmitFailedItems()"
+            >
+              Resent Failed Items
+            </button>
+            <button nz-button (click)="onBackToListView()">
+              Back to List View
+            </button>
           </div>
         </nz-result>
       </div>
@@ -130,12 +269,22 @@
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 2">
-      <i nz-icon nzType="left"></i>{{'Common.PreviousButton' | transloco}}
+    <button
+      nz-button
+      (click)="pre()"
+      *ngIf="currentStep > 0 && currentStep < 2"
+    >
+      <i nz-icon nzType="left"></i>{{ "Common.PreviousButton" | transloco }}
     </button>
-    <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled"
-      *ngIf="currentStep < 2">
-      {{'Common.NextButton' | transloco}}<i nz-icon nzType="right"></i>
+    <button
+      nz-button
+      nzType="primary"
+      id="button_next_step"
+      (click)="next()"
+      [disabled]="!nextButtonEnabled"
+      *ngIf="currentStep < 2"
+    >
+      {{ "Common.NextButton" | transloco }}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>

@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NzResultModule } from 'ng-zorro-antd/result';
-import { TranslocoModule } from '@ngneat/transloco';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { NzResultModule } from "ng-zorro-antd/result";
+import { TranslocoModule } from "@ngneat/transloco";
 
-import { FatalErrorRoutingModule } from './fatal-error-routing.module';
-import { FatalErrorComponent } from './fatal-error.component';
+import { FatalErrorRoutingModule } from "./fatal-error-routing.module";
+import { FatalErrorComponent } from "./fatal-error.component";
 
 @NgModule({
   declarations: [FatalErrorComponent],
@@ -12,7 +12,7 @@ import { FatalErrorComponent } from './fatal-error.component';
     CommonModule,
     NzResultModule,
     TranslocoModule,
-    FatalErrorRoutingModule
-  ]
+    FatalErrorRoutingModule,
+  ],
 })
-export class FatalErrorModule { }
+export class FatalErrorModule {}

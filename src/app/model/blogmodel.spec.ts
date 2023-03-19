@@ -2,28 +2,34 @@
 // Unit test for blogmodel.ts
 //
 
-import { BlogPost, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson,
-  BlogPostTag, BlogUserSetting, } from './blogmodel';
+import {
+  BlogPost,
+  BlogCollection,
+  BlogCollectionAPIJson,
+  BlogPostAPIJson,
+  BlogPostTag,
+  BlogUserSetting,
+} from "./blogmodel";
 
-describe('BlogUserSetting', () => {
+describe("BlogUserSetting", () => {
   let instance: BlogUserSetting;
 
   beforeEach(() => {
     instance = new BlogUserSetting();
   });
 
-  it('shall work', () => {
+  it("shall work", () => {
     expect(instance).toBeTruthy();
   });
 
-  it('writeAPIJson and onSetData', () => {
-    instance.title = 'a';
-    instance.owner = 'b';
-    instance.footer = 'c';
-    instance.deploy = 'd';
-    instance.author = 'e';
-    instance.authordesp = 'f';
-    instance.authorimage = 'g';
+  it("writeAPIJson and onSetData", () => {
+    instance.title = "a";
+    instance.owner = "b";
+    instance.footer = "c";
+    instance.deploy = "d";
+    instance.author = "e";
+    instance.authordesp = "f";
+    instance.authorimage = "g";
 
     const apijson = instance.writeAPIJson();
     expect(apijson.Author).toEqual(instance.author);
@@ -46,21 +52,21 @@ describe('BlogUserSetting', () => {
   });
 });
 
-describe('BlogCollection', () => {
+describe("BlogCollection", () => {
   let instance: BlogCollection;
 
   beforeEach(() => {
     instance = new BlogCollection();
   });
 
-  it('shall work', () => {
+  it("shall work", () => {
     expect(instance).toBeTruthy();
   });
-  it('writeAPIJson and onSetData', () => {
+  it("writeAPIJson and onSetData", () => {
     instance.id = 1;
-    instance.name = 'a';
-    instance.comment = 'b';
-    instance.owner = 'c';
+    instance.name = "a";
+    instance.comment = "b";
+    instance.owner = "c";
 
     const apijson: BlogCollectionAPIJson = instance.writeAPIJson();
     expect(apijson.ID).toEqual(instance.id);
@@ -77,23 +83,23 @@ describe('BlogCollection', () => {
   });
 });
 
-describe('BlogPost', () => {
+describe("BlogPost", () => {
   let instance: BlogPost;
 
   beforeEach(() => {
     instance = new BlogPost();
   });
 
-  it('shall work', () => {
+  it("shall work", () => {
     expect(instance).toBeTruthy();
   });
-  it('writeAPIJson and onSetData', () => {
+  it("writeAPIJson and onSetData", () => {
     instance.id = 1;
     instance.format = 1;
-    instance.owner = 'a';
-    instance.title = 'b';
-    instance.brief = 'd';
-    instance.content = 'c';
+    instance.owner = "a";
+    instance.title = "b";
+    instance.brief = "d";
+    instance.content = "c";
 
     const apidata: BlogPostAPIJson = instance.writeAPIJson();
     expect(apidata).toBeTruthy();
@@ -115,14 +121,14 @@ describe('BlogPost', () => {
   });
 });
 
-describe('BlogPostTag', () => {
+describe("BlogPostTag", () => {
   let instance: BlogPostTag;
 
   beforeEach(() => {
     instance = new BlogPostTag();
   });
 
-  it('shall work', () => {
+  it("shall work", () => {
     expect(instance).toBeTruthy();
   });
 });

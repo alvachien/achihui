@@ -1,11 +1,11 @@
-import * as moment from 'moment';
-import { momentDateFormat } from './common';
+import * as moment from "moment";
+import { momentDateFormat } from "./common";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-export const BlogPostStatus_Draft             = 1;
-export const BlogPostStatus_PublishAsPublic   = 2;
-export const BlogPostStatus_PublishAsPrivate  = 3;
-export const BlogPostStatus_Deleted           = 4;
+export const BlogPostStatus_Draft = 1;
+export const BlogPostStatus_PublishAsPublic = 2;
+export const BlogPostStatus_PublishAsPrivate = 3;
+export const BlogPostStatus_Deleted = 4;
 
 /**
  * User Setting
@@ -24,27 +24,27 @@ export interface BlogUserSettingAPIJson {
 export class BlogUserSetting {
   owner: string;
   title: string;
-  footer: string | null  = null;
+  footer: string | null = null;
   deploy: string;
   author: string;
   authordesp: string | null = null;
   authorimage: string | null = null;
 
   constructor() {
-    this.owner = '';
-    this.title = '';
-    this.author = '';
-    this.deploy = '';
+    this.owner = "";
+    this.title = "";
+    this.author = "";
+    this.deploy = "";
   }
   public onSetData(data: BlogUserSettingAPIJson): void {
     if (data) {
-      this.owner = data.Owner ? data.Owner : '';
-      this.title = data.Name ? data.Name : '';
+      this.owner = data.Owner ? data.Owner : "";
+      this.title = data.Name ? data.Name : "";
       if (data.Comment) {
         this.footer = data.Comment;
       }
-      this.deploy = data.DeployFolder ? data.DeployFolder : '';
-      this.author = data.Author ? data.Author : '';
+      this.deploy = data.DeployFolder ? data.DeployFolder : "";
+      this.author = data.Author ? data.Author : "";
       if (data.AuthorDesp) {
         this.authordesp = data.AuthorDesp;
       }
@@ -84,9 +84,9 @@ export interface BlogCollectionAPIJson {
 }
 
 export class BlogCollection {
-  public id: number = -1;
-  public owner: string = '';
-  public name: string = '';
+  public id = -1;
+  public owner = "";
+  public name = "";
   public comment: string | null = null;
 
   public onSetData(data: BlogCollectionAPIJson): void {
@@ -106,14 +106,14 @@ export class BlogCollection {
       ID: this.id,
       Owner: this.owner,
       Name: this.name,
-      Comment: this.comment ? this.comment: undefined
+      Comment: this.comment ? this.comment : undefined,
     } as BlogCollectionAPIJson;
   }
 }
 
 export class BlogPostCollection {
-  public PostID: number = -1;
-  public CollectionID: number = -1;
+  public PostID = -1;
+  public CollectionID = -1;
 }
 
 /**
@@ -155,7 +155,7 @@ export class BlogPost {
     if (this.createdAt) {
       return this.createdAt.format(momentDateFormat);
     }
-    return '';
+    return "";
   }
 
   public onSetData(data: BlogPostAPIJson) {
@@ -191,10 +191,14 @@ export class BlogPost {
       BlogPostTags: this.BlogPostTags,
     };
     if (this.createdAt) {
-      rtnjson.CreatedAt = this.createdAt ? this.createdAt.format(momentDateFormat) : '';
+      rtnjson.CreatedAt = this.createdAt
+        ? this.createdAt.format(momentDateFormat)
+        : "";
     }
     if (this.updatedAt) {
-      rtnjson.UpdatedAt = this.updatedAt ? this.updatedAt.format(momentDateFormat) : '';
+      rtnjson.UpdatedAt = this.updatedAt
+        ? this.updatedAt.format(momentDateFormat)
+        : "";
     }
 
     return rtnjson;

@@ -1,33 +1,56 @@
 <nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>{{'Finance.Accounts' | transloco}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{
+          "Common.Overview" | transloco
+        }}</a></nz-breadcrumb-item
+      >
+      <nz-breadcrumb-item>{{
+        "Finance.Accounts" | transloco
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
-    <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
+    <nz-page-header-title>{{
+      "Finance.Account" | transloco
+    }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{
+      "Common.ListView" | transloco
+    }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" (click)="onRefresh(true)">{{'Common.Refresh' | transloco}}</a>
+      <a nz-button nzType="link" (click)="onRefresh(true)">{{
+        "Common.Refresh" | transloco
+      }}</a>
       <nz-divider nzType="vertical"></nz-divider>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
-      <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
+      <a
+        nz-button
+        nzType="link"
+        [disabled]="isChildMode"
+        routerLink="/finance/account/create"
+        >{{ "Common.Create" | transloco }}</a
+      >
+      <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{
+        "Common.HierarchyView" | transloco
+      }}</a>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
-    <nz-table #basicTable
+    <nz-table
+      #basicTable
       [nzLoading]="isLoadingResults"
       [nzData]="dataSet"
-      nzTableLayout="fixed">
+      nzTableLayout="fixed"
+    >
       <thead>
         <tr>
           <th
             *ngFor="let column of listOfColumns"
             [nzSortOrder]="column.sortOrder"
-            [nzSortFn]="column.sortFn"            
+            [nzSortFn]="column.sortFn"
             [nzSortDirections]="column.sortDirections"
             [nzFilterMultiple]="column.filterMultiple"
             [nzFilters]="column.listOfFilter"
-            [nzFilterFn]="column.filterFn">
+            [nzFilterFn]="column.filterFn"
+          >
             {{ column.name | transloco }}
           </th>
         </tr>
@@ -35,32 +58,55 @@
       <tbody>
         <tr *ngFor="let data of basicTable.data">
           <td>
-            <span [ngClass]="{'closed-account': data.isClosed}">{{data.Id}}</span>
+            <span [ngClass]="{ 'closed-account': data.isClosed }">{{
+              data.Id
+            }}</span>
             <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplay(data.Id!)">{{'Common.Display' | transloco}}</button>
+            <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
+              {{ "Common.Display" | transloco }}
+            </button>
             <a nz-dropdown nz-dropdown [nzDropdownMenu]="menuForChange">
-              {{'Common.AdvancedOperations' | transloco}}
+              {{ "Common.AdvancedOperations" | transloco }}
               <i nz-icon nzType="down"></i>
             </a>
             <nz-divider nzType="vertical"></nz-divider>
-            <a nz-button nz-popconfirm [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
+            <a
+              nz-button
+              nz-popconfirm
+              [nzPopconfirmTitle]="
+                'Common.ConfirmToDeleteSelectedItem' | transloco
+              "
               *ngIf="!isChildMode"
               nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="onDelete(data.Id!)" nzType="link" nzDanger>{{'Common.Delete' | transloco}}</a>
+              (nzOnConfirm)="onDelete(data.Id!)"
+              nzType="link"
+              nzDanger
+              >{{ "Common.Delete" | transloco }}</a
+            >
             <nz-dropdown-menu #menuForChange="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="onEdit(data.Id!)">{{'Common.Edit' | transloco}}</li>
+                <li nz-menu-item (click)="onEdit(data.Id!)">
+                  {{ "Common.Edit" | transloco }}
+                </li>
                 <li nz-menu-divider></li>
-                <li nz-menu-item (click)="onChangeAccountName(data.Id!)">{{'Finance.ChangeAccountName' | transloco}}</li>
+                <li nz-menu-item (click)="onChangeAccountName(data.Id!)">
+                  {{ "Finance.ChangeAccountName" | transloco }}
+                </li>
                 <li nz-menu-divider></li>
-                <li nz-menu-item (click)="onAccountReconcile(data.Id!)">{{'Finance.AccountReconcile' | transloco}}</li>
+                <li nz-menu-item (click)="onAccountReconcile(data.Id!)">
+                  {{ "Finance.AccountReconcile" | transloco }}
+                </li>
               </ul>
             </nz-dropdown-menu>
           </td>
-          <td><span [ngClass]="{'closed-account': data.isClosed}">{{data.Name}}</span></td>
-          <td>{{getCategoryName(data.CategoryId!) | transloco}}</td>
-          <td>{{getStatusString(data.Status) | transloco}}</td>
-          <td>{{data.Comment}}</td>
+          <td>
+            <span [ngClass]="{ 'closed-account': data.isClosed }">{{
+              data.Name
+            }}</span>
+          </td>
+          <td>{{ getCategoryName(data.CategoryId!) | transloco }}</td>
+          <td>{{ getStatusString(data.Status) | transloco }}</td>
+          <td>{{ data.Comment }}</td>
         </tr>
       </tbody>
     </nz-table>

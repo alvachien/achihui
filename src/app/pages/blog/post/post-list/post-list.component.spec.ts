@@ -1,19 +1,37 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, discardPeriodicTasks, tick, flush, inject } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  discardPeriodicTasks,
+  tick,
+  flush,
+  inject,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { of, BehaviorSubject } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
-import { BlogUIModule } from '../../blog-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
-import { PostListComponent } from './post-list.component';
-import { AuthService, UIStatusService, BlogOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
-import { Router } from '@angular/router';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import { BlogUIModule } from "../../blog-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import { PostListComponent } from "./post-list.component";
+import {
+  AuthService,
+  UIStatusService,
+  BlogOdataService,
+} from "../../../../services";
+import { UserAuthInfo } from "../../../../model";
+import { Router } from "@angular/router";
+import { OverlayContainer } from "@angular/cdk/overlay";
 
-describe('PostListComponent', () => {
+describe("PostListComponent", () => {
   let component: PostListComponent;
   let fixture: ComponentFixture<PostListComponent>;
   const authServiceStub: Partial<AuthService> = {};
@@ -27,8 +45,8 @@ describe('PostListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildBlogPost();
 
-    storageService = jasmine.createSpyObj('BlogOdataService', [
-      'fetchAllPosts',
+    storageService = jasmine.createSpyObj("BlogOdataService", [
+      "fetchAllPosts",
     ]);
     fetchAllPostsSpy = storageService.fetchAllPosts.and.returnValue(of({}));
 
@@ -44,17 +62,14 @@ describe('PostListComponent', () => {
         getTranslocoModule(),
         RouterTestingModule,
       ],
-      declarations: [
-        PostListComponent,
-      ],
+      declarations: [PostListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
         { provide: BlogOdataService, useValue: storageService },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -63,24 +78,26 @@ describe('PostListComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     beforeEach(() => {
-      fetchAllPostsSpy.and.returnValue(asyncData({
-        totalCount: 100,
-        contentList: fakeData.blogPost,
-      }));
+      fetchAllPostsSpy.and.returnValue(
+        asyncData({
+          totalCount: 100,
+          contentList: fakeData.blogPost,
+        })
+      );
     });
 
-    it('should not show data before OnInit', () => {
+    it("should not show data before OnInit", () => {
       expect(component.dataSet.length).toEqual(0);
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -94,7 +111,7 @@ describe('PostListComponent', () => {
       flush();
     }));
 
-    it('shall navigate to display post', fakeAsync(() => {
+    it("shall navigate to display post", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -102,17 +119,19 @@ describe('PostListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      spyOn(routerstub, "navigate");
 
       // Display
       component.onDisplay(fakeData.blogPost[0].id!);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/display/' + fakeData.blogPost[0].id!.toString()]);
+      expect(routerstub.navigate).toHaveBeenCalledWith([
+        "/blog/post/display/" + fakeData.blogPost[0].id!.toString(),
+      ]);
 
       discardPeriodicTasks();
       flush();
     }));
 
-    it('shall navigate to edit post', fakeAsync(() => {
+    it("shall navigate to edit post", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -120,18 +139,20 @@ describe('PostListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      spyOn(routerstub, "navigate");
 
       // Display
       component.onEdit(fakeData.blogPost[0].id!);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/edit/' + fakeData.blogPost[0].id!.toString()]);
+      expect(routerstub.navigate).toHaveBeenCalledWith([
+        "/blog/post/edit/" + fakeData.blogPost[0].id!.toString(),
+      ]);
 
       discardPeriodicTasks();
       flush();
     }));
   });
 
-  describe('3. shall display error dialog for exception', () => {
+  describe("3. shall display error dialog for exception", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -139,8 +160,7 @@ describe('PostListComponent', () => {
       fetchAllPostsSpy.and.returnValue(asyncData(fakeData.blogPost));
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -149,26 +169,32 @@ describe('PostListComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it("should display error when Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllPostsSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllPostsSpy.and.returnValue(asyncError<string>("Service failed"));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ".ant-modal-close"
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(0);
 
       flush();
     }));

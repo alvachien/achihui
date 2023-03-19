@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { Component, Input, OnInit } from "@angular/core";
+import { NzMessageService } from "ng-zorro-antd/message";
+import { NzModalRef } from "ng-zorro-antd/modal";
 
-import { Location } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { Location } from "src/app/model";
+import { LibraryStorageService } from "src/app/services";
 
 @Component({
-  selector: 'hih-location-selection-dlg',
-  templateUrl: './location-selection-dlg.component.html',
-  styleUrls: ['./location-selection-dlg.component.less'],
+  selector: "hih-location-selection-dlg",
+  templateUrl: "./location-selection-dlg.component.html",
+  styleUrls: ["./location-selection-dlg.component.less"],
 })
 export class LocationSelectionDlgComponent implements OnInit {
   checked = false;
@@ -33,8 +33,13 @@ export class LocationSelectionDlgComponent implements OnInit {
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfLocationInCurrentPage.every(prn => this.setOfCheckedId.has(prn.ID));
-    this.indeterminate = this.listOfLocationInCurrentPage.some(prn => this.setOfCheckedId.has(prn.ID)) && !this.checked;
+    this.checked = this.listOfLocationInCurrentPage.every((prn) =>
+      this.setOfCheckedId.has(prn.ID)
+    );
+    this.indeterminate =
+      this.listOfLocationInCurrentPage.some((prn) =>
+        this.setOfCheckedId.has(prn.ID)
+      ) && !this.checked;
   }
 
   onItemChecked(id: number, checked: boolean): void {
@@ -43,24 +48,26 @@ export class LocationSelectionDlgComponent implements OnInit {
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfLocationInCurrentPage
-      .forEach(prn => this.updateCheckedSet(prn.ID, checked));
+    this.listOfLocationInCurrentPage.forEach((prn) =>
+      this.updateCheckedSet(prn.ID, checked)
+    );
     this.refreshCheckedStatus();
   }
 
-  constructor(private modal: NzModalRef,
+  constructor(
+    private modal: NzModalRef,
     private storageSrv: LibraryStorageService,
-    private messageService: NzMessageService) { }
+    private messageService: NzMessageService
+  ) {}
 
   ngOnInit(): void {
     this.storageSrv.fetchAllLocations().subscribe({
-      next: data => {
+      next: (data) => {
         this.listAllLocation = data;
       },
-      error: err => {
+      error: (err) => {
         // Error handling
-      }
-    })
+      },
+    });
   }
-
 }

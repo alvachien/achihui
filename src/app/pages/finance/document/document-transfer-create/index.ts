@@ -1,1 +1,1 @@
-export * from './document-transfer-create.component';
+export * from "./document-transfer-create.component";

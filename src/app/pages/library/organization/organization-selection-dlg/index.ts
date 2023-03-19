@@ -1,1 +1,1 @@
-export * from './organization-selection-dlg.component';
+export * from "./organization-selection-dlg.component";

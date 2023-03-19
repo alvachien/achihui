@@ -3,15 +3,15 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{'Common.Name' | transloco}}</th>
-        <th>{{'Common.Comment' | transloco}}</th>
+        <th>{{ "Common.Name" | transloco }}</th>
+        <th>{{ "Common.Comment" | transloco }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{data.Id}}</td>
-        <td>{{data.Name | transloco}}</td>
-        <td>{{data.Comment}}</td>
+        <td>{{ data.Id }}</td>
+        <td>{{ data.Name | transloco }}</td>
+        <td>{{ data.Comment }}</td>
       </tr>
     </tbody>
   </nz-table>

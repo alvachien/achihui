@@ -1,22 +1,46 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+  discardPeriodicTasks,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum, } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { NormalEventListComponent } from './normal-event-list.component';
+import { EventUIModule } from "src/app/pages/event/event-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  LibraryStorageService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  financeAccountCategoryCash,
+  Account,
+  AccountStatusEnum,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { NormalEventListComponent } from "./normal-event-list.component";
 
-describe('NormalEventListComponent', () => {
+describe("NormalEventListComponent", () => {
   let component: NormalEventListComponent;
   let fixture: ComponentFixture<NormalEventListComponent>;
   let fakeData: FakeDataHelper;
@@ -32,10 +56,12 @@ describe('NormalEventListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
-      'fetchGeneralEvents',
+    storageService = jasmine.createSpyObj("LibraryStorageService", [
+      "fetchGeneralEvents",
     ]);
-    fetchGeneralEventsSpy = storageService.fetchGeneralEvents.and.returnValue(of({}));
+    fetchGeneralEventsSpy = storageService.fetchGeneralEvents.and.returnValue(
+      of({})
+    );
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -57,16 +83,15 @@ describe('NormalEventListComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ NormalEventListComponent ],
+      declarations: [NormalEventListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,16 +100,18 @@ describe('NormalEventListComponent', () => {
     //fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
-  
-  describe('2. shall work with data', () => {
+
+  describe("2. shall work with data", () => {
     beforeEach(() => {
-      fetchGeneralEventsSpy.and.returnValue(asyncData({totalCount: 0, contentList: []}));
+      fetchGeneralEventsSpy.and.returnValue(
+        asyncData({ totalCount: 0, contentList: [] })
+      );
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();

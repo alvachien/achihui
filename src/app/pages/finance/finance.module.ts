@@ -1,11 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FinanceUIModule } from './finance-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FinanceUIModule } from "./finance-ui.module";
+import { TranslocoModule } from "@ngneat/transloco";
 
-import { FinanceRoutingModule } from './finance-routing.module';
-import { FinanceAssetDepreciationDlgComponent, FinanceComponent } from '../finance/finance.component';
-import { CurrencyComponent } from './currency';
+import { FinanceRoutingModule } from "./finance-routing.module";
+import {
+  FinanceAssetDepreciationDlgComponent,
+  FinanceComponent,
+} from "../finance/finance.component";
+import { CurrencyComponent } from "./currency";
 
 @NgModule({
   declarations: [
@@ -20,4 +23,4 @@ import { CurrencyComponent } from './currency';
     FinanceRoutingModule,
   ],
 })
-export class FinanceModule { }
+export class FinanceModule {}

@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { environment } from "src/environments/environment";
 
 @Component({
-  selector: 'hih-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css'],
+  selector: "hih-welcome",
+  templateUrl: "./welcome.component.html",
+  styleUrls: ["./welcome.component.css"],
 })
 export class WelcomeComponent {
   gridFinanceStyle = {
-    width: '33%',
-    textAlign: 'center'
+    width: "33%",
+    textAlign: "center",
   };
-  constructor(private router: Router,) { }
+  constructor(private router: Router) {}
 
   get accountImage(): string {
     return `${environment.AppHost}/assets/img/Accounts.png`;
@@ -69,60 +69,60 @@ export class WelcomeComponent {
     return `${environment.AppHost}/assets/img/Home.png`;
   }
   onNavigateToHomeList(): void {
-    this.router.navigate(['homedef']);
+    this.router.navigate(["homedef"]);
   }
   onNavigateToCurrentHome(): void {
-    this.router.navigate(['homedef']);
+    this.router.navigate(["homedef"]);
   }
   onNavigateToOverview(): void {
-    this.router.navigate(['finance', 'overview']);
+    this.router.navigate(["finance", "overview"]);
   }
-  onNavigateToAccount():void {
-    this.router.navigate(['finance', 'account']);
+  onNavigateToAccount(): void {
+    this.router.navigate(["finance", "account"]);
   }
-  onNavigateToDocument():void {
-    this.router.navigate(['finance', 'document']);
+  onNavigateToDocument(): void {
+    this.router.navigate(["finance", "document"]);
   }
-  onNavigateToReport():void {
-    this.router.navigate(['finance', 'report']);
+  onNavigateToReport(): void {
+    this.router.navigate(["finance", "report"]);
   }
   onNavigateToPlan(): void {
-    this.router.navigate(['finance', 'plan']);
+    this.router.navigate(["finance", "plan"]);
   }
   onNavigateToConfig(): void {
-    this.router.navigate(['finance', 'config']);
+    this.router.navigate(["finance", "config"]);
   }
   onNavigateToFinanceSearch(): void {
-    this.router.navigate(['finance', 'search']);
+    this.router.navigate(["finance", "search"]);
   }
   onNavigateToLibraryPerson(): void {
-    this.router.navigate(['library', 'person']);
+    this.router.navigate(["library", "person"]);
   }
   onNavigateToLibraryOrganization(): void {
-    this.router.navigate(['library', 'organization']);
+    this.router.navigate(["library", "organization"]);
   }
   onNavigateToLibraryLocation(): void {
-    this.router.navigate(['library', 'location']);
+    this.router.navigate(["library", "location"]);
   }
   onNavigateToLibraryBooks(): void {
-    this.router.navigate(['library', 'book']);
+    this.router.navigate(["library", "book"]);
   }
   onNavigateToLibraryBorrowRecord(): void {
-    this.router.navigate(['library', 'borrowrecord']);
+    this.router.navigate(["library", "borrowrecord"]);
   }
   onNavigateToLibrarySearch(): void {
-    this.router.navigate(['library', 'search']);
+    this.router.navigate(["library", "search"]);
   }
   onNavigateToEventOverview(): void {
-    this.router.navigate(['event', 'overview']);
+    this.router.navigate(["event", "overview"]);
   }
   onNavigateToEventList(): void {
-    this.router.navigate(['event', 'normal-event']);
+    this.router.navigate(["event", "normal-event"]);
   }
   onNavigateToEventRecurList(): void {
-    this.router.navigate(['event', 'recur-event']);
+    this.router.navigate(["event", "recur-event"]);
   }
   onNavigateToEventSearch(): void {
-    this.router.navigate(['event', 'search']);
+    this.router.navigate(["event", "search"]);
   }
 }

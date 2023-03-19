@@ -1,21 +1,33 @@
 <div>
-    <nz-table #tablePerson nzShowPagination nzShowSizeChanger [nzData]="listAllPerson"
-        (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
-        <thead>
-            <tr>
-                <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-                <th>ID</th>
-                <th>Native Name</th>
-                <th>Chinese Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of tablePerson.data">
-                <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>{{ data.ChineseName }}</td>
-            </tr>
-        </tbody>
-    </nz-table>
+  <nz-table
+    #tablePerson
+    nzShowPagination
+    nzShowSizeChanger
+    [nzData]="listAllPerson"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+  >
+    <thead>
+      <tr>
+        <th
+          [nzChecked]="checked"
+          [nzIndeterminate]="indeterminate"
+          (nzCheckedChange)="onAllChecked($event)"
+        ></th>
+        <th>ID</th>
+        <th>Native Name</th>
+        <th>Chinese Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of tablePerson.data">
+        <td
+          [nzChecked]="setOfCheckedId.has(data.ID)"
+          (nzCheckedChange)="onItemChecked(data.ID, $event)"
+        ></td>
+        <td>{{ data.ID }}</td>
+        <td>{{ data.NativeName }}</td>
+        <td>{{ data.ChineseName }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
 </div>

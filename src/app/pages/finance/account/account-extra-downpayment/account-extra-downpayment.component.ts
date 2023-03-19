@@ -1,38 +1,68 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, UntypedFormGroup, UntypedFormControl,
-  Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  Input,
+  OnDestroy,
+  ViewChild,
+  HostListener,
+} from "@angular/core";
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NG_VALIDATORS,
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validator,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from "@angular/forms";
+import { Router } from "@angular/router";
+import { ReplaySubject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import * as moment from "moment";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { translate } from "@ngneat/transloco";
+import { UIMode, isUIEditable } from "actslib";
 
-import { AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
-  RepeatedDatesWithAmountAPIInput, RepeatedDatesWithAmountAPIOutput,
-  ConsoleLogTypeEnum, ModelUtility, TranType, RepeatFrequencyEnum,
-} from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import {
+  AccountExtraAdvancePayment,
+  UIDisplayStringUtil,
+  TemplateDocADP,
+  RepeatedDatesWithAmountAPIInput,
+  RepeatedDatesWithAmountAPIOutput,
+  ConsoleLogTypeEnum,
+  ModelUtility,
+  TranType,
+  RepeatFrequencyEnum,
+} from "../../../../model";
+import {
+  FinanceOdataService,
+  UIStatusService,
+  HomeDefOdataService,
+} from "../../../../services";
 
 @Component({
-  selector: 'hih-finance-account-extra-downpayment',
-  templateUrl: './account-extra-downpayment.component.html',
-  styleUrls: ['./account-extra-downpayment.component.less'],
+  selector: "hih-finance-account-extra-downpayment",
+  templateUrl: "./account-extra-downpayment.component.html",
+  styleUrls: ["./account-extra-downpayment.component.less"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => AccountExtraDownpaymentComponent),
       multi: true,
-    }, {
+    },
+    {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => AccountExtraDownpaymentComponent),
       multi: true,
     },
   ],
 })
-export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
-
+export class AccountExtraDownpaymentComponent
+  implements OnInit, ControlValueAccessor, Validator, OnDestroy
+{
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
@@ -40,36 +70,37 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   private _onTouched?: () => void;
   private _refDocID: number | null = null;
 
-  public currentMode: string = '';
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public currentMode = "";
+  public arFrequencies: any[] =
+    UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   get refDocId(): number | null {
     return this._refDocID;
   }
-  isLoadingTmpDocs: boolean = false;
+  isLoadingTmpDocs = false;
   public listTmpDocs: TemplateDocADP[] = [];
 
   public adpInfoFormGroup: UntypedFormGroup;
 
-  @Input() tranAmount: number = 0;
+  @Input() tranAmount = 0;
   @Input() tranType?: number;
   @Input() allTranTypes: TranType[] = [];
 
   get value(): AccountExtraAdvancePayment {
     const inst: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
 
-    let controlVal = this.adpInfoFormGroup.get('startDateControl')?.value;
+    let controlVal = this.adpInfoFormGroup.get("startDateControl")?.value;
     if (controlVal !== undefined) {
       inst.StartDate = moment(controlVal as Date);
     }
-    controlVal = this.adpInfoFormGroup.get('endDateControl')?.value;
+    controlVal = this.adpInfoFormGroup.get("endDateControl")?.value;
     if (controlVal !== undefined) {
       inst.EndDate = moment(controlVal as Date);
     }
-    controlVal = this.adpInfoFormGroup.get('frqControl')?.value;
+    controlVal = this.adpInfoFormGroup.get("frqControl")?.value;
     if (controlVal !== undefined) {
       inst.RepeatType = controlVal as RepeatFrequencyEnum;
     }
-    controlVal = this.adpInfoFormGroup.get('cmtControl')?.value;
+    controlVal = this.adpInfoFormGroup.get("cmtControl")?.value;
     if (controlVal !== undefined) {
       inst.Comment = controlVal as string;
     }
@@ -102,42 +133,55 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     public router: Router,
     public odataService: FinanceOdataService,
     public homeService: HomeDefOdataService,
-    public modalService: NzModalService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    public modalService: NzModalService
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.adpInfoFormGroup = new UntypedFormGroup({
-      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate()),
+      startDateControl: new UntypedFormControl(moment().toDate(), [
+        Validators.required,
+      ]),
+      endDateControl: new UntypedFormControl(moment().add(1, "y").toDate()),
       frqControl: new UntypedFormControl(undefined, Validators.required),
-      cmtControl: new UntypedFormControl('', Validators.maxLength(30)),
+      cmtControl: new UntypedFormControl("", Validators.maxLength(30)),
     });
   }
 
-  @HostListener('change') onChange(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...',
-      ConsoleLogTypeEnum.debug);
+  @HostListener("change") onChange(): void {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...",
+      ConsoleLogTypeEnum.debug
+    );
     if (this._onChange) {
       this._onChange(this.value);
     }
   }
-  @HostListener('blur') onTouched(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...',
-      ConsoleLogTypeEnum.debug);
+  @HostListener("blur") onTouched(): void {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...",
+      ConsoleLogTypeEnum.debug
+    );
     if (this._onTouched) {
       this._onTouched();
     }
   }
 
   ngOnInit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
     this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -159,40 +203,45 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       TotalAmount: this.tranAmount,
     };
 
-    this.odataService.calcADPTmpDocs(datInput)
+    this.odataService
+      .calcADPTmpDocs(datInput)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (rsts: RepeatedDatesWithAmountAPIOutput[]) => {
           if (rsts && rsts instanceof Array && rsts.length > 0) {
             const tmpDocs: TemplateDocADP[] = [];
-    
-            rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
-              const item: TemplateDocADP = new TemplateDocADP();
-              item.HID = this.homeService.ChosedHome!.ID;
-              item.DocId = idx + 1;
-              item.TranType = this.tranType!;
-              item.TranDate = rst.TranDate;
-              item.TranAmount = rst.TranAmount;
-              item.Desp = rst.Desp;
-              tmpDocs.push(item);
-            });
-    
+
+            rsts.forEach(
+              (rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
+                const item: TemplateDocADP = new TemplateDocADP();
+                item.HID = this.homeService.ChosedHome!.ID;
+                item.DocId = idx + 1;
+                item.TranType = this.tranType!;
+                item.TranDate = rst.TranDate;
+                item.TranAmount = rst.TranAmount;
+                item.Desp = rst.Desp;
+                tmpDocs.push(item);
+              }
+            );
+
             this.listTmpDocs = tmpDocs.slice();
-    
+
             // Trigger the change.
             this.onChange();
           }
         },
-        error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${err}`,
-            ConsoleLogTypeEnum.error);
-  
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${err}`,
+            ConsoleLogTypeEnum.error
+          );
+
           this.modalService.error({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
   }
 
@@ -204,22 +253,31 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   // }
 
   public onRefDocClick(docid: number): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.router.navigate([`/finance/document/display/${docid}`]);
   }
 
   writeValue(val: AccountExtraAdvancePayment): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (val) {
-      this.adpInfoFormGroup.get('startDateControl')?.setValue(val.StartDate.toDate());
-      this.adpInfoFormGroup.get('endDateControl')?.setValue(val.EndDate.toDate());
+      this.adpInfoFormGroup
+        .get("startDateControl")
+        ?.setValue(val.StartDate.toDate());
+      this.adpInfoFormGroup
+        .get("endDateControl")
+        ?.setValue(val.EndDate.toDate());
       if (val.RepeatType !== null && val.RepeatType !== undefined) {
-        this.adpInfoFormGroup.get('frqControl')?.setValue(val.RepeatType);
+        this.adpInfoFormGroup.get("frqControl")?.setValue(val.RepeatType);
       }
-      this.adpInfoFormGroup.get('cmtControl')?.setValue(val.Comment);
+      this.adpInfoFormGroup.get("cmtControl")?.setValue(val.Comment);
       this.listTmpDocs = [];
       if (val.dpTmpDocs) {
         this.listTmpDocs = val.dpTmpDocs.slice();
@@ -236,22 +294,28 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   }
 
   registerOnChange(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._onChange = fn;
   }
 
   registerOnTouched(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._onTouched = fn;
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (isDisabled) {
       this.adpInfoFormGroup.disable();
@@ -263,18 +327,25 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this.adpInfoFormGroup.valid) {
       // Beside the basic form valid, it need more checks
       if (!this.value.isValid) {
-        return { invalidForm: {valid: false, message: 'Value is invalid'} };
+        return { invalidForm: { valid: false, message: "Value is invalid" } };
       }
 
       return null;
     }
 
-    return { invalidForm: {valid: false, message: 'Advance payment fields are invalid'} };
+    return {
+      invalidForm: {
+        valid: false,
+        message: "Advance payment fields are invalid",
+      },
+    };
   }
 }

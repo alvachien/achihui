@@ -1,7 +1,10 @@
-<nz-result nzStatus="403" *transloco="let t"
-  [nzTitle]="t('Common.PageLackAuthorityHeader')" 
-  [nzSubTitle]="t('Common.PageLackAuthorityContent')">
+<nz-result
+  nzStatus="403"
+  *transloco="let t"
+  [nzTitle]="t('Common.PageLackAuthorityHeader')"
+  [nzSubTitle]="t('Common.PageLackAuthorityContent')"
+>
   <div nz-result-extra>
-    <button nz-button nzType="primary">{{'Common.Back' | transloco}}</button>
+    <button nz-button nzType="primary">{{ "Common.Back" | transloco }}</button>
   </div>
 </nz-result>

@@ -4,27 +4,36 @@
  * UI Models with UI Framework dependent
  */
 
-import { ValidatorFn, FormGroup, ValidationErrors, AbstractControl, } from '@angular/forms';
-import * as moment from 'moment';
-import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd/table';
+import { ValidatorFn, ValidationErrors, AbstractControl } from "@angular/forms";
+import * as moment from "moment";
+import {
+  NzTableSortOrder,
+  NzTableSortFn,
+  NzTableFilterList,
+  NzTableFilterFn,
+} from "ng-zorro-antd/table";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * Validator for date range
  * @param group Instance of the form group
  */
-export const dateRangeValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-  const strdt = group.get('startDateControl')?.value as Date;
+export const dateRangeValidator: ValidatorFn = (
+  group: AbstractControl
+): ValidationErrors | null => {
+  const strdt = group.get("startDateControl")?.value as Date;
   if (!strdt) {
     return { invalidStartDate: true };
   }
-  const enddt = group.get('endDateControl')?.value as Date;
+  const enddt = group.get("endDateControl")?.value as Date;
   if (!enddt) {
     return { invalidEndDate: true };
   }
-  const startDate: moment.Moment = moment(strdt).startOf('day');
-  const endDate: moment.Moment = moment(enddt).startOf('day');
+  const startDate: moment.Moment = moment(strdt).startOf("day");
+  const endDate: moment.Moment = moment(enddt).startOf("day");
   if (!endDate.isSameOrAfter(startDate)) {
-    return  { invalidDateRange: true };
+    return { invalidDateRange: true };
   }
 
   return null;
@@ -34,9 +43,11 @@ export const dateRangeValidator: ValidatorFn = (group: AbstractControl): Validat
  * Validator for cost object
  * @param group Instance of the form group
  */
-export const costObjectValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-  const cc: any = group.get('ccControl')?.value;
-  const order: any = group.get('orderControl')?.value;
+export const costObjectValidator: ValidatorFn = (
+  group: AbstractControl
+): ValidationErrors | null => {
+  const cc: any = group.get("ccControl")?.value;
+  const order: any = group.get("orderControl")?.value;
   if (cc) {
     if (order) {
       return { costobjectoverassign: true };

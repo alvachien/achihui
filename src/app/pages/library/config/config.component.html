@@ -1,27 +1,28 @@
 <nz-page-header nzBackIcon [nzTitle]="'Finance.ConfigObjects' | transloco">
+  <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb nz-page-header-breadcrumb>
-        <nz-breadcrumb-item>{{'Nav.LibraryTrace' | transloco}}</nz-breadcrumb-item>
-      </nz-breadcrumb>     
+      <nz-breadcrumb-item>{{
+        "Nav.LibraryTrace" | transloco
+      }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-content>
-      <nz-tabset>
-        <nz-tab [nzTitle]="'Library.PersonRoles' | transloco">
-          <ng-template nz-tab>
-            <hih-person-role-list></hih-person-role-list>
-          </ng-template>
-        </nz-tab>
-        <nz-tab [nzTitle]="'Library.OrganizationTypes' | transloco">
-          <ng-template nz-tab>
-            <hih-organization-type-list></hih-organization-type-list>
-          </ng-template>
-        </nz-tab>
-        <nz-tab [nzTitle]="'Library.BookCategories' | transloco">
-          <ng-template nz-tab>
-            <hih-book-category-list></hih-book-category-list>
-          </ng-template>
-        </nz-tab>
-      </nz-tabset>
-    </nz-page-header-content>
-  </nz-page-header>
-  
+  </nz-breadcrumb>
+  <nz-page-header-content>
+    <nz-tabset>
+      <nz-tab [nzTitle]="'Library.PersonRoles' | transloco">
+        <ng-template nz-tab>
+          <hih-person-role-list></hih-person-role-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab [nzTitle]="'Library.OrganizationTypes' | transloco">
+        <ng-template nz-tab>
+          <hih-organization-type-list></hih-organization-type-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab [nzTitle]="'Library.BookCategories' | transloco">
+        <ng-template nz-tab>
+          <hih-book-category-list></hih-book-category-list>
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </nz-page-header-content>
+</nz-page-header>

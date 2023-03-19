@@ -1,24 +1,50 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { UIMode, } from 'actslib';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
+import { Router } from "@angular/router";
+import { ReplaySubject, forkJoin } from "rxjs";
+import * as moment from "moment";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { takeUntil, finalize } from "rxjs/operators";
+import { translate } from "@ngneat/transloco";
+import { UIMode } from "actslib";
 
-import { financeDocTypeNormal, Account, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum,
-  UIOrderForSelection, Currency, TranType, ControlCenter, Order, UIAccountForSelection, DocumentType,
-  BuildupAccountForSelection, BuildupOrderForSelection, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, momentDateFormat, DocumentItemView,
-} from '../../../../model';
-import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
+import {
+  financeDocTypeNormal,
+  Account,
+  Document,
+  DocumentItem,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  UIOrderForSelection,
+  Currency,
+  TranType,
+  ControlCenter,
+  Order,
+  UIAccountForSelection,
+  DocumentType,
+  BuildupAccountForSelection,
+  BuildupOrderForSelection,
+  GeneralFilterItem,
+  GeneralFilterOperatorEnum,
+  GeneralFilterValueType,
+  momentDateFormat,
+  DocumentItemView,
+} from "../../../../model";
+import {
+  HomeDefOdataService,
+  UIStatusService,
+  FinanceOdataService,
+} from "../../../../services";
+import { popupDialog } from "../../../message-dialog";
 
 @Component({
-  selector: 'hih-fin-document-normal-create',
-  templateUrl: './document-normal-create.component.html',
-  styleUrls: ['./document-normal-create.component.less'],
+  selector: "hih-fin-document-normal-create",
+  templateUrl: "./document-normal-create.component.html",
+  styleUrls: ["./document-normal-create.component.less"],
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -40,24 +66,27 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Header
   public headerForm: UntypedFormGroup;
   // Step: Item
-  public doccur: string = '';
-  public doccur2?: string = '';
+  public doccur = "";
+  public doccur2?: string = "";
   public itemsForm: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
-  public arDocItem: DocumentItemView[] = [];  
+  public arDocItem: DocumentItemView[] = [];
   // Step: Result
   public isDocPosting = false;
   public docIdCreated?: number;
-  public docPostingFailed: string = '';
+  public docPostingFailed = "";
 
   constructor(
     private homeService: HomeDefOdataService,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    private router: Router
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
@@ -77,8 +106,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -93,7 +124,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: rst => {
+        next: (rst) => {
           // Accounts
           this.arAccounts = rst[2];
           this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
@@ -111,21 +142,25 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
           // Doc. type
           this.arDocTypes = rst[6];
         },
-        error: err => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${err}`,
-          ConsoleLogTypeEnum.error);
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${err}`,
+            ConsoleLogTypeEnum.error
+          );
           this.modalService.create({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: err.toString(),
             nzClosable: true,
           });
-        }
+        },
       });
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -135,60 +170,75 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   onSave(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...",
+      ConsoleLogTypeEnum.debug
+    );
 
     // Save the doc
     const detailObject: Document = this._generateDocObject();
-    if (!detailObject.onVerify({
-      ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranType,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
-    })) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
-        ConsoleLogTypeEnum.debug);
+    if (
+      !detailObject.onVerify({
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranType,
+        Currencies: this.arCurrencies,
+        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+      })
+    ) {
+      ModelUtility.writeConsoleLog(
+        "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...",
+        ConsoleLogTypeEnum.debug
+      );
 
-      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
+      popupDialog(this.modalService, "Common.Error", detailObject.VerifiedMsgs);
       this.isDocPosting = false;
 
       return;
     }
 
     // Now call to the service
-    this.odataService.createDocument(detailObject)
-    .pipe(takeUntil(this._destroyed$!),
-    finalize(() => {
-      this.isDocPosting = false;
-      this.currentStep = 3;
-    }))
-    .subscribe({
-      next: (doc) => {
-        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
-          ConsoleLogTypeEnum.debug);
-        this.docIdCreated = doc.Id;
-        this.docPostingFailed = '';
-      },
-      error: (error: any) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
-          ConsoleLogTypeEnum.error);
-        this.docIdCreated = undefined;
-        this.docPostingFailed = error;
-      },
-    });
+    this.odataService
+      .createDocument(detailObject)
+      .pipe(
+        takeUntil(this._destroyed$!),
+        finalize(() => {
+          this.isDocPosting = false;
+          this.currentStep = 3;
+        })
+      )
+      .subscribe({
+        next: (doc) => {
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...",
+            ConsoleLogTypeEnum.debug
+          );
+          this.docIdCreated = doc.Id;
+          this.docPostingFailed = "";
+        },
+        error: (error: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
+          this.docIdCreated = undefined;
+          this.docPostingFailed = error;
+        },
+      });
   }
 
   onDisplayCreatedDoc(): void {
     if (this.docIdCreated !== null) {
-      this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
+      this.router.navigate([
+        "/finance/document/display/" + this.docIdCreated?.toString(),
+      ]);
     }
   }
 
   onReset(): void {
-    this.router.navigate(['/finance/document/createnormal']);
+    this.router.navigate(["/finance/document/createnormal"]);
     // this.currentStep = 0;
     // this.itemsForm.reset();
     // this.headerForm.reset();
@@ -205,13 +255,14 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   next(): void {
     switch (this.currentStep) {
       case 0: {
-        this.currentStep ++;
-        const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
-        this.doccur = detailObject.TranCurr;        
+        this.currentStep++;
+        const detailObject: Document = this.headerForm.get("headerControl")
+          ?.value as Document;
+        this.doccur = detailObject.TranCurr;
         this.doccur2 = detailObject.TranCurr2;
         break;
       }
-      case 1: {        
+      case 1: {
         this._updateConfirmInfo();
 
         break;
@@ -244,16 +295,16 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.outAmount = 0;
     const filters: GeneralFilterItem[] = [];
     filters.push({
-      fieldName: 'TransactionDate',
+      fieldName: "TransactionDate",
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: doc.TranDate.format(momentDateFormat),
       valueType: GeneralFilterValueType.date,
     } as GeneralFilterItem);
 
-    let aracntid: number[] = [];
+    const aracntid: number[] = [];
     doc.Items.forEach((val: DocumentItem) => {
       if (val.AccountId) {
-        if (aracntid.findIndex(p => p === val.AccountId!) !== -1) {
+        if (aracntid.findIndex((p) => p === val.AccountId!) !== -1) {
           aracntid.push(val.AccountId);
         }
       }
@@ -268,45 +319,57 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         }
       }
     });
-    aracntid.forEach(acntid => {
+    aracntid.forEach((acntid) => {
       filters.push({
-        fieldName: 'AccountID',
+        fieldName: "AccountID",
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: acntid,
         valueType: GeneralFilterValueType.number,
         highValue: 0,
-      });  
-    })
+      });
+    });
 
     this.confirmInfo.warningExist = false;
     this.confirmInfo.duplicatedItems = [];
-    this.odataService.searchDocItem(filters).pipe(finalize(
-      () => this.currentStep ++
-    )).subscribe({
-      next: val => {
-        this.arDocItem = val.contentList;
-        // Check whether same amount exist
-        doc.Items.forEach(di => {
-          this.arDocItem.forEach(di2 => {
-            if (di.AccountId! === di2.AccountID!
-              && Math.abs(di.TranAmount) === Math.abs(di2.Amount)
-              && di.TranType === di2.TransactionType ) {
+    this.odataService
+      .searchDocItem(filters)
+      .pipe(finalize(() => this.currentStep++))
+      .subscribe({
+        next: (val) => {
+          this.arDocItem = val.contentList;
+          // Check whether same amount exist
+          doc.Items.forEach((di) => {
+            this.arDocItem.forEach((di2) => {
+              if (
+                di.AccountId! === di2.AccountID! &&
+                Math.abs(di.TranAmount) === Math.abs(di2.Amount) &&
+                di.TranType === di2.TransactionType
+              ) {
                 this.confirmInfo.warningExist = true;
-                this.confirmInfo.duplicatedItems.push("Account: " + di.AccountId.toString() + "; Amount: " + di.TranAmount.toString() +"; Tran. type: " + di.TranType?.toString());                
+                this.confirmInfo.duplicatedItems.push(
+                  "Account: " +
+                    di.AccountId.toString() +
+                    "; Amount: " +
+                    di.TranAmount.toString() +
+                    "; Tran. type: " +
+                    di.TranType?.toString()
+                );
               }
-          })
-        });
-      },
-      error: err => {
-        // Simply discard it.
-      }
-    });    
+            });
+          });
+        },
+        error: (err) => {
+          // Simply discard it.
+        },
+      });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
+    const detailObject: Document = this.headerForm.get("headerControl")
+      ?.value as Document;
     detailObject.HID = this.homeService.ChosedHome!.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.itemsForm.get('itemControl')?.value as DocumentItem[];
+    detailObject.Items = this.itemsForm.get("itemControl")
+      ?.value as DocumentItem[];
 
     return detailObject;
   }

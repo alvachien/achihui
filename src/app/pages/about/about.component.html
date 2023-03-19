@@ -1,39 +1,35 @@
 <article nz-typography>
   <h1 nz-title>
-    <strong>{{'Nav.About' | transloco}}</strong>
+    <strong>{{ "Nav.About" | transloco }}</strong>
   </h1>
   <h2 nz-title>
-    {{'Common.ShortIntroduceHIH2' | transloco}}
+    {{ "Common.ShortIntroduceHIH2" | transloco }}
   </h2>
-  <p nz-paragraph>
-    Including: Finance trace, Library, and more.
-  </p>
+  <p nz-paragraph>Including: Finance trace, Library, and more.</p>
   <p nz-paragraph>
     <strong>
-      {{'Common.HIHAuthor' | transloco}}
+      {{ "Common.HIHAuthor" | transloco }}
     </strong>
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
-    <strong>UI {{'Nav.Version' | transloco}}:</strong>
+    <strong>UI {{ "Nav.Version" | transloco }}:</strong>
     <span nz-text>
-      <strong id="curversion">{{version}}</strong>
-    </span>.
+      <strong id="curversion">{{ version }}</strong> </span
+    >.
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
     API (Built with Odata) Version:
     <span nz-text>
-      <strong>{{resultVersion!.APIVersion}}
-      </strong>
+      <strong>{{ resultVersion!.APIVersion }} </strong>
     </span>
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
     Database Schema Version:
     <span nz-text>
-      <strong>{{resultVersion!.StorageVersion}}
-      </strong>
+      <strong>{{ resultVersion!.StorageVersion }} </strong>
     </span>
   </p>
 </article>

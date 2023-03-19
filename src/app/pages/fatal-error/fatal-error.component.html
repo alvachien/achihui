@@ -1,6 +1,9 @@
-<nz-result nzStatus="500" [nzTitle]="'Common.PageFatalErrorHeader' | transloco"
-  [nzSubTitle]="errorContext">
+<nz-result
+  nzStatus="500"
+  [nzTitle]="'Common.PageFatalErrorHeader' | transloco"
+  [nzSubTitle]="errorContext"
+>
   <div nz-result-extra>
-    <button nz-button nzType="primary">{{'Common.Back' | transloco}}</button>
+    <button nz-button nzType="primary">{{ "Common.Back" | transloco }}</button>
   </div>
 </nz-result>

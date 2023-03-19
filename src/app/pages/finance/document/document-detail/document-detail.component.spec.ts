@@ -1,25 +1,51 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush, async } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { By } from '@angular/platform-browser';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { UIMode } from 'actslib';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  inject,
+  fakeAsync,
+  tick,
+  flush,
+  async,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { Router, ActivatedRoute, UrlSegment } from "@angular/router";
+import { en_US, NZ_I18N, zh_CN } from "ng-zorro-antd/i18n";
+import { BehaviorSubject, of } from "rxjs";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { By } from "@angular/platform-browser";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { UIMode } from "actslib";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { DocumentHeaderComponent } from '../document-header';
-import { DocumentItemsComponent } from '../document-items';
-import { DocumentDetailComponent } from './document-detail.component';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document, DocumentItem } from '../../../../model';
-import * as moment from 'moment';
+import { FinanceUIModule } from "../../finance-ui.module";
+import { DocumentHeaderComponent } from "../document-header";
+import { DocumentItemsComponent } from "../document-items";
+import { DocumentDetailComponent } from "./document-detail.component";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  FormGroupHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  HomeDefOdataService,
+  FinanceOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  financeDocTypeNormal,
+  financeDocTypeCurrencyExchange,
+  Document,
+  DocumentItem,
+} from "../../../../model";
+import * as moment from "moment";
 
-describe('DocumentDetailComponent', () => {
+describe("DocumentDetailComponent", () => {
   let component: DocumentDetailComponent;
   let fixture: ComponentFixture<DocumentDetailComponent>;
   let activatedRouteStub: any;
@@ -50,29 +76,41 @@ describe('DocumentDetailComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllCurrencies',
-      'fetchAllDocTypes',
-      'fetchAllTranTypes',
-      'fetchAllAccountCategories',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
-      'readDocument',      
-      'readAccount',
-      'isDocumentChangable',
-      'changeDocument',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchAllCurrencies",
+      "fetchAllDocTypes",
+      "fetchAllTranTypes",
+      "fetchAllAccountCategories",
+      "fetchAllAccounts",
+      "fetchAllControlCenters",
+      "fetchAllOrders",
+      "readDocument",
+      "readAccount",
+      "isDocumentChangable",
+      "changeDocument",
     ]);
-    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
-    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
+      of([])
+    );
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(
+      of([])
+    );
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
+      of([])
+    );
+    fetchAllAccountCategoriesSpy =
+      storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
+      of([])
+    );
+    fetchAllControlCentersSpy =
+      storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     readDocumentSpy = storageService.readDocument.and.returnValue(of({}));
     readAccountSpy = storageService.readAccount.and.returnValue(of({}));
-    isDocumentChangableSpy = storageService.isDocumentChangable.and.returnValue(of({}));
+    isDocumentChangableSpy = storageService.isDocumentChangable.and.returnValue(
+      of({})
+    );
     changeDocumentSpy = storageService.changeDocument.and.returnValue(of({}));
 
     homeService = {
@@ -84,8 +122,10 @@ describe('DocumentDetailComponent', () => {
   });
 
   beforeEach(waitForAsync(() => {
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    const routerSpy: any = jasmine.createSpyObj("Router", ["navigate"]);
+    activatedRouteStub = new ActivatedRouteUrlStub([
+      new UrlSegment("create", {}),
+    ] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -110,9 +150,8 @@ describe('DocumentDetailComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -121,47 +160,70 @@ describe('DocumentDetailComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. change mode', () => {
+  describe("2. change mode", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let docobj: Document;
 
     beforeEach(() => {
-      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([
+        new UrlSegment("edit", {}),
+        new UrlSegment("122", {}),
+      ] as UrlSegment[]);
       docobj = new Document();
       docobj.Id = 122;
-      docobj.Desp = 'test';
-      docobj.TranCurr = 'CNY';
+      docobj.Desp = "test";
+      docobj.TranCurr = "CNY";
       docobj.DocType = financeDocTypeNormal;
       docobj.TranDate = moment();
       docobj.Items = [];
-      let item1 = new DocumentItem();
+      const item1 = new DocumentItem();
       item1.ItemId = 1;
       item1.AccountId = fakeData.finAccounts[0].Id;
       item1.TranAmount = 100;
       item1.TranType = fakeData.finTranTypes[0].Id!;
-      item1.Desp = 'test';
+      item1.Desp = "test";
       docobj.Items.push(item1);
 
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
-      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(asyncData(fakeData.finControlCenters));
-      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
-      readDocumentSpy = storageService.readDocument.and.returnValue(asyncData(docobj));
+      fetchAllControlCentersSpy.and.returnValue(
+        asyncData(fakeData.finControlCenters)
+      );
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
+        asyncData(fakeData.currencies)
+      );
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(
+        asyncData(fakeData.finDocTypes)
+      );
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
+        asyncData(fakeData.finTranTypes)
+      );
+      fetchAllAccountCategoriesSpy =
+        storageService.fetchAllAccountCategories.and.returnValue(
+          asyncData(fakeData.finAccountCategories)
+        );
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
+        asyncData(fakeData.finAccounts)
+      );
+      fetchAllControlCentersSpy =
+        storageService.fetchAllControlCenters.and.returnValue(
+          asyncData(fakeData.finControlCenters)
+        );
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(
+        asyncData(fakeData.finOrders)
+      );
+      readDocumentSpy = storageService.readDocument.and.returnValue(
+        asyncData(docobj)
+      );
       readAccountSpy = storageService.readAccount.and.returnValue(of({}));
-      isDocumentChangableSpy = storageService.isDocumentChangable.and.returnValue(of({}));
+      isDocumentChangableSpy =
+        storageService.isDocumentChangable.and.returnValue(of({}));
       changeDocumentSpy = storageService.changeDocument.and.returnValue(of({}));
-      });
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    });
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -170,7 +232,7 @@ describe('DocumentDetailComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('change mode init without error', fakeAsync(() => {
+    it("change mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

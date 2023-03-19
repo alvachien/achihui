@@ -1,1 +1,1 @@
-export * from './document-normal-mass-create.component';
+export * from "./document-normal-mass-create.component";

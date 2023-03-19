@@ -1,13 +1,27 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item><a routerLink="/finance/report">{{'Finance.Reports' | transloco}}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.Account' | transloco}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{
+        "Common.Overview" | transloco
+      }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/report">{{
+        "Finance.Reports" | transloco
+      }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item>{{ "Finance.Account" | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{'Finance.Reports' | transloco}}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Finance.Account' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-title>{{
+    "Finance.Reports" | transloco
+  }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{
+    "Finance.Account" | transloco
+  }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button (click)="onLoadData(true)">{{'Common.Refresh' | transloco}}</button>
+    <button nz-button (click)="onLoadData(true)">
+      {{ "Common.Refresh" | transloco }}
+    </button>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -16,14 +30,24 @@
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetOption!" style="height: 320px;" (chartClick)="onAssetsCategoryChartClicked($event)"></div>
+          <div
+            echarts
+            [options]="chartAssetOption!"
+            style="height: 320px"
+            (chartClick)="onAssetsCategoryChartClicked($event)"
+          ></div>
         </div>
       </nz-card>
     </div>
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesOption!" style="height: 320px;" (chartClick)="onLiabilitiesCategoryChartClicked($event)"></div>
+          <div
+            echarts
+            [options]="chartLiabilitiesOption!"
+            style="height: 320px"
+            (chartClick)="onLiabilitiesCategoryChartClicked($event)"
+          ></div>
         </div>
       </nz-card>
     </div>
@@ -34,58 +58,86 @@
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartAssetAccountOption!" style="height: 320px;" (chartClick)="onAssetsAccountChartClicked($event)"></div>
+          <div
+            echarts
+            [options]="chartAssetAccountOption!"
+            style="height: 320px"
+            (chartClick)="onAssetsAccountChartClicked($event)"
+          ></div>
         </div>
       </nz-card>
     </div>
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Liabilities' | transloco">
         <div nz-col [nzSpan]="24">
-          <div echarts [options]="chartLiabilitiesAccountOption!" style="height: 320px;" (chartClick)="onLiabilitiesAccountChartClicked($event)"></div>
+          <div
+            echarts
+            [options]="chartLiabilitiesAccountOption!"
+            style="height: 320px"
+            (chartClick)="onLiabilitiesAccountChartClicked($event)"
+          ></div>
         </div>
       </nz-card>
     </div>
   </div>
   <nz-divider></nz-divider>
 
-  <div nz-row style="padding-top: 30px;">
+  <div nz-row style="padding-top: 30px">
     <nz-table #basicTable nzBordered [nzData]="dataSet">
       <thead>
         <tr>
           <th>#</th>
-          <th>{{'Common.Name' | transloco}}</th>
-          <th>{{'Common.Category' | transloco}}</th>
-          <th>{{'Finance.In' | transloco}}</th>
-          <th>{{'Finance.Out' | transloco}}</th>
-          <th>{{'Finance.Balance' | transloco}}</th>
+          <th>{{ "Common.Name" | transloco }}</th>
+          <th>{{ "Common.Category" | transloco }}</th>
+          <th>{{ "Finance.In" | transloco }}</th>
+          <th>{{ "Finance.Out" | transloco }}</th>
+          <th>{{ "Finance.Balance" | transloco }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
           <td>
-            {{data.AccountId}}
+            {{ data.AccountId }}
             <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplayMasterData(data.AccountId)">{{'Common.Display' | transloco}}</button>  
-          </td>
-          <td>{{data.AccountName}}</td>
-          <td>{{data.CategoryName | transloco}}</td>
-          <td>
-            <button nz-button nzType="link" (click)="onDisplayDebitData(data.AccountId)">
-              {{data.DebitBalance | number: '1.2-2'}}
+            <button
+              nz-button
+              nzType="link"
+              (click)="onDisplayMasterData(data.AccountId)"
+            >
+              {{ "Common.Display" | transloco }}
             </button>
-            <span style="padding-left: 5px;">{{baseCurrency}}</span>
+          </td>
+          <td>{{ data.AccountName }}</td>
+          <td>{{ data.CategoryName | transloco }}</td>
+          <td>
+            <button
+              nz-button
+              nzType="link"
+              (click)="onDisplayDebitData(data.AccountId)"
+            >
+              {{ data.DebitBalance | number : "1.2-2" }}
+            </button>
+            <span style="padding-left: 5px">{{ baseCurrency }}</span>
           </td>
           <td>
-            <button nz-button nzType="link" (click)="onDisplayCreditData(data.AccountId)">
-              {{data.CreditBalance | number: '1.2-2'}}
+            <button
+              nz-button
+              nzType="link"
+              (click)="onDisplayCreditData(data.AccountId)"
+            >
+              {{ data.CreditBalance | number : "1.2-2" }}
             </button>
-            <span style="padding-left: 5px;">{{baseCurrency}}</span>
+            <span style="padding-left: 5px">{{ baseCurrency }}</span>
           </td>
           <td>
-            <button nz-button nzType="link" (click)="onDisplayBalanceData(data.AccountId)">
-              {{data.Balance | number: '1.2-2'}}
+            <button
+              nz-button
+              nzType="link"
+              (click)="onDisplayBalanceData(data.AccountId)"
+            >
+              {{ data.Balance | number : "1.2-2" }}
             </button>
-            <span style="padding-left: 5px;">{{baseCurrency}}</span>
+            <span style="padding-left: 5px">{{ baseCurrency }}</span>
           </td>
         </tr>
       </tbody>

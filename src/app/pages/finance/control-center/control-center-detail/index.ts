@@ -1,1 +1,1 @@
-export * from './control-center-detail.component';
+export * from "./control-center-detail.component";

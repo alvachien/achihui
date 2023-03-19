@@ -1,1 +1,1 @@
-export * from './borrow-record-list.component';
+export * from "./borrow-record-list.component";

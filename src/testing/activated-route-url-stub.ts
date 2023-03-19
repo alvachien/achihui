@@ -1,5 +1,7 @@
-import { UrlSegment, } from '@angular/router';
-import { ReplaySubject, BehaviorSubject } from 'rxjs';
+import { UrlSegment } from "@angular/router";
+import { BehaviorSubject } from "rxjs";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * An ActivateRoute test double with a `url` observable.

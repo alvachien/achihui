@@ -1,53 +1,66 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { Component, ViewChild } from '@angular/core';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  flush,
+  discardPeriodicTasks,
+} from "@angular/core/testing";
+import { Component, ViewChild } from "@angular/core";
 // import { NzConfigService, } from 'ng-zorro-antd';
-import { NzResizableModule } from 'ng-zorro-antd/resizable';
-import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzConfigService } from 'ng-zorro-antd/core/config';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MarkdownModule } from 'ngx-markdown';
-import { BehaviorSubject, interval } from 'rxjs';
-import { KatexOptions } from 'ngx-markdown';
+import { NzResizableModule } from "ng-zorro-antd/resizable";
+import { NzCodeEditorModule } from "ng-zorro-antd/code-editor";
+import { NzButtonModule } from "ng-zorro-antd/button";
+import { NzIconModule } from "ng-zorro-antd/icon";
+import { NzFormModule } from "ng-zorro-antd/form";
+import { NzDividerModule } from "ng-zorro-antd/divider";
+import { NzInputModule } from "ng-zorro-antd/input";
+import { NzSwitchModule } from "ng-zorro-antd/switch";
+import { NzLayoutModule } from "ng-zorro-antd/layout";
+import { NzUploadModule } from "ng-zorro-antd/upload";
+import { NzConfigService } from "ng-zorro-antd/core/config";
+import { NzModalService } from "ng-zorro-antd/modal";
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormGroup,
+  UntypedFormControl,
+} from "@angular/forms";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MarkdownModule } from "ngx-markdown";
+import { BehaviorSubject, interval } from "rxjs";
+import { KatexOptions } from "ngx-markdown";
 
-import { getTranslocoModule } from '../../../../testing';
-import { MarkdownEditorComponent } from './markdown-editor.component';
-import { AuthService } from '../../../services';
-import { UserAuthInfo } from '../../../../app/model';
+import { getTranslocoModule } from "../../../../testing";
+import { MarkdownEditorComponent } from "./markdown-editor.component";
+import { AuthService } from "../../../services";
+import { UserAuthInfo } from "../../../../app/model";
 
 @Component({
-  template: `
-    <form [formGroup]="formGrp">
-      <nz-form-item>
-        <nz-form-control>
-          <ac-markdown-editor formControlName="infoControl"></ac-markdown-editor>
-        </nz-form-control>
-      </nz-form-item>
-    </form>`,
+  template: ` <form [formGroup]="formGrp">
+    <nz-form-item>
+      <nz-form-control>
+        <ac-markdown-editor formControlName="infoControl"></ac-markdown-editor>
+      </nz-form-control>
+    </nz-form-item>
+  </form>`,
 })
 export class MarkdownEditorTestFormComponent {
   public formGrp: UntypedFormGroup;
-  @ViewChild(MarkdownEditorComponent, {static: true}) editorComponent?: MarkdownEditorComponent;
+  @ViewChild(MarkdownEditorComponent, { static: true })
+  editorComponent?: MarkdownEditorComponent;
 
   constructor() {
     this.formGrp = new UntypedFormGroup({
-      infoControl: new UntypedFormControl()
+      infoControl: new UntypedFormControl(),
     });
   }
 }
 
-describe('MarkdownEditorComponent', () => {
+describe("MarkdownEditorComponent", () => {
   let testingComponent: MarkdownEditorTestFormComponent;
   let fixture: ComponentFixture<MarkdownEditorTestFormComponent>;
   let authServiceStub: Partial<AuthService>;
@@ -78,17 +91,13 @@ describe('MarkdownEditorComponent', () => {
         NzUploadModule,
         MarkdownModule.forRoot(),
       ],
-      declarations: [
-        MarkdownEditorComponent,
-        MarkdownEditorTestFormComponent,
-      ],
+      declarations: [MarkdownEditorComponent, MarkdownEditorTestFormComponent],
       providers: [
         NzConfigService,
         NzModalService,
         { provide: AuthService, useValue: authServiceStub },
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -97,12 +106,12 @@ describe('MarkdownEditorComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(testingComponent).toBeTruthy();
   });
 
-  describe('edit mode', () => {
-    it('edit mode init without error', fakeAsync(() => {
+  describe("edit mode", () => {
+    it("edit mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -112,7 +121,7 @@ describe('MarkdownEditorComponent', () => {
       flush();
     }));
 
-    it('edit mode for code coverage', fakeAsync(() => {
+    it("edit mode for code coverage", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -150,7 +159,7 @@ describe('MarkdownEditorComponent', () => {
         testingComponent.editorComponent.onToolbarPicture();
         testingComponent.editorComponent.setDisabledState!(false);
         testingComponent.editorComponent.onChange();
-        testingComponent.editorComponent.onTouched();  
+        testingComponent.editorComponent.onTouched();
 
         // Value getter
         const ctent = testingComponent.editorComponent.value;
@@ -164,7 +173,7 @@ describe('MarkdownEditorComponent', () => {
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized
     // .../components/code-editor/code-editor.spec.ts
-    xit('edit mode with value change', fakeAsync(() => {
+    xit("edit mode with value change", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -187,14 +196,14 @@ describe('MarkdownEditorComponent', () => {
       fixture.detectChanges();
 
       testingComponent.editorComponent?.onToolbarH1();
-      testingComponent.formGrp.get('infoControl')?.markAsDirty();
-      testingComponent.formGrp.get('infoControl')?.updateValueAndValidity();
+      testingComponent.formGrp.get("infoControl")?.markAsDirty();
+      testingComponent.formGrp.get("infoControl")?.updateValueAndValidity();
 
       tick();
       flush();
       fixture.detectChanges();
 
-      curval = testingComponent.formGrp.get('infoControl')?.value;
+      curval = testingComponent.formGrp.get("infoControl")?.value;
       expect(curval).toBeTruthy();
     }));
   });

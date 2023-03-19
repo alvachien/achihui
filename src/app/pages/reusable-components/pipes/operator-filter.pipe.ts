@@ -1,27 +1,35 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../../../model';
+import { Pipe, PipeTransform } from "@angular/core";
+import {
+  UIDisplayString,
+  GeneralFilterOperatorEnum,
+  GeneralFilterValueType,
+} from "../../../model";
 
 @Pipe({
-  name: 'operatorFilter',
+  name: "operatorFilter",
 })
 export class OperatorFilterPipe implements PipeTransform {
-
-  transform(allOperators: UIDisplayString[], args?: GeneralFilterValueType): any {
+  transform(
+    allOperators: UIDisplayString[],
+    args?: GeneralFilterValueType
+  ): any {
     return allOperators.filter((value: UIDisplayString) => {
       if (args) {
         switch (args) {
           case GeneralFilterValueType.string: {
-            if (value.value === GeneralFilterOperatorEnum.Like
-              || value.value === GeneralFilterOperatorEnum.Equal) {
-                return true;
-              }
+            if (
+              value.value === GeneralFilterOperatorEnum.Like ||
+              value.value === GeneralFilterOperatorEnum.Equal
+            ) {
+              return true;
+            }
             return false;
           }
 
           case GeneralFilterValueType.boolean: {
             if (value.value === GeneralFilterOperatorEnum.Equal) {
-                return true;
-              }
+              return true;
+            }
             return false;
           }
 
@@ -40,7 +48,7 @@ export class OperatorFilterPipe implements PipeTransform {
           }
 
           default:
-          break;
+            break;
         }
       }
 

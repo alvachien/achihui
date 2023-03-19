@@ -1,56 +1,67 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { forkJoin, ReplaySubject } from "rxjs";
+import { takeUntil, finalize } from "rxjs/operators";
+import { translate } from "@ngneat/transloco";
+import { Router } from "@angular/router";
 
-import { ConsoleLogTypeEnum, ModelUtility, Person } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, Person } from "src/app/model";
+import { LibraryStorageService, UIStatusService } from "src/app/services";
 
 @Component({
-  selector: 'hih-person-list',
-  templateUrl: './person-list.component.html',
-  styleUrls: ['./person-list.component.less']
+  selector: "hih-person-list",
+  templateUrl: "./person-list.component.html",
+  styleUrls: ["./person-list.component.less"],
 })
 export class PersonListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Person[] = [];
 
-  constructor(public odataService: LibraryStorageService,
+  constructor(
+    public odataService: LibraryStorageService,
     public uiStatusService: UIStatusService,
     public router: Router,
-    public modalService: NzModalService) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonListComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    public modalService: NzModalService
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering PersonListComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.isLoadingResults = false;
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonListComponent OnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering PersonListComponent OnInit...",
+      ConsoleLogTypeEnum.debug
+    );
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this.odataService.fetchAllPersons()
+    this.odataService
+      .fetchAllPersons()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => this.isLoadingResults = false)
+        finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
         next: (x: Person[]) => {
-          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonListComponent OnInit fetchAllPersons...',
-            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(
+            "AC_HIH_UI [Debug]: Entering PersonListComponent OnInit fetchAllPersons...",
+            ConsoleLogTypeEnum.debug
+          );
 
           this.dataSet = x;
         },
         error: (error: any) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PersonListComponent fetchAllPersons failed ${error}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllPersons failed ${error}`,
+            ConsoleLogTypeEnum.error
+          );
           this.modalService.error({
-            nzTitle: translate('Common.Error'),
+            nzTitle: translate("Common.Error"),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -59,8 +70,10 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PersonListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering PersonListComponent OnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -69,45 +82,53 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   public onDisplay(pid: number) {
-    this.router.navigate(['/library/person/display/' + pid.toString()]);
+    this.router.navigate(["/library/person/display/" + pid.toString()]);
   }
-  public onEdit(pid: number) {
-    
-  }
+  public onEdit(pid: number) {}
   public onDelete(pid: number) {
     this.modalService.confirm({
-      nzTitle: translate('Common.DeleteConfirmation'),
-      nzContent: '<b style="color: red;">' + translate('Common.ConfirmToDeleteSelectedItem') + '</b>',
-      nzOkText: 'Yes',
-      nzOkType: 'primary',
+      nzTitle: translate("Common.DeleteConfirmation"),
+      nzContent:
+        '<b style="color: red;">' +
+        translate("Common.ConfirmToDeleteSelectedItem") +
+        "</b>",
+      nzOkText: "Yes",
+      nzOkType: "primary",
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deletePerson(pid).subscribe({
-          next: data => {
-            let sdlg = this.modalService.success({
-              nzTitle: translate('Common.Success')
+          next: (data) => {
+            const sdlg = this.modalService.success({
+              nzTitle: translate("Common.Success"),
             });
             sdlg.afterClose.subscribe(() => {
-              let dix = this.dataSet.findIndex(p => p.ID === pid);
+              const dix = this.dataSet.findIndex((p) => p.ID === pid);
               if (dix !== -1) {
                 this.dataSet.splice(dix, 1);
                 this.dataSet = [...this.dataSet];
-              }  
+              }
             });
             setTimeout(() => sdlg.destroy(), 1000);
           },
-          error: err => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PersonList onDelete failed ${err}`, ConsoleLogTypeEnum.error);
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering PersonList onDelete failed ${err}`,
+              ConsoleLogTypeEnum.error
+            );
             this.modalService.error({
-              nzTitle: translate('Common.Error'),
+              nzTitle: translate("Common.Error"),
               nzContent: err.toString(),
               nzClosable: true,
             });
-          }
-        });            
+          },
+        });
       },
-      nzCancelText: 'No',
-      nzOnCancel: () => ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering PersonList onDelete cancelled`, ConsoleLogTypeEnum.debug)
+      nzCancelText: "No",
+      nzOnCancel: () =>
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering PersonList onDelete cancelled`,
+          ConsoleLogTypeEnum.debug
+        ),
     });
   }
 }

@@ -1,19 +1,17 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { ControlCenterComponent } from './control-center.component';
+import { ControlCenterComponent } from "./control-center.component";
 
-describe('ControlCenterComponent', () => {
+describe("ControlCenterComponent", () => {
   let component: ControlCenterComponent;
   let fixture: ComponentFixture<ControlCenterComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [        
-      ],
-      declarations: [ ControlCenterComponent ]
-    })
-    .compileComponents();
+      imports: [],
+      declarations: [ControlCenterComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -22,7 +20,7 @@ describe('ControlCenterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

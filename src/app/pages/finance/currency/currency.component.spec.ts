@@ -1,20 +1,37 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { FinanceUIModule } from '../finance-ui.module';
-import { CurrencyComponent } from './currency.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../services';
-import { UserAuthInfo } from '../../../model';
-import { MessageDialogComponent } from '../../message-dialog';
+import { FinanceUIModule } from "../finance-ui.module";
+import { CurrencyComponent } from "./currency.component";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+} from "../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  FinanceOdataService,
+} from "../../../services";
+import { UserAuthInfo } from "../../../model";
+import { MessageDialogComponent } from "../../message-dialog";
 
-describe('CurrencyComponent', () => {
+describe("CurrencyComponent", () => {
   let component: CurrencyComponent;
   let fixture: ComponentFixture<CurrencyComponent>;
   let fakeData: FakeDataHelper;
@@ -31,10 +48,12 @@ describe('CurrencyComponent', () => {
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllCurrencies',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchAllCurrencies",
     ]);
-    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
+      of([])
+    );
   });
 
   beforeEach(waitForAsync(() => {
@@ -47,23 +66,18 @@ describe('CurrencyComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [
-        CurrencyComponent,
-        MessageDialogComponent,
-      ],
+      declarations: [CurrencyComponent, MessageDialogComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-      ]
+      ],
     });
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
-        entryComponents: [
-          MessageDialogComponent,
-        ],
+        entryComponents: [MessageDialogComponent],
       },
     }).compileComponents();
   }));
@@ -74,20 +88,20 @@ describe('CurrencyComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    it('should not show data before OnInit', () => {
+    it("should not show data before OnInit", () => {
       expect(component.dataSource.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -101,7 +115,7 @@ describe('CurrencyComponent', () => {
     }));
   });
 
-  describe('3. shall display error dialog for exception', () => {
+  describe("3. shall display error dialog for exception", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -109,8 +123,7 @@ describe('CurrencyComponent', () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -119,26 +132,34 @@ describe('CurrencyComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it("should display error when Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllCurrenciesSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ".ant-modal-close"
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(0);
 
       flush();
     }));

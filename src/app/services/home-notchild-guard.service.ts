@@ -1,25 +1,40 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Injectable } from "@angular/core";
+import {
+  CanActivate,
+  Router,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from "@angular/router";
 
-import { environment } from '../../environments/environment';
-import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
-import { AuthService } from './auth.service';
-import { HomeDefOdataService } from './home-def-odata.service';
-import { UIStatusService } from './uistatus.service';
+import { environment } from "../../environments/environment";
+import {
+  LogLevel,
+  UserAuthInfo,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+} from "../model";
+import { AuthService } from "./auth.service";
+import { HomeDefOdataService } from "./home-def-odata.service";
+import { UIStatusService } from "./uistatus.service";
 
 @Injectable()
 export class HomeNotChildGuardService implements CanActivate {
-
   constructor(
     private authService: AuthService,
     private homeService: HomeDefOdataService,
     private uiService: UIStatusService,
-    private router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService constructor',
-      ConsoleLogTypeEnum.debug);
+    private router: Router
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering HomeNotChildGuardService constructor",
+      ConsoleLogTypeEnum.debug
+    );
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
     const url: string = state.url;
 
     if (this.uiService.fatalError) {
@@ -30,8 +45,10 @@ export class HomeNotChildGuardService implements CanActivate {
       return true;
     }
 
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService canActivate',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering HomeNotChildGuardService canActivate",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (!this.checkLogin()) {
       return false;
@@ -42,7 +59,7 @@ export class HomeNotChildGuardService implements CanActivate {
 
     if (this.homeService.ChosedHome === undefined) {
       // Navigate to other page
-      this.router.navigate(['/homedef']);
+      this.router.navigate(["/homedef"]);
       return false;
     }
 
@@ -51,15 +68,19 @@ export class HomeNotChildGuardService implements CanActivate {
 
   checkLogin(): boolean {
     if (this.authService.authSubject.getValue().isAuthorized) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: TRUE',
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(
+        "AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: TRUE",
+        ConsoleLogTypeEnum.debug
+      );
 
       return true;
     }
 
     // Navigate to the login page with extras
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: FALSE, redirecting',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering HomeNotChildGuardService checkLogin: FALSE, redirecting",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.authService.doLogin();
 

@@ -1,26 +1,54 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
-import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import * as moment from 'moment';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  inject,
+  tick,
+  fakeAsync,
+  flush,
+  discardPeriodicTasks,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { Router } from "@angular/router";
+import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
+import { BehaviorSubject, of } from "rxjs";
+import { RouterTestingModule } from "@angular/router/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { By } from "@angular/platform-browser";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import * as moment from "moment";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, ElementClass_DialogContent, ElementClass_DialogCloseButton, } from '../../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, Document, DocumentItem, momentDateFormat, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
-import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
+import { FinanceUIModule } from "../../finance-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+  ElementClass_DialogContent,
+  ElementClass_DialogCloseButton,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  HomeDefOdataService,
+  FinanceOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  Document,
+  DocumentItem,
+  momentDateFormat,
+  RepeatedDatesAPIOutput,
+  DocumentItemView,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
+import { DocumentRecurredMassCreateComponent } from "./document-recurred-mass-create.component";
+import { DocumentNormalMassCreateItemComponent } from "../document-normal-mass-create-item";
 
-describe('DocumentRecurredMassCreateComponent', () => {
+describe("DocumentRecurredMassCreateComponent", () => {
   let component: DocumentRecurredMassCreateComponent;
   let fixture: ComponentFixture<DocumentRecurredMassCreateComponent>;
   let fakeData: FakeDataHelper;
@@ -52,30 +80,39 @@ describe('DocumentRecurredMassCreateComponent', () => {
     const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllCurrencies',
-      'fetchAllDocTypes',
-      'fetchAllAccountCategories',
-      'fetchAllTranTypes',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
-      'massCreateNormalDocument',
-      'getRepeatedDates',
-      'searchDocItem',
+    const odataService: any = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchAllCurrencies",
+      "fetchAllDocTypes",
+      "fetchAllAccountCategories",
+      "fetchAllTranTypes",
+      "fetchAllAccounts",
+      "fetchAllControlCenters",
+      "fetchAllOrders",
+      "massCreateNormalDocument",
+      "getRepeatedDates",
+      "searchDocItem",
     ]);
-    fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(
+      of([])
+    );
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllTranTypesSpy = odataService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy =
+      odataService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllTranTypesSpy = odataService.fetchAllTranTypes.and.returnValue(
+      of([])
+    );
     fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllControlCentersSpy = odataService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllControlCentersSpy =
+      odataService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = odataService.fetchAllOrders.and.returnValue(of([]));
-    massCreateNormalDocumentSpy = odataService.massCreateNormalDocument.and.returnValue(of({}));
+    massCreateNormalDocumentSpy =
+      odataService.massCreateNormalDocument.and.returnValue(of({}));
     getRepeatedDatesSpy = odataService.getRepeatedDates.and.returnValue(of([]));
-    searchDocItemSpy = odataService.searchDocItem.and.returnValue(of({
-      contentList: [],
-    }));
+    searchDocItemSpy = odataService.searchDocItem.and.returnValue(
+      of({
+        contentList: [],
+      })
+    );
 
     TestBed.configureTestingModule({
       imports: [
@@ -104,7 +141,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
-        entryComponents: [ MessageDialogComponent ],
+        entryComponents: [MessageDialogComponent],
       },
     }).compileComponents();
   }));
@@ -115,11 +152,11 @@ describe('DocumentRecurredMassCreateComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Working with data', () => {
+  describe("Working with data", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let ardates: RepeatedDatesAPIOutput[] = [];
@@ -127,30 +164,34 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
+      );
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
 
       // Accounts
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
       // CC
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllControlCentersSpy.and.returnValue(
+        asyncData(fakeData.finControlCenters)
+      );
       // Order
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
 
       // Repeated docs
       ardates = [];
       ardates.push({
-        StartDate: moment().startOf('month'),
-        EndDate: moment().endOf('month'),
+        StartDate: moment().startOf("month"),
+        EndDate: moment().endOf("month"),
       });
       ardates.push({
-        StartDate: moment().add(1, 'months').startOf('month'),
-        EndDate: moment().add(1, 'months').endOf('month'),
+        StartDate: moment().add(1, "months").startOf("month"),
+        EndDate: moment().add(1, "months").endOf("month"),
       });
       ardates.push({
-        StartDate: moment().add(2, 'months').startOf('month'),
-        EndDate: moment().add(2, 'months').endOf('month'),
+        StartDate: moment().add(2, "months").startOf("month"),
+        EndDate: moment().add(2, "months").endOf("month"),
       });
       getRepeatedDatesSpy.and.returnValue(asyncData(ardates));
 
@@ -160,8 +201,8 @@ describe('DocumentRecurredMassCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'days'),
-        DocumentDesp: 'doc 1',
+        TransactionDate: moment().add(1, "days"),
+        DocumentDesp: "doc 1",
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,
         IsExpense: fakeData.finTranTypes[0].Expense,
@@ -170,14 +211,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
         Amount: 100.23,
         AmountInLocalCurrency: 100.23,
         ControlCenterID: fakeData.finControlCenters[0].Id,
-        ItemDesp: 'item 1',
+        ItemDesp: "item 1",
       });
       ardocitems.push({
         DocumentID: 2,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'weeks'),
-        DocumentDesp: 'doc 2',
+        TransactionDate: moment().add(1, "weeks"),
+        DocumentDesp: "doc 2",
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,
         IsExpense: fakeData.finTranTypes[0].Expense,
@@ -186,25 +227,30 @@ describe('DocumentRecurredMassCreateComponent', () => {
         Amount: 200.23,
         AmountInLocalCurrency: 200.23,
         ControlCenterID: fakeData.finControlCenters[0].Id,
-        ItemDesp: 'item 2.1',
+        ItemDesp: "item 2.1",
       });
-      searchDocItemSpy.and.returnValue(asyncData({
-        totalCount: 20,
-        contentList: ardocitems,
-      }));
+      searchDocItemSpy.and.returnValue(
+        asyncData({
+          totalCount: 20,
+          contentList: ardocitems,
+        })
+      );
 
       // Mass create
-      massCreateNormalDocumentSpy.and.returnValue(asyncData({
-        PostedDocuments: [{
-          Id: 1,
-          TranDateFormatString: '2020-01-01'
-        }],
-        FailedDocuments: []
-      }));
+      massCreateNormalDocumentSpy.and.returnValue(
+        asyncData({
+          PostedDocuments: [
+            {
+              Id: 1,
+              TranDateFormatString: "2020-01-01",
+            },
+          ],
+          FailedDocuments: [],
+        })
+      );
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -213,168 +259,224 @@ describe('DocumentRecurredMassCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should popup error dialog if fetchAllAccountCategories fails', fakeAsync(() => {
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllAccountCategories fails", fakeAsync(() => {
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllTranTypes fails', fakeAsync(() => {
-      fetchAllTranTypesSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllTranTypes fails", fakeAsync(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllAccounts fails', fakeAsync(() => {
-      fetchAllAccountsSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllAccounts fails", fakeAsync(() => {
+      fetchAllAccountsSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllControlCenters fails', fakeAsync(() => {
-      fetchAllControlCentersSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllControlCenters fails", fakeAsync(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllOrders fails', fakeAsync(() => {
-      fetchAllOrdersSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllOrders fails", fakeAsync(() => {
+      fetchAllOrdersSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllCurrencies fails', fakeAsync(() => {
-      fetchAllCurrenciesSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllCurrencies fails", fakeAsync(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('should popup error dialog if fetchAllDocTypes fails', fakeAsync(() => {
-      fetchAllDocTypesSpy.and.returnValue(asyncError('failed'));
+    it("should popup error dialog if fetchAllDocTypes fails", fakeAsync(() => {
+      fetchAllDocTypesSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      
+
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       //flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it('Step 0: search page without input', fakeAsync(() => {
+    it("Step 0: search page without input", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -387,44 +489,56 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 0: frequency is manadatory', fakeAsync(() => {
+    it("Step 0: frequency is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Add frequency
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
 
       flush();
     }));
 
-    it('Step 0: Account is manadatory', fakeAsync(() => {
+    it("Step 0: Account is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Add account
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -432,59 +546,26 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 1: Error dialog if getRepeatedDates failed', fakeAsync(() => {
-      getRepeatedDatesSpy.and.returnValue(asyncError('failed'));
+    it("Step 1: Error dialog if getRepeatedDates failed", fakeAsync(() => {
+      getRepeatedDatesSpy.and.returnValue(asyncError("failed"));
 
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.searchFormGroup.markAsDirty();
-      expect(component.searchFormGroup.valid).toBeTruthy();
-      expect(component.nextButtonEnabled).toBeTruthy();
-      component.next();
-
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
-
-      // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
-      flush();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
-
-      flush();
-    }));
-
-    it('Step 1: Error dialog if searchDocItem failed', fakeAsync(() => {
-      searchDocItemSpy.and.returnValue(asyncError('failed'));
-
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -495,33 +576,100 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
 
       flush();
     }));
 
-    it('Step 1: Existing document items', fakeAsync(() => {
+    it("Step 1: Error dialog if searchDocItem failed", fakeAsync(() => {
+      searchDocItemSpy.and.returnValue(asyncError("failed"));
+
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup.markAsDirty();
+      expect(component.searchFormGroup.valid).toBeTruthy();
+      expect(component.nextButtonEnabled).toBeTruthy();
+      component.next();
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn = overlayContainerElement.querySelector(
+        ElementClass_DialogCloseButton
+      ) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(
+        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
+          .length
+      ).toBe(0);
+
+      flush();
+    }));
+
+    it("Step 1: Existing document items", fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Input search criteria
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -541,18 +689,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default value', fakeAsync(() => {
+    it("Step 2: Default value", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -576,18 +730,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default page account is manadatory', fakeAsync(() => {
+    it("Step 2: Default page account is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -606,11 +766,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(undefined);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(undefined);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
@@ -619,18 +785,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default page tran type is manadatory', fakeAsync(() => {
+    it("Step 2: Default page tran type is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -649,11 +821,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(undefined);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(undefined);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
@@ -662,18 +840,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default page amount is manadatory', fakeAsync(() => {
+    it("Step 2: Default page amount is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -692,11 +876,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(undefined);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(undefined);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
@@ -705,18 +895,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default page desp is manadatory', fakeAsync(() => {
+    it("Step 2: Default page desp is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -735,11 +931,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue(undefined);
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue(undefined);
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
@@ -748,18 +950,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 2: Default page cost object is manadatory', fakeAsync(() => {
+    it("Step 2: Default page cost object is manadatory", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -778,21 +986,31 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
-      component.defaultValueFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("orderControl")
+        ?.setValue(fakeData.finOrders[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
-      component.defaultValueFormGroup.get('ccControl')?.setValue(undefined);
-      component.defaultValueFormGroup.get('orderControl')?.setValue(undefined);
+      component.defaultValueFormGroup.get("ccControl")?.setValue(undefined);
+      component.defaultValueFormGroup.get("orderControl")?.setValue(undefined);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeFalse();
 
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -800,18 +1018,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 3: Items', fakeAsync(() => {
+    it("Step 3: Items", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -830,11 +1054,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -850,18 +1080,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 4: Confirm', fakeAsync(() => {
+    it("Step 4: Confirm", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -880,11 +1116,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -898,9 +1140,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.currentStep).toEqual(3);
 
       // Add item and delete it
-      let nidx = component.onCreateNewItem(undefined);
+      const nidx = component.onCreateNewItem(undefined);
       if (nidx > 0) {
-        let nidx2 = component.onCopyItem(undefined, nidx);
+        const nidx2 = component.onCopyItem(undefined, nidx);
         if (nidx2 > 0) {
           component.onRemoveItem(undefined, nidx2);
         }
@@ -919,18 +1161,24 @@ describe('DocumentRecurredMassCreateComponent', () => {
       flush();
     }));
 
-    it('Step 5: Result page', fakeAsync(() => {
+    it("Step 5: Result page", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup.get('dateRangeControl')?.setValue([
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ]);
-      component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
-      component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.searchFormGroup
+        .get("dateRangeControl")
+        ?.setValue([
+          moment().startOf("month").toDate(),
+          moment().endOf("month").toDate(),
+        ]);
+      component.searchFormGroup
+        .get("frqControl")
+        ?.setValue(component.arFrequencies[0].value);
+      component.searchFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -949,11 +1197,17 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
-      component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
-      component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
-      component.defaultValueFormGroup.get('amountControl')?.setValue(100);
-      component.defaultValueFormGroup.get('despControl')?.setValue('test');
-      component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.defaultValueFormGroup
+        .get("accountControl")
+        ?.setValue(fakeData.finAccounts[0].Id);
+      component.defaultValueFormGroup
+        .get("tranTypeControl")
+        ?.setValue(fakeData.finTranTypes[0].Id);
+      component.defaultValueFormGroup.get("amountControl")?.setValue(100);
+      component.defaultValueFormGroup.get("despControl")?.setValue("test");
+      component.defaultValueFormGroup
+        .get("ccControl")
+        ?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();

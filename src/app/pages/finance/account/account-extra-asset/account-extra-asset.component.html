@@ -2,14 +2,20 @@
   <div [formGroup]="assetInfoFormGroup">
     <!-- Category -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Category' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{
+        "Common.Category" | transloco
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyErrorTpl">
         <nz-select formControlName="ctgyControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of arAssetCategories" [nzValue]="rt.ID" [nzLabel]="t(rt.Name!)"></nz-option>
+          <nz-option
+            *ngFor="let rt of arAssetCategories"
+            [nzValue]="rt.ID"
+            [nzLabel]="t(rt.Name!)"
+          ></nz-option>
         </nz-select>
         <ng-template #ctgyErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
+            {{ "Common.FieldIsMandatory" | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -17,28 +23,32 @@
 
     <!-- Name -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{'Common.Name' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{
+        "Common.Name" | transloco
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
         <input nz-input formControlName="nameControl" maxlength="30" />
         <ng-template #nameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{'Common.FieldMaxLength' | transloco}}
+            {{ "Common.FieldMaxLength" | transloco }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            {{'Common.FieldIsMandatory' | transloco}}
+            {{ "Common.FieldIsMandatory" | transloco }}
           </ng-container>
         </ng-template>
-      </nz-form-control>      
+      </nz-form-control>
     </nz-form-item>
 
     <!-- Comment -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Common.Comment' | transloco}}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{
+        "Common.Comment" | transloco
+      }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="commentControl" maxlength="45" />
         <ng-template #cmtTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{'Common.FieldMaxLength' | transloco}}
+            {{ "Common.FieldMaxLength" | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -46,25 +56,44 @@
 
     <!-- Bought date -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Finance.BoughtDate' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" style="text-align: left;">
-        <nz-date-picker id="boughtDate" formControlName="boughtDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+      <nz-form-label [nzSpan]="7">{{
+        "Finance.BoughtDate" | transloco
+      }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left">
+        <nz-date-picker
+          id="boughtDate"
+          formControlName="boughtDateControl"
+          (ngModelChange)="onChange()"
+        ></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
     <!-- Expired date -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Finance.ExpiredDate' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" style="text-align: left;">
-        <nz-date-picker id="expiredDate" formControlName="expiredDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+      <nz-form-label [nzSpan]="7">{{
+        "Finance.ExpiredDate" | transloco
+      }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left">
+        <nz-date-picker
+          id="expiredDate"
+          formControlName="expiredDateControl"
+          (ngModelChange)="onChange()"
+        ></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{'Finance.ResidualValue' | transloco}}</nz-form-label>
-      <nz-form-control [nzSpan]="12" style="text-align: left;">
-        <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="residualValueControl"
-          [nzPlaceHolder]="'Finance.ResidualValue' | transloco" (ngModelChange)="onChange()">
+      <nz-form-label [nzSpan]="7">{{
+        "Finance.ResidualValue" | transloco
+      }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" style="text-align: left">
+        <nz-input-number
+          [nzMin]="0.01"
+          [nzStep]="0.01"
+          formControlName="residualValueControl"
+          [nzPlaceHolder]="'Finance.ResidualValue' | transloco"
+          (ngModelChange)="onChange()"
+        >
         </nz-input-number>
       </nz-form-control>
     </nz-form-item>
@@ -72,11 +101,23 @@
 
   <!-- Ref doc. ID -->
   <div nz-row class="achih-control-full-width" *ngIf="refBuyDocID">
-    <div nz-col nzSpan="2" nzOffset="5"><label>{{'Finance.RefDoc' | transloco}}</label></div>
-    <div nz-col><button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">{{refBuyDocID}}</button></div>
+    <div nz-col nzSpan="2" nzOffset="5">
+      <label>{{ "Finance.RefDoc" | transloco }}</label>
+    </div>
+    <div nz-col>
+      <button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">
+        {{ refBuyDocID }}
+      </button>
+    </div>
   </div>
   <div nz-row class="achih-control-full-width" *ngIf="refSoldDocID">
-    <div nz-col nzSpan="2" nzOffset="5"><label>{{'Finance.RefDoc' | transloco}}</label></div>
-    <div nz-col><button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">{{refSoldDocID}}</button></div>
+    <div nz-col nzSpan="2" nzOffset="5">
+      <label>{{ "Finance.RefDoc" | transloco }}</label>
+    </div>
+    <div nz-col>
+      <button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">
+        {{ refSoldDocID }}
+      </button>
+    </div>
   </div>
 </ng-container>

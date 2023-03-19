@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'hih-person-role-selection-dlg',
-  templateUrl: './person-role-selection-dlg.component.html',
-  styleUrls: ['./person-role-selection-dlg.component.less']
+  selector: "hih-person-role-selection-dlg",
+  templateUrl: "./person-role-selection-dlg.component.html",
+  styleUrls: ["./person-role-selection-dlg.component.less"],
 })
 export class PersonRoleSelectionDlgComponent {
-
-  constructor() { }
-
+  constructor() {}
 }

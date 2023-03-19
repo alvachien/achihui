@@ -1,24 +1,52 @@
-import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
-  Validator, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
-import * as moment from 'moment';
-import { UIMode, isUIEditable } from 'actslib';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  HostListener,
+  OnDestroy,
+  Input,
+} from "@angular/core";
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NG_VALIDATORS,
+  FormGroup,
+  FormControl,
+  Validator,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from "@angular/forms";
+import * as moment from "moment";
+import { UIMode, isUIEditable } from "actslib";
 
-import { Account, ControlCenter, Order, AccountCategory, Currency,
-  TranType, Document, DocumentItem, ModelUtility, ConsoleLogTypeEnum, financeDocTypeNormal,
-  UIAccountForSelection, UIOrderForSelection,
-} from '../../../../model';
+import {
+  Account,
+  ControlCenter,
+  Order,
+  AccountCategory,
+  Currency,
+  TranType,
+  Document,
+  DocumentItem,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  financeDocTypeNormal,
+  UIAccountForSelection,
+  UIOrderForSelection,
+} from "../../../../model";
 
 @Component({
-  selector: 'hih-fin-document-items',
-  templateUrl: './document-items.component.html',
-  styleUrls: ['./document-items.component.less'],
+  selector: "hih-fin-document-items",
+  templateUrl: "./document-items.component.html",
+  styleUrls: ["./document-items.component.less"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DocumentItemsComponent),
       multi: true,
-    }, {
+    },
+    {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => DocumentItemsComponent),
       multi: true,
@@ -28,8 +56,8 @@ import { Account, ControlCenter, Order, AccountCategory, Currency,
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _tranCurr: string = '';
-  private _tranCurr2?: string
+  private _tranCurr = "";
+  private _tranCurr2?: string;
   private _docType?: number;
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: any) => void = undefined;
@@ -48,18 +76,18 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   get controlError(): any {
     const err = this.validate();
     if (err) {
-      if (err['noitems']) {
-        return { value: 'Finance.NoDocumentItem' };
-      } else if (err['itemwithoutaccount']) {
-        return { value: 'Finance.AccountIsMust' };
-      } else if (err['itemwithouttrantype']) {
-        return { value: 'Finance.TransactionTypeIsMust' };
-      } else if (err['itemwithoutamount']) {
-        return { value: 'Finance.AmountIsMust' };
-      } else if (err['itemwithwrongcostobject']) {
-        return { value: 'Finance.EitherControlCenterOrOrder' };
-      } else if (err['itemwithoutdesp']) {
-        return { value: 'Finance.DespIsMust' };
+      if (err["noitems"]) {
+        return { value: "Finance.NoDocumentItem" };
+      } else if (err["itemwithoutaccount"]) {
+        return { value: "Finance.AccountIsMust" };
+      } else if (err["itemwithouttrantype"]) {
+        return { value: "Finance.TransactionTypeIsMust" };
+      } else if (err["itemwithoutamount"]) {
+        return { value: "Finance.AmountIsMust" };
+      } else if (err["itemwithwrongcostobject"]) {
+        return { value: "Finance.EitherControlCenterOrOrder" };
+      } else if (err["itemwithoutdesp"]) {
+        return { value: "Finance.DespIsMust" };
       }
     }
     return err;
@@ -109,13 +137,18 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._uiMode;
   }
   set currentUIMode(mode: UIMode) {
-    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering DocumentItemsComponent currentUIMode setter`,
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering DocumentItemsComponent currentUIMode setter`,
+      ConsoleLogTypeEnum.debug
+    );
     if (this._uiMode !== mode) {
       this._uiMode = mode;
       if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
         this.setDisabledState(true);
-      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Update) {
+      } else if (
+        this._uiMode === UIMode.Create ||
+        this._uiMode === UIMode.Update
+      ) {
         this.setDisabledState(false);
       }
     }
@@ -153,66 +186,112 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this.listItems;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Update);
+    return (
+      this._isChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        this.currentUIMode === UIMode.Update)
+    );
   }
   get isAddItemAllowed(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
   get isDeleteItemAllowed(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
   get isItemIDEditable(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
   get isAccountIDEditable(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
   get isTranTypeEditable(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
   get isAmountEditable(): boolean {
-    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
-      || (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal));
+    return (
+      this.isFieldChangable &&
+      (this.currentUIMode === UIMode.Create ||
+        (this.currentUIMode === UIMode.Update &&
+          this.docType === financeDocTypeNormal))
+    );
   }
 
-  constructor() { }
+  constructor() {}
 
-  @HostListener('change') onChange(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...', ConsoleLogTypeEnum.debug);
+  @HostListener("change") onChange(): void {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._onChange) {
       this._onChange(this.documentItems);
     }
   }
-  @HostListener('blur') onTouched(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent onTouched...', ConsoleLogTypeEnum.debug);
+  @HostListener("blur") onTouched(): void {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent onTouched...",
+      ConsoleLogTypeEnum.debug
+    );
     if (this._onTouched) {
       this._onTouched();
     }
   }
 
   writeValue(val: DocumentItem[]): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...",
+      ConsoleLogTypeEnum.debug
+    );
     if (val) {
       this.listItems = val;
     }
   }
 
   registerOnChange(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...",
+      ConsoleLogTypeEnum.debug
+    );
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...",
+      ConsoleLogTypeEnum.debug
+    );
     this._onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...",
+      ConsoleLogTypeEnum.debug
+    );
     if (isDisabled) {
       this._isChangable = false;
     } else {
@@ -239,36 +318,38 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       return val.TranType === undefined;
     });
     if (erridx !== -1) {
-      return {itemwithouttrantype: true};
+      return { itemwithouttrantype: true };
     }
     // Check 4. Amount
     erridx = this.listItems.findIndex((val: DocumentItem) => {
       return val.TranAmount <= 0;
     });
     if (erridx !== -1) {
-      return {itemwithoutamount: true};
+      return { itemwithoutamount: true };
     }
     // Check 5. Each item has control center or order
     erridx = this.listItems.findIndex((val: DocumentItem) => {
-      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
-      || (val.ControlCenterId === undefined && val.OrderId === undefined);
+      return (
+        (val.ControlCenterId !== undefined && val.OrderId !== undefined) ||
+        (val.ControlCenterId === undefined && val.OrderId === undefined)
+      );
     });
     if (erridx !== -1) {
-      return {itemwithwrongcostobject: true};
+      return { itemwithwrongcostobject: true };
     }
     // Check 6. Each item has description
     erridx = this.listItems.findIndex((val: DocumentItem) => {
       return val.Desp === undefined || val.Desp.length === 0;
     });
     if (erridx !== -1) {
-      return {itemwithoutdesp: true};
+      return { itemwithoutdesp: true };
     }
     // Item ID
     erridx = this.listItems.findIndex((val: DocumentItem) => {
       return val.ItemId === undefined || val.ItemId <= 0;
     });
     if (erridx !== -1) {
-      return {itemwithoutitemid: true};
+      return { itemwithoutitemid: true };
     }
     // // Duplicated Item ID
 
@@ -284,10 +365,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     if (this.arControlCenters.length === 1) {
       di.ControlCenterId = this.arControlCenters[0].Id;
     }
-    this.listItems = [
-      ...this.listItems,
-      di
-    ];
+    this.listItems = [...this.listItems, di];
 
     this.onChange();
   }
@@ -316,10 +394,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     di2.TranAmount = di.TranAmount;
     di2.TranType = di.TranType;
     di2.UseCurr2 = di.UseCurr2;
-    this.listItems = [
-      ...this.listItems,
-      di2
-    ];
+    this.listItems = [...this.listItems, di2];
 
     this.onChange();
   }

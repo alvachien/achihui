@@ -1,21 +1,33 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub, asyncData, asyncError } from '../../../../../testing';
-import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
-import { UserAuthInfo } from 'src/app/model';
+import { FinanceUIModule } from "../../finance-ui.module";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  FormGroupHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import {
+  AuthService,
+  FinanceOdataService,
+  HomeDefOdataService,
+  UIStatusService,
+} from "src/app/services";
+import { en_US, NZ_I18N } from "ng-zorro-antd/i18n";
+import { DocumentChangeDateDialogComponent } from "./document-change-date-dialog.component";
+import { UserAuthInfo } from "src/app/model";
 
-describe('DocumentChangeDateDialogComponent', () => {
+describe("DocumentChangeDateDialogComponent", () => {
   let component: DocumentChangeDateDialogComponent;
   let fixture: ComponentFixture<DocumentChangeDateDialogComponent>;
   let fakeData: FakeDataHelper;
@@ -33,10 +45,11 @@ describe('DocumentChangeDateDialogComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'changeDocumentDateViaPatch',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "changeDocumentDateViaPatch",
     ]);
-    changeDocumentDateViaPatchSpy = storageService.changeDocumentDateViaPatch.and.returnValue(of([]));
+    changeDocumentDateViaPatchSpy =
+      storageService.changeDocumentDateViaPatch.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
@@ -53,7 +66,7 @@ describe('DocumentChangeDateDialogComponent', () => {
         RouterTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [ DocumentChangeDateDialogComponent ],
+      declarations: [DocumentChangeDateDialogComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -63,15 +76,15 @@ describe('DocumentChangeDateDialogComponent', () => {
         NzModalService,
         {
           provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) => modalSvc.create({
-            nzClosable: true,
-            nzContent: DocumentChangeDateDialogComponent
-          }),
-          deps: [NzModalService]
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: DocumentChangeDateDialogComponent,
+            }),
+          deps: [NzModalService],
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -80,7 +93,7 @@ describe('DocumentChangeDateDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

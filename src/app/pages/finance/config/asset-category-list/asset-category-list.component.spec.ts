@@ -1,21 +1,38 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BehaviorSubject, of, } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  inject,
+  flush,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BehaviorSubject, of } from "rxjs";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { AssetCategoryListComponent } from './asset-category-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError, } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
+import { FinanceUIModule } from "../../finance-ui.module";
+import { AssetCategoryListComponent } from "./asset-category-list.component";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import {
+  AuthService,
+  UIStatusService,
+  FinanceOdataService,
+} from "../../../../services";
+import { UserAuthInfo } from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
 
-describe('AssetCategoryListComponent', () => {
+describe("AssetCategoryListComponent", () => {
   let component: AssetCategoryListComponent;
   let fixture: ComponentFixture<AssetCategoryListComponent>;
   let fakeData: FakeDataHelper;
@@ -31,10 +48,11 @@ describe('AssetCategoryListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildFinConfigData();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllAssetCategories',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchAllAssetCategories",
     ]);
-    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllAssetCategoriesSpy =
+      storageService.fetchAllAssetCategories.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -51,23 +69,18 @@ describe('AssetCategoryListComponent', () => {
         BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [
-        MessageDialogComponent,
-        AssetCategoryListComponent,
-      ],
+      declarations: [MessageDialogComponent, AssetCategoryListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-      ]
+      ],
     });
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
-        entryComponents: [
-          MessageDialogComponent,
-        ],
+        entryComponents: [MessageDialogComponent],
       },
     }).compileComponents();
   }));
@@ -78,41 +91,46 @@ describe('AssetCategoryListComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. shall work with data', () => {
+  describe("2. shall work with data", () => {
     beforeEach(() => {
-      fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllAssetCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAssetCategories)
+      );
     });
 
-    it('should not show data before OnInit', () => {
+    it("should not show data before OnInit", () => {
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it("should show data after OnInit", fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.dataSet.length).toBeGreaterThan(0);
-      expect(component.dataSet.length).toEqual(fakeData.finAssetCategories.length);
+      expect(component.dataSet.length).toEqual(
+        fakeData.finAssetCategories.length
+      );
 
       flush();
     }));
   });
 
-  describe('3. shall display error dialog for exception', () => {
+  describe("3. shall display error dialog for exception", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllAssetCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAssetCategories)
+      );
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -121,26 +139,34 @@ describe('AssetCategoryListComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it("should display error when Service fails", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAssetCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllAssetCategoriesSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ".ant-modal-close"
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(0);
 
       flush();
     }));

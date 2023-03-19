@@ -1,5 +1,5 @@
-import * as moment from 'moment';
-import * as hih from './common';
+import * as moment from "moment";
+import * as hih from "./common";
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
@@ -7,9 +7,9 @@ import * as hih from './common';
  * Relationship
  */
 export enum HomeMemberRelationEnum {
-  Self   = 0,
+  Self = 0,
   Couple = 1,
-  Child  = 2,
+  Child = 2,
   Parent = 3,
 }
 
@@ -28,9 +28,9 @@ export interface IHomeMemberJson {
  * Home member
  */
 export class HomeMember {
-  private _hid: number = 0;
-  private _user: string = '';
-  private _displayas: string = '';
+  private _hid = 0;
+  private _user = "";
+  private _displayas = "";
   private _relation: HomeMemberRelationEnum | null = null;
   private _ischild: boolean | null = null;
 
@@ -78,8 +78,7 @@ export class HomeMember {
     return true;
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   public parseJSONData(data: IHomeMemberJson): void {
     this._hid = data.HomeID;
@@ -88,7 +87,10 @@ export class HomeMember {
       this._displayas = data.DisplayAs;
     }
     if (data.Relation) {
-      this._relation = HomeMemberRelationEnum[data.Relation as unknown as keyof typeof HomeMemberRelationEnum];
+      this._relation =
+        HomeMemberRelationEnum[
+          data.Relation as unknown as keyof typeof HomeMemberRelationEnum
+        ];
     } else {
       this._relation = null;
     }
@@ -127,11 +129,11 @@ export interface HomeDefJson {
  * Home definition
  */
 export class HomeDef extends hih.BaseModel {
-  private _id: number = 0;
-  private _name: string = '';
-  private _details: string = '';
-  private _host: string = '';
-  private _basecurr: string = '';
+  private _id = 0;
+  private _name = "";
+  private _details = "";
+  private _host = "";
+  private _basecurr = "";
   private _listMembers: HomeMember[];
 
   constructor() {
@@ -179,7 +181,7 @@ export class HomeDef extends hih.BaseModel {
       }
     }
 
-    return '';
+    return "";
   }
 
   get Members(): HomeMember[] {
@@ -205,13 +207,13 @@ export class HomeDef extends hih.BaseModel {
     let selfcnt = 0;
     let invalidmem = 0;
     let invalidself = false;
-    this.Members.forEach(mem => {
+    this.Members.forEach((mem) => {
       if (!mem.isValid) {
-        invalidmem ++;
+        invalidmem++;
       }
 
       if (mem.Relation === HomeMemberRelationEnum.Self) {
-        selfcnt ++;
+        selfcnt++;
         if (mem.IsChild) {
           invalidself = true;
         }
@@ -285,16 +287,16 @@ export interface IHomeMsgJson {
  * Home message
  */
 export class HomeMsg {
-  private _hid: number = 0;
-  private _id: number = 0;
-  private _usrto: string = '';
-  private _usrtoDisplayAs: string = '';
-  private _usrfrom: string = '';
-  private _usrfromDisplayAs: string = '';
+  private _hid = 0;
+  private _id = 0;
+  private _usrto = "";
+  private _usrtoDisplayAs = "";
+  private _usrfrom = "";
+  private _usrfromDisplayAs = "";
   private _senddate: moment.Moment;
-  private _readflag: boolean = false;
-  private _title: string = '';
-  private _content: string = '';
+  private _readflag = false;
+  private _title = "";
+  private _content = "";
 
   constructor() {
     this._senddate = moment();
@@ -416,13 +418,13 @@ export class HomeMsg {
  * Key Figure
  */
 export class HomeKeyFigure {
-  private _totalAssets: number = 0;
-  private _totalLiabilities: number = 0;
-  private _totalAssetsUnderMyName: number = 0;
-  private _totalLiabilitiesUnderMyName: number = 0;
-  private _totalUnreadMessage: number = 0;
-  private _myUnCompletedEvents: number = 0;
-  private _myCompletedEvents: number = 0;
+  private _totalAssets = 0;
+  private _totalLiabilities = 0;
+  private _totalAssetsUnderMyName = 0;
+  private _totalLiabilitiesUnderMyName = 0;
+  private _totalUnreadMessage = 0;
+  private _myUnCompletedEvents = 0;
+  private _myCompletedEvents = 0;
   get TotalAssets(): number {
     return this._totalAssets;
   }

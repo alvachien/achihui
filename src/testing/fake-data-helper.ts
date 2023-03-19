@@ -1,23 +1,68 @@
-import { Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
-  AccountCategory, TranType, AssetCategory, Account, AccountJson,
-  UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
-  AccountCategoryJson, TranTypeJson, AssetCategoryJson,
-  BookCategory, Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
-  financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
-  ControlCenter, ControlCenterJson, Order, OrderJson, Plan, PlanTypeEnum,
-  Document, DocumentItem, AccountExtraAdvancePayment,
-  RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
-  FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
-  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
-  AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
-  financeAccountCategoryAdvancePayment, SettlementRule, financeDocTypeNormal,
-  financeTranTypeInterestOut, BlogCollection, BlogCollectionAPIJson, BlogPostAPIJson, BlogPost, PersonRole,
+import {
+  Currency,
+  HomeDef,
+  HomeMember,
+  HomeMemberRelationEnum,
+  DocumentType,
+  AccountCategory,
+  TranType,
+  AssetCategory,
+  Account,
+  AccountJson,
+  UserAuthInfo,
+  AppLanguage,
+  CurrencyJson,
+  AppLanguageJson,
+  DocumentTypeJson,
+  AccountCategoryJson,
+  TranTypeJson,
+  AssetCategoryJson,
+  BookCategory,
+  Tag,
+  TagJson,
+  TagTypeEnum,
+  TagCount,
+  AccountStatusEnum,
+  financeAccountCategoryCash,
+  financeAccountCategoryCreditCard,
+  ControlCenter,
+  ControlCenterJson,
+  Order,
+  OrderJson,
+  Plan,
+  PlanTypeEnum,
+  Document,
+  DocumentItem,
+  AccountExtraAdvancePayment,
+  RepeatFrequencyEnum,
+  TemplateDocADP,
+  financeDocTypeAdvancePayment,
+  FinanceAssetBuyinDocumentAPI,
+  AccountExtraAsset,
+  FinanceAssetSoldoutDocumentAPI,
+  momentDateFormat,
+  financeAccountCategoryAsset,
+  FinanceAssetValChgDocumentAPI,
+  financeAccountCategoryBorrowFrom,
+  AccountExtraLoan,
+  RepaymentMethodEnum,
+  TemplateDocLoan,
+  financeAccountCategoryLendTo,
+  financeAccountCategoryAdvancePayment,
+  SettlementRule,
+  financeDocTypeNormal,
+  financeTranTypeInterestOut,
+  BlogCollection,
+  BlogCollectionAPIJson,
+  BlogPostAPIJson,
+  BlogPost,
+  PersonRole,
   OrganizationType,
-} from '../app/model';
-import * as moment from 'moment';
+} from "../app/model";
+import * as moment from "moment";
 
 export class FakeDataHelper {
-  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _currencies: Currency[] = [];
   private _currenciesFromAPI: CurrencyJson[] = [];
   private _chosedHome: HomeDef = new HomeDef();
@@ -32,7 +77,8 @@ export class FakeDataHelper {
   private _finAssetCategoriesFromAPI: AssetCategoryJson[] = [];
   private _finAccounts: Account[] = [];
   private _finAccountsFromAPI: AccountJson[] = [];
-  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment =
+    new AccountExtraAdvancePayment();
   private _finControlCenters: ControlCenter[] = [];
   private _finControlCentersFromAPI: ControlCenterJson[] = [];
   private _finOrders: Order[] = [];
@@ -55,8 +101,8 @@ export class FakeDataHelper {
   private _personRoles: PersonRole[] = [];
   private _organizationTypes: OrganizationType[] = [];
 
-  readonly userID1: string = 'abcdefg';
-  readonly userID1Sub: string = '12345abcdefg';
+  readonly userID1: string = "abcdefg";
+  readonly userID1Sub: string = "12345abcdefg";
 
   constructor() {
     // Empty
@@ -242,50 +288,50 @@ export class FakeDataHelper {
   public buildCurrencies(): void {
     this._currencies = [];
     let curr: Currency = new Currency();
-    curr.Name = 'Chinese Yuan';
-    curr.Symbol = '￥';
-    curr.Currency = 'CNY';
+    curr.Name = "Chinese Yuan";
+    curr.Symbol = "￥";
+    curr.Currency = "CNY";
     this._currencies.push(curr);
 
     curr = new Currency();
-    curr.Name = 'US Dollar';
-    curr.Symbol = '$';
-    curr.Currency = 'USD';
+    curr.Name = "US Dollar";
+    curr.Symbol = "$";
+    curr.Currency = "USD";
     this._currencies.push(curr);
 
     curr = new Currency();
-    curr.Name = 'Euro';
-    curr.Symbol = 'E';
-    curr.Currency = 'EUR';
+    curr.Name = "Euro";
+    curr.Symbol = "E";
+    curr.Currency = "EUR";
     this._currencies.push(curr);
   }
   public buildCurrenciesFromAPI(): void {
     this._currenciesFromAPI = [];
     const curr: CurrencyJson = {
-      Name: 'Chinese Yuan',
-      Symbol: '#',
-      Curr: 'CNY',
+      Name: "Chinese Yuan",
+      Symbol: "#",
+      Curr: "CNY",
     };
     this._currenciesFromAPI.push(curr);
     const curr2: CurrencyJson = {
-      Name: 'US Dollar',
-      Symbol: '$',
-      Curr: 'USD',
+      Name: "US Dollar",
+      Symbol: "$",
+      Curr: "USD",
     };
     this._currenciesFromAPI.push(curr2);
   }
   public buildChosedHome(): void {
     this._chosedHome = new HomeDef();
     this._chosedHome.ID = 2;
-    this._chosedHome.Name = 'Home for UT';
-    this._chosedHome.BaseCurrency = 'CNY';
+    this._chosedHome.Name = "Home for UT";
+    this._chosedHome.BaseCurrency = "CNY";
     // this._chosedHome.CreatorDisplayAs = 'Creator in Home for UT';
     this._chosedHome.Host = this.userID1;
     const hmem: HomeMember = new HomeMember();
     hmem.HomeID = this._chosedHome.ID;
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
-    hmem.DisplayAs = 'Creator in Home';
+    hmem.DisplayAs = "Creator in Home";
     hmem.IsChild = false;
     this._chosedHome.Members.push(hmem);
   }
@@ -296,8 +342,8 @@ export class FakeDataHelper {
     }
     const def: HomeDef = new HomeDef();
     def.ID = 3;
-    def.Name = 'Second Home for UT';
-    def.BaseCurrency = 'USD';
+    def.Name = "Second Home for UT";
+    def.BaseCurrency = "USD";
     // def.CreatorDisplayAs = 'Creator';
     def.Host = this.userID1;
     this._homeDefs.push(def);
@@ -307,443 +353,443 @@ export class FakeDataHelper {
     this._finDocTypes = [];
     let docType: DocumentType = new DocumentType();
     docType.Id = 1;
-    docType.Name = 'Sys.DocTy.Normal';
-    docType.Comment = 'Normal';
+    docType.Name = "Sys.DocTy.Normal";
+    docType.Comment = "Normal";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 2;
-    docType.Name = 'Sys.DocTy.Transfer';
-    docType.Comment = 'Transfer';
+    docType.Name = "Sys.DocTy.Transfer";
+    docType.Comment = "Transfer";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 3;
-    docType.Name = 'Sys.DocTy.CurrExg';
-    docType.Comment = 'CurrExg';
+    docType.Name = "Sys.DocTy.CurrExg";
+    docType.Comment = "CurrExg";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 5;
-    docType.Name = 'Sys.DocTy.AdvancedPayment';
-    docType.Comment = 'AdvancedPayment';
+    docType.Name = "Sys.DocTy.AdvancedPayment";
+    docType.Comment = "AdvancedPayment";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 7;
-    docType.Name = 'Sys.DocTy.AssetBuyIn';
-    docType.Comment = 'AssetBuyIn';
+    docType.Name = "Sys.DocTy.AssetBuyIn";
+    docType.Comment = "AssetBuyIn";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 8;
-    docType.Name = 'Sys.DocTy.AssetSoldOut';
-    docType.Comment = 'AssetSoldOut';
+    docType.Name = "Sys.DocTy.AssetSoldOut";
+    docType.Comment = "AssetSoldOut";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 9;
-    docType.Name = 'Sys.DocTy.BorrowFrom';
-    docType.Comment = 'BorrowFrom';
+    docType.Name = "Sys.DocTy.BorrowFrom";
+    docType.Comment = "BorrowFrom";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 10;
-    docType.Name = 'Sys.DocTy.LendTo';
-    docType.Comment = 'LendTo';
+    docType.Name = "Sys.DocTy.LendTo";
+    docType.Comment = "LendTo";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 11;
-    docType.Name = 'Sys.DocTy.Repay';
-    docType.Comment = 'Repay';
+    docType.Name = "Sys.DocTy.Repay";
+    docType.Comment = "Repay";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 12;
-    docType.Name = 'Sys.DocTy.AdvancedRecv';
-    docType.Comment = 'AdvancedRecv';
+    docType.Name = "Sys.DocTy.AdvancedRecv";
+    docType.Comment = "AdvancedRecv";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 13;
-    docType.Name = 'Sys.DocTy.AssetValChg';
-    docType.Comment = 'AssetValChg';
+    docType.Name = "Sys.DocTy.AssetValChg";
+    docType.Comment = "AssetValChg";
     this._finDocTypes.push(docType);
     docType = new DocumentType();
     docType.Id = 14;
-    docType.Name = 'Sys.DocTy.Insurance';
-    docType.Comment = 'Insurance';
+    docType.Name = "Sys.DocTy.Insurance";
+    docType.Comment = "Insurance";
     this._finDocTypes.push(docType);
 
     // Tran. type
     this._finTranType = [];
     let tranType: TranType = new TranType();
     tranType.Id = 1;
-    tranType.Name = '初始资金';
+    tranType.Name = "初始资金";
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 2;
-    tranType.Name = '主业收入';
+    tranType.Name = "主业收入";
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 3;
-    tranType.Name = '工资';
+    tranType.Name = "工资";
     tranType.ParId = 2;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 4;
-    tranType.Name = '奖金';
+    tranType.Name = "奖金";
     tranType.ParId = 2;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 35;
-    tranType.Name = '津贴';
+    tranType.Name = "津贴";
     tranType.ParId = 2;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 5;
-    tranType.Name = '投资、保险、博彩类收入';
+    tranType.Name = "投资、保险、博彩类收入";
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 6;
-    tranType.Name = '股票收益';
+    tranType.Name = "股票收益";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 7;
-    tranType.Name = '基金类收益';
+    tranType.Name = "基金类收益";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 8;
-    tranType.Name = '银行利息收入';
+    tranType.Name = "银行利息收入";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 13;
-    tranType.Name = '彩票中奖类收益';
+    tranType.Name = "彩票中奖类收益";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 36;
-    tranType.Name = '保险报销收入';
+    tranType.Name = "保险报销收入";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 87;
-    tranType.Name = '借贷还款收入';
+    tranType.Name = "借贷还款收入";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 90;
-    tranType.Name = '资产增值';
+    tranType.Name = "资产增值";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 93;
-    tranType.Name = '资产出售收益';
+    tranType.Name = "资产出售收益";
     tranType.ParId = 5;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 10;
-    tranType.Name = '其它收入';
+    tranType.Name = "其它收入";
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 37;
-    tranType.Name = '转账收入';
+    tranType.Name = "转账收入";
     tranType.ParId = 10;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 80;
-    tranType.Name = '贷款入账';
+    tranType.Name = "贷款入账";
     tranType.ParId = 10;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 91;
-    tranType.Name = '预收款收入';
+    tranType.Name = "预收款收入";
     tranType.ParId = 10;
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 30;
-    tranType.Name = '人情交往类';
+    tranType.Name = "人情交往类";
     tranType.Expense = false;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 33;
-    tranType.Name = '红包收入';
+    tranType.Name = "红包收入";
     tranType.Expense = true;
     tranType.ParId = 30;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 9;
-    tranType.Name = '生活类开支';
+    tranType.Name = "生活类开支";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 11;
-    tranType.Name = '物业类支出';
+    tranType.Name = "物业类支出";
     tranType.ParId = 9;
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 14;
-    tranType.Name = '小区物业费';
+    tranType.Name = "小区物业费";
     tranType.Expense = true;
     tranType.ParId = 11;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 15;
-    tranType.Name = '水费';
+    tranType.Name = "水费";
     tranType.Expense = true;
     tranType.ParId = 11;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 16;
-    tranType.Name = '电费';
+    tranType.Name = "电费";
     tranType.Expense = true;
     tranType.ParId = 11;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 17;
-    tranType.Name = '天然气费用';
+    tranType.Name = "天然气费用";
     tranType.Expense = true;
     tranType.ParId = 11;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 18;
-    tranType.Name = '物业维修费';
+    tranType.Name = "物业维修费";
     tranType.Expense = true;
     tranType.ParId = 11;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 26;
-    tranType.Name = '通讯费';
+    tranType.Name = "通讯费";
     tranType.ParId = 9;
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 27;
-    tranType.Name = '固定电话/宽带';
+    tranType.Name = "固定电话/宽带";
     tranType.Expense = true;
     tranType.ParId = 26;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 28;
-    tranType.Name = '手机费';
+    tranType.Name = "手机费";
     tranType.Expense = true;
     tranType.ParId = 26;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 38;
-    tranType.Name = '衣服饰品';
+    tranType.Name = "衣服饰品";
     tranType.ParId = 9;
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 39;
-    tranType.Name = '食品酒水';
+    tranType.Name = "食品酒水";
     tranType.ParId = 9;
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 49;
-    tranType.Name = '休闲娱乐';
+    tranType.Name = "休闲娱乐";
     tranType.ParId = 9;
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 54;
-    tranType.Name = '学习进修';
+    tranType.Name = "学习进修";
     tranType.Expense = true;
     tranType.ParId = 9;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 61;
-    tranType.Name = '日常用品';
+    tranType.Name = "日常用品";
     tranType.Expense = true;
     tranType.ParId = 9;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 12;
-    tranType.Name = '私家车支出';
+    tranType.Name = "私家车支出";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 19;
-    tranType.Name = '车辆保养';
+    tranType.Name = "车辆保养";
     tranType.Expense = true;
     tranType.ParId = 12;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 20;
-    tranType.Name = '汽油费';
+    tranType.Name = "汽油费";
     tranType.Expense = true;
     tranType.ParId = 12;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 21;
-    tranType.Name = '车辆保险费';
+    tranType.Name = "车辆保险费";
     tranType.Expense = true;
     tranType.ParId = 12;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 22;
-    tranType.Name = '停车费';
+    tranType.Name = "停车费";
     tranType.Expense = true;
     tranType.ParId = 12;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 23;
-    tranType.Name = '车辆维修';
+    tranType.Name = "车辆维修";
     tranType.Expense = true;
     tranType.ParId = 12;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 24;
-    tranType.Name = '其它支出';
+    tranType.Name = "其它支出";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 60;
-    tranType.Name = '转账支出';
+    tranType.Name = "转账支出";
     tranType.Expense = true;
     tranType.ParId = 24;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 81;
-    tranType.Name = '借出款项';
+    tranType.Name = "借出款项";
     tranType.Expense = true;
     tranType.ParId = 24;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 82;
-    tranType.Name = '起始负债';
+    tranType.Name = "起始负债";
     tranType.Expense = true;
     tranType.ParId = 24;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 88;
-    tranType.Name = '预付款支出';
+    tranType.Name = "预付款支出";
     tranType.Expense = true;
     tranType.ParId = 24;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 25;
-    tranType.Name = '投资、保险、博彩类支出';
+    tranType.Name = "投资、保险、博彩类支出";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 29;
-    tranType.Name = '彩票支出';
+    tranType.Name = "彩票支出";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 34;
-    tranType.Name = '保单投保、续保支出';
+    tranType.Name = "保单投保、续保支出";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 55;
-    tranType.Name = '银行利息支出';
+    tranType.Name = "银行利息支出";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 56;
-    tranType.Name = '银行手续费支出';
+    tranType.Name = "银行手续费支出";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 86;
-    tranType.Name = '偿还借贷款';
+    tranType.Name = "偿还借贷款";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 89;
-    tranType.Name = '资产减值';
+    tranType.Name = "资产减值";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 92;
-    tranType.Name = '资产出售费用';
+    tranType.Name = "资产出售费用";
     tranType.Expense = true;
     tranType.ParId = 25;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 31;
-    tranType.Name = '人际交往';
+    tranType.Name = "人际交往";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 32;
-    tranType.Name = '红包支出';
+    tranType.Name = "红包支出";
     tranType.Expense = true;
     tranType.ParId = 31;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 47;
-    tranType.Name = '请客送礼';
+    tranType.Name = "请客送礼";
     tranType.Expense = true;
     tranType.ParId = 31;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 48;
-    tranType.Name = '孝敬家长';
+    tranType.Name = "孝敬家长";
     tranType.Expense = true;
     tranType.ParId = 31;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 69;
-    tranType.Name = '公共交通类';
+    tranType.Name = "公共交通类";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 70;
-    tranType.Name = '公交地铁等';
+    tranType.Name = "公交地铁等";
     tranType.Expense = true;
     tranType.ParId = 69;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 71;
-    tranType.Name = '长途客车等';
+    tranType.Name = "长途客车等";
     tranType.Expense = true;
     tranType.ParId = 69;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 72;
-    tranType.Name = '火车动车等';
+    tranType.Name = "火车动车等";
     tranType.Expense = true;
     tranType.ParId = 69;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 73;
-    tranType.Name = '飞机等';
+    tranType.Name = "飞机等";
     tranType.Expense = true;
     tranType.ParId = 69;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 74;
-    tranType.Name = '出租车等';
+    tranType.Name = "出租车等";
     tranType.Expense = true;
     tranType.ParId = 69;
     this._finTranType.push(tranType);
     tranType = new TranType();
     tranType.Id = 75;
-    tranType.Name = '医疗保健';
+    tranType.Name = "医疗保健";
     tranType.Expense = true;
     this._finTranType.push(tranType);
     // 40	NULL	衣服鞋帽	1	38	衣服鞋帽
@@ -774,7 +820,7 @@ export class FakeDataHelper {
     // 83	NULL	投资手续费支出	1	25	理财产品等投资手续费
     // 84	NULL	房租收入	0	5	房租收入等
     // 85	NULL	房租支出	1	11	房租支出等
-    this._finTranType.forEach((value: any, index: number) => {
+    this._finTranType.forEach((value: any) => {
       if (!value.ParId) {
         value.HierLevel = 0;
         value.FullDisplayText = value.Name;
@@ -787,113 +833,113 @@ export class FakeDataHelper {
     this._finAccountCategories = [];
     let acntctgy: AccountCategory = new AccountCategory();
     acntctgy.ID = 1;
-    acntctgy.Name = 'Sys.AcntCty.Cash';
+    acntctgy.Name = "Sys.AcntCty.Cash";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'Cash';
+    acntctgy.Comment = "Cash";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 2;
-    acntctgy.Name = 'Sys.AcntCty.DepositAccount';
+    acntctgy.Name = "Sys.AcntCty.DepositAccount";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'Deposit Account';
+    acntctgy.Comment = "Deposit Account";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 3;
-    acntctgy.Name = 'Sys.AcntCty.CreditCard';
+    acntctgy.Name = "Sys.AcntCty.CreditCard";
     acntctgy.AssetFlag = false;
-    acntctgy.Comment = 'CreditCard';
+    acntctgy.Comment = "CreditCard";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 4;
-    acntctgy.Name = 'Sys.AcntCty.AccountPayable';
+    acntctgy.Name = "Sys.AcntCty.AccountPayable";
     acntctgy.AssetFlag = false;
-    acntctgy.Comment = 'Account Payable';
+    acntctgy.Comment = "Account Payable";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 5;
-    acntctgy.Name = 'Sys.AcntCty.AccountReceviable';
+    acntctgy.Name = "Sys.AcntCty.AccountReceviable";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'Account Receviable';
+    acntctgy.Comment = "Account Receviable";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 6;
-    acntctgy.Name = 'Sys.AcntCty.VirtualAccount';
+    acntctgy.Name = "Sys.AcntCty.VirtualAccount";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'VirtualAccount';
+    acntctgy.Comment = "VirtualAccount";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 7;
-    acntctgy.Name = 'Sys.AcntCty.AssetAccount';
+    acntctgy.Name = "Sys.AcntCty.AssetAccount";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'AssetAccount';
+    acntctgy.Comment = "AssetAccount";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 8;
-    acntctgy.Name = 'Sys.AcntCty.AdvancedPayment';
+    acntctgy.Name = "Sys.AcntCty.AdvancedPayment";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'AdvancedPayment';
+    acntctgy.Comment = "AdvancedPayment";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 9;
-    acntctgy.Name = 'Sys.AcntCty.BorrowFrom';
+    acntctgy.Name = "Sys.AcntCty.BorrowFrom";
     acntctgy.AssetFlag = false;
-    acntctgy.Comment = 'BorrowFrom';
+    acntctgy.Comment = "BorrowFrom";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 10;
-    acntctgy.Name = 'Sys.AcntCty.LendTo';
+    acntctgy.Name = "Sys.AcntCty.LendTo";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'LendTo';
+    acntctgy.Comment = "LendTo";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 11;
-    acntctgy.Name = 'Sys.AcntCty.AdvancedRecv';
+    acntctgy.Name = "Sys.AcntCty.AdvancedRecv";
     acntctgy.AssetFlag = false;
-    acntctgy.Comment = 'AdvancedRecv';
+    acntctgy.Comment = "AdvancedRecv";
     this._finAccountCategories.push(acntctgy);
     acntctgy = new AccountCategory();
     acntctgy.ID = 12;
-    acntctgy.Name = 'Sys.AcntCty.Insurance';
+    acntctgy.Name = "Sys.AcntCty.Insurance";
     acntctgy.AssetFlag = true;
-    acntctgy.Comment = 'Insurance';
+    acntctgy.Comment = "Insurance";
     this._finAccountCategories.push(acntctgy);
     // Asset category
     this._finAssetCategories = [];
     let asstctgy: AssetCategory;
     asstctgy = new AssetCategory();
     asstctgy.ID = 1;
-    asstctgy.Name = 'Sys.AssCtgy.Apartment';
-    asstctgy.Desp = 'Apartment';
+    asstctgy.Name = "Sys.AssCtgy.Apartment";
+    asstctgy.Desp = "Apartment";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 2;
-    asstctgy.Name = 'Sys.AssCtgy.Automobile';
-    asstctgy.Desp = 'Automobile';
+    asstctgy.Name = "Sys.AssCtgy.Automobile";
+    asstctgy.Desp = "Automobile";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 3;
-    asstctgy.Name = 'Sys.AssCtgy.Furniture';
-    asstctgy.Desp = 'Furniture';
+    asstctgy.Name = "Sys.AssCtgy.Furniture";
+    asstctgy.Desp = "Furniture";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 4;
-    asstctgy.Name = 'Sys.AssCtgy.HouseAppliances';
-    asstctgy.Desp = 'House Appliances';
+    asstctgy.Name = "Sys.AssCtgy.HouseAppliances";
+    asstctgy.Desp = "House Appliances";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 5;
-    asstctgy.Name = 'Sys.AssCtgy.Camera';
-    asstctgy.Desp = 'Apartment';
+    asstctgy.Name = "Sys.AssCtgy.Camera";
+    asstctgy.Desp = "Apartment";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 6;
-    asstctgy.Name = 'Sys.AssCtgy.Computer';
-    asstctgy.Desp = 'Computer';
+    asstctgy.Name = "Sys.AssCtgy.Computer";
+    asstctgy.Desp = "Computer";
     this._finAssetCategories.push(asstctgy);
     asstctgy = new AssetCategory();
     asstctgy.ID = 7;
-    asstctgy.Name = 'Sys.AssCtgy.MobileDevice';
-    asstctgy.Desp = 'MobileDevice';
+    asstctgy.Name = "Sys.AssCtgy.MobileDevice";
+    asstctgy.Desp = "MobileDevice";
     this._finAssetCategories.push(asstctgy);
   }
   public buildFinAccounts(): void {
@@ -904,64 +950,64 @@ export class FakeDataHelper {
     // Cash account 1
     acnt = new Account();
     acnt.Id = 11;
-    acnt.Name = 'Cash 1';
+    acnt.Name = "Cash 1";
     acnt.CategoryId = 1;
     acnt.OwnerId = this.userID1;
     acnt.Status = AccountStatusEnum.Normal;
-    acnt.Comment = 'Cash Account 1';
+    acnt.Comment = "Cash Account 1";
     this._finAccounts.push(acnt);
     // Deposit account 1
     acnt = new Account();
     acnt.Id = 12;
-    acnt.Name = 'Deposit 1';
+    acnt.Name = "Deposit 1";
     acnt.CategoryId = 2;
     acnt.OwnerId = this.userID1;
     acnt.Status = AccountStatusEnum.Normal;
-    acnt.Comment = 'Deposit Account 1';
+    acnt.Comment = "Deposit Account 1";
     this._finAccounts.push(acnt);
     // Credit card  account 1
     acnt = new Account();
     acnt.Id = 13;
-    acnt.Name = 'CreditCard 1';
+    acnt.Name = "CreditCard 1";
     acnt.CategoryId = 3;
     acnt.OwnerId = this.userID1;
     acnt.Status = AccountStatusEnum.Closed;
-    acnt.Comment = 'CreditCard Account 1';
+    acnt.Comment = "CreditCard Account 1";
     this._finAccounts.push(acnt);
     // Asset
     acnt = new Account();
     acnt.Id = 21;
-    acnt.Name = 'Asset 1';
+    acnt.Name = "Asset 1";
     acnt.CategoryId = financeAccountCategoryAsset;
     acnt.Status = AccountStatusEnum.Normal;
     const asset: AccountExtraAsset = new AccountExtraAsset();
-    asset.Name = 'Asset Test';
+    asset.Name = "Asset Test";
     asset.CategoryID = 1;
     acnt.ExtraInfo = asset;
     this._finAccounts.push(acnt);
     // Borrow from
     acnt = new Account();
     acnt.Id = 22;
-    acnt.Name = 'Borrow from 1';
+    acnt.Name = "Borrow from 1";
     acnt.CategoryId = financeAccountCategoryBorrowFrom;
     acnt.Status = AccountStatusEnum.Normal;
     const brwInfo: AccountExtraLoan = new AccountExtraLoan();
-    brwInfo.Comment = 'Borrow test';
+    brwInfo.Comment = "Borrow test";
     brwInfo.PayingAccount = 11;
     brwInfo.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     brwInfo.TotalMonths = 12;
     brwInfo.annualRate = 0.0435;
-    brwInfo.startDate = moment().subtract(1, 'M').startOf('day');
-    brwInfo.endDate = brwInfo.startDate.add(1, 'y');
+    brwInfo.startDate = moment().subtract(1, "M").startOf("day");
+    brwInfo.endDate = brwInfo.startDate.add(1, "y");
     brwInfo.loanTmpDocs = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
-      tmpdoc.InterestAmount = 362.50;
+      tmpdoc.InterestAmount = 362.5;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = brwInfo.startDate.add(i + 1, 'M');
+      tmpdoc.TranDate = brwInfo.startDate.add(i + 1, "M");
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 22;
       brwInfo.loanTmpDocs.push(tmpdoc);
@@ -971,25 +1017,25 @@ export class FakeDataHelper {
     // Lend to
     acnt = new Account();
     acnt.Id = 23;
-    acnt.Name = 'Lend to 1';
+    acnt.Name = "Lend to 1";
     acnt.CategoryId = financeAccountCategoryLendTo;
     acnt.Status = AccountStatusEnum.Normal;
     const lendto: AccountExtraLoan = new AccountExtraLoan();
-    lendto.Comment = 'Lend test';
+    lendto.Comment = "Lend test";
     lendto.PayingAccount = 11;
     lendto.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     lendto.TotalMonths = 12;
     lendto.annualRate = 0.0435;
-    lendto.startDate = moment().subtract(1, 'M').startOf('day');
-    lendto.endDate = brwInfo.startDate.add(1, 'y');
+    lendto.startDate = moment().subtract(1, "M").startOf("day");
+    lendto.endDate = brwInfo.startDate.add(1, "y");
     for (let i = 0; i < 5; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
-      tmpdoc.InterestAmount = 362.50;
+      tmpdoc.InterestAmount = 362.5;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = lendto.startDate.add(i + 1, 'M');
+      tmpdoc.TranDate = lendto.startDate.add(i + 1, "M");
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 23;
       lendto.loanTmpDocs.push(tmpdoc);
@@ -999,11 +1045,11 @@ export class FakeDataHelper {
     // ADP
     acnt = new Account();
     acnt.Id = 24;
-    acnt.Name = 'ADP test 1';
+    acnt.Name = "ADP test 1";
     acnt.CategoryId = financeAccountCategoryAdvancePayment;
     acnt.Status = AccountStatusEnum.Normal;
     const extadp: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    extadp.Comment = 'ADP Test 1';
+    extadp.Comment = "ADP Test 1";
     extadp.RepeatType = RepeatFrequencyEnum.Month;
     for (let i = 0; i < 10; i++) {
       const item: TemplateDocADP = new TemplateDocADP();
@@ -1012,7 +1058,7 @@ export class FakeDataHelper {
       }
       item.DocId = i + 1;
       item.TranType = 2;
-      item.TranDate = moment().add(i + 1, 'M');
+      item.TranDate = moment().add(i + 1, "M");
       item.TranAmount = 20;
       item.Desp = `item ${i + 1}`;
       item.AccountId = 24;
@@ -1038,7 +1084,7 @@ export class FakeDataHelper {
     const usr: any = {
       userName: this.userID1,
       userId: this.userID1Sub,
-      accessToken: 'access_token',
+      accessToken: "access_token",
     };
 
     this._currUser.setContent(usr);
@@ -1046,17 +1092,17 @@ export class FakeDataHelper {
   public buildAppLanguage(): void {
     this._appLanguages = [];
     let alan: AppLanguage = new AppLanguage();
-    alan.EnglishName = 'English';
-    alan.IsoName = 'en';
+    alan.EnglishName = "English";
+    alan.IsoName = "en";
     alan.AppFlag = true;
     alan.Lcid = 9;
-    alan.NativeName = 'English';
+    alan.NativeName = "English";
     this._appLanguages.push(alan);
     alan = new AppLanguage();
     alan.Lcid = 4;
-    alan.IsoName = 'zh-Hans';
-    alan.EnglishName = 'Chinese (Simplified';
-    alan.NativeName = '简体中文';
+    alan.IsoName = "zh-Hans";
+    alan.EnglishName = "Chinese (Simplified";
+    alan.NativeName = "简体中文";
     alan.AppFlag = true;
     this._appLanguages.push(alan);
   }
@@ -1064,18 +1110,18 @@ export class FakeDataHelper {
     this._appLanguagesFromAPI = [];
     const alan: AppLanguageJson = {
       Lcid: 9,
-      EnglishName: 'English',
+      EnglishName: "English",
       AppFlag: true,
-      NativeName: 'English',
-      ISOName: 'en',
+      NativeName: "English",
+      ISOName: "en",
     };
     this._appLanguagesFromAPI.push(alan);
     const alan2: AppLanguageJson = {
       Lcid: 4,
-      EnglishName: 'Chinese (Simplified)',
+      EnglishName: "Chinese (Simplified)",
       AppFlag: true,
-      NativeName: '简体中文',
-      ISOName: 'zh-Hans',
+      NativeName: "简体中文",
+      ISOName: "zh-Hans",
     };
     this._appLanguagesFromAPI.push(alan2);
   }
@@ -1099,7 +1145,7 @@ export class FakeDataHelper {
         ID: i + 1,
         Name: `account category ${i + 1}`,
         AssetFlag: true,
-        Comment: 'comment for category 1',
+        Comment: "comment for category 1",
       };
       this._finAccountCategoriesFromAPI.push(ac1 as AccountCategoryJson);
     }
@@ -1109,7 +1155,7 @@ export class FakeDataHelper {
         ID: i + 1,
         Name: `tran type ${i + 1}`,
         Expense: false,
-        Comment: 'comment for tran type 1',
+        Comment: "comment for tran type 1",
       };
       this._finTranTypeFromAPI.push(tt1 as TranTypeJson);
     }
@@ -1118,7 +1164,7 @@ export class FakeDataHelper {
       const asc1: any = {
         ID: i + 1,
         Name: `asset ${i + 1}`,
-        Desp: 'desp of asset 1',
+        Desp: "desp of asset 1",
       };
       this._finAssetCategoriesFromAPI.push(asc1 as AssetCategoryJson);
     }
@@ -1167,27 +1213,27 @@ export class FakeDataHelper {
   }
   public getFinCashAccountForCreation(): Account {
     const acnt: Account = new Account();
-    acnt.Name = 'Cash 1';
+    acnt.Name = "Cash 1";
     acnt.Status = AccountStatusEnum.Normal;
     if (this._chosedHome) {
       acnt.HID = this._chosedHome.ID;
       acnt.OwnerId = this._chosedHome.Host;
     }
     acnt.CategoryId = financeAccountCategoryCash;
-    acnt.Comment = 'Cash 1';
+    acnt.Comment = "Cash 1";
 
     return acnt;
   }
   public getFinCreditcardAccountForCreation(): Account {
     const acnt: Account = new Account();
-    acnt.Name = 'Creditcard 1';
+    acnt.Name = "Creditcard 1";
     acnt.Status = AccountStatusEnum.Normal;
     if (this._chosedHome) {
       acnt.HID = this._chosedHome.ID;
       acnt.OwnerId = this._chosedHome.Host;
     }
     acnt.CategoryId = financeAccountCategoryCreditCard;
-    acnt.Comment = 'Creditcard 1';
+    acnt.Comment = "Creditcard 1";
 
     return acnt;
   }
@@ -1252,8 +1298,8 @@ export class FakeDataHelper {
         ID: i + 1,
         HomeID: this._chosedHome ? this._chosedHome.ID : 0,
         Name: `Order ${i + 1}`,
-        ValidFrom: '2018-01-01',
-        ValidTo: '2018-12-31',
+        ValidFrom: "2018-01-01",
+        ValidTo: "2018-12-31",
         SRule: [],
       };
       this._finOrdersFromAPI.push(ctgy as OrderJson);
@@ -1267,9 +1313,9 @@ export class FakeDataHelper {
       obj.ID = i + 1;
       obj.HID = this._chosedHome ? this._chosedHome.ID : 0;
       obj.StartDate = moment();
-      obj.TargetDate = moment().add(1, 'y');
+      obj.TargetDate = moment().add(1, "y");
       obj.TargetBalance = 500;
-      obj.TranCurrency = this._chosedHome ? this._chosedHome.BaseCurrency : '';
+      obj.TranCurrency = this._chosedHome ? this._chosedHome.BaseCurrency : "";
       obj.Description = `Desp ${i + 1}`;
       obj.PlanType = PlanTypeEnum.TranType;
       obj.TranTypeID = financeTranTypeInterestOut;
@@ -1286,8 +1332,8 @@ export class FakeDataHelper {
     this._finADPDocumentForCreate = new Document();
     this._finADPDocumentForCreate.Id = 100;
     this._finADPDocumentForCreate.DocType = financeDocTypeAdvancePayment;
-    this._finADPDocumentForCreate.Desp = 'Test';
-    this._finADPDocumentForCreate.TranCurr = 'CNY';
+    this._finADPDocumentForCreate.Desp = "Test";
+    this._finADPDocumentForCreate.TranCurr = "CNY";
     this._finADPDocumentForCreate.TranDate = moment();
 
     const ditem: DocumentItem = new DocumentItem();
@@ -1295,13 +1341,13 @@ export class FakeDataHelper {
     ditem.AccountId = 11;
     ditem.ControlCenterId = 1;
     ditem.TranType = 2;
-    ditem.Desp = 'test';
+    ditem.Desp = "test";
     ditem.TranAmount = 20;
     this._finADPDocumentForCreate.Items = [ditem];
   }
   public buildFinAccountExtraAdvancePayment(): void {
     this._finAccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    this._finAccountExtraAdvancePayment.Comment = 'Test';
+    this._finAccountExtraAdvancePayment.Comment = "Test";
     this._finAccountExtraAdvancePayment.RepeatType = RepeatFrequencyEnum.Month;
     for (let i = 0; i < 10; i++) {
       const item: TemplateDocADP = new TemplateDocADP();
@@ -1310,7 +1356,7 @@ export class FakeDataHelper {
       }
       item.DocId = i + 1;
       item.TranType = 2;
-      item.TranDate = moment().add(i + 1, 'M');
+      item.TranDate = moment().add(i + 1, "M");
       item.TranAmount = 20;
       item.Desp = `item ${i + 1}`;
       item.AccountId = 24;
@@ -1318,40 +1364,43 @@ export class FakeDataHelper {
     }
   }
   public buildFinAssetBuyInDocumentForCreate(): FinanceAssetBuyinDocumentAPI {
-    const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
+    const apidetail: FinanceAssetBuyinDocumentAPI =
+      new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._chosedHome.ID;
     apidetail.TranDate = moment().format(momentDateFormat);
     apidetail.TranCurr = this._chosedHome.BaseCurrency;
     apidetail.TranAmount = 100;
-    apidetail.Desp = 'test';
+    apidetail.Desp = "test";
     apidetail.ControlCenterID = 11;
     apidetail.IsLegacy = false;
     apidetail.AccountOwner = this._chosedHome.Members[0].User;
     apidetail.AccountAsset = new AccountExtraAsset();
     apidetail.AccountAsset.CategoryID = 2;
-    apidetail.AccountAsset.Name = 'test';
-    apidetail.AccountAsset.Comment = 'test';
+    apidetail.AccountAsset.Name = "test";
+    apidetail.AccountAsset.Comment = "test";
 
     return apidetail;
   }
   public buildFinAssetSoldoutDocumentForCreate(): FinanceAssetSoldoutDocumentAPI {
-    const detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
+    const detail: FinanceAssetSoldoutDocumentAPI =
+      new FinanceAssetSoldoutDocumentAPI();
     detail.HID = this._chosedHome.ID;
     detail.TranDate = moment().format(momentDateFormat);
     detail.TranCurr = this._chosedHome.BaseCurrency;
     detail.TranAmount = 20;
-    detail.Desp = 'test';
+    detail.Desp = "test";
     detail.AssetAccountID = 11;
     detail.ControlCenterID = 11;
 
     return detail;
   }
   public buildFinAssetValueChangeDocumentForCreate(): FinanceAssetValChgDocumentAPI {
-    const detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
+    const detailObject: FinanceAssetValChgDocumentAPI =
+      new FinanceAssetValChgDocumentAPI();
     detailObject.HID = this._chosedHome.ID;
     detailObject.TranDate = moment().format(momentDateFormat);
     detailObject.TranCurr = this._chosedHome.BaseCurrency;
-    detailObject.Desp = 'test';
+    detailObject.Desp = "test";
     detailObject.AssetAccountID = 21;
     detailObject.ControlCenterID = 11;
     // detailObject.orderID = this.firstFormGroup.get('orderControl').value;
@@ -1365,8 +1414,8 @@ export class FakeDataHelper {
     const doc: Document = new Document();
     doc.Id = 100;
     doc.DocType = financeDocTypeNormal;
-    doc.Desp = 'Test';
-    doc.TranCurr = this.chosedHome ? this.chosedHome.BaseCurrency : 'CNY';
+    doc.Desp = "Test";
+    doc.TranCurr = this.chosedHome ? this.chosedHome.BaseCurrency : "CNY";
     doc.TranDate = moment();
 
     const ditem: DocumentItem = new DocumentItem();
@@ -1374,19 +1423,27 @@ export class FakeDataHelper {
     ditem.AccountId = 11;
     ditem.ControlCenterId = 1;
     ditem.TranType = 2;
-    ditem.Desp = 'test';
+    ditem.Desp = "test";
     ditem.TranAmount = 20;
     doc.Items = [ditem];
 
     return doc;
   }
-  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number): void {
-    listTranType.forEach((value: any, index: number) => {
+  private buildTranTypeHierarchyImpl(
+    par: TranType,
+    listTranType: TranType[],
+    curLvl: number
+  ): void {
+    listTranType.forEach((value: any) => {
       if (value.ParId === par.Id) {
         value.HierLevel = curLvl;
-        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
+        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
 
-        this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
+        this.buildTranTypeHierarchyImpl(
+          value,
+          listTranType,
+          value.HierLevel + 1
+        );
       }
     });
   }
@@ -1395,8 +1452,8 @@ export class FakeDataHelper {
     this._blogCollectionAPI.push({
       ID: 1,
       Owner: this.userID1,
-      Name: 'test1',
-      Comment: 'test1',
+      Name: "test1",
+      Comment: "test1",
     } as BlogCollectionAPIJson);
   }
   public buildBlogCollection() {
@@ -1404,8 +1461,8 @@ export class FakeDataHelper {
     this._blogCollection.push({
       id: 1,
       owner: this.userID1,
-      name: 'test1',
-      comment: 'test1',
+      name: "test1",
+      comment: "test1",
     } as BlogCollection);
   }
   public buildBlogPostAPI() {
@@ -1414,8 +1471,8 @@ export class FakeDataHelper {
       ID: 1,
       Owner: this.userID1,
       Format: 1,
-      Title: 'test1',
-      Content: 'test1',
+      Title: "test1",
+      Content: "test1",
       Status: 1,
     } as BlogPostAPIJson);
   }
@@ -1425,17 +1482,17 @@ export class FakeDataHelper {
       id: 1,
       owner: this.userID1,
       format: 1,
-      title: 'test1',
-      content: 'test1',
+      title: "test1",
+      content: "test1",
       status: 1,
     } as BlogPost);
   }
   public buildPersonRoles() {
     this._personRoles = [];
-    let pp: PersonRole = new PersonRole();
+    const pp: PersonRole = new PersonRole();
     pp.ID = 1;
-    pp.Name = 'Test1';
-    pp.Comment = 'Test1';
+    pp.Name = "Test1";
+    pp.Comment = "Test1";
     this._personRoles.push(pp);
   }
 }

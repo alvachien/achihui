@@ -1,26 +1,26 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FinanceUIModule } from '../finance-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
-import { NzListModule } from 'ng-zorro-antd/list';
-import { NzProgressModule } from 'ng-zorro-antd/progress';
-import { NzCascaderModule } from 'ng-zorro-antd/cascader';
-import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FinanceUIModule } from "../finance-ui.module";
+import { TranslocoModule } from "@ngneat/transloco";
+import { NzListModule } from "ng-zorro-antd/list";
+import { NzProgressModule } from "ng-zorro-antd/progress";
+import { NzCascaderModule } from "ng-zorro-antd/cascader";
+import { NzSelectModule } from "ng-zorro-antd/select";
 
-import { ReportRoutingModule } from './report-routing.module';
-import { ControlCenterReportComponent } from './control-center-report';
-import { OrderReportComponent } from './order-report';
-import { AccountReportComponent } from './account-report';
-import { TranTypeReportComponent } from './tran-type-report';
-import { ReportComponent } from './report.component';
-import { DocumentItemViewModule } from '../document-item-view/document-item-view.module';
-import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report';
-import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report';
-import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report';
-import { CashReportComponent } from './cash-report';
-import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report';
-import { StatementOfIncomeExpenseComponent } from './statement-of-income-expense';
-import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month';
+import { ReportRoutingModule } from "./report-routing.module";
+import { ControlCenterReportComponent } from "./control-center-report";
+import { OrderReportComponent } from "./order-report";
+import { AccountReportComponent } from "./account-report";
+import { TranTypeReportComponent } from "./tran-type-report";
+import { ReportComponent } from "./report.component";
+import { DocumentItemViewModule } from "../document-item-view/document-item-view.module";
+import { TranTypeMonthOnMonthReportComponent } from "./tran-type-month-on-month-report";
+import { AccountMonthOnMonthReportComponent } from "./account-month-on-month-report";
+import { ControlCenterMonthOnMonthReportComponent } from "./control-center-month-on-month-report";
+import { CashReportComponent } from "./cash-report";
+import { CashMonthOnMonthReportComponent } from "./cash-month-on-month-report";
+import { StatementOfIncomeExpenseComponent } from "./statement-of-income-expense";
+import { StatementOfIncomeExpenseMonthOnMonthComponent } from "./statement-of-income-expense-month-on-month";
 
 @NgModule({
   declarations: [
@@ -47,6 +47,6 @@ import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-in
     NzProgressModule,
     NzCascaderModule,
     NzSelectModule,
-  ]
+  ],
 })
-export class ReportModule { }
+export class ReportModule {}

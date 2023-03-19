@@ -1,26 +1,50 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { NZ_I18N, en_US, } from 'ng-zorro-antd/i18n';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule, } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {
+  waitForAsync,
+  ComponentFixture,
+  TestBed,
+  inject,
+  fakeAsync,
+  tick,
+  flush,
+} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router, ActivatedRoute, UrlSegment } from "@angular/router";
+import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { BehaviorSubject, of } from "rxjs";
+import { NzModalService } from "ng-zorro-antd/modal";
 
-import { FinanceUIModule } from '../../finance-ui.module';
-import { AccountDetailComponent } from './account-detail.component';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper, ActivatedRouteUrlStub, asyncData, asyncError } from '../../../../../testing';
-import { AccountExtraAssetComponent } from '../account-extra-asset';
-import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
-import { AccountExtraLoanComponent } from '../account-extra-loan';
-import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService, } from '../../../../services';
-import { UserAuthInfo, AccountStatusEnum, financeAccountCategoryCash } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
+import { FinanceUIModule } from "../../finance-ui.module";
+import { AccountDetailComponent } from "./account-detail.component";
+import {
+  getTranslocoModule,
+  FakeDataHelper,
+  FormGroupHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+  asyncError,
+} from "../../../../../testing";
+import { AccountExtraAssetComponent } from "../account-extra-asset";
+import { AccountExtraDownpaymentComponent } from "../account-extra-downpayment";
+import { AccountExtraLoanComponent } from "../account-extra-loan";
+import {
+  AuthService,
+  UIStatusService,
+  FinanceOdataService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  UserAuthInfo,
+  AccountStatusEnum,
+  financeAccountCategoryCash,
+} from "../../../../model";
+import { MessageDialogComponent } from "../../../message-dialog";
 
-describe('AccountDetailComponent', () => {
+describe("AccountDetailComponent", () => {
   let component: AccountDetailComponent;
   let fixture: ComponentFixture<AccountDetailComponent>;
   let fakeData: FakeDataHelper;
@@ -44,19 +68,24 @@ describe('AccountDetailComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllAccountCategories',
-      'readAccount',
-      'fetchAllAssetCategories',
-      'fetchAllTranTypes',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
+    storageService = jasmine.createSpyObj("FinanceOdataService", [
+      "fetchAllAccountCategories",
+      "readAccount",
+      "fetchAllAssetCategories",
+      "fetchAllTranTypes",
+      "fetchAllControlCenters",
+      "fetchAllOrders",
     ]);
-    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy =
+      storageService.fetchAllAccountCategories.and.returnValue(of([]));
     readAccountSpy = storageService.readAccount.and.returnValue(of({}));
-    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
-    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllAssetCategoriesSpy =
+      storageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
+      of([])
+    );
+    fetchAllControlCentersSpy =
+      storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -64,7 +93,9 @@ describe('AccountDetailComponent', () => {
   });
 
   beforeEach(waitForAsync(() => {
-    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([
+      new UrlSegment("create", {}),
+    ] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -92,14 +123,12 @@ describe('AccountDetailComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ]
+      ],
     });
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
-        entryComponents: [
-          MessageDialogComponent,
-        ],
+        entryComponents: [MessageDialogComponent],
       },
     }).compileComponents();
   }));
@@ -110,16 +139,18 @@ describe('AccountDetailComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('1. create mode', () => {
+  describe("1. create mode", () => {
     beforeEach(() => {
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
+      );
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it("create mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -130,28 +161,32 @@ describe('AccountDetailComponent', () => {
       expect(component.isCreateMode).toBeTruthy();
     }));
 
-    it('category is a must', fakeAsync(() => {
+    it("category is a must", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
-      component.headerFormGroup.get('nameControl')?.setValue('test');
-      component.headerFormGroup.get('nameControl')?.markAsDirty();
+      component.headerFormGroup.get("nameControl")?.setValue("test");
+      component.headerFormGroup.get("nameControl")?.markAsDirty();
       tick();
       fixture.detectChanges();
 
       // Default value
-      expect(component.headerFormGroup.get('ctgyControl')?.value).toEqual(financeAccountCategoryCash);
+      expect(component.headerFormGroup.get("ctgyControl")?.value).toEqual(
+        financeAccountCategoryCash
+      );
       expect(component.headerFormGroup.valid).toBeTruthy();
 
-      component.headerFormGroup.get('ctgyControl')?.setValue(undefined);
-      component.headerFormGroup.get('ctgyControl')?.markAsDirty();
+      component.headerFormGroup.get("ctgyControl")?.setValue(undefined);
+      component.headerFormGroup.get("ctgyControl")?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
 
-      component.headerFormGroup.get('ctgyControl')?.setValue(financeAccountCategoryCash);
-      component.headerFormGroup.get('ctgyControl')?.markAsDirty();
+      component.headerFormGroup
+        .get("ctgyControl")
+        ?.setValue(financeAccountCategoryCash);
+      component.headerFormGroup.get("ctgyControl")?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -159,15 +194,15 @@ describe('AccountDetailComponent', () => {
       flush();
     }));
 
-    it('name is a must', fakeAsync(() => {
+    it("name is a must", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
       expect(component.headerFormGroup.valid).toBeFalsy();
 
-      component.headerFormGroup.get('nameControl')?.setValue('test');
-      component.headerFormGroup.get('nameControl')?.markAsDirty();
+      component.headerFormGroup.get("nameControl")?.setValue("test");
+      component.headerFormGroup.get("nameControl")?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
@@ -176,19 +211,28 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('2. change mode', () => {
+  describe("2. change mode", () => {
     beforeEach(() => {
-      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([
+        new UrlSegment("edit", {}),
+        new UrlSegment("122", {}),
+      ] as UrlSegment[]);
 
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
+      );
       readAccountSpy.and.returnValue(asyncData(fakeData.finAccounts[0]));
-      fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllAssetCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAssetCategories)
+      );
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllControlCentersSpy.and.returnValue(
+        asyncData(fakeData.finControlCenters)
+      );
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    it('change mode init without error', fakeAsync(() => {
+    it("change mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -202,19 +246,28 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('3. display mode', () => {
+  describe("3. display mode", () => {
     beforeEach(() => {
-      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([
+        new UrlSegment("display", {}),
+        new UrlSegment("122", {}),
+      ] as UrlSegment[]);
 
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
+      );
       readAccountSpy.and.returnValue(asyncData(fakeData.finAccounts[0]));
-      fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllAssetCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAssetCategories)
+      );
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllControlCentersSpy.and.returnValue(
+        asyncData(fakeData.finControlCenters)
+      );
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it("display mode init without error", fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -228,16 +281,17 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('4. shall display error dialog for exception', () => {
+  describe("4. shall display error dialog for exception", () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
+      );
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
@@ -246,26 +300,34 @@ describe('AccountDetailComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails on Account Category', fakeAsync(() => {
+    it("should display error when Service fails on Account Category", fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllAccountCategoriesSpy.and.returnValue(
+        asyncError<string>("Service failed")
+      );
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(1);
       flush();
 
       // OK button
-      const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(
+        ".ant-modal-close"
+      ) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+      expect(
+        overlayContainerElement.querySelectorAll(".ant-modal-body").length
+      ).toBe(0);
 
       flush();
     }));

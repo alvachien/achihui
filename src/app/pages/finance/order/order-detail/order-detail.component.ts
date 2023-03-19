@@ -1,22 +1,37 @@
-import { Component, OnInit, OnDestroy, } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
-import { UIMode, isUIEditable } from 'actslib';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { ReplaySubject, forkJoin } from "rxjs";
+import { Router, ActivatedRoute } from "@angular/router";
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
+import { takeUntil, finalize } from "rxjs/operators";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { translate } from "@ngneat/transloco";
+import * as moment from "moment";
+import { UIMode, isUIEditable } from "actslib";
 
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, Order, ModelUtility, ConsoleLogTypeEnum, getUIModeString, SettlementRule, } from '../../../../model';
-import { dateRangeValidator, } from '../../../../uimodel';
-import { popupDialog } from '../../../message-dialog';
+import {
+  FinanceOdataService,
+  UIStatusService,
+  HomeDefOdataService,
+} from "../../../../services";
+import {
+  ControlCenter,
+  Order,
+  ModelUtility,
+  ConsoleLogTypeEnum,
+  getUIModeString,
+  SettlementRule,
+} from "../../../../model";
+import { dateRangeValidator } from "../../../../uimodel";
+import { popupDialog } from "../../../message-dialog";
 
 @Component({
-  selector: 'hih-fin-order-detail',
-  templateUrl: './order-detail.component.html',
-  styleUrls: ['./order-detail.component.less'],
+  selector: "hih-fin-order-detail",
+  templateUrl: "./order-detail.component.html",
+  styleUrls: ["./order-detail.component.less"],
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -34,7 +49,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   isOrderSubmitting = false;
   isOrderSubmitted = false;
   orderIdCreated?: number;
-  orderSavedFailed: string = '';
+  orderSavedFailed = "";
 
   get isFieldChangable(): boolean {
     return isUIEditable(this.uiMode);
@@ -43,7 +58,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get saveButtonEnabled(): boolean {
-    if (this.isFieldChangable && this.detailFormGroup.valid && this.listRules.length > 0) {
+    if (
+      this.isFieldChangable &&
+      this.detailFormGroup.valid &&
+      this.listRules.length > 0
+    ) {
       const failidx = this.listRules.findIndex((rule: SettlementRule) => {
         return !rule.onVerify();
       });
@@ -59,37 +78,54 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     private activateRoute: ActivatedRoute,
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private router: Router) {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug);
+    private router: Router
+  ) {
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.isLoadingResults = false;
-    this.detailFormGroup = new UntypedFormGroup({
-      idControl: new UntypedFormControl(),
-      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
-      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate(), [Validators.required]),
-      cmtControl: new UntypedFormControl(),
-    }, [dateRangeValidator]);
+    this.detailFormGroup = new UntypedFormGroup(
+      {
+        idControl: new UntypedFormControl(),
+        nameControl: new UntypedFormControl("", [
+          Validators.required,
+          Validators.maxLength(30),
+        ]),
+        startDateControl: new UntypedFormControl(moment().toDate(), [
+          Validators.required,
+        ]),
+        endDateControl: new UntypedFormControl(moment().add(1, "y").toDate(), [
+          Validators.required,
+        ]),
+        cmtControl: new UntypedFormControl(),
+      },
+      [dateRangeValidator]
+    );
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...",
+      ConsoleLogTypeEnum.debug
+    );
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x: any) => {
-      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug);
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug
+      );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
+        if (x[0].path === "create") {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
+        } else if (x[0].path === "edit") {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
+        } else if (x[0].path === "display") {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -106,78 +142,98 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
           forkJoin([
             this.odataService.fetchAllControlCenters(),
-            this.odataService.readOrder(this.routerID)
+            this.odataService.readOrder(this.routerID),
           ])
-          .pipe(takeUntil(this._destroyed$!),
-            finalize(() => {
-              this.isLoadingResults = false;
-            }))
-          .subscribe({
-            next: rsts => {
-              this.arControlCenters = rsts[0];
+            .pipe(
+              takeUntil(this._destroyed$!),
+              finalize(() => {
+                this.isLoadingResults = false;
+              })
+            )
+            .subscribe({
+              next: (rsts) => {
+                this.arControlCenters = rsts[0];
 
-              this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
-              this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
-              this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom!.toDate());
-              this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo!.toDate());
-              if (rsts[1].Comment) {
-                this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
-              }
-  
-              // Disable the form
-              if (this.uiMode === UIMode.Display) {
-                this.detailFormGroup.disable();
-              }
-  
-              this.listRules = [];
-              this.listRules = rsts[1].SRules;  
-            },
-            error: err => {
-              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${err}`,
-                ConsoleLogTypeEnum.error);
-              this.uiMode = UIMode.Invalid;
-              this.modalService.create({
-                nzTitle: translate('Common.Error'),
-                nzContent: err.toString(),
-                nzClosable: true,
-              });
-            }
-          });
+                this.detailFormGroup.get("idControl")?.setValue(rsts[1].Id);
+                this.detailFormGroup.get("nameControl")?.setValue(rsts[1].Name);
+                this.detailFormGroup
+                  .get("startDateControl")
+                  ?.setValue(rsts[1].ValidFrom!.toDate());
+                this.detailFormGroup
+                  .get("endDateControl")
+                  ?.setValue(rsts[1].ValidTo!.toDate());
+                if (rsts[1].Comment) {
+                  this.detailFormGroup
+                    .get("cmtControl")
+                    ?.setValue(rsts[1].Comment);
+                }
+
+                // Disable the form
+                if (this.uiMode === UIMode.Display) {
+                  this.detailFormGroup.disable();
+                }
+
+                this.listRules = [];
+                this.listRules = rsts[1].SRules;
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${err}`,
+                  ConsoleLogTypeEnum.error
+                );
+                this.uiMode = UIMode.Invalid;
+                this.modalService.create({
+                  nzTitle: translate("Common.Error"),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
           break;
         }
 
         case UIMode.Create:
-        default: {
-          this.isLoadingResults = true;
+        default:
+          {
+            this.isLoadingResults = true;
 
-          this.odataService.fetchAllControlCenters()
-            .pipe(takeUntil(this._destroyed$!),
-            finalize(() => this.isLoadingResults = false))
-            .subscribe({
-              next: val => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
-                  ConsoleLogTypeEnum.debug);
-                this.arControlCenters = val;  
-              },
-              error: err => {
-                ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters ${err}`,
-                  ConsoleLogTypeEnum.error);
-                this.modalService.create({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });  
-              }
-            });
+            this.odataService
+              .fetchAllControlCenters()
+              .pipe(
+                takeUntil(this._destroyed$!),
+                finalize(() => (this.isLoadingResults = false))
+              )
+              .subscribe({
+                next: (val) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
+                    ConsoleLogTypeEnum.debug
+                  );
+                  this.arControlCenters = val;
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters ${err}`,
+                    ConsoleLogTypeEnum.error
+                  );
+                  this.modalService.create({
+                    nzTitle: translate("Common.Error"),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
           }
           break;
-        }
-      });
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...",
+      ConsoleLogTypeEnum.debug
+    );
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -189,8 +245,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...",
+      ConsoleLogTypeEnum.debug
+    );
 
     this.isOrderSubmitting = true;
     if (this.uiMode === UIMode.Create) {
@@ -211,56 +269,71 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
 
   private onCreateOrder(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...",
+      ConsoleLogTypeEnum.debug
+    );
 
     const objOrder: Order = this._generateOrder();
 
     // Check!
-    if (!objOrder.onVerify({
-      ControlCenters: this.arControlCenters,
-    })) {
-      popupDialog(this.modalService, 'Common.Error', objOrder.VerifiedMsgs);
+    if (
+      !objOrder.onVerify({
+        ControlCenters: this.arControlCenters,
+      })
+    ) {
+      popupDialog(this.modalService, "Common.Error", objOrder.VerifiedMsgs);
       this.isOrderSubmitting = false;
 
       return;
     }
 
-    this.odataService.createOrder(objOrder)
-      .pipe(finalize(() => {
-        this.isOrderSubmitting = false;
-        this.isOrderSubmitted =  true;
-      }))
+    this.odataService
+      .createOrder(objOrder)
+      .pipe(
+        finalize(() => {
+          this.isOrderSubmitting = false;
+          this.isOrderSubmitted = true;
+        })
+      )
       .subscribe({
         next: (neword: Order) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder`,
-            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder`,
+            ConsoleLogTypeEnum.debug
+          );
 
           this.orderIdCreated = neword.Id;
-          this.orderSavedFailed = '';
+          this.orderSavedFailed = "";
         },
         error: (error: any) => {
           // Show error message
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${error}`,
-            ConsoleLogTypeEnum.error);
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
 
           this.orderIdCreated = undefined;
           this.orderSavedFailed = error;
-        }
+        },
       });
   }
 
   private onChangeOrder(): void {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderDetailComponent onChangeOrder...',
-      ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog(
+      "AC_HIH_UI [Debug]: Entering OrderDetailComponent onChangeOrder...",
+      ConsoleLogTypeEnum.debug
+    );
 
     const ordObj: Order = this._generateOrder();
 
     // Check!
-    if (!ordObj.onVerify({
-      ControlCenters: this.arControlCenters,
-    })) {
-      popupDialog(this.modalService, 'Common.Error', ordObj.VerifiedMsgs);
+    if (
+      !ordObj.onVerify({
+        ControlCenters: this.arControlCenters,
+      })
+    ) {
+      popupDialog(this.modalService, "Common.Error", ordObj.VerifiedMsgs);
       this.isOrderSubmitting = false;
 
       return;
@@ -268,62 +341,76 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
     // Check the dirty control
     if (this.ruleChanged) {
-      this.odataService.changeOrder(ordObj)
-        .pipe(finalize(() => {
-          this.isOrderSubmitting = false;
-          this.isOrderSubmitted =  true;
-        }))
+      this.odataService
+        .changeOrder(ordObj)
+        .pipe(
+          finalize(() => {
+            this.isOrderSubmitting = false;
+            this.isOrderSubmitted = true;
+          })
+        )
         .subscribe({
           next: (x: Order) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
-              ConsoleLogTypeEnum.debug);
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
+              ConsoleLogTypeEnum.debug
+            );
 
-            this.orderSavedFailed = '';
+            this.orderSavedFailed = "";
             this.orderIdCreated = ordObj.Id;
           },
           error: (error: any) => {
             // Show error message
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
-              ConsoleLogTypeEnum.error);
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              ConsoleLogTypeEnum.error
+            );
 
             this.orderSavedFailed = error;
-          }
+          },
         });
     } else {
       const arcontent: any = {};
-      if (this.detailFormGroup.get('nameControl')?.dirty) {
+      if (this.detailFormGroup.get("nameControl")?.dirty) {
         arcontent.Name = ordObj.Name;
       }
-      if (this.detailFormGroup.get('startDateControl')?.dirty) {
+      if (this.detailFormGroup.get("startDateControl")?.dirty) {
         arcontent.ValidFrom = ordObj.ValidFromFormatString;
       }
-      if (this.detailFormGroup.get('endDateControl')?.dirty) {
+      if (this.detailFormGroup.get("endDateControl")?.dirty) {
         arcontent.ValidTo = ordObj.ValidToFormatString;
       }
-      if (this.detailFormGroup.get('cmtControl')?.dirty) {
+      if (this.detailFormGroup.get("cmtControl")?.dirty) {
         arcontent.Comment = ordObj.Comment;
       }
 
-      this.odataService.changeOrderByPatch(this.routerID, arcontent)
-        .pipe(finalize(() => {
-          this.isOrderSubmitting = false;
-          this.isOrderSubmitted =  true;
-        }))
+      this.odataService
+        .changeOrderByPatch(this.routerID, arcontent)
+        .pipe(
+          finalize(() => {
+            this.isOrderSubmitting = false;
+            this.isOrderSubmitted = true;
+          })
+        )
         .subscribe({
           next: (x: Order) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
-              ConsoleLogTypeEnum.debug);
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
+              ConsoleLogTypeEnum.debug
+            );
 
-            this.orderSavedFailed = '';
+            this.orderSavedFailed = "";
             this.orderIdCreated = ordObj.Id;
           },
           error: (error: any) => {
             // Show error message
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
-              ConsoleLogTypeEnum.error);
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              ConsoleLogTypeEnum.error
+            );
 
             this.orderSavedFailed = error;
-          }
+          },
         });
     }
   }
@@ -332,7 +419,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     this.isOrderSubmitted = false;
     this.isOrderSubmitting = false;
     this.orderIdCreated = undefined;
-    this.orderSavedFailed = '';
+    this.orderSavedFailed = "";
   }
 
   public onDeleteRule(rule: SettlementRule): void {
@@ -353,11 +440,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public onDisplayOrder(): void {
     // Display order
     if (this.orderIdCreated) {
-      this.router.navigate(['/finance/order/display', this.orderIdCreated]);
+      this.router.navigate(["/finance/order/display", this.orderIdCreated]);
     }
   }
   public onCreateAnotherOrder(): void {
-    this.router.navigate(['/finance/order/create']);
+    this.router.navigate(["/finance/order/create"]);
   }
 
   private getNextRuleID(): number {
@@ -380,10 +467,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Update) {
       ordInstance.Id = this.routerID;
     }
-    ordInstance.Name = this.detailFormGroup.get('nameControl')?.value;
-    ordInstance.ValidFrom = moment(this.detailFormGroup.get('startDateControl')?.value);
-    ordInstance.ValidTo = moment(this.detailFormGroup.get('endDateControl')?.value);
-    ordInstance.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    ordInstance.Name = this.detailFormGroup.get("nameControl")?.value;
+    ordInstance.ValidFrom = moment(
+      this.detailFormGroup.get("startDateControl")?.value
+    );
+    ordInstance.ValidTo = moment(
+      this.detailFormGroup.get("endDateControl")?.value
+    );
+    ordInstance.Comment = this.detailFormGroup.get("cmtControl")?.value;
     ordInstance.SRules = [];
     ordInstance.SRules = this.listRules.slice();
     return ordInstance;

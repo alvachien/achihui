@@ -1,31 +1,71 @@
-<div class="acme" #acme_wrapper style="height: 500px;">
+<div class="acme" #acme_wrapper style="height: 500px">
   <div nz-row class="acme-toolbar">
     <nz-button-group>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarUndo()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarRedo()"><i nz-icon nzType="redo" nzTheme="outline"></i></button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarUndo()">
+        <i nz-icon nzType="undo" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarRedo()">
+        <i nz-icon nzType="redo" nzTheme="outline"></i>
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarBold()"><i nz-icon nzType="bold" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarStrikethrough()"><i nz-icon nzType="strikethrough" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarItalic()"><i nz-icon nzType="italic" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarQuote()">"</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarUpperCase()">A</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarLowerCase()">a</button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarBold()">
+        <i nz-icon nzType="bold" nzTheme="outline"></i>
+      </button>
+      <button
+        nz-button
+        [disabled]="readOnly"
+        (click)="onToolbarStrikethrough()"
+      >
+        <i nz-icon nzType="strikethrough" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarItalic()">
+        <i nz-icon nzType="italic" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarQuote()">
+        "
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarUpperCase()">
+        A
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarLowerCase()">
+        a
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH1()">H1</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH2()">H2</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH3()">H3</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH4()">H4</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH5()">H5</button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarH6()">H6</button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH1()">
+        H1
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH2()">
+        H2
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH3()">
+        H3
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH4()">
+        H4
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH5()">
+        H5
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarH6()">
+        H6
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarUnorderedList()"><i nz-icon nzType="unordered-list" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarOrderedList()"><i nz-icon nzType="ordered-list" nzTheme="outline"></i></button>
+      <button
+        nz-button
+        [disabled]="readOnly"
+        (click)="onToolbarUnorderedList()"
+      >
+        <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarOrderedList()">
+        <i nz-icon nzType="ordered-list" nzTheme="outline"></i>
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <!-- <nz-upload [nzAction]="uploadAPI"
@@ -38,33 +78,77 @@
     </nz-upload> -->
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="link" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarCode()"><i nz-icon nzType="code" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="block" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarPicture()"><i nz-icon nzType="picture" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="table" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarDateTime()"><i nz-icon nzType="calendar" nzTheme="outline"></i></button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="link" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarCode()">
+        <i nz-icon nzType="code" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="block" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarPicture()">
+        <i nz-icon nzType="picture" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="table" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarDateTime()">
+        <i nz-icon nzType="calendar" nzTheme="outline"></i>
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly" (click)="onToolbarClear()"><i nz-icon nzType="delete" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="search" nzTheme="outline"></i></button>
+      <button nz-button [disabled]="readOnly" (click)="onToolbarClear()">
+        <i nz-icon nzType="delete" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="search" nzTheme="outline"></i>
+      </button>
     </nz-button-group>
     <nz-divider nzType="vertical"></nz-divider>
     <nz-button-group>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></button>
-      <button nz-button [disabled]="readOnly"><i nz-icon nzType="fullscreen" nzTheme="outline"></i></button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="eye-invisible" nzTheme="outline"></i>
+      </button>
+      <button nz-button [disabled]="readOnly">
+        <i nz-icon nzType="fullscreen" nzTheme="outline"></i>
+      </button>
     </nz-button-group>
   </div>
 
-  <div nz-row style="height: 100%; width: 100%;" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" class="editor">
-      <nz-code-editor [nzFullControl]="true" (nzEditorInitialized)="onEditorInit($event)">
+  <div
+    nz-row
+    style="height: 100%; width: 100%"
+    [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }"
+  >
+    <div
+      nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="12"
+      class="editor"
+    >
+      <nz-code-editor
+        [nzFullControl]="true"
+        (nzEditorInitialized)="onEditorInit($event)"
+      >
       </nz-code-editor>
     </div>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" class="editor-preview" #previewElement>
+    <div
+      nz-col
+      nzXs="24"
+      nzSm="24"
+      nzMd="12"
+      nzLg="12"
+      nzXl="12"
+      class="editor-preview"
+      #previewElement
+    >
       <markdown [data]="content" katex [katexOptions]="katexOptions">
       </markdown>
     </div>
-  </div> 
+  </div>
 </div>
