@@ -34,6 +34,7 @@ import { AuthService } from "./auth.service";
 import { HomeDefOdataService } from "./home-def-odata.service";
 import { FakeDataHelper } from "../../testing";
 import { environment } from "../../environments/environment";
+import { SafeAny } from "src/common";
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 describe("FinanceOdataService", () => {
@@ -126,13 +127,15 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to GET currencies from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === currAPIURL &&
-          requrl.params.has("$count")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === currAPIURL &&
+            requrl.params.has("$count")
+          );
+        }
+      );
       expect(req.request.params.get("$count")).toEqual("true");
 
       // Respond with the mock currencies
@@ -160,13 +163,15 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === currAPIURL &&
-          requrl.params.has("$count")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === currAPIURL &&
+            requrl.params.has("$count")
+          );
+        }
+      );
       expect(req.request.params.get("$count")).toEqual("true");
 
       req.flush({
@@ -186,13 +191,15 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === currAPIURL &&
-          requrl.params.has("$count")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === currAPIURL &&
+            requrl.params.has("$count")
+          );
+        }
+      );
       expect(req.request.params.get("$count")).toEqual("true");
 
       // respond with a 404 and the error message in the body
@@ -286,14 +293,16 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to GET account categories from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,AssetFlag,Comment"
       );
@@ -325,14 +334,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,AssetFlag,Comment"
       );
@@ -354,14 +365,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,AssetFlag,Comment"
       );
@@ -391,7 +404,7 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return requrl.method === "GET" && requrl.url === accountCategoryAPIURL;
       });
       reqs[0].flush({
@@ -401,7 +414,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllAccountCategories().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return requrl.method === "GET" && requrl.url === accountCategoryAPIURL;
       });
       expect(req2.length)
@@ -419,7 +432,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const req3: any = httpTestingController.match((requrl: any) => {
+      const req3: any = httpTestingController.match((requrl: SafeAny) => {
         return requrl.method === "GET" && requrl.url === accountCategoryAPIURL;
       });
       expect(req3.length)
@@ -457,14 +470,16 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to GET asset categories from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === assetCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === assetCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual("ID,HomeID,Name,Desp");
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`
@@ -494,14 +509,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === assetCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === assetCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual("ID,HomeID,Name,Desp");
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`
@@ -521,14 +538,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === assetCategoryAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === assetCategoryAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual("ID,HomeID,Name,Desp");
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID} or HomeID eq null`
@@ -555,7 +574,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === assetCategoryAPIURL &&
@@ -573,7 +592,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllAssetCategories().subscribe();
-      const reqs2: any = httpTestingController.match((requrl: any) => {
+      const reqs2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === assetCategoryAPIURL &&
@@ -596,7 +615,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs3: any = httpTestingController.match((requrl: any) => {
+      const reqs3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === assetCategoryAPIURL &&
@@ -639,14 +658,16 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to GET doc types from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === docTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === docTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Comment"
       );
@@ -678,14 +699,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === docTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === docTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Comment"
       );
@@ -707,14 +730,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === docTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === docTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Comment"
       );
@@ -743,7 +768,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === docTypeAPIURL &&
@@ -761,7 +786,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllDocTypes().subscribe();
-      const reqs2: any = httpTestingController.match((requrl: any) => {
+      const reqs2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === docTypeAPIURL &&
@@ -784,7 +809,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs3: any = httpTestingController.match((requrl: any) => {
+      const reqs3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === docTypeAPIURL &&
@@ -827,14 +852,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET tran types from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tranTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === tranTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Expense,ParID,Comment"
       );
@@ -866,14 +893,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tranTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === tranTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Expense,ParID,Comment"
       );
@@ -895,14 +924,16 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tranTypeAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === tranTypeAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,Expense,ParID,Comment"
       );
@@ -931,7 +962,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === tranTypeAPIURL &&
@@ -949,7 +980,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllTranTypes().subscribe();
-      const reqs2: any = httpTestingController.match((requrl: any) => {
+      const reqs2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === tranTypeAPIURL &&
@@ -972,7 +1003,7 @@ describe("FinanceOdataService", () => {
           // Do nothing
         },
       });
-      const reqs3: any = httpTestingController.match((requrl: any) => {
+      const reqs3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === tranTypeAPIURL &&
@@ -1010,18 +1041,19 @@ describe("FinanceOdataService", () => {
             .withContext("should have buffered")
             .toEqual(fakeData.finAccountsFromAPI.length);
         },
-        error: (err) => {},
       });
 
       // Service should have made one request to GET account from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,CategoryID,Status,Comment"
       );
@@ -1036,25 +1068,30 @@ describe("FinanceOdataService", () => {
     });
 
     it("should be OK returning no accounts", () => {
-      expect(service.Accounts.length).toEqual(0, "should not buffered yet");
-      service.fetchAllAccounts().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(0, "should have empty account array");
-          expect(service.Accounts.length).toEqual(0, "should buffered nothing");
+      expect(service.Accounts.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllAccounts().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should have empty account array")
+            .toEqual(0);
+          expect(service.Accounts.length)
+            .withContext("should buffered nothing")
+            .toEqual(0);
         },
-        (fail: any) => {
-          // Empty
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,CategoryID,Status,Comment"
       );
@@ -1067,23 +1104,25 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "Deliberate 404";
-      service.fetchAllAccounts().subscribe(
-        (data: any) => {
+      service.fetchAllAccounts().subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === accountAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === accountAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,CategoryID,Status,Comment"
       );
@@ -1096,23 +1135,24 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return expected account (called multiple times)", () => {
-      expect(service.Accounts.length).toEqual(0, "should not buffered yet");
-      service.fetchAllAccounts().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finAccountsFromAPI.length,
-            "should return expected account"
-          );
-          expect(data.length).toEqual(
-            service.Accounts.length,
-            "should have buffered"
-          );
+      expect(service.Accounts.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllAccounts().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected account")
+            .toEqual(fakeData.finAccountsFromAPI.length);
+          expect(data.length)
+            .withContext("should have buffered")
+            .toEqual(service.Accounts.length);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Do nothing
-        }
-      );
-      const reqs: any = httpTestingController.match((requrl: any) => {
+        },
+      });
+
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === accountAPIURL &&
@@ -1127,7 +1167,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllAccounts().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === accountAPIURL &&
@@ -1141,18 +1181,17 @@ describe("FinanceOdataService", () => {
       );
 
       // Third call
-      service.fetchAllAccounts().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finAccountsFromAPI.length,
-            "should return expected accounts"
-          );
+      service.fetchAllAccounts().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected accounts")
+            .toEqual(fakeData.finAccountsFromAPI.length);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Do nothing
-        }
-      );
-      const req3: any = httpTestingController.match((requrl: any) => {
+        },
+      });
+      const req3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === accountAPIURL &&
@@ -1160,10 +1199,9 @@ describe("FinanceOdataService", () => {
           requrl.params.has("$filter")
         );
       });
-      expect(req3.length).toEqual(
-        0,
-        "shall be 0 calls to real API in third call!"
-      );
+      expect(req3.length)
+        .withContext("shall be 0 calls to real API in third call!")
+        .toEqual(0);
     });
   });
 
@@ -1179,25 +1217,27 @@ describe("FinanceOdataService", () => {
 
     it("should return Account in success case", () => {
       expect(service.Accounts.length).toEqual(0);
-      service.readAccount(21).subscribe(
-        (data: any) => {
+      service.readAccount(21).subscribe({
+        next: (data: any) => {
           expect(data).toBeTruthy();
           // Should be buffered
           expect(service.Accounts.length).toEqual(1);
         },
-        (fail: any) => {
+        error: (fail: any) => {
           // Empty
-        }
-      );
+        },
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.accountAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.accountAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ value: [fakeData.finAccountsFromAPI[0]] });
@@ -1214,13 +1254,15 @@ describe("FinanceOdataService", () => {
         },
       });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.accountAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.accountAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -1238,65 +1280,73 @@ describe("FinanceOdataService", () => {
     });
 
     it("should be OK for create normal cash accounts", () => {
-      expect(service.Accounts.length).toEqual(0, "should not buffered yet");
+      expect(service.Accounts.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
 
-      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe(
-        (acnt: any) => {
-          expect(service.Accounts.length).toEqual(
-            1,
-            "should has buffered nothing"
-          );
+      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe({
+        next: (acnt: SafeAny) => {
+          expect(service.Accounts.length)
+            .withContext("should has buffered nothing")
+            .toEqual(1);
         },
-        (fail: any) => {
+        error: (fail: SafeAny) => {
           // Empty
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === accountAPIURL;
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === accountAPIURL;
-      });
 
       req.flush(fakeData.getFinCashAccountForCreation()); // Respond with data
     });
 
     it("should be OK for create normal creditcard accounts", () => {
-      expect(service.Accounts.length).toEqual(0, "should not buffered yet");
+      expect(service.Accounts.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
 
       service
         .createAccount(fakeData.getFinCreditcardAccountForCreation())
-        .subscribe(
-          (acnt: any) => {
-            expect(service.Accounts.length).toEqual(
-              1,
-              "should has buffered nothing"
-            );
+        .subscribe({
+          next: (acnt: SafeAny) => {
+            expect(service.Accounts.length)
+              .withContext("should has buffered nothing")
+              .toEqual(1);
           },
-          (fail: any) => {
+          error: (fail: SafeAny) => {
             // Empty
-          }
-        );
+          },
+        });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === accountAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === accountAPIURL;
+        }
+      );
 
       req.flush(fakeData.getFinCreditcardAccountForCreation()); // Respond with data
     });
 
     it("should return error for 404 error", () => {
       const msg = "Deliberate 404";
-      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe(
-        (data: any) => {
+      service.createAccount(fakeData.getFinCashAccountForCreation()).subscribe({
+        next: (data: any) => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === accountAPIURL;
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === accountAPIURL;
-      });
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: msg });
@@ -1313,9 +1363,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === accountAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === accountAPIURL;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: msg });
@@ -1349,35 +1401,39 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" &&
-          requrl.url ===
-            accountAPIURL + "(" + currentAccount.Id!.toString() + ")"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url ===
+              accountAPIURL + "(" + (currentAccount.Id ?? 0).toString() + ")"
+          );
+        }
+      );
 
       req.flush(currentAccount); // Respond with data
     });
 
     it("should return error for 500 error", () => {
       const msg = "500: Internal error";
-      service.changeAccount(currentAccount).subscribe(
-        (data: any) => {
+      service.changeAccount(currentAccount).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url ===
+              accountAPIURL + "(" + currentAccount.Id!.toString() + ")"
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" &&
-          requrl.url ===
-            accountAPIURL + "(" + currentAccount.Id!.toString() + ")"
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: msg });
@@ -1395,36 +1451,32 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return expected control centers (called once)", () => {
-      expect(service.ControlCenters.length).toEqual(
-        0,
-        "should not buffered yet"
-      );
+      expect(service.ControlCenters.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
 
-      service.fetchAllControlCenters().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finControlCentersFromAPI.length,
-            "should return expected control center"
-          );
-          expect(service.ControlCenters.length).toEqual(
-            fakeData.finControlCentersFromAPI.length,
-            "should have buffered"
-          );
+      service.fetchAllControlCenters().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected control center")
+            .toEqual(fakeData.finControlCentersFromAPI.length);
+          expect(service.ControlCenters.length)
+            .withContext("should have buffered")
+            .toEqual(fakeData.finControlCentersFromAPI.length);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === ccAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === ccAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,ParentID,Comment"
       );
@@ -1439,31 +1491,30 @@ describe("FinanceOdataService", () => {
     });
 
     it("should be OK returning no control centers", () => {
-      expect(service.ControlCenters.length).toEqual(
-        0,
-        "should not buffered yet"
-      );
-      service.fetchAllControlCenters().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(0, "should have empty cc array");
-          expect(service.ControlCenters.length).toEqual(
-            0,
-            "should buffered nothing"
-          );
+      expect(service.ControlCenters.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllControlCenters().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should have empty cc array")
+            .toEqual(0);
+          expect(service.ControlCenters.length)
+            .withContext("should buffered nothing")
+            .toEqual(0);
         },
-        (fail: any) => {
-          // Empty
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === ccAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === ccAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,ParentID,Comment"
       );
@@ -1476,23 +1527,25 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "Deliberate 404";
-      service.fetchAllControlCenters().subscribe(
-        (data: any) => {
+      service.fetchAllControlCenters().subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === ccAPIURL &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === ccAPIURL &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$select")).toEqual(
         "ID,HomeID,Name,ParentID,Comment"
       );
@@ -1505,26 +1558,21 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return expected control centers (called multiple times)", () => {
-      expect(service.ControlCenters.length).toEqual(
-        0,
-        "should not buffered yet"
-      );
-      service.fetchAllControlCenters().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finControlCentersFromAPI.length,
-            "should return expected cc"
-          );
-          expect(data.length).toEqual(
-            service.ControlCenters.length,
-            "should have buffered"
-          );
+      expect(service.ControlCenters.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllControlCenters().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected cc")
+            .toEqual(fakeData.finControlCentersFromAPI.length);
+          expect(data.length)
+            .withContext("should have buffered")
+            .toEqual(service.ControlCenters.length);
         },
-        (fail: any) => {
-          // Do nothing
-        }
-      );
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      });
+
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === ccAPIURL &&
@@ -1539,7 +1587,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllControlCenters().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === ccAPIURL &&
@@ -1547,24 +1595,20 @@ describe("FinanceOdataService", () => {
           requrl.params.has("$filter")
         );
       });
-      expect(req2.length).toEqual(
-        0,
-        "shall be 0 calls to real API due to buffer!"
-      );
+      expect(req2.length)
+        .withContext("shall be 0 calls to real API due to buffer!")
+        .toEqual(0);
 
       // Third call
-      service.fetchAllControlCenters().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finControlCentersFromAPI.length,
-            "should return expected ccs"
-          );
+      service.fetchAllControlCenters().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected ccs")
+            .toEqual(fakeData.finControlCentersFromAPI.length);
         },
-        (fail: any) => {
-          // Do nothing
-        }
-      );
-      const req3: any = httpTestingController.match((requrl: any) => {
+      });
+
+      const req3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === ccAPIURL &&
@@ -1572,10 +1616,9 @@ describe("FinanceOdataService", () => {
           requrl.params.has("$filter")
         );
       });
-      expect(req3.length).toEqual(
-        0,
-        "shall be 0 calls to real API in third call!"
-      );
+      expect(req3.length)
+        .withContext("shall be 0 calls to real API in third call!")
+        .toEqual(0);
     });
   });
 
@@ -1591,24 +1634,23 @@ describe("FinanceOdataService", () => {
 
     it("should return control center in success case", () => {
       expect(service.ControlCenters.length).toEqual(0);
-      service.readControlCenter(21).subscribe(
-        (data: any) => {
+      service.readControlCenter(21).subscribe({
+        next: (data: any) => {
           expect(data).toBeTruthy();
           expect(service.ControlCenters.length).toBeGreaterThan(0);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.controlCenterAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.controlCenterAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ value: [fakeData.finControlCentersFromAPI[0]] });
@@ -1616,22 +1658,24 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.readControlCenter(21).subscribe(
-        (data: any) => {
+      service.readControlCenter(21).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.controlCenterAPIUrl &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.controlCenterAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -1650,22 +1694,22 @@ describe("FinanceOdataService", () => {
 
     it("should create a control center in success case", () => {
       expect(service.ControlCenters.length).toEqual(0);
-      service.createControlCenter(new ControlCenter()).subscribe(
-        (data: any) => {
+      service.createControlCenter(new ControlCenter()).subscribe({
+        next: (data: any) => {
           expect(data).toBeTruthy();
           expect(service.ControlCenters.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "POST" && requrl.url === service.controlCenterAPIUrl
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "POST" &&
+            requrl.url === service.controlCenterAPIUrl
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finControlCentersFromAPI[0]);
@@ -1673,20 +1717,23 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.createControlCenter(new ControlCenter()).subscribe(
-        (data: any) => {
+      service.createControlCenter(new ControlCenter()).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "POST" &&
+            requrl.url === service.controlCenterAPIUrl
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "POST" && requrl.url === service.controlCenterAPIUrl
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -1708,23 +1755,22 @@ describe("FinanceOdataService", () => {
 
     it("should return control center in success case", () => {
       expect(service.ControlCenters.length).toEqual(0);
-      service.changeControlCenter(cc).subscribe(
-        (data: any) => {
+      service.changeControlCenter(cc).subscribe({
+        next: (data: SafeAny) => {
           expect(data).toBeTruthy();
           expect(service.ControlCenters.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to PUT from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" &&
-          requrl.url === service.controlCenterAPIUrl + "(11)"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url === service.controlCenterAPIUrl + "(11)"
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finControlCentersFromAPI[0]);
@@ -1732,21 +1778,23 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.changeControlCenter(cc).subscribe(
-        (data: any) => {
+      service.changeControlCenter(cc).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url === service.controlCenterAPIUrl + "(11)"
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" &&
-          requrl.url === service.controlCenterAPIUrl + "(11)"
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -1772,23 +1820,22 @@ describe("FinanceOdataService", () => {
         .changeControlCenterByPatch(11, {
           Comment: "Test",
         })
-        .subscribe(
-          (data: any) => {
+        .subscribe({
+          next: (data: SafeAny) => {
             expect(data).toBeTruthy();
             expect(service.ControlCenters.length).toEqual(1);
           },
-          (fail: any) => {
-            // Empty
-          }
-        );
+        });
 
       // Service should have made one request to PUT from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PATCH" &&
-          requrl.url === service.controlCenterAPIUrl + "/11"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PATCH" &&
+            requrl.url === service.controlCenterAPIUrl + "/11"
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finControlCentersFromAPI[0]);
@@ -1800,21 +1847,23 @@ describe("FinanceOdataService", () => {
         .changeControlCenterByPatch(11, {
           Comment: "Test",
         })
-        .subscribe(
-          (data: any) => {
+        .subscribe({
+          next: () => {
             fail("expected to fail");
           },
-          (error: any) => {
-            expect(error).toContain(msg);
-          }
-        );
+          error: (err: any) => {
+            expect(err.toString()).toContain(msg);
+          },
+        });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PATCH" &&
-          requrl.url === service.controlCenterAPIUrl + "/11"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PATCH" &&
+            requrl.url === service.controlCenterAPIUrl + "/11"
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -1832,33 +1881,32 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return expected orders (called once)", () => {
-      expect(service.Orders.length).toEqual(0, "should not buffered yet");
+      expect(service.Orders.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
 
-      service.fetchAllOrders().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finOrdersFromAPI.length,
-            "should return expected orders"
-          );
-          expect(service.Orders.length).toEqual(
-            fakeData.finOrdersFromAPI.length,
-            "should have buffered"
-          );
+      service.fetchAllOrders().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected orders")
+            .toEqual(fakeData.finOrdersFromAPI.length);
+          expect(service.Orders.length)
+            .withContext("should have buffered")
+            .toEqual(fakeData.finOrdersFromAPI.length);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.orderAPIUrl &&
-          requrl.params.has("$expand") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.orderAPIUrl &&
+            requrl.params.has("$expand") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID}`
       );
@@ -1871,25 +1919,30 @@ describe("FinanceOdataService", () => {
     });
 
     it("should be OK returning no order", () => {
-      expect(service.Orders.length).toEqual(0, "should not buffered yet");
-      service.fetchAllOrders().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(0, "should have empty order array");
-          expect(service.Orders.length).toEqual(0, "should buffered nothing");
+      expect(service.Orders.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllOrders().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should have empty order array")
+            .toEqual(0);
+          expect(service.Orders.length)
+            .withContext("should buffered nothing")
+            .toEqual(0);
         },
-        (fail: any) => {
-          // Empty
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.orderAPIUrl &&
+            requrl.params.has("$expand") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.orderAPIUrl &&
-          requrl.params.has("$expand") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID}`
       );
@@ -1900,23 +1953,25 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "Deliberate 404";
-      service.fetchAllOrders().subscribe(
-        (data: any) => {
+      service.fetchAllOrders().subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.orderAPIUrl &&
+            requrl.params.has("$expand") &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.orderAPIUrl &&
-          requrl.params.has("$expand") &&
-          requrl.params.has("$filter")
-        );
-      });
       expect(req.request.params.get("$filter")).toEqual(
         `HomeID eq ${fakeData.chosedHome.ID}`
       );
@@ -1927,23 +1982,21 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return expected control centers (called multiple times)", () => {
-      expect(service.Orders.length).toEqual(0, "should not buffered yet");
-      service.fetchAllOrders().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finOrdersFromAPI.length,
-            "should return expected cc"
-          );
-          expect(data.length).toEqual(
-            service.Orders.length,
-            "should have buffered"
-          );
+      expect(service.Orders.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllOrders().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected cc")
+            .toEqual(fakeData.finOrdersFromAPI.length);
+          expect(data.length)
+            .withContext("should have buffered")
+            .toEqual(service.Orders.length);
         },
-        (fail: any) => {
-          // Do nothing
-        }
-      );
-      const reqs: any = httpTestingController.match((requrl: any) => {
+      });
+
+      const reqs: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === service.orderAPIUrl &&
@@ -1958,7 +2011,7 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllOrders().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === service.orderAPIUrl &&
@@ -1966,24 +2019,20 @@ describe("FinanceOdataService", () => {
           requrl.params.has("$filter")
         );
       });
-      expect(req2.length).toEqual(
-        0,
-        "shall be 0 calls to real API due to buffer!"
-      );
+      expect(req2.length)
+        .withContext("shall be 0 calls to real API due to buffer!")
+        .toEqual(0);
 
       // Third call
-      service.fetchAllOrders().subscribe(
-        (data: any) => {
-          expect(data.length).toEqual(
-            fakeData.finOrdersFromAPI.length,
-            "should return expected ccs"
-          );
+      service.fetchAllOrders().subscribe({
+        next: (data: any) => {
+          expect(data.length)
+            .withContext("should return expected ccs")
+            .toEqual(fakeData.finOrdersFromAPI.length);
         },
-        (fail: any) => {
-          // Do nothing
-        }
-      );
-      const req3: any = httpTestingController.match((requrl: any) => {
+      });
+
+      const req3: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === service.orderAPIUrl &&
@@ -1991,10 +2040,9 @@ describe("FinanceOdataService", () => {
           requrl.params.has("$filter")
         );
       });
-      expect(req3.length).toEqual(
-        0,
-        "shall be 0 calls to real API in third call!"
-      );
+      expect(req3.length)
+        .withContext("shall be 0 calls to real API in third call!")
+        .toEqual(0);
     });
   });
 
@@ -2010,24 +2058,23 @@ describe("FinanceOdataService", () => {
 
     it("should return order in success case", () => {
       expect(service.Orders.length).toEqual(0);
-      service.readOrder(21).subscribe(
-        (data: any) => {
+      service.readOrder(21).subscribe({
+        next: (data: any) => {
           expect(data).toBeTruthy();
           expect(service.Orders.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.orderAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.orderAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ value: [fakeData.finOrdersFromAPI[0]] });
@@ -2035,22 +2082,24 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.readOrder(21).subscribe(
-        (data: any) => {
+      service.readOrder(21).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.orderAPIUrl &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.orderAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2069,20 +2118,19 @@ describe("FinanceOdataService", () => {
 
     it("should create an order in success case", () => {
       expect(service.Orders.length).toEqual(0);
-      service.createOrder(new Order()).subscribe(
-        (data: any) => {
+      service.createOrder(new Order()).subscribe({
+        next: (data: any) => {
           expect(data).toBeTruthy();
           expect(service.Orders.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === service.orderAPIUrl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === service.orderAPIUrl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -2090,18 +2138,20 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.createOrder(new Order()).subscribe(
-        (data: any) => {
+      service.createOrder(new Order()).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === service.orderAPIUrl;
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === service.orderAPIUrl;
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2123,22 +2173,22 @@ describe("FinanceOdataService", () => {
 
     it("should return order in success case", () => {
       expect(service.Orders.length).toEqual(0);
-      service.changeOrder(ord).subscribe(
-        (data: any) => {
+      service.changeOrder(ord).subscribe({
+        next: (data: SafeAny) => {
           expect(data).toBeTruthy();
           expect(service.Orders.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to PUT from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" && requrl.url === service.orderAPIUrl + "/11"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url === service.orderAPIUrl + "/11"
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -2146,20 +2196,23 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.changeOrder(ord).subscribe(
-        (data: any) => {
+      service.changeOrder(ord).subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PUT" &&
+            requrl.url === service.orderAPIUrl + "/11"
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PUT" && requrl.url === service.orderAPIUrl + "/11"
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2185,23 +2238,22 @@ describe("FinanceOdataService", () => {
         .changeOrderByPatch(11, {
           Comment: "Tezt",
         })
-        .subscribe(
-          (data: any) => {
+        .subscribe({
+          next: (data: SafeAny) => {
             expect(data).toBeTruthy();
             expect(service.Orders.length).toEqual(1);
           },
-          (fail: any) => {
-            // Empty
-          }
-        );
+        });
 
       // Service should have made one request to PUT from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PATCH" &&
-          requrl.url === service.orderAPIUrl + "/11"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PATCH" &&
+            requrl.url === service.orderAPIUrl + "/11"
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -2213,21 +2265,23 @@ describe("FinanceOdataService", () => {
         .changeOrderByPatch(11, {
           Comment: "Tezt",
         })
-        .subscribe(
-          (data: any) => {
+        .subscribe({
+          next: () => {
             fail("expected to fail");
           },
-          (error: any) => {
-            expect(error).toContain(msg);
-          }
-        );
+          error: (err: SafeAny) => {
+            expect(err.toString()).toContain(msg);
+          },
+        });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "PATCH" &&
-          requrl.url === service.orderAPIUrl + "/11"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "PATCH" &&
+            requrl.url === service.orderAPIUrl + "/11"
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2245,23 +2299,22 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return data for success case", () => {
-      service.fetchAllPlans().subscribe(
-        (data: Plan[]) => {
+      service.fetchAllPlans().subscribe({
+        next: (data: Plan[]) => {
           expect(data.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.planAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.planAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -2284,23 +2337,22 @@ describe("FinanceOdataService", () => {
     });
 
     it("should fetch data only once (call multiple times)", () => {
-      service.fetchAllPlans().subscribe(
-        (data: Plan[]) => {
+      service.fetchAllPlans().subscribe({
+        next: (data: Plan[]) => {
           expect(data.length).toEqual(1);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.planAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.planAPIUrl &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -2325,37 +2377,38 @@ describe("FinanceOdataService", () => {
 
       // Second call
       service.fetchAllPlans().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === service.planAPIUrl &&
           requrl.params.has("$filter")
         );
       });
-      expect(req2.length).toEqual(
-        0,
-        "shall be 0 calls to real API due to buffer!"
-      );
+      expect(req2.length)
+        .withContext("shall be 0 calls to real API due to buffer!")
+        .toEqual(0);
     });
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.fetchAllPlans().subscribe(
-        (data: any) => {
+      service.fetchAllPlans().subscribe({
+        next: (data: SafeAny) => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.planAPIUrl &&
+            requrl.params.has("$filter")
+          );
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.planAPIUrl &&
-          requrl.params.has("$filter")
-        );
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2373,19 +2426,18 @@ describe("FinanceOdataService", () => {
     });
 
     it("should return plan in success case", () => {
-      service.readPlan(21).subscribe(
-        (data: any) => {
+      service.readPlan(21).subscribe({
+        next: (data: SafeAny) => {
           expect(data).toBeTruthy();
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === service.planAPIUrl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === service.planAPIUrl;
+        }
+      );
 
       // Respond with the mock data
       const planData: Plan = new Plan();
@@ -2404,18 +2456,20 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.readPlan(21).subscribe(
-        (data: any) => {
+      service.readPlan(21).subscribe({
+        next: (data: SafeAny) => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === service.planAPIUrl;
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === service.planAPIUrl;
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2443,19 +2497,18 @@ describe("FinanceOdataService", () => {
     });
 
     it("should create a plan in success case", () => {
-      service.createPlan(planData).subscribe(
-        (data: any) => {
+      service.createPlan(planData).subscribe({
+        next: (data: SafeAny) => {
           expect(data).toBeTruthy();
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === service.planAPIUrl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === service.planAPIUrl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(planData.writeJSONObject());
@@ -2463,18 +2516,20 @@ describe("FinanceOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
-      service.createPlan(planData).subscribe(
-        (data: any) => {
+      service.createPlan(planData).subscribe({
+        next: (data: SafeAny) => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err: SafeAny) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === service.planAPIUrl;
         }
       );
-
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === service.planAPIUrl;
-      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2518,9 +2573,11 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === documentAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === documentAPIURL;
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
@@ -2537,9 +2594,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === documentAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === documentAPIURL;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2585,9 +2644,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === documentAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === documentAPIURL;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -2626,9 +2687,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({ id: 100 });
@@ -2647,9 +2710,11 @@ describe("FinanceOdataService", () => {
           }
         );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2677,12 +2742,14 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to DELETE from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "DELETE" &&
-          requrl.url === service.documentAPIUrl + "(1)"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "DELETE" &&
+            requrl.url === service.documentAPIUrl + "(1)"
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush("", { status: 200, statusText: "OK" });
@@ -2700,12 +2767,14 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to DELETE from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "DELETE" &&
-          requrl.url === service.documentAPIUrl + "(1)"
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "DELETE" &&
+            requrl.url === service.documentAPIUrl + "(1)"
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2742,19 +2811,21 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.documentAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter") &&
-          //          && requrl.params.has('$orderby')
-          requrl.params.has("$top") &&
-          requrl.params.has("$skip") &&
-          requrl.params.has("$count") &&
-          requrl.params.has("$expand")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.documentAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter") &&
+            //          && requrl.params.has('$orderby')
+            requrl.params.has("$top") &&
+            requrl.params.has("$skip") &&
+            requrl.params.has("$count") &&
+            requrl.params.has("$expand")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -2802,19 +2873,21 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.documentAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter") &&
-          //          && requrl.params.has('$orderby')
-          requrl.params.has("$top") &&
-          requrl.params.has("$skip") &&
-          requrl.params.has("$count") &&
-          requrl.params.has("$expand")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.documentAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter") &&
+            //          && requrl.params.has('$orderby')
+            requrl.params.has("$top") &&
+            requrl.params.has("$skip") &&
+            requrl.params.has("$count") &&
+            requrl.params.has("$expand")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2847,9 +2920,11 @@ describe("FinanceOdataService", () => {
         });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush([
@@ -2952,9 +3027,11 @@ describe("FinanceOdataService", () => {
           },
         });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -2987,9 +3064,11 @@ describe("FinanceOdataService", () => {
         });
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(`[{'hid':1, 'docID':397, 'refDocID':null, 'accountID':58, 'tranDate':'2019-02-22', 'tranAmount':3653.63, 'interestAmount':9782.60,
@@ -3013,9 +3092,11 @@ describe("FinanceOdataService", () => {
           },
         });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "GET" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "GET" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3052,9 +3133,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === adpDocumentAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === adpDocumentAPIURL;
+        }
+      );
 
       // Respond with the mock data
       req.flush(fakeData.finADPDocumentForCreate.writeJSONObject());
@@ -3077,9 +3160,11 @@ describe("FinanceOdataService", () => {
           }
         );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === adpDocumentAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === adpDocumentAPIURL;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3114,9 +3199,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3139,9 +3226,11 @@ describe("FinanceOdataService", () => {
           }
         );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3175,9 +3264,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(100);
@@ -3198,9 +3289,11 @@ describe("FinanceOdataService", () => {
           }
         );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3234,9 +3327,11 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(100);
@@ -3257,9 +3352,11 @@ describe("FinanceOdataService", () => {
           }
         );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3289,9 +3386,11 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush(100);
@@ -3308,9 +3407,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3341,9 +3442,11 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3362,9 +3465,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3392,13 +3497,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByAccountURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByAccountURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3426,13 +3533,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByAccountURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByAccountURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3450,7 +3559,7 @@ describe("FinanceOdataService", () => {
 
       httpTestingController.verify();
       service.fetchReportByAccount().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === reportByAccountURL &&
@@ -3474,13 +3583,15 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByAccountURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByAccountURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3508,13 +3619,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByCCURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByCCURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3542,13 +3655,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByCCURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByCCURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3566,7 +3681,7 @@ describe("FinanceOdataService", () => {
 
       httpTestingController.verify();
       service.fetchReportByControlCenter().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === reportByCCURL &&
@@ -3590,13 +3705,15 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByCCURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByCCURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3624,13 +3741,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByOrderURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByOrderURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3658,13 +3777,15 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByOrderURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByOrderURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -3682,7 +3803,7 @@ describe("FinanceOdataService", () => {
 
       httpTestingController.verify();
       service.fetchReportByOrder().subscribe();
-      const req2: any = httpTestingController.match((requrl: any) => {
+      const req2: any = httpTestingController.match((requrl: SafeAny) => {
         return (
           requrl.method === "GET" &&
           requrl.url === reportByOrderURL &&
@@ -3706,13 +3827,15 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === reportByOrderURL &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === reportByOrderURL &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3764,9 +3887,11 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === calcADPTmpAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === calcADPTmpAPIURL;
+        }
+      );
 
       // Respond with the mock data
       req.flush({ value: outputData });
@@ -3783,9 +3908,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === calcADPTmpAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === calcADPTmpAPIURL;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3842,9 +3969,11 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === calcLoanTmpAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === calcLoanTmpAPIURL;
+        }
+      );
 
       // Respond with the mock data
       req.flush({ value: outputData });
@@ -3861,9 +3990,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === calcLoanTmpAPIURL;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === calcLoanTmpAPIURL;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "Error occurred" });
@@ -3893,16 +4024,18 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter") &&
-          requrl.params.has("$top") &&
-          requrl.params.has("$skip")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter") &&
+            requrl.params.has("$top") &&
+            requrl.params.has("$skip")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ totalCount: 0, contentList: [] });
@@ -3919,14 +4052,16 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -3962,16 +4097,18 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$filter") &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$top") &&
-          requrl.params.has("$skip")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$filter") &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$top") &&
+            requrl.params.has("$skip")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ totalCount: 0, contentList: [] });
@@ -3988,14 +4125,16 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -4025,14 +4164,16 @@ describe("FinanceOdataService", () => {
         );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush({ totalCount: 0, contentList: [] });
@@ -4049,14 +4190,16 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -4130,14 +4273,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4162,14 +4307,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4194,14 +4341,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4225,14 +4374,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4256,14 +4407,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4287,14 +4440,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4318,14 +4473,16 @@ describe("FinanceOdataService", () => {
       );
 
       // Service should have made one request to GET cc from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // Respond with the mock data
       req.flush(objrst);
@@ -4342,14 +4499,16 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === service.docItemViewAPIUrl &&
-          requrl.params.has("$select") &&
-          requrl.params.has("$filter")
-        );
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return (
+            requrl.method === "GET" &&
+            requrl.url === service.docItemViewAPIUrl &&
+            requrl.params.has("$select") &&
+            requrl.params.has("$filter")
+          );
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "server failed" });
@@ -4396,9 +4555,11 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -4417,9 +4578,11 @@ describe("FinanceOdataService", () => {
         }
       );
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "Error occurred" });
@@ -4445,9 +4608,11 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -4472,9 +4637,11 @@ describe("FinanceOdataService", () => {
           expect(err.toString()).toContain(msg);
         },
       });
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "POST" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: msg });
@@ -4496,9 +4663,11 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -4517,9 +4686,11 @@ describe("FinanceOdataService", () => {
           expect(err).toContain(msg);
         },
       });
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "Error occurred" });
@@ -4541,9 +4712,11 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -4562,9 +4735,11 @@ describe("FinanceOdataService", () => {
           expect(err).toContain(msg);
         },
       });
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "Error occurred" });
@@ -4586,9 +4761,11 @@ describe("FinanceOdataService", () => {
       });
 
       // Service should have made one request to POST
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // Respond with the mock data
       req.flush({
@@ -4607,9 +4784,11 @@ describe("FinanceOdataService", () => {
           expect(err).toContain(msg);
         },
       });
-      const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "PATCH" && requrl.url === apiurl;
-      });
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => {
+          return requrl.method === "PATCH" && requrl.url === apiurl;
+        }
+      );
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: "Error occurred" });

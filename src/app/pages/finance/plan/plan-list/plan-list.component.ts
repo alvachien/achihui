@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
+import { ReplaySubject } from "rxjs";
 import { takeUntil, finalize } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { NzModalService } from "ng-zorro-antd/modal";
@@ -7,7 +7,6 @@ import { translate } from "@ngneat/transloco";
 import * as moment from "moment";
 
 import {
-  LogLevel,
   Plan,
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -18,7 +17,6 @@ import {
 import {
   FinanceOdataService,
   HomeDefOdataService,
-  UIStatusService,
 } from "../../../../services";
 
 @Component({

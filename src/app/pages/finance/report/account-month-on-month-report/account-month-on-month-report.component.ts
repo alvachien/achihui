@@ -4,14 +4,12 @@ import { NumberUtility } from "actslib";
 import { EChartsOption } from "echarts";
 import * as moment from "moment";
 import { NzModalService } from "ng-zorro-antd/modal";
-import { forkJoin, lastValueFrom } from "rxjs";
+import { forkJoin } from "rxjs";
 
 import { FinanceOdataService } from "src/app/services";
 import {
   ModelUtility,
   ConsoleLogTypeEnum,
-  TranType,
-  FinanceReportEntryByTransactionTypeMoM,
   UIAccountForSelection,
   Account,
   AccountCategory,

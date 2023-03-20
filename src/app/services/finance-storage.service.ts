@@ -6,7 +6,7 @@ import {
   HttpErrorResponse,
 } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
-import { catchError, map, startWith, switchMap } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import * as moment from "moment";
 
 import { environment } from "../../environments/environment";
@@ -74,7 +74,7 @@ export class FinanceStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.debug(
               `AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`
@@ -109,7 +109,10 @@ export class FinanceStorageService {
 
     const apiurl: string = environment.ApiUrl + "/FinanceReportTranType";
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", this._homeService.ChosedHome!.ID.toString());
+    params = params.append(
+      "hid",
+      (this._homeService.ChosedHome?.ID ?? 0).toString()
+    );
     if (dtbgn) {
       params = params.append("dtbgn", dtbgn.format(momentDateFormat));
     }

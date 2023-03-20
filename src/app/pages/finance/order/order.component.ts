@@ -6,5 +6,4 @@ import { Component } from "@angular/core";
   styleUrls: ["./order.component.less"],
 })
 export class OrderComponent {
-  constructor() {}
 }

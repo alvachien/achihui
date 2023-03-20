@@ -1588,12 +1588,7 @@ describe("LibraryStorageService", () => {
     });
 
     it("should return expected data", () => {
-      service.deleteBook(2).subscribe({
-        next: (data) => {},
-        error: (err) => {
-          // Empty
-        },
-      });
+      service.deleteBook(2).subscribe({});
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {

@@ -8,7 +8,7 @@ import {
   flush,
 } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router, UrlSegment, ActivatedRoute } from "@angular/router";
+import { UrlSegment, ActivatedRoute } from "@angular/router";
 import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
 import { NzModalService } from "ng-zorro-antd/modal";
 import { BehaviorSubject, of } from "rxjs";

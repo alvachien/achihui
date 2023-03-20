@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { PlanComponent } from "./plan.component";
 import { PlanListComponent } from "./plan-list/plan-list.component";
 import { PlanDetailComponent } from "./plan-detail/plan-detail.component";
 

@@ -16,15 +16,12 @@ import { NzModalService } from "ng-zorro-antd/modal";
 import { BehaviorSubject, of } from "rxjs";
 import { RouterTestingModule } from "@angular/router/testing";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { By } from "@angular/platform-browser";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
 import * as moment from "moment";
 
 import { FinanceUIModule } from "./finance-ui.module";
 import {
   getTranslocoModule,
   FakeDataHelper,
-  asyncData,
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
@@ -37,8 +34,6 @@ import {
 } from "../../services";
 import {
   UserAuthInfo,
-  Document,
-  DocumentItem,
   momentDateFormat,
   TemplateDocADP,
   TemplateDocLoan,

@@ -8,7 +8,6 @@ import {
   flush,
 } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject, of } from "rxjs";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -22,7 +21,6 @@ import { OrderValidityFilterPipe } from "../../pipes";
 import { OrderListComponent } from "./order-list.component";
 import {
   getTranslocoModule,
-  RouterLinkDirectiveStub,
   FakeDataHelper,
   asyncData,
   asyncError,

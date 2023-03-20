@@ -5,5 +5,4 @@ import { Component } from "@angular/core";
   templateUrl: "./library.component.html",
   styleUrls: ["./library.component.less"],
 })
-export class LibraryComponent {
-}
+export class LibraryComponent {}

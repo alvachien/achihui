@@ -7,12 +7,8 @@ import {
   ChangeDetectorRef,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, merge, of, ReplaySubject, forkJoin } from "rxjs";
+import { ReplaySubject, forkJoin } from "rxjs";
 import {
-  catchError,
-  map,
-  startWith,
-  switchMap,
   takeUntil,
   finalize,
 } from "rxjs/operators";
@@ -22,7 +18,6 @@ import { translate } from "@ngneat/transloco";
 import * as moment from "moment";
 
 import {
-  Currency,
   ModelUtility,
   ConsoleLogTypeEnum,
   TemplateDocADP,

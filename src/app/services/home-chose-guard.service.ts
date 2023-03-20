@@ -6,12 +6,7 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { environment } from "../../environments/environment";
-import {
-  LogLevel,
-  UserAuthInfo,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../model";
+import { ModelUtility, ConsoleLogTypeEnum } from "../model";
 import { AuthService } from "./auth.service";
 import { HomeDefOdataService } from "./home-def-odata.service";
 import { UIStatusService } from "./uistatus.service";

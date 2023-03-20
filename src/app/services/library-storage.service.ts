@@ -128,7 +128,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
       );
       return this._http
         .get(this.personRoleAPIURL, {
@@ -203,7 +203,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
       );
       return this._http
         .get(this.orgTypeAPIURL, {
@@ -276,7 +276,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID} or HomeID eq null`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
       );
       return this._http
         .get(this.bookCategoryAPIURL, {
@@ -354,7 +354,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID}`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
       );
       return this._http
         .get(this.personAPIURL, {
@@ -421,7 +421,7 @@ export class LibraryStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       "$filter",
-      `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${pid}`
+      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`
     );
     params = params.append("$expand", `Roles`);
 
@@ -519,7 +519,7 @@ export class LibraryStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deletePerson, map.`,
             ConsoleLogTypeEnum.debug
@@ -566,7 +566,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID}`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
       );
       return this._http
         .get(this.organizationAPIURL, {
@@ -633,7 +633,7 @@ export class LibraryStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       "$filter",
-      `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${pid}`
+      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`
     );
     params = params.append("$expand", `Types`);
 
@@ -731,7 +731,7 @@ export class LibraryStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteOrganization, map.`,
             ConsoleLogTypeEnum.debug
@@ -776,7 +776,7 @@ export class LibraryStorageService {
       params = params.append("$count", "true");
       params = params.append(
         "$filter",
-        `HomeID eq ${this._homeService.ChosedHome!.ID}`
+        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
       );
       return this._http
         .get(this.locationAPIURL, {
@@ -843,7 +843,7 @@ export class LibraryStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       "$filter",
-      `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${lid}`
+      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${lid}`
     );
 
     return this._http
@@ -945,7 +945,7 @@ export class LibraryStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteLocation, map.`,
             ConsoleLogTypeEnum.debug
@@ -1008,7 +1008,7 @@ export class LibraryStorageService {
     params = params.append("$count", `true`);
     params = params.append(
       "$filter",
-      `HomeID eq ${this._homeService.ChosedHome!.ID}`
+      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
     );
     return this._http
       .get(this.bookAPIURL, {
@@ -1070,7 +1070,7 @@ export class LibraryStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       "$filter",
-      `HomeID eq ${this._homeService.ChosedHome!.ID} and Id eq ${bid}`
+      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${bid}`
     );
     params = params.append(
       "$expand",
@@ -1169,7 +1169,7 @@ export class LibraryStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBook, map.`,
             ConsoleLogTypeEnum.debug
@@ -1211,7 +1211,7 @@ export class LibraryStorageService {
       "$select",
       "ID,HomeID,BookId,FromOrganization,FromDate,ToDate,Comment"
     );
-    const filterstr = `HomeID eq ${this._homeService.ChosedHome!.ID}`;
+    const filterstr = `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`;
     params = params.append("$filter", filterstr);
     if (orderby) {
       params = params.append("$orderby", `${orderby.field} ${orderby.order}`);
@@ -1283,7 +1283,7 @@ export class LibraryStorageService {
       );
 
     objtbc.User = this._authService.authSubject.getValue().getUserId()!;
-    objtbc.HID = this._homeService.ChosedHome?.ID!;
+    objtbc.HID = this._homeService.ChosedHome?.ID ?? 0;
     const jdata = objtbc.writeJSONObject();
 
     return this._http
@@ -1331,7 +1331,7 @@ export class LibraryStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBookBorrowRecord, map.`,
             ConsoleLogTypeEnum.debug

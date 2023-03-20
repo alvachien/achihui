@@ -193,7 +193,7 @@ describe("EventStorageService", () => {
       httpTestingController.verify();
     });
 
-    it("shall work with data", () => {});
+    // it("shall work with data", () => {});
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
@@ -228,7 +228,7 @@ describe("EventStorageService", () => {
       httpTestingController.verify();
     });
 
-    it("shall work with data", () => {});
+    // it("shall work with data", () => {});
 
     it("should return error in case error appear", () => {
       const msg = "server failed";
@@ -312,7 +312,7 @@ describe("EventStorageService", () => {
       httpTestingController.verify();
     });
 
-    it("shall work with data", () => {});
+    // it("shall work with data", () => {});
 
     it("should return error in case error appear", () => {
       const msg = "server failed";

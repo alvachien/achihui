@@ -7,7 +7,7 @@ import {
   HttpErrorResponse,
 } from "@angular/common/http";
 import { Observable, BehaviorSubject, of, throwError } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { environment } from "../../environments/environment";
 
 import {
@@ -77,7 +77,7 @@ export class HomeDefOdataService {
 
   // Members in selected HomeDef
   get MembersInChosedHome(): HomeMember[] {
-    return this.ChosedHome!.Members;
+    return this.ChosedHome?.Members ?? [];
   }
 
   // Redirect URL
@@ -292,7 +292,7 @@ export class HomeDefOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`,
             ConsoleLogTypeEnum.debug
@@ -330,7 +330,7 @@ export class HomeDefOdataService {
     skip: number
   ): Observable<any> {
     const apiurl: string = environment.ApiUrl + "/homemsg";
-    const curhid: number = this.ChosedHome!.ID;
+    const curhid: number = this.ChosedHome?.ID ?? 0;
     const requestUrl: any = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
     let headers: HttpHeaders = new HttpHeaders();
@@ -393,7 +393,7 @@ export class HomeDefOdataService {
       );
     const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", this.ChosedHome!.ID.toString());
+    params = params.append("hid", (this.ChosedHome?.ID ?? 0).toString());
     const jdata: any[] = [
       {
         op: "replace",
@@ -435,7 +435,7 @@ export class HomeDefOdataService {
       );
     const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", this.ChosedHome!.ID.toString());
+    params = params.append("hid", (this.ChosedHome?.ID ?? 0).toString());
     const jdata: any[] = [
       {
         op: "replace",
@@ -468,7 +468,7 @@ export class HomeDefOdataService {
    */
   public getHomeKeyFigure(): Observable<any> {
     const apiurl: string = environment.ApiUrl + "/HomeKeyFigure";
-    const curhid: number = this.ChosedHome!.ID;
+    const curhid: number = this.ChosedHome?.ID ?? 0;
     const requestUrl: any = `${apiurl}?hid=${curhid}`;
 
     let headers: HttpHeaders = new HttpHeaders();

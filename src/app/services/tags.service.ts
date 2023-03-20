@@ -43,7 +43,10 @@ export class TagsService {
       );
 
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", this._homeService.ChosedHome!.ID!.toString());
+    params = params.append(
+      "hid",
+      (this._homeService.ChosedHome?.ID ?? 0).toString()
+    );
     params = params.append("reqamt", (<boolean>reqamt).toString());
     if (tagtype) {
       params = params.append("tagtype", (<number>tagtype).toString());

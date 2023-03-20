@@ -11,8 +11,6 @@ enum ThemeType {
 export class ThemeService {
   currentTheme = ThemeType.default;
 
-  constructor() {}
-
   private reverseTheme(theme: string): ThemeType {
     return theme === ThemeType.dark ? ThemeType.default : ThemeType.dark;
   }

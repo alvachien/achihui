@@ -47,22 +47,22 @@ describe("LanguageOdataService", () => {
     });
 
     it("should return expected languages (called once)", () => {
-      expect(service.Languages.length).toEqual(0, "should not buffered yet");
-      service.fetchAllLanguages().subscribe(
-        (langs: any) => {
-          expect(langs.length).toEqual(
-            fakeData.appLanguagesFromAPI.length,
-            "should return expected languages"
-          );
-          expect(service.Languages.length).toEqual(
-            fakeData.appLanguagesFromAPI.length,
-            "should have buffered"
-          );
+      expect(service.Languages.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllLanguages().subscribe({
+        next: (langs: any) => {
+          expect(langs.length)
+            .withContext("should return expected languages")
+            .toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(service.Languages.length)
+            .withContext("should have buffered")
+            .toEqual(fakeData.appLanguagesFromAPI.length);
         },
-        (fail: any) => {
+        error: () => {
           // Empty
-        }
-      );
+        },
+      });
 
       // Service should have made one request to GET languages from expected URL
       const req: any = httpTestingController.expectOne(dataAPIURL);
@@ -75,19 +75,22 @@ describe("LanguageOdataService", () => {
     });
 
     it("should be OK returning no languages", () => {
-      expect(service.Languages.length).toEqual(0, "should not buffered yet");
-      service.fetchAllLanguages().subscribe(
-        (langs: any) => {
-          expect(langs.length).toEqual(0, "should have empty languages array");
-          expect(service.Languages.length).toEqual(
-            0,
-            "should buffered nothing"
-          );
+      expect(service.Languages.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllLanguages().subscribe({
+        next: (langs: any) => {
+          expect(langs.length)
+            .withContext("should have empty languages array")
+            .toEqual(0);
+          expect(service.Languages.length)
+            .withContext("should buffered nothing")
+            .toEqual(0);
         },
-        (fail: any) => {
+        error: () => {
           // Empty
-        }
-      );
+        },
+      });
 
       const req: any = httpTestingController.expectOne(dataAPIURL);
       req.flush({}); // Respond with no data
@@ -95,14 +98,14 @@ describe("LanguageOdataService", () => {
 
     it("should return error in case error appear", () => {
       const msg = "Deliberate 404";
-      service.fetchAllLanguages().subscribe(
-        (langs: any) => {
+      service.fetchAllLanguages().subscribe({
+        next: () => {
           fail("expected to fail");
         },
-        (error: any) => {
-          expect(error).toContain(msg);
-        }
-      );
+        error: (err: any) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
 
       const req: any = httpTestingController.expectOne(dataAPIURL);
 
@@ -111,62 +114,58 @@ describe("LanguageOdataService", () => {
     });
 
     it("should return expected languages (called multiple times)", () => {
-      expect(service.Languages.length).toEqual(0, "should not buffered yet");
-      service.fetchAllLanguages().subscribe(
-        (langs: any) => {
-          expect(langs.length).toEqual(
-            fakeData.appLanguagesFromAPI.length,
-            "should return expected languages"
-          );
-          expect(langs.length).toEqual(
-            service.Languages.length,
-            "should have buffered"
-          );
+      expect(service.Languages.length)
+        .withContext("should not buffered yet")
+        .toEqual(0);
+      service.fetchAllLanguages().subscribe({
+        next: (langs: any) => {
+          expect(langs.length)
+            .withContext("should return expected languages")
+            .toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(langs.length)
+            .withContext("should have buffered")
+            .toEqual(service.Languages.length);
         },
-        (fail: any) => {
+        error: () => {
           // Do nothing
-        }
-      );
+        },
+      });
+
       const requests: any = httpTestingController.match(dataAPIURL);
-      expect(requests.length).toEqual(1, "shall be only 1 calls to real API!");
+      expect(requests.length)
+        .withContext("shall be only 1 calls to real API!")
+        .toEqual(1);
       requests[0].flush({
         value: fakeData.appLanguagesFromAPI,
       });
       httpTestingController.verify();
 
       // Second call
-      expect(service.Languages.length).toEqual(
-        fakeData.appLanguagesFromAPI.length,
-        "buffer should not changed"
-      );
+      expect(service.Languages.length)
+        .withContext("buffer should not changed")
+        .toEqual(fakeData.appLanguagesFromAPI.length);
       service.fetchAllLanguages().subscribe();
       const requests2: any = httpTestingController.match(dataAPIURL);
-      expect(requests2.length).toEqual(
-        0,
-        "shall be 0 calls to real API due to buffer!"
-      );
+      expect(requests2.length)
+        .withContext("shall be 0 calls to real API due to buffer!")
+        .toEqual(0);
 
       // Third call
-      expect(service.Languages.length).toEqual(
-        fakeData.appLanguagesFromAPI.length,
-        "buffer should not changed"
-      );
-      service.fetchAllLanguages().subscribe(
-        (langs: any) => {
-          expect(langs.length).toEqual(
-            fakeData.appLanguagesFromAPI.length,
-            "should return expected languages"
-          );
+      expect(service.Languages.length)
+        .withContext("buffer should not changed")
+        .toEqual(fakeData.appLanguagesFromAPI.length);
+      service.fetchAllLanguages().subscribe({
+        next: (langs: any) => {
+          expect(langs.length)
+            .withContext("should return expected languages")
+            .toEqual(fakeData.appLanguagesFromAPI.length);
         },
-        (fail: any) => {
-          // Do nothing
-        }
-      );
+      });
+
       const requests3: any = httpTestingController.match(dataAPIURL);
-      expect(requests3.length).toEqual(
-        0,
-        "shall be 0 calls to real API in third call!"
-      );
+      expect(requests3.length)
+        .withContext("shall be 0 calls to real API in third call!")
+        .toEqual(0);
     });
   });
 });
