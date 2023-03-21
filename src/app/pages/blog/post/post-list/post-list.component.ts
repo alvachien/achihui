@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import * as moment from "moment";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
 import {
   LogLevel,
@@ -16,13 +16,13 @@ import {
   BlogPostStatus_Draft,
   BlogPostStatus_PublishAsPublic,
   BlogPostStatus_PublishAsPrivate,
-} from "../../../../model";
-import { BlogOdataService, UIStatusService } from "../../../../services";
+} from '../../../../model';
+import { BlogOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-blog-post-list",
-  templateUrl: "./post-list.component.html",
-  styleUrls: ["./post-list.component.less"],
+  selector: 'hih-blog-post-list',
+  templateUrl: './post-list.component.html',
+  styleUrls: ['./post-list.component.less'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -33,13 +33,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   totalPostCount = 0;
   dataSet: BlogPost[] = [];
 
-  constructor(
-    private odataService: BlogOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  constructor(private odataService: BlogOdataService, private modalService: NzModalService, private router: Router) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PostListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering PostListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -47,10 +43,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PostListComponent OnInit...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PostListComponent OnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this.fetchData();
@@ -58,7 +51,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PostListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering PostListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -69,11 +62,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
   getStatusDisplayString(status: number): string {
     if (status === BlogPostStatus_PublishAsPublic) {
-      return "Common.PublishAsPublic";
+      return 'Common.PublishAsPublic';
     } else if (status === BlogPostStatus_PublishAsPrivate) {
-      return "Common.PublishAsPrivate";
+      return 'Common.PublishAsPrivate';
     } else {
-      return "Common.SaveAsDraft";
+      return 'Common.SaveAsDraft';
     }
   }
 
@@ -111,7 +104,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -119,13 +112,13 @@ export class PostListComponent implements OnInit, OnDestroy {
       });
   }
   onCreate(): void {
-    this.router.navigate(["/blog/post/create"]);
+    this.router.navigate(['/blog/post/create']);
   }
   onDisplay(rid: number): void {
-    this.router.navigate(["/blog/post/display/" + rid.toString()]);
+    this.router.navigate(['/blog/post/display/' + rid.toString()]);
   }
   onEdit(rid: number): void {
-    this.router.navigate(["/blog/post/edit/" + rid.toString()]);
+    this.router.navigate(['/blog/post/edit/' + rid.toString()]);
   }
   onDelete(rid: number) {
     // TBD.
@@ -134,8 +127,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.odataService.deployPost(rid).subscribe({
       next: (val) => {
         const modalRef = this.modalService.success({
-          nzTitle: translate("Blog.DeploySuccess"),
-          nzContent: translate("Common.WillCloseIn1Second"),
+          nzTitle: translate('Blog.DeploySuccess'),
+          nzContent: translate('Common.WillCloseIn1Second'),
         });
         setTimeout(() => {
           modalRef.close();
@@ -143,7 +136,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.modalService.error({
-          nzTitle: translate("Common.Error"),
+          nzTitle: translate('Common.Error'),
           nzContent: err.toString(),
           nzClosable: true,
         });
@@ -154,8 +147,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.odataService.revokeDeployPost(rid).subscribe({
       next: (val) => {
         const modalRef = this.modalService.success({
-          nzTitle: translate("Blog.RevokeDeploySuccess"),
-          nzContent: translate("Common.WillCloseIn1Second"),
+          nzTitle: translate('Blog.RevokeDeploySuccess'),
+          nzContent: translate('Common.WillCloseIn1Second'),
         });
         setTimeout(() => {
           modalRef.close();
@@ -163,7 +156,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.modalService.error({
-          nzTitle: translate("Common.Error"),
+          nzTitle: translate('Common.Error'),
           nzContent: err.toString(),
           nzClosable: true,
         });

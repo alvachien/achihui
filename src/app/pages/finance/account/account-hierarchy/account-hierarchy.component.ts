@@ -1,25 +1,14 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from "@angular/core";
-import { ReplaySubject, forkJoin } from "rxjs";
-import {
-  NzFormatEmitEvent,
-  NzTreeNode,
-  NzTreeNodeOptions,
-} from "ng-zorro-antd/tree";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { Router } from "@angular/router";
-import { translate } from "@ngneat/transloco";
-import { NzResizeEvent } from "ng-zorro-antd/resizable";
-import {
-  NzContextMenuService,
-  NzDropdownMenuComponent,
-} from "ng-zorro-antd/dropdown";
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
+import { translate } from '@ngneat/transloco';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 
-import {
-  FinanceOdataService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "../../../../services";
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
   Account,
   AccountStatusEnum,
@@ -36,9 +25,9 @@ import {
   momentDateFormat,
   BuildupAccountForSelection,
   ControlCenter,
-} from "../../../../model";
-import * as moment from "moment";
-import { AccountChangeNameDialogComponent } from "../account-change-name-dialog";
+} from '../../../../model';
+import * as moment from 'moment';
+import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -53,9 +42,9 @@ interface ISettleAccountDetail {
 }
 
 @Component({
-  selector: "hih-fin-account-hierarchy",
-  templateUrl: "./account-hierarchy.component.html",
-  styleUrls: ["./account-hierarchy.component.less"],
+  selector: 'hih-fin-account-hierarchy',
+  templateUrl: './account-hierarchy.component.html',
+  styleUrls: ['./account-hierarchy.component.less'],
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -77,7 +66,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   activatedNode?: NzTreeNode;
   isAccountView = false;
   currentAccountBalance = 0;
-  baseCurrency = "";
+  baseCurrency = '';
   // Settle dialog
   isAccountSettleDlgVisible = false;
   selectedAccountForSettle: ISettleAccountDetail | undefined;
@@ -97,7 +86,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
     this.isLoadingResults = false; // Default value
@@ -109,7 +98,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -119,7 +108,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
     if (this._destroyed$) {
@@ -131,7 +120,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   onNodeClick(data: NzTreeNode | NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -159,13 +148,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   onDisplayAccount(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
-        this.router.navigate(["/finance/account/display/" + acntid.toString()]);
+        this.router.navigate(['/finance/account/display/' + acntid.toString()]);
       } else {
         this.modalService.warning({
-          nzTitle: translate("Common.Warning"),
-          nzContent: translate("Finance.CurrentNodeNotAccount"),
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
           nzClosable: true,
         });
       }
@@ -173,16 +162,14 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   onChangeAccountName(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
 
-        const acntidx = this.odataService.Accounts.findIndex(
-          (p) => p.Id === acntid
-        );
+        const acntidx = this.odataService.Accounts.findIndex((p) => p.Id === acntid);
         if (acntidx !== -1) {
           // Change the account name
           const modal = this.modalService.create({
-            nzTitle: translate("Finance.ChangeAccountName"),
+            nzTitle: translate('Finance.ChangeAccountName'),
             nzContent: AccountChangeNameDialogComponent,
             nzViewContainerRef: this.viewContainerRef,
             nzComponentParams: {
@@ -197,32 +184,30 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   onAccountReconcile(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
-        this.router.navigate([
-          "/finance/account-reconcile/bymonth/" + acntid.toString(),
-        ]);
+        this.router.navigate(['/finance/account-reconcile/bymonth/' + acntid.toString()]);
       } else {
         this.modalService.warning({
-          nzTitle: translate("Common.Warning"),
-          nzContent: translate("Finance.CurrentNodeNotAccount"),
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
           nzClosable: true,
         });
       }
     }
   }
   openAdvanceOperations(): void {
-    console.log("Entering openAdvanceOperations");
+    console.log('Entering openAdvanceOperations');
   }
   onEditAccount(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
-        this.router.navigate(["/finance/account/edit/" + acntid.toString()]);
+        this.router.navigate(['/finance/account/edit/' + acntid.toString()]);
       } else {
         this.modalService.warning({
-          nzTitle: translate("Common.Warning"),
-          nzContent: translate("Finance.CurrentNodeNotAccount"),
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
           nzClosable: true,
         });
       }
@@ -230,28 +215,28 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   onCloseAccount(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
         this.odataService.closeAccount(acntid).subscribe({
           next: (val) => {
             if (val) {
               this.modalService.success({
-                nzTitle: translate("Common.Success"),
-                nzContent: translate("Finance.AccountClosedSuccesfully"),
+                nzTitle: translate('Common.Success'),
+                nzContent: translate('Finance.AccountClosedSuccesfully'),
                 nzClosable: true,
               });
               this._refreshTreeCore();
             } else {
               this.modalService.error({
-                nzTitle: translate("Common.Error"),
-                nzContent: translate("Finance.CloseAccountIsNotAllowed"),
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Finance.CloseAccountIsNotAllowed'),
                 nzClosable: true,
               });
             }
           },
           error: (err) => {
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
@@ -259,8 +244,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         });
       } else {
         this.modalService.warning({
-          nzTitle: translate("Common.Warning"),
-          nzContent: translate("Finance.CurrentNodeNotAccount"),
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
           nzClosable: true,
         });
       }
@@ -268,7 +253,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   onSettleAccount(): void {
     if (this.activatedNode) {
-      if (this.activatedNode?.key.startsWith("a")) {
+      if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
 
         forkJoin([
@@ -280,9 +265,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             // Accounts
             const arAcnts = rst[1] as Account[];
             const acntidx = arAcnts.findIndex((acnt) => acnt.Id === acntid);
-            let acntName = "";
+            let acntName = '';
             let acntCtgyId = 0;
-            let acntCtgyName = "";
+            let acntCtgyName = '';
             if (acntidx !== -1) {
               acntName = arAcnts[acntidx].Name!;
               acntCtgyId = arAcnts[acntidx].CategoryId!;
@@ -303,7 +288,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           },
           error: (err) => {
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
@@ -311,8 +296,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         });
       } else {
         this.modalService.warning({
-          nzTitle: translate("Common.Warning"),
-          nzContent: translate("Finance.CurrentNodeNotAccount"),
+          nzTitle: translate('Common.Warning'),
+          nzContent: translate('Finance.CurrentNodeNotAccount'),
           nzClosable: true,
         });
       }
@@ -335,15 +320,15 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             // Settled.
             if (val) {
               this.modalService.success({
-                nzTitle: translate("Common.Success"),
-                nzContent: translate("Common.Success"),
+                nzTitle: translate('Common.Success'),
+                nzContent: translate('Common.Success'),
                 nzClosable: true,
               });
               this._refreshTreeCore();
             } else {
               this.modalService.error({
-                nzTitle: translate("Common.Error"),
-                nzContent: translate("Common.Error"),
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Common.Error'),
                 nzClosable: true,
               });
             }
@@ -351,7 +336,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           error: (err) => {
             // Error occurs
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
@@ -372,7 +357,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   onAccountStatusFilterChanged(selectedStatus: any[]): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
       ConsoleLogTypeEnum.debug
     );
     this._refreshTreeCore();
@@ -384,16 +369,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   private _refreshTree(isReload?: boolean): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...",
+      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...',
       ConsoleLogTypeEnum.debug
     );
 
     this.isLoadingResults = true;
 
-    forkJoin([
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(isReload),
-    ])
+    forkJoin([this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)])
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
@@ -401,7 +383,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: any) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...",
+            'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -409,12 +391,12 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...",
+            'AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -430,14 +412,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
   private _refreshTreeCore(): void {
     this.availableCategories = this.odataService.AccountCategories.slice();
-    this.availableAccounts = this._filterAccountsByStatus(
-      this.odataService.Accounts
-    );
-    this.accountTreeNodes = this._buildAccountTree(
-      this.availableCategories,
-      this.availableAccounts,
-      1
-    );
+    this.availableAccounts = this._filterAccountsByStatus(this.odataService.Accounts);
+    this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
   }
   private _buildAccountTree(
     arctgy: AccountCategory[],
@@ -455,12 +431,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           title: translate(val.Name!),
           isLeaf: false,
         };
-        node.children = this._buildAccountTree(
-          arctgy,
-          aracnt,
-          level + 1,
-          +val.ID!
-        );
+        node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID!);
         data.push(node);
       });
     } else {
@@ -483,7 +454,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     return data;
   }
   private fetchAccountBalance() {
-    if (this.activatedNode?.key.startsWith("a")) {
+    if (this.activatedNode?.key.startsWith('a')) {
       this.isAccountView = true;
       const acntid = +this.activatedNode?.key.substring(1);
       this.odataService.fetchAccountBalance(acntid).subscribe({
@@ -501,13 +472,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private refreshDocumentItemView(): void {
     const arFilters = [];
 
-    if (this.activatedNode?.key.startsWith("c")) {
+    if (this.activatedNode?.key.startsWith('c')) {
       const ctgyid = +this.activatedNode?.key.substring(1);
 
       this.availableAccounts.forEach((acnt) => {
         if (acnt.CategoryId === ctgyid) {
           arFilters.push({
-            fieldName: "AccountID",
+            fieldName: 'AccountID',
             operator: GeneralFilterOperatorEnum.Equal,
             lowValue: acnt.Id,
             highValue: 0,
@@ -515,10 +486,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           });
         }
       });
-    } else if (this.activatedNode?.key.startsWith("a")) {
+    } else if (this.activatedNode?.key.startsWith('a')) {
       const acntid = +this.activatedNode?.key.substring(1);
       arFilters.push({
-        fieldName: "AccountID",
+        fieldName: 'AccountID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: acntid,
         highValue: 0,
@@ -529,7 +500,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       // Scope
       const dats = getOverviewScopeRange(this.selectedScope);
       arFilters.push({
-        fieldName: "TransactionDate",
+        fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
         lowValue: dats.BeginDate.format(momentDateFormat),
         highValue: dats.EndDate.format(momentDateFormat),

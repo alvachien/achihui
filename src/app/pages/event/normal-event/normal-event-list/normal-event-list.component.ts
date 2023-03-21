@@ -1,23 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { Router } from "@angular/router";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import {
-  ConsoleLogTypeEnum,
-  ModelUtility,
-  GeneralEvent,
-  BaseListModel,
-} from "src/app/model";
-import { EventStorageService, UIStatusService } from "src/app/services";
-import { NzTableQueryParams } from "ng-zorro-antd/table";
+import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from 'src/app/model';
+import { EventStorageService, UIStatusService } from 'src/app/services';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
-  selector: "hih-normal-event-list",
-  templateUrl: "./normal-event-list.component.html",
-  styleUrls: ["./normal-event-list.component.less"],
+  selector: 'hih-normal-event-list',
+  templateUrl: './normal-event-list.component.html',
+  styleUrls: ['./normal-event-list.component.less'],
 })
 export class NormalEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -34,7 +29,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering NormalEventListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering NormalEventListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -43,7 +38,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -53,7 +48,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering NormalEventListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -72,10 +67,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   ): void {
     this.isLoadingResults = true;
     this.odataService
-      .fetchGeneralEvents(
-        pageSize,
-        pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0
-      )
+      .fetchGeneralEvents(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0)
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
@@ -83,7 +75,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: BaseListModel<GeneralEvent>) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit fetchGeneralEvents...",
+            'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit fetchGeneralEvents...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -96,7 +88,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -124,20 +116,20 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   }
 
   onDisplay(eventid: number): void {
-    this.router.navigate(["/event/normal-event/display/" + eventid.toString()]);
+    this.router.navigate(['/event/normal-event/display/' + eventid.toString()]);
   }
   onDelete(eventid: number): void {
     this.modalService.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
+      nzTitle: translate('Common.DeleteConfirmation'),
       nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
-      nzOkText: "Yes",
-      nzOkType: "primary",
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteGeneralEvent(eventid).subscribe({
           next: (data) => {
             const sdlg = this.modalService.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.dataSet.findIndex((p) => p.ID === eventid);
@@ -154,15 +146,15 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: "No",
-      nzOnCancel: () => console.log("Cancel"),
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel'),
     });
   }
 }

@@ -1,22 +1,17 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { Router } from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
-import {
-  BookCategory,
-  ConsoleLogTypeEnum,
-  Location,
-  ModelUtility,
-} from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
+import { ConsoleLogTypeEnum, Location, ModelUtility } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: "hih-location-list",
-  templateUrl: "./location-list.component.html",
-  styleUrls: ["./location-list.component.less"],
+  selector: 'hih-location-list',
+  templateUrl: './location-list.component.html',
+  styleUrls: ['./location-list.component.less'],
 })
 export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -30,7 +25,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -39,7 +34,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -54,20 +49,20 @@ export class LocationListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: Location[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering LocationListComponent OnInit fetchAllLocations...",
+            'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit fetchAllLocations...',
             ConsoleLogTypeEnum.debug
           );
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering LocationListComponent fetchAllLocations failed ${error}`,
+            `AC_HIH_UI [Error]: Entering LocationListComponent fetchAllLocations failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
-            nzContent: error.toString(),
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -76,7 +71,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering LocationListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -87,24 +82,21 @@ export class LocationListComponent implements OnInit, OnDestroy {
   }
 
   public onDisplay(pid: number) {
-    this.router.navigate(["/library/location/display/" + pid.toString()]);
+    this.router.navigate(['/library/location/display/' + pid.toString()]);
   }
   public onEdit(pid: number) {}
   public onDelete(pid: number) {
     this.modalService.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
-      nzContent:
-        '<b style="color: red;">' +
-        translate("Common.ConfirmToDeleteSelectedItem") +
-        "</b>",
-      nzOkText: "Yes",
-      nzOkType: "primary",
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: '<b style="color: red;">' + translate('Common.ConfirmToDeleteSelectedItem') + '</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteLocation(pid).subscribe({
           next: (data) => {
             const sdlg = this.modalService.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.dataSet.findIndex((p) => p.ID === pid);
@@ -121,14 +113,14 @@ export class LocationListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: "No",
+      nzCancelText: 'No',
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering LocationList onDelete cancelled`,

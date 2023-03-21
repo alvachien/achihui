@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountSettleDialogComponent } from "./account-settle-dialog.component";
+import { AccountSettleDialogComponent } from './account-settle-dialog.component';
 
-describe("AccountSettleDialogComponent", () => {
+describe('AccountSettleDialogComponent', () => {
   let component: AccountSettleDialogComponent;
   let fixture: ComponentFixture<AccountSettleDialogComponent>;
 
@@ -18,7 +18,7 @@ describe("AccountSettleDialogComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

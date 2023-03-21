@@ -1,23 +1,15 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{
-        "Common.Overview" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
     >
     <nz-breadcrumb-item
-      ><a routerLink="/finance/document/list">{{
-        "Finance.Documents" | transloco
-      }}</a>
+      ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{ "Common.Create" | transloco }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'Common.Create' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Finance.Document" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Common.Create" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Common.Create' | transloco }}</nz-page-header-subtitle>
 </nz-page-header>
 
 <div *transloco="let t">
@@ -73,20 +65,16 @@
           nzShowIcon
         >
         </nz-alert>
-        <h3 nz-title>
-          {{ "Common.Date" | transloco }}: {{ confirmInfo?.tranDateString }}
-        </h3>
+        <h3 nz-title>{{ 'Common.Date' | transloco }}: {{ confirmInfo?.tranDateString }}</h3>
+        <h2 nz-title>{{ 'Common.Description' | transloco }}: {{ confirmInfo?.tranDesp }}</h2>
         <h2 nz-title>
-          {{ "Common.Description" | transloco }}: {{ confirmInfo?.tranDesp }}
-        </h2>
-        <h2 nz-title>
-          {{ "Finance.Incoming" | transloco }}:
-          {{ confirmInfo?.inAmount | number : "1.2-2" }}
+          {{ 'Finance.Incoming' | transloco }}:
+          {{ confirmInfo?.inAmount | number : '1.2-2' }}
           {{ confirmInfo?.tranCurrency }}
         </h2>
         <h2 nz-title>
-          {{ "Finance.Outgoing" | transloco }}:
-          {{ confirmInfo?.outAmount | number : "1.2-2" }}
+          {{ 'Finance.Outgoing' | transloco }}:
+          {{ confirmInfo?.outAmount | number : '1.2-2' }}
           {{ confirmInfo?.tranCurrency }}
         </h2>
         <div *ngIf="confirmInfo?.warningExist">
@@ -109,15 +97,11 @@
             [nzSubTitle]="'Finance.DocumentPosted' | transloco"
           >
             <div nz-result-extra>
-              <button
-                nz-button
-                (click)="onDisplayCreatedDoc()"
-                nzType="primary"
-              >
-                {{ "Common.Display" | transloco }}
+              <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
+                {{ 'Common.Display' | transloco }}
               </button>
               <button nz-button (click)="onReset()">
-                {{ "Common.CreateAnotherOne" | transloco }}
+                {{ 'Common.CreateAnotherOne' | transloco }}
               </button>
             </div>
           </nz-result>
@@ -130,7 +114,7 @@
           >
             <div nz-result-content>
               <div class="desc">
-                <h4 nz-title>{{ "Common.TitleOfSubmitError" | transloco }}</h4>
+                <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
                 <p nz-paragraph>
                   <i nz-icon nzType="close-circle"></i>
                   {{ docPostingFailed }}
@@ -139,8 +123,7 @@
             </div>
             <div nz-result-extra>
               <button nz-button nzType="primary" (click)="pre()">
-                <i nz-icon nzType="left"></i
-                >{{ "Common.PreviousButton" | transloco }}
+                <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
               </button>
             </div>
           </nz-result>
@@ -150,12 +133,8 @@
   </div>
 
   <div class="steps-action">
-    <button
-      nz-button
-      (click)="pre()"
-      *ngIf="currentStep > 0 && currentStep < 3"
-    >
-      <i nz-icon nzType="left"></i>{{ "Common.PreviousButton" | transloco }}
+    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+      <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
     </button>
     <button
       nz-button
@@ -165,7 +144,7 @@
       [disabled]="!nextButtonEnabled"
       *ngIf="currentStep < 3"
     >
-      {{ "Common.NextButton" | transloco }}<i nz-icon nzType="right"></i>
+      {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
     </button>
   </div>
 </div>

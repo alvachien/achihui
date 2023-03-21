@@ -1,1 +1,1 @@
-export * from "./location-selection-dlg.component";
+export * from './location-selection-dlg.component';

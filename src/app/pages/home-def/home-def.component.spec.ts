@@ -1,9 +1,9 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { HomeDefComponent } from "./home-def.component";
+import { HomeDefComponent } from './home-def.component';
 
-describe("HomeDefComponent", () => {
+describe('HomeDefComponent', () => {
   let component: HomeDefComponent;
   let fixture: ComponentFixture<HomeDefComponent>;
 
@@ -20,7 +20,7 @@ describe("HomeDefComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -47,61 +47,61 @@ import {
   TranTypeReport,
   FinanceReportByAccount,
   BalanceSheetReport,
-} from "./financemodel";
-import * as moment from "moment";
-import * as hih from "./common";
-import { FakeDataHelper } from "../../testing";
+} from './financemodel';
+import * as moment from 'moment';
+import * as hih from './common';
+import { FakeDataHelper } from '../../testing';
 
-describe("Currency", () => {
+describe('Currency', () => {
   let instance: Currency;
 
   beforeEach(() => {
     instance = new Currency();
   });
 
-  it("#0. onInit", () => {
-    instance.Name = "test";
-    instance.Symbol = "$";
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Symbol = '$';
     instance.onInit();
     expect(instance.Name).toBeFalsy();
     expect(instance.Symbol).toBeFalsy();
   });
-  it("#1. onVerify: name is must", () => {
-    instance.Currency = "USD";
-    instance.Symbol = "$";
+  it('#1. onVerify: name is must', () => {
+    instance.Currency = 'USD';
+    instance.Symbol = '$';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#2. onVerify: currency is must", () => {
-    instance.Symbol = "$";
-    instance.Name = "US Dollar";
+  it('#2. onVerify: currency is must', () => {
+    instance.Symbol = '$';
+    instance.Name = 'US Dollar';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#3. onVerify: symbol is must", () => {
-    instance.Currency = "USD";
-    instance.Name = "US Dollar";
+  it('#3. onVerify: symbol is must', () => {
+    instance.Currency = 'USD';
+    instance.Name = 'US Dollar';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#4. onVerify: valid case", () => {
-    instance.Currency = "USD";
-    instance.Symbol = "$";
-    instance.Name = "US Dollar";
+  it('#4. onVerify: valid case', () => {
+    instance.Currency = 'USD';
+    instance.Symbol = '$';
+    instance.Name = 'US Dollar';
 
     expect(instance.onVerify()).toBeTruthy();
   });
 
-  it("#5. onSetData and writeJSONObject", () => {
-    instance.Currency = "USD";
-    instance.Symbol = "$";
-    instance.Name = "US Dollar";
+  it('#5. onSetData and writeJSONObject', () => {
+    instance.Currency = 'USD';
+    instance.Symbol = '$';
+    instance.Name = 'US Dollar';
 
     const jdata: CurrencyJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.Name).toEqual("US Dollar");
-    expect(jdata.Symbol).toEqual("$");
-    expect(jdata.Curr).toEqual("USD");
+    expect(jdata.Name).toEqual('US Dollar');
+    expect(jdata.Symbol).toEqual('$');
+    expect(jdata.Curr).toEqual('USD');
 
     const instance2: Currency = new Currency();
     instance2.onSetData(jdata);
@@ -111,44 +111,44 @@ describe("Currency", () => {
   });
 });
 
-describe("AccountCategory", () => {
+describe('AccountCategory', () => {
   let instance: AccountCategory;
 
   beforeEach(() => {
     instance = new AccountCategory();
   });
 
-  it("#0. onInit", () => {
+  it('#0. onInit', () => {
     instance.AssetFlag = true;
-    instance.Comment = "test";
+    instance.Comment = 'test';
     instance.onInit();
     expect(instance.AssetFlag).toBeFalse();
     expect(instance.Comment).toBeNull();
   });
 
-  it("#1. onVerify: name is must", () => {
+  it('#1. onVerify: name is must', () => {
     instance.AssetFlag = true;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#2. onVerify: valid case", () => {
-    instance.Name = "test";
+  it('#2. onVerify: valid case', () => {
+    instance.Name = 'test';
     instance.AssetFlag = true;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     expect(instance.onVerify()).toBeTruthy();
   });
-  it("#5. onSetData and writeJSONObject", () => {
-    instance.Name = "test";
+  it('#5. onSetData and writeJSONObject', () => {
+    instance.Name = 'test';
     instance.AssetFlag = true;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     const jdata: AccountCategoryJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.Name).toEqual("test");
+    expect(jdata.Name).toEqual('test');
     expect(jdata.AssetFlag).toEqual(true);
-    expect(jdata.Comment).toEqual("test");
+    expect(jdata.Comment).toEqual('test');
 
     const instance2: AccountCategory = new AccountCategory();
     instance2.onSetData(jdata);
@@ -158,39 +158,39 @@ describe("AccountCategory", () => {
   });
 });
 
-describe("DocumentType", () => {
+describe('DocumentType', () => {
   let instance: DocumentType;
 
   beforeEach(() => {
     instance = new DocumentType();
   });
 
-  it("#0. onInit", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
     instance.onInit();
     expect(instance.Name).toBeNull();
     expect(instance.Comment).toBeNull();
   });
-  it("#1. onVerify: name is must", () => {
-    instance.Comment = "test";
+  it('#1. onVerify: name is must', () => {
+    instance.Comment = 'test';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#2. onVerify: valid case", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#2. onVerify: valid case', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
 
     expect(instance.onVerify()).toBeTruthy();
   });
-  it("#3. onSetData and writeJSONObject", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#3. onSetData and writeJSONObject', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
 
     const jdata: DocumentTypeJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.Name).toEqual("test");
-    expect(jdata.Comment).toEqual("test");
+    expect(jdata.Name).toEqual('test');
+    expect(jdata.Comment).toEqual('test');
 
     const instance2: DocumentType = new DocumentType();
     instance2.onSetData(jdata);
@@ -199,40 +199,40 @@ describe("DocumentType", () => {
   });
 });
 
-describe("AssetCategory", () => {
+describe('AssetCategory', () => {
   let instance: AssetCategory;
 
   beforeEach(() => {
     instance = new AssetCategory();
   });
 
-  it("#0. onInit", () => {
-    instance.Name = "test";
-    instance.Desp = "test";
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
 
     instance.onInit();
     expect(instance.Name).toBeNull();
     expect(instance.Desp).toBeNull();
   });
-  it("#1. onVerify: name is must", () => {
-    instance.Desp = "test";
+  it('#1. onVerify: name is must', () => {
+    instance.Desp = 'test';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#2. onVerify: valid case", () => {
-    instance.Name = "test";
-    instance.Desp = "test";
+  it('#2. onVerify: valid case', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
 
     expect(instance.onVerify()).toBeTruthy();
   });
-  it("#3. onSetData and writeJSONObject", () => {
-    instance.Name = "test";
-    instance.Desp = "test";
+  it('#3. onSetData and writeJSONObject', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
 
     const jdata: AssetCategoryJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.Name).toEqual("test");
-    expect(jdata.Desp).toEqual("test");
+    expect(jdata.Name).toEqual('test');
+    expect(jdata.Desp).toEqual('test');
 
     const instance2: AssetCategory = new AssetCategory();
     instance2.onSetData(jdata);
@@ -241,28 +241,28 @@ describe("AssetCategory", () => {
   });
 });
 
-describe("Account", () => {
+describe('Account', () => {
   let instance: Account;
 
   beforeEach(() => {
     instance = new Account();
   });
 
-  it("#1. onVerify: name is must", () => {
-    instance.Comment = "test";
+  it('#1. onVerify: name is must', () => {
+    instance.Comment = 'test';
     instance.CategoryId = 1;
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#2. onVerify: category is must", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#2. onVerify: category is must', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
 
     expect(instance.onVerify()).toBeFalsy();
   });
-  it("#3. onVerify: category shall be valid", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#3. onVerify: category shall be valid', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
     instance.CategoryId = 11;
 
     expect(
@@ -270,27 +270,27 @@ describe("Account", () => {
         Categories: [
           {
             ID: 1,
-            Name: "Ctgy 1",
+            Name: 'Ctgy 1',
           } as AccountCategory,
           {
             ID: 2,
-            Name: "Ctgy 2",
+            Name: 'Ctgy 2',
           } as AccountCategory,
         ],
       } as IAccountVerifyContext)
     ).toBeFalsy();
   });
 
-  it("onSetData and writeObject", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('onSetData and writeObject', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
 
     const writeObj: AccountJson = instance.writeJSONObject();
     expect(writeObj).toBeTruthy();
   });
 });
 
-describe("AccountExtraAdvancePayment", () => {
+describe('AccountExtraAdvancePayment', () => {
   let instance: AccountExtraAdvancePayment;
 
   beforeEach(() => {
@@ -301,14 +301,14 @@ describe("AccountExtraAdvancePayment", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.StartDate).toBeTruthy();
     expect(instance.EndDate).toBeTruthy();
     expect(instance.StartDate.isBefore(instance.EndDate)).toEqual(true);
     expect(instance.Comment).toBeFalsy();
   });
 
-  it("#2. onInit", () => {
+  it('#2. onInit', () => {
     instance.onInit();
 
     expect(instance.StartDate).toBeTruthy();
@@ -317,62 +317,62 @@ describe("AccountExtraAdvancePayment", () => {
     expect(instance.Comment).toBeFalsy();
   });
 
-  it("#3. frequence type is a must", () => {
+  it('#3. frequence type is a must', () => {
     expect(instance.isValid).toEqual(false);
 
-    instance.Comment = "test";
+    instance.Comment = 'test';
     expect(instance.isValid).toEqual(false);
   });
 
-  it("#4. comment is a must", () => {
+  it('#4. comment is a must', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
     expect(instance.isValid).toEqual(false);
   });
 
-  it("#5. date range is a must", () => {
+  it('#5. date range is a must', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
-    instance.Comment = "test";
-    instance.StartDate = instance.EndDate.add(1, "y");
+    instance.Comment = 'test';
+    instance.StartDate = instance.EndDate.add(1, 'y');
     expect(instance.isValid).toEqual(false);
   });
 
-  it("#6. account valid case", () => {
+  it('#6. account valid case', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     expect(instance.isAccountValid).toEqual(true);
     expect(instance.isValid).toEqual(false);
   });
 
-  it("#7. valid case", () => {
+  it('#7. valid case', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
-    instance.Comment = "test";
+    instance.Comment = 'test';
     instance.dpTmpDocs.push({
       DocId: 1,
       AccountId: 1,
       TranType: 2,
       TranAmount: 100,
       ControlCenterId: 1,
-      Desp: "Test",
+      Desp: 'Test',
       TranDate: moment(),
     } as TemplateDocADP);
 
     expect(instance.isValid).toEqual(true);
   });
 
-  it("#8. clone shall work", () => {
+  it('#8. clone shall work', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     const instance2: AccountExtraAdvancePayment = instance.clone();
     expect(instance2.Comment).toEqual(instance.Comment);
@@ -381,31 +381,24 @@ describe("AccountExtraAdvancePayment", () => {
     expect(instance.EndDate.isSame(instance2.EndDate)).toBeTruthy();
   });
 
-  it("#9. onSetData and writeObject shall work", () => {
+  it('#9. onSetData and writeObject shall work', () => {
     expect(instance.isValid).toEqual(false);
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
-    instance.Comment = "test";
+    instance.Comment = 'test';
 
     const jdata: any = instance.writeJSONObject();
 
-    const instance2: AccountExtraAdvancePayment =
-      new AccountExtraAdvancePayment();
+    const instance2: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     instance2.onSetData(jdata);
     expect(instance2.Comment).toEqual(instance.Comment);
     expect(instance2.RepeatType).toEqual(instance.RepeatType);
-    expect(
-      instance.StartDate.startOf("day").isSame(
-        instance2.StartDate.startOf("day")
-      )
-    ).toBeTruthy();
-    expect(
-      instance.EndDate.startOf("day").isSame(instance2.EndDate.startOf("day"))
-    ).toBeTruthy();
+    expect(instance.StartDate.startOf('day').isSame(instance2.StartDate.startOf('day'))).toBeTruthy();
+    expect(instance.EndDate.startOf('day').isSame(instance2.EndDate.startOf('day'))).toBeTruthy();
   });
 });
 
-describe("AccountExtraAsset", () => {
+describe('AccountExtraAsset', () => {
   let instance: AccountExtraAsset;
 
   beforeEach(() => {
@@ -416,26 +409,26 @@ describe("AccountExtraAsset", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.Name).toBeFalsy();
     expect(instance.CategoryID).toBeFalsy();
     expect(instance.Comment).toBeFalsy();
   });
 
-  it("#2. onInit", () => {
+  it('#2. onInit', () => {
     instance.onInit();
 
     expect(instance.Name).toBeFalsy();
     expect(instance.CategoryID).toBeFalsy();
     expect(instance.Comment).toBeFalsy();
   });
-  it("#3. clone shall work", () => {
+  it('#3. clone shall work', () => {
     const instance2: any = instance.clone();
     expect(instance2).not.toBeFalsy();
   });
-  it("#4. writeJSONObject and onSetData shall work", () => {
-    instance.Name = "test";
-    instance.Comment = "test";
+  it('#4. writeJSONObject and onSetData shall work', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
     const dataJson: any = instance.writeJSONObject();
 
     expect(dataJson).not.toBeFalsy();
@@ -445,7 +438,7 @@ describe("AccountExtraAsset", () => {
   });
 });
 
-describe("AccountExtraLoan", () => {
+describe('AccountExtraLoan', () => {
   let instance: AccountExtraLoan;
 
   beforeEach(() => {
@@ -456,21 +449,21 @@ describe("AccountExtraLoan", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.startDate).not.toBeFalsy();
   });
-  it("#2. onInit", () => {
+  it('#2. onInit', () => {
     instance.onInit();
 
     expect(instance.startDate).not.toBeFalsy();
   });
-  it("#3. clone shall work", () => {
+  it('#3. clone shall work', () => {
     const instance2: any = instance.clone();
     expect(instance2).not.toBeFalsy();
   });
-  it("#4. writeJSONObject and onSetData shall work", () => {
-    instance.Comment = "test";
-    instance.Partner = "partner";
+  it('#4. writeJSONObject and onSetData shall work', () => {
+    instance.Comment = 'test';
+    instance.Partner = 'partner';
     instance.TotalMonths = 30;
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
@@ -478,13 +471,13 @@ describe("AccountExtraLoan", () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  xit("#5. isAccountValid", () => {
+  xit('#5. isAccountValid', () => {
     expect(instance.isAccountValid).toBeFalsy();
     instance.InterestFree = true;
     instance.startDate = moment();
-    instance.endDate = moment().subtract(1, "d");
+    instance.endDate = moment().subtract(1, 'd');
     expect(instance.isAccountValid).toBeFalsy();
-    instance.endDate = moment().add(1, "y");
+    instance.endDate = moment().add(1, 'y');
     expect(instance.isAccountValid).toBeFalsy();
     instance.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     expect(instance.isAccountValid).toBeFalsy();
@@ -493,7 +486,7 @@ describe("AccountExtraLoan", () => {
   });
 });
 
-describe("ControlCenter", () => {
+describe('ControlCenter', () => {
   let instance: ControlCenter;
 
   beforeEach(() => {
@@ -504,18 +497,18 @@ describe("ControlCenter", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.Name).toBeFalsy();
   });
-  it("#2. onInit", () => {
-    instance.Name = "Test";
+  it('#2. onInit', () => {
+    instance.Name = 'Test';
     expect(instance.Name).toBeTruthy();
     instance.onInit();
     expect(instance.Name).toBeFalsy();
   });
-  it("#3. writeJSONObject and onSetData shall work", () => {
-    instance.Comment = "test";
-    instance.Name = "test";
+  it('#3. writeJSONObject and onSetData shall work', () => {
+    instance.Comment = 'test';
+    instance.Name = 'test';
 
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
@@ -523,14 +516,14 @@ describe("ControlCenter", () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it("#4. onVerify", () => {
+  it('#4. onVerify', () => {
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
     expect(instance.VerifiedMsgs.length).toBeGreaterThan(0);
   });
 });
 
-describe("Order", () => {
+describe('Order', () => {
   let instance: Order;
   let fakeData: FakeDataHelper;
 
@@ -547,19 +540,19 @@ describe("Order", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.ValidFrom).not.toBeFalsy();
     expect(instance.Name).toBeFalsy();
   });
-  it("#2. onInit", () => {
-    instance.Name = "Test";
+  it('#2. onInit', () => {
+    instance.Name = 'Test';
     expect(instance.Name).toBeTruthy();
     instance.onInit();
     expect(instance.Name).toBeFalsy();
   });
-  it("#3. writeJSONObject and onSetData shall work", () => {
-    instance.Comment = "test";
-    instance.Name = "test";
+  it('#3. writeJSONObject and onSetData shall work', () => {
+    instance.Comment = 'test';
+    instance.Name = 'test';
 
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
@@ -567,81 +560,71 @@ describe("Order", () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it("#4. onVerify: name is must", () => {
-    instance.Name = "";
+  it('#4. onVerify: name is must', () => {
+    instance.Name = '';
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgTitle === "Common.NameIsMust";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.NameIsMust';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#5. onVerify: valid from is must", () => {
-    instance.Name = "test";
+  it('#5. onVerify: valid from is must', () => {
+    instance.Name = 'test';
     instance.ValidFrom = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgTitle === "Common.InvalidValidFrom";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidFrom';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#6. onVerify: valid to is must", () => {
-    instance.Name = "test";
+  it('#6. onVerify: valid to is must', () => {
+    instance.Name = 'test';
     instance.ValidTo = undefined;
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgTitle === "Common.InvalidValidTo";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidTo';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#7. onVerify: valid from must earlier than valid to", () => {
-    instance.Name = "test";
-    instance.ValidTo = instance.ValidFrom?.subtract(1, "M");
+  it('#7. onVerify: valid from must earlier than valid to', () => {
+    instance.Name = 'test';
+    instance.ValidTo = instance.ValidFrom?.subtract(1, 'M');
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgTitle === "Common.InvalidValidRange";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidRange';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#8. onVerify: settlement rule is must", () => {
-    instance.Name = "test";
+  it('#8. onVerify: settlement rule is must', () => {
+    instance.Name = 'test';
 
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgContent === "Finance.NoSettlementRule";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Finance.NoSettlementRule';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#9. onVerify: settlement rule ID shall not duplicate", () => {
+  it('#9. onVerify: settlement rule ID shall not duplicate', () => {
     // Ref: https://github.com/alvachien/achihui/issues/245
-    instance.Name = "test";
+    instance.Name = 'test';
     let srule: SettlementRule = new SettlementRule();
     srule.RuleId = 1;
     srule.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -656,16 +639,14 @@ describe("Order", () => {
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgContent === "Common.DuplicatedID";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Common.DuplicatedID';
+    });
     expect(erridx).not.toEqual(-1);
   });
-  it("#10. onVerify: one control center shall not used in multiple settlement rules", () => {
+  it('#10. onVerify: one control center shall not used in multiple settlement rules', () => {
     // Ref: https://github.com/alvachien/achihui/issues/249
-    instance.Name = "test";
+    instance.Name = 'test';
     let srule: SettlementRule = new SettlementRule();
     srule.RuleId = 1;
     srule.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -680,16 +661,14 @@ describe("Order", () => {
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
 
-    const erridx: number = instance.VerifiedMsgs.findIndex(
-      (val: hih.InfoMessage) => {
-        return val.MsgContent === "Common.DuplicatedID";
-      }
-    );
+    const erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Common.DuplicatedID';
+    });
     expect(erridx).not.toEqual(-1);
   });
 });
 
-describe("SettlementRule", () => {
+describe('SettlementRule', () => {
   let instance: SettlementRule;
 
   beforeEach(() => {
@@ -700,11 +679,11 @@ describe("SettlementRule", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
   });
-  it("#2. writeJSONObject and onSetData shall work", () => {
-    instance.Comment = "test";
+  it('#2. writeJSONObject and onSetData shall work', () => {
+    instance.Comment = 'test';
     instance.Precent = 100;
     instance.RuleId = 1;
     instance.ControlCenterId = 1;
@@ -715,7 +694,7 @@ describe("SettlementRule", () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it("#4. onVerify", () => {
+  it('#4. onVerify', () => {
     instance.Precent = 101;
     const rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
@@ -723,7 +702,7 @@ describe("SettlementRule", () => {
   });
 });
 
-describe("Document", () => {
+describe('Document', () => {
   let instance: Document;
   let fakeData: FakeDataHelper;
 
@@ -745,16 +724,16 @@ describe("Document", () => {
     // Do nothing here
   });
 
-  it("#1. Default values", () => {
+  it('#1. Default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
     expect(instance.TranDate).toBeTruthy();
   });
-  it("#2. onVerify: Doc type is a must", () => {
+  it('#2. onVerify: Doc type is a must', () => {
     instance.Id = 1;
     // instance.DocType = fakeData.finDocTypes[0].Id;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -767,19 +746,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DocumentTypeIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DocumentTypeIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#3. onVerify: Doc type should be valid", () => {
+  it('#3. onVerify: Doc type should be valid', () => {
     instance.Id = 1;
     instance.DocType = 233; // Invalid one
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -792,19 +769,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidDocumentType";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidDocumentType';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#4. onVerify: Doc type must be fetched", () => {
+  it('#4. onVerify: Doc type must be fetched', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -817,14 +792,12 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DocumentTypeFetchFailed";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DocumentTypeFetchFailed';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#5. onVerify: Desp is a must", () => {
+  it('#5. onVerify: Desp is a must', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
@@ -842,19 +815,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DespIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#6. onVerify: Desp larger than 44", () => {
+  it('#6. onVerify: Desp larger than 44', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "testttttttttttttttttttttttttttttttttttttttttttttttttt";
+    instance.Desp = 'testttttttttttttttttttttttttttttttttttttttttttttttttt';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -867,19 +838,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DespIsTooLong";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsTooLong';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#7. onVerify: currency is a must", () => {
+  it('#7. onVerify: currency is a must', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     // instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -892,19 +861,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.CurrencyIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.CurrencyIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#8. onVerify: currency should be valid", () => {
+  it('#8. onVerify: currency should be valid', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
-    instance.TranCurr = "DEM"; // Invalid currency
+    instance.TranCurr = 'DEM'; // Invalid currency
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -917,19 +884,17 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidCurrency";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidCurrency';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#9. onVerify: currency should be fetched", () => {
+  it('#9. onVerify: currency should be fetched', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,
@@ -942,33 +907,31 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.CurrencyFetchFailed";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.CurrencyFetchFailed';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#10. onVerify: item ID shall not duplicated", () => {
+  it('#10. onVerify: item ID shall not duplicated', () => {
     // Ref: https://github.com/alvachien/achihui/issues/244
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id!;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
     let di: DocumentItem = new DocumentItem();
     di.ItemId = 1;
     di.AccountId = fakeData.finAccounts[0].Id;
     di.ControlCenterId = fakeData.finControlCenters[0].Id;
     di.TranAmount = 100;
-    di.Desp = "Test 1";
+    di.Desp = 'Test 1';
     instance.Items.push(di);
     di = new DocumentItem();
     di.ItemId = 1;
     di.AccountId = fakeData.finAccounts[1].Id;
     di.ControlCenterId = fakeData.finControlCenters[0].Id;
     di.TranAmount = 100;
-    di.Desp = "Test 2";
+    di.Desp = 'Test 2';
     instance.Items.push(di);
 
     const rst: boolean = instance.onVerify({
@@ -982,31 +945,29 @@ describe("Document", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Common.DuplicatedID";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.DuplicatedID';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#11. onVerify: amount shall be zero for currency exchange doc", () => {
+  it('#11. onVerify: amount shall be zero for currency exchange doc', () => {
     // Ref: https://github.com/alvachien/achihui/issues/260
     instance.HID = 1;
     instance.Id = 1;
     instance.DocType = financeDocTypeCurrencyExchange;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranCurr2 = "USD";
+    instance.TranCurr2 = 'USD';
     instance.ExgRate2 = 673.11;
     instance.ExgRate_Plan2 = false;
     instance.TranDate = moment();
-    instance.Desp = "test";
+    instance.Desp = 'test';
     let di: DocumentItem = new DocumentItem();
     di.ItemId = 1;
     di.AccountId = fakeData.finAccounts[0].Id;
     di.ControlCenterId = fakeData.finControlCenters[0].Id;
     di.TranType = financeTranTypeTransferOut;
     di.TranAmount = 1009.67;
-    di.Desp = "Test 1";
+    di.Desp = 'Test 1';
     instance.Items.push(di);
     di = new DocumentItem();
     di.ItemId = 2;
@@ -1015,7 +976,7 @@ describe("Document", () => {
     di.TranType = financeTranTypeTransferIn;
     di.TranAmount = 150;
     di.UseCurr2 = true;
-    di.Desp = "Test 2";
+    di.Desp = 'Test 2';
     instance.Items.push(di);
 
     const rst: boolean = instance.onVerify({
@@ -1032,7 +993,7 @@ describe("Document", () => {
   });
 });
 
-describe("DocumentItem", () => {
+describe('DocumentItem', () => {
   let instance: DocumentItem;
   let fakeData: FakeDataHelper;
 
@@ -1054,21 +1015,21 @@ describe("DocumentItem", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
   });
 
-  it("#3. writeJSONObject and onSetData shall work", () => {
+  it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: DocumentItem = new DocumentItem();
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it("#4. onVerify: Item Id is a must", () => {
+  it('#4. onVerify: Item Id is a must', () => {
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1084,18 +1045,16 @@ describe("DocumentItem", () => {
 
     expect(rst).toBeFalsy();
 
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidItemID";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidItemID';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#5. onVerify: Account Id is a must", () => {
+  it('#5. onVerify: Account Id is a must', () => {
     instance.ItemId = 1;
     // instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1110,18 +1069,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.AccountIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AccountIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#6. onVerify: Account Id must be exists", () => {
+  it('#6. onVerify: Account Id must be exists', () => {
     instance.ItemId = 1;
     instance.AccountId = 30001; // Invalid account ID
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1136,20 +1093,18 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidAccount";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidAccount';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#7. onVerify: Account status must be normal", () => {
+  it('#7. onVerify: Account status must be normal', () => {
     const arAccounts: Account[] = fakeData.finAccounts.slice();
     arAccounts[0].Status = AccountStatusEnum.Closed;
     instance.ItemId = 1;
     instance.AccountId = arAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1164,18 +1119,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidAccount";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidAccount';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#8. onVerify: Account must be fetched for verifying", () => {
+  it('#8. onVerify: Account must be fetched for verifying', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1190,18 +1143,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.AccountFetchFailed";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AccountFetchFailed';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#9. onVerify: Tran type is a must", () => {
+  it('#9. onVerify: Tran type is a must', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     // instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1216,18 +1167,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.TransactionTypeIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.TransactionTypeIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#10. onVerify: Tran type should be valid", () => {
+  it('#10. onVerify: Tran type should be valid', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = 32323; // Invalid one
 
@@ -1242,18 +1191,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidTransactionType";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidTransactionType';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#11. onVerify: Tran type must be fetched", () => {
+  it('#11. onVerify: Tran type must be fetched', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1268,18 +1215,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.TransactionTypeFetchFailed";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.TransactionTypeFetchFailed';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#12. onVerify: Tran amount must larger than 0", () => {
+  it('#12. onVerify: Tran amount must larger than 0', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     // instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1294,14 +1239,12 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.AmountIsNotCorrect";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AmountIsNotCorrect';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#13. onVerify: Desp is must", () => {
+  it('#13. onVerify: Desp is must', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
@@ -1320,18 +1263,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DespIsMust";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsMust';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#14. onVerify: Desp is max to 44", () => {
+  it('#14. onVerify: Desp is max to 44', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
-    instance.Desp = "testtttttttttttttttttttttttttttttttttttttttttttttttt";
+    instance.Desp = 'testtttttttttttttttttttttttttttttttttttttttttttttttt';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1346,19 +1287,17 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DespIsTooLong";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsTooLong';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#15. onVerify: control center and order not allow assign both", () => {
+  it('#15. onVerify: control center and order not allow assign both', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
     instance.OrderId = fakeData.finOrders[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1373,19 +1312,17 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.DualInputFound";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DualInputFound';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#16. onVerify: control center and order not allow no assign", () => {
+  it('#16. onVerify: control center and order not allow no assign', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     // instance.ControlCenterId = fakeData.finControlCenters[0].Id;
     // instance.OrderId = fakeData.finOrders[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1400,19 +1337,17 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.NoInputFound";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.NoInputFound';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#17. onVerify: control center shall be valid", () => {
+  it('#17. onVerify: control center shall be valid', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = 33331;
     // instance.OrderId = fakeData.finOrders[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1427,19 +1362,17 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidControlCenter";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidControlCenter';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#18. onVerify: order shall be valid", () => {
+  it('#18. onVerify: order shall be valid', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     // instance.ControlCenterId = 33331;
     instance.OrderId = 33331;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1454,19 +1387,17 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.InvalidActivity";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidActivity';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#19. onVerify: control center shall be fetched", () => {
+  it('#19. onVerify: control center shall be fetched', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.ControlCenterId = fakeData.finControlCenters[0].Id;
     // instance.OrderId = fakeData.finOrders[0].Id;
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
 
@@ -1481,18 +1412,16 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.ControlCenterFetchFailedOrNoCC";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.ControlCenterFetchFailedOrNoCC';
+    });
     expect(idx).not.toEqual(-1);
   });
-  it("#20. onVerify: order shall be fetched", () => {
+  it('#20. onVerify: order shall be fetched', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
     instance.OrderId = fakeData.finOrders[0].Id; // Invalid one
-    instance.Desp = "test";
+    instance.Desp = 'test';
     instance.TranAmount = 100;
     instance.TranType = fakeData.finTranTypes[0].Id;
 
@@ -1507,16 +1436,14 @@ describe("DocumentItem", () => {
     });
 
     expect(rst).toBeFalsy();
-    const idx: number = instance.VerifiedMsgs.findIndex(
-      (msg: hih.InfoMessage) => {
-        return msg.MsgTitle === "Finance.ActivityFetchFailedOrNoActivity";
-      }
-    );
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.ActivityFetchFailedOrNoActivity';
+    });
     expect(idx).not.toEqual(-1);
   });
 });
 
-describe("TemplateDocLoan", () => {
+describe('TemplateDocLoan', () => {
   let instance: TemplateDocLoan;
 
   beforeEach(() => {
@@ -1527,11 +1454,11 @@ describe("TemplateDocLoan", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
   });
 
-  it("#3. writeJSONObject and onSetData shall work", () => {
+  it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: TemplateDocLoan = new TemplateDocLoan();
@@ -1540,7 +1467,7 @@ describe("TemplateDocLoan", () => {
   });
 });
 
-describe("Plan", () => {
+describe('Plan', () => {
   let instance: Plan;
 
   beforeEach(() => {
@@ -1551,11 +1478,11 @@ describe("Plan", () => {
     // Do nothing here
   });
 
-  it("#1. default values", () => {
+  it('#1. default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
   });
 
-  it("#3. writeJSONObject and onSetData shall work", () => {
+  it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson: any = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     // let instance2: Plan = new Plan();
@@ -1564,18 +1491,18 @@ describe("Plan", () => {
   });
 });
 
-describe("FinanceNormalDocItemMassCreate", () => {
+describe('FinanceNormalDocItemMassCreate', () => {
   let objtbt: FinanceNormalDocItemMassCreate;
 
   beforeEach(() => {
     objtbt = new FinanceNormalDocItemMassCreate();
   });
 
-  it("isValid", () => {
+  it('isValid', () => {
     let vrst = objtbt.isValid;
     expect(vrst).toBeFalse();
 
-    objtbt.desp = "test";
+    objtbt.desp = 'test';
     vrst = objtbt.isValid;
     expect(vrst).toBeFalse();
 
@@ -1591,7 +1518,7 @@ describe("FinanceNormalDocItemMassCreate", () => {
     vrst = objtbt.isValid;
     expect(vrst).toBeFalse();
 
-    objtbt.tranCurrency = "USD";
+    objtbt.tranCurrency = 'USD';
     vrst = objtbt.isValid;
     expect(vrst).toBeFalse();
 
@@ -1605,7 +1532,7 @@ describe("FinanceNormalDocItemMassCreate", () => {
   });
 });
 
-describe("FinanceReportBase", () => {
+describe('FinanceReportBase', () => {
   let instance: FinanceReportBase;
 
   beforeEach(() => {
@@ -1616,7 +1543,7 @@ describe("FinanceReportBase", () => {
     // Do nothing here
   });
 
-  it("#3. writeJSONObject and onSetData shall work", () => {
+  it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson: any = {};
 
     const instance2: FinanceReportBase = new FinanceReportBase();
@@ -1625,7 +1552,7 @@ describe("FinanceReportBase", () => {
   });
 });
 
-describe("FinanceOverviewKeyfigure", () => {
+describe('FinanceOverviewKeyfigure', () => {
   let objtbt: FinanceOverviewKeyfigure;
 
   beforeEach(() => {
@@ -1634,10 +1561,10 @@ describe("FinanceOverviewKeyfigure", () => {
   afterEach(() => {
     // Do nothing now.
   });
-  it("#1. onSetData", () => {
+  it('#1. onSetData', () => {
     objtbt.onSetData({
       HomeID: 1,
-      Currency: "CNY",
+      Currency: 'CNY',
       CurrentMonthIncome: 100,
       CurrentMonthOutgo: 20,
       LastMonthIncome: 90,
@@ -1647,13 +1574,13 @@ describe("FinanceOverviewKeyfigure", () => {
       CurrentMonthIncomePrecentage: 0.3,
       CurrentMonthOutgoPrecentage: 0.2,
     });
-    expect(objtbt.BaseCurrency).toEqual("CNY");
+    expect(objtbt.BaseCurrency).toEqual('CNY');
     expect(objtbt.CurrentMonthOutgo).toEqual(20);
     expect(objtbt.OutgoYTD).toEqual(300);
   });
 });
 
-describe("FinanceReportEntryByAccountAndExpense", () => {
+describe('FinanceReportEntryByAccountAndExpense', () => {
   let objtbt: FinanceReportEntryByAccountAndExpense;
 
   beforeEach(() => {
@@ -1662,7 +1589,7 @@ describe("FinanceReportEntryByAccountAndExpense", () => {
   afterEach(() => {
     // do nothing now.
   });
-  it("#1. onSetData", () => {
+  it('#1. onSetData', () => {
     objtbt.onSetData({
       HomeID: 1,
       AccountID: 2,
@@ -1674,7 +1601,7 @@ describe("FinanceReportEntryByAccountAndExpense", () => {
   });
 });
 
-describe("FinanceReportEntryByTransactionTypeMoM", () => {
+describe('FinanceReportEntryByTransactionTypeMoM', () => {
   let objtbt: FinanceReportEntryByTransactionTypeMoM;
 
   beforeEach(() => {
@@ -1683,12 +1610,12 @@ describe("FinanceReportEntryByTransactionTypeMoM", () => {
   afterEach(() => {
     // do nothing now.
   });
-  it("#1. onSetData", () => {
+  it('#1. onSetData', () => {
     expect(objtbt).toBeTruthy();
     objtbt.onSetData({
       Month: 2,
       TransactionType: 1,
-      TransactionTypeName: "Test",
+      TransactionTypeName: 'Test',
       HomeID: 2,
       InAmount: 100,
       OutAmount: 50,
@@ -1698,33 +1625,33 @@ describe("FinanceReportEntryByTransactionTypeMoM", () => {
   });
 });
 
-describe("FinanceReportEntryPerDate", () => {
+describe('FinanceReportEntryPerDate', () => {
   let objtbt: FinanceReportEntryPerDate;
 
   beforeEach(() => {
     objtbt = new FinanceReportEntryPerDate();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       HomeID: 2,
       InAmount: 100,
       OutAmount: 50,
-      TransactionDate: "2022-07-01",
+      TransactionDate: '2022-07-01',
     });
     expect(objtbt.transactionDate).toBeTruthy();
     expect(objtbt.InAmount).toEqual(100);
   });
 });
 
-describe("FinanceReportEntryMoM", () => {
+describe('FinanceReportEntryMoM', () => {
   let objtbt: FinanceReportEntryMoM;
 
   beforeEach(() => {
     objtbt = new FinanceReportEntryMoM();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       HomeID: 2,
       InAmount: 300,
@@ -1736,119 +1663,119 @@ describe("FinanceReportEntryMoM", () => {
   });
 });
 
-describe("FinanceDocumentMassCreateConfirm", () => {
+describe('FinanceDocumentMassCreateConfirm', () => {
   let objtbt: FinanceDocumentMassCreateConfirm;
 
   beforeEach(() => {
     objtbt = new FinanceDocumentMassCreateConfirm();
   });
 
-  it("shall be create", () => {
+  it('shall be create', () => {
     expect(objtbt).toBeTruthy();
     expect(objtbt.listDocByDate.length).toEqual(0);
   });
 });
 
-describe("DocumentCreatedFrequenciesByUser", () => {
+describe('DocumentCreatedFrequenciesByUser', () => {
   let objtbt: DocumentCreatedFrequenciesByUser;
 
   beforeEach(() => {
     objtbt = new DocumentCreatedFrequenciesByUser();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
-      userID: "test1",
+      userID: 'test1',
       year: 2022,
       month: 8,
       week: 24,
       amountOfDocuments: 20,
     });
-    expect(objtbt.userID).toEqual("test1");
+    expect(objtbt.userID).toEqual('test1');
     expect(objtbt.year).toEqual(2022);
   });
 });
 
-describe("DocumentWithPlanExgRateForUpdate", () => {
+describe('DocumentWithPlanExgRateForUpdate', () => {
   let objtbt: DocumentWithPlanExgRateForUpdate;
 
   beforeEach(() => {
     objtbt = new DocumentWithPlanExgRateForUpdate();
   });
 
-  it("it shall be created", () => {
+  it('it shall be created', () => {
     objtbt.hid = 1;
-    objtbt.targetCurrency = "USD";
+    objtbt.targetCurrency = 'USD';
     objtbt.exchangeRate = 1;
     expect(objtbt).toBeTruthy();
   });
 });
 
-describe("DocumentWithPlanExgRate", () => {
+describe('DocumentWithPlanExgRate', () => {
   let objtbt: DocumentWithPlanExgRate;
 
   beforeEach(() => {
     objtbt = new DocumentWithPlanExgRate();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       hid: 2,
       docID: 22,
       docType: 23,
-      tranDate: "2022-07-03",
-      desp: "test",
-      tranCurr: "USD",
+      tranDate: '2022-07-03',
+      desp: 'test',
+      tranCurr: 'USD',
       exgRate: 2.3,
       exgRate_Plan: true,
-      tranCurr2: "CNY",
+      tranCurr2: 'CNY',
       exgRate_Plan2: true,
     });
-    expect(objtbt.Desp).toEqual("test");
-    expect(objtbt.TranDateDisplayString).toEqual("2022-07-03");
+    expect(objtbt.Desp).toEqual('test');
+    expect(objtbt.TranDateDisplayString).toEqual('2022-07-03');
   });
 });
 
-describe("DocumentItemWithBalance", () => {
+describe('DocumentItemWithBalance', () => {
   let objtbt: DocumentItemWithBalance;
 
   beforeEach(() => {
     objtbt = new DocumentItemWithBalance();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       accountID: 12,
       tranType_Exp: true,
-      tranCurr: "CNY",
+      tranCurr: 'CNY',
       tranAmount_Org: 200,
       tranAmount_LC: 200,
       balance: 300,
-      tranTypeName: "test",
-      controlCenterName: "test1",
-      orderName: "",
-      tranDate: "2022-07-01",
-      docDesp: "test",
+      tranTypeName: 'test',
+      controlCenterName: 'test1',
+      orderName: '',
+      tranDate: '2022-07-01',
+      docDesp: 'test',
       docID: 12,
       itemID: 3,
       tranType: 12,
-      desp: "test",
+      desp: 'test',
     });
     expect(objtbt.TranDate).toBeTruthy();
-    expect(objtbt.TranDateFormatString).toEqual("2022-07-01");
+    expect(objtbt.TranDateFormatString).toEqual('2022-07-01');
   });
 });
 
-describe("ReportTrendExData", () => {
+describe('ReportTrendExData', () => {
   let objtbt: ReportTrendExData;
 
   beforeEach(() => {
     objtbt = new ReportTrendExData();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
-      tranDate: "2022-07-01",
+      tranDate: '2022-07-01',
       tranWeek: 34,
       tranMonth: 7,
       tranYear: 2022,
@@ -1859,14 +1786,14 @@ describe("ReportTrendExData", () => {
   });
 });
 
-describe("MonthOnMonthReport", () => {
+describe('MonthOnMonthReport', () => {
   let objtbt: MonthOnMonthReport;
 
   beforeEach(() => {
     objtbt = new MonthOnMonthReport();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       year: 2022,
       month: 8,
@@ -1877,36 +1804,36 @@ describe("MonthOnMonthReport", () => {
   });
 });
 
-describe("TranTypeReport", () => {
+describe('TranTypeReport', () => {
   let objtbt: TranTypeReport;
 
   beforeEach(() => {
     objtbt = new TranTypeReport();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       tranType: 24,
-      name: "Test",
+      name: 'Test',
       expenseFlag: true,
-      tranDate: "2022-07-09",
+      tranDate: '2022-07-09',
       tranAmount: 330,
     });
     expect(objtbt.TranAmount).toEqual(330);
     expect(objtbt.ExpenseFlag).toBeTrue();
-    expect(objtbt.TranTypeName).toEqual("Test");
+    expect(objtbt.TranTypeName).toEqual('Test');
     expect(objtbt.TranType).toEqual(24);
   });
 });
 
-describe("FinanceReportByAccount", () => {
+describe('FinanceReportByAccount', () => {
   let objtbt: FinanceReportByAccount;
 
   beforeEach(() => {
     objtbt = new FinanceReportByAccount();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       AccountId: 24,
       DebiteBalance: 200,
@@ -1917,26 +1844,26 @@ describe("FinanceReportByAccount", () => {
   });
 });
 
-describe("BalanceSheetReport", () => {
+describe('BalanceSheetReport', () => {
   let objtbt: BalanceSheetReport;
 
   beforeEach(() => {
     objtbt = new BalanceSheetReport();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objtbt.onSetData({
       accountID: 24,
       DebiteBalance: 200,
       CreditBalance: 100,
       Balance: 100,
-      accountName: "test",
+      accountName: 'test',
       accountCategoryID: 1,
-      accountCategoryName: "Cash",
+      accountCategoryName: 'Cash',
     });
     expect(objtbt.AccountId).toEqual(24);
-    expect(objtbt.AccountName).toEqual("test");
+    expect(objtbt.AccountName).toEqual('test');
     expect(objtbt.AccountCategoryId).toEqual(1);
-    expect(objtbt.AccountCategoryName).toEqual("Cash");
+    expect(objtbt.AccountCategoryName).toEqual('Cash');
   });
 });

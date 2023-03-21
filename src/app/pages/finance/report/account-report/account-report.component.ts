@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Router } from "@angular/router";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { NzDrawerService } from "ng-zorro-antd/drawer";
-import { translate } from "@ngneat/transloco";
-import { EChartsOption } from "echarts";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { translate } from '@ngneat/transloco';
+import { EChartsOption } from 'echarts';
 
 import {
   FinanceReportByAccount,
@@ -17,18 +17,15 @@ import {
   GeneralFilterValueType,
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
-} from "../../../../model";
-import {
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { DocumentItemViewComponent } from "../../document-item-view";
-import { NumberUtility } from "actslib";
+} from '../../../../model';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { DocumentItemViewComponent } from '../../document-item-view';
+import { NumberUtility } from 'actslib';
 
 @Component({
-  selector: "hih-finance-report-account",
-  templateUrl: "./account-report.component.html",
-  styleUrls: ["./account-report.component.less"],
+  selector: 'hih-finance-report-account',
+  templateUrl: './account-report.component.html',
+  styleUrls: ['./account-report.component.less'],
 })
 export class AccountReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -38,7 +35,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   arAccounts: Account[] = [];
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
-  baseCurrency = "";
+  baseCurrency = '';
   chartAssetOption: EChartsOption | null = null;
   chartLiabilitiesOption: EChartsOption | null = null;
   chartAssetAccountOption: EChartsOption | null = null;
@@ -56,7 +53,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     private drawerService: NzDrawerService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountReportComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering AccountReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -65,7 +62,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountReportComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering AccountReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -76,7 +73,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountReportComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering AccountReportComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -88,19 +85,19 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   }
 
   onDisplayMasterData(acntid: number) {
-    this.router.navigate(["/finance/account/display/" + acntid.toString()]);
+    this.router.navigate(['/finance/account/display/' + acntid.toString()]);
   }
   onDisplayDebitData(acntid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "AccountID",
+      fieldName: 'AccountID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: acntid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LargerThan,
       lowValue: 0,
       highValue: 0,
@@ -113,14 +110,14 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -137,14 +134,14 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   onDisplayCreditData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "AccountID",
+      fieldName: 'AccountID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LessThan,
       lowValue: 0,
       highValue: 0,
@@ -157,14 +154,14 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -181,7 +178,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   onDisplayBalanceData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "AccountID",
+      fieldName: 'AccountID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
@@ -194,14 +191,14 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -237,10 +234,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     }
   }
 
-  filterReportByAccountTable(
-    seledCategory: number[],
-    selectedAccounts: number[]
-  ) {
+  filterReportByAccountTable(seledCategory: number[], selectedAccounts: number[]) {
     if (seledCategory.length > 0) {
       this.selectedCategoryFilter = seledCategory;
     } else if (selectedAccounts.length > 0) {
@@ -291,7 +285,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -300,8 +294,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   }
 
   private buildAssetChart() {
-    const namevalues: Array<{ category: number; name: string; value: number }> =
-      [];
+    const namevalues: Array<{ category: number; name: string; value: number }> = [];
     const names: any[] = [];
 
     let ctgyAmt = 0;
@@ -339,12 +332,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.chartAssetOption = {
       tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)",
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
-        left: "center",
-        top: "bottom",
+        left: 'center',
+        top: 'bottom',
         data: names,
       },
       toolbox: {
@@ -357,10 +350,10 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: "",
-          type: "pie",
+          name: '',
+          type: 'pie',
           radius: [30, 110],
-          roseType: "area",
+          roseType: 'area',
           data: namevalues,
         },
       ],
@@ -368,8 +361,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   }
   private buildLiabilityChart() {
     const names: any[] = [];
-    const namevalues: Array<{ category: number; name: string; value: number }> =
-      [];
+    const namevalues: Array<{ category: number; name: string; value: number }> = [];
 
     let ctgyAmt = 0;
     let ctgyUsed = false;
@@ -407,12 +399,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.chartLiabilitiesOption = {
       tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)",
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
-        left: "center",
-        top: "bottom",
+        left: 'center',
+        top: 'bottom',
         data: names,
       },
       toolbox: {
@@ -425,29 +417,26 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: "",
-          type: "pie",
+          name: '',
+          type: 'pie',
           radius: [30, 110],
-          roseType: "radius",
+          roseType: 'radius',
           data: namevalues,
         },
       ],
     };
   }
   private buildAssetAccountChart() {
-    const namevalues: Array<{ category: number; name: string; value: number }> =
-      [];
+    const namevalues: Array<{ category: number; name: string; value: number }> = [];
     const names: any[] = [];
 
     this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
       const acntobj = this.arAccounts.find((acnt: Account) => {
         return acnt.Id === rpt.AccountId;
       });
-      const acntCtgy = this.arAccountCategories.find(
-        (ctgy: AccountCategory) => {
-          return ctgy.ID === acntobj?.CategoryId;
-        }
-      );
+      const acntCtgy = this.arAccountCategories.find((ctgy: AccountCategory) => {
+        return ctgy.ID === acntobj?.CategoryId;
+      });
       if (acntCtgy?.AssetFlag) {
         names.push(acntobj?.Name);
 
@@ -464,12 +453,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.chartAssetAccountOption = {
       tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)",
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
-        left: "center",
-        top: "bottom",
+        left: 'center',
+        top: 'bottom',
         data: names,
       },
       toolbox: {
@@ -482,10 +471,10 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: "",
-          type: "pie",
+          name: '',
+          type: 'pie',
           radius: [30, 110],
-          roseType: "area",
+          roseType: 'area',
           data: namevalues,
         },
       ],
@@ -493,18 +482,15 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   }
   private buildLiabilityAccountChart() {
     const names: any[] = [];
-    const namevalues: Array<{ category: number; name: string; value: number }> =
-      [];
+    const namevalues: Array<{ category: number; name: string; value: number }> = [];
 
     this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
       const acntobj = this.arAccounts.find((acnt: Account) => {
         return acnt.Id === rpt.AccountId;
       });
-      const acntCtgy = this.arAccountCategories.find(
-        (ctgy: AccountCategory) => {
-          return ctgy.ID === acntobj?.CategoryId;
-        }
-      );
+      const acntCtgy = this.arAccountCategories.find((ctgy: AccountCategory) => {
+        return ctgy.ID === acntobj?.CategoryId;
+      });
       if (acntCtgy && !acntCtgy.AssetFlag) {
         names.push(acntobj?.Name);
 
@@ -521,12 +507,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
     this.chartLiabilitiesAccountOption = {
       tooltip: {
-        trigger: "item",
-        formatter: "{a} <br/>{b} : {c} ({d}%)",
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
-        left: "center",
-        top: "bottom",
+        left: 'center',
+        top: 'bottom',
         data: names,
       },
       toolbox: {
@@ -539,10 +525,10 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       },
       series: [
         {
-          name: "",
-          type: "pie",
+          name: '',
+          type: 'pie',
           radius: [30, 110],
-          roseType: "radius",
+          roseType: 'radius',
           data: namevalues,
         },
       ],
@@ -556,18 +542,16 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         return acnt.Id === baldata.AccountId;
       });
       if (acntobj !== undefined) {
-        const ctgyobj = this.arAccountCategories.find(
-          (ctg: AccountCategory) => {
-            return ctg.ID === acntobj.CategoryId;
-          }
-        );
+        const ctgyobj = this.arAccountCategories.find((ctg: AccountCategory) => {
+          return ctg.ID === acntobj.CategoryId;
+        });
 
         if (this.selectedCategoryFilter.length > 0 && ctgyobj !== undefined) {
           if (this.selectedCategoryFilter.indexOf(ctgyobj.ID!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,
               AccountName: acntobj.Name,
-              CategoryName: ctgyobj ? ctgyobj.Name : "",
+              CategoryName: ctgyobj ? ctgyobj.Name : '',
               DebitBalance: baldata.DebitBalance,
               CreditBalance: baldata.CreditBalance,
               Balance: baldata.Balance,
@@ -578,7 +562,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
             this.dataSet.push({
               AccountId: baldata.AccountId,
               AccountName: acntobj.Name,
-              CategoryName: ctgyobj ? ctgyobj.Name : "",
+              CategoryName: ctgyobj ? ctgyobj.Name : '',
               DebitBalance: baldata.DebitBalance,
               CreditBalance: baldata.CreditBalance,
               Balance: baldata.Balance,
@@ -588,7 +572,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           this.dataSet.push({
             AccountId: baldata.AccountId,
             AccountName: acntobj.Name,
-            CategoryName: ctgyobj ? ctgyobj.Name : "",
+            CategoryName: ctgyobj ? ctgyobj.Name : '',
             DebitBalance: baldata.DebitBalance,
             CreditBalance: baldata.CreditBalance,
             Balance: baldata.Balance,

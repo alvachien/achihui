@@ -1,1 +1,1 @@
-export * from "./document-change-desp-dialog.component";
+export * from './document-change-desp-dialog.component';

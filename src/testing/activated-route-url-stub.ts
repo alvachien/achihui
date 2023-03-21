@@ -1,5 +1,5 @@
-import { UrlSegment } from "@angular/router";
-import { BehaviorSubject } from "rxjs";
+import { UrlSegment } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

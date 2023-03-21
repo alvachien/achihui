@@ -1,20 +1,12 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item>{{
-        "Nav.EventTrace" | transloco
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'Nav.EventTrace' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>{{
-      "Common.RecurEvents" | transloco
-    }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{
-      "Common.ListView" | transloco
-    }}</nz-page-header-subtitle>
+    <nz-page-header-title>{{ 'Common.RecurEvents' | transloco }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" routerLink="/event/recur-event/create">{{
-        "Common.Create" | transloco
-      }}</a>
+      <a nz-button nzType="link" routerLink="/event/recur-event/create">{{ 'Common.Create' | transloco }}</a>
     </nz-page-header-extra>
   </nz-page-header>
   <nz-table
@@ -30,8 +22,8 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{ "Common.Name" | transloco }}</th>
-        <th>{{ "Common.Date" | transloco }}</th>
+        <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Common.Date' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
@@ -40,16 +32,14 @@
           {{ data.ID }}
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" (click)="onDisplay(data.ID!)">
-            {{ "Common.Display" | transloco }}
+            {{ 'Common.Display' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>
-            {{ "Common.Delete" | transloco }}
+            {{ 'Common.Delete' | transloco }}
           </button>
         </td>
         <td>{{ data.Name }}</td>
-        <td>
-          {{ data.StartDateDisplayString }} - {{ data.EndDateDisplayString }}
-        </td>
+        <td>{{ data.StartDateDisplayString }} - {{ data.EndDateDisplayString }}</td>
       </tr>
     </tbody>
   </nz-table>

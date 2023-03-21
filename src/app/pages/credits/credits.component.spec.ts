@@ -1,10 +1,10 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NzListModule } from "ng-zorro-antd/list";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzListModule } from 'ng-zorro-antd/list';
 
-import { getTranslocoModule } from "../../../testing";
-import { CreditsComponent } from "./credits.component";
+import { getTranslocoModule } from '../../../testing';
+import { CreditsComponent } from './credits.component';
 
-describe("CreditsComponent", () => {
+describe('CreditsComponent', () => {
   let component: CreditsComponent;
   let fixture: ComponentFixture<CreditsComponent>;
 
@@ -21,11 +21,11 @@ describe("CreditsComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it("credits", () => {
+  it('credits', () => {
     expect(component.creditApp.length).toBeGreaterThan(0);
   });
 });

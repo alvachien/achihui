@@ -1,11 +1,11 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NzResultModule } from "ng-zorro-antd/result";
-import { NzButtonModule } from "ng-zorro-antd/button";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
-import { LackAuthorityComponent } from "./lack-authority.component";
-import { getTranslocoModule } from "../../../testing";
+import { LackAuthorityComponent } from './lack-authority.component';
+import { getTranslocoModule } from '../../../testing';
 
-describe("LackAuthorityComponent", () => {
+describe('LackAuthorityComponent', () => {
   let component: LackAuthorityComponent;
   let fixture: ComponentFixture<LackAuthorityComponent>;
 
@@ -22,7 +22,7 @@ describe("LackAuthorityComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import {
   ConsoleLogTypeEnum,
@@ -14,19 +14,19 @@ import {
   GeneralFilterValueType,
   ModelUtility,
   momentDateFormat,
-} from "src/app/model";
-import { FinanceOdataService } from "src/app/services";
-import { translate } from "@ngneat/transloco";
-import { EChartsOption } from "echarts";
-import * as moment from "moment";
-import { NumberUtility } from "actslib";
-import { NzDrawerService } from "ng-zorro-antd/drawer";
-import { DocumentItemViewComponent } from "../../document-item-view";
+} from 'src/app/model';
+import { FinanceOdataService } from 'src/app/services';
+import { translate } from '@ngneat/transloco';
+import { EChartsOption } from 'echarts';
+import * as moment from 'moment';
+import { NumberUtility } from 'actslib';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: "hih-cash-month-on-month-report",
-  templateUrl: "./cash-month-on-month-report.component.html",
-  styleUrls: ["./cash-month-on-month-report.component.less"],
+  selector: 'hih-cash-month-on-month-report',
+  templateUrl: './cash-month-on-month-report.component.html',
+  styleUrls: ['./cash-month-on-month-report.component.less'],
 })
 export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -41,14 +41,14 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     public drawerService: NzDrawerService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -59,7 +59,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -95,7 +95,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -121,24 +121,17 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     if (this.selectedPeriod === financePeriodLast12Months) {
       // Last 12 months
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -148,24 +141,17 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     } else if (this.selectedPeriod === financePeriodLast6Months) {
       // Last 6 months
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -175,24 +161,17 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     } else if (this.selectedPeriod === financePeriodLast3Months) {
       // Last 3 months
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -203,83 +182,79 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
 
     this.chartOption = {
       tooltip: {
-        trigger: "axis",
+        trigger: 'axis',
         axisPointer: {
-          type: "cross",
+          type: 'cross',
           crossStyle: {
-            color: "#999",
+            color: '#999',
           },
         },
       },
       toolbox: {
         feature: {
           dataView: { show: true, readOnly: false },
-          magicType: { show: true, type: ["line", "bar"] },
+          magicType: { show: true, type: ['line', 'bar'] },
           restore: { show: true },
           saveAsImage: { show: true },
         },
       },
       legend: {
-        data: [
-          translate("Finance.Income"),
-          translate("Finance.Expense"),
-          translate("Common.Total"),
-        ],
+        data: [translate('Finance.Income'), translate('Finance.Expense'), translate('Common.Total')],
       },
       xAxis: [
         {
-          type: "category",
+          type: 'category',
           data: arAxis,
           axisPointer: {
-            type: "shadow",
+            type: 'shadow',
           },
         },
       ],
       yAxis: [
         {
-          type: "value",
+          type: 'value',
         },
       ],
       series: [
         {
-          id: "in",
-          name: translate("Finance.Income"),
-          type: "bar",
+          id: 'in',
+          name: translate('Finance.Income'),
+          type: 'bar',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arIn,
         },
         {
-          id: "out",
-          name: translate("Finance.Expense"),
-          type: "bar",
+          id: 'out',
+          name: translate('Finance.Expense'),
+          type: 'bar',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arOut,
         },
         {
-          id: "total",
-          name: translate("Common.Total"),
-          type: "line",
+          id: 'total',
+          name: translate('Common.Total'),
+          type: 'line',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arBal,
         },
@@ -308,20 +283,12 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     // seriesType: "bar"
     // type: "click"
     // value: -200
-    const dtmonth = moment(event.name + ".01");
-    if (event.seriesId === "in") {
-      this.onDisplayDocItem(
-        dtmonth.format(momentDateFormat),
-        dtmonth.add(1, "M").format(momentDateFormat),
-        false
-      );
-    } else if (event.seriesId === "out") {
-      this.onDisplayDocItem(
-        dtmonth.format(momentDateFormat),
-        dtmonth.add(1, "M").format(momentDateFormat),
-        true
-      );
-    } else if (event.seriesId === "total") {
+    const dtmonth = moment(event.name + '.01');
+    if (event.seriesId === 'in') {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+    } else if (event.seriesId === 'out') {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else if (event.seriesId === 'total') {
       // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
     } else {
       console.error(event.toString());
@@ -330,14 +297,14 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
     const fltrs: GeneralFilterItem[] = [];
     fltrs.push({
-      fieldName: "IsExpense",
+      fieldName: 'IsExpense',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: isexp,
       highValue: isexp,
       valueType: GeneralFilterValueType.boolean,
     });
     fltrs.push({
-      fieldName: "TransactionDate",
+      fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
       lowValue: beginDate,
       highValue: endDate,
@@ -351,14 +318,14 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: translate("Finance.Documents"),
+      nzTitle: translate('Finance.Documents'),
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {

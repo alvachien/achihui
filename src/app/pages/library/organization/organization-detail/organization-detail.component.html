@@ -1,26 +1,18 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>{{
-      "Nav.LibraryTrace" | transloco
-    }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Library.Organization" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    currentMode | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Library.Organization' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{
-      "Common.Save" | transloco
-    }}</a>
+    <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{ 'Common.Save' | transloco }}</a>
   </nz-page-header-extra>
 </nz-page-header>
 
 <form nz-form [formGroup]="detailFormGroup">
   <!-- ID -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">{{ "Common.ID" | transloco }}</nz-form-label>
+    <nz-form-label [nzSpan]="7">{{ 'Common.ID' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12">
       <input nz-input formControlName="idControl" />
     </nz-form-control>
@@ -28,17 +20,15 @@
 
   <!-- Native Name -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{
-      "Common.NativeName" | transloco
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.NativeName' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nnameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
         <ng-container *ngIf="control.hasError('maxlength')">
-          {{ "Common.FieldMaxLength" | transloco }}
+          {{ 'Common.FieldMaxLength' | transloco }}
         </ng-container>
         <ng-container *ngIf="control.hasError('required')">
-          {{ "Common.FieldIsMandatory" | transloco }}
+          {{ 'Common.FieldIsMandatory' | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -46,17 +36,15 @@
 
   <!-- Chinese Name -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">{{
-      "Common.ChineseName" | transloco
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="7">{{ 'Common.ChineseName' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="cnameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
         <ng-container *ngIf="control.hasError('maxlength')">
-          {{ "Common.FieldMaxLength" | transloco }}
+          {{ 'Common.FieldMaxLength' | transloco }}
         </ng-container>
         <ng-container *ngIf="control.hasError('required')">
-          {{ "Common.FieldIsMandatory" | transloco }}
+          {{ 'Common.FieldIsMandatory' | transloco }}
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -66,7 +54,7 @@
   <nz-form-item>
     <nz-form-control [nzSpan]="12" [nzOffset]="7">
       <label nz-checkbox formControlName="chnIsNativeControl">
-        {{ "Common.ChineseIsNative" | transloco }}
+        {{ 'Common.ChineseIsNative' | transloco }}
       </label>
     </nz-form-control>
   </nz-form-item>
@@ -74,13 +62,8 @@
 
 <div>
   <div class="toolbar_buttons">
-    <button
-      nz-button
-      nzType="primary"
-      [disabled]="!isEditable"
-      (click)="onAssignType()"
-    >
-      {{ "Finance.CreateItem" | transloco }}
+    <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignType()">
+      {{ 'Finance.CreateItem' | transloco }}
     </button>
   </div>
 
@@ -88,33 +71,20 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{ "Common.Name" | transloco }}</th>
-        <th>{{ "Common.Comment" | transloco }}</th>
+        <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Common.Comment' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of typeTable.data">
         <td>
-          <nz-select
-            [(ngModel)]="data.ID"
-            [nzDisabled]="!isEditable"
-            (ngModelChange)="onTypeModeChanged($event)"
-          >
-            <nz-option
-              *ngFor="let coll of allTypes"
-              [nzLabel]="coll.Name | transloco"
-              [nzValue]="coll.ID"
-            ></nz-option>
+          <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
+            <nz-option *ngFor="let coll of allTypes" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
           </nz-select>
 
           <nz-divider nzType="vertical"></nz-divider>
-          <button
-            nz-button
-            nzType="link"
-            [disabled]="!isEditable"
-            (click)="onRemoveTypeAssignment(data.ID)"
-          >
-            {{ "Common.Delete" | transloco }}
+          <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveTypeAssignment(data.ID)">
+            {{ 'Common.Delete' | transloco }}
           </button>
         </td>
         <td>{{ data.Name }}</td>

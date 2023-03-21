@@ -1,23 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { translate } from '@ngneat/transloco';
 
-import {
-  ConsoleLogTypeEnum,
-  ModelUtility,
-  RecurEvent,
-  BaseListModel,
-} from "src/app/model";
-import { EventStorageService, UIStatusService } from "src/app/services";
-import { NzTableQueryParams } from "ng-zorro-antd/table";
+import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from 'src/app/model';
+import { EventStorageService, UIStatusService } from 'src/app/services';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
-  selector: "hih-recur-event-list",
-  templateUrl: "./recur-event-list.component.html",
-  styleUrls: ["./recur-event-list.component.less"],
+  selector: 'hih-recur-event-list',
+  templateUrl: './recur-event-list.component.html',
+  styleUrls: ['./recur-event-list.component.less'],
 })
 export class RecurEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -34,7 +29,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -43,7 +38,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -53,7 +48,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering RecurEventListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -72,10 +67,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   ): void {
     this.isLoadingResults = true;
     this.odataService
-      .fetchRecurEvents(
-        pageSize,
-        pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0
-      )
+      .fetchRecurEvents(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0)
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
@@ -83,7 +75,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: BaseListModel<RecurEvent>) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit fetchGeneralEvents...",
+            'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit fetchGeneralEvents...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -97,7 +89,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -114,20 +106,20 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   }
 
   onDisplay(eventid: number): void {
-    this.router.navigate(["/event/recur-event/display/" + eventid.toString()]);
+    this.router.navigate(['/event/recur-event/display/' + eventid.toString()]);
   }
   onDelete(eventid: number): void {
     this.modalService.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
+      nzTitle: translate('Common.DeleteConfirmation'),
       nzContent: '<b style="color: red;">Deletion cannot be undo</b>',
-      nzOkText: "Yes",
-      nzOkType: "primary",
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteRecurEvent(eventid).subscribe({
           next: (data) => {
             const sdlg = this.modalService.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.dataSet.findIndex((p) => p.ID === eventid);
@@ -144,15 +136,15 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: "No",
-      nzOnCancel: () => console.log("Cancel"),
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel'),
     });
   }
 }

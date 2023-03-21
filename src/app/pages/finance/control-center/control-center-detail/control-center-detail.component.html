@@ -2,28 +2,15 @@
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{
-          "Common.Overview" | transloco
-        }}</a></nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{
-        "Finance.ControlCenters" | transloco
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'Finance.ControlCenters' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>{{
-      "Finance.ControlCenter" | transloco
-    }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{
-      currentMode | transloco
-    }}</nz-page-header-subtitle>
+    <nz-page-header-title>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button
-        nz-button
-        nzType="primary"
-        (click)="onSubmit()"
-        [disabled]="!isFieldChangable || !detailFormGroup.valid"
-      >
-        {{ "Common.Save" | transloco }}
+      <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!isFieldChangable || !detailFormGroup.valid">
+        {{ 'Common.Save' | transloco }}
       </button>
       <!-- <button nz-button (click)="onCheck()" [disabled]="!isFieldChangable">{{'Common.Check' | transloco}}</button> -->
     </nz-page-header-extra>
@@ -32,9 +19,7 @@
   <form nz-form [formGroup]="detailFormGroup">
     <!-- ID -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.ID" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ID' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input formControlName="idControl" readonly />
       </nz-form-control>
@@ -42,17 +27,15 @@
 
     <!-- Name -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.Name" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Name' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="nameControl" maxlength="30" required />
         <ng-template #nameTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -60,14 +43,12 @@
 
     <!-- Comment -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Common.Comment" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="cmtControl" maxlength="45" />
         <ng-template #cmtTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -75,20 +56,14 @@
 
     <!-- Parent -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Common.Parent" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Common.Parent' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="parentTpl">
         <nz-select formControlName="parentControl">
-          <nz-option
-            *ngFor="let cc of existedCC"
-            [nzValue]="cc.Id"
-            [nzLabel]="cc.Name"
-          ></nz-option>
+          <nz-option *ngFor="let cc of existedCC" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
         </nz-select>
         <ng-template #parentTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -96,20 +71,14 @@
 
     <!-- Owner -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Finance.Owner" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Finance.Owner' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ownerTpl">
         <nz-select formControlName="ownerControl">
-          <nz-option
-            *ngFor="let usr of arMembers"
-            [nzValue]="usr.User"
-            [nzLabel]="usr.DisplayAs"
-          ></nz-option>
+          <nz-option *ngFor="let usr of arMembers" [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
         </nz-select>
         <ng-template #ownerTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>

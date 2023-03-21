@@ -1,80 +1,41 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{
-        "Common.Overview" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
     >
     <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{
-        "Finance.Reports" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
     >
-    <nz-breadcrumb-item>{{
-      "Finance.TransactionTypes" | transloco
-    }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'Finance.TransactionTypes' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Finance.Reports" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Finance.TransactionTypes" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Finance.TransactionTypes' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <nz-radio-group
-      [(ngModel)]="groupLevel"
-      nzButtonStyle="solid"
-      (ngModelChange)="onRebuildData()"
-    >
+    <nz-radio-group [(ngModel)]="groupLevel" nzButtonStyle="solid" (ngModelChange)="onRebuildData()">
       <label nz-radio-button nzValue="1">1</label>
       <label nz-radio-button nzValue="2">2</label>
       <label nz-radio-button nzValue="3">3</label>
     </nz-radio-group>
     <nz-divider nzType="vertical"></nz-divider>
-    <nz-radio-group
-      [(ngModel)]="selectedScope"
-      nzButtonStyle="solid"
-      (ngModelChange)="onLoadData()"
-    >
-      <label nz-radio-button nzValue="1">{{
-        "Common.PreviousYear" | transloco
-      }}</label>
-      <label nz-radio-button nzValue="2">{{
-        "Common.CurrentYear" | transloco
-      }}</label>
-      <label nz-radio-button nzValue="3">{{
-        "Common.PreviousMonth" | transloco
-      }}</label>
-      <label nz-radio-button nzValue="4">{{
-        "Common.CurrentMonth" | transloco
-      }}</label>
+    <nz-radio-group [(ngModel)]="selectedScope" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
+      <label nz-radio-button nzValue="1">{{ 'Common.PreviousYear' | transloco }}</label>
+      <label nz-radio-button nzValue="2">{{ 'Common.CurrentYear' | transloco }}</label>
+      <label nz-radio-button nzValue="3">{{ 'Common.PreviousMonth' | transloco }}</label>
+      <label nz-radio-button nzValue="4">{{ 'Common.CurrentMonth' | transloco }}</label>
     </nz-radio-group>
   </nz-page-header-extra>
 </nz-page-header>
 
 <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-    <div
-      nz-col
-      style="margin-bottom: 8px"
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="12"
-    >
-      <nz-table
-        #incomeTable
-        nzSize="small"
-        [nzData]="reportIncome"
-        [nzFooter]="incomeFooterTemplate"
-      >
+    <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <nz-table #incomeTable nzSize="small" [nzData]="reportIncome" [nzFooter]="incomeFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
-            <th>{{ "Common.Name" | transloco }}</th>
-            <th>{{ "Finance.Amount" | transloco }}</th>
-            <th>{{ "Common.Precent" | transloco }}</th>
+            <th>{{ 'Common.Name' | transloco }}</th>
+            <th>{{ 'Finance.Amount' | transloco }}</th>
+            <th>{{ 'Common.Precent' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -82,12 +43,8 @@
             <td>{{ data.TransactionType }}</td>
             <td>{{ data.TransactionTypeName }}</td>
             <td>
-              <button
-                nz-button
-                nzType="link"
-                (click)="onDisplayDocumentItem(data.TransactionType)"
-              >
-                {{ data.Amount | number : "1.2-2" }}
+              <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
+                {{ data.Amount | number : '1.2-2' }}
               </button>
               <span style="padding-left: 2px"
                 ><small>{{ baseCurrency }}</small></span
@@ -105,35 +62,21 @@
       </nz-table>
       <ng-template #incomeFooterTemplate>
         <div>
-          <span>{{ "Common.Total" | transloco }}: </span
-          >{{ totalIncome | number : "1.2-2" }}
+          <span>{{ 'Common.Total' | transloco }}: </span>{{ totalIncome | number : '1.2-2' }}
           <span style="padding-left: 2px"
             ><small>{{ baseCurrency }}</small></span
           >
         </div>
       </ng-template>
     </div>
-    <div
-      nz-col
-      style="margin-bottom: 8px"
-      nzXs="24"
-      nzSm="24"
-      nzMd="12"
-      nzLg="12"
-      nzXl="12"
-    >
-      <nz-table
-        #expenseTable
-        nzSize="small"
-        [nzData]="reportExpense"
-        [nzFooter]="outgoFooterTemplate"
-      >
+    <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+      <nz-table #expenseTable nzSize="small" [nzData]="reportExpense" [nzFooter]="outgoFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
-            <th>{{ "Common.Name" | transloco }}</th>
-            <th>{{ "Finance.Amount" | transloco }}</th>
-            <th>{{ "Common.Precent" | transloco }}</th>
+            <th>{{ 'Common.Name' | transloco }}</th>
+            <th>{{ 'Finance.Amount' | transloco }}</th>
+            <th>{{ 'Common.Precent' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -141,12 +84,8 @@
             <td>{{ data.TransactionType }}</td>
             <td>{{ data.TransactionTypeName }}</td>
             <td>
-              <button
-                nz-button
-                nzType="link"
-                (click)="onDisplayDocumentItem(data.TransactionType)"
-              >
-                {{ data.Amount | number : "1.2-2" }}
+              <button nz-button nzType="link" (click)="onDisplayDocumentItem(data.TransactionType)">
+                {{ data.Amount | number : '1.2-2' }}
               </button>
               <span style="padding-left: 2px"
                 ><small>{{ baseCurrency }}</small></span
@@ -164,8 +103,7 @@
       </nz-table>
       <ng-template #outgoFooterTemplate>
         <div>
-          <span>{{ "Common.Total" | transloco }}: </span
-          >{{ totalExpense | number : "1.2-2" }}
+          <span>{{ 'Common.Total' | transloco }}: </span>{{ totalExpense | number : '1.2-2' }}
           <span style="padding-left: 2px"
             ><small>{{ baseCurrency }}</small></span
           >

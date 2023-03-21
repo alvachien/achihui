@@ -7,37 +7,32 @@ import {
   flush,
   inject,
   discardPeriodicTasks,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router, UrlSegment, ActivatedRoute } from "@angular/router";
-import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import * as moment from "moment";
-import { By } from "@angular/platform-browser";
+} from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import * as moment from 'moment';
+import { By } from '@angular/platform-browser';
 
-import { FinanceUIModule } from "../../finance-ui.module";
-import { DocumentHeaderComponent } from "../document-header";
-import { DocumentLoanCreateComponent } from "./document-loan-create.component";
-import { AccountExtraLoanComponent } from "../../account/account-extra-loan";
+import { FinanceUIModule } from '../../finance-ui.module';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentLoanCreateComponent } from './document-loan-create.component';
+import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import {
   getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
   asyncError,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  HomeDefOdataService,
-  FinanceOdataService,
-} from "../../../../services";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import {
   UserAuthInfo,
   Document,
@@ -46,10 +41,10 @@ import {
   AccountExtraLoan,
   RepaymentMethodEnum,
   TemplateDocLoan,
-} from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
+} from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
 
-describe("DocumentLoanCreateComponent", () => {
+describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
   let fixture: ComponentFixture<DocumentLoanCreateComponent>;
   let fakeData: FakeDataHelper;
@@ -65,8 +60,8 @@ describe("DocumentLoanCreateComponent", () => {
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  const modalClassName = ".ant-modal-body";
-  const nextButtonId = "#button_next_step";
+  const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -78,36 +73,24 @@ describe("DocumentLoanCreateComponent", () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllAccountCategories",
-      "fetchAllDocTypes",
-      "fetchAllTranTypes",
-      "fetchAllAccounts",
-      "fetchAllControlCenters",
-      "fetchAllOrders",
-      "fetchAllCurrencies",
-      "createLoanDocument",
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllAccountCategories',
+      'fetchAllDocTypes',
+      'fetchAllTranTypes',
+      'fetchAllAccounts',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
+      'fetchAllCurrencies',
+      'createLoanDocument',
     ]);
-    fetchAllAccountCategoriesSpy =
-      storageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(
-      of([])
-    );
-    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
-      of([])
-    );
-    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
-      of([])
-    );
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy =
-      storageService.fetchAllControlCenters.and.returnValue(of([]));
-    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
-      of([])
-    );
-    createLoanDocumentSpy = storageService.createLoanDocument.and.returnValue(
-      of({})
-    );
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
+    createLoanDocumentSpy = storageService.createLoanDocument.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -117,9 +100,7 @@ describe("DocumentLoanCreateComponent", () => {
   });
 
   beforeEach(waitForAsync(() => {
-    activatedRouteStub = new ActivatedRouteUrlStub([
-      new UrlSegment("createbrwfrm", {}),
-    ] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createbrwfrm', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -161,38 +142,26 @@ describe("DocumentLoanCreateComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("working with data", () => {
+  describe('working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      fetchAllAccountCategoriesSpy =
-        storageService.fetchAllAccountCategories.and.returnValue(
-          asyncData(fakeData.finAccountCategories)
-        );
-      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(
-        asyncData(fakeData.finDocTypes)
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
       );
-      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
-        asyncData(fakeData.finTranTypes)
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
+        asyncData(fakeData.finControlCenters)
       );
-      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
-        asyncData(fakeData.finAccounts)
-      );
-      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(
-        asyncData(fakeData.finOrders)
-      );
-      fetchAllControlCentersSpy =
-        storageService.fetchAllControlCenters.and.returnValue(
-          asyncData(fakeData.finControlCenters)
-        );
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
-        asyncData(fakeData.currencies)
-      );
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -204,7 +173,7 @@ describe("DocumentLoanCreateComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("step 0: initial status", fakeAsync(() => {
+    it('step 0: initial status', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -215,7 +184,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    it("step 0: document header is manadatory", fakeAsync(() => {
+    it('step 0: document header is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -228,26 +197,26 @@ describe("DocumentLoanCreateComponent", () => {
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add the desp back
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get("headerControl")?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
     }));
 
-    xit("step 0: account is manadatory", fakeAsync(() => {
+    xit('step 0: account is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -259,9 +228,9 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -269,13 +238,11 @@ describe("DocumentLoanCreateComponent", () => {
 
       // Account - missing
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -283,10 +250,8 @@ describe("DocumentLoanCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add an account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -295,7 +260,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 0: amount is manadatory", fakeAsync(() => {
+    xit('step 0: amount is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -307,25 +272,21 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount - missing
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -333,8 +294,8 @@ describe("DocumentLoanCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add amount back
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -343,7 +304,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    it("step 0: costing object is manadatory", fakeAsync(() => {
+    it('step 0: costing object is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -355,22 +316,20 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount - missing
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
       tick();
@@ -379,22 +338,18 @@ describe("DocumentLoanCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Second false case: input both
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
-      component.firstFormGroup
-        .get("orderControl")
-        ?.setValue(fakeData.finOrders[0].Id);
-      component.firstFormGroup.get("orderControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now correct it - remove order
-      component.firstFormGroup.get("orderControl")?.setValue(undefined);
-      component.firstFormGroup.get("orderControl")?.markAsDirty();
+      component.firstFormGroup.get('orderControl')?.setValue(undefined);
+      component.firstFormGroup.get('orderControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -403,7 +358,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    it("step 1: back to step 0 shall work", fakeAsync(() => {
+    it('step 1: back to step 0 shall work', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -414,22 +369,18 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
@@ -437,9 +388,7 @@ describe("DocumentLoanCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -455,7 +404,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 1: loan extra info is manadatory", fakeAsync(() => {
+    xit('step 1: loan extra info is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -466,30 +415,24 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -500,11 +443,11 @@ describe("DocumentLoanCreateComponent", () => {
       // Update the correct extra info
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, "y");
+      extraLoan.endDate = moment().add(1, 'y');
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
-      extraLoan.Comment = "test";
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push({
         DocId: 1,
@@ -512,12 +455,12 @@ describe("DocumentLoanCreateComponent", () => {
         TranType: fakeData.finTranTypes[0].Id,
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: "test",
-        TranDate: moment().add(1, "d"),
+        Desp: 'test',
+        TranDate: moment().add(1, 'd'),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get("loanAccountControl")?.setValue(extraLoan);
-      component.extraFormGroup.get("loanAccountControl")?.markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
@@ -526,7 +469,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 2: shall go to step 2 in valid case", fakeAsync(() => {
+    xit('step 2: shall go to step 2 in valid case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -537,41 +480,35 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, "y");
+      extraLoan.endDate = moment().add(1, 'y');
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
-      extraLoan.Comment = "test";
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push({
         DocId: 1,
@@ -579,12 +516,12 @@ describe("DocumentLoanCreateComponent", () => {
         TranType: fakeData.finTranTypes[0].Id,
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: "test",
-        TranDate: moment().add(1, "d"),
+        Desp: 'test',
+        TranDate: moment().add(1, 'd'),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get("loanAccountControl")?.setValue(extraLoan);
-      component.extraFormGroup.get("loanAccountControl")?.markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -597,7 +534,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 2: shall popup error dialog if verfication failed in generated object", fakeAsync(() => {
+    xit('step 2: shall popup error dialog if verfication failed in generated object', fakeAsync(() => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -613,41 +550,35 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, "y");
+      extraLoan.endDate = moment().add(1, 'y');
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
-      extraLoan.Comment = "test";
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push({
         DocId: 1,
@@ -655,12 +586,12 @@ describe("DocumentLoanCreateComponent", () => {
         TranType: fakeData.finTranTypes[0].Id,
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: "test",
-        TranDate: moment().add(1, "d"),
+        Desp: 'test',
+        TranDate: moment().add(1, 'd'),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get("loanAccountControl")?.setValue(extraLoan);
-      component.extraFormGroup.get("loanAccountControl")?.markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -670,9 +601,9 @@ describe("DocumentLoanCreateComponent", () => {
 
       // Step 2.
       // Fake an error in generated doc
-      dochead.Desp = "";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = '';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
       flush();
@@ -680,23 +611,17 @@ describe("DocumentLoanCreateComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
@@ -709,7 +634,7 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 3: shall display success result after document posted", fakeAsync(() => {
+    xit('step 3: shall display success result after document posted', fakeAsync(() => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -725,41 +650,35 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, "y");
+      extraLoan.endDate = moment().add(1, 'y');
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
-      extraLoan.Comment = "test";
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push({
         DocId: 1,
@@ -767,12 +686,12 @@ describe("DocumentLoanCreateComponent", () => {
         TranType: fakeData.finTranTypes[0].Id,
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: "test",
-        TranDate: moment().add(1, "d"),
+        Desp: 'test',
+        TranDate: moment().add(1, 'd'),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get("loanAccountControl")?.setValue(extraLoan);
-      component.extraFormGroup.get("loanAccountControl")?.markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -796,8 +715,8 @@ describe("DocumentLoanCreateComponent", () => {
       flush();
     }));
 
-    xit("step 3: shall display error result after document failed to post", fakeAsync(() => {
-      createLoanDocumentSpy.and.returnValue(asyncError("Failed to post"));
+    xit('step 3: shall display error result after document failed to post', fakeAsync(() => {
+      createLoanDocumentSpy.and.returnValue(asyncError('Failed to post'));
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -808,41 +727,35 @@ describe("DocumentLoanCreateComponent", () => {
       const dochead: Document = new Document();
       dochead.TranDate = moment();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
-      dochead.Desp = "test";
-      component.firstFormGroup.get("headerControl")?.setValue(dochead);
-      component.firstFormGroup.get("headerControl")?.markAsDirty();
+      dochead.Desp = 'test';
+      component.firstFormGroup.get('headerControl')?.setValue(dochead);
+      component.firstFormGroup.get('headerControl')?.markAsDirty();
       // Account
-      component.firstFormGroup
-        .get("accountControl")
-        ?.setValue(fakeData.finAccounts[0].Id);
-      component.firstFormGroup.get("accountControl")?.markAsDirty();
+      component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
+      component.firstFormGroup.get('accountControl')?.markAsDirty();
       // Amount
-      component.firstFormGroup.get("amountControl")?.setValue(100.2);
-      component.firstFormGroup.get("amountControl")?.markAsDirty();
+      component.firstFormGroup.get('amountControl')?.setValue(100.2);
+      component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center
-      component.firstFormGroup
-        .get("ccControl")
-        ?.setValue(fakeData.finControlCenters[0].Id);
-      component.firstFormGroup.get("ccControl")?.markAsDirty();
+      component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
+      component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       tick();
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
       extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, "y");
+      extraLoan.endDate = moment().add(1, 'y');
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
-      extraLoan.Comment = "test";
+      extraLoan.Comment = 'test';
       expect(extraLoan.isAccountValid).toBeTruthy();
       extraLoan.loanTmpDocs.push({
         DocId: 1,
@@ -850,12 +763,12 @@ describe("DocumentLoanCreateComponent", () => {
         TranType: fakeData.finTranTypes[0].Id,
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
-        Desp: "test",
-        TranDate: moment().add(1, "d"),
+        Desp: 'test',
+        TranDate: moment().add(1, 'd'),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
-      component.extraFormGroup.get("loanAccountControl")?.setValue(extraLoan);
-      component.extraFormGroup.get("loanAccountControl")?.markAsDirty();
+      component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
+      component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -880,34 +793,22 @@ describe("DocumentLoanCreateComponent", () => {
     }));
   });
 
-  describe("shall display error dialog when service failed", () => {
+  describe('shall display error dialog when service failed', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      fetchAllAccountCategoriesSpy =
-        storageService.fetchAllAccountCategories.and.returnValue(
-          asyncData(fakeData.finAccountCategories)
-        );
-      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(
-        asyncData(fakeData.finDocTypes)
+      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
+        asyncData(fakeData.finAccountCategories)
       );
-      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(
-        asyncData(fakeData.finTranTypes)
+      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
+        asyncData(fakeData.finControlCenters)
       );
-      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
-        asyncData(fakeData.finAccounts)
-      );
-      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(
-        asyncData(fakeData.finOrders)
-      );
-      fetchAllControlCentersSpy =
-        storageService.fetchAllControlCenters.and.returnValue(
-          asyncData(fakeData.finControlCenters)
-        );
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(
-        asyncData(fakeData.currencies)
-      );
+      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -919,220 +820,170 @@ describe("DocumentLoanCreateComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("should display error when Account Category fetched fails", fakeAsync(() => {
+    it('should display error when Account Category fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when Doc type fetched fails", fakeAsync(() => {
+    it('should display error when Doc type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllDocTypesSpy.and.returnValue(asyncError<string>("Service failed"));
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when Tran. type fetched fails", fakeAsync(() => {
+    it('should display error when Tran. type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllTranTypesSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when currency fetched fails", fakeAsync(() => {
+    it('should display error when currency fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllCurrenciesSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when account fetched fails", fakeAsync(() => {
+    it('should display error when account fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(asyncError<string>("Service failed"));
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when control center fetched fails", fakeAsync(() => {
+    it('should display error when control center fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("should display error when order fetched fails", fakeAsync(() => {
+    it('should display error when order fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllOrdersSpy.and.returnValue(asyncError<string>("Service failed"));
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));

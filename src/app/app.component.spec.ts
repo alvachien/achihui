@@ -6,38 +6,27 @@ import {
   tick,
   flush,
   discardPeriodicTasks,
-} from "@angular/core/testing";
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { BehaviorSubject } from "rxjs";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { NzLayoutModule } from "ng-zorro-antd/layout";
-import { NzMenuModule } from "ng-zorro-antd/menu";
-import { NzIconModule } from "ng-zorro-antd/icon";
-import { NzInputModule } from "ng-zorro-antd/input";
-import { NzDropDownModule } from "ng-zorro-antd/dropdown";
-import { NzTableModule } from "ng-zorro-antd/table";
-import {
-  NzModalConfirmContainerComponent,
-  NzModalModule,
-  NzModalService,
-} from "ng-zorro-antd/modal";
-import { en_US, NZ_I18N } from "ng-zorro-antd/i18n";
+} from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BehaviorSubject } from 'rxjs';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 
-import { environment } from "../environments/environment";
-import { AppComponent } from "./app.component";
-import { getTranslocoModule } from "../testing";
-import {
-  AuthService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "../app/services";
-import { UserAuthInfo } from "./model";
+import { environment } from '../environments/environment';
+import { AppComponent } from './app.component';
+import { getTranslocoModule } from '../testing';
+import { AuthService, HomeDefOdataService, UIStatusService } from '../app/services';
+import { UserAuthInfo } from './model';
 
-describe("AppComponent", () => {
+describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   const authServiceStub: Partial<AuthService> = {};
@@ -45,9 +34,9 @@ describe("AppComponent", () => {
 
   beforeAll(() => {
     const usrvalue = {
-      userId: "user1_sub",
-      userName: "user1",
-      accessToken: "user1_access_token",
+      userId: 'user1_sub',
+      userName: 'user1',
+      accessToken: 'user1_access_token',
     };
     authinfo.setContent(usrvalue);
     authServiceStub.authContent = new BehaviorSubject(authinfo);
@@ -87,11 +76,11 @@ describe("AppComponent", () => {
     // expect(app).toBeTruthy();
   });
 
-  it("should create the app", () => {
+  it('should create the app', () => {
     expect(component).toBeTruthy();
   });
 
-  it("shall work with data", fakeAsync(() => {
+  it('shall work with data', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -103,12 +92,12 @@ describe("AppComponent", () => {
     flush();
   }));
 
-  it("doLogon shall work", fakeAsync(() => {
+  it('doLogon shall work', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, "doLogin" as never);
+    spyOn(authServiceStub, 'doLogin' as never);
 
     expect(authServiceStub.doLogin).toHaveBeenCalledTimes(0);
     component.onLogon();
@@ -121,12 +110,12 @@ describe("AppComponent", () => {
     flush();
   }));
 
-  it("doLogout shall work", fakeAsync(() => {
+  it('doLogout shall work', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, "doLogout" as never);
+    spyOn(authServiceStub, 'doLogout' as never);
 
     expect(authServiceStub.doLogout).toHaveBeenCalledTimes(0);
     component.onLogout();
@@ -138,14 +127,14 @@ describe("AppComponent", () => {
     flush();
   }));
 
-  it("switch language shall work", fakeAsync(() => {
+  it('switch language shall work', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
 
-    component.switchLanguage("zh_CN");
+    component.switchLanguage('zh_CN');
     expect(component).toBeTruthy();
-    component.switchLanguage("en_US");
+    component.switchLanguage('en_US');
     expect(component).toBeTruthy();
 
     discardPeriodicTasks();

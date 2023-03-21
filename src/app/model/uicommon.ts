@@ -1,10 +1,4 @@
-import {
-  UICommonLabelEnum,
-  QuestionBankTypeEnum,
-  TagTypeEnum,
-  OverviewScopeEnum,
-  RepeatFrequencyEnum,
-} from "./common";
+import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
 import {
   AccountStatusEnum,
   RepaymentMethodEnum,
@@ -19,10 +13,10 @@ import {
   financeAccountCategoryAdvancePayment,
   IAccountCategoryFilter,
   financeAccountCategoryLendTo,
-} from "./financemodel";
-import { HomeMemberRelationEnum } from "./homedef";
-import * as moment from "moment";
-import { LocationTypeEnum } from "./librarymodel";
+} from './financemodel';
+import { HomeMemberRelationEnum } from './homedef';
+import * as moment from 'moment';
+import { LocationTypeEnum } from './librarymodel';
 
 /**
  * UI Status
@@ -77,13 +71,13 @@ export class CreditsComponent {
 
 // For UI controls
 export class UIRadioButton {
-  public id = "";
-  public name = "";
+  public id = '';
+  public name = '';
   public value: any;
-  public label = "";
+  public label = '';
   public checked = false;
   public disabled = false;
-  public arialabel = "";
+  public arialabel = '';
 }
 
 export class UIRadioButtonGroup {
@@ -93,9 +87,9 @@ export class UIRadioButtonGroup {
 }
 
 export class UIRouteLink {
-  public title = "";
-  public route = "";
-  public icon = "";
+  public title = '';
+  public route = '';
+  public icon = '';
 }
 
 /**
@@ -138,8 +132,8 @@ export type UIDisplayStringEnum =
  */
 export class UIDisplayString {
   public value: UIDisplayStringEnum = UICommonLabelEnum.Category;
-  public i18nterm = "";
-  public displaystring = "";
+  public i18nterm = '';
+  public displaystring = '';
 }
 
 /**
@@ -156,7 +150,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getUICommonLabelDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -174,7 +168,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getQuestionBankTypeDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -192,7 +186,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getTagTypeDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -210,7 +204,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getOverviewScopeDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -228,7 +222,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getAccountStatusDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -246,7 +240,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getRepaymentMethodDisplayString(+se),
-          displaystring: "",
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -280,10 +274,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(
-            +rfe as RepeatFrequencyEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(+rfe as RepeatFrequencyEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -300,10 +292,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(
-            +rfe as TranTypeLevelEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(+rfe as TranTypeLevelEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -320,10 +310,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +rfe,
-          i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(
-            +rfe as GeneralFilterOperatorEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(+rfe as GeneralFilterOperatorEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -340,11 +328,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +qat,
-          i18nterm:
-            UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(
-              +qat as FinanceQuickAccessTypeEnum
-            ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(+qat as FinanceQuickAccessTypeEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -361,10 +346,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +qat,
-          i18nterm: UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(
-            +qat as PlanTypeEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(+qat as PlanTypeEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -381,10 +364,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +qat,
-          i18nterm: UIDisplayStringUtil.getHomeMemberRelationEnumDisplayString(
-            +qat as HomeMemberRelationEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getHomeMemberRelationEnumDisplayString(+qat as HomeMemberRelationEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -401,10 +382,8 @@ export class UIDisplayStringUtil {
       } else {
         arrst.push({
           value: +qat,
-          i18nterm: UIDisplayStringUtil.getLocationTypeDisplayString(
-            +qat as LocationTypeEnum
-          ),
-          displaystring: "",
+          i18nterm: UIDisplayStringUtil.getLocationTypeDisplayString(+qat as LocationTypeEnum),
+          displaystring: '',
         } as UIDisplayString);
       }
     }
@@ -417,166 +396,162 @@ export class UIDisplayStringUtil {
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
     switch (le) {
       case UICommonLabelEnum.DocumentPosted:
-        return "Finance.DocumentPosted";
+        return 'Finance.DocumentPosted';
 
       case UICommonLabelEnum.CreateAnotherOne:
-        return "Common.CreateAnotherOne";
+        return 'Common.CreateAnotherOne';
 
       case UICommonLabelEnum.CreatedSuccess:
-        return "Common.CreatedSuccessfully";
+        return 'Common.CreatedSuccessfully';
 
       case UICommonLabelEnum.Category:
-        return "Common.Category";
+        return 'Common.Category';
 
       case UICommonLabelEnum.User:
-        return "Login.User";
+        return 'Login.User';
 
       case UICommonLabelEnum.Count:
-        return "Common.Count";
+        return 'Common.Count';
 
       case UICommonLabelEnum.Total:
-        return "Common.Total";
+        return 'Common.Total';
 
       case UICommonLabelEnum.DeleteConfirmTitle:
-        return "Common.DeleteConfirmation";
+        return 'Common.DeleteConfirmation';
 
       case UICommonLabelEnum.DeleteConfrimContent:
-        return "Common.ConfirmToDeleteSelectedItem";
+        return 'Common.ConfirmToDeleteSelectedItem';
 
       case UICommonLabelEnum.Error:
-        return "Common.Error";
+        return 'Common.Error';
 
       case UICommonLabelEnum.ChartLegend:
-        return "Common.ChartLegend";
+        return 'Common.ChartLegend';
 
       case UICommonLabelEnum.UpdatedSuccess:
-        return "Common.UpdatedSuccessfully";
+        return 'Common.UpdatedSuccessfully';
 
       case UICommonLabelEnum.Incoming:
-        return "Finance.Incoming";
+        return 'Finance.Incoming';
 
       case UICommonLabelEnum.Outgoing:
-        return "Finance.Outgoing";
+        return 'Finance.Outgoing';
 
       case UICommonLabelEnum.DocumentUpdated:
-        return "Finance.DocumentUpdated";
+        return 'Finance.DocumentUpdated';
 
       case UICommonLabelEnum.OperConfirmTitle:
-        return "Common.OperationConfirmation";
+        return 'Common.OperationConfirmation';
 
       case UICommonLabelEnum.OperConfirmContent:
-        return "Common.OperationConfirmationContent";
+        return 'Common.OperationConfirmationContent';
 
       case UICommonLabelEnum.OperationCompleted:
-        return "Common.OperationCompleted";
+        return 'Common.OperationCompleted';
 
       default:
-        return "";
+        return '';
     }
   }
 
-  public static getQuestionBankTypeDisplayString(
-    se: QuestionBankTypeEnum
-  ): string {
+  public static getQuestionBankTypeDisplayString(se: QuestionBankTypeEnum): string {
     switch (se) {
       case QuestionBankTypeEnum.EssayQuestion:
-        return "Learning.EssayQuestion";
+        return 'Learning.EssayQuestion';
 
       case QuestionBankTypeEnum.MultipleChoice:
-        return "Learning.MultipleChoice";
+        return 'Learning.MultipleChoice';
 
       default:
-        return "";
+        return '';
     }
   }
 
   public static getLocationTypeDisplayString(se: LocationTypeEnum): string {
     switch (se) {
       case LocationTypeEnum.PaperBook:
-        return "Library.PaperBook";
+        return 'Library.PaperBook';
 
       case LocationTypeEnum.EBook:
-        return "Library.EBook";
+        return 'Library.EBook';
 
       default:
-        return "";
+        return '';
     }
   }
 
   public static getTagTypeDisplayString(se: TagTypeEnum): string {
     switch (se) {
       case TagTypeEnum.FinanceDocumentItem:
-        return "Finance.Document";
+        return 'Finance.Document';
 
       case TagTypeEnum.LearnQuestionBank:
-        return "Learning.QuestionBank";
+        return 'Learning.QuestionBank';
 
       default:
-        return "";
+        return '';
     }
   }
 
   public static getOverviewScopeDisplayString(se: OverviewScopeEnum): string {
     switch (se) {
       case OverviewScopeEnum.CurrentMonth:
-        return "Common.CurrentMonth";
+        return 'Common.CurrentMonth';
 
       case OverviewScopeEnum.CurrentYear:
-        return "Common.CurrentYear";
+        return 'Common.CurrentYear';
 
       case OverviewScopeEnum.PreviousMonth:
-        return "Common.PreviousMonth";
+        return 'Common.PreviousMonth';
 
       case OverviewScopeEnum.PreviousYear:
-        return "Common.PreviousYear";
+        return 'Common.PreviousYear';
 
       case OverviewScopeEnum.CurrentQuarter:
-        return "Common.CurrentQuarter";
+        return 'Common.CurrentQuarter';
 
       case OverviewScopeEnum.PreviousQuarter:
-        return "Common.PreviousQuarter";
+        return 'Common.PreviousQuarter';
 
       case OverviewScopeEnum.CurrentWeek:
-        return "Common.CurrentWeek";
+        return 'Common.CurrentWeek';
 
       case OverviewScopeEnum.PreviousWeek:
-        return "Common.PreviousWeek";
+        return 'Common.PreviousWeek';
 
       case OverviewScopeEnum.All:
-        return "Common.All";
+        return 'Common.All';
 
       default:
-        return "";
+        return '';
     }
   }
 
   public static getAccountStatusDisplayString(stat: AccountStatusEnum): string {
     switch (stat) {
       case AccountStatusEnum.Normal:
-        return "Finance.AccountStatusNormal";
+        return 'Finance.AccountStatusNormal';
       case AccountStatusEnum.Closed:
-        return "Finance.AccountStatusClosed";
+        return 'Finance.AccountStatusClosed';
       case AccountStatusEnum.Frozen:
-        return "Finance.AccountStatusFrozen";
+        return 'Finance.AccountStatusFrozen';
       default:
-        return "";
+        return '';
     }
   }
 
-  public static getRepaymentMethodDisplayString(
-    pm: RepaymentMethodEnum
-  ): string {
+  public static getRepaymentMethodDisplayString(pm: RepaymentMethodEnum): string {
     switch (pm) {
       case RepaymentMethodEnum.EqualPrincipal:
-        return "Finance.EqualPrincipal";
+        return 'Finance.EqualPrincipal';
       case RepaymentMethodEnum.EqualPrincipalAndInterset:
-        return "Finance.EqualPrincipalAndInterest";
+        return 'Finance.EqualPrincipalAndInterest';
       case RepaymentMethodEnum.DueRepayment:
-        return "Finance.DueRepayment";
+        return 'Finance.DueRepayment';
       case RepaymentMethodEnum.Informal:
-        return "Finance.Unspecified";
+        return 'Finance.Unspecified';
       default:
-        return "";
+        return '';
     }
   }
 
@@ -598,115 +573,107 @@ export class UIDisplayStringUtil {
   //   }
   // }
 
-  public static getRepeatFrequencyDisplayString(
-    frq: RepeatFrequencyEnum
-  ): string {
+  public static getRepeatFrequencyDisplayString(frq: RepeatFrequencyEnum): string {
     switch (frq) {
       case RepeatFrequencyEnum.Day:
-        return "RepeatFrequency.Day";
+        return 'RepeatFrequency.Day';
       case RepeatFrequencyEnum.Month:
-        return "RepeatFrequency.Month";
+        return 'RepeatFrequency.Month';
       case RepeatFrequencyEnum.Fortnight:
-        return "RepeatFrequency.Fortnight";
+        return 'RepeatFrequency.Fortnight';
       case RepeatFrequencyEnum.Manual:
-        return "RepeatFrequency.Manual";
+        return 'RepeatFrequency.Manual';
       case RepeatFrequencyEnum.HalfYear:
-        return "RepeatFrequency.HalfYear";
+        return 'RepeatFrequency.HalfYear';
       case RepeatFrequencyEnum.Year:
-        return "RepeatFrequency.Year";
+        return 'RepeatFrequency.Year';
       case RepeatFrequencyEnum.Quarter:
-        return "RepeatFrequency.Quarter";
+        return 'RepeatFrequency.Quarter';
       case RepeatFrequencyEnum.Week:
-        return "RepeatFrequency.Week";
+        return 'RepeatFrequency.Week';
       default:
-        return "";
+        return '';
     }
   }
 
   public static getTranTypeLevelDisplayString(ttl: TranTypeLevelEnum): string {
     switch (ttl) {
       case TranTypeLevelEnum.TopLevel:
-        return "Finance.TranTypeTopLevel";
+        return 'Finance.TranTypeTopLevel';
       case TranTypeLevelEnum.FirstLevel:
-        return "Finance.TranTypeFirstLevel";
+        return 'Finance.TranTypeFirstLevel';
       case TranTypeLevelEnum.SecondLevel:
-        return "Finance.TranTypeSecondLevel";
+        return 'Finance.TranTypeSecondLevel';
       default:
-        return "";
+        return '';
     }
   }
 
-  public static getGeneralFilterOperatorDisplayString(
-    opte: GeneralFilterOperatorEnum
-  ): string {
+  public static getGeneralFilterOperatorDisplayString(opte: GeneralFilterOperatorEnum): string {
     switch (opte) {
       case GeneralFilterOperatorEnum.Between:
-        return "Sys.Operator.Between";
+        return 'Sys.Operator.Between';
       case GeneralFilterOperatorEnum.Equal:
-        return "Sys.Operator.Equal";
+        return 'Sys.Operator.Equal';
       case GeneralFilterOperatorEnum.LargerEqual:
-        return "Sys.Operator.LargerEqual";
+        return 'Sys.Operator.LargerEqual';
       case GeneralFilterOperatorEnum.LargerThan:
-        return "Sys.Operator.LargerThan";
+        return 'Sys.Operator.LargerThan';
       case GeneralFilterOperatorEnum.LessEqual:
-        return "Sys.Operator.LessEqual";
+        return 'Sys.Operator.LessEqual';
       case GeneralFilterOperatorEnum.LessThan:
-        return "Sys.Operator.LessThan";
+        return 'Sys.Operator.LessThan';
       case GeneralFilterOperatorEnum.NotEqual:
-        return "Sys.Operator.NotEqual";
+        return 'Sys.Operator.NotEqual';
       case GeneralFilterOperatorEnum.Like:
-        return "Sys.Operator.Like";
+        return 'Sys.Operator.Like';
       default:
-        return "";
+        return '';
     }
   }
 
-  public static getFinanceQuickAccessTypeEnumDisplayString(
-    qte: FinanceQuickAccessTypeEnum
-  ): string {
+  public static getFinanceQuickAccessTypeEnumDisplayString(qte: FinanceQuickAccessTypeEnum): string {
     switch (qte) {
       case FinanceQuickAccessTypeEnum.Account:
-        return "Finance.Account";
+        return 'Finance.Account';
       case FinanceQuickAccessTypeEnum.Document:
-        return "Finance.Document";
+        return 'Finance.Document';
       case FinanceQuickAccessTypeEnum.ControlCenter:
-        return "Finance.ControlCenter";
+        return 'Finance.ControlCenter';
       case FinanceQuickAccessTypeEnum.Order:
-        return "Finance.Activity";
+        return 'Finance.Activity';
       default:
-        return "";
+        return '';
     }
   }
 
-  public static getHomeMemberRelationEnumDisplayString(
-    re: HomeMemberRelationEnum
-  ): string {
+  public static getHomeMemberRelationEnumDisplayString(re: HomeMemberRelationEnum): string {
     switch (re) {
       case HomeMemberRelationEnum.Self:
-        return "Sys.MemRel.Self";
+        return 'Sys.MemRel.Self';
       case HomeMemberRelationEnum.Couple:
-        return "Sys.MemRel.Couple";
+        return 'Sys.MemRel.Couple';
       case HomeMemberRelationEnum.Child:
-        return "Sys.MemRel.Children";
+        return 'Sys.MemRel.Children';
       case HomeMemberRelationEnum.Parent:
-        return "Sys.MemRel.Parent";
+        return 'Sys.MemRel.Parent';
       default:
-        return "";
+        return '';
     }
   }
 
   public static getFinancePlanTypeEnumDisplayString(pte: PlanTypeEnum): string {
     switch (pte) {
       case PlanTypeEnum.Account:
-        return "Finance.Account";
+        return 'Finance.Account';
       case PlanTypeEnum.AccountCategory:
-        return "Finance.AccountCategory";
+        return 'Finance.AccountCategory';
       case PlanTypeEnum.ControlCenter:
-        return "Finance.ControlCenter";
+        return 'Finance.ControlCenter';
       case PlanTypeEnum.TranType:
-        return "Finance.TransactionType";
+        return 'Finance.TransactionType';
       default:
-        return "";
+        return '';
     }
   }
 }
@@ -722,7 +689,7 @@ export enum GeneralFilterValueType {
  * General Filter Item
  */
 export class GeneralFilterItem {
-  fieldName = "";
+  fieldName = '';
   operator: GeneralFilterOperatorEnum = GeneralFilterOperatorEnum.Equal;
   lowValue: any;
   highValue: any;
@@ -736,7 +703,7 @@ export function getFilterString(filters: GeneralFilterItem[]): string {
       arfields.push(val.fieldName);
     }
   });
-  let filterstr = "";
+  let filterstr = '';
   arfields.forEach((fieldname) => {
     const subfilters: string[] = [];
     filters.forEach((val) => {
@@ -749,22 +716,18 @@ export function getFilterString(filters: GeneralFilterItem[]): string {
     });
 
     if (subfilters.length > 0) {
-      let subfltstr = "";
+      let subfltstr = '';
       if (subfilters.length === 1) {
         subfltstr = subfilters[0];
       } else {
         // More than one item
         subfilters.forEach((sf) => {
-          subfltstr =
-            subfltstr.length === 0 ? `(${sf}` : `${subfltstr} or ${sf}`;
+          subfltstr = subfltstr.length === 0 ? `(${sf}` : `${subfltstr} or ${sf}`;
         });
         subfltstr = `${subfltstr})`;
       }
 
-      filterstr =
-        filterstr.length === 0
-          ? `${subfltstr}`
-          : `${filterstr} and ${subfltstr}`;
+      filterstr = filterstr.length === 0 ? `${subfltstr}` : `${filterstr} and ${subfltstr}`;
     }
   });
   return filterstr;
@@ -775,7 +738,7 @@ export function getFilterString(filters: GeneralFilterItem[]): string {
  * @param flt Single Filter
  */
 export function getSingleFilterString(flt: GeneralFilterItem): string {
-  let subfilter = "";
+  let subfilter = '';
   switch (flt.operator) {
     case GeneralFilterOperatorEnum.Equal: {
       switch (flt.valueType) {
@@ -950,8 +913,8 @@ export function getSingleFilterString(flt: GeneralFilterItem): string {
 export class UIAccountForSelection {
   public Id = 0;
   public CategoryId = 0;
-  public Name = "";
-  public CategoryName = "";
+  public Name = '';
+  public CategoryName = '';
   public AssetFlag = false;
   public Status: AccountStatusEnum = AccountStatusEnum.Normal;
 }
@@ -990,8 +953,7 @@ export function BuildupAccountForSelection(
       if (
         ctgyFilter !== undefined &&
         ctgyFilter.skipLoan === true &&
-        (acnt.CategoryId === financeAccountCategoryBorrowFrom ||
-          acnt.CategoryId === financeAccountCategoryLendTo)
+        (acnt.CategoryId === financeAccountCategoryBorrowFrom || acnt.CategoryId === financeAccountCategoryLendTo)
       ) {
         continue;
       }
@@ -1024,7 +986,7 @@ export function BuildupAccountForSelection(
  */
 export class UIOrderForSelection {
   public Id = 0;
-  public Name = "";
+  public Name = '';
   public _validFrom: moment.Moment = moment();
   public _validTo: moment.Moment = moment();
 }
@@ -1034,10 +996,7 @@ export class UIOrderForSelection {
  * @param orders Orders
  * @param skipinv Skip invalid orders
  */
-export function BuildupOrderForSelection(
-  orders: Order[],
-  skipinv?: boolean
-): UIOrderForSelection[] {
+export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UIOrderForSelection[] {
   const arrst: UIOrderForSelection[] = [];
 
   if (orders && orders.length > 0) {

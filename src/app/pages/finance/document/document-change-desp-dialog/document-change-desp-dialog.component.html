@@ -10,17 +10,15 @@
 
     <!-- Description -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.Description" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Description' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="despTpl">
         <input nz-input formControlName="despControl" maxlength="45" required />
         <ng-template #despTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -28,15 +26,8 @@
   </form>
 </div>
 <div *nzModalFooter>
-  <button
-    nz-button
-    nzType="default"
-    (click)="onSubmit()"
-    [disabled]="isSubmittedDisabled"
-  >
-    OK
-  </button>
+  <button nz-button nzType="default" (click)="onSubmit()" [disabled]="isSubmittedDisabled">OK</button>
   <button nz-button nzType="primary" (click)="onCancel()">
-    {{ "Common.Cancel" | transloco }}
+    {{ 'Common.Cancel' | transloco }}
   </button>
 </div>

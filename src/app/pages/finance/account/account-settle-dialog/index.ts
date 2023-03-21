@@ -1,1 +1,1 @@
-export * from "./account-settle-dialog.component";
+export * from './account-settle-dialog.component';

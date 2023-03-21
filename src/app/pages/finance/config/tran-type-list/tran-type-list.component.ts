@@ -1,21 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import {
-  LogLevel,
-  TranType,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../../../../model";
-import { FinanceOdataService, UIStatusService } from "../../../../services";
+import { LogLevel, TranType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-fin-tran-type-list",
-  templateUrl: "./tran-type-list.component.html",
-  styleUrls: ["./tran-type-list.component.less"],
+  selector: 'hih-fin-tran-type-list',
+  templateUrl: './tran-type-list.component.html',
+  styleUrls: ['./tran-type-list.component.less'],
 })
 export class TranTypeListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -29,7 +24,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering TranTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -38,7 +33,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInt...",
+      'AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInt...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -53,7 +48,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: TranType[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInit, fetchAllTranTypes...",
+            'AC_HIH_UI [Debug]: Entering TranTypeListComponent OnInit, fetchAllTranTypes...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -65,7 +60,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -75,7 +70,7 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeListComponent onDestroy...",
+      'AC_HIH_UI [Debug]: Entering TranTypeListComponent onDestroy...',
       ConsoleLogTypeEnum.debug
     );
 

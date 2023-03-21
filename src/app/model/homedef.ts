@@ -1,5 +1,5 @@
-import * as moment from "moment";
-import * as hih from "./common";
+import * as moment from 'moment';
+import * as hih from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
@@ -29,8 +29,8 @@ export interface IHomeMemberJson {
  */
 export class HomeMember {
   private _hid = 0;
-  private _user = "";
-  private _displayas = "";
+  private _user = '';
+  private _displayas = '';
   private _relation: HomeMemberRelationEnum | null = null;
   private _ischild: boolean | null = null;
 
@@ -87,10 +87,7 @@ export class HomeMember {
       this._displayas = data.DisplayAs;
     }
     if (data.Relation) {
-      this._relation =
-        HomeMemberRelationEnum[
-          data.Relation as unknown as keyof typeof HomeMemberRelationEnum
-        ];
+      this._relation = HomeMemberRelationEnum[data.Relation as unknown as keyof typeof HomeMemberRelationEnum];
     } else {
       this._relation = null;
     }
@@ -130,10 +127,10 @@ export interface HomeDefJson {
  */
 export class HomeDef extends hih.BaseModel {
   private _id = 0;
-  private _name = "";
-  private _details = "";
-  private _host = "";
-  private _basecurr = "";
+  private _name = '';
+  private _details = '';
+  private _host = '';
+  private _basecurr = '';
   private _listMembers: HomeMember[];
 
   constructor() {
@@ -173,15 +170,13 @@ export class HomeDef extends hih.BaseModel {
   }
   get CreatorDisplayAs(): string {
     if (this._listMembers) {
-      const hostmem = this._listMembers.find(
-        (mem: HomeMember) => mem.Relation === HomeMemberRelationEnum.Self
-      );
+      const hostmem = this._listMembers.find((mem: HomeMember) => mem.Relation === HomeMemberRelationEnum.Self);
       if (hostmem) {
         return hostmem.DisplayAs;
       }
     }
 
-    return "";
+    return '';
   }
 
   get Members(): HomeMember[] {
@@ -289,14 +284,14 @@ export interface IHomeMsgJson {
 export class HomeMsg {
   private _hid = 0;
   private _id = 0;
-  private _usrto = "";
-  private _usrtoDisplayAs = "";
-  private _usrfrom = "";
-  private _usrfromDisplayAs = "";
+  private _usrto = '';
+  private _usrtoDisplayAs = '';
+  private _usrfrom = '';
+  private _usrfromDisplayAs = '';
   private _senddate: moment.Moment;
   private _readflag = false;
-  private _title = "";
-  private _content = "";
+  private _title = '';
+  private _content = '';
 
   constructor() {
     this._senddate = moment();

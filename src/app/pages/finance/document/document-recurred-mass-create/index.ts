@@ -1,1 +1,1 @@
-export * from "./document-recurred-mass-create.component";
+export * from './document-recurred-mass-create.component';

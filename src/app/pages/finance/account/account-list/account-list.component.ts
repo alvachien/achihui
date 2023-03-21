@@ -1,15 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from "@angular/core";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import {
-  FinanceOdataService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "../../../../services";
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
   ITableFilterValues,
   Account,
@@ -19,14 +15,14 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   AccountCategory,
-} from "../../../../model";
-import { UITableColumnItem } from "../../../../uimodel";
-import { AccountChangeNameDialogComponent } from "../account-change-name-dialog";
+} from '../../../../model';
+import { UITableColumnItem } from '../../../../uimodel';
+import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 
 @Component({
-  selector: "hih-fin-account-list",
-  templateUrl: "./account-list.component.html",
-  styleUrls: ["./account-list.component.less"],
+  selector: 'hih-fin-account-list',
+  templateUrl: './account-list.component.html',
+  styleUrls: ['./account-list.component.less'],
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -52,7 +48,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -68,7 +64,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     // Columns: ID, Name, Category, Status, Comment
     this.listOfColumns = [
       {
-        name: "Common.ID",
+        name: 'Common.ID',
         sortOrder: null,
         sortFn: null,
         sortDirections: [],
@@ -77,48 +73,42 @@ export class AccountListComponent implements OnInit, OnDestroy {
         filterMultiple: false,
       },
       {
-        name: "Common.Name",
+        name: 'Common.Name',
         sortOrder: null,
         sortDirections: [],
         listOfFilter: [],
         filterFn: null,
         filterMultiple: false,
-        sortFn: (a: Account, b: Account): number =>
-          a.Name!.localeCompare(b.Name!),
+        sortFn: (a: Account, b: Account): number => a.Name!.localeCompare(b.Name!),
       },
       {
-        name: "Common.Category",
+        name: 'Common.Category',
         sortOrder: null,
         sortFn: null,
         sortDirections: [],
         listOfFilter: [],
         filterMultiple: true,
         filterFn: (selectedCategories: number[], item: Account) =>
-          selectedCategories
-            ? selectedCategories.some((ctgyid) => item.CategoryId === ctgyid)
-            : false,
+          selectedCategories ? selectedCategories.some((ctgyid) => item.CategoryId === ctgyid) : false,
       },
       {
-        name: "Common.Status",
+        name: 'Common.Status',
         sortOrder: null,
         sortFn: null,
         sortDirections: [],
         listOfFilter: this.listStatusFilter,
         filterMultiple: true,
         filterFn: (selectedStatus: AccountStatusEnum[], item: Account) =>
-          selectedStatus
-            ? selectedStatus.some((sts) => item.Status === sts)
-            : false,
+          selectedStatus ? selectedStatus.some((sts) => item.Status === sts) : false,
       },
       {
-        name: "Common.Comment",
+        name: 'Common.Comment',
         sortOrder: null,
         sortDirections: [],
         listOfFilter: [],
         filterFn: null,
         filterMultiple: false,
-        sortFn: (a: Account, b: Account) =>
-          a.Comment!.localeCompare(b.Comment!),
+        sortFn: (a: Account, b: Account) => a.Comment!.localeCompare(b.Comment!),
       },
     ];
   }
@@ -126,18 +116,18 @@ export class AccountListComponent implements OnInit, OnDestroy {
     const ctgyobj = this.arCategories.find((val) => {
       return val.ID === ctgyid;
     });
-    return ctgyobj && ctgyobj.Name ? ctgyobj.Name : "";
+    return ctgyobj && ctgyobj.Name ? ctgyobj.Name : '';
   }
   public getStatusString(sts: any): string {
     const stsobj = this.arrayStatus.find((val) => {
       return val.value === sts;
     });
-    return stsobj ? stsobj.i18nterm : "";
+    return stsobj ? stsobj.i18nterm : '';
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -154,7 +144,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (val) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed",
+            'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
             ConsoleLogTypeEnum.debug
           );
           this.arCategories = val;
@@ -167,18 +157,18 @@ export class AccountListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed",
+            'AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
         },
         complete: () => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed",
+            'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
             ConsoleLogTypeEnum.debug
           );
           this.onRefresh();
@@ -188,7 +178,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
     if (this._destroyed$) {
@@ -210,7 +200,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: Account[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh fetchAllAccounts succeed",
+            'AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh fetchAllAccounts succeed',
             ConsoleLogTypeEnum.debug
           );
           this.dataSet = data.slice();
@@ -222,7 +212,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -231,11 +221,11 @@ export class AccountListComponent implements OnInit, OnDestroy {
   }
 
   onDisplay(rid: number): void {
-    this.router.navigate(["/finance/account/display/" + rid.toString()]);
+    this.router.navigate(['/finance/account/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {
-    this.router.navigate(["/finance/account/edit/" + rid.toString()]);
+    this.router.navigate(['/finance/account/edit/' + rid.toString()]);
   }
 
   onDelete(rid: number): void {
@@ -263,7 +253,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -272,13 +262,11 @@ export class AccountListComponent implements OnInit, OnDestroy {
   }
 
   onChangeAccountName(acntid: number): void {
-    const acntidx = this.odataService.Accounts.findIndex(
-      (p) => p.Id === acntid
-    );
+    const acntidx = this.odataService.Accounts.findIndex((p) => p.Id === acntid);
     if (acntidx !== -1) {
       // Change the account name
       const modal = this.modalService.create({
-        nzTitle: translate("Finance.ChangeAccountName"),
+        nzTitle: translate('Finance.ChangeAccountName'),
         nzContent: AccountChangeNameDialogComponent,
         nzViewContainerRef: this.viewContainerRef,
         nzComponentParams: {
@@ -289,16 +277,12 @@ export class AccountListComponent implements OnInit, OnDestroy {
         // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
       });
       const instance = modal.getContentComponent();
-      modal.afterOpen.subscribe(() => console.log("[afterOpen] emitted!"));
+      modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
       // Return a result when closed
-      modal.afterClose.subscribe((result) =>
-        console.log("[afterClose] The result is:", result)
-      );
+      modal.afterClose.subscribe((result) => console.log('[afterClose] The result is:', result));
     }
   }
   onAccountReconcile(acntid: number): void {
-    this.router.navigate([
-      "/finance/account-reconcile/bymonth/" + acntid.toString(),
-    ]);
+    this.router.navigate(['/finance/account-reconcile/bymonth/' + acntid.toString()]);
   }
 }

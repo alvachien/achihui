@@ -1,35 +1,31 @@
-import { TestBed } from "@angular/core/testing";
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject } from "rxjs";
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
-import { FinanceStorageService } from "./finance-storage.service";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
-import { DocumentWithPlanExgRateForUpdate } from "../model";
-import { environment } from "../../environments/environment";
-import { FakeDataHelper } from "../../testing";
+import { FinanceStorageService } from './finance-storage.service';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
+import { DocumentWithPlanExgRateForUpdate } from '../model';
+import { environment } from '../../environments/environment';
+import { FakeDataHelper } from '../../testing';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
-describe("FinanceStorageService", () => {
+describe('FinanceStorageService', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: FinanceStorageService;
-  const accountCategoryAPIURL: any =
-    environment.ApiUrl + "/FinanceAccountCategory";
-  const docTypeAPIURL: any = environment.ApiUrl + "/FinanceDocType";
-  const tranTypeAPIURL: any = environment.ApiUrl + "/FinanceTranType";
-  const assetCategoryAPIURL: any = environment.ApiUrl + "/FinanceAssetCategory";
-  const accountAPIURL: any = environment.ApiUrl + "/FinanceAccount";
-  const ccAPIURL: any = environment.ApiUrl + "/FinanceControlCenter";
-  const orderAPIURL: any = environment.ApiUrl + "/FinanceOrder";
-  const documentAPIURL: any = environment.ApiUrl + "/FinanceDocument";
-  const adpDocumentAPIURL: any = environment.ApiUrl + "/Financeadpdocument";
+  const accountCategoryAPIURL: any = environment.ApiUrl + '/FinanceAccountCategory';
+  const docTypeAPIURL: any = environment.ApiUrl + '/FinanceDocType';
+  const tranTypeAPIURL: any = environment.ApiUrl + '/FinanceTranType';
+  const assetCategoryAPIURL: any = environment.ApiUrl + '/FinanceAssetCategory';
+  const accountAPIURL: any = environment.ApiUrl + '/FinanceAccount';
+  const ccAPIURL: any = environment.ApiUrl + '/FinanceControlCenter';
+  const orderAPIURL: any = environment.ApiUrl + '/FinanceOrder';
+  const documentAPIURL: any = environment.ApiUrl + '/FinanceDocument';
+  const adpDocumentAPIURL: any = environment.ApiUrl + '/Financeadpdocument';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -61,12 +57,12 @@ describe("FinanceStorageService", () => {
     service = TestBed.inject(FinanceStorageService);
   });
 
-  it("should be created without data", () => {
+  it('should be created without data', () => {
     expect(service).toBeTruthy();
   });
 
-  xdescribe("updatePreviousDocWithPlanExgRate", () => {
-    const apiurl: string = environment.ApiUrl + "/FinanceDocWithPlanExgRate";
+  xdescribe('updatePreviousDocWithPlanExgRate', () => {
+    const apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
     });
@@ -76,50 +72,42 @@ describe("FinanceStorageService", () => {
       httpTestingController.verify();
     });
 
-    it("should return doc for success case", () => {
-      service
-        .updatePreviousDocWithPlanExgRate(
-          {} as DocumentWithPlanExgRateForUpdate
-        )
-        .subscribe(
-          (data: any) => {
-            expect(data).toBeTruthy();
-          },
-          (fail: any) => {
-            // Empty
-          }
-        );
+    it('should return doc for success case', () => {
+      service.updatePreviousDocWithPlanExgRate({} as DocumentWithPlanExgRateForUpdate).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        }
+      );
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // Respond with the mock data
       req.flush({});
     });
 
-    it("should return error in case error appear", () => {
-      const msg = "server failed";
-      service
-        .updatePreviousDocWithPlanExgRate(
-          {} as DocumentWithPlanExgRateForUpdate
-        )
-        .subscribe(
-          (data: any) => {
-            fail("expected to fail");
-          },
-          (error: any) => {
-            expect(error).toContain(msg);
-          }
-        );
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.updatePreviousDocWithPlanExgRate({} as DocumentWithPlanExgRateForUpdate).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        }
+      );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === "POST" && requrl.url === apiurl;
+        return requrl.method === 'POST' && requrl.url === apiurl;
       });
 
       // respond with a 500 and the error message in the body
-      req.flush(msg, { status: 500, statusText: "server failed" });
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 });

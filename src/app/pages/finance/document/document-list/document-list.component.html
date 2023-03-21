@@ -2,20 +2,12 @@
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{
-          "Common.Overview" | transloco
-        }}</a></nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{
-        "Finance.Documents" | transloco
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'Finance.Documents' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>{{
-      "Finance.Document" | transloco
-    }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{
-      "Common.ListView" | transloco
-    }}</nz-page-header-subtitle>
+    <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <input
         nz-input
@@ -23,123 +15,69 @@
         placeholder="{{ 'Common.ShortcutID' | transloco }}"
         [(ngModel)]="shortcutDocID"
       />
-      <button
-        nz-button
-        nzType="text"
-        [disabled]="!shortcutDocID"
-        (click)="onOpenShortCutDocID()"
-      >
+      <button nz-button nzType="text" [disabled]="!shortcutDocID" (click)="onOpenShortCutDocID()">
         <i nz-icon nzType="folder-open" nzTheme="outline"></i>
       </button>
       <nz-divider nzType="vertical"></nz-divider>
-      <button
-        nz-button
-        nzType="primary"
-        nz-dropdown
-        [nzDropdownMenu]="menuCreateDocument"
-      >
-        {{ "Common.Create" | transloco }}
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="menuCreateDocument">
+        {{ 'Common.Create' | transloco }}
         <i nz-icon nzType="down"></i>
       </button>
       <nz-dropdown-menu #menuCreateDocument="nzDropdownMenu">
         <ul nz-menu nzSelectable>
           <li nz-menu-item (click)="onCreateNormalDocument()">
-            {{ "Finance.Document" | transloco }}
+            {{ 'Finance.Document' | transloco }}
           </li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateTransferDocument()"
-          >
-            {{ "Finance.TransferDocument" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateTransferDocument()">
+            {{ 'Finance.TransferDocument' | transloco }}
           </li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateExgDocument()"
-          >
-            {{ "Finance.CurrencyExchange" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateExgDocument()">
+            {{ 'Finance.CurrencyExchange' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateADPDocument()"
-          >
-            {{ "Finance.AdvancePayment" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateADPDocument()">
+            {{ 'Finance.AdvancePayment' | transloco }}
           </li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateADRDocument()"
-          >
-            {{ "Sys.DocTy.AdvancedRecv" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateADRDocument()">
+            {{ 'Sys.DocTy.AdvancedRecv' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateBorrowFromDocument()"
-          >
-            {{ "Sys.DocTy.BorrowFrom" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateBorrowFromDocument()">
+            {{ 'Sys.DocTy.BorrowFrom' | transloco }}
           </li>
           <!-- <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li> -->
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateRepayDocument()"
-          >
-            {{ "Sys.DocTy.Repay" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateRepayDocument()">
+            {{ 'Sys.DocTy.Repay' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateAssetBuyInDocument()"
-          >
-            {{ "Sys.DocTy.AssetBuyIn" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetBuyInDocument()">
+            {{ 'Sys.DocTy.AssetBuyIn' | transloco }}
           </li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateAssetSoldOutDocument()"
-          >
-            {{ "Sys.DocTy.AssetSoldOut" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetSoldOutDocument()">
+            {{ 'Sys.DocTy.AssetSoldOut' | transloco }}
           </li>
-          <li
-            nz-menu-item
-            [nzDisabled]="isChildMode"
-            (click)="onCreateAssetValChgDocument()"
-          >
-            {{ "Sys.DocTy.AssetValChg" | transloco }}
+          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetValChgDocument()">
+            {{ 'Sys.DocTy.AssetValChg' | transloco }}
           </li>
         </ul>
       </nz-dropdown-menu>
       <nz-divider nzType="vertical"></nz-divider>
-      <button
-        nz-button
-        nzType="primary"
-        nz-dropdown
-        [nzDropdownMenu]="menuMassCreateDocument"
-      >
-        {{ "Common.MassCreate" | transloco }}
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="menuMassCreateDocument">
+        {{ 'Common.MassCreate' | transloco }}
         <i nz-icon nzType="down"></i>
       </button>
       <nz-dropdown-menu #menuMassCreateDocument="nzDropdownMenu">
         <ul nz-menu nzSelectable>
           <li nz-menu-item (click)="onMassCreateNormalDocument()">
-            {{ "Finance.FreelyMassCreateNormalDocs" | transloco }}
+            {{ 'Finance.FreelyMassCreateNormalDocs' | transloco }}
           </li>
           <li nz-menu-item (click)="onMassCreateRecurredDocument()">
-            {{ "Finance.MassCreateRecurredNormalDocs" | transloco }}
+            {{ 'Finance.MassCreateRecurredNormalDocs' | transloco }}
           </li>
         </ul>
       </nz-dropdown-menu>
       <nz-divider nzType="vertical"></nz-divider>
-      <nz-range-picker
-        [(ngModel)]="selectedRange"
-        (ngModelChange)="onRangeChange($event)"
-      ></nz-range-picker>
+      <nz-range-picker [(ngModel)]="selectedRange" (ngModelChange)="onRangeChange($event)"></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
@@ -157,16 +95,16 @@
       <thead>
         <tr>
           <th nzShowExpand></th>
-          <th nzColumnKey="docid">{{ "Common.ID" | transloco }}</th>
-          <th nzColumnKey="curr">{{ "Finance.Currency" | transloco }}</th>
+          <th nzColumnKey="docid">{{ 'Common.ID' | transloco }}</th>
+          <th nzColumnKey="curr">{{ 'Finance.Currency' | transloco }}</th>
           <th nzColumnKey="date" [nzSortFn]="true" [nzSortOrder]="'descend'">
-            {{ "Common.Date" | transloco }}
+            {{ 'Common.Date' | transloco }}
           </th>
           <th nzColumnKey="doctype">
-            {{ "Finance.DocumentType" | transloco }}
+            {{ 'Finance.DocumentType' | transloco }}
           </th>
           <th nzColumnKey="desp" [nzSortFn]="true">
-            {{ "Common.Description" | transloco }}
+            {{ 'Common.Description' | transloco }}
           </th>
         </tr>
       </thead>
@@ -178,10 +116,10 @@
               {{ data.Id }}
               <nz-divider nzType="vertical"></nz-divider>
               <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
-                {{ "Common.Display" | transloco }}
+                {{ 'Common.Display' | transloco }}
               </button>
               <a nz-dropdown nz-dropdown [nzDropdownMenu]="menuForChange">
-                {{ "Common.Edit" | transloco }}
+                {{ 'Common.Edit' | transloco }}
                 <i nz-icon nzType="down"></i>
               </a>
               <nz-divider nzType="vertical"></nz-divider>
@@ -189,28 +127,23 @@
                 nz-button
                 nzType="link"
                 nz-popconfirm
-                [nzPopconfirmTitle]="
-                  'Common.OperationConfirmationContent' | transloco
-                "
+                [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
                 (nzOnConfirm)="onDelete(data.Id!)"
                 nzDanger
               >
-                {{ "Common.Delete" | transloco }}
+                {{ 'Common.Delete' | transloco }}
               </button>
               <nz-dropdown-menu #menuForChange="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item (click)="onEdit(data.Id!)">
-                    {{ "Common.Edit" | transloco }}
+                    {{ 'Common.Edit' | transloco }}
                   </li>
                   <li nz-menu-divider></li>
-                  <li
-                    nz-menu-item
-                    (click)="onChangeDate(data.Id!, data.TranDate)"
-                  >
-                    {{ "Finance.ChangeDate" | transloco }}
+                  <li nz-menu-item (click)="onChangeDate(data.Id!, data.TranDate)">
+                    {{ 'Finance.ChangeDate' | transloco }}
                   </li>
                   <li nz-menu-item (click)="onChangeDesp(data.Id!, data.Desp!)">
-                    {{ "Finance.ChangeDesp" | transloco }}
+                    {{ 'Finance.ChangeDesp' | transloco }}
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -222,21 +155,17 @@
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id!]">
             <td colspan="6">
-              <nz-table
-                #itemTable
-                [nzData]="data.Items"
-                [nzShowPagination]="false"
-              >
+              <nz-table #itemTable [nzData]="data.Items" [nzShowPagination]="false">
                 <thead>
                   <tr>
                     <th nzWidth="50px">#</th>
-                    <th nzWidth="200px">{{ "Finance.Account" | transloco }}</th>
+                    <th nzWidth="200px">{{ 'Finance.Account' | transloco }}</th>
                     <th nzWidth="300px">
-                      {{ "Finance.TransactionType" | transloco }}
+                      {{ 'Finance.TransactionType' | transloco }}
                     </th>
-                    <th nzWidth="200px">{{ "Finance.Amount" | transloco }}</th>
+                    <th nzWidth="200px">{{ 'Finance.Amount' | transloco }}</th>
                     <th nzWidth="400px">
-                      {{ "Common.Description" | transloco }}
+                      {{ 'Common.Description' | transloco }}
                     </th>
                   </tr>
                 </thead>
@@ -246,7 +175,7 @@
                     <td>{{ getAccountName(itemdata.AccountId!) }}</td>
                     <td>{{ getTranTypeName(itemdata.TranType!) }}</td>
                     <td>
-                      {{ itemdata.TranAmount | number : "1.2-2" }}
+                      {{ itemdata.TranAmount | number : '1.2-2' }}
                       <small>{{ getCurrencyName(data.TranCurr!) }}</small>
                     </td>
                     <td>{{ itemdata.Desp }}</td>

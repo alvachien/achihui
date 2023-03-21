@@ -1,14 +1,14 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { NzModalRef } from "ng-zorro-antd/modal";
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
-import { Person } from "src/app/model";
-import { LibraryStorageService } from "src/app/services";
+import { Person } from 'src/app/model';
+import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: "hih-person-selection-dlg",
-  templateUrl: "./person-selection-dlg.component.html",
-  styleUrls: ["./person-selection-dlg.component.less"],
+  selector: 'hih-person-selection-dlg',
+  templateUrl: './person-selection-dlg.component.html',
+  styleUrls: ['./person-selection-dlg.component.less'],
 })
 export class PersonSelectionDlgComponent implements OnInit {
   checked = false;
@@ -33,13 +33,8 @@ export class PersonSelectionDlgComponent implements OnInit {
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfCurrentPagePerson.every((prn) =>
-      this.setOfCheckedId.has(prn.ID)
-    );
-    this.indeterminate =
-      this.listOfCurrentPagePerson.some((prn) =>
-        this.setOfCheckedId.has(prn.ID)
-      ) && !this.checked;
+    this.checked = this.listOfCurrentPagePerson.every((prn) => this.setOfCheckedId.has(prn.ID));
+    this.indeterminate = this.listOfCurrentPagePerson.some((prn) => this.setOfCheckedId.has(prn.ID)) && !this.checked;
   }
 
   onItemChecked(id: number, checked: boolean): void {
@@ -48,9 +43,7 @@ export class PersonSelectionDlgComponent implements OnInit {
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfCurrentPagePerson.forEach((prn) =>
-      this.updateCheckedSet(prn.ID, checked)
-    );
+    this.listOfCurrentPagePerson.forEach((prn) => this.updateCheckedSet(prn.ID, checked));
     this.refreshCheckedStatus();
   }
 
@@ -66,7 +59,7 @@ export class PersonSelectionDlgComponent implements OnInit {
       next: (data) => {
         this.listAllPerson = data;
       },
-      error: (err) => {
+      error: () => {
         // Error handling
       },
     });

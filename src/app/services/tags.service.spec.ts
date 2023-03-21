@@ -1,25 +1,20 @@
-import { TestBed } from "@angular/core/testing";
-import { HttpClient } from "@angular/common/http";
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { BehaviorSubject } from "rxjs";
+import { TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { BehaviorSubject } from 'rxjs';
 
-import { TagsService } from "./tags.service";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
-import { FakeDataHelper } from "../../testing";
-import { environment } from "../../environments/environment";
+import { TagsService } from './tags.service';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
+import { FakeDataHelper } from '../../testing';
+import { environment } from '../../environments/environment';
 
-describe("TagsService", () => {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-
+describe('TagsService', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let fakeData: FakeDataHelper;
   let service: TagsService;
-  const tagsAPIURL: any = environment.ApiUrl + "/Tag";
+  const tagsAPIURL = environment.ApiUrl + '/Tag';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -51,12 +46,12 @@ describe("TagsService", () => {
     httpTestingController.verify();
   });
 
-  it("1. should be created", () => {
+  it('1. should be created', () => {
     expect(service).toBeTruthy();
   });
 
   /// TagsService method tests begin ///
-  describe("2. fetchAllTags", () => {
+  describe('2. fetchAllTags', () => {
     beforeEach(() => {
       service = TestBed.inject(TagsService);
     });
@@ -65,13 +60,10 @@ describe("TagsService", () => {
       httpTestingController.verify();
     });
 
-    it("should return expected tags (called once)", () => {
+    it('should return expected tags (called once)', () => {
       service.fetchAllTags(true).subscribe(
         (curries: any) => {
-          expect(curries.length).toEqual(
-            fakeData.tagsFromAPI.length,
-            "should return expected tags"
-          );
+          expect(curries.length).toEqual(fakeData.tagsFromAPI.length, 'should return expected tags');
         },
         (fail: any) => {
           // Empty
@@ -80,24 +72,18 @@ describe("TagsService", () => {
 
       // Service should have made one request to GET tags from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tagsAPIURL &&
-          requrl.params.has("hid")
-        );
+        return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
-      expect(req.request.params.get("hid")).toEqual(
-        fakeData.chosedHome.ID.toString()
-      );
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock tags
       req.flush(fakeData.tagsFromAPI);
     });
 
-    it("should be OK returning no tags", () => {
+    it('should be OK returning no tags', () => {
       service.fetchAllTags(true).subscribe(
         (curries: any) => {
-          expect(curries.length).toEqual(0, "should have empty tags array");
+          expect(curries.length).toEqual(0, 'should have empty tags array');
         },
         (fail: any) => {
           // Empty
@@ -105,24 +91,18 @@ describe("TagsService", () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tagsAPIURL &&
-          requrl.params.has("hid")
-        );
+        return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
-      expect(req.request.params.get("hid")).toEqual(
-        fakeData.chosedHome.ID.toString()
-      );
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
     });
 
-    it("should return error in case error appear", () => {
-      const msg = "Deliberate 404";
+    it('should return error in case error appear', () => {
+      const msg = 'Deliberate 404';
       service.fetchAllTags(true).subscribe(
         (curries: any) => {
-          fail("expected to fail");
+          fail('expected to fail');
         },
         (error: any) => {
           expect(error).toContain(msg);
@@ -130,15 +110,11 @@ describe("TagsService", () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return (
-          requrl.method === "GET" &&
-          requrl.url === tagsAPIURL &&
-          requrl.params.has("hid")
-        );
+        return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
 
       // respond with a 404 and the error message in the body
-      req.flush(msg, { status: 404, statusText: "Not Found" });
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
   });
 });

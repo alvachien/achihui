@@ -1,6 +1,6 @@
-import { dateSplitChar, LogLevel } from "./common";
-import { DocumentItem } from "./financemodel";
-import { environment } from "../../environments/environment";
+import { dateSplitChar, LogLevel } from './common';
+import { DocumentItem } from './financemodel';
+import { environment } from '../../environments/environment';
 
 export enum ConsoleLogTypeEnum {
   log = 0,
@@ -21,16 +21,8 @@ export class ModelUtility {
    */
   public static DaysBetween(first: Date, second: Date): number {
     // Copy date parts of the timestamps, discarding the time parts.
-    const one: Date = new Date(
-      first.getFullYear(),
-      first.getMonth(),
-      first.getDate()
-    );
-    const two: Date = new Date(
-      second.getFullYear(),
-      second.getMonth(),
-      second.getDate()
-    );
+    const one: Date = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+    const two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
 
     // Do the math.
     const millisecondsPerDay: number = 1000 * 60 * 60 * 24;
@@ -58,13 +50,11 @@ export class ModelUtility {
   public static CheckMail(strMail: string): boolean {
     let isValid = false;
 
-    if (strMail.indexOf("@") >= 1) {
-      const mValidDom: string = strMail.substr(strMail.indexOf("@") + 1);
-      if (mValidDom.indexOf("@") === -1) {
-        if (mValidDom.indexOf(".") >= 1) {
-          const mValidDomE: string = mValidDom.substr(
-            mValidDom.indexOf(".") + 1
-          );
+    if (strMail.indexOf('@') >= 1) {
+      const mValidDom: string = strMail.substr(strMail.indexOf('@') + 1);
+      if (mValidDom.indexOf('@') === -1) {
+        if (mValidDom.indexOf('.') >= 1) {
+          const mValidDomE: string = mValidDom.substr(mValidDom.indexOf('.') + 1);
           if (mValidDomE.length >= 1) {
             isValid = true;
           }
@@ -82,11 +72,7 @@ export class ModelUtility {
    * @param maxLength Max. length allowed
    * @returns true if the string meet the length check
    */
-  public static CheckStringLength(
-    strField: string,
-    minlength: number,
-    maxLength: number
-  ): boolean {
+  public static CheckStringLength(strField: string, minlength: number, maxLength: number): boolean {
     const lengthDf: number = strField.length;
     let bResult = false;
 
@@ -151,7 +137,7 @@ export class ModelUtility {
    * @example Input: num=2,length=3; Output: 002
    */
   public static prefixInteger(num: number, length: number): string {
-    return (Array(length).join("0") + num).slice(-length);
+    return (Array(length).join('0') + num).slice(-length);
   }
 
   /**
@@ -164,7 +150,7 @@ export class ModelUtility {
    * @example Input: y=2018,m=11, Output: 2018-11
    */
   public static getYearMonthDisplayString(y: number, m: number): string {
-    return y.toString() + dateSplitChar + (m < 10 ? "0" + m : m).toString();
+    return y.toString() + dateSplitChar + (m < 10 ? '0' + m : m).toString();
   }
 
   /**
@@ -187,10 +173,7 @@ export class ModelUtility {
     return nMax + 1;
   }
 
-  public static writeConsoleLog(
-    log: string,
-    logType: ConsoleLogTypeEnum = ConsoleLogTypeEnum.log
-  ): void {
+  public static writeConsoleLog(log: string, logType: ConsoleLogTypeEnum = ConsoleLogTypeEnum.log): void {
     if (log) {
       switch (logType) {
         case ConsoleLogTypeEnum.debug:

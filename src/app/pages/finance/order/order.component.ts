@@ -1,9 +1,8 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-  selector: "hih-fin-order",
-  templateUrl: "./order.component.html",
-  styleUrls: ["./order.component.less"],
+  selector: 'hih-fin-order',
+  templateUrl: './order.component.html',
+  styleUrls: ['./order.component.less'],
 })
-export class OrderComponent {
-}
+export class OrderComponent {}

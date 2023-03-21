@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -6,14 +6,14 @@ import {
   UntypedFormArray,
   UntypedFormBuilder,
   AbstractControl,
-} from "@angular/forms";
-import { Router } from "@angular/router";
-import { ReplaySubject, forkJoin, of, interval, Observable, range } from "rxjs";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { takeUntil, finalize, mergeAll, map, catchError } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { takeUntil, finalize, mergeAll, map, catchError } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   financeDocTypeNormal,
@@ -42,22 +42,18 @@ import {
   RepeatedDatesAPIOutput,
   FinanceNormalDocItemMassCreate,
   UIDisplayString,
-} from "../../../../model";
-import { costObjectValidator } from "../../../../uimodel";
-import {
-  HomeDefOdataService,
-  UIStatusService,
-  FinanceOdataService,
-} from "../../../../services";
+} from '../../../../model';
+import { costObjectValidator } from '../../../../uimodel';
+import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 
 class DocumentCountByDateRange {
   StartDate: moment.Moment | null = null;
   get StartDateString(): string {
-    return this.StartDate ? this.StartDate.format(momentDateFormat) : "";
+    return this.StartDate ? this.StartDate.format(momentDateFormat) : '';
   }
   EndDate: moment.Moment | null = null;
   get EndDateString(): string {
-    return this.EndDate ? this.EndDate.format(momentDateFormat) : "";
+    return this.EndDate ? this.EndDate.format(momentDateFormat) : '';
   }
   expand = false;
   Items: DocumentItemView[] = [];
@@ -67,16 +63,15 @@ class DocumentCountByDateRange {
 }
 
 @Component({
-  selector: "hih-document-recurred-mass-create",
-  templateUrl: "./document-recurred-mass-create.component.html",
-  styleUrls: ["./document-recurred-mass-create.component.less"],
+  selector: 'hih-document-recurred-mass-create',
+  templateUrl: './document-recurred-mass-create.component.html',
+  styleUrls: ['./document-recurred-mass-create.component.less'],
 })
 export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
 
-  public arFrequencies: UIDisplayString[] =
-    UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public arFrequencies: UIDisplayString[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   public arUIOrders: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   public arCurrencies: Currency[] = [];
@@ -114,7 +109,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -122,10 +117,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
 
     this.searchFormGroup = new UntypedFormGroup({
-      dateRangeControl: new UntypedFormControl(
-        [new Date(), new Date()],
-        [Validators.required]
-      ),
+      dateRangeControl: new UntypedFormControl([new Date(), new Date()], [Validators.required]),
       frqControl: new UntypedFormControl(undefined, [Validators.required]),
       accountControl: new UntypedFormControl(undefined, [Validators.required]),
       tranTypeControl: new UntypedFormControl(),
@@ -137,15 +129,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.defaultValueFormGroup = new UntypedFormGroup(
       {
         dayOffsetControl: new UntypedFormControl(0),
-        accountControl: new UntypedFormControl(undefined, [
-          Validators.required,
-        ]),
-        tranTypeControl: new UntypedFormControl(undefined, [
-          Validators.required,
-        ]),
+        accountControl: new UntypedFormControl(undefined, [Validators.required]),
+        tranTypeControl: new UntypedFormControl(undefined, [Validators.required]),
         amountControl: new UntypedFormControl(0, [Validators.required]),
         // currControl: ['', Validators.required],
-        despControl: new UntypedFormControl("", [Validators.required]),
+        despControl: new UntypedFormControl('', [Validators.required]),
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
@@ -159,7 +147,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -200,7 +188,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -210,7 +198,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -272,35 +260,35 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     }
   }
   public getConfirmDocumentTitle(idx: number): string {
-    return translate("Finance.Document") + " #" + (idx + 1);
+    return translate('Finance.Document') + ' #' + (idx + 1);
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name ? acntObj.Name : "";
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : "";
+    return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
     const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : "";
+    return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
     const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : "";
+    return tranTypeObj ? tranTypeObj.Name : '';
   }
   get getItemFormArray(): UntypedFormArray {
-    return this.itemsFormGroup?.controls["items"] as UntypedFormArray;
+    return this.itemsFormGroup?.controls['items'] as UntypedFormArray;
   }
   get getItemControls(): UntypedFormGroup[] {
     return this.getItemFormArray.controls as UntypedFormGroup[];
@@ -310,20 +298,19 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
     // Date range
-    const dtrange = this.searchFormGroup.get("dateRangeControl")
-      ?.value as any[];
+    const dtrange = this.searchFormGroup.get('dateRangeControl')?.value as any[];
     filters.push({
-      fieldName: "TransactionDate",
+      fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
       lowValue: moment(dtrange[0] as Date).format(momentDateFormat),
       valueType: GeneralFilterValueType.date,
       highValue: moment(dtrange[1] as Date).format(momentDateFormat),
     });
     // Tran. type
-    let idval = this.searchFormGroup.get("tranTypeControl")?.value;
+    let idval = this.searchFormGroup.get('tranTypeControl')?.value;
     if (idval) {
       filters.push({
-        fieldName: "TransactionType",
+        fieldName: 'TransactionType',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: idval as number,
         valueType: GeneralFilterValueType.number,
@@ -331,10 +318,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Account
-    idval = this.searchFormGroup.get("accountControl")?.value;
+    idval = this.searchFormGroup.get('accountControl')?.value;
     if (idval) {
       filters.push({
-        fieldName: "AccountID",
+        fieldName: 'AccountID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: idval as number,
         valueType: GeneralFilterValueType.number,
@@ -342,10 +329,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Control center
-    idval = this.searchFormGroup.get("ccControl")?.value;
+    idval = this.searchFormGroup.get('ccControl')?.value;
     if (idval) {
       filters.push({
-        fieldName: "ControlCenterID",
+        fieldName: 'ControlCenterID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: idval as number,
         valueType: GeneralFilterValueType.number,
@@ -353,10 +340,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
     }
     // Order
-    idval = this.searchFormGroup.get("orderControl")?.value;
+    idval = this.searchFormGroup.get('orderControl')?.value;
     if (idval) {
       filters.push({
-        fieldName: "OrderID",
+        fieldName: 'OrderID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: idval as number,
         valueType: GeneralFilterValueType.number,
@@ -367,14 +354,10 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     const datinput: RepeatedDatesAPIInput = {
       StartDate: moment(dtrange[0] as Date),
       EndDate: moment(dtrange[1] as Date),
-      RepeatType: this.searchFormGroup.get("frqControl")
-        ?.value as RepeatFrequencyEnum,
+      RepeatType: this.searchFormGroup.get('frqControl')?.value as RepeatFrequencyEnum,
     };
 
-    forkJoin([
-      this.odataService.getRepeatedDates(datinput),
-      this.odataService.searchDocItem(filters),
-    ])
+    forkJoin([this.odataService.getRepeatedDates(datinput), this.odataService.searchDocItem(filters)])
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isReadingExistingItem = false))
@@ -389,12 +372,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
           this.listDates.forEach((datrange) => {
             const aritems: DocumentItemView[] = [];
             arallitems.forEach((div: DocumentItemView) => {
-              if (
-                moment(div.TransactionDate).isBetween(
-                  datrange.StartDate,
-                  datrange.EndDate
-                )
-              ) {
+              if (moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate)) {
                 aritems.push(div);
               }
             });
@@ -413,7 +391,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -424,35 +402,25 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   private prepareDefaultValue(): void {
     // Fetch data from search
     // 0. Account
-    if (this.searchFormGroup.get("accountControl")?.value) {
-      this.defaultValueFormGroup
-        .get("accountControl")
-        ?.setValue(this.searchFormGroup.get("accountControl")?.value);
+    if (this.searchFormGroup.get('accountControl')?.value) {
+      this.defaultValueFormGroup.get('accountControl')?.setValue(this.searchFormGroup.get('accountControl')?.value);
     }
     // 1. Control center
-    if (this.searchFormGroup.get("ccControl")?.value) {
-      this.defaultValueFormGroup
-        .get("ccControl")
-        ?.setValue(this.searchFormGroup.get("ccControl")?.value);
+    if (this.searchFormGroup.get('ccControl')?.value) {
+      this.defaultValueFormGroup.get('ccControl')?.setValue(this.searchFormGroup.get('ccControl')?.value);
     }
     // 2. Order
-    if (this.searchFormGroup.get("orderControl")?.value) {
-      this.defaultValueFormGroup
-        .get("orderControl")
-        ?.setValue(this.searchFormGroup.get("orderControl")?.value);
+    if (this.searchFormGroup.get('orderControl')?.value) {
+      this.defaultValueFormGroup.get('orderControl')?.setValue(this.searchFormGroup.get('orderControl')?.value);
     }
     // 3. Tran. type
-    if (this.searchFormGroup.get("tranTypeControl")?.value) {
-      this.defaultValueFormGroup
-        .get("tranTypeControl")
-        ?.setValue(this.searchFormGroup.get("tranTypeControl")?.value);
+    if (this.searchFormGroup.get('tranTypeControl')?.value) {
+      this.defaultValueFormGroup.get('tranTypeControl')?.setValue(this.searchFormGroup.get('tranTypeControl')?.value);
     }
   }
   // Step 3. Items
   private generateItems(): void {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     control.clear(); // Clear it
 
     const defval = this.defaultValueFormGroup.value;
@@ -461,19 +429,17 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         const newItem: any = this.initItem();
         let stdat = docitems.StartDate!.clone();
         if (defval.dayOffsetControl) {
-          stdat = stdat.add(defval.dayOffsetControl, "days");
+          stdat = stdat.add(defval.dayOffsetControl, 'days');
         }
-        newItem.get("dateControl").setValue(stdat.toDate());
+        newItem.get('dateControl').setValue(stdat.toDate());
         // Desp
-        newItem
-          .get("despControl")
-          .setValue(defval.despControl + " " + docitems.StartDateString);
+        newItem.get('despControl').setValue(defval.despControl + ' ' + docitems.StartDateString);
 
-        newItem.get("accountControl").setValue(defval.accountControl);
-        newItem.get("tranTypeControl").setValue(defval.tranTypeControl);
-        newItem.get("amountControl").setValue(defval.amountControl);
-        newItem.get("ccControl").setValue(defval.ccControl);
-        newItem.get("orderControl").setValue(defval.orderControl);
+        newItem.get('accountControl').setValue(defval.accountControl);
+        newItem.get('tranTypeControl').setValue(defval.tranTypeControl);
+        newItem.get('amountControl').setValue(defval.amountControl);
+        newItem.get('ccControl').setValue(defval.ccControl);
+        newItem.get('orderControl').setValue(defval.orderControl);
 
         control.push(newItem);
       }
@@ -487,7 +453,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         tranTypeControl: [undefined, Validators.required],
         amountControl: [0, Validators.required],
         // currControl: ['', Validators.required],
-        despControl: ["", Validators.required],
+        despControl: ['', Validators.required],
         ccControl: [undefined],
         orderControl: [undefined],
       },
@@ -520,28 +486,24 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
 
   private createItem(): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const newItem: UntypedFormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
-      newItem.get("dateControl")?.setValue(oldItem.dateControl);
-      newItem.get("accountControl")?.setValue(oldItem.accountControl);
-      newItem.get("tranTypeControl")?.setValue(oldItem.tranTypeControl);
-      newItem.get("amountControl")?.setValue(oldItem.amountControl);
-      newItem.get("despControl")?.setValue(oldItem.despControl);
-      newItem.get("ccControl")?.setValue(oldItem.ccControl);
-      newItem.get("orderControl")?.setValue(oldItem.orderControl);
+      newItem.get('dateControl')?.setValue(oldItem.dateControl);
+      newItem.get('accountControl')?.setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl')?.setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl')?.setValue(oldItem.amountControl);
+      newItem.get('despControl')?.setValue(oldItem.despControl);
+      newItem.get('ccControl')?.setValue(oldItem.ccControl);
+      newItem.get('orderControl')?.setValue(oldItem.orderControl);
     }
 
     control.push(newItem);
@@ -549,17 +511,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return control.length - 1;
   }
   private removeItem(i: number): void {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     control.removeAt(i);
   }
   // Step 4: Confirm
   private generateMassDocumentItems(): void {
     this.arItems = [];
-    const controlArrays: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const controlArrays: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
 
     for (let i = 0; i < controlArrays.length; i++) {
       const control = controlArrays.value[i];
@@ -595,9 +553,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
       let docObj = this.confirmInfo.find((val) => {
-        return (
-          val.TranDateFormatString === item.tranDate.format(momentDateFormat)
-        );
+        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
       });
 
       if (docObj !== undefined) {
@@ -677,12 +633,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         finalize(() => (this.isDocPosting = false))
       )
       .subscribe({
-        next: (rsts: {
-          PostedDocuments: Document[];
-          FailedDocuments: Document[];
-        }) => {
+        next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent doPosting massCreateNormalDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent doPosting massCreateNormalDocument...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -699,7 +652,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   }
   // Step 5: Result
   public onBackToListView(): void {
-    this.router.navigate(["/finance/document/list"]);
+    this.router.navigate(['/finance/document/list']);
   }
   public onResubmitFailedItems(): void {
     this.isDocPosting = true;
@@ -710,12 +663,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         finalize(() => (this.isDocPosting = false))
       )
       .subscribe({
-        next: (rsts: {
-          PostedDocuments: Document[];
-          FailedDocuments: Document[];
-        }) => {
+        next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
             ConsoleLogTypeEnum.debug
           );
 

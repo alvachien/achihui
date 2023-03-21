@@ -1,22 +1,17 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AccountCategoryListComponent } from "./account-category-list";
-import { AssetCategoryListComponent } from "./asset-category-list";
-import { DocTypeListComponent } from "./doc-type-list";
-import { TranTypeHierarchyComponent } from "./tran-type-hierarchy";
-import { TranTypeListComponent } from "./tran-type-list";
-import { ConfigComponent } from "./config.component";
-import {
-  getTranslocoModule,
-  FakeDataHelper,
-  asyncData,
-  asyncError,
-} from "../../../../testing";
-import { HomeDefOdataService } from "../../../services";
+import { AccountCategoryListComponent } from './account-category-list';
+import { AssetCategoryListComponent } from './asset-category-list';
+import { DocTypeListComponent } from './doc-type-list';
+import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
+import { TranTypeListComponent } from './tran-type-list';
+import { ConfigComponent } from './config.component';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import { HomeDefOdataService } from '../../../services';
 
-describe("ConfigComponent", () => {
+describe('ConfigComponent', () => {
   let component: ConfigComponent;
   let fixture: ComponentFixture<ConfigComponent>;
   let fakeData: FakeDataHelper;
@@ -36,12 +31,7 @@ describe("ConfigComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       declarations: [
         AccountCategoryListComponent,
         AssetCategoryListComponent,
@@ -60,7 +50,7 @@ describe("ConfigComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

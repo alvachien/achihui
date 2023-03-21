@@ -1,1 +1,1 @@
-export * from "./user-setting.component";
+export * from './user-setting.component';

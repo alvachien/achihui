@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
-import { UIDisplayStringUtil } from "../../../model";
-import { AuthService, HomeDefOdataService } from "../../../services";
+import { UIDisplayStringUtil } from '../../../model';
+import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
-  selector: "hih-user-detail",
-  templateUrl: "./user-detail.component.html",
-  styleUrls: ["./user-detail.component.less"],
+  selector: 'hih-user-detail',
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.less'],
 })
 export class UserDetailComponent implements OnInit {
   userID: string | null = null;
@@ -18,10 +18,7 @@ export class UserDetailComponent implements OnInit {
   currentHomeMemIsChild: boolean | null = null;
   currentHomeMemRelI18n: string | null = null;
 
-  constructor(
-    private authService: AuthService,
-    private homeService: HomeDefOdataService
-  ) {}
+  constructor(private authService: AuthService, private homeService: HomeDefOdataService) {}
 
   ngOnInit() {
     this.authService.authContent.subscribe({
@@ -34,16 +31,12 @@ export class UserDetailComponent implements OnInit {
 
     if (this.homeService && this.homeService.ChosedHome) {
       this.currentHomeName = this.homeService.ChosedHome.Name;
-      this.currentHomeMemDisplayAs =
-        this.homeService.CurrentMemberInChosedHome!.DisplayAs;
-      this.currentHomeMemIsChild =
-        this.homeService.CurrentMemberInChosedHome!.IsChild;
+      this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome!.DisplayAs;
+      this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome!.IsChild;
 
       const arrels = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
       arrels.forEach((val) => {
-        if (
-          val.value === this.homeService.CurrentMemberInChosedHome!.Relation
-        ) {
+        if (val.value === this.homeService.CurrentMemberInChosedHome!.Relation) {
           this.currentHomeMemRelI18n = val.i18nterm;
         }
       });

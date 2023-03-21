@@ -1,25 +1,21 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
-import { Router } from "@angular/router";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import {
-  BookBorrowRecord,
-  ConsoleLogTypeEnum,
-  ModelUtility,
-} from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
-import { BorrowRecordCreateDlgComponent } from "../borrow-record-create-dlg";
-import { NzTableQueryParams } from "ng-zorro-antd/table";
+import { BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-  selector: "hih-borrow-record-list",
-  templateUrl: "./borrow-record-list.component.html",
-  styleUrls: ["./borrow-record-list.component.less"],
+  selector: 'hih-borrow-record-list',
+  templateUrl: './borrow-record-list.component.html',
+  styleUrls: ['./borrow-record-list.component.less'],
 })
 export class BorrowRecordListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -37,7 +33,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -45,7 +41,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   }
 
   getBorrowFromName(pid: number | null): string {
-    let orgname = "";
+    let orgname = '';
     if (pid !== null) {
       this.storageService.Organizations.forEach((org) => {
         if (org.ID === pid) {
@@ -58,7 +54,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -68,7 +64,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -90,32 +86,29 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     forkJoin([
       this.storageService.fetchAllOrganizationTypes(),
-      this.storageService.fetchBookBorrowRecords(
-        pageSize,
-        pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0
-      ),
+      this.storageService.fetchBookBorrowRecords(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0),
     ])
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: any[]) => {
+        next: (x) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit fetchBookBorrowRecords...",
+            'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent OnInit fetchBookBorrowRecords...',
             ConsoleLogTypeEnum.debug
           );
 
           this.totalCount = x[1].totalCount;
           this.dataSet = x[1].contentList;
         },
-        error: (err: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BorrowRecordListComponent fetchBookBorrowRecords failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modal.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -133,14 +126,14 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
 
   onCreate(): void {
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.CreateBorrowRecord"),
+      nzTitle: translate('Library.CreateBorrowRecord'),
       nzWidth: 600,
       nzContent: BorrowRecordCreateDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzComponentParams: {},
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, OK button...",
+          'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, OK button...',
           ConsoleLogTypeEnum.debug
         );
         // this.listPresses = [];
@@ -154,7 +147,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -164,7 +157,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
@@ -175,16 +168,16 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   onEdit(bid: number): void {}
   onDelete(bid: number): void {
     this.modal.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
-      nzContent: translate("Common.ConfirmToDeleteSelectedItem"),
-      nzOkText: translate("Common.Yes"),
-      nzOkType: "primary",
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.storageService.deleteBookBorrowRecord(bid).subscribe({
           next: (data) => {
             const sdlg = this.modal.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.dataSet.findIndex((p) => p.ID === bid);
@@ -201,15 +194,15 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modal.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: "No",
-      nzOnCancel: () => console.log("Cancel"),
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel'),
     });
   }
 }

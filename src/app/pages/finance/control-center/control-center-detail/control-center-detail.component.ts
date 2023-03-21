@@ -1,41 +1,27 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { Router, ActivatedRoute } from "@angular/router";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  FinanceOdataService,
-  UIStatusService,
-  HomeDefOdataService,
-} from "../../../../services";
-import {
-  ControlCenter,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  getUIModeString,
-  HomeMember,
-} from "../../../../model";
-import { popupDialog } from "../../../message-dialog";
-import { translate } from "@ngneat/transloco";
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '../../../../model';
+import { popupDialog } from '../../../message-dialog';
+import { translate } from '@ngneat/transloco';
 
 @Component({
-  selector: "hih-fin-control-center-detail",
-  templateUrl: "./control-center-detail.component.html",
-  styleUrls: ["./control-center-detail.component.less"],
+  selector: 'hih-fin-control-center-detail',
+  templateUrl: './control-center-detail.component.html',
+  styleUrls: ['./control-center-detail.component.less'],
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   public existedCC: ControlCenter[] = [];
   public detailFormGroup: UntypedFormGroup;
@@ -57,7 +43,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
     this.isLoadingResults = false;
@@ -65,11 +51,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl(),
-      nameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(30),
-      ]),
-      cmtControl: new UntypedFormControl("", Validators.maxLength(45)),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
       parentControl: new UntypedFormControl(),
       ownerControl: new UntypedFormControl(),
     });
@@ -77,7 +60,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -91,12 +74,12 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-        } else if (x[0].path === "edit") {
+        if (x[0].path === 'create') {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -107,10 +90,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           case UIMode.Display: {
             this.isLoadingResults = true;
 
-            forkJoin([
-              this.odataService.fetchAllControlCenters(),
-              this.odataService.readControlCenter(this.routerID),
-            ])
+            forkJoin([this.odataService.fetchAllControlCenters(), this.odataService.readControlCenter(this.routerID)])
               .pipe(
                 takeUntil(this._destroyed$!),
                 finalize(() => (this.isLoadingResults = false))
@@ -119,19 +99,11 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 next: (rsts: any[]) => {
                   this.existedCC = rsts[0];
 
-                  this.detailFormGroup.get("idControl")?.setValue(rsts[1].Id);
-                  this.detailFormGroup
-                    .get("nameControl")
-                    ?.setValue(rsts[1].Name);
-                  this.detailFormGroup
-                    .get("cmtControl")
-                    ?.setValue(rsts[1].Comment);
-                  this.detailFormGroup
-                    .get("parentControl")
-                    ?.setValue(rsts[1].ParentId);
-                  this.detailFormGroup
-                    .get("ownerControl")
-                    ?.setValue(rsts[1].Owner);
+                  this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
+                  this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+                  this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
+                  this.detailFormGroup.get('parentControl')?.setValue(rsts[1].ParentId);
+                  this.detailFormGroup.get('ownerControl')?.setValue(rsts[1].Owner);
                   this.detailFormGroup.markAsPristine();
                   if (this.uiMode === UIMode.Display) {
                     this.detailFormGroup.disable();
@@ -146,7 +118,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                   );
 
                   this.modalService.create({
-                    nzTitle: translate("Common.Error"),
+                    nzTitle: translate('Common.Error'),
                     nzContent: error.toString(),
                     nzClosable: true,
                   });
@@ -167,7 +139,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               .subscribe({
                 next: (cclist: ControlCenter[]) => {
                   ModelUtility.writeConsoleLog(
-                    "AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...",
+                    'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
                     ConsoleLogTypeEnum.debug
                   );
 
@@ -181,7 +153,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                   );
 
                   this.modalService.create({
-                    nzTitle: translate("Common.Error"),
+                    nzTitle: translate('Common.Error'),
                     nzContent: error.toString(),
                     nzClosable: true,
                   });
@@ -196,7 +168,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -214,7 +186,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       })
     ) {
       // Error dialog
-      popupDialog(this.modalService, "Common.Error", detailObject.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       return;
     }
   }
@@ -231,7 +203,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       })
     ) {
       // Error dialog
-      popupDialog(this.modalService, "Common.Error", detailObject.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       return;
     }
 
@@ -245,16 +217,16 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       // parentControl: new FormControl(),
       // ownerControl: new FormControl(),
 
-      if (this.detailFormGroup.get("nameControl")?.dirty) {
+      if (this.detailFormGroup.get('nameControl')?.dirty) {
         arcontent.Name = detailObject.Name;
       }
-      if (this.detailFormGroup.get("cmtControl")?.dirty) {
+      if (this.detailFormGroup.get('cmtControl')?.dirty) {
         arcontent.Comment = detailObject.Comment;
       }
-      if (this.detailFormGroup.get("parentControl")?.dirty) {
+      if (this.detailFormGroup.get('parentControl')?.dirty) {
         arcontent.ParentId = detailObject.ParentId;
       }
-      if (this.detailFormGroup.get("ownerControl")?.dirty) {
+      if (this.detailFormGroup.get('ownerControl')?.dirty) {
         arcontent.Owner = detailObject.Owner;
       }
 
@@ -265,10 +237,10 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private _generateObject(): ControlCenter {
     const detailObject: ControlCenter = new ControlCenter();
     detailObject.HID = this.homeService.ChosedHome!.ID;
-    detailObject.Name = this.detailFormGroup.get("nameControl")?.value;
-    detailObject.Comment = this.detailFormGroup.get("cmtControl")?.value;
-    detailObject.ParentId = this.detailFormGroup.get("parentControl")?.value;
-    detailObject.Owner = this.detailFormGroup.get("ownerControl")?.value;
+    detailObject.Name = this.detailFormGroup.get('nameControl')?.value;
+    detailObject.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    detailObject.ParentId = this.detailFormGroup.get('parentControl')?.value;
+    detailObject.Owner = this.detailFormGroup.get('ownerControl')?.value;
     return detailObject;
   }
 
@@ -289,7 +261,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           );
 
           // Show the result dialog
-          this.router.navigate(["/finance/controlcenter/display/", x.Id]);
+          this.router.navigate(['/finance/controlcenter/display/', x.Id]);
         },
         (error: any) => {
           ModelUtility.writeConsoleLog(
@@ -298,7 +270,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           );
           // Show error message
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -318,7 +290,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           );
 
           // Show the result dialog
-          this.router.navigate(["/finance/controlcenter/display/", x.Id]);
+          this.router.navigate(['/finance/controlcenter/display/', x.Id]);
         },
         (error: any) => {
           ModelUtility.writeConsoleLog(
@@ -327,7 +299,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           );
           // Show error message
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });

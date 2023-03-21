@@ -2,29 +2,23 @@
 // Unit test for homedef.ts
 //
 
-import {
-  HomeMember,
-  HomeDef,
-  HomeMemberRelationEnum,
-  HomeMsg,
-  HomeKeyFigure,
-} from "./homedef";
+import { HomeMember, HomeDef, HomeMemberRelationEnum, HomeMsg, HomeKeyFigure } from './homedef';
 
-describe("HomeMember", () => {
+describe('HomeMember', () => {
   let hmem: HomeMember;
 
   beforeEach(() => {
     hmem = new HomeMember();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(hmem).toBeTruthy();
   });
 
-  it("generate and parse JSON", () => {
+  it('generate and parse JSON', () => {
     hmem.HomeID = 1;
-    hmem.User = "abc";
-    hmem.DisplayAs = "Abc";
+    hmem.User = 'abc';
+    hmem.DisplayAs = 'Abc';
     hmem.Relation = HomeMemberRelationEnum.Self;
 
     const jdata = hmem.generateJSONData();
@@ -40,42 +34,42 @@ describe("HomeMember", () => {
   });
 });
 
-describe("HomeDef", () => {
+describe('HomeDef', () => {
   let hdobj: HomeDef;
 
   beforeEach(() => {
     hdobj = new HomeDef();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(hdobj).toBeTruthy();
     expect(hdobj.Members.length).toEqual(0);
     expect(hdobj.isValid).toBeFalsy();
   });
 
-  it("check valid", () => {
+  it('check valid', () => {
     expect(hdobj.isValid).toBeFalsy();
 
-    hdobj.Name = "test";
+    hdobj.Name = 'test';
     expect(hdobj.isValid).toBeFalsy();
 
-    hdobj.Host = "abc";
+    hdobj.Host = 'abc';
     expect(hdobj.isValid).toBeFalsy();
 
-    hdobj.BaseCurrency = "ABC";
+    hdobj.BaseCurrency = 'ABC';
     expect(hdobj.isValid).toBeFalsy();
   });
 
-  it("Generate and Parse JSON", () => {
-    hdobj.Name = "Test";
-    hdobj.BaseCurrency = "CNY";
-    hdobj.Details = "Test case 1";
-    hdobj.Host = "abc";
+  it('Generate and Parse JSON', () => {
+    hdobj.Name = 'Test';
+    hdobj.BaseCurrency = 'CNY';
+    hdobj.Details = 'Test case 1';
+    hdobj.Host = 'abc';
 
     const hmem: HomeMember = new HomeMember();
     hmem.HomeID = 1;
-    hmem.User = "abc";
-    hmem.DisplayAs = "Abc";
+    hmem.User = 'abc';
+    hmem.DisplayAs = 'Abc';
     hmem.Relation = HomeMemberRelationEnum.Self;
     hdobj.setMembers([hmem]);
 
@@ -96,54 +90,54 @@ describe("HomeDef", () => {
   });
 });
 
-describe("HomeMsg", () => {
+describe('HomeMsg', () => {
   let hmsg: HomeMsg;
 
   beforeEach(() => {
     hmsg = new HomeMsg();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(hmsg).toBeTruthy();
   });
 
-  it("onSetData and writeObject", () => {
+  it('onSetData and writeObject', () => {
     hmsg.HID = 1;
     hmsg.ID = 1;
-    hmsg.UserTo = "abc";
-    hmsg.UserFrom = "def";
-    hmsg.UserToDisplayAs = "ABC";
-    hmsg.UserFrom = "DEF";
+    hmsg.UserTo = 'abc';
+    hmsg.UserFrom = 'def';
+    hmsg.UserToDisplayAs = 'ABC';
+    hmsg.UserFrom = 'DEF';
     const sentdatestring = hmsg.SendDateFormatString;
     expect(sentdatestring).toBeTruthy();
-    hmsg.Title = "test";
-    hmsg.Content = "test";
+    hmsg.Title = 'test';
+    hmsg.Content = 'test';
     const gobj = hmsg.writeJSONObject();
     expect(gobj).toBeTruthy();
 
     const hmsg2 = new HomeMsg();
     hmsg2.onSetData(gobj);
     expect(hmsg2).toBeTruthy();
-    expect(hmsg2.UserTo).toEqual("abc");
-    expect(hmsg2.UserFrom).toEqual("DEF");
+    expect(hmsg2.UserTo).toEqual('abc');
+    expect(hmsg2.UserFrom).toEqual('DEF');
     expect(hmsg2.ID).toBe(1);
-    expect(hmsg2.Title).toEqual("test");
-    expect(hmsg2.Content).toEqual("test");
+    expect(hmsg2.Title).toEqual('test');
+    expect(hmsg2.Content).toEqual('test');
   });
 });
 
-describe("HomeKeyFigure", () => {
+describe('HomeKeyFigure', () => {
   let hkg = new HomeKeyFigure();
 
   beforeEach(() => {
     hkg = new HomeKeyFigure();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(hkg).toBeTruthy();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     hkg.onSetData({
       totalAsset: 100,
       totalLiability: 20,

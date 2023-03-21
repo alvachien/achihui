@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   UntypedFormGroup,
@@ -6,26 +6,21 @@ import {
   Validators,
   ValidatorFn,
   ValidationErrors,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService, NzModalRef } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  BlogPost,
-  BlogUserSetting,
-} from "../../../model";
-import { BlogOdataService, UIStatusService } from "../../../services";
+import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogUserSetting } from '../../../model';
+import { BlogOdataService, UIStatusService } from '../../../services';
 
 @Component({
-  selector: "hih-user-setting",
-  templateUrl: "./user-setting.component.html",
-  styleUrls: ["./user-setting.component.less"],
+  selector: 'hih-user-setting',
+  templateUrl: './user-setting.component.html',
+  styleUrls: ['./user-setting.component.less'],
 })
 export class UserSettingComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -35,33 +30,20 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   uiMode: UIMode = UIMode.Invalid;
 
   get isSaveButtonEnabled(): boolean {
-    return (
-      this.uiMode === UIMode.Update &&
-      this.detailFormGroup.enabled &&
-      this.detailFormGroup.valid
-    );
+    return this.uiMode === UIMode.Update && this.detailFormGroup.enabled && this.detailFormGroup.valid;
   }
 
-  constructor(
-    private odataService: BlogOdataService,
-    private modalService: NzModalService
-  ) {
+  constructor(private odataService: BlogOdataService, private modalService: NzModalService) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
     this.detailFormGroup = new UntypedFormGroup({
-      userControl: new UntypedFormControl(
-        { value: undefined, disabled: true },
-        [Validators.required]
-      ),
-      deployControl: new UntypedFormControl(
-        { value: undefined, disable: true },
-        [Validators.required]
-      ),
-      titleControl: new UntypedFormControl("", [Validators.required]),
-      footerControl: new UntypedFormControl("", [Validators.required]),
+      userControl: new UntypedFormControl({ value: undefined, disabled: true }, [Validators.required]),
+      deployControl: new UntypedFormControl({ value: undefined, disable: true }, [Validators.required]),
+      titleControl: new UntypedFormControl('', [Validators.required]),
+      footerControl: new UntypedFormControl('', [Validators.required]),
       authorControl: new UntypedFormControl(),
       authorDespControl: new UntypedFormControl(),
       authorImageControl: new UntypedFormControl(),
@@ -70,7 +52,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering UserSettingComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering UserSettingComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -82,20 +64,16 @@ export class UserSettingComponent implements OnInit, OnDestroy {
         next: (next) => {
           if (next !== null) {
             this.uiMode = UIMode.Update;
-            this.detailFormGroup.get("userControl")?.setValue(next.owner);
-            this.detailFormGroup.get("deployControl")?.setValue(next.deploy);
-            this.detailFormGroup.get("titleControl")?.setValue(next.title);
-            this.detailFormGroup.get("footerControl")?.setValue(next.footer);
-            this.detailFormGroup.get("authorControl")?.setValue(next.author);
-            this.detailFormGroup
-              .get("authorDespControl")
-              ?.setValue(next.authordesp);
-            this.detailFormGroup
-              .get("authorImageControl")
-              ?.setValue(next.authorimage);
+            this.detailFormGroup.get('userControl')?.setValue(next.owner);
+            this.detailFormGroup.get('deployControl')?.setValue(next.deploy);
+            this.detailFormGroup.get('titleControl')?.setValue(next.title);
+            this.detailFormGroup.get('footerControl')?.setValue(next.footer);
+            this.detailFormGroup.get('authorControl')?.setValue(next.author);
+            this.detailFormGroup.get('authorDespControl')?.setValue(next.authordesp);
+            this.detailFormGroup.get('authorImageControl')?.setValue(next.authorimage);
             this.detailFormGroup.enable();
-            this.detailFormGroup.get("userControl")?.disable();
-            this.detailFormGroup.get("deployControl")?.disable();
+            this.detailFormGroup.get('userControl')?.disable();
+            this.detailFormGroup.get('deployControl')?.disable();
           } else {
             this.uiMode = UIMode.Invalid;
             this.detailFormGroup.disable();
@@ -108,7 +86,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -118,7 +96,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering UserSettingComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering UserSettingComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -130,7 +108,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering UserSettingComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering UserSettingComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -139,14 +117,13 @@ export class UserSettingComponent implements OnInit, OnDestroy {
     }
 
     const settings = new BlogUserSetting();
-    settings.owner = this.detailFormGroup.get("userControl")?.value;
-    settings.deploy = this.detailFormGroup.get("deployControl")?.value;
-    settings.title = this.detailFormGroup.get("titleControl")?.value;
-    settings.footer = this.detailFormGroup.get("footerControl")?.value;
-    settings.author = this.detailFormGroup.get("authorControl")?.value;
-    settings.authordesp = this.detailFormGroup.get("authorDespControl")?.value;
-    settings.authorimage =
-      this.detailFormGroup.get("authorImageControl")?.value;
+    settings.owner = this.detailFormGroup.get('userControl')?.value;
+    settings.deploy = this.detailFormGroup.get('deployControl')?.value;
+    settings.title = this.detailFormGroup.get('titleControl')?.value;
+    settings.footer = this.detailFormGroup.get('footerControl')?.value;
+    settings.author = this.detailFormGroup.get('authorControl')?.value;
+    settings.authordesp = this.detailFormGroup.get('authorDespControl')?.value;
+    settings.authorimage = this.detailFormGroup.get('authorImageControl')?.value;
 
     this.odataService
       .updateUserSetting(settings)
@@ -154,17 +131,17 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (next) => {
           this.modalService.confirm({
-            nzTitle: translate("Common.Confirm"),
-            nzContent: translate("Blog.DeployContentNow"),
-            nzOkText: "OK",
-            nzCancelText: translate("Comon.Cancel"),
+            nzTitle: translate('Common.Confirm'),
+            nzContent: translate('Blog.DeployContentNow'),
+            nzOkText: 'OK',
+            nzCancelText: translate('Comon.Cancel'),
             nzOnOk: (okrst) => {
               this.odataService.deploySetting(settings.owner).subscribe({
                 next: (rst) => {
                   // Show success dialog
                   const ref: NzModalRef = this.modalService.success({
-                    nzTitle: translate("Blog.DeploySuccess"),
-                    nzContent: translate("Common.WillCloseIn1Second"),
+                    nzTitle: translate('Blog.DeploySuccess'),
+                    nzContent: translate('Common.WillCloseIn1Second'),
                   });
                   setTimeout(() => {
                     ref.close();
@@ -173,7 +150,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
                 error: (derr) => {
                   // Popup another dialog
                   this.modalService.error({
-                    nzTitle: translate("Common.Error"),
+                    nzTitle: translate('Common.Error'),
                     nzContent: derr.toString(),
                   });
                 },
@@ -189,7 +166,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });

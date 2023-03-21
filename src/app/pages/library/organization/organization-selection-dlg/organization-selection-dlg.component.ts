@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { NzModalRef } from "ng-zorro-antd/modal";
+import { Component, Input, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
-import { Organization } from "src/app/model";
-import { LibraryStorageService } from "src/app/services";
+import { Organization } from 'src/app/model';
+import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: "hih-organization-selection-dlg",
-  templateUrl: "./organization-selection-dlg.component.html",
-  styleUrls: ["./organization-selection-dlg.component.less"],
+  selector: 'hih-organization-selection-dlg',
+  templateUrl: './organization-selection-dlg.component.html',
+  styleUrls: ['./organization-selection-dlg.component.less'],
 })
 export class OrganizationSelectionDlgComponent implements OnInit {
   checked = false;
@@ -29,21 +29,15 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     }
   }
 
-  onCurrentPageDataChange(
-    listOfCurrentPageData: readonly Organization[]
-  ): void {
+  onCurrentPageDataChange(listOfCurrentPageData: readonly Organization[]): void {
     this.listOfOrganizationInCurrentPage = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfOrganizationInCurrentPage.every((prn) =>
-      this.setOfCheckedId.has(prn.ID)
-    );
+    this.checked = this.listOfOrganizationInCurrentPage.every((prn) => this.setOfCheckedId.has(prn.ID));
     this.indeterminate =
-      this.listOfOrganizationInCurrentPage.some((prn) =>
-        this.setOfCheckedId.has(prn.ID)
-      ) && !this.checked;
+      this.listOfOrganizationInCurrentPage.some((prn) => this.setOfCheckedId.has(prn.ID)) && !this.checked;
   }
 
   onItemChecked(id: number, checked: boolean): void {
@@ -52,9 +46,7 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfOrganizationInCurrentPage.forEach((prn) =>
-      this.updateCheckedSet(prn.ID, checked)
-    );
+    this.listOfOrganizationInCurrentPage.forEach((prn) => this.updateCheckedSet(prn.ID, checked));
     this.refreshCheckedStatus();
   }
 
@@ -76,9 +68,6 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     this.storageSrv.fetchAllOrganizations().subscribe({
       next: (data) => {
         this.listAllOrganization = data;
-      },
-      error: (err) => {
-        // Error handling
       },
     });
   }

@@ -1,1 +1,1 @@
-export * from "./operator-filter.pipe";
+export * from './operator-filter.pipe';

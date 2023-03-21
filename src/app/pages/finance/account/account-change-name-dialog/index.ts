@@ -1,1 +1,1 @@
-export * from "./account-change-name-dialog.component";
+export * from './account-change-name-dialog.component';

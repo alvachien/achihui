@@ -1,15 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from "@angular/core";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   ModelUtility,
@@ -20,27 +16,24 @@ import {
   Organization,
   BookCategory,
   Location,
-} from "../../../../model";
-import {
-  HomeDefOdataService,
-  LibraryStorageService,
-} from "../../../../services";
-import { PersonSelectionDlgComponent } from "../../person/person-selection-dlg";
-import { OrganizationSelectionDlgComponent } from "../../organization/organization-selection-dlg";
-import { BookCategorySelectionDlgComponent } from "../../config/book-category-selection-dlg";
-import { LocationSelectionDlgComponent } from "../../location/location-selection-dlg";
+} from '../../../../model';
+import { HomeDefOdataService, LibraryStorageService } from '../../../../services';
+import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
+import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
+import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 @Component({
-  selector: "hih-book-detail",
-  templateUrl: "./book-detail.component.html",
-  styleUrls: ["./book-detail.component.less"],
+  selector: 'hih-book-detail',
+  templateUrl: './book-detail.component.html',
+  styleUrls: ['./book-detail.component.less'],
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
   listAuthors: Person[] = [];
@@ -58,17 +51,14 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     private homeService: HomeDefOdataService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nnameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(100),
-      ]),
-      cnameControl: new UntypedFormControl("", [Validators.maxLength(100)]),
+      nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
       chnIsNativeControl: new UntypedFormControl(false),
     });
   }
@@ -79,7 +69,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -92,13 +82,13 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -118,16 +108,10 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe({
               next: (e: Book) => {
-                this.detailFormGroup.get("idControl")?.setValue(e.ID);
-                this.detailFormGroup
-                  .get("nnameControl")
-                  ?.setValue(e.NativeName);
-                this.detailFormGroup
-                  .get("cnameControl")
-                  ?.setValue(e.ChineseName);
-                this.detailFormGroup
-                  .get("chnIsNativeControl")
-                  ?.setValue(e.ChineseIsNative);
+                this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
+                this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
+                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e.ChineseIsNative);
                 this.listAuthors = e.Authors;
                 this.listCategories = e.Categories;
                 this.listLocations = e.Locations;
@@ -138,7 +122,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
@@ -147,7 +131,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modal.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -159,7 +143,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         case UIMode.Create:
         default: {
           // Do nothing
-          this.detailFormGroup.get("idControl")?.setValue("NEW OBJECT");
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;
         }
       }
@@ -168,7 +152,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookDetailComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering BookDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -184,7 +168,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       setPerson.add(prn.ID);
     });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.SelectAuthor"),
+      nzTitle: translate('Library.SelectAuthor'),
       nzWidth: 900,
       nzContent: PersonSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -193,7 +177,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, OK button...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, OK button...',
           ConsoleLogTypeEnum.debug
         );
         this.listAuthors = [];
@@ -207,7 +191,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -217,7 +201,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
@@ -229,7 +213,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       setPress.add(prs.ID);
     });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.SelectPress"),
+      nzTitle: translate('Library.SelectPress'),
       nzWidth: 900,
       nzContent: OrganizationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -238,7 +222,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...',
           ConsoleLogTypeEnum.debug
         );
         this.listPresses = [];
@@ -252,7 +236,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -262,7 +246,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
@@ -273,7 +257,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       setCategory.add(ctg.ID);
     });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.SelectCategory"),
+      nzTitle: translate('Library.SelectCategory'),
       nzWidth: 900,
       nzContent: BookCategorySelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -282,7 +266,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, OK button...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, OK button...',
           ConsoleLogTypeEnum.debug
         );
         this.listCategories = [];
@@ -296,7 +280,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -306,7 +290,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
@@ -317,7 +301,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       setLocation.add(loc.ID);
     });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.SelectLocation"),
+      nzTitle: translate('Library.SelectLocation'),
       nzWidth: 900,
       nzContent: LocationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -326,7 +310,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, OK button...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, OK button...',
           ConsoleLogTypeEnum.debug
         );
         this.listLocations = [];
@@ -340,7 +324,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -350,23 +334,19 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Do nothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
   }
 
   onSave(): void {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookDetailComponent onSave...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSave...', ConsoleLogTypeEnum.debug);
 
     const objtbo = new Book();
-    objtbo.ChineseName = this.detailFormGroup.get("cnameControl")?.value;
-    objtbo.NativeName = this.detailFormGroup.get("nnameControl")?.value;
-    objtbo.ChineseIsNative =
-      this.detailFormGroup.get("chnIsNativeControl")?.value;
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID!;
     objtbo.Authors = this.listAuthors.slice();
     objtbo.Translators = this.listTranslators.slice();
@@ -381,7 +361,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate(["/library/book/display/" + e.ID.toString()]);
+            this.router.navigate(['/library/book/display/' + e.ID.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
@@ -389,7 +369,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modal.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });

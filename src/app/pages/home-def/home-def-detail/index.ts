@@ -1,1 +1,1 @@
-export * from "./home-def-detail.component";
+export * from './home-def-detail.component';

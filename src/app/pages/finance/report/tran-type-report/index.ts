@@ -1,1 +1,1 @@
-export * from "./tran-type-report.component";
+export * from './tran-type-report.component';

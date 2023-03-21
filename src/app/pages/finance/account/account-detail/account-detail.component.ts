@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  QueryList,
-  ViewChild,
-  ChangeDetectorRef,
-  AfterViewInit,
-} from "@angular/core";
+import { Component, OnInit, OnDestroy, QueryList, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import {
   FormBuilder,
   UntypedFormGroup,
@@ -15,14 +7,14 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
-} from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, forkJoin, Subscription, ReplaySubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
-import * as moment from "moment";
+} from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, forkJoin, Subscription, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
+import * as moment from 'moment';
 
 import {
   Account,
@@ -61,31 +53,25 @@ import {
   BuildupOrderForSelection,
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
-} from "../../../../model";
-import {
-  HomeDefOdataService,
-  FinanceOdataService,
-  UIStatusService,
-} from "../../../../services";
-import { popupDialog } from "../../../message-dialog";
-import { AccountExtraDownpaymentComponent } from "../account-extra-downpayment";
-import { AccountExtraLoanComponent } from "../account-extra-loan";
-import { AccountExtraAssetComponent } from "../account-extra-asset";
-import { costObjectValidator } from "src/app/uimodel";
+} from '../../../../model';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
+import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
+import { AccountExtraLoanComponent } from '../account-extra-loan';
+import { AccountExtraAssetComponent } from '../account-extra-asset';
+import { costObjectValidator } from 'src/app/uimodel';
 
 @Component({
-  selector: "hih-fin-account-detail",
-  templateUrl: "./account-detail.component.html",
-  styleUrls: ["./account-detail.component.less"],
+  selector: 'hih-fin-account-detail',
+  templateUrl: './account-detail.component.html',
+  styleUrls: ['./account-detail.component.less'],
 })
-export class AccountDetailComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   arStatusDisplayStrings: UIDisplayString[] = [];
   arMembers: HomeMember[] = [];
@@ -110,11 +96,11 @@ export class AccountDetailComponent
   public arTranTypes: TranType[] = [];
   public tranType?: number;
 
-  @ViewChild("extraADP", { static: false })
+  @ViewChild('extraADP', { static: false })
   compExtraADP?: AccountExtraDownpaymentComponent;
-  @ViewChild("extraLoan", { static: false })
+  @ViewChild('extraLoan', { static: false })
   compExtraLoan?: AccountExtraLoanComponent;
-  @ViewChild("extraAsset", { static: false })
+  @ViewChild('extraAsset', { static: false })
   compExtraAsset?: AccountExtraAssetComponent;
 
   get isFieldChangable(): boolean {
@@ -124,7 +110,7 @@ export class AccountDetailComponent
     return this.uiMode === UIMode.Create;
   }
   get currentCategory(): number {
-    return this.headerFormGroup.get("ctgyControl")?.value;
+    return this.headerFormGroup.get('ctgyControl')?.value;
   }
   get isAssetAccount(): boolean {
     if (this.currentCategory === financeAccountCategoryAsset) {
@@ -178,15 +164,12 @@ export class AccountDetailComponent
 
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl(),
-      nameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(30),
-      ]),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
       ctgyControl: new UntypedFormControl(
         financeAccountCategoryCash,
         [Validators.required] // this.categoryValidator],
       ),
-      cmtControl: new UntypedFormControl("", Validators.maxLength(45)),
+      cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
       statusControl: new UntypedFormControl(AccountStatusEnum.Normal),
       ownerControl: new UntypedFormControl(),
     });
@@ -217,7 +200,7 @@ export class AccountDetailComponent
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
-    this.headerFormGroup.get("idControl")?.disable();
+    this.headerFormGroup.get('idControl')?.disable();
   }
 
   ngAfterViewInit(): void {
@@ -228,13 +211,13 @@ export class AccountDetailComponent
 
     this.activateRoute.url.subscribe((x: any) => {
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -261,65 +244,57 @@ export class AccountDetailComponent
                 const acnt = rst[3] as Account;
 
                 if (acnt.CategoryId === financeAccountCategoryAdvancePayment) {
-                  this.odataService
-                    .fetchAllDPTmpDocs({ AccountID: this.routerID })
-                    .subscribe({
-                      next: (val) => {
-                        (
-                          acnt.ExtraInfo as AccountExtraAdvancePayment
-                        ).dpTmpDocs = val;
-                        this._displayAccountContent(acnt);
+                  this.odataService.fetchAllDPTmpDocs({ AccountID: this.routerID }).subscribe({
+                    next: (val) => {
+                      (acnt.ExtraInfo as AccountExtraAdvancePayment).dpTmpDocs = val;
+                      this._displayAccountContent(acnt);
 
-                        this.headerFormGroup.markAsPristine();
-                        this.extraADPFormGroup.markAsPristine();
-                        this.extraAssetFormGroup.markAsPristine();
-                        this.extraLoanFormGroup.markAsPristine();
+                      this.headerFormGroup.markAsPristine();
+                      this.extraADPFormGroup.markAsPristine();
+                      this.extraAssetFormGroup.markAsPristine();
+                      this.extraLoanFormGroup.markAsPristine();
 
-                        if (this.uiMode === UIMode.Display) {
-                          this.headerFormGroup.disable();
-                          this.extraADPFormGroup.disable();
-                          this.extraAssetFormGroup.disable();
-                          this.extraLoanFormGroup.disable();
-                        }
-                      },
-                      error: (err) => {
-                        this.modalService.error({
-                          nzTitle: translate("Common.Error"),
-                          nzContent: err.toString(),
-                          nzClosable: true,
-                        });
-                      },
-                    });
-                } else if (
-                  acnt.CategoryId === financeAccountCategoryBorrowFrom
-                ) {
-                  this.odataService
-                    .fetchAllLoanTmpDocs({ AccountID: this.routerID })
-                    .subscribe({
-                      next: (val) => {
-                        (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
-                        this._displayAccountContent(acnt);
+                      if (this.uiMode === UIMode.Display) {
+                        this.headerFormGroup.disable();
+                        this.extraADPFormGroup.disable();
+                        this.extraAssetFormGroup.disable();
+                        this.extraLoanFormGroup.disable();
+                      }
+                    },
+                    error: (err) => {
+                      this.modalService.error({
+                        nzTitle: translate('Common.Error'),
+                        nzContent: err.toString(),
+                        nzClosable: true,
+                      });
+                    },
+                  });
+                } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
+                  this.odataService.fetchAllLoanTmpDocs({ AccountID: this.routerID }).subscribe({
+                    next: (val) => {
+                      (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
+                      this._displayAccountContent(acnt);
 
-                        this.headerFormGroup.markAsPristine();
-                        this.extraADPFormGroup.markAsPristine();
-                        this.extraAssetFormGroup.markAsPristine();
-                        this.extraLoanFormGroup.markAsPristine();
+                      this.headerFormGroup.markAsPristine();
+                      this.extraADPFormGroup.markAsPristine();
+                      this.extraAssetFormGroup.markAsPristine();
+                      this.extraLoanFormGroup.markAsPristine();
 
-                        if (this.uiMode === UIMode.Display) {
-                          this.headerFormGroup.disable();
-                          this.extraADPFormGroup.disable();
-                          this.extraAssetFormGroup.disable();
-                          this.extraLoanFormGroup.disable();
-                        }
-                      },
-                      error: (err) => {
-                        this.modalService.error({
-                          nzTitle: translate("Common.Error"),
-                          nzContent: err.toString(),
-                          nzClosable: true,
-                        });
-                      },
-                    });
+                      if (this.uiMode === UIMode.Display) {
+                        this.headerFormGroup.disable();
+                        this.extraADPFormGroup.disable();
+                        this.extraAssetFormGroup.disable();
+                        this.extraLoanFormGroup.disable();
+                      }
+                    },
+                    error: (err) => {
+                      this.modalService.error({
+                        nzTitle: translate('Common.Error'),
+                        nzContent: err.toString(),
+                        nzClosable: true,
+                      });
+                    },
+                  });
                 } else if (acnt.CategoryId === financeAccountCategoryAsset) {
                   this._displayAccountContent(acnt);
                   this.headerFormGroup.markAsPristine();
@@ -356,7 +331,7 @@ export class AccountDetailComponent
 
                 this.uiMode = UIMode.Invalid;
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -386,7 +361,7 @@ export class AccountDetailComponent
                 );
 
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -453,10 +428,7 @@ export class AccountDetailComponent
     return true;
   }
   public onSave(): void {
-    ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`,
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`, ConsoleLogTypeEnum.debug);
     if (this.uiMode === UIMode.Create) {
       this.onCreateImpl();
     } else if (this.uiMode === UIMode.Update) {
@@ -474,7 +446,7 @@ export class AccountDetailComponent
         Categories: this.arAccountCategories,
       })
     ) {
-      popupDialog(this.modalService, "Common.Error", acntobj.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
       return;
     }
 
@@ -492,15 +464,12 @@ export class AccountDetailComponent
             doc.DocType = financeDocTypeNormal;
             doc.HID = this.homeSevice.ChosedHome?.ID;
             doc.TranCurr = this.homeSevice.ChosedHome?.BaseCurrency!;
-            doc.TranDate = moment(
-              this.amountFormGroup.get("dateControl")?.value as Date
-            );
+            doc.TranDate = moment(this.amountFormGroup.get('dateControl')?.value as Date);
             const docitem: DocumentItem = new DocumentItem();
             docitem.AccountId = nacntid;
             docitem.Desp = doc.Desp;
             docitem.ItemId = 1;
-            docitem.TranAmount =
-              this.amountFormGroup.get("amountControl")?.value;
+            docitem.TranAmount = this.amountFormGroup.get('amountControl')?.value;
             let assetflag = false;
             this.arAccountCategories.find((ctgy) => {
               if (ctgy.ID === val.CategoryId) {
@@ -512,19 +481,18 @@ export class AccountDetailComponent
             } else {
               docitem.TranType = financeTranTypeOpeningLiability;
             }
-            docitem.ControlCenterId =
-              this.amountFormGroup.get("ccControl")?.value;
-            docitem.OrderId = this.amountFormGroup.get("orderControl")?.value;
+            docitem.ControlCenterId = this.amountFormGroup.get('ccControl')?.value;
+            docitem.OrderId = this.amountFormGroup.get('orderControl')?.value;
             doc.Items.push(docitem);
 
             this.odataService.createDocument(doc).subscribe({
               next: (crtdoc) => {
                 // Navigate to display mode
-                this.router.navigate(["/finance/document/display", crtdoc.Id]);
+                this.router.navigate(['/finance/document/display', crtdoc.Id]);
               },
               error: (err2) => {
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err2,
                   nzClosable: true,
                 });
@@ -532,12 +500,12 @@ export class AccountDetailComponent
             });
           } else {
             // Navigate to display mode
-            this.router.navigate(["/finance/account/display", val.Id]);
+            this.router.navigate(['/finance/account/display', val.Id]);
           }
         },
         error: (err) => {
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -555,7 +523,7 @@ export class AccountDetailComponent
         Categories: this.arAccountCategories,
       })
     ) {
-      popupDialog(this.modalService, "Common.Error", acntobj.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
       return;
     }
 
@@ -569,16 +537,16 @@ export class AccountDetailComponent
     // statusControl: new FormControl(),
     // ownerControl: new FormControl(),
 
-    if (this.headerFormGroup.get("nameControl")?.dirty) {
+    if (this.headerFormGroup.get('nameControl')?.dirty) {
       arcontent.Name = acntobj.Name;
     }
-    if (this.headerFormGroup.get("cmtControl")?.dirty) {
+    if (this.headerFormGroup.get('cmtControl')?.dirty) {
       arcontent.Comment = acntobj.Comment;
     }
-    if (this.headerFormGroup.get("statusControl")?.dirty) {
+    if (this.headerFormGroup.get('statusControl')?.dirty) {
       arcontent.Status = AccountStatusEnum[acntobj.Status];
     }
-    if (this.headerFormGroup.get("ownerControl")?.dirty) {
+    if (this.headerFormGroup.get('ownerControl')?.dirty) {
       arcontent.OwnerId = acntobj.OwnerId;
     }
 
@@ -589,11 +557,11 @@ export class AccountDetailComponent
       .subscribe({
         next: (val) => {
           // Navigate to display mode
-          this.router.navigate(["/finance/account/display", val.Id]);
+          this.router.navigate(['/finance/account/display', val.Id]);
         },
         error: (err) => {
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -604,29 +572,23 @@ export class AccountDetailComponent
   private _displayAccountContent(objAcnt: Account): void {
     // Step 0.
     this.headerFormGroup.reset();
-    this.headerFormGroup.get("idControl")?.setValue(objAcnt.Id);
-    this.headerFormGroup.get("nameControl")?.setValue(objAcnt.Name);
-    this.headerFormGroup.get("ctgyControl")?.setValue(objAcnt.CategoryId);
+    this.headerFormGroup.get('idControl')?.setValue(objAcnt.Id);
+    this.headerFormGroup.get('nameControl')?.setValue(objAcnt.Name);
+    this.headerFormGroup.get('ctgyControl')?.setValue(objAcnt.CategoryId);
     if (objAcnt.OwnerId) {
-      this.headerFormGroup.get("ownerControl")?.setValue(objAcnt.OwnerId);
+      this.headerFormGroup.get('ownerControl')?.setValue(objAcnt.OwnerId);
     }
     if (objAcnt.Comment) {
-      this.headerFormGroup.get("cmtControl")?.setValue(objAcnt.Comment);
+      this.headerFormGroup.get('cmtControl')?.setValue(objAcnt.Comment);
     }
-    this.headerFormGroup.get("statusControl")?.setValue(objAcnt.Status);
+    this.headerFormGroup.get('statusControl')?.setValue(objAcnt.Status);
     // Step 1.
     if (this.isADPAccount) {
-      this.extraADPFormGroup
-        .get("extADPControl")
-        ?.setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);
+      this.extraADPFormGroup.get('extADPControl')?.setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);
     } else if (this.isAssetAccount) {
-      this.extraAssetFormGroup
-        .get("extAssetControl")
-        ?.setValue(objAcnt.ExtraInfo as AccountExtraAsset);
+      this.extraAssetFormGroup.get('extAssetControl')?.setValue(objAcnt.ExtraInfo as AccountExtraAsset);
     } else if (this.isLoanAccount) {
-      this.extraLoanFormGroup
-        .get("extLoanControl")
-        ?.setValue(objAcnt.ExtraInfo as AccountExtraLoan);
+      this.extraLoanFormGroup.get('extLoanControl')?.setValue(objAcnt.ExtraInfo as AccountExtraLoan);
     }
   }
 
@@ -637,22 +599,21 @@ export class AccountDetailComponent
       acntObj.Id = this.routerID;
     }
 
-    acntObj.Name = this.headerFormGroup.get("nameControl")?.value;
+    acntObj.Name = this.headerFormGroup.get('nameControl')?.value;
     acntObj.CategoryId = this.currentCategory;
-    acntObj.OwnerId = this.headerFormGroup.get("ownerControl")?.value;
-    acntObj.Comment = this.headerFormGroup.get("cmtControl")?.value;
-    acntObj.Status = this.headerFormGroup.get("statusControl")?.value;
+    acntObj.OwnerId = this.headerFormGroup.get('ownerControl')?.value;
+    acntObj.Comment = this.headerFormGroup.get('cmtControl')?.value;
+    acntObj.Status = this.headerFormGroup.get('statusControl')?.value;
 
     if (this.isADPAccount) {
       // ADP
-      acntObj.ExtraInfo = this.extraADPFormGroup.get("extADPControl")?.value;
+      acntObj.ExtraInfo = this.extraADPFormGroup.get('extADPControl')?.value;
     } else if (this.isAssetAccount) {
       // Asset
-      acntObj.ExtraInfo =
-        this.extraAssetFormGroup.get("extAssetControl")?.value;
+      acntObj.ExtraInfo = this.extraAssetFormGroup.get('extAssetControl')?.value;
     } else if (this.isLoanAccount) {
       // Loan
-      acntObj.ExtraInfo = this.extraLoanFormGroup.get("extLoanControl")?.value;
+      acntObj.ExtraInfo = this.extraLoanFormGroup.get('extLoanControl')?.value;
     }
 
     return acntObj;

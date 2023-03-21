@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import * as moment from "moment";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
 import {
   LogLevel,
@@ -13,13 +13,13 @@ import {
   UIDisplayStringUtil,
   BlogCollection,
   momentDateFormat,
-} from "../../../../model";
-import { BlogOdataService, UIStatusService } from "../../../../services";
+} from '../../../../model';
+import { BlogOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-blog-collection-list",
-  templateUrl: "./collection-list.component.html",
-  styleUrls: ["./collection-list.component.less"],
+  selector: 'hih-blog-collection-list',
+  templateUrl: './collection-list.component.html',
+  styleUrls: ['./collection-list.component.less'],
 })
 export class CollectionListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -27,13 +27,9 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   dataSet: BlogCollection[] = [];
 
-  constructor(
-    private odataService: BlogOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  constructor(private odataService: BlogOdataService, private modalService: NzModalService, private router: Router) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -42,7 +38,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering CollectionListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -66,7 +62,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -76,7 +72,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering CollectionListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -87,13 +83,13 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   }
 
   onCreate(): void {
-    this.router.navigate(["/blog/collection/create"]);
+    this.router.navigate(['/blog/collection/create']);
   }
   onDisplay(rid: number): void {
-    this.router.navigate(["/blog/collection/display/" + rid.toString()]);
+    this.router.navigate(['/blog/collection/display/' + rid.toString()]);
   }
   onEdit(rid: number): void {
-    this.router.navigate(["/blog/collection/edit/" + rid.toString()]);
+    this.router.navigate(['/blog/collection/edit/' + rid.toString()]);
   }
   onDelete(rid: number) {
     // TBD.

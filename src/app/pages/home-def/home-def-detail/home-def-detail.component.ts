@@ -1,16 +1,11 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  Validators,
-  UntypedFormControl,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   HomeDef,
@@ -22,18 +17,13 @@ import {
   UIDisplayString,
   UIDisplayStringUtil,
   HomeMemberRelationEnum,
-} from "../../../model";
-import {
-  AuthService,
-  HomeDefOdataService,
-  FinanceOdataService,
-  UIStatusService,
-} from "../../../services";
+} from '../../../model';
+import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../services';
 
 @Component({
-  selector: "hih-home-def-detail",
-  templateUrl: "./home-def-detail.component.html",
-  styleUrls: ["./home-def-detail.component.less"],
+  selector: 'hih-home-def-detail',
+  templateUrl: './home-def-detail.component.html',
+  styleUrls: ['./home-def-detail.component.less'],
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -88,8 +78,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
   get currentHomeDefObject(): HomeDef {
     const hdobj = new HomeDef();
-    hdobj.Name = this.detailFormGroup.get("nameControl")?.value;
-    hdobj.BaseCurrency = this.detailFormGroup.get("baseCurrControl")?.value;
+    hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+    hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
     this.listMembers.forEach((val) => {
       hdobj.Members.push(val);
     });
@@ -106,7 +96,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -114,9 +104,9 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nameControl: new UntypedFormControl("", Validators.required),
+      nameControl: new UntypedFormControl('', Validators.required),
       detailControl: new UntypedFormControl(),
-      baseCurrControl: new UntypedFormControl("", Validators.required),
+      baseCurrControl: new UntypedFormControl('', Validators.required),
       hostControl: new UntypedFormControl(
         {
           value: this.authService.authSubject.getValue().getUserId(),
@@ -130,7 +120,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -139,13 +129,13 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     // Distinguish current mode
     this.activateRoute.url.subscribe((x: any) => {
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -157,10 +147,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
-          forkJoin([
-            this.finService.fetchAllCurrencies(),
-            this.storageService.readHomeDef(this.routerID),
-          ])
+          forkJoin([this.finService.fetchAllCurrencies(), this.storageService.readHomeDef(this.routerID)])
             .pipe(
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
@@ -169,15 +156,11 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               next: (rsts: any[]) => {
                 this.arCurrencies = rsts[0];
 
-                this.detailFormGroup.get("idControl")?.setValue(rsts[1].ID);
-                this.detailFormGroup.get("nameControl")?.setValue(rsts[1].Name);
-                this.detailFormGroup
-                  .get("baseCurrControl")
-                  ?.setValue(rsts[1].BaseCurrency);
-                this.detailFormGroup.get("hostControl")?.setValue(rsts[1].Host);
-                this.detailFormGroup
-                  .get("detailControl")
-                  ?.setValue(rsts[1].Details);
+                this.detailFormGroup.get('idControl')?.setValue(rsts[1].ID);
+                this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+                this.detailFormGroup.get('baseCurrControl')?.setValue(rsts[1].BaseCurrency);
+                this.detailFormGroup.get('hostControl')?.setValue(rsts[1].Host);
+                this.detailFormGroup.get('detailControl')?.setValue(rsts[1].Details);
                 this.detailFormGroup.markAsUntouched();
                 this.detailFormGroup.markAsPristine();
 
@@ -185,7 +168,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
 
                 this.listMembers = rsts[1].Members.slice();
@@ -193,7 +176,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               error: (error: any) => {
                 // Show error dialog
                 this.modalService.create({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: error.toString(),
                   nzClosable: true,
                 });
@@ -226,7 +209,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               error: (error: any) => {
                 // Show error dialog
                 this.modalService.create({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: error.toString(),
                   nzClosable: true,
                 });
@@ -240,7 +223,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -252,7 +235,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   onChange() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...",
+      'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...',
       ConsoleLogTypeEnum.debug
     );
   }
@@ -262,16 +245,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       // Create mode
       const hdobj = new HomeDef();
-      hdobj.Name = this.detailFormGroup.get("nameControl")?.value;
-      hdobj.BaseCurrency = this.detailFormGroup.get("baseCurrControl")?.value;
-      hdobj.Host = this.detailFormGroup.get("hostControl")?.value;
-      hdobj.Details = this.detailFormGroup.get("detailControl")?.value;
+      hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
+      hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
+      hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
       this.listMembers.forEach((val) => hdobj.Members.push(val));
       if (!hdobj.isValid) {
         this.modalService.error({
-          nzTitle: translate("Common.Error"),
-          nzContent: "Errors",
+          nzTitle: translate('Common.Error'),
+          nzContent: 'Errors',
           nzClosable: true,
         });
 
@@ -284,12 +267,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (val) => {
             // Shall create successfully.
-            this.router.navigate(["/homedef/display/" + val.ID.toString()]);
+            this.router.navigate(['/homedef/display/' + val.ID.toString()]);
           },
           error: (err) => {
             // Show error
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
@@ -299,16 +282,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       // Change mode
       const hdobj = new HomeDef();
       hdobj.ID = +this.routerID;
-      hdobj.Name = this.detailFormGroup.get("nameControl")?.value;
-      hdobj.BaseCurrency = this.detailFormGroup.get("baseCurrControl")?.value;
-      hdobj.Host = this.detailFormGroup.get("hostControl")?.value;
-      hdobj.Details = this.detailFormGroup.get("detailControl")?.value;
+      hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
+      hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
+      hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
+      hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
       this.listMembers.forEach((val) => hdobj.Members.push(val));
       if (!hdobj.isValid) {
         this.modalService.error({
-          nzTitle: translate("Common.Error"),
-          nzContent: "Errors",
+          nzTitle: translate('Common.Error'),
+          nzContent: 'Errors',
           nzClosable: true,
         });
 
@@ -321,12 +304,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (val) => {
             // Shall create successfully.
-            this.router.navigate(["/homedef/display/" + hdobj.ID.toString()]);
+            this.router.navigate(['/homedef/display/' + hdobj.ID.toString()]);
           },
           error: (err) => {
             // Show error
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });

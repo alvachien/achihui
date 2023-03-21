@@ -1,1 +1,1 @@
-export * from "./home-def-list.component";
+export * from './home-def-list.component';

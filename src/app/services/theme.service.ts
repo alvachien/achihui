@@ -1,12 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 enum ThemeType {
-  dark = "dark",
-  default = "default",
+  dark = 'dark',
+  default = 'default',
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ThemeService {
   currentTheme = ThemeType.default;
@@ -25,8 +25,8 @@ export class ThemeService {
 
   private loadCss(href: string, id: string): Promise<Event> {
     return new Promise((resolve, reject) => {
-      const style = document.createElement("link");
-      style.rel = "stylesheet";
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
       style.href = href;
       style.id = id;
       style.onload = resolve;

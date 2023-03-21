@@ -12,38 +12,38 @@ import {
   Tag,
   TagTypeEnum,
   TagCount,
-} from "./common";
-import * as moment from "moment";
+} from './common';
+import * as moment from 'moment';
 
-describe("isOverviewDateInScope", () => {
+describe('isOverviewDateInScope', () => {
   let dt: moment.Moment;
   beforeEach(() => {
     dt = moment(); // Now
   });
 
-  it("shall work", () => {
+  it('shall work', () => {
     const inscope = isOverviewDateInScope(dt, OverviewScopeEnum.All);
     expect(inscope).toBeTrue();
   });
 });
 
-describe("MultipleNamesObject", () => {
+describe('MultipleNamesObject', () => {
   let testobj: MultipleNamesObject;
 
   beforeEach(() => {
     testobj = new MultipleNamesObject();
   });
 
-  it("onInit", () => {
-    testobj.ChineseName = "aaa";
+  it('onInit', () => {
+    testobj.ChineseName = 'aaa';
     expect(testobj.ChineseName.length).toBeGreaterThan(0);
 
     testobj.onInit();
     expect(testobj.ChineseName.length).toEqual(0);
   });
 
-  it("onVerify", () => {
-    testobj.ChineseName = "aaa";
+  it('onVerify', () => {
+    testobj.ChineseName = 'aaa';
     let vrst = testobj.onVerify();
     expect(vrst).toBeTrue();
 
@@ -51,14 +51,14 @@ describe("MultipleNamesObject", () => {
     vrst = testobj.onVerify();
     expect(vrst).toBeFalse();
 
-    testobj.NativeName = "aaa";
+    testobj.NativeName = 'aaa';
     vrst = testobj.onVerify();
     expect(vrst).toBeTrue();
   });
 
-  it("writeObject shall work", () => {
-    testobj.ChineseName = "aaa";
-    testobj.NativeName = "bbb";
+  it('writeObject shall work', () => {
+    testobj.ChineseName = 'aaa';
+    testobj.NativeName = 'bbb';
     const writeobj = testobj.writeJSONObject();
     expect(writeobj).toBeTruthy();
     expect(writeobj.ChineseName).toEqual(testobj.ChineseName);
@@ -72,19 +72,19 @@ describe("MultipleNamesObject", () => {
   });
 });
 
-describe("AppLanguage", () => {
+describe('AppLanguage', () => {
   let testobj: AppLanguage;
 
   beforeEach(() => {
     testobj = new AppLanguage();
   });
 
-  it("onSetData shall work", () => {
+  it('onSetData shall work', () => {
     const jdata: AppLanguageJson = {
       Lcid: 1,
-      ISOName: "Lang1",
-      NativeName: "Language 1",
-      EnglishName: "Language_1",
+      ISOName: 'Lang1',
+      NativeName: 'Language 1',
+      EnglishName: 'Language_1',
     };
     testobj.onSetData(jdata);
     expect(jdata.ISOName).toEqual(testobj.IsoName);
@@ -95,79 +95,79 @@ describe("AppLanguage", () => {
   });
 });
 
-describe("Tag", () => {
+describe('Tag', () => {
   let objTag: Tag;
 
   beforeEach(() => {
     objTag = new Tag();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(objTag).toBeTruthy();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     objTag.onSetData({
       tagType: 10,
       tagID: 123,
       tagSubID: 456,
-      term: "abc",
+      term: 'abc',
     });
-    expect(objTag.LinkTarget).toEqual("/finance/document/display/123");
+    expect(objTag.LinkTarget).toEqual('/finance/document/display/123');
     expect(objTag.TagType).toEqual(TagTypeEnum.FinanceDocumentItem);
     expect(objTag.TagID).toEqual(123);
     expect(objTag.TagSubID).toEqual(456);
-    expect(objTag.Term).toEqual("abc");
+    expect(objTag.Term).toEqual('abc');
   });
 });
 
-describe("TagCount", () => {
+describe('TagCount', () => {
   let tcount: TagCount;
 
   beforeEach(() => {
     tcount = new TagCount();
   });
 
-  it("init", () => {
+  it('init', () => {
     expect(tcount).toBeTruthy();
   });
 
-  it("onSetData", () => {
+  it('onSetData', () => {
     tcount.onSetData({
-      term: "abc",
+      term: 'abc',
       termCount: 10,
     });
 
-    expect(tcount.Term).toBe("abc");
+    expect(tcount.Term).toBe('abc');
     expect(tcount.TermCount).toEqual(10);
   });
 });
 
-describe("getOverviewScopeRange", () => {
+describe('getOverviewScopeRange', () => {
   let curdata: moment.Moment;
 
   beforeEach(() => {
     curdata = moment();
   });
 
-  it("CurrentMonth", () => {
+  it('CurrentMonth', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentMonth);
     expect(rst.BeginDate.date()).toEqual(1);
     expect(rst.BeginDate.month()).toEqual(rst.EndDate.month());
   });
-  it("CurrentYear", () => {
+  it('CurrentYear', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentYear);
     expect(rst.BeginDate.date()).toEqual(1);
   });
-  it("PreviousMonth", () => {
+  it('PreviousMonth', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousMonth);
     expect(rst.BeginDate.date()).toEqual(1);
   });
-  it("PreviousYear", () => {
+  it('PreviousYear', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousYear);
     expect(rst.BeginDate.date()).toEqual(1);
   });
-  it("CurrentWeek", () => {
+  it('CurrentWeek', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentWeek);
     expect(rst.BeginDate).toBeTruthy();
   });

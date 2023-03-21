@@ -1,14 +1,10 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{
-        "Common.Overview" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
     >
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Common.Overview" | transloco
-  }}</nz-page-header-title>
+  <nz-page-header-title>{{ 'Common.Overview' | transloco }}</nz-page-header-title>
   <nz-page-header-extra>
     <nz-switch
       *ngIf="!isChildMode"
@@ -21,10 +17,7 @@
 </nz-page-header>
 
 <div *ngIf="isChildMode">
-  <nz-result
-    [nzIcon]="'smile-twotone'"
-    [nzTitle]="'Common.ChildModeDetail' | transloco"
-  >
+  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
     <div nz-result-extra>
       <button nz-button nzType="primary">OK</button>
     </div>
@@ -60,9 +53,7 @@
         <nz-card>
           <nz-statistic
             [nzValueTemplate]="valueTpl"
-            [nzValue]="
-              (keyfigure!.CurrentMonthIncomePrecentage | number : '1.2-2')!
-            "
+            [nzValue]="(keyfigure!.CurrentMonthIncomePrecentage | number : '1.2-2')!"
             [nzTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"
           ></nz-statistic>
         </nz-card>
@@ -71,9 +62,7 @@
         <nz-card>
           <nz-statistic
             [nzValueTemplate]="valueTpl"
-            [nzValue]="
-              (keyfigure!.CurrentMonthOutgoPrecentage | number : '1.2-2')!
-            "
+            [nzValue]="(keyfigure!.CurrentMonthOutgoPrecentage | number : '1.2-2')!"
             [nzTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"
           ></nz-statistic>
         </nz-card>
@@ -123,9 +112,7 @@
           <button
             nz-button
             nz-popconfirm
-            [nzPopconfirmTitle]="
-              'Common.OperationConfirmationContent' | transloco
-            "
+            [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
             (nzOnConfirm)="doPostDPDoc(item)"
             nzShape="circle"
           >
@@ -139,9 +126,7 @@
           <button
             nz-button
             nz-popconfirm
-            [nzPopconfirmTitle]="
-              'Common.OperationConfirmationContent' | transloco
-            "
+            [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
             (nzOnConfirm)="doPostLoanDoc(item)"
           >
             <i nz-icon nzType="export"></i>
@@ -151,28 +136,18 @@
       </li>
       <li *ngIf="isLastDateInMonth(date)">
         <div>
-          <button
-            nz-button
-            nzType="primary"
-            nzShape="round"
-            (click)="onAssetDeprec(date)"
-          >
+          <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(date)">
             <span nz-icon nzType="audit" nzTheme="outline"></span>
-            {{ "Sys.DocTy.AssetDeprec" | transloco }}
+            {{ 'Sys.DocTy.AssetDeprec' | transloco }}
           </button>
         </div>
       </li>
     </ul>
     <ng-container *nzMonthCell="let month">
       <div>
-        <button
-          nz-button
-          nzType="primary"
-          nzShape="round"
-          (click)="onAssetDeprec(month)"
-        >
+        <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(month)">
           <span nz-icon nzType="audit" nzTheme="outline"></span>
-          {{ "Sys.DocTy.AssetDeprec" | transloco }}
+          {{ 'Sys.DocTy.AssetDeprec' | transloco }}
         </button>
       </div>
     </ng-container>

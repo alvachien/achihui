@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   UntypedFormBuilder,
   FormControl,
@@ -6,14 +6,14 @@ import {
   Validators,
   UntypedFormArray,
   AbstractControl,
-} from "@angular/forms";
-import { Router } from "@angular/router";
-import { ReplaySubject, forkJoin } from "rxjs";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   financeDocTypeNormal,
@@ -35,19 +35,15 @@ import {
   FinanceDocumentMassCreateConfirm,
   FinanceNormalDocItemMassCreate,
   momentDateFormat,
-} from "../../../../model";
-import { costObjectValidator } from "../../../../uimodel";
-import {
-  HomeDefOdataService,
-  UIStatusService,
-  FinanceOdataService,
-} from "../../../../services";
-import { popupDialog } from "../../../message-dialog";
+} from '../../../../model';
+import { costObjectValidator } from '../../../../uimodel';
+import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
-  selector: "hih-document-normal-mass-create",
-  templateUrl: "./document-normal-mass-create.component.html",
-  styleUrls: ["./document-normal-mass-create.component.less"],
+  selector: 'hih-document-normal-mass-create',
+  templateUrl: './document-normal-mass-create.component.html',
+  styleUrls: ['./document-normal-mass-create.component.less'],
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -85,7 +81,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -96,7 +92,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -143,7 +139,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -153,7 +149,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -210,9 +206,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     if (this.currentStep === 0) {
-      const controlArray: UntypedFormArray = this.itemsFormGroup?.controls[
-        "items"
-      ] as UntypedFormArray;
+      const controlArray: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
       if (controlArray.length <= 0) {
         return false;
       }
@@ -227,26 +221,26 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name ? acntObj.Name : "";
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : "";
+    return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
     const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : "";
+    return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
     const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : "";
+    return tranTypeObj ? tranTypeObj.Name : '';
   }
 
   // Step 0: Items
@@ -258,7 +252,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         tranTypeControl: [undefined, Validators.required],
         amountControl: [0, Validators.required],
         // currControl: ['', Validators.required],
-        despControl: ["", Validators.required],
+        despControl: ['', Validators.required],
         ccControl: [undefined],
         orderControl: [undefined],
       },
@@ -268,35 +262,31 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     );
   }
   private createItem(): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
   }
   private copyItem(i: number): number {
-    const control: UntypedFormArray = this.itemsFormGroup?.controls[
-      "items"
-    ] as UntypedFormArray;
+    const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
     const newItem: UntypedFormGroup = this.initItem();
     const oldItem = control.value[i];
     if (oldItem) {
-      newItem.get("dateControl")?.setValue(oldItem.dateControl);
-      newItem.get("accountControl")?.setValue(oldItem.accountControl);
-      newItem.get("tranTypeControl")?.setValue(oldItem.tranTypeControl);
-      newItem.get("amountControl")?.setValue(oldItem.amountControl);
-      newItem.get("despControl")?.setValue(oldItem.despControl);
-      newItem.get("ccControl")?.setValue(oldItem.ccControl);
-      newItem.get("orderControl")?.setValue(oldItem.orderControl);
+      newItem.get('dateControl')?.setValue(oldItem.dateControl);
+      newItem.get('accountControl')?.setValue(oldItem.accountControl);
+      newItem.get('tranTypeControl')?.setValue(oldItem.tranTypeControl);
+      newItem.get('amountControl')?.setValue(oldItem.amountControl);
+      newItem.get('despControl')?.setValue(oldItem.despControl);
+      newItem.get('ccControl')?.setValue(oldItem.ccControl);
+      newItem.get('orderControl')?.setValue(oldItem.orderControl);
     }
 
     control.push(newItem);
     return control.length - 1;
   }
   get getItemFormArray(): UntypedFormArray {
-    return this.itemsFormGroup?.controls["items"] as UntypedFormArray;
+    return this.itemsFormGroup?.controls['items'] as UntypedFormArray;
   }
   get getItemControls(): UntypedFormGroup[] {
     return this.getItemFormArray.controls as UntypedFormGroup[];
@@ -344,9 +334,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
       let docObj = this.confirmInfo.find((val) => {
-        return (
-          val.TranDateFormatString === item.tranDate.format(momentDateFormat)
-        );
+        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
       });
 
       if (docObj !== undefined) {
@@ -426,12 +414,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         finalize(() => (this.isDocPosting = false))
       )
       .subscribe({
-        next: (rsts: {
-          PostedDocuments: Document[];
-          FailedDocuments: Document[];
-        }) => {
+        next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -448,7 +433,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   // Step 3: Result
   public onBackToListView(): void {
-    this.router.navigate(["/finance/document/list"]);
+    this.router.navigate(['/finance/document/list']);
   }
   public onResubmitFailedItems(): void {
     this.isDocPosting = true;
@@ -459,12 +444,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         finalize(() => (this.isDocPosting = false))
       )
       .subscribe({
-        next: (rsts: {
-          PostedDocuments: Document[];
-          FailedDocuments: Document[];
-        }) => {
+        next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
             ConsoleLogTypeEnum.debug
           );
 

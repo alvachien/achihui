@@ -1,25 +1,17 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import {
-  FinanceOdataService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "../../../../services";
-import {
-  ControlCenter,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../../../../model";
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 
 @Component({
-  selector: "hih-control-center-list",
-  templateUrl: "./control-center-list.component.html",
-  styleUrls: ["./control-center-list.component.less"],
+  selector: 'hih-control-center-list',
+  templateUrl: './control-center-list.component.html',
+  styleUrls: ['./control-center-list.component.less'],
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -42,7 +34,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -58,7 +50,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (value: ControlCenter[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...",
+            'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -71,7 +63,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -81,7 +73,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -93,23 +85,23 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
   onDisplay(rid: number): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDisplay...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDisplay...',
       ConsoleLogTypeEnum.debug
     );
-    this.router.navigate(["/finance/controlcenter/display/" + rid.toString()]);
+    this.router.navigate(['/finance/controlcenter/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterListComponent onEdit...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onEdit...',
       ConsoleLogTypeEnum.debug
     );
-    this.router.navigate(["/finance/controlcenter/edit/" + rid.toString()]);
+    this.router.navigate(['/finance/controlcenter/edit/' + rid.toString()]);
   }
 
   onDelete(rid: number) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDelete...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDelete...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -129,7 +121,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });

@@ -1,22 +1,14 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from "../../finance-ui.module";
+import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -24,18 +16,13 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { UserAuthInfo } from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
-import { PlanListComponent } from "./plan-list.component";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
+import { PlanListComponent } from './plan-list.component';
 
-describe("PlanListComponent", () => {
+describe('PlanListComponent', () => {
   let component: PlanListComponent;
   let fixture: ComponentFixture<PlanListComponent>;
   let fakeData: FakeDataHelper;
@@ -51,9 +38,7 @@ describe("PlanListComponent", () => {
     fakeData.buildChosedHome();
     fakeData.buildFinPlans();
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllPlans",
-    ]);
+    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans']);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeService = {
@@ -98,20 +83,20 @@ describe("PlanListComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("2. shall work with data", () => {
+  describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllPlansSpy.and.returnValue(asyncData(fakeData.finPlans));
     });
 
-    it("should not show data before OnInit", () => {
+    it('should not show data before OnInit', () => {
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it("should show data after OnInit", fakeAsync(() => {
+    it('should show data after OnInit', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -123,7 +108,7 @@ describe("PlanListComponent", () => {
     }));
   });
 
-  describe("3. shall display error dialog for exception", () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -140,34 +125,26 @@ describe("PlanListComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("should display error when Service fails", fakeAsync(() => {
+    it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllPlansSpy.and.returnValue(asyncError<string>("Service failed"));
+      fetchAllPlansSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

@@ -1,24 +1,16 @@
-import {
-  ComponentFixture,
-  discardPeriodicTasks,
-  fakeAsync,
-  flush,
-  inject,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { NgxEchartsModule } from "ngx-echarts";
-import * as echarts from "echarts";
+import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
-import { FinanceUIModule } from "../../finance-ui.module";
+import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -26,13 +18,8 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../../services";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
   FinanceReportByOrder,
@@ -41,11 +28,11 @@ import {
   FinanceReportEntryMoM,
   financePeriodLast6Months,
   financePeriodLast12Months,
-} from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
-import { CashMonthOnMonthReportComponent } from "./cash-month-on-month-report.component";
+} from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
+import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report.component';
 
-describe("CashMonthOnMonthReportComponent", () => {
+describe('CashMonthOnMonthReportComponent', () => {
   let component: CashMonthOnMonthReportComponent;
   let fixture: ComponentFixture<CashMonthOnMonthReportComponent>;
   let fakeData: FakeDataHelper;
@@ -64,12 +51,8 @@ describe("CashMonthOnMonthReportComponent", () => {
 
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchCashReportMoM",
-    ]);
-    fetchCashReportMoMSpy = storageService.fetchCashReportMoM.and.returnValue(
-      of([])
-    );
+    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
+    fetchCashReportMoMSpy = storageService.fetchCashReportMoM.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
@@ -101,11 +84,11 @@ describe("CashMonthOnMonthReportComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("2. shall work with data", () => {
+  describe('2. shall work with data', () => {
     let arRptData: FinanceReportEntryMoM[] = [];
     beforeEach(() => {
       arRptData = [];
@@ -172,11 +155,11 @@ describe("CashMonthOnMonthReportComponent", () => {
       fetchCashReportMoMSpy.and.returnValue(asyncData(arRptData));
     });
 
-    it("should not show data before OnInit", () => {
+    it('should not show data before OnInit', () => {
       expect(component.reportData.length).toEqual(0);
     });
 
-    it("should show data after OnInit", fakeAsync(() => {
+    it('should show data after OnInit', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -189,7 +172,7 @@ describe("CashMonthOnMonthReportComponent", () => {
       flush();
     }));
 
-    it("should show data after period changed", fakeAsync(() => {
+    it('should show data after period changed', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -215,7 +198,7 @@ describe("CashMonthOnMonthReportComponent", () => {
     }));
   });
 
-  describe("3. shall popup dialog for exceptions", () => {
+  describe('3. shall popup dialog for exceptions', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -227,11 +210,9 @@ describe("CashMonthOnMonthReportComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("should display error when Report by account Service fails", fakeAsync(() => {
+    it('should display error when Report by account Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchCashReportMoMSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchCashReportMoMSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -240,25 +221,17 @@ describe("CashMonthOnMonthReportComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

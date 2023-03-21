@@ -1,21 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import {
-  LogLevel,
-  AssetCategory,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../../../../model";
-import { FinanceOdataService, UIStatusService } from "../../../../services";
+import { LogLevel, AssetCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-fin-asset-category-list",
-  templateUrl: "./asset-category-list.component.html",
-  styleUrls: ["./asset-category-list.component.less"],
+  selector: 'hih-fin-asset-category-list',
+  templateUrl: './asset-category-list.component.html',
+  styleUrls: ['./asset-category-list.component.less'],
 })
 export class AssetCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -29,7 +24,7 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AssetTypeListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering AssetTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -38,7 +33,7 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -54,7 +49,7 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: AssetCategory[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AssetTypeListComponent fetchAllAssetCategories...",
+            'AC_HIH_UI [Debug]: Entering AssetTypeListComponent fetchAllAssetCategories...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -67,7 +62,7 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -77,7 +72,7 @@ export class AssetCategoryListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering AssetTypeListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 

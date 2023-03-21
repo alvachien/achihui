@@ -1,28 +1,25 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { EventUIModule } from "src/app/pages/event/event-ui.module";
-import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  LibraryStorageService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { UserAuthInfo } from "../../../../model";
-import { BorrowRecordCreateDlgComponent } from "./borrow-record-create-dlg.component";
+import { EventUIModule } from 'src/app/pages/event/event-ui.module';
+import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo } from '../../../../model';
+import { BorrowRecordCreateDlgComponent } from './borrow-record-create-dlg.component';
 
-describe("BorrowRecordCreateDlgComponent", () => {
+describe('BorrowRecordCreateDlgComponent', () => {
   let component: BorrowRecordCreateDlgComponent;
   let fixture: ComponentFixture<BorrowRecordCreateDlgComponent>;
   let fakeData: FakeDataHelper;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let storageService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let createBookBorrowRecordSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -34,11 +31,8 @@ describe("BorrowRecordCreateDlgComponent", () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj("LibraryStorageService", [
-      "createBookBorrowRecord",
-    ]);
-    createBookBorrowRecordSpy =
-      storageService.createBookBorrowRecord.and.returnValue(of({}));
+    storageService = jasmine.createSpyObj('LibraryStorageService', ['createBookBorrowRecord']);
+    createBookBorrowRecordSpy = storageService.createBookBorrowRecord.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -72,7 +66,7 @@ describe("BorrowRecordCreateDlgComponent", () => {
           useFactory: (modalSvc: NzModalService) =>
             modalSvc.create({
               nzClosable: true,
-              nzContent: "test",
+              nzContent: 'test',
             }),
           deps: [NzModalService],
         },
@@ -86,7 +80,7 @@ describe("BorrowRecordCreateDlgComponent", () => {
     //fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

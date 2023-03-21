@@ -1,13 +1,9 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{
-    "Blog.Collection" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Common.ListView" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Blog.Collection' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button nzType="primary" (click)="onCreate()">
-      {{ "Common.Create" | transloco }}
+      {{ 'Common.Create' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
@@ -16,9 +12,9 @@
   <nz-table #basicTable [nzData]="dataSet">
     <thead>
       <tr>
-        <th>{{ "Common.ID" | transloco }}</th>
-        <th>{{ "Common.Name" | transloco }}</th>
-        <th>{{ "Common.Comment" | transloco }}</th>
+        <th>{{ 'Common.ID' | transloco }}</th>
+        <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Common.Comment' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
@@ -27,13 +23,13 @@
           {{ data.id }}
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" (click)="onDisplay(data.id)">
-            {{ "Common.Display" | transloco }}
+            {{ 'Common.Display' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onEdit(data.id)">
-            {{ "Common.Edit" | transloco }}
+            {{ 'Common.Edit' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onDelete(data.id)" nzDanger>
-            {{ "Common.Delete" | transloco }}
+            {{ 'Common.Delete' | transloco }}
           </button>
         </td>
         <td>{{ data.name }}</td>

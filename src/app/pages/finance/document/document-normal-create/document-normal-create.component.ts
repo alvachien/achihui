@@ -1,16 +1,12 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { Router } from "@angular/router";
-import { ReplaySubject, forkJoin } from "rxjs";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { UIMode } from "actslib";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { UIMode } from 'actslib';
 
 import {
   financeDocTypeNormal,
@@ -33,18 +29,14 @@ import {
   GeneralFilterValueType,
   momentDateFormat,
   DocumentItemView,
-} from "../../../../model";
-import {
-  HomeDefOdataService,
-  UIStatusService,
-  FinanceOdataService,
-} from "../../../../services";
-import { popupDialog } from "../../../message-dialog";
+} from '../../../../model';
+import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
-  selector: "hih-fin-document-normal-create",
-  templateUrl: "./document-normal-create.component.html",
-  styleUrls: ["./document-normal-create.component.less"],
+  selector: 'hih-fin-document-normal-create',
+  templateUrl: './document-normal-create.component.html',
+  styleUrls: ['./document-normal-create.component.less'],
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -66,8 +58,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Header
   public headerForm: UntypedFormGroup;
   // Step: Item
-  public doccur = "";
-  public doccur2?: string = "";
+  public doccur = '';
+  public doccur2?: string = '';
   public itemsForm: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
@@ -75,7 +67,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public isDocPosting = false;
   public docIdCreated?: number;
-  public docPostingFailed = "";
+  public docPostingFailed = '';
 
   constructor(
     private homeService: HomeDefOdataService,
@@ -84,7 +76,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -107,7 +99,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -148,7 +140,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -158,7 +150,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -171,7 +163,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -189,11 +181,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       })
     ) {
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...",
+        'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug
       );
 
-      popupDialog(this.modalService, "Common.Error", detailObject.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       this.isDocPosting = false;
 
       return;
@@ -212,11 +204,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (doc) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
             ConsoleLogTypeEnum.debug
           );
           this.docIdCreated = doc.Id;
-          this.docPostingFailed = "";
+          this.docPostingFailed = '';
         },
         error: (error: any) => {
           ModelUtility.writeConsoleLog(
@@ -231,14 +223,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   onDisplayCreatedDoc(): void {
     if (this.docIdCreated !== null) {
-      this.router.navigate([
-        "/finance/document/display/" + this.docIdCreated?.toString(),
-      ]);
+      this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
     }
   }
 
   onReset(): void {
-    this.router.navigate(["/finance/document/createnormal"]);
+    this.router.navigate(['/finance/document/createnormal']);
     // this.currentStep = 0;
     // this.itemsForm.reset();
     // this.headerForm.reset();
@@ -256,8 +246,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     switch (this.currentStep) {
       case 0: {
         this.currentStep++;
-        const detailObject: Document = this.headerForm.get("headerControl")
-          ?.value as Document;
+        const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
         this.doccur = detailObject.TranCurr;
         this.doccur2 = detailObject.TranCurr2;
         break;
@@ -295,7 +284,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.outAmount = 0;
     const filters: GeneralFilterItem[] = [];
     filters.push({
-      fieldName: "TransactionDate",
+      fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: doc.TranDate.format(momentDateFormat),
       valueType: GeneralFilterValueType.date,
@@ -321,7 +310,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     });
     aracntid.forEach((acntid) => {
       filters.push({
-        fieldName: "AccountID",
+        fieldName: 'AccountID',
         operator: GeneralFilterOperatorEnum.Equal,
         lowValue: acntid,
         valueType: GeneralFilterValueType.number,
@@ -347,11 +336,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
               ) {
                 this.confirmInfo.warningExist = true;
                 this.confirmInfo.duplicatedItems.push(
-                  "Account: " +
+                  'Account: ' +
                     di.AccountId.toString() +
-                    "; Amount: " +
+                    '; Amount: ' +
                     di.TranAmount.toString() +
-                    "; Tran. type: " +
+                    '; Tran. type: ' +
                     di.TranType?.toString()
                 );
               }
@@ -364,12 +353,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerForm.get("headerControl")
-      ?.value as Document;
+    const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
     detailObject.HID = this.homeService.ChosedHome!.ID;
     detailObject.DocType = this.curDocType;
-    detailObject.Items = this.itemsForm.get("itemControl")
-      ?.value as DocumentItem[];
+    detailObject.Items = this.itemsForm.get('itemControl')?.value as DocumentItem[];
 
     return detailObject;
   }

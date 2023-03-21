@@ -1,15 +1,10 @@
-import { Injectable } from "@angular/core";
-import {
-  CanActivate,
-  Router,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-} from "@angular/router";
-import { environment } from "../../environments/environment";
-import { ModelUtility, ConsoleLogTypeEnum } from "../model";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
-import { UIStatusService } from "./uistatus.service";
+import { Injectable } from '@angular/core';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { ModelUtility, ConsoleLogTypeEnum } from '../model';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
+import { UIStatusService } from './uistatus.service';
 
 @Injectable()
 export class HomeChoseGuardService implements CanActivate {
@@ -20,15 +15,12 @@ export class HomeChoseGuardService implements CanActivate {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeChoseGuardService constructor",
+      'AC_HIH_UI [Debug]: Entering HomeChoseGuardService constructor',
       ConsoleLogTypeEnum.debug
     );
   }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url: string = state.url;
 
     if (this.uiService.fatalError) {
@@ -40,7 +32,7 @@ export class HomeChoseGuardService implements CanActivate {
     }
 
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeChoseGuardService canActivate",
+      'AC_HIH_UI [Debug]: Entering HomeChoseGuardService canActivate',
       ConsoleLogTypeEnum.debug
     );
 
@@ -53,7 +45,7 @@ export class HomeChoseGuardService implements CanActivate {
 
     if (!this.homeService.ChosedHome) {
       // Navigate to other page
-      this.router.navigate(["/homedef"]);
+      this.router.navigate(['/homedef']);
       return false;
     }
 
@@ -63,7 +55,7 @@ export class HomeChoseGuardService implements CanActivate {
   checkLogin(): boolean {
     if (this.authService.authSubject.getValue().isAuthorized) {
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: TRUE",
+        'AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: TRUE',
         ConsoleLogTypeEnum.debug
       );
 
@@ -72,7 +64,7 @@ export class HomeChoseGuardService implements CanActivate {
 
     // Navigate to the login page with extras
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: FALSE, redirecting",
+      'AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: FALSE, redirecting',
       ConsoleLogTypeEnum.debug
     );
 

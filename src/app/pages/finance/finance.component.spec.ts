@@ -1,46 +1,28 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  inject,
-  tick,
-  fakeAsync,
-  flush,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule, ReactiveFormsModule, FormArray } from "@angular/forms";
-import { Router } from "@angular/router";
-import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import * as moment from "moment";
+import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import * as moment from 'moment';
 
-import { FinanceUIModule } from "./finance-ui.module";
+import { FinanceUIModule } from './finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  HomeDefOdataService,
-  FinanceOdataService,
-} from "../../services";
-import {
-  UserAuthInfo,
-  momentDateFormat,
-  TemplateDocADP,
-  TemplateDocLoan,
-} from "../../model";
-import { FinanceComponent } from "./finance.component";
+} from '../../../testing';
+import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
+import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
+import { FinanceComponent } from './finance.component';
 
-describe("FinanceComponent", () => {
+describe('FinanceComponent', () => {
   let component: FinanceComponent;
   let fixture: ComponentFixture<FinanceComponent>;
   let fakeData: FakeDataHelper;
@@ -64,20 +46,16 @@ describe("FinanceComponent", () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    const odataService: any = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllDPTmpDocs",
-      "fetchAllLoanTmpDocs",
-      "createDocumentFromDPTemplate",
-      "fetchOverviewKeyfigure",
+    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllDPTmpDocs',
+      'fetchAllLoanTmpDocs',
+      'createDocumentFromDPTemplate',
+      'fetchOverviewKeyfigure',
     ]);
     fetchAllDPTmpDocsSpy = odataService.fetchAllDPTmpDocs.and.returnValue([]);
-    fetchAllLoanTmpDocsSpy = odataService.fetchAllLoanTmpDocs.and.returnValue(
-      []
-    );
-    createDocumentFromDPTemplateSpy =
-      odataService.createDocumentFromDPTemplate.and.returnValue();
-    fetchOverviewKeyfigureSpy =
-      odataService.fetchOverviewKeyfigure.and.returnValue(of({}));
+    fetchAllLoanTmpDocsSpy = odataService.fetchAllLoanTmpDocs.and.returnValue([]);
+    createDocumentFromDPTemplateSpy = odataService.createDocumentFromDPTemplate.and.returnValue();
+    fetchOverviewKeyfigureSpy = odataService.fetchOverviewKeyfigure.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
       imports: [
@@ -107,11 +85,11 @@ describe("FinanceComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("Working with data", () => {
+  describe('Working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let arDPTmpDoc: TemplateDocADP[] = [];
@@ -133,7 +111,7 @@ describe("FinanceComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("Should work if there is no data", fakeAsync(() => {
+    it('Should work if there is no data', fakeAsync(() => {
       arLoanTmpDoc = [];
       arDPTmpDoc = [];
       fetchAllDPTmpDocsSpy.and.returnValue(of(arDPTmpDoc));
@@ -148,9 +126,9 @@ describe("FinanceComponent", () => {
       flush();
     }));
 
-    it("Should work for DP and Loan docs", fakeAsync(() => {
-      const dat1 = moment().startOf("month");
-      const dat2 = moment().endOf("month");
+    it('Should work for DP and Loan docs', fakeAsync(() => {
+      const dat1 = moment().startOf('month');
+      const dat2 = moment().endOf('month');
       arLoanTmpDoc = [];
       arDPTmpDoc = [];
       const dp1: TemplateDocADP = new TemplateDocADP();
@@ -159,7 +137,7 @@ describe("FinanceComponent", () => {
       dp1.TranAmount = 100;
       dp1.TranDate = dat1.clone();
       dp1.AccountId = 1;
-      dp1.Desp = "test1";
+      dp1.Desp = 'test1';
       arDPTmpDoc.push(dp1);
       const dp2 = new TemplateDocADP();
       dp2.HID = fakeData.chosedHome.ID;
@@ -167,11 +145,11 @@ describe("FinanceComponent", () => {
       dp2.TranAmount = 200;
       dp2.TranDate = dat2.clone();
       dp2.AccountId = 1;
-      dp2.Desp = "test2";
+      dp2.Desp = 'test2';
       arDPTmpDoc.push(dp2);
       const loan1: TemplateDocLoan = new TemplateDocLoan();
       loan1.HID = fakeData.chosedHome.ID;
-      loan1.Desp = "Loan 1";
+      loan1.Desp = 'Loan 1';
       loan1.TranDate = dat2.clone();
       loan1.DocId = 3;
       loan1.AccountId = 1;
@@ -198,81 +176,61 @@ describe("FinanceComponent", () => {
       component.doPostDPDoc(dp1);
       expect(createDocumentFromDPTemplateSpy).toHaveBeenCalled();
       expect(component.listDate.length).toEqual(1);
-      expect(
-        component.listDate[0].CurrentDate!.format(momentDateFormat)
-      ).toEqual(dat2.format(momentDateFormat));
+      expect(component.listDate[0].CurrentDate!.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
 
       // Post the Loan doc
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, "navigate");
+      spyOn(routerstub, 'navigate');
       component.doPostLoanDoc(loan1);
 
       expect(routerstub.navigate).toHaveBeenCalled();
-      expect(routerstub.navigate).toHaveBeenCalledWith([
-        "/finance/document/createloanrepay/3",
-      ]);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createloanrepay/3']);
 
       flush();
     }));
 
-    it("should popup error dialog if fetchAllDPTmpDocs fails", fakeAsync(() => {
-      fetchAllDPTmpDocsSpy.and.returnValue(asyncError("failed"));
+    it('should popup error dialog if fetchAllDPTmpDocs fails', fakeAsync(() => {
+      fetchAllDPTmpDocsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
 
-    it("should popup error dialog if fetchAllLoanTmpDocs fails", fakeAsync(() => {
-      fetchAllLoanTmpDocsSpy.and.returnValue(asyncError("failed"));
+    it('should popup error dialog if fetchAllLoanTmpDocs fails', fakeAsync(() => {
+      fetchAllLoanTmpDocsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

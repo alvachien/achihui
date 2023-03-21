@@ -1,23 +1,19 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject } from "rxjs";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from "src/app/model";
-import {
-  AuthService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "src/app/services";
-import { FakeDataHelper, getTranslocoModule } from "src/testing";
-import { LibraryUIModule } from "../../library-ui.module";
+import { UserAuthInfo } from 'src/app/model';
+import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { LibraryUIModule } from '../../library-ui.module';
 
-import { LocationSelectionDlgComponent } from "./location-selection-dlg.component";
+import { LocationSelectionDlgComponent } from './location-selection-dlg.component';
 
-describe("LocationSelectionDlgComponent", () => {
+describe('LocationSelectionDlgComponent', () => {
   let component: LocationSelectionDlgComponent;
   let fixture: ComponentFixture<LocationSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
@@ -64,7 +60,7 @@ describe("LocationSelectionDlgComponent", () => {
           useFactory: (modalSvc: NzModalService) =>
             modalSvc.create({
               nzClosable: true,
-              nzContent: "test",
+              nzContent: 'test',
             }),
           deps: [NzModalService],
         },
@@ -78,7 +74,7 @@ describe("LocationSelectionDlgComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

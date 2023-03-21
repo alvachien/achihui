@@ -1,1 +1,1 @@
-export * from "./document-normal-create.component";
+export * from './document-normal-create.component';

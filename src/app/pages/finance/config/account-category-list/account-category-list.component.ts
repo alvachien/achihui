@@ -1,21 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import {
-  LogLevel,
-  AccountCategory,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../../../../model";
-import { FinanceOdataService, UIStatusService } from "../../../../services";
+import { LogLevel, AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-fin-account-category-list",
-  templateUrl: "./account-category-list.component.html",
-  styleUrls: ["./account-category-list.component.less"],
+  selector: 'hih-fin-account-category-list',
+  templateUrl: './account-category-list.component.html',
+  styleUrls: ['./account-category-list.component.less'],
 })
 export class AccountCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -29,7 +24,7 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountCategoryListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering AccountCategoryListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -38,7 +33,7 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -53,7 +48,7 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: AccountCategory[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit fetchAllAccountCategories...",
+            'AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnInit fetchAllAccountCategories...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -65,7 +60,7 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -75,7 +70,7 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering AccountCategoryListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 

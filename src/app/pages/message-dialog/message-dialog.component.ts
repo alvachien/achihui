@@ -1,7 +1,7 @@
-import { Component, Input } from "@angular/core";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
+import { Component, Input } from '@angular/core';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { InfoMessage } from "../../model";
+import { InfoMessage } from '../../model';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -26,12 +26,12 @@ export interface MessageDialogInfo {
 }
 
 @Component({
-  selector: "hih-message-dialog",
-  templateUrl: "./message-dialog.component.html",
-  styleUrls: ["./message-dialog.component.less"],
+  selector: 'hih-message-dialog',
+  templateUrl: './message-dialog.component.html',
+  styleUrls: ['./message-dialog.component.less'],
 })
 export class MessageDialogComponent {
-  @Input() title = "";
+  @Input() title = '';
   @Input() infoMessages: InfoMessage[] = [];
 
   constructor(private modal: NzModalRef) {}
@@ -62,13 +62,12 @@ export function popupDialog(
     case MessageDialogButtonEnum.okcancel:
       footer = [
         {
-          label: "OK",
+          label: 'OK',
           onClick: (componentInstance: any) => componentInstance!.handleOk(),
         },
         {
-          label: "Cancel",
-          onClick: (componentInstance: any) =>
-            componentInstance!.handleCancel(),
+          label: 'Cancel',
+          onClick: (componentInstance: any) => componentInstance!.handleCancel(),
         },
       ];
       break;
@@ -77,7 +76,7 @@ export function popupDialog(
     default:
       footer = [
         {
-          label: "OK",
+          label: 'OK',
           onClick: (componentInstance: any) => componentInstance!.handleOk(),
         },
       ];

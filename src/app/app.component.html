@@ -14,172 +14,111 @@
       </a>
     </div>
     <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li
-        nz-submenu
-        nzOpen
-        [nzTitle]="t('Common.Dashboard')"
-        nzIcon="dashboard"
-      >
+      <li nz-submenu nzOpen [nzTitle]="t('Common.Dashboard')" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'welcome']">{{
-              "Common.WelcomeToHIH" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'welcome']">{{ 'Common.WelcomeToHIH' | transloco }}</a>
           </li>
         </ul>
       </li>
-      <li
-        nz-submenu
-        [nzTitle]="'Nav.FinanceTrace' | transloco"
-        nzIcon="money-collect"
-      >
+      <li nz-submenu [nzTitle]="'Nav.FinanceTrace' | transloco" nzIcon="money-collect">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'overview']">{{
-              "Common.Overview" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'overview']">{{ 'Common.Overview' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'currency']">{{
-              "Finance.Currencies" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'currency']">{{ 'Finance.Currencies' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'config']">{{
-              "Finance.ConfigObjects" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'config']">{{ 'Finance.ConfigObjects' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'account']">{{
-              "Finance.Accounts" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'account']">{{ 'Finance.Accounts' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'document']">{{
-              "Finance.Documents" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'document']">{{ 'Finance.Documents' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'controlcenter']">{{
-              "Finance.ControlCenters" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'controlcenter']">{{ 'Finance.ControlCenters' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'order']">{{
-              "Finance.Activities" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'order']">{{ 'Finance.Activities' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'search']">{{
-              "Common.Search" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'search']">{{ 'Common.Search' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'report']">{{
-              "Finance.Reports" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'report']">{{ 'Finance.Reports' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'plan']">{{
-              "Common.Plan" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'finance', 'plan']">{{ 'Common.Plan' | transloco }}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="'Nav.LibraryTrace' | transloco" nzIcon="read">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'config']">{{
-              "Finance.ConfigObjects" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'config']">{{ 'Finance.ConfigObjects' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'person']">{{
-              "Library.Persons" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'person']">{{ 'Library.Persons' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'organization']">{{
-              "Library.Organizations" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'organization']">{{ 'Library.Organizations' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'location']">{{
-              "Library.Locations" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'location']">{{ 'Library.Locations' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'book']">{{
-              "Library.Books" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'book']">{{ 'Library.Books' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'library', 'borrowrecord']">{{
-              "Library.BorrowRecords" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'library', 'borrowrecord']">{{ 'Library.BorrowRecords' | transloco }}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="'Nav.EventTrace' | transloco" nzIcon="schedule">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'event', 'overview']">{{
-              "Common.Overview" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'event', 'overview']">{{ 'Common.Overview' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'event', 'normal-event']">{{
-              "Common.NormalEvents" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'event', 'normal-event']">{{ 'Common.NormalEvents' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'event', 'recur-event']">{{
-              "Common.RecurEvents" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'event', 'recur-event']">{{ 'Common.RecurEvents' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'event', 'search']">{{
-              "Common.Search" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'event', 'search']">{{ 'Common.Search' | transloco }}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu [nzTitle]="'Nav.Blogs' | transloco" nzIcon="file">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'blog', 'setting']">{{
-              "Common.Setting" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'blog', 'setting']">{{ 'Common.Setting' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'blog', 'collection']">{{
-              "Blog.Collections" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'blog', 'collection']">{{ 'Blog.Collections' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'blog', 'post']">{{
-              "Blog.Posts" | transloco
-            }}</a>
+            <a [routerLink]="['/', 'blog', 'post']">{{ 'Blog.Posts' | transloco }}</a>
           </li>
         </ul>
       </li>
-      <li
-        nz-submenu
-        [nzTitle]="'Common.Help' | transloco"
-        nzIcon="question-circle"
-      >
+      <li nz-submenu [nzTitle]="'Common.Help' | transloco" nzIcon="question-circle">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/about">{{ "Nav.About" | transloco }}</a>
+            <a routerLink="/about">{{ 'Nav.About' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/version">{{ "Nav.Version" | transloco }}</a>
+            <a routerLink="/version">{{ 'Nav.Version' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/credits">{{ "Nav.Credits" | transloco }}</a>
+            <a routerLink="/credits">{{ 'Nav.Credits' | transloco }}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/languages">{{ "Common.Languages" | transloco }}</a>
+            <a routerLink="/languages">{{ 'Common.Languages' | transloco }}</a>
           </li>
         </ul>
       </li>
@@ -210,64 +149,36 @@
           <li class="app-header-nav-container">
             <div class="app-header-nav-item">
               <a class="header-nav-item" (click)="toggleTheme()">
-                <i
-                  nz-icon
-                  nzType="skin"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="skin" nzTheme="outline" class="app-header-icon"></i>
               </a>
             </div>
           </li>
           <li>
             <div class="app-header-nav-item">
-              <a
-                class="header-nav-item"
-                href="https://www.alvachien.com"
-                target="_blank"
-              >
-                <i
-                  nz-icon
-                  nzType="home"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+              <a class="header-nav-item" href="https://www.alvachien.com" target="_blank">
+                <i nz-icon nzType="home" nzTheme="outline" class="app-header-icon"></i>
               </a>
             </div>
           </li>
           <li>
             <div class="app-header-nav-item">
-              <a
-                class="header-nav-item"
-                href="https://github.com/alvachien/achihui"
-                target="_blank"
-              >
-                <i
-                  nz-icon
-                  nzType="github"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+              <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
+                <i nz-icon nzType="github" nzTheme="outline" class="app-header-icon"></i>
               </a>
             </div>
           </li>
           <li>
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuLanguage">
-                <i
-                  nz-icon
-                  nzType="global"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="global" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuLanguage="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
                   <li nz-menu-item (click)="switchLanguage('en_US')">
-                    {{ "Nav.English" | transloco }}
+                    {{ 'Nav.English' | transloco }}
                   </li>
                   <li nz-menu-item (click)="switchLanguage('zh_CN')">
-                    {{ "Nav.SimplifiedChinese" | transloco }}
+                    {{ 'Nav.SimplifiedChinese' | transloco }}
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -276,29 +187,19 @@
           <li *ngIf="!isLoggedIn">
             <div class="app-header-nav-item">
               <a (click)="onLogon()">
-                <i
-                  nz-icon
-                  nzType="idcard"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
               </a>
             </div>
           </li>
           <li *ngIf="isLoggedIn">
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuUser">
-                <i
-                  nz-icon
-                  nzType="idcard"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuUser="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
                   <li nz-menu-item (click)="onGoToUserDetail()">
-                    {{ "Nav.UserDetail" | transloco }}
+                    {{ 'Nav.UserDetail' | transloco }}
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -307,22 +208,15 @@
           <li>
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
-                <i
-                  nz-icon
-                  nzType="apartment"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
                   <li nz-menu-item>
-                    <a routerLink="/homedef">{{
-                      "Nav.HomeList" | transloco
-                    }}</a>
+                    <a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a>
                   </li>
                   <li nz-menu-item (click)="onGoToSelectedHome()">
-                    {{ "Nav.HomeDetail" | transloco }}
+                    {{ 'Nav.HomeDetail' | transloco }}
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -331,18 +225,11 @@
           <li class="app-header-nav-container">
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuApps">
-                <i
-                  nz-icon
-                  nzType="appstore"
-                  nzTheme="outline"
-                  class="app-header-icon"
-                ></i>
+                <i nz-icon nzType="appstore" nzTheme="outline" class="app-header-icon"></i>
               </a>
               <nz-dropdown-menu #menuApps="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item (click)="onOpenPhotoGallery()">
-                    AC Gallery
-                  </li>
+                  <li nz-menu-item (click)="onOpenPhotoGallery()">AC Gallery</li>
                   <li nz-menu-item (click)="onOpenMathExcises()">K.H.B.</li>
                 </ul>
               </nz-dropdown-menu>

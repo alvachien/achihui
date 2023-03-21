@@ -1,26 +1,21 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { NzModalService } from "ng-zorro-antd/modal";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { LibraryUIModule } from "../../library-ui.module";
-import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  LibraryStorageService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { UserAuthInfo } from "../../../../model";
-import { OrganizationTypeListComponent } from "./organization-type-list.component";
+import { LibraryUIModule } from '../../library-ui.module';
+import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo } from '../../../../model';
+import { OrganizationTypeListComponent } from './organization-type-list.component';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-describe("OrganizationTypeListComponent", () => {
+describe('OrganizationTypeListComponent', () => {
   let component: OrganizationTypeListComponent;
   let fixture: ComponentFixture<OrganizationTypeListComponent>;
   let fakeData: FakeDataHelper;
@@ -36,11 +31,8 @@ describe("OrganizationTypeListComponent", () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj("LibraryStorageService", [
-      "fetchAllOrganizationTypes",
-    ]);
-    fetchAllOrganizationTypesSpy =
-      storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
+    storageService = jasmine.createSpyObj('LibraryStorageService', ['fetchAllOrganizationTypes']);
+    fetchAllOrganizationTypesSpy = storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -79,7 +71,7 @@ describe("OrganizationTypeListComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

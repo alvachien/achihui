@@ -1,6 +1,6 @@
-import { Dictionary } from "actslib";
-import * as moment from "moment";
-import * as hih from "./common";
+import { Dictionary } from 'actslib';
+import * as moment from 'moment';
+import * as hih from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
@@ -16,8 +16,8 @@ export interface PersonRoleJSON {
 export class PersonRole extends hih.BaseModel {
   private _id = 0;
   private _hid: number | null = null;
-  private _name = "";
-  private _cmt = "";
+  private _name = '';
+  private _cmt = '';
 
   get ID(): number {
     return this._id;
@@ -52,18 +52,14 @@ export class PersonRole extends hih.BaseModel {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this._name = "";
-    this._cmt = "";
+    this._name = '';
+    this._cmt = '';
   }
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (
-        this._name === null ||
-        this._name.length <= 0 ||
-        this._name.length > 30
-      ) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
         vrst = false;
       }
       if (this._cmt && this._cmt.length > 100) {
@@ -113,8 +109,8 @@ export class PersonRole extends hih.BaseModel {
 export class OrganizationType extends hih.BaseModel {
   private _id = 0;
   private _hid: number | null = null;
-  private _name = "";
-  private _cmt = "";
+  private _name = '';
+  private _cmt = '';
 
   get ID(): number {
     return this._id;
@@ -149,18 +145,14 @@ export class OrganizationType extends hih.BaseModel {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this._name = "";
-    this._cmt = "";
+    this._name = '';
+    this._cmt = '';
   }
 
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (
-        this._name === null ||
-        this._name.length <= 0 ||
-        this._name.length > 30
-      ) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
         vrst = false;
       }
       if (this._cmt && this._cmt.length > 100) {
@@ -221,7 +213,7 @@ export class Person extends hih.MultipleNamesObject {
   // private _gend: GenderEnum | null = null;
   // private _shrtintro: string = '';
   // private _ext1link: string = '';
-  private _detail = "";
+  private _detail = '';
 
   get ID(): number {
     return this._id;
@@ -253,7 +245,7 @@ export class Person extends hih.MultipleNamesObject {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this.Detail = "";
+    this.Detail = '';
     this.Roles = [];
   }
 
@@ -335,7 +327,7 @@ export class Person extends hih.MultipleNamesObject {
 export class Organization extends hih.MultipleNamesObject {
   private _id = 0;
   private _hid: number | null = null;
-  private _detail = "";
+  private _detail = '';
 
   get ID(): number {
     return this._id;
@@ -361,7 +353,7 @@ export class Organization extends hih.MultipleNamesObject {
     super.onInit();
     this._id = 0;
     this._hid = null;
-    this.Detail = "";
+    this.Detail = '';
     this.Types = [];
   }
 
@@ -450,9 +442,9 @@ export enum LocationTypeEnum {
 export class Location extends hih.BaseModel {
   private _id = 0;
   private _hid: number | null = null;
-  private _name = "";
+  private _name = '';
   private _loctype: LocationTypeEnum = LocationTypeEnum.PaperBook;
-  private _cmt = "";
+  private _cmt = '';
 
   get ID(): number {
     return this._id;
@@ -497,9 +489,9 @@ export class Location extends hih.BaseModel {
   private initCore(): void {
     this._id = 0;
     this._hid = null;
-    this._name = "";
+    this._name = '';
     this._loctype = LocationTypeEnum.PaperBook;
-    this._cmt = "";
+    this._cmt = '';
   }
 
   public override onVerify(context?: any): boolean {
@@ -541,7 +533,7 @@ export class Location extends hih.BaseModel {
       this.Name = data.Name;
     }
     if (data && data.LocationType) {
-      if (typeof data.LocationType === "number") {
+      if (typeof data.LocationType === 'number') {
         this._loctype = data.LocationType as LocationTypeEnum;
       }
     }
@@ -557,9 +549,9 @@ export class Location extends hih.BaseModel {
 export class BookCategory extends hih.BaseModel {
   private _id = 0;
   private _hid: number | null = null;
-  private _name = "";
+  private _name = '';
   private _parid: number | null = null;
-  private _comment = "";
+  private _comment = '';
 
   get ID(): number {
     return this._id;
@@ -593,7 +585,7 @@ export class BookCategory extends hih.BaseModel {
   }
 
   public HierLevel: number | null = null;
-  public FullDisplayText = "";
+  public FullDisplayText = '';
 
   constructor() {
     super();
@@ -605,17 +597,10 @@ export class BookCategory extends hih.BaseModel {
   public override onVerify(context?: any): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
-      if (
-        this._name === null ||
-        this._name.length <= 0 ||
-        this._name.length > 30
-      ) {
+      if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
         vrst = false;
       }
-      if (
-        this._comment &&
-        (this._comment.length <= 0 || this._comment.length > 100)
-      ) {
+      if (this._comment && (this._comment.length <= 0 || this._comment.length > 100)) {
         vrst = false;
       }
     }
@@ -878,11 +863,7 @@ export class Book extends hih.MultipleNamesObject {
       }
     }
     this.Translators = [];
-    if (
-      data &&
-      data.Translators instanceof Array &&
-      data.Translators.length > 0
-    ) {
+    if (data && data.Translators instanceof Array && data.Translators.length > 0) {
       for (const auth of data.Translators) {
         const objauth: Person = new Person();
         objauth.onSetData(auth);
@@ -890,11 +871,7 @@ export class Book extends hih.MultipleNamesObject {
       }
     }
     this.Categories = [];
-    if (
-      data &&
-      data.Categories instanceof Array &&
-      data.Categories.length > 0
-    ) {
+    if (data && data.Categories instanceof Array && data.Categories.length > 0) {
       for (const ctg of data.Categories) {
         const objctgy: BookCategory = new BookCategory();
         objctgy.onSetData(ctg);
@@ -927,12 +904,12 @@ export class BookBorrowRecord extends hih.BaseModel {
   private _id = 0;
   private _hid?: number;
   private _bookid?: number;
-  private _user = "";
+  private _user = '';
   private _from_org: number | null = null;
   private _from_date: moment.Moment | null = null;
   private _to_date: moment.Moment | null = null;
   private _has_return = false;
-  private _cmt = "";
+  private _cmt = '';
 
   get ID(): number {
     return this._id;
@@ -999,19 +976,19 @@ export class BookBorrowRecord extends hih.BaseModel {
     if (this._from_date) {
       return this._from_date.format(hih.momentDateFormat);
     }
-    return "";
+    return '';
   }
   get ToDateString(): string {
     if (this._to_date) {
       return this._to_date.format(hih.momentDateFormat);
     }
-    return "";
+    return '';
   }
   private initCore(): void {
     this._id = 0;
     this._hid = undefined;
     this._from_org = null;
-    this._user = "";
+    this._user = '';
     this._from_date = null;
     this._to_date = null;
     this._has_return = false;
@@ -1027,42 +1004,26 @@ export class BookBorrowRecord extends hih.BaseModel {
     if (vrst) {
       if (!this._hid) {
         vrst = false;
-        const msg = new hih.InfoMessage(
-          hih.MessageType.Error,
-          "HomeID is must",
-          "HomeID is must"
-        );
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'HomeID is must', 'HomeID is must');
         this.VerifiedMsgs.push(msg);
       }
 
       if (!this._bookid) {
         vrst = false;
-        const msg = new hih.InfoMessage(
-          hih.MessageType.Error,
-          "BookID is must",
-          "BookID is must"
-        );
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'BookID is must', 'BookID is must');
         this.VerifiedMsgs.push(msg);
       }
 
       if (!this._user) {
         vrst = false;
-        const msg = new hih.InfoMessage(
-          hih.MessageType.Error,
-          "User is must",
-          "User is must"
-        );
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'User is must', 'User is must');
         this.VerifiedMsgs.push(msg);
       }
 
       if (this._from_date !== null && this._to_date !== null) {
         if (this._from_date.isAfter(this._to_date)) {
           vrst = false;
-          const msg = new hih.InfoMessage(
-            hih.MessageType.Error,
-            "ToDate is must",
-            "ToDate is must"
-          );
+          const msg = new hih.InfoMessage(hih.MessageType.Error, 'ToDate is must', 'ToDate is must');
           this.VerifiedMsgs.push(msg);
         }
       }

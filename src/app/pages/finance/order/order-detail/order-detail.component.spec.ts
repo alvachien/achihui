@@ -1,25 +1,17 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  flush,
-  inject,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { UrlSegment, ActivatedRoute } from "@angular/router";
-import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { UrlSegment, ActivatedRoute } from '@angular/router';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from "../../finance-ui.module";
-import { OrderDetailComponent } from "./order-detail.component";
+import { FinanceUIModule } from '../../finance-ui.module';
+import { OrderDetailComponent } from './order-detail.component';
 import {
   getTranslocoModule,
   ActivatedRouteUrlStub,
@@ -28,18 +20,13 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  HomeDefOdataService,
-  FinanceOdataService,
-} from "../../../../services";
-import { UserAuthInfo } from "../../../../model";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { MessageDialogComponent } from "../../../message-dialog";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
+import { UserAuthInfo } from '../../../../model';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { MessageDialogComponent } from '../../../message-dialog';
 
-describe("OrderDetailComponent", () => {
+describe('OrderDetailComponent', () => {
   let component: OrderDetailComponent;
   let fixture: ComponentFixture<OrderDetailComponent>;
   let fakeData: FakeDataHelper;
@@ -64,21 +51,18 @@ describe("OrderDetailComponent", () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllControlCenters",
-      "readOrder",
-      "createOrder",
-      "changeOrder",
-      "changeOrderByPatch",
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllControlCenters',
+      'readOrder',
+      'createOrder',
+      'changeOrder',
+      'changeOrderByPatch',
     ]);
-    fetchAllControlCentersSpy =
-      storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     readOrderSpy = storageService.readOrder.and.returnValue(of({}));
     createOrderSpy = storageService.createOrder.and.returnValue(of({}));
     changeOrderSpy = storageService.changeOrder.and.returnValue(of({}));
-    changeOrderByPatchSpy = storageService.changeOrderByPatch.and.returnValue(
-      of({})
-    );
+    changeOrderByPatchSpy = storageService.changeOrderByPatch.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -88,9 +72,7 @@ describe("OrderDetailComponent", () => {
   });
 
   beforeEach(waitForAsync(() => {
-    activatedRouteStub = new ActivatedRouteUrlStub([
-      new UrlSegment("create", {}),
-    ] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -128,18 +110,16 @@ describe("OrderDetailComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("1. create mode", () => {
+  describe('1. create mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       createOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -151,7 +131,7 @@ describe("OrderDetailComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("init without error", fakeAsync(() => {
+    it('init without error', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -166,7 +146,7 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("Name is manadatory", fakeAsync(() => {
+    it('Name is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -178,26 +158,22 @@ describe("OrderDetailComponent", () => {
       // Name
       // component.detailFormGroup.get('nameControl').setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
 
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
 
       flush();
     }));
 
-    it("Validity is manadatory", fakeAsync(() => {
+    it('Validity is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -207,30 +183,24 @@ describe("OrderDetailComponent", () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().subtract(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().subtract(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
 
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
 
       flush();
     }));
 
-    it("Settlement rules are manadatory", fakeAsync(() => {
+    it('Settlement rules are manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -240,17 +210,13 @@ describe("OrderDetailComponent", () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -276,7 +242,7 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall show success result", fakeAsync(() => {
+    it('shall show success result', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -286,17 +252,13 @@ describe("OrderDetailComponent", () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -313,11 +275,9 @@ describe("OrderDetailComponent", () => {
         expect(component.saveButtonEnabled).toBeFalsy();
 
         // Change it.
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 30;
-        component.listRules[1].ControlCenterId =
-          fakeData.finControlCenters[1].Id;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[1].Id;
         component.listRules[1].Precent = 70;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -327,8 +287,7 @@ describe("OrderDetailComponent", () => {
         expect(component.listRules.length).toBe(1);
         expect(component.saveButtonEnabled).toBeFalsy();
 
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 100;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -355,8 +314,8 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall show failed result", fakeAsync(() => {
-      createOrderSpy.and.returnValue(asyncError("failed in creation"));
+    it('shall show failed result', fakeAsync(() => {
+      createOrderSpy.and.returnValue(asyncError('failed in creation'));
 
       fixture.detectChanges();
       tick();
@@ -367,17 +326,13 @@ describe("OrderDetailComponent", () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -394,11 +349,9 @@ describe("OrderDetailComponent", () => {
         expect(component.saveButtonEnabled).toBeFalsy();
 
         // Change it.
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 30;
-        component.listRules[1].ControlCenterId =
-          fakeData.finControlCenters[1].Id;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[1].Id;
         component.listRules[1].Precent = 70;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -408,8 +361,7 @@ describe("OrderDetailComponent", () => {
         expect(component.listRules.length).toBe(1);
         expect(component.saveButtonEnabled).toBeFalsy();
 
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 100;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -435,7 +387,7 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall popup error dialog if settlement rules are invalid", fakeAsync(() => {
+    it('shall popup error dialog if settlement rules are invalid', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -445,17 +397,13 @@ describe("OrderDetailComponent", () => {
       expect(component).toBeTruthy();
 
       // Name
-      component.detailFormGroup.get("nameControl")?.setValue("test");
+      component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup
-        .get("startDateControl")
-        ?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
       // Valid to
-      component.detailFormGroup
-        .get("endDateControl")
-        ?.setValue(moment().add(1, "y").toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
       // Comment
-      component.detailFormGroup.get("cmtControl")?.setValue("test");
+      component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeFalsy();
@@ -472,11 +420,9 @@ describe("OrderDetailComponent", () => {
         expect(component.saveButtonEnabled).toBeFalsy();
 
         // Change it.
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 30;
-        component.listRules[1].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[1].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[1].Precent = 70;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -486,8 +432,7 @@ describe("OrderDetailComponent", () => {
         expect(component.listRules.length).toBe(1);
         expect(component.saveButtonEnabled).toBeFalsy();
 
-        component.listRules[0].ControlCenterId =
-          fakeData.finControlCenters[0].Id;
+        component.listRules[0].ControlCenterId = fakeData.finControlCenters[0].Id;
         component.listRules[0].Precent = 110;
         fixture.detectChanges();
         expect(component.saveButtonEnabled).toBeTruthy();
@@ -503,24 +448,16 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
@@ -532,11 +469,9 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("should display error when Service fails on control center", fakeAsync(() => {
+    it('should display error when Service fails on control center', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -545,43 +480,30 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
   });
 
-  describe("2. change mode", () => {
+  describe('2. change mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      activatedRouteStub.setURL([
-        new UrlSegment("edit", {}),
-        new UrlSegment("122", {}),
-      ] as UrlSegment[]);
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
       changeOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
       changeOrderByPatchSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
@@ -595,7 +517,7 @@ describe("OrderDetailComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("change mode init without error", fakeAsync(() => {
+    it('change mode init without error', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -611,7 +533,7 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall show success result", fakeAsync(() => {
+    it('shall show success result', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -620,8 +542,8 @@ describe("OrderDetailComponent", () => {
 
       expect(component).toBeTruthy();
       // Change the name
-      component.detailFormGroup.get("nameControl")?.setValue("test2");
-      component.detailFormGroup.get("nameControl")?.markAsDirty();
+      component.detailFormGroup.get('nameControl')?.setValue('test2');
+      component.detailFormGroup.get('nameControl')?.markAsDirty();
 
       expect(component.saveButtonEnabled).toBeTrue();
 
@@ -643,8 +565,8 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall show failed result without rule change", fakeAsync(() => {
-      changeOrderByPatchSpy.and.returnValue(asyncError("failed in creation"));
+    it('shall show failed result without rule change', fakeAsync(() => {
+      changeOrderByPatchSpy.and.returnValue(asyncError('failed in creation'));
 
       fixture.detectChanges();
       tick();
@@ -654,8 +576,8 @@ describe("OrderDetailComponent", () => {
 
       expect(component).toBeTruthy();
       // Change the name
-      component.detailFormGroup.get("nameControl")?.setValue("test2");
-      component.detailFormGroup.get("nameControl")?.markAsDirty();
+      component.detailFormGroup.get('nameControl')?.setValue('test2');
+      component.detailFormGroup.get('nameControl')?.markAsDirty();
 
       expect(component.saveButtonEnabled).toBeTrue();
 
@@ -676,7 +598,7 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("shall popup error dialog if settlement rules are invalid", fakeAsync(() => {
+    it('shall popup error dialog if settlement rules are invalid', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -688,8 +610,7 @@ describe("OrderDetailComponent", () => {
 
       const nidx = component.listRules.length;
       component.onCreateRule();
-      component.listRules[nidx].ControlCenterId =
-        fakeData.finControlCenters[0].Id;
+      component.listRules[nidx].ControlCenterId = fakeData.finControlCenters[0].Id;
       component.listRules[nidx].Precent = 50;
       fixture.detectChanges();
       expect(component.saveButtonEnabled).toBeTruthy();
@@ -701,24 +622,16 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
       fixture.detectChanges();
 
       expect(component.isOrderSubmitting).toBeFalsy();
@@ -730,11 +643,9 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("should display error when Service fails on control center", fakeAsync(() => {
+    it('should display error when Service fails on control center', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -743,32 +654,24 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
 
-    it("should display error when Service fails on read order", fakeAsync(() => {
+    it('should display error when Service fails on read order', fakeAsync(() => {
       // tell spy to return an async error observable
-      readOrderSpy.and.returnValue(asyncError<string>("read order failed"));
+      readOrderSpy.and.returnValue(asyncError<string>('read order failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -777,42 +680,29 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
   });
 
-  describe("3. display mode", () => {
+  describe('3. display mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     beforeEach(() => {
-      activatedRouteStub.setURL([
-        new UrlSegment("display", {}),
-        new UrlSegment("122", {}),
-      ] as UrlSegment[]);
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
 
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       readOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -824,7 +714,7 @@ describe("OrderDetailComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("display mode init without error", fakeAsync(() => {
+    it('display mode init without error', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -839,11 +729,9 @@ describe("OrderDetailComponent", () => {
       flush();
     }));
 
-    it("should display error when Service fails on control center", fakeAsync(() => {
+    it('should display error when Service fails on control center', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -852,32 +740,24 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
 
-    it("should display error when Service fails on read order", fakeAsync(() => {
+    it('should display error when Service fails on read order', fakeAsync(() => {
       // tell spy to return an async error observable
-      readOrderSpy.and.returnValue(asyncError<string>("read order failed"));
+      readOrderSpy.and.returnValue(asyncError<string>('read order failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -886,25 +766,17 @@ describe("OrderDetailComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

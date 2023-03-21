@@ -1,15 +1,11 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   ModelUtility,
@@ -19,19 +15,19 @@ import {
   Location,
   UIDisplayString,
   LocationTypeEnum,
-} from "../../../../model";
-import { HomeDefOdataService, LibraryStorageService } from "src/app/services";
+} from '../../../../model';
+import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: "hih-location-detail",
-  templateUrl: "./location-detail.component.html",
-  styleUrls: ["./location-detail.component.less"],
+  selector: 'hih-location-detail',
+  templateUrl: './location-detail.component.html',
+  styleUrls: ['./location-detail.component.less'],
 })
 export class LocationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
   arLocationStrings: UIDisplayString[] = [];
@@ -44,22 +40,16 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
-    this.arLocationStrings =
-      UIDisplayStringUtil.getLocationTypeEnumDisplayStrings();
+    this.arLocationStrings = UIDisplayStringUtil.getLocationTypeEnumDisplayStrings();
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(100),
-      ]),
-      locTypeControl: new UntypedFormControl(LocationTypeEnum.PaperBook, [
-        Validators.required,
-      ]),
-      cmtControl: new UntypedFormControl("", [Validators.maxLength(100)]),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      locTypeControl: new UntypedFormControl(LocationTypeEnum.PaperBook, [Validators.required]),
+      cmtControl: new UntypedFormControl('', [Validators.maxLength(100)]),
     });
   }
 
@@ -69,7 +59,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -82,13 +72,13 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -108,16 +98,16 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe({
               next: (e: Location) => {
-                this.detailFormGroup.get("idControl")?.setValue(e.ID);
-                this.detailFormGroup.get("nameControl")?.setValue(e.Name);
-                this.detailFormGroup.get("cmtControl")?.setValue(e.Comment);
-                this.detailFormGroup.get("locTypeControl")?.setValue(e.LocType);
+                this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
+                this.detailFormGroup.get('cmtControl')?.setValue(e.Comment);
+                this.detailFormGroup.get('locTypeControl')?.setValue(e.LocType);
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
@@ -126,7 +116,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -137,7 +127,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          this.detailFormGroup.get("idControl")?.setValue("NEW OBJECT");
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
 
           break;
         }
@@ -147,7 +137,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationDetailComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering LocationDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -159,15 +149,14 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering LocationDetailComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering LocationDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
     const objtbo = new Location();
-    objtbo.Name = this.detailFormGroup.get("nameControl")?.value;
-    objtbo.Comment = this.detailFormGroup.get("cmtControl")?.value;
-    objtbo.LocType = this.detailFormGroup.get("locTypeControl")
-      ?.value as LocationTypeEnum;
+    objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
+    objtbo.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    objtbo.LocType = this.detailFormGroup.get('locTypeControl')?.value as LocationTypeEnum;
     objtbo.HID = this.homeService.ChosedHome?.ID!;
 
     if (this.uiMode === UIMode.Create) {
@@ -177,9 +166,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate([
-              "/library/location/display/" + e.ID.toString(),
-            ]);
+            this.router.navigate(['/library/location/display/' + e.ID.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
@@ -187,7 +174,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });

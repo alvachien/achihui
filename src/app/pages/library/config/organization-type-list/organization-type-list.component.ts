@@ -1,20 +1,16 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import {
-  ConsoleLogTypeEnum,
-  ModelUtility,
-  OrganizationType,
-} from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
+import { ConsoleLogTypeEnum, ModelUtility, OrganizationType } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: "hih-organization-type-list",
-  templateUrl: "./organization-type-list.component.html",
-  styleUrls: ["./organization-type-list.component.less"],
+  selector: 'hih-organization-type-list',
+  templateUrl: './organization-type-list.component.html',
+  styleUrls: ['./organization-type-list.component.less'],
 })
 export class OrganizationTypeListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -27,7 +23,7 @@ export class OrganizationTypeListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -36,7 +32,7 @@ export class OrganizationTypeListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -51,20 +47,20 @@ export class OrganizationTypeListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: OrganizationType[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnInit fetchAllOrganizationTypes...",
+            'AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnInit fetchAllOrganizationTypes...',
             ConsoleLogTypeEnum.debug
           );
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering OrganizationTypeListComponent fetchAllOrganizationTypes failed ${error}`,
+            `AC_HIH_UI [Error]: Entering OrganizationTypeListComponent fetchAllOrganizationTypes failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
-            nzContent: error.toString(),
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -73,7 +69,7 @@ export class OrganizationTypeListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering OrganizationTypeListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 

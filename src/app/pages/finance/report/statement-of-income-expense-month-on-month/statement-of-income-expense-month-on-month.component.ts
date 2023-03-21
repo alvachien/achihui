@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { NzDrawerService } from "ng-zorro-antd/drawer";
-import { translate } from "@ngneat/transloco";
-import { EChartsOption } from "echarts";
-import * as moment from "moment";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { translate } from '@ngneat/transloco';
+import { EChartsOption } from 'echarts';
+import * as moment from 'moment';
 
 import {
   ConsoleLogTypeEnum,
@@ -18,19 +18,17 @@ import {
   GeneralFilterValueType,
   ModelUtility,
   momentDateFormat,
-} from "src/app/model";
-import { FinanceOdataService } from "src/app/services";
-import { NumberUtility } from "actslib";
-import { DocumentItemViewComponent } from "../../document-item-view";
+} from 'src/app/model';
+import { FinanceOdataService } from 'src/app/services';
+import { NumberUtility } from 'actslib';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: "hih-statement-of-income-expense-month-on-month",
-  templateUrl: "./statement-of-income-expense-month-on-month.component.html",
-  styleUrls: ["./statement-of-income-expense-month-on-month.component.less"],
+  selector: 'hih-statement-of-income-expense-month-on-month',
+  templateUrl: './statement-of-income-expense-month-on-month.component.html',
+  styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
 })
-export class StatementOfIncomeExpenseMonthOnMonthComponent
-  implements OnInit, OnDestroy
-{
+export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   excludeTransfer = false;
@@ -44,14 +42,14 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
     private drawerService: NzDrawerService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -62,7 +60,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -81,11 +79,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
     this.isLoadingResults = true;
 
     this.odataService
-      .fetchStatementOfIncomeAndExposeMoM(
-        this.selectedPeriod,
-        this.excludeTransfer,
-        forceReload
-      )
+      .fetchStatementOfIncomeAndExposeMoM(this.selectedPeriod, this.excludeTransfer, forceReload)
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
@@ -102,7 +96,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -128,24 +122,17 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
     if (this.selectedPeriod === financePeriodLast12Months) {
       // Last 12 months
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -155,24 +142,17 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
     } else if (this.selectedPeriod === financePeriodLast6Months) {
       // Last 6 months
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -182,24 +162,17 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
     } else if (this.selectedPeriod === financePeriodLast3Months) {
       // Last 3 months
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        arAxis.push(monthinuse.format("YYYY.MM"));
+        const monthinuse = moment().subtract(imonth, 'month');
+        arAxis.push(monthinuse.format('YYYY.MM'));
       }
 
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, "month");
-        const validx = this.reportData.findIndex(
-          (p) => p.Month === monthinuse.month() + 1
-        );
+        const monthinuse = moment().subtract(imonth, 'month');
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
-          arBal.push(
-            NumberUtility.Round2Two(
-              this.reportData[validx].InAmount +
-                this.reportData[validx].OutAmount
-            )
-          );
+          arBal.push(NumberUtility.Round2Two(this.reportData[validx].InAmount + this.reportData[validx].OutAmount));
         } else {
           arIn.push(0);
           arOut.push(0);
@@ -210,83 +183,79 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
 
     this.chartOption = {
       tooltip: {
-        trigger: "axis",
+        trigger: 'axis',
         axisPointer: {
-          type: "cross",
+          type: 'cross',
           crossStyle: {
-            color: "#999",
+            color: '#999',
           },
         },
       },
       toolbox: {
         feature: {
           dataView: { show: true, readOnly: false },
-          magicType: { show: true, type: ["line", "bar"] },
+          magicType: { show: true, type: ['line', 'bar'] },
           restore: { show: true },
           saveAsImage: { show: true },
         },
       },
       legend: {
-        data: [
-          translate("Finance.Income"),
-          translate("Finance.Expense"),
-          translate("Common.Total"),
-        ],
+        data: [translate('Finance.Income'), translate('Finance.Expense'), translate('Common.Total')],
       },
       xAxis: [
         {
-          type: "category",
+          type: 'category',
           data: arAxis,
           axisPointer: {
-            type: "shadow",
+            type: 'shadow',
           },
         },
       ],
       yAxis: [
         {
-          type: "value",
+          type: 'value',
         },
       ],
       series: [
         {
-          id: "in",
-          name: translate("Finance.Income"),
-          type: "bar",
+          id: 'in',
+          name: translate('Finance.Income'),
+          type: 'bar',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arIn,
         },
         {
-          id: "out",
-          name: translate("Finance.Expense"),
-          type: "bar",
+          id: 'out',
+          name: translate('Finance.Expense'),
+          type: 'bar',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arOut,
         },
         {
-          id: "total",
-          name: translate("Common.Total"),
-          type: "line",
+          id: 'total',
+          name: translate('Common.Total'),
+          type: 'line',
           label: {
             show: true,
-            formatter: "{c}",
+            formatter: '{c}',
             fontSize: 16,
           },
           emphasis: {
-            focus: "series",
+            focus: 'series',
           },
           data: arBal,
         },
@@ -295,20 +264,12 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
   }
 
   onChartClick(event: any) {
-    const dtmonth = moment(event.name + ".01");
-    if (event.seriesId === "in") {
-      this.onDisplayDocItem(
-        dtmonth.format(momentDateFormat),
-        dtmonth.add(1, "M").format(momentDateFormat),
-        false
-      );
-    } else if (event.seriesId === "out") {
-      this.onDisplayDocItem(
-        dtmonth.format(momentDateFormat),
-        dtmonth.add(1, "M").format(momentDateFormat),
-        true
-      );
-    } else if (event.seriesId === "total") {
+    const dtmonth = moment(event.name + '.01');
+    if (event.seriesId === 'in') {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+    } else if (event.seriesId === 'out') {
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+    } else if (event.seriesId === 'total') {
       // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
     } else {
       console.error(event.toString());
@@ -317,14 +278,14 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
     const fltrs: GeneralFilterItem[] = [];
     fltrs.push({
-      fieldName: "IsExpense",
+      fieldName: 'IsExpense',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: isexp,
       highValue: isexp,
       valueType: GeneralFilterValueType.boolean,
     });
     fltrs.push({
-      fieldName: "TransactionDate",
+      fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
       lowValue: beginDate,
       highValue: endDate,
@@ -338,14 +299,14 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent
       },
       string
     >({
-      nzTitle: translate("Finance.Documents"),
+      nzTitle: translate('Finance.Documents'),
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {

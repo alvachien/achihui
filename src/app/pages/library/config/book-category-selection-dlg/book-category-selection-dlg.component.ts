@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { NzModalRef } from "ng-zorro-antd/modal";
+import { Component, Input, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
-import { BookCategory } from "src/app/model";
-import { LibraryStorageService } from "src/app/services";
+import { BookCategory } from 'src/app/model';
+import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: "hih-book-category-selection-dlg",
-  templateUrl: "./book-category-selection-dlg.component.html",
-  styleUrls: ["./book-category-selection-dlg.component.less"],
+  selector: 'hih-book-category-selection-dlg',
+  templateUrl: './book-category-selection-dlg.component.html',
+  styleUrls: ['./book-category-selection-dlg.component.less'],
 })
 export class BookCategorySelectionDlgComponent implements OnInit {
   checked = false;
@@ -27,21 +27,15 @@ export class BookCategorySelectionDlgComponent implements OnInit {
     }
   }
 
-  onCurrentPageDataChange(
-    listOfCurrentPageData: readonly BookCategory[]
-  ): void {
+  onCurrentPageDataChange(listOfCurrentPageData: readonly BookCategory[]): void {
     this.listOfBookCategoryInCurrentPage = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.listOfBookCategoryInCurrentPage.every((prn) =>
-      this.setOfCheckedId.has(prn.ID)
-    );
+    this.checked = this.listOfBookCategoryInCurrentPage.every((prn) => this.setOfCheckedId.has(prn.ID));
     this.indeterminate =
-      this.listOfBookCategoryInCurrentPage.some((prn) =>
-        this.setOfCheckedId.has(prn.ID)
-      ) && !this.checked;
+      this.listOfBookCategoryInCurrentPage.some((prn) => this.setOfCheckedId.has(prn.ID)) && !this.checked;
   }
 
   onItemChecked(id: number, checked: boolean): void {
@@ -50,9 +44,7 @@ export class BookCategorySelectionDlgComponent implements OnInit {
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfBookCategoryInCurrentPage.forEach((prn) =>
-      this.updateCheckedSet(prn.ID, checked)
-    );
+    this.listOfBookCategoryInCurrentPage.forEach((prn) => this.updateCheckedSet(prn.ID, checked));
     this.refreshCheckedStatus();
   }
 
@@ -66,9 +58,6 @@ export class BookCategorySelectionDlgComponent implements OnInit {
     this.storageSrv.fetchAllBookCategories().subscribe({
       next: (data) => {
         this.listAllBookCategory = data;
-      },
-      error: (err) => {
-        // Error handling
       },
     });
   }

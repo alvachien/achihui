@@ -7,45 +7,30 @@ import {
   fakeAsync,
   flush,
   discardPeriodicTasks,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
-import { NZ_I18N, en_US } from "ng-zorro-antd/i18n";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { By } from "@angular/platform-browser";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
+} from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { By } from '@angular/platform-browser';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from "../../finance-ui.module";
-import { DocumentHeaderComponent } from "../document-header";
-import { DocumentItemsComponent } from "../document-items";
-import { DocumentNormalCreateComponent } from "./document-normal-create.component";
-import {
-  getTranslocoModule,
-  FakeDataHelper,
-  asyncData,
-  asyncError,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  HomeDefOdataService,
-  FinanceOdataService,
-} from "../../../../services";
-import {
-  UserAuthInfo,
-  Document,
-  DocumentItem,
-  momentDateFormat,
-} from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
+import { FinanceUIModule } from '../../finance-ui.module';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { DocumentNormalCreateComponent } from './document-normal-create.component';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
+import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
 
-describe("DocumentNormalCreateComponent", () => {
+describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
   let fixture: ComponentFixture<DocumentNormalCreateComponent>;
   let fakeData: FakeDataHelper;
@@ -58,8 +43,8 @@ describe("DocumentNormalCreateComponent", () => {
   let fetchAllOrdersSpy: any;
   let createDocumentSpy: any;
   let searchDocItemSpy: any;
-  const modalClassName = ".ant-modal-body";
-  const nextButtonId = "#button_next_step";
+  const modalClassName = '.ant-modal-body';
+  const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -78,34 +63,26 @@ describe("DocumentNormalCreateComponent", () => {
     const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllCurrencies",
-      "fetchAllDocTypes",
-      "fetchAllAccountCategories",
-      "fetchAllTranTypes",
-      "fetchAllAccounts",
-      "fetchAllControlCenters",
-      "fetchAllOrders",
-      "createDocument",
-      "searchDocItem",
+    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllCurrencies',
+      'fetchAllDocTypes',
+      'fetchAllAccountCategories',
+      'fetchAllTranTypes',
+      'fetchAllAccounts',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
+      'createDocument',
+      'searchDocItem',
     ]);
-    fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(
-      of([])
-    );
+    fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllAccountCategoriesSpy =
-      odataService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllTranTypesSpy = odataService.fetchAllTranTypes.and.returnValue(
-      of([])
-    );
+    fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllTranTypesSpy = odataService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllControlCentersSpy =
-      odataService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllControlCentersSpy = odataService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = odataService.fetchAllOrders.and.returnValue(of([]));
     createDocumentSpy = odataService.createDocument.and.returnValue(of({}));
-    searchDocItemSpy = odataService.searchDocItem.and.returnValue(
-      of({ contentList: [] })
-    );
+    searchDocItemSpy = odataService.searchDocItem.and.returnValue(of({ contentList: [] }));
 
     TestBed.configureTestingModule({
       imports: [
@@ -146,28 +123,24 @@ describe("DocumentNormalCreateComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("1. should create", () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("3. working with data", () => {
+  describe('3. working with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
 
       // Accounts
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
       // CC
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       // Order
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       // Search doc item
@@ -183,27 +156,22 @@ describe("DocumentNormalCreateComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("step 0: should set the default values: base currency, date, and so on", fakeAsync(() => {
+    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.headerForm.get("headerControl")).toBeTruthy(
-        "Expect header control has been initialized"
-      );
-      expect(component.itemsForm.get("itemControl")).toBeTruthy(
-        "Expect item control has been initialized"
-      );
+      expect(component.headerForm.get('headerControl')).toBeTruthy('Expect header control has been initialized');
+      expect(component.itemsForm.get('itemControl')).toBeTruthy('Expect item control has been initialized');
 
       flush();
       fixture.detectChanges();
 
-      const docobj: Document = component.headerForm.get("headerControl")
-        ?.value as Document;
+      const docobj: Document = component.headerForm.get('headerControl')?.value as Document;
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
-    xit("step 0: should not go to next page if header is not valid", fakeAsync(() => {
+    xit('step 0: should not go to next page if header is not valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -215,7 +183,7 @@ describe("DocumentNormalCreateComponent", () => {
       flush();
     }));
 
-    xit("step 0: should go to next page if header is valid for document with local currency", fakeAsync(() => {
+    xit('step 0: should go to next page if header is valid for document with local currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -224,11 +192,11 @@ describe("DocumentNormalCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalse();
 
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -239,7 +207,7 @@ describe("DocumentNormalCreateComponent", () => {
       flush();
     }));
 
-    xit("step 0: should go to next page if header is valid for document with foreign currency", fakeAsync(() => {
+    xit('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -248,16 +216,16 @@ describe("DocumentNormalCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalse();
 
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
-      docheader.TranCurr = "USD";
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = 'USD';
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       docheader.ExgRate = 653;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -268,7 +236,7 @@ describe("DocumentNormalCreateComponent", () => {
       flush();
     }));
 
-    xit("step 1: should not go to next page if item is invalid", fakeAsync(() => {
+    xit('step 1: should not go to next page if item is invalid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -277,11 +245,11 @@ describe("DocumentNormalCreateComponent", () => {
       expect(component.nextButtonEnabled).toBeFalse();
 
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -294,18 +262,18 @@ describe("DocumentNormalCreateComponent", () => {
       flush();
     }));
 
-    it("step 1: should go to next page if item is valid", fakeAsync(() => {
+    it('step 1: should go to next page if item is valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0.
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -315,13 +283,13 @@ describe("DocumentNormalCreateComponent", () => {
       const aritem: DocumentItem = new DocumentItem();
       aritem.ItemId = 1;
       aritem.AccountId = fakeData.finAccounts[0].Id;
-      aritem.Desp = "Test 1";
+      aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get("itemControl")?.setValue(aritems);
-      component.itemsForm.get("itemControl")?.markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
 
@@ -333,23 +301,21 @@ describe("DocumentNormalCreateComponent", () => {
       flush();
     }));
 
-    xit("step 2: should popup an error dialog if verification failed on generated object", fakeAsync(() => {
+    xit('step 2: should popup an error dialog if verification failed on generated object', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0.
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(
-        By.css(nextButtonId)
-      )[0].nativeElement;
+      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -358,13 +324,13 @@ describe("DocumentNormalCreateComponent", () => {
       const aritem: DocumentItem = new DocumentItem();
       aritem.ItemId = 1;
       aritem.AccountId = fakeData.finAccounts[0].Id;
-      aritem.Desp = "Test 1";
+      aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get("itemControl")?.setValue(aritems);
-      component.itemsForm.get("itemControl")?.markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       nextButtonNativeEl.click();
@@ -373,9 +339,9 @@ describe("DocumentNormalCreateComponent", () => {
       // Step 2.
       expect(component.currentStep).toEqual(2);
       // Fake an error in generated doc
-      docheader.Desp = "";
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      docheader.Desp = '';
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
       flush();
@@ -383,23 +349,17 @@ describe("DocumentNormalCreateComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ".ant-modal-close"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
@@ -412,10 +372,8 @@ describe("DocumentNormalCreateComponent", () => {
       discardPeriodicTasks();
     }));
 
-    it("step 3: should display error result when service return failure", fakeAsync(() => {
-      createDocumentSpy.and.returnValue(
-        asyncError<string>("create document failed")
-      );
+    it('step 3: should display error result when service return failure', fakeAsync(() => {
+      createDocumentSpy.and.returnValue(asyncError<string>('create document failed'));
 
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -423,11 +381,11 @@ describe("DocumentNormalCreateComponent", () => {
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -438,13 +396,13 @@ describe("DocumentNormalCreateComponent", () => {
       const aritem: DocumentItem = new DocumentItem();
       aritem.ItemId = 1;
       aritem.AccountId = fakeData.finAccounts[0].Id;
-      aritem.Desp = "Test 1";
+      aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get("itemControl")?.setValue(aritems);
-      component.itemsForm.get("itemControl")?.markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -474,18 +432,18 @@ describe("DocumentNormalCreateComponent", () => {
       discardPeriodicTasks();
     }));
 
-    xit("step 3: should save document for base currency case", fakeAsync(() => {
+    xit('step 3: should save document for base currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -496,13 +454,13 @@ describe("DocumentNormalCreateComponent", () => {
       const aritem: DocumentItem = new DocumentItem();
       aritem.ItemId = 1;
       aritem.AccountId = fakeData.finAccounts[0].Id;
-      aritem.Desp = "Test 1";
+      aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get("itemControl")?.setValue(aritems);
-      component.itemsForm.get("itemControl")?.markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -522,22 +480,22 @@ describe("DocumentNormalCreateComponent", () => {
       discardPeriodicTasks();
     }));
 
-    it("step 3: should save document for foreign currency case", fakeAsync(() => {
+    it('step 3: should save document for foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment("2020-02-02", momentDateFormat);
-      docheader.Desp = "Test on 2nd May, 2020";
-      docheader.TranCurr = "USD";
-      component.headerForm.get("headerControl")?.setValue(docheader);
-      component.headerForm.get("headerControl")?.markAsDirty();
+      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = 'USD';
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       docheader.ExgRate = 634;
-      component.headerForm.get("headerControl")?.setValue(docheader);
+      component.headerForm.get('headerControl')?.setValue(docheader);
       tick();
       fixture.detectChanges();
       component.next();
@@ -548,13 +506,13 @@ describe("DocumentNormalCreateComponent", () => {
       const aritem: DocumentItem = new DocumentItem();
       aritem.ItemId = 1;
       aritem.AccountId = fakeData.finAccounts[0].Id;
-      aritem.Desp = "Test 1";
+      aritem.Desp = 'Test 1';
       aritem.TranAmount = 200;
       aritem.TranType = fakeData.finTranTypes[0].Id;
       aritem.ControlCenterId = fakeData.finControlCenters[0].Id;
       aritems.push(aritem);
-      component.itemsForm.get("itemControl")?.setValue(aritems);
-      component.itemsForm.get("itemControl")?.markAsDirty();
+      component.itemsForm.get('itemControl')?.setValue(aritems);
+      component.itemsForm.get('itemControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
       component.next();
@@ -587,24 +545,20 @@ describe("DocumentNormalCreateComponent", () => {
     // Reset should work
   });
 
-  describe("2. Exception case handling", () => {
+  describe('2. Exception case handling', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
 
       // Accounts
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
       // CC
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       // Order
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       searchDocItemSpy.and.returnValue(asyncData({ contentList: [] }));
@@ -619,228 +573,179 @@ describe("DocumentNormalCreateComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("1. should display error when currency service fails", fakeAsync(() => {
+    it('1. should display error when currency service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllCurrenciesSpy.and.returnValue(
-        asyncError<string>("Currency service failed")
-      );
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Currency service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Currency service failed",
-        "Expected dialog to show the error message: Currency service failed"
+        'Currency service failed',
+        'Expected dialog to show the error message: Currency service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("2. should display error when accont category service fails", fakeAsync(() => {
+    it('2. should display error when accont category service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncError<string>("Account category service failed")
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Account category service failed",
-        "Expected snack bar to show the error message: Account category service failed"
+        'Account category service failed',
+        'Expected snack bar to show the error message: Account category service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("3. should display error when doc type service fails", fakeAsync(() => {
+    it('3. should display error when doc type service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllDocTypesSpy.and.returnValue(
-        asyncError<string>("Doc type service failed")
-      );
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Doc type service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Doc type service failed",
-        "Expected snack bar to show the error message: Doc type service failed"
+        'Doc type service failed',
+        'Expected snack bar to show the error message: Doc type service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("4. should display error when tran type service fails", fakeAsync(() => {
+    it('4. should display error when tran type service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllTranTypesSpy.and.returnValue(
-        asyncError<string>("Tran type service failed")
-      );
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Tran type service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Tran type service failed",
-        "Expected snack bar to show the error message: Tran type service failed"
+        'Tran type service failed',
+        'Expected snack bar to show the error message: Tran type service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("5. should display error when accont service fails", fakeAsync(() => {
+    it('5. should display error when accont service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(
-        asyncError<string>("Account service failed")
-      );
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Account service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Account service failed",
-        "Expected snack bar to show the error message: Account service failed"
+        'Account service failed',
+        'Expected snack bar to show the error message: Account service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("6. should display error when control center service fails", fakeAsync(() => {
+    it('6. should display error when control center service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncError<string>("Control center service failed")
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Control center service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Control center service failed",
-        "Expected snack bar to show the error message: Control center service failed"
+        'Control center service failed',
+        'Expected snack bar to show the error message: Control center service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));
 
-    it("7. should display error when order service fails", fakeAsync(() => {
+    it('7. should display error when order service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllOrdersSpy.and.returnValue(
-        asyncError<string>("Order service failed")
-      );
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Order service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
 
       // tick();
       fixture.detectChanges();
-      const messageElement: any =
-        overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
-        "Order service failed",
-        "Expected snack bar to show the error message: Order service failed"
+        'Order service failed',
+        'Expected snack bar to show the error message: Order service failed'
       );
 
       // Close the dialog
-      const closeBtn = overlayContainerElement.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(".ant-modal-body").length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       discardPeriodicTasks();
     }));

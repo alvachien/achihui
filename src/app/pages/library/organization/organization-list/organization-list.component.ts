@@ -1,17 +1,17 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { Router } from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
 
-import { ConsoleLogTypeEnum, ModelUtility, Organization } from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
+import { ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: "hih-organization-list",
-  templateUrl: "./organization-list.component.html",
-  styleUrls: ["./organization-list.component.less"],
+  selector: 'hih-organization-list',
+  templateUrl: './organization-list.component.html',
+  styleUrls: ['./organization-list.component.less'],
 })
 export class OrganizationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -25,7 +25,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -34,7 +34,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -49,7 +49,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: Organization[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit fetchAllOrganizations...",
+            'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit fetchAllOrganizations...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -61,7 +61,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -71,7 +71,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -82,24 +82,23 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   public onDisplay(pid: number) {
-    this.router.navigate(["/library/organization/display/" + pid.toString()]);
+    this.router.navigate(['/library/organization/display/' + pid.toString()]);
   }
-  public onEdit(pid: number) {}
+  public onEdit(pid: number) {
+    // TBD.
+  }
   public onDelete(pid: number) {
     this.modalService.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
-      nzContent:
-        '<b style="color: red;">' +
-        translate("Common.ConfirmToDeleteSelectedItem") +
-        "</b>",
-      nzOkText: "Yes",
-      nzOkType: "primary",
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: '<b style="color: red;">' + translate('Common.ConfirmToDeleteSelectedItem') + '</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteOrganization(pid).subscribe({
           next: (data) => {
             const sdlg = this.modalService.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.dataSet.findIndex((p) => p.ID === pid);
@@ -116,14 +115,14 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: "No",
+      nzCancelText: 'No',
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering OrganizationList onDelete cancelled`,

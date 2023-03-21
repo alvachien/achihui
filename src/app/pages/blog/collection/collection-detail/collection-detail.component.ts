@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   UntypedFormGroup,
@@ -6,13 +6,13 @@ import {
   Validators,
   ValidatorFn,
   ValidationErrors,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   LogLevel,
@@ -22,20 +22,20 @@ import {
   BlogCollection,
   momentDateFormat,
   getUIModeString,
-} from "../../../../model";
-import { BlogOdataService, UIStatusService } from "../../../../services";
+} from '../../../../model';
+import { BlogOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-blog-collection-detail",
-  templateUrl: "./collection-detail.component.html",
-  styleUrls: ["./collection-detail.component.less"],
+  selector: 'hih-blog-collection-detail',
+  templateUrl: './collection-detail.component.html',
+  styleUrls: ['./collection-detail.component.less'],
 })
 export class CollectionDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
 
@@ -46,23 +46,20 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(30),
-      ]),
-      commentControl: new UntypedFormControl("", [Validators.required]),
+      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
+      commentControl: new UntypedFormControl('', [Validators.required]),
     });
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -75,13 +72,13 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -101,15 +98,15 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe({
               next: (e) => {
-                this.detailFormGroup.get("idControl")?.setValue(e.id);
-                this.detailFormGroup.get("nameControl")?.setValue(e.name);
-                this.detailFormGroup.get("commentControl")?.setValue(e.comment);
+                this.detailFormGroup.get('idControl')?.setValue(e.id);
+                this.detailFormGroup.get('nameControl')?.setValue(e.name);
+                this.detailFormGroup.get('commentControl')?.setValue(e.comment);
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
@@ -118,7 +115,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -130,7 +127,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         case UIMode.Create:
         default: {
           // Do nothing
-          this.detailFormGroup.get("idControl")?.setValue("NEW OBJECT");
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
           break;
         }
       }
@@ -139,7 +136,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionDetailComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering CollectionDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -151,13 +148,13 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering CollectionDetailComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering CollectionDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
     const objColl = new BlogCollection();
-    objColl.name = this.detailFormGroup.get("nameControl")?.value;
-    objColl.comment = this.detailFormGroup.get("commentControl")?.value;
+    objColl.name = this.detailFormGroup.get('nameControl')?.value;
+    objColl.comment = this.detailFormGroup.get('commentControl')?.value;
 
     if (this.uiMode === UIMode.Create) {
       this.odataService
@@ -166,9 +163,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate([
-              "/blog/collection/display/" + e.id.toString(),
-            ]);
+            this.router.navigate(['/blog/collection/display/' + e.id.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
@@ -176,7 +171,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });

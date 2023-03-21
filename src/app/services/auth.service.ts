@@ -1,36 +1,18 @@
-import { Injectable, EventEmitter } from "@angular/core";
-import {
-  EventTypes,
-  OidcSecurityService,
-  PublicEventsService,
-} from "angular-auth-oidc-client";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import {
-  LogLevel,
-  UserAuthInfo,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-} from "../model";
+import { UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthService {
-  public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(
-    new UserAuthInfo()
-  );
-  public authContent: Observable<UserAuthInfo> =
-    this.authSubject.asObservable();
+  public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
+  public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
 
-  constructor(
-    private authService: OidcSecurityService,
-    private eventService: PublicEventsService
-  ) {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AuthService constructor...",
-      ConsoleLogTypeEnum.debug
-    );
+  constructor(private authService: OidcSecurityService, private eventService: PublicEventsService) {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor...', ConsoleLogTypeEnum.debug);
 
     this.eventService
       .registerForEvents()
@@ -39,50 +21,50 @@ export class AuthService {
         switch (value.type) {
           case EventTypes.CheckSessionReceived:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: Check session received...",
+              'AC_HIH_UI [Debug]: Entering AuthService: Check session received...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.ConfigLoaded:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: Config loaded...",
+              'AC_HIH_UI [Debug]: Entering AuthService: Config loaded...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.ConfigLoadingFailed:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: Config loading failed...",
+              'AC_HIH_UI [Debug]: Entering AuthService: Config loading failed...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.UserDataChanged:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: User data changed...",
+              'AC_HIH_UI [Debug]: Entering AuthService: User data changed...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.NewAuthenticationResult:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: New authentication result...",
+              'AC_HIH_UI [Debug]: Entering AuthService: New authentication result...',
               ConsoleLogTypeEnum.debug
             );
             this.checkAuth();
             break;
           case EventTypes.TokenExpired:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: Token expired...",
+              'AC_HIH_UI [Debug]: Entering AuthService: Token expired...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.IdTokenExpired:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: ID token expired...",
+              'AC_HIH_UI [Debug]: Entering AuthService: ID token expired...',
               ConsoleLogTypeEnum.debug
             );
             break;
           case EventTypes.SilentRenewStarted:
             ModelUtility.writeConsoleLog(
-              "AC_HIH_UI [Debug]: Entering AuthService: Silent renew started...",
+              'AC_HIH_UI [Debug]: Entering AuthService: Silent renew started...',
               ConsoleLogTypeEnum.debug
             );
             break;
@@ -99,17 +81,11 @@ export class AuthService {
   }
 
   public doLogin(): void {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AuthService logon...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService logon...', ConsoleLogTypeEnum.debug);
     this.authService.authorize();
   }
   public doLogout(): void {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering AuthService doLogout...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...', ConsoleLogTypeEnum.debug);
     this.authService.logoffAndRevokeTokens().subscribe(() => {
       const usrAuthInfo = this.authSubject.value;
       usrAuthInfo.cleanContent();
@@ -118,26 +94,24 @@ export class AuthService {
   }
 
   public checkAuth() {
-    this.authService
-      .checkAuth()
-      .subscribe(({ isAuthenticated, userData, accessToken }) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`,
-          ConsoleLogTypeEnum.debug
-        );
-        if (isAuthenticated) {
-          const usrAuthInfo = this.authSubject.value;
-          usrAuthInfo.setContent({
-            userId: userData.sub,
-            userName: userData.name,
-            accessToken: accessToken,
-          });
-          this.authSubject.next(usrAuthInfo);
-        } else {
-          const usrAuthInfo = this.authSubject.value;
-          usrAuthInfo.cleanContent();
-          this.authSubject.next(usrAuthInfo);
-        }
-      });
+    this.authService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`,
+        ConsoleLogTypeEnum.debug
+      );
+      if (isAuthenticated) {
+        const usrAuthInfo = this.authSubject.value;
+        usrAuthInfo.setContent({
+          userId: userData.sub,
+          userName: userData.name,
+          accessToken: accessToken,
+        });
+        this.authSubject.next(usrAuthInfo);
+      } else {
+        const usrAuthInfo = this.authSubject.value;
+        usrAuthInfo.cleanContent();
+        this.authSubject.next(usrAuthInfo);
+      }
+    });
   }
 }

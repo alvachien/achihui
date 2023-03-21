@@ -1,1 +1,1 @@
-export * from "./document-change-date-dialog.component";
+export * from './document-change-date-dialog.component';

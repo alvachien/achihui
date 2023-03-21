@@ -1,23 +1,15 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{
-        "Common.Overview" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
     >
     <nz-breadcrumb-item
-      ><a routerLink="/finance/document/list">{{
-        "Finance.Documents" | transloco
-      }}</a>
+      ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
     </nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{ "Common.Create" | transloco }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'Common.Create' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Finance.TransferDocument" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Common.Create" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Finance.TransferDocument' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Common.Create' | transloco }}</nz-page-header-subtitle>
 </nz-page-header>
 
 <nz-steps [nzCurrent]="currentStep">
@@ -42,9 +34,7 @@
     </hih-fin-document-header>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Finance.Amount" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Amount' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
         <nz-input-number
           [nzMin]="0.01"
@@ -55,7 +45,7 @@
         </nz-input-number>
         <ng-template #amountTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -65,49 +55,31 @@
   <!-- From -->
   <form nz-form [formGroup]="fromFormGroup" [hidden]="currentStep !== 1">
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Finance.Account" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
         <nz-select formControlName="accountControl">
-          <nz-option
-            *ngFor="let acnt of arUIAccounts"
-            [nzValue]="acnt.Id"
-            [nzLabel]="acnt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
         </nz-select>
         <ng-template #accountTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Finance.ControlCenter" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback>
         <nz-select formControlName="ccControl" nzAllowClear>
-          <nz-option
-            *ngFor="let tt of arControlCenters"
-            [nzValue]="tt.Id"
-            [nzLabel]="tt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Finance.Activity" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback>
         <nz-select formControlName="orderControl" nzAllowClear>
-          <nz-option
-            *ngFor="let tt of arUIOrders"
-            [nzValue]="tt.Id"
-            [nzLabel]="tt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -116,49 +88,31 @@
   <!-- To -->
   <form nz-form [formGroup]="toFormGroup" [hidden]="currentStep !== 2">
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Finance.Account" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
         <nz-select formControlName="accountControl">
-          <nz-option
-            *ngFor="let acnt of arUIAccounts"
-            [nzValue]="acnt.Id"
-            [nzLabel]="acnt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
         </nz-select>
         <ng-template #accountTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Finance.ControlCenter" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback>
         <nz-select formControlName="ccControl" nzAllowClear>
-          <nz-option
-            *ngFor="let tt of arControlCenters"
-            [nzValue]="tt.Id"
-            [nzLabel]="tt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Finance.Activity" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback>
         <nz-select formControlName="orderControl" nzAllowClear>
-          <nz-option
-            *ngFor="let tt of arUIOrders"
-            [nzValue]="tt.Id"
-            [nzLabel]="tt.Name"
-          ></nz-option>
+          <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -167,20 +121,16 @@
   <!-- Review and Confirm -->
   <div [hidden]="currentStep !== 3">
     <div>
-      <h3 nz-title>
-        {{ "Common.Date" | transloco }}: {{ confirmInfo?.tranDateString }}
-      </h3>
+      <h3 nz-title>{{ 'Common.Date' | transloco }}: {{ confirmInfo?.tranDateString }}</h3>
+      <h2 nz-title>{{ 'Common.Description' | transloco }}: {{ confirmInfo?.tranDesp }}</h2>
       <h2 nz-title>
-        {{ "Common.Description" | transloco }}: {{ confirmInfo?.tranDesp }}
-      </h2>
-      <h2 nz-title>
-        {{ "Finance.Incoming" | transloco }}:
-        {{ confirmInfo?.inAmount | number : "1.2-2" }}
+        {{ 'Finance.Incoming' | transloco }}:
+        {{ confirmInfo?.inAmount | number : '1.2-2' }}
         {{ confirmInfo?.tranCurrency }}
       </h2>
       <h2 nz-title>
-        {{ "Finance.Outgoing" | transloco }}:
-        {{ confirmInfo?.outAmount | number : "1.2-2" }}
+        {{ 'Finance.Outgoing' | transloco }}:
+        {{ confirmInfo?.outAmount | number : '1.2-2' }}
         {{ confirmInfo?.tranCurrency }}
       </h2>
     </div>
@@ -197,10 +147,10 @@
         >
           <div nz-result-extra>
             <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
-              {{ "Common.Display" | transloco }}
+              {{ 'Common.Display' | transloco }}
             </button>
             <button nz-button>
-              {{ "Common.CreateAnotherOne" | transloco }}
+              {{ 'Common.CreateAnotherOne' | transloco }}
             </button>
           </div>
         </nz-result>
@@ -213,7 +163,7 @@
         >
           <div nz-result-content>
             <div class="desc">
-              <h4 nz-title>{{ "Common.TitleOfSubmitError" | transloco }}</h4>
+              <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
               <p nz-paragraph>
                 <i nz-icon nzType="close-circle"></i>
                 {{ docPostingFailed }}
@@ -222,8 +172,7 @@
           </div>
           <div nz-result-extra>
             <button nz-button nzType="primary" (click)="pre()">
-              <i nz-icon nzType="left"></i
-              >{{ "Common.PreviousButton" | transloco }}
+              <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
             </button>
           </div>
         </nz-result>
@@ -234,7 +183,7 @@
 
 <div class="steps-action">
   <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 4">
-    <i nz-icon nzType="left"></i>{{ "Common.PreviousButton" | transloco }}
+    <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
   </button>
   <button
     nz-button
@@ -244,6 +193,6 @@
     [disabled]="!nextButtonEnabled"
     *ngIf="currentStep < 4"
   >
-    {{ "Common.NextButton" | transloco }}<i nz-icon nzType="right"></i>
+    {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
   </button>
 </div>

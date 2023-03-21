@@ -1,1 +1,1 @@
-export * from "./statement-of-income-expense.component";
+export * from './statement-of-income-expense.component';

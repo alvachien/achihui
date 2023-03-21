@@ -1,22 +1,18 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NzModalService } from "ng-zorro-antd/modal";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { BlogUIModule } from "../blog-ui.module";
-import { getTranslocoModule, FakeDataHelper } from "../../../../testing";
-import { UserSettingComponent } from "./user-setting.component";
-import {
-  AuthService,
-  UIStatusService,
-  BlogOdataService,
-} from "../../../services";
-import { UserAuthInfo } from "../../../model";
+import { BlogUIModule } from '../blog-ui.module';
+import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
+import { UserSettingComponent } from './user-setting.component';
+import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
+import { UserAuthInfo } from '../../../model';
 
-describe("UserSettingComponent", () => {
+describe('UserSettingComponent', () => {
   let component: UserSettingComponent;
   let fixture: ComponentFixture<UserSettingComponent>;
   const authServiceStub: Partial<AuthService> = {};
@@ -29,9 +25,7 @@ describe("UserSettingComponent", () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj("BlogOdataService", [
-      "readUserSetting",
-    ]);
+    storageService = jasmine.createSpyObj('BlogOdataService', ['readUserSetting']);
     readUserSettingSpy = storageService.readUserSetting.and.returnValue(of({}));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -49,10 +43,7 @@ describe("UserSettingComponent", () => {
         RouterTestingModule,
       ],
       declarations: [UserSettingComponent],
-      providers: [
-        { provide: BlogOdataService, useValue: storageService },
-        NzModalService,
-      ],
+      providers: [{ provide: BlogOdataService, useValue: storageService }, NzModalService],
     }).compileComponents();
   }));
 
@@ -62,7 +53,7 @@ describe("UserSettingComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

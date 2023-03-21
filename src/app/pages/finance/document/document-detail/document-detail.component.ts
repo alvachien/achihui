@@ -1,16 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
-import { ReplaySubject, forkJoin, of, ObservableInput } from "rxjs";
-import { takeUntil, catchError, map, finalize } from "rxjs/operators";
-import { Router, ActivatedRoute } from "@angular/router";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
+import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  FinanceOdataService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "../../../../services";
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
   Account,
   Document,
@@ -29,24 +25,20 @@ import {
   ConsoleLogTypeEnum,
   getUIModeString,
   DocumentItem,
-} from "../../../../model";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
+} from '../../../../model';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: "hih-fin-document-detail",
-  templateUrl: "./document-detail.component.html",
-  styleUrls: ["./document-detail.component.less"],
+  selector: 'hih-fin-document-detail',
+  templateUrl: './document-detail.component.html',
+  styleUrls: ['./document-detail.component.less'],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   public currentDocument: Document;
   // Attributes
@@ -74,7 +66,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -82,17 +74,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     this.docFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ disabled: true }),
-      headerControl: new UntypedFormControl(
-        this.currentDocument,
-        Validators.required
-      ),
+      headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
       itemsControl: new UntypedFormControl(),
     });
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -105,13 +94,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -148,10 +137,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.arDocTypes = rsts[1] as DocumentType[];
                 this.arTranType = rsts[2] as TranType[];
                 this.arAccountCategories = rsts[3] as AccountCategory[];
-                this.arUIAccounts = BuildupAccountForSelection(
-                  rsts[4] as Account[],
-                  rsts[3] as AccountCategory[]
-                );
+                this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
                 this.arControlCenters = rsts[5] as ControlCenter[];
                 const arorders = rsts[6] as Order[];
                 this.arUIOrders = BuildupOrderForSelection(arorders, true);
@@ -164,11 +150,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 });
                 const listNIDs: number[] = [];
                 listAcntIDs.forEach((acntid) => {
-                  if (
-                    this.arUIAccounts.findIndex(
-                      (acnt) => acnt.Id === acntid
-                    ) === -1
-                  ) {
+                  if (this.arUIAccounts.findIndex((acnt) => acnt.Id === acntid) === -1) {
                     listNIDs.push(acntid!);
                   }
                 });
@@ -198,7 +180,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                       error: (err) => {
                         this.uiMode = UIMode.Invalid;
                         this.modalService.create({
-                          nzTitle: translate("Common.Error"),
+                          nzTitle: translate('Common.Error'),
                           nzContent: err.toString(),
                           nzClosable: true,
                         });
@@ -216,7 +198,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -234,7 +216,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -245,9 +227,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   private onSetData() {
-    this.docFormGroup.get("idControl")?.setValue(this.currentDocument.Id);
-    this.docFormGroup.get("headerControl")?.setValue(this.currentDocument);
-    this.docFormGroup.get("itemsControl")?.setValue(this.currentDocument.Items);
+    this.docFormGroup.get('idControl')?.setValue(this.currentDocument.Id);
+    this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
+    this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
 
     if (this.uiMode === UIMode.Display) {
       this.docFormGroup.disable();
@@ -256,11 +238,11 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         next: (val) => {
           if (val) {
             this.docFormGroup.enable();
-            this.docFormGroup.get("idControl")?.disable();
+            this.docFormGroup.get('idControl')?.disable();
           } else {
             const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate("Common.Error"),
-              nzContent: translate("Finance.EditDocumentNotAllowed"),
+              nzTitle: translate('Common.Error'),
+              nzContent: translate('Finance.EditDocumentNotAllowed'),
               nzClosable: false,
             });
             setTimeout(() => {
@@ -278,7 +260,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.uiMode = UIMode.Display;
           this.docFormGroup.disable();
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -289,18 +271,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
     if (this.uiMode === UIMode.Update) {
       // Update mode.
-      const detailObject = this.docFormGroup.get("headerControl")
-        ?.value as Document;
+      const detailObject = this.docFormGroup.get('headerControl')?.value as Document;
       detailObject.HID = this.currentDocument.HID;
       detailObject.Id = this.currentDocument.Id;
       detailObject.DocType = this.currentDocument.DocType;
-      detailObject.Items = this.docFormGroup.get("itemsControl")
-        ?.value as DocumentItem[];
+      detailObject.Items = this.docFormGroup.get('itemsControl')?.value as DocumentItem[];
       detailObject.Items.forEach((item) => {
         item.DocId = detailObject.Id;
       });
@@ -308,20 +288,20 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.odataService.changeDocument(detailObject).subscribe({
         next: (val) => {
           const ref: NzModalRef = this.modalService.success({
-            nzTitle: translate("Common.Success"),
-            nzContent: translate("Finance.EditDocumentSuccessfully"),
+            nzTitle: translate('Common.Success'),
+            nzContent: translate('Finance.EditDocumentSuccessfully'),
           });
           setTimeout(() => {
             ref.close();
             ref.destroy();
           }, 1000);
 
-          this.router.navigate(["/finance/document/display", val.Id]);
+          this.router.navigate(['/finance/document/display', val.Id]);
         },
         error: (err) => {
           console.error(err);
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -335,11 +315,11 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.odataService.isDocumentChangable(this.routerID).subscribe({
         next: (val) => {
           if (val) {
-            this.router.navigate(["/finance/document/edit/", this.routerID]);
+            this.router.navigate(['/finance/document/edit/', this.routerID]);
           } else {
             const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate("Common.Error"),
-              nzContent: translate("Finance.EditDocumentNotAllowed"),
+              nzTitle: translate('Common.Error'),
+              nzContent: translate('Finance.EditDocumentNotAllowed'),
               nzClosable: false,
             });
             setTimeout(() => {
@@ -357,7 +337,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.uiMode = UIMode.Display;
           this.docFormGroup.disable();
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });

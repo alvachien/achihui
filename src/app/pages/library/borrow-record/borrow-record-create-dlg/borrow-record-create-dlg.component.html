@@ -2,9 +2,7 @@
   <form nz-form [formGroup]="detailFormGroup">
     <!-- Book -->
     <div nz-row class="line-item">
-      <label nz-col nzSpan="7" style="text-align: right">{{
-        "Library.Book" | transloco
-      }}</label>
+      <label nz-col nzSpan="7" style="text-align: right">{{ 'Library.Book' | transloco }}</label>
       <div nz-col nzSpan="12" class="line-content">
         <nz-space [nzSplit]="spaceSplit">
           <ng-template #spaceSplit>
@@ -19,9 +17,7 @@
 
     <!-- Borrow from -->
     <div nz-row class="line-item">
-      <label nz-col nzSpan="7" style="text-align: right">{{
-        "Library.BorrowFrom" | transloco
-      }}</label>
+      <label nz-col nzSpan="7" style="text-align: right">{{ 'Library.BorrowFrom' | transloco }}</label>
       <div nz-col nzSpan="12" class="line-content">
         <nz-space [nzSplit]="spaceSplit">
           <ng-template #spaceSplit>
@@ -29,9 +25,7 @@
           </ng-template>
 
           <a *nzSpaceItem nz-typography>{{ selectOrgName }}</a>
-          <a *nzSpaceItem nz-typography (click)="onSelectOrganization()"
-            >Select Organization</a
-          >
+          <a *nzSpaceItem nz-typography (click)="onSelectOrganization()">Select Organization</a>
         </nz-space>
       </div>
     </div>
@@ -46,9 +40,7 @@
 
     <!-- Has Returned -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Library.HasReturned" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Library.HasReturned' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback>
         <nz-switch formControlName="hasRtnedControl"></nz-switch>
       </nz-form-control>
@@ -56,9 +48,7 @@
 
     <!-- Comment -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Common.Comment" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input formControlName="cmtControl" maxlength="50" />
       </nz-form-control>
@@ -67,12 +57,5 @@
 </div>
 <div *nzModalFooter>
   <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-  <button
-    nz-button
-    nzType="primary"
-    (click)="handleOk()"
-    [disabled]="!isSubmittedAllowed"
-  >
-    Submit
-  </button>
+  <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!isSubmittedAllowed">Submit</button>
 </div>

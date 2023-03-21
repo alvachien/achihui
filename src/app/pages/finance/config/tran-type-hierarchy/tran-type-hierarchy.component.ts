@@ -1,17 +1,17 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { NzFormatEmitEvent, NzTreeNodeOptions } from "ng-zorro-antd/tree";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 
-import { ModelUtility, ConsoleLogTypeEnum, TranType } from "../../../../model";
-import { FinanceOdataService, UIStatusService } from "../../../../services";
+import { ModelUtility, ConsoleLogTypeEnum, TranType } from '../../../../model';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: "hih-fin-tran-type-hierarchy",
-  templateUrl: "./tran-type-hierarchy.component.html",
-  styleUrls: ["./tran-type-hierarchy.component.less"],
+  selector: 'hih-fin-tran-type-hierarchy',
+  templateUrl: './tran-type-hierarchy.component.html',
+  styleUrls: ['./tran-type-hierarchy.component.less'],
 })
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -25,14 +25,14 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -47,7 +47,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: TranType[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes...",
+            'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -61,7 +61,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -71,7 +71,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
     if (this._destroyed$) {
@@ -81,11 +81,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _buildTree(
-    value: TranType[],
-    level: number,
-    id?: number
-  ): NzTreeNodeOptions[] {
+  private _buildTree(value: TranType[], level: number, id?: number): NzTreeNodeOptions[] {
     const data: NzTreeNodeOptions[] = [];
 
     if (id === undefined) {
@@ -94,7 +90,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           // Root nodes!
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
-            title: val.Name + "(" + val.Id!.toString() + ")",
+            title: val.Name + '(' + val.Id!.toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
           if (node.children && node.children.length > 0) {
@@ -112,7 +108,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: val.Id!.toString(),
-            title: val.Name + "(" + val.Id!.toString() + ")",
+            title: val.Name + '(' + val.Id!.toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
           if (node.children && node.children.length > 0) {

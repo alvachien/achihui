@@ -1,18 +1,9 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{
-    "Blog.Collection" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    currentMode | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Blog.Collection' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button
-      nz-button
-      nzType="primary"
-      [disabled]="!detailFormGroup.valid"
-      (click)="onSave()"
-    >
-      {{ "Common.Save" | transloco }}
+    <button nz-button nzType="primary" [disabled]="!detailFormGroup.valid" (click)="onSave()">
+      {{ 'Common.Save' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
@@ -21,7 +12,7 @@
   <form nz-form [formGroup]="detailFormGroup">
     <!-- ID -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{ "Common.ID" | transloco }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Common.ID' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input formControlName="idControl" />
       </nz-form-control>
@@ -29,17 +20,15 @@
 
     <!-- Name -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.Name" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Name' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="nameControl" maxlength="30" required />
         <ng-template #nameTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -47,19 +36,12 @@
 
     <!-- Comment -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{
-        "Common.Comment" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
-        <input
-          nz-input
-          formControlName="commentControl"
-          maxlength="30"
-          required
-        />
+        <input nz-input formControlName="commentControl" maxlength="30" required />
         <ng-template #cmtTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>

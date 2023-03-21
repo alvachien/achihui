@@ -1,28 +1,25 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { BehaviorSubject, of } from "rxjs";
-import { NzModalService } from "ng-zorro-antd/modal";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject, of } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { LibraryUIModule } from "../../library-ui.module";
-import { getTranslocoModule, FakeDataHelper } from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  LibraryStorageService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { UserAuthInfo } from "../../../../model";
-import { LocationDetailComponent } from "./location-detail.component";
+import { LibraryUIModule } from '../../library-ui.module';
+import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo } from '../../../../model';
+import { LocationDetailComponent } from './location-detail.component';
 
-describe("LocationDetailComponent", () => {
+describe('LocationDetailComponent', () => {
   let component: LocationDetailComponent;
   let fixture: ComponentFixture<LocationDetailComponent>;
   let fakeData: FakeDataHelper;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let storageService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let readLocationSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -34,9 +31,7 @@ describe("LocationDetailComponent", () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj("LibraryStorageService", [
-      "readLocation",
-    ]);
+    storageService = jasmine.createSpyObj('LibraryStorageService', ['readLocation']);
     //readLocationSpy = storageService.readLocation.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -75,7 +70,7 @@ describe("LocationDetailComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

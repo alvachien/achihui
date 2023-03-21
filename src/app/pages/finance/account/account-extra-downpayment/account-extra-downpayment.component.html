@@ -2,21 +2,12 @@
   <div [formGroup]="adpInfoFormGroup">
     <!-- Start date -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.StartDate" | transloco
-      }}</nz-form-label>
-      <nz-form-control
-        [nzSpan]="12"
-        nzHasFeedback
-        [nzErrorTip]="startdateErrorTpl"
-      >
-        <nz-date-picker
-          formControlName="startDateControl"
-          (ngModelChange)="onChange()"
-        ></nz-date-picker>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.StartDate' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startdateErrorTpl">
+        <nz-date-picker formControlName="startDateControl" (ngModelChange)="onChange()"></nz-date-picker>
         <ng-template #startdateErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -24,21 +15,12 @@
 
     <!-- End date -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.EndDate" | transloco
-      }}</nz-form-label>
-      <nz-form-control
-        [nzSpan]="12"
-        nzHasFeedback
-        [nzErrorTip]="enddateErrorTpl"
-      >
-        <nz-date-picker
-          formControlName="endDateControl"
-          (ngModelChange)="onChange()"
-        ></nz-date-picker>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.EndDate' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="enddateErrorTpl">
+        <nz-date-picker formControlName="endDateControl" (ngModelChange)="onChange()"></nz-date-picker>
         <ng-template #enddateErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -46,9 +28,7 @@
 
     <!-- Repeat frequency -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.RepeatFrequency" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.RepeatFrequency' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
         <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
           <nz-option
@@ -59,7 +39,7 @@
         </nz-select>
         <ng-template #frqTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -67,23 +47,15 @@
 
     <!-- Description -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{
-        "Common.Description" | transloco
-      }}</nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Description' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
-        <input
-          nz-input
-          formControlName="cmtControl"
-          maxlength="45"
-          (ngModelChange)="onChange()"
-          required
-        />
+        <input nz-input formControlName="cmtControl" maxlength="45" (ngModelChange)="onChange()" required />
         <ng-template #cmtTpl let-control>
           <ng-container *ngIf="control.hasError('maxlength')">
-            {{ "Common.FieldMaxLength" | transloco }}
+            {{ 'Common.FieldMaxLength' | transloco }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            {{ "Common.FieldIsMandatory" | transloco }}
+            {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -92,7 +64,7 @@
 
   <!-- Ref doc. ID -->
   <div class="achih-control-full-width" *ngIf="refDocId">
-    <label>{{ "Finance.RefDoc" | transloco }}</label>
+    <label>{{ 'Finance.RefDoc' | transloco }}</label>
     <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">
       {{ refDocId }}
     </button>
@@ -100,13 +72,8 @@
 
   <!-- Toolbar -->
   <div class="toolbar_buttons">
-    <button
-      nz-button
-      nzType="primary"
-      (click)="onGenerateTmpDocs()"
-      [disabled]="!isFieldChangable"
-    >
-      {{ "Finance.GenerateTmpDocs" | transloco }}
+    <button nz-button nzType="primary" (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable">
+      {{ 'Finance.GenerateTmpDocs' | transloco }}
     </button>
   </div>
 
@@ -114,10 +81,10 @@
   <nz-table #basicTable [nzLoading]="isLoadingTmpDocs" [nzData]="listTmpDocs">
     <thead>
       <tr>
-        <th>{{ "Common.Date" | transloco }}</th>
-        <th>{{ "Finance.TransactionType" | transloco }}</th>
-        <th>{{ "Finance.Amount" | transloco }}</th>
-        <th>{{ "Common.Description" | transloco }}</th>
+        <th>{{ 'Common.Date' | transloco }}</th>
+        <th>{{ 'Finance.TransactionType' | transloco }}</th>
+        <th>{{ 'Finance.Amount' | transloco }}</th>
+        <th>{{ 'Common.Description' | transloco }}</th>
       </tr>
     </thead>
     <tbody>

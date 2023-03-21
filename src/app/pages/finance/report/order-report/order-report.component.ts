@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { NzDrawerService } from "ng-zorro-antd/drawer";
-import { translate } from "@ngneat/transloco";
-import { Router } from "@angular/router";
-import * as moment from "moment";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { translate } from '@ngneat/transloco';
+import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import {
   LogLevel,
@@ -17,18 +17,14 @@ import {
   GeneralFilterValueType,
   GeneralFilterItem,
   Order,
-} from "../../../../model";
-import {
-  FinanceOdataService,
-  UIStatusService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { DocumentItemViewComponent } from "../../document-item-view";
+} from '../../../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: "hih-finance-report-order",
-  templateUrl: "./order-report.component.html",
-  styleUrls: ["./order-report.component.less"],
+  selector: 'hih-finance-report-order',
+  templateUrl: './order-report.component.html',
+  styleUrls: ['./order-report.component.less'],
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -49,7 +45,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrderReportComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering OrderReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -59,7 +55,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrderReportComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering OrderReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -67,10 +63,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchReportByOrder(),
-      this.odataService.fetchAllOrders(),
-    ])
+    forkJoin([this.odataService.fetchReportByOrder(), this.odataService.fetchAllOrders()])
       .pipe(
         takeUntil(this._destroyed$),
         finalize(() => (this.isLoadingResults = false))
@@ -89,7 +82,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -99,7 +92,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrderReportComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering OrderReportComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -111,7 +104,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
   onOrderValidityChanged(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrderReportComponent onOrderValidityChanged...",
+      'AC_HIH_UI [Debug]: Entering OrderReportComponent onOrderValidityChanged...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -120,20 +113,20 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   }
 
   onDisplayMasterData(ccid: number) {
-    this.router.navigate(["/finance/order/display/" + ccid.toString()]);
+    this.router.navigate(['/finance/order/display/' + ccid.toString()]);
   }
 
   onDisplayDebitData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "OrderID",
+      fieldName: 'OrderID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LargerThan,
       lowValue: 0,
       highValue: 0,
@@ -146,14 +139,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -170,14 +163,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   onDisplayCreditData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "OrderID",
+      fieldName: 'OrderID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LessThan,
       lowValue: 0,
       highValue: 0,
@@ -190,14 +183,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -214,7 +207,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   onDisplayBalanceData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "OrderID",
+      fieldName: 'OrderID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
@@ -227,14 +220,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -252,9 +245,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     this.dataSet = [];
     const dt = moment();
     const ords = this.arOrder.filter((value) => {
-      return this.validOrderOnly
-        ? value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt)
-        : true;
+      return this.validOrderOnly ? value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt) : true;
     });
     this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {
       const ordobj = ords.find((cc: Order) => {

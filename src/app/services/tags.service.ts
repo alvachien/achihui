@@ -1,58 +1,39 @@
-import { Injectable } from "@angular/core";
-import {
-  HttpParams,
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { environment } from "../../environments/environment";
-import { LogLevel, Tag, TagCount, TagTypeEnum } from "../model";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable()
 export class TagsService {
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  constructor(
-    private _http: HttpClient,
-    private _homeService: HomeDefOdataService,
-    private _authService: AuthService
-  ) {
+  constructor(private _http: HttpClient, private _homeService: HomeDefOdataService, private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug("AC_HIH_UI [Debug]: Entering TagsService constructor...");
+      console.debug('AC_HIH_UI [Debug]: Entering TagsService constructor...');
     }
   }
 
-  public fetchAllTags(
-    reqamt: boolean,
-    tagtype?: TagTypeEnum,
-    tagterm?: string
-  ): Observable<any> {
+  public fetchAllTags(reqamt: boolean, tagtype?: TagTypeEnum, tagterm?: string): Observable<any> {
     // if (!this._islistLoaded || forceReload) {
-    const apiurl: string = environment.ApiUrl + "/Tag";
+    const apiurl: string = environment.ApiUrl + '/Tag';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "hid",
-      (this._homeService.ChosedHome?.ID ?? 0).toString()
-    );
-    params = params.append("reqamt", (<boolean>reqamt).toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
+    params = params.append('reqamt', (<boolean>reqamt).toString());
     if (tagtype) {
-      params = params.append("tagtype", (<number>tagtype).toString());
+      params = params.append('tagtype', (<number>tagtype).toString());
     }
     if (tagterm) {
-      params = params.append("tagterm", tagterm);
+      params = params.append('tagterm', tagterm);
     }
 
     return this._http
@@ -63,9 +44,7 @@ export class TagsService {
       .pipe(
         map((response: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(
-              `AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`
-            );
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
           }
 
           const listCountRst: TagCount[] = [];
@@ -82,8 +61,7 @@ export class TagsService {
               const tag: Tag = new Tag();
               tag.onSetData(si);
 
-              const rids: string =
-                (<number>tag.TagType).toString() + "_" + tag.TagID?.toString();
+              const rids: string = (<number>tag.TagType).toString() + '_' + tag.TagID?.toString();
               if (mapIDs.has(rids)) {
                 continue;
               } else {
@@ -101,17 +79,13 @@ export class TagsService {
         }),
         catchError((err: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(
-              `AC_HIH_UI [Error]: Entering TagsService, fetchAllTags, failed with ${err}`
-            );
+            console.error(`AC_HIH_UI [Error]: Entering TagsService, fetchAllTags, failed with ${err}`);
           }
 
           // this._islistLoaded = false;
           // this.listDataChange.next([]);
 
-          return throwError(
-            err.statusText + "; " + err.error + "; " + err.message
-          );
+          return throwError(err.statusText + '; ' + err.error + '; ' + err.message);
         })
       );
     // } else {

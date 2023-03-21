@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Router } from "@angular/router";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { NzDrawerService } from "ng-zorro-antd/drawer";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { translate } from '@ngneat/transloco';
 
 import {
   FinanceReportByControlCenter,
@@ -15,18 +15,14 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
   GeneralFilterItem,
-} from "../../../../model";
-import {
-  FinanceOdataService,
-  UIStatusService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { DocumentItemViewComponent } from "../../document-item-view";
+} from '../../../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: "hih-finance-report-controlcenter",
-  templateUrl: "./control-center-report.component.html",
-  styleUrls: ["./control-center-report.component.less"],
+  selector: 'hih-finance-report-controlcenter',
+  templateUrl: './control-center-report.component.html',
+  styleUrls: ['./control-center-report.component.less'],
 })
 export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -45,7 +41,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -55,7 +51,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterReportComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -66,7 +62,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ControlCenterReportComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -77,20 +73,20 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   }
 
   onDisplayMasterData(ccid: number) {
-    this.router.navigate(["/finance/controlcenter/display/" + ccid.toString()]);
+    this.router.navigate(['/finance/controlcenter/display/' + ccid.toString()]);
   }
 
   onDisplayDebitData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "ControlCenterID",
+      fieldName: 'ControlCenterID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LargerThan,
       lowValue: 0,
       highValue: 0,
@@ -103,14 +99,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -127,14 +123,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   onDisplayCreditData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "ControlCenterID",
+      fieldName: 'ControlCenterID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
       valueType: GeneralFilterValueType.number,
     });
     fltrs.push({
-      fieldName: "Amount",
+      fieldName: 'Amount',
       operator: GeneralFilterOperatorEnum.LessThan,
       lowValue: 0,
       highValue: 0,
@@ -147,14 +143,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -171,7 +167,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   onDisplayBalanceData(ccid: number) {
     const fltrs = [];
     fltrs.push({
-      fieldName: "ControlCenterID",
+      fieldName: 'ControlCenterID',
       operator: GeneralFilterOperatorEnum.Equal,
       lowValue: ccid,
       highValue: 0,
@@ -184,14 +180,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       },
       string
     >({
-      nzTitle: "Document Items",
+      nzTitle: 'Document Items',
       nzContent: DocumentItemViewComponent,
       nzContentParams: {
         filterDocItem: fltrs,
       },
-      nzWidth: "100%",
-      nzHeight: "50%",
-      nzPlacement: "bottom",
+      nzWidth: '100%',
+      nzHeight: '50%',
+      nzPlacement: 'bottom',
     });
 
     drawerRef.afterOpen.subscribe(() => {
@@ -212,10 +208,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchReportByControlCenter(forceReload),
-      this.odataService.fetchAllControlCenters(),
-    ])
+    forkJoin([this.odataService.fetchReportByControlCenter(forceReload), this.odataService.fetchAllControlCenters()])
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
@@ -234,7 +227,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -244,21 +237,19 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
   private buildReportList(): void {
     this.dataSet = [];
-    this.arReportByControlCenter.forEach(
-      (bal: FinanceReportByControlCenter) => {
-        const ccobj = this.arControlCenter.find((cc: ControlCenter) => {
-          return cc.Id === bal.ControlCenterId;
+    this.arReportByControlCenter.forEach((bal: FinanceReportByControlCenter) => {
+      const ccobj = this.arControlCenter.find((cc: ControlCenter) => {
+        return cc.Id === bal.ControlCenterId;
+      });
+      if (ccobj) {
+        this.dataSet.push({
+          ControlCenterId: bal.ControlCenterId,
+          ControlCenterName: ccobj.Name,
+          DebitBalance: bal.DebitBalance,
+          CreditBalance: bal.CreditBalance,
+          Balance: bal.Balance,
         });
-        if (ccobj) {
-          this.dataSet.push({
-            ControlCenterId: bal.ControlCenterId,
-            ControlCenterName: ccobj.Name,
-            DebitBalance: bal.DebitBalance,
-            CreditBalance: bal.CreditBalance,
-            Balance: bal.Balance,
-          });
-        }
       }
-    );
+    });
   }
 }

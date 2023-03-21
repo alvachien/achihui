@@ -1,22 +1,14 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from "../../finance-ui.module";
+import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -24,18 +16,13 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../../services";
-import { UserAuthInfo, FinanceReportByOrder, Order } from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
-import { OrderReportComponent } from "./order-report.component";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo, FinanceReportByOrder, Order } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
+import { OrderReportComponent } from './order-report.component';
 
-describe("OrderReportComponent", () => {
+describe('OrderReportComponent', () => {
   let component: OrderReportComponent;
   let fixture: ComponentFixture<OrderReportComponent>;
   let fakeData: FakeDataHelper;
@@ -55,13 +42,8 @@ describe("OrderReportComponent", () => {
     fakeData.buildFinOrders();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchReportByOrder",
-      "fetchAllOrders",
-    ]);
-    fetchReportByOrderSpy = storageService.fetchReportByOrder.and.returnValue(
-      of([])
-    );
+    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchReportByOrder', 'fetchAllOrders']);
+    fetchReportByOrderSpy = storageService.fetchReportByOrder.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -99,11 +81,11 @@ describe("OrderReportComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("2. shall work with data", () => {
+  describe('2. shall work with data', () => {
     let arRptData: FinanceReportByOrder[] = [];
     beforeEach(() => {
       arRptData = [];
@@ -125,11 +107,11 @@ describe("OrderReportComponent", () => {
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    it("should not show data before OnInit", () => {
+    it('should not show data before OnInit', () => {
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it("should show data after OnInit", fakeAsync(() => {
+    it('should show data after OnInit', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -143,7 +125,7 @@ describe("OrderReportComponent", () => {
     }));
   });
 
-  describe("3. shall display error dialog for exception", () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let arRptData: FinanceReportByOrder[] = [];
@@ -177,11 +159,9 @@ describe("OrderReportComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("should display error when Report by order Service fails", fakeAsync(() => {
+    it('should display error when Report by order Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchReportByOrderSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchReportByOrderSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -190,32 +170,24 @@ describe("OrderReportComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));
 
-    it("should display error when order Service fails", fakeAsync(() => {
+    it('should display error when order Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllOrdersSpy.and.returnValue(asyncError<string>("Service failed"));
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
@@ -224,25 +196,17 @@ describe("OrderReportComponent", () => {
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

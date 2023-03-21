@@ -1,5 +1,5 @@
-import * as moment from "moment";
-import { momentDateFormat } from "./common";
+import * as moment from 'moment';
+import { momentDateFormat } from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 export const BlogPostStatus_Draft = 1;
@@ -31,20 +31,20 @@ export class BlogUserSetting {
   authorimage: string | null = null;
 
   constructor() {
-    this.owner = "";
-    this.title = "";
-    this.author = "";
-    this.deploy = "";
+    this.owner = '';
+    this.title = '';
+    this.author = '';
+    this.deploy = '';
   }
   public onSetData(data: BlogUserSettingAPIJson): void {
     if (data) {
-      this.owner = data.Owner ? data.Owner : "";
-      this.title = data.Name ? data.Name : "";
+      this.owner = data.Owner ? data.Owner : '';
+      this.title = data.Name ? data.Name : '';
       if (data.Comment) {
         this.footer = data.Comment;
       }
-      this.deploy = data.DeployFolder ? data.DeployFolder : "";
-      this.author = data.Author ? data.Author : "";
+      this.deploy = data.DeployFolder ? data.DeployFolder : '';
+      this.author = data.Author ? data.Author : '';
       if (data.AuthorDesp) {
         this.authordesp = data.AuthorDesp;
       }
@@ -85,8 +85,8 @@ export interface BlogCollectionAPIJson {
 
 export class BlogCollection {
   public id = -1;
-  public owner = "";
-  public name = "";
+  public owner = '';
+  public name = '';
   public comment: string | null = null;
 
   public onSetData(data: BlogCollectionAPIJson): void {
@@ -155,7 +155,7 @@ export class BlogPost {
     if (this.createdAt) {
       return this.createdAt.format(momentDateFormat);
     }
-    return "";
+    return '';
   }
 
   public onSetData(data: BlogPostAPIJson) {
@@ -191,14 +191,10 @@ export class BlogPost {
       BlogPostTags: this.BlogPostTags,
     };
     if (this.createdAt) {
-      rtnjson.CreatedAt = this.createdAt
-        ? this.createdAt.format(momentDateFormat)
-        : "";
+      rtnjson.CreatedAt = this.createdAt ? this.createdAt.format(momentDateFormat) : '';
     }
     if (this.updatedAt) {
-      rtnjson.UpdatedAt = this.updatedAt
-        ? this.updatedAt.format(momentDateFormat)
-        : "";
+      rtnjson.UpdatedAt = this.updatedAt ? this.updatedAt.format(momentDateFormat) : '';
     }
 
     return rtnjson;

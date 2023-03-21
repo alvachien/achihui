@@ -1,5 +1,5 @@
-import { UntypedFormGroup, ValidationErrors } from "@angular/forms";
-import { SequenceList } from "actslib";
+import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
+import { SequenceList } from 'actslib';
 
 export interface IFormGroupError {
   key: string;
@@ -8,15 +8,13 @@ export interface IFormGroupError {
 }
 
 export class FormGroupHelper {
-  public static getFormGroupError(
-    formGroup: UntypedFormGroup
-  ): SequenceList<IFormGroupError> {
+  public static getFormGroupError(formGroup: UntypedFormGroup): SequenceList<IFormGroupError> {
     const listErrors = new SequenceList<IFormGroupError>();
     if (formGroup.errors !== null) {
       const controlErrors: ValidationErrors = formGroup.errors;
       Object.keys(controlErrors).forEach((keyError) => {
         listErrors.AppendElement({
-          key: "formGroup",
+          key: 'formGroup',
           error: keyError,
           errorValue: controlErrors[keyError],
         } as IFormGroupError);
@@ -24,8 +22,7 @@ export class FormGroupHelper {
     }
 
     Object.keys(formGroup.controls).forEach((key) => {
-      const controlErrors: ValidationErrors | null | undefined =
-        formGroup.get(key)?.errors;
+      const controlErrors: ValidationErrors | null | undefined = formGroup.get(key)?.errors;
       if (controlErrors) {
         Object.keys(controlErrors).forEach((keyError) => {
           listErrors.AppendElement({

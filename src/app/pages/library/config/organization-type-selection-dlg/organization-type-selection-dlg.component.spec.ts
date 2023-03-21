@@ -1,27 +1,25 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject } from "rxjs";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from "src/app/model";
-import {
-  AuthService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "src/app/services";
-import { FakeDataHelper, getTranslocoModule } from "src/testing";
-import { LibraryUIModule } from "../../library-ui.module";
+import { UserAuthInfo } from 'src/app/model';
+import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { LibraryUIModule } from '../../library-ui.module';
 
-import { OrganizationTypeSelectionDlgComponent } from "./organization-type-selection-dlg.component";
+import { OrganizationTypeSelectionDlgComponent } from './organization-type-selection-dlg.component';
 
-describe("OrganizationTypeSelectionDlgComponent", () => {
+describe('OrganizationTypeSelectionDlgComponent', () => {
   let component: OrganizationTypeSelectionDlgComponent;
   let fixture: ComponentFixture<OrganizationTypeSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let storageService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let readBookSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -64,7 +62,7 @@ describe("OrganizationTypeSelectionDlgComponent", () => {
           useFactory: (modalSvc: NzModalService) =>
             modalSvc.create({
               nzClosable: true,
-              nzContent: "test",
+              nzContent: 'test',
             }),
           deps: [NzModalService],
         },
@@ -78,7 +76,7 @@ describe("OrganizationTypeSelectionDlgComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

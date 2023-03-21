@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  forwardRef,
-  HostListener,
-  OnDestroy,
-  Input,
-} from "@angular/core";
+import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -16,9 +9,9 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
-} from "@angular/forms";
-import * as moment from "moment";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import * as moment from 'moment';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   Account,
@@ -34,12 +27,12 @@ import {
   financeDocTypeNormal,
   UIAccountForSelection,
   UIOrderForSelection,
-} from "../../../../model";
+} from '../../../../model';
 
 @Component({
-  selector: "hih-fin-document-items",
-  templateUrl: "./document-items.component.html",
-  styleUrls: ["./document-items.component.less"],
+  selector: 'hih-fin-document-items',
+  templateUrl: './document-items.component.html',
+  styleUrls: ['./document-items.component.less'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -56,7 +49,7 @@ import {
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
-  private _tranCurr = "";
+  private _tranCurr = '';
   private _tranCurr2?: string;
   private _docType?: number;
   private _onTouched?: () => void = undefined;
@@ -76,18 +69,18 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   get controlError(): any {
     const err = this.validate();
     if (err) {
-      if (err["noitems"]) {
-        return { value: "Finance.NoDocumentItem" };
-      } else if (err["itemwithoutaccount"]) {
-        return { value: "Finance.AccountIsMust" };
-      } else if (err["itemwithouttrantype"]) {
-        return { value: "Finance.TransactionTypeIsMust" };
-      } else if (err["itemwithoutamount"]) {
-        return { value: "Finance.AmountIsMust" };
-      } else if (err["itemwithwrongcostobject"]) {
-        return { value: "Finance.EitherControlCenterOrOrder" };
-      } else if (err["itemwithoutdesp"]) {
-        return { value: "Finance.DespIsMust" };
+      if (err['noitems']) {
+        return { value: 'Finance.NoDocumentItem' };
+      } else if (err['itemwithoutaccount']) {
+        return { value: 'Finance.AccountIsMust' };
+      } else if (err['itemwithouttrantype']) {
+        return { value: 'Finance.TransactionTypeIsMust' };
+      } else if (err['itemwithoutamount']) {
+        return { value: 'Finance.AmountIsMust' };
+      } else if (err['itemwithwrongcostobject']) {
+        return { value: 'Finance.EitherControlCenterOrOrder' };
+      } else if (err['itemwithoutdesp']) {
+        return { value: 'Finance.DespIsMust' };
       }
     }
     return err;
@@ -145,10 +138,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       this._uiMode = mode;
       if (this._uiMode === UIMode.Display || this._uiMode === UIMode.Invalid) {
         this.setDisabledState(true);
-      } else if (
-        this._uiMode === UIMode.Create ||
-        this._uiMode === UIMode.Update
-      ) {
+      } else if (this._uiMode === UIMode.Create || this._uiMode === UIMode.Update) {
         this.setDisabledState(false);
       }
     }
@@ -186,66 +176,56 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this.listItems;
   }
   get isFieldChangable(): boolean {
-    return (
-      this._isChangable &&
-      (this.currentUIMode === UIMode.Create ||
-        this.currentUIMode === UIMode.Update)
-    );
+    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Update);
   }
   get isAddItemAllowed(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
   get isDeleteItemAllowed(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
   get isItemIDEditable(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
   get isAccountIDEditable(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
   get isTranTypeEditable(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
   get isAmountEditable(): boolean {
     return (
       this.isFieldChangable &&
       (this.currentUIMode === UIMode.Create ||
-        (this.currentUIMode === UIMode.Update &&
-          this.docType === financeDocTypeNormal))
+        (this.currentUIMode === UIMode.Update && this.docType === financeDocTypeNormal))
     );
   }
 
   constructor() {}
 
-  @HostListener("change") onChange(): void {
+  @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -253,9 +233,9 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       this._onChange(this.documentItems);
     }
   }
-  @HostListener("blur") onTouched(): void {
+  @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent onTouched...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent onTouched...',
       ConsoleLogTypeEnum.debug
     );
     if (this._onTouched) {
@@ -265,7 +245,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
 
   writeValue(val: DocumentItem[]): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...',
       ConsoleLogTypeEnum.debug
     );
     if (val) {
@@ -275,21 +255,21 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
 
   registerOnChange(fn: any): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
     );
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug
     );
     this._onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...',
       ConsoleLogTypeEnum.debug
     );
     if (isDisabled) {

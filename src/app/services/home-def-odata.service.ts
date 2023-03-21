@@ -1,14 +1,8 @@
-import { Injectable } from "@angular/core";
-import {
-  HttpParams,
-  HttpClient,
-  HttpHeaders,
-  HttpResponse,
-  HttpErrorResponse,
-} from "@angular/common/http";
-import { Observable, BehaviorSubject, of, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { environment } from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 import {
   HomeDef,
@@ -19,17 +13,17 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   CheckVersionResult,
-} from "../model";
-import { AuthService } from "./auth.service";
+} from '../model';
+import { AuthService } from './auth.service';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class HomeDefOdataService {
-  private _redirURL = "";
+  private _redirURL = '';
 
   // Buffer
   private _islistLoaded: boolean;
@@ -42,8 +36,7 @@ export class HomeDefOdataService {
   }
 
   // Subject for the selected HomeDef
-  curHomeSelected: BehaviorSubject<HomeDef | null> =
-    new BehaviorSubject<HomeDef | null>(null);
+  curHomeSelected: BehaviorSubject<HomeDef | null> = new BehaviorSubject<HomeDef | null>(null);
   get ChosedHome(): HomeDef | null {
     return this.curHomeSelected.value;
   }
@@ -59,8 +52,7 @@ export class HomeDefOdataService {
   }
 
   // Subject for current home member
-  curHomeMember: BehaviorSubject<HomeMember | null> =
-    new BehaviorSubject<HomeMember | null>(null);
+  curHomeMember: BehaviorSubject<HomeMember | null> = new BehaviorSubject<HomeMember | null>(null);
   get CurrentMemberInChosedHome(): HomeMember | null {
     return this.curHomeMember.value;
   }
@@ -108,15 +100,12 @@ export class HomeDefOdataService {
     if (!this._islistLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append("$expand", "HomeMembers");
+      params = params.append('$count', 'true');
+      params = params.append('$expand', 'HomeMembers');
 
       return this._http
         .get(this.apiUrl, {
@@ -153,12 +142,7 @@ export class HomeDefOdataService {
             this._islistLoaded = false;
             this._listHomeDefList = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -172,15 +156,12 @@ export class HomeDefOdataService {
   public readHomeDef(hid: number): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append("$expand", "HomeMembers");
-    params = params.append("$filter", `ID eq ${hid}`);
+    params = params.append('$expand', 'HomeMembers');
+    params = params.append('$filter', `ID eq ${hid}`);
 
     return this._http
       .get(this.apiUrl, {
@@ -198,11 +179,9 @@ export class HomeDefOdataService {
           hd.parseJSONData((response as any).value[0]);
 
           // Buffer it
-          const nidx: number = this._listHomeDefList.findIndex(
-            (val: HomeDef) => {
-              return val.ID === hd.ID;
-            }
-          );
+          const nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {
+            return val.ID === hd.ID;
+          });
           if (nidx === -1) {
             this._listHomeDefList.push(hd);
           } else {
@@ -217,9 +196,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            error.statusText + "; " + error.error + "; " + error.message
-          );
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         })
       );
   }
@@ -231,12 +208,9 @@ export class HomeDefOdataService {
   public createHomeDef(objhd: HomeDef): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
@@ -264,9 +238,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            error.statusText + "; " + error.error + "; " + error.message
-          );
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         })
       );
   }
@@ -277,12 +249,9 @@ export class HomeDefOdataService {
   public changeHomeDef(objhd: HomeDef): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const apipath = `${this.apiUrl}(${objhd.ID})`;
@@ -312,9 +281,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            error.statusText + "; " + error.error + "; " + error.message
-          );
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         })
       );
   }
@@ -324,23 +291,16 @@ export class HomeDefOdataService {
    * @param top Total messages to fetch
    * @param skip Skip the first X messages
    */
-  public getHomeMessages(
-    sentbox: boolean,
-    top: number,
-    skip: number
-  ): Observable<any> {
-    const apiurl: string = environment.ApiUrl + "/homemsg";
+  public getHomeMessages(sentbox: boolean, top: number, skip: number): Observable<any> {
+    const apiurl: string = environment.ApiUrl + '/homemsg';
     const curhid: number = this.ChosedHome?.ID ?? 0;
     const requestUrl: any = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http.get<any>(requestUrl, { headers });
   }
@@ -352,13 +312,10 @@ export class HomeDefOdataService {
   public createHomeMessage(data: HomeMsg): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
-    const apiurl: string = environment.ApiUrl + "/homemsg";
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl: string = environment.ApiUrl + '/homemsg';
 
     const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
     return this._http
@@ -367,10 +324,7 @@ export class HomeDefOdataService {
       })
       .pipe(
         map((response: any) => {
-          ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]:" + response,
-            ConsoleLogTypeEnum.debug
-          );
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response as any);
@@ -385,19 +339,16 @@ export class HomeDefOdataService {
   public markHomeMessageHasRead(msg: HomeMsg): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
-    const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", (this.ChosedHome?.ID ?? 0).toString());
+    params = params.append('hid', (this.ChosedHome?.ID ?? 0).toString());
     const jdata: any[] = [
       {
-        op: "replace",
-        path: "/readFlag",
+        op: 'replace',
+        path: '/readFlag',
         value: true,
       },
     ];
@@ -409,10 +360,7 @@ export class HomeDefOdataService {
       })
       .pipe(
         map((response: any) => {
-          ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]:" + response,
-            ConsoleLogTypeEnum.debug
-          );
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response as any);
@@ -427,19 +375,16 @@ export class HomeDefOdataService {
   public deleteHomeMessage(msg: HomeMsg, senderdel?: boolean): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
-    const apiurl: string = environment.ApiUrl + "/homemsg/" + msg.ID.toString();
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl: string = environment.ApiUrl + '/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append("hid", (this.ChosedHome?.ID ?? 0).toString());
+    params = params.append('hid', (this.ChosedHome?.ID ?? 0).toString());
     const jdata: any[] = [
       {
-        op: "replace",
-        path: senderdel ? "/senderDeletion" : "/receiverDeletion",
+        op: 'replace',
+        path: senderdel ? '/senderDeletion' : '/receiverDeletion',
         value: true,
       },
     ];
@@ -451,10 +396,7 @@ export class HomeDefOdataService {
       })
       .pipe(
         map((response: any) => {
-          ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]:" + response,
-            ConsoleLogTypeEnum.debug
-          );
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response);
@@ -467,18 +409,15 @@ export class HomeDefOdataService {
    * Get Key Figure
    */
   public getHomeKeyFigure(): Observable<any> {
-    const apiurl: string = environment.ApiUrl + "/HomeKeyFigure";
+    const apiurl: string = environment.ApiUrl + '/HomeKeyFigure';
     const curhid: number = this.ChosedHome?.ID ?? 0;
     const requestUrl: any = `${apiurl}?hid=${curhid}`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http.get<any>(requestUrl, { headers }).pipe(
       map((x: HttpResponse<any>) => {
@@ -497,9 +436,7 @@ export class HomeDefOdataService {
           ConsoleLogTypeEnum.error
         );
 
-        return throwError(
-          error.statusText + "; " + error.error + "; " + error.message
-        );
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       })
     );
   }
@@ -509,13 +446,11 @@ export class HomeDefOdataService {
    */
   public checkDBVersion(): Observable<CheckVersionResult> {
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json");
+    headers = headers.append('Content-Type', 'application/json').append('Accept', 'application/json');
 
     return this._http
       .post(
-        environment.ApiUrl + "/DBVersions",
+        environment.ApiUrl + '/DBVersions',
         {},
         {
           headers,
@@ -536,9 +471,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            error.statusText + "; " + error.error + "; " + error.message
-          );
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         })
       );
   }

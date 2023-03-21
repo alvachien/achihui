@@ -2,20 +2,20 @@
 // Unit test for userinfo.ts
 //
 
-import { UserDetail, UserAuthInfo } from "./userinfo";
+import { UserDetail, UserAuthInfo } from './userinfo';
 
-describe("UserDetail", () => {
+describe('UserDetail', () => {
   let urdtl: UserDetail;
 
   beforeEach(() => {
     urdtl = new UserDetail();
   });
 
-  it("get and set data", () => {
-    urdtl.UserId = "abc";
-    urdtl.Email = "aaa@bbb.com";
-    urdtl.Others = "others";
-    urdtl.DisplayAs = "Abc";
+  it('get and set data', () => {
+    urdtl.UserId = 'abc';
+    urdtl.Email = 'aaa@bbb.com';
+    urdtl.Others = 'others';
+    urdtl.DisplayAs = 'Abc';
 
     const data = urdtl.onGetData();
     expect(data).toBeTruthy();
@@ -29,25 +29,25 @@ describe("UserDetail", () => {
   });
 });
 
-describe("UserAuthInfo", () => {
+describe('UserAuthInfo', () => {
   let authinfo: UserAuthInfo;
   let usrvalue: any;
 
   beforeEach(() => {
     authinfo = new UserAuthInfo();
     usrvalue = {
-      userId: "user1_sub",
-      userName: "user1_mail",
-      accessToken: "user1_access_token",
+      userId: 'user1_sub',
+      userName: 'user1_mail',
+      accessToken: 'user1_access_token',
     };
   });
 
-  it("init: not authorized", () => {
+  it('init: not authorized', () => {
     expect(authinfo).toBeTruthy();
     expect(authinfo.isAuthorized).toBeFalsy();
   });
 
-  it("setContent shall work", () => {
+  it('setContent shall work', () => {
     expect(authinfo.isAuthorized).toBeFalsy();
 
     authinfo.setContent(usrvalue);

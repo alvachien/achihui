@@ -1,26 +1,17 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import {
-  UIDisplayString,
-  GeneralFilterOperatorEnum,
-  GeneralFilterValueType,
-} from "../../../model";
+import { Pipe, PipeTransform } from '@angular/core';
+import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../../../model';
 
 @Pipe({
-  name: "operatorFilter",
+  name: 'operatorFilter',
 })
 export class OperatorFilterPipe implements PipeTransform {
-  transform(
-    allOperators: UIDisplayString[],
-    args?: GeneralFilterValueType
-  ): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transform(allOperators: UIDisplayString[], args?: GeneralFilterValueType): any {
     return allOperators.filter((value: UIDisplayString) => {
       if (args) {
         switch (args) {
           case GeneralFilterValueType.string: {
-            if (
-              value.value === GeneralFilterOperatorEnum.Like ||
-              value.value === GeneralFilterOperatorEnum.Equal
-            ) {
+            if (value.value === GeneralFilterOperatorEnum.Like || value.value === GeneralFilterOperatorEnum.Equal) {
               return true;
             }
             return false;

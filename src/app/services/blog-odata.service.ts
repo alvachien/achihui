@@ -1,28 +1,16 @@
-import { Injectable } from "@angular/core";
-import {
-  HttpParams,
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from "@angular/common/http";
-import { Observable, of, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { environment } from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
-import {
-  ConsoleLogTypeEnum,
-  ModelUtility,
-  BlogCollection,
-  BlogPost,
-  BlogPostTag,
-  BlogUserSetting,
-} from "../model";
-import { AuthService } from "./auth.service";
+import { ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost, BlogPostTag, BlogUserSetting } from '../model';
+import { AuthService } from './auth.service';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class BlogOdataService {
   private isCollectionlistLoaded: boolean;
@@ -59,17 +47,11 @@ export class BlogOdataService {
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
-      params = params.append(
-        "$filter",
-        `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`
-      );
+      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
 
       return this.http
         .get(apiUrl, {
@@ -100,32 +82,21 @@ export class BlogOdataService {
             this.isSettingLoaded = false;
             this.setting = null;
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
       return of(this.setting);
     }
   }
-  public updateUserSetting(
-    newset: BlogUserSetting
-  ): Observable<BlogUserSetting> {
-    const apiUrl: string =
-      environment.ApiUrl + `/BlogUserSettings('${newset.owner}')`;
+  public updateUserSetting(newset: BlogUserSetting): Observable<BlogUserSetting> {
+    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${newset.owner}')`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const jdata = newset.writeAPIJson();
     return this.http
@@ -155,27 +126,18 @@ export class BlogOdataService {
           this.isSettingLoaded = false;
           this.setting = null;
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deploySetting(owner: string): Observable<string> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string =
-      environment.ApiUrl + `/BlogUserSettings('${owner}')/Deploy()`;
+    const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${owner}')/Deploy()`;
     return this.http
       .get(apiUrl, {
         headers,
@@ -187,7 +149,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.debug
           );
 
-          return ""; // Empty means success
+          return ''; // Empty means success
         }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
@@ -195,12 +157,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -208,26 +165,18 @@ export class BlogOdataService {
    * fetch all collections
    * @param forceReload set to true to enforce reload all currencies
    */
-  public fetchAllCollections(
-    forceReload?: boolean
-  ): Observable<BlogCollection[]> {
+  public fetchAllCollections(forceReload?: boolean): Observable<BlogCollection[]> {
     if (!this.isCollectionlistLoaded || forceReload) {
-      const apiUrl: string = environment.ApiUrl + "/BlogCollections";
+      const apiUrl: string = environment.ApiUrl + '/BlogCollections';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
 
       return this.http
         .get(apiUrl, {
@@ -243,7 +192,7 @@ export class BlogOdataService {
 
             this.listCollection = [];
             const rjs: any = response;
-            const amt = rjs["@odata.count"];
+            const amt = rjs['@odata.count'];
             if (rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: BlogCollection = new BlogCollection();
@@ -264,12 +213,7 @@ export class BlogOdataService {
             this.isCollectionlistLoaded = false;
             this.listCollection = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -284,14 +228,11 @@ export class BlogOdataService {
   public createCollection(coll: BlogCollection): Observable<BlogCollection> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + "/BlogCollections";
+    const apiUrl: string = environment.ApiUrl + '/BlogCollections';
     coll.owner = this.authService.authSubject.getValue().getUserId()!;
     const jdata = coll.writeAPIJson();
     return this.http
@@ -315,12 +256,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -330,23 +266,18 @@ export class BlogOdataService {
    * @param id ID of the Collection to be read
    */
   public readCollection(id: number): Observable<BlogCollection> {
-    const apiUrl: string = environment.ApiUrl + "/BlogCollections";
+    const apiUrl: string = environment.ApiUrl + '/BlogCollections';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append(
-      "$filter",
-      `Owner eq '${this.authService.authSubject
-        .getValue()
-        .getUserId()}' and ID eq ${id}`
+      '$filter',
+      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`
     );
     return this.http
       .get(apiUrl, {
@@ -362,19 +293,13 @@ export class BlogOdataService {
 
           const hd: BlogCollection = new BlogCollection();
           const repdata = response as any;
-          if (
-            repdata &&
-            repdata.value instanceof Array &&
-            repdata.value.length === 1
-          ) {
+          if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
             hd.onSetData(repdata.value[0]);
 
             // Update the buffer if necessary
-            const idx: number = this.listCollection.findIndex(
-              (val: BlogCollection) => {
-                return val.id === hd.id;
-              }
-            );
+            const idx: number = this.listCollection.findIndex((val: BlogCollection) => {
+              return val.id === hd.id;
+            });
             if (idx !== -1) {
               this.listCollection.splice(idx, 1, hd);
             } else {
@@ -390,12 +315,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -405,29 +325,20 @@ export class BlogOdataService {
    * @param top The maximum amount of returned entries
    * @param skip The offset position
    */
-  public fetchAllPosts(
-    top: number,
-    skip: number
-  ): Observable<{ totalCount: number; contentList: BlogPost[] }> {
-    const apiUrl: string = environment.ApiUrl + "/BlogPosts";
+  public fetchAllPosts(top: number, skip: number): Observable<{ totalCount: number; contentList: BlogPost[] }> {
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append("$count", "true");
-    params = params.append("$select", "ID,Owner,Title,Status,Brief,CreatedAt");
-    params = params.append(
-      "$filter",
-      `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`
-    );
-    params = params.append("$top", `${top}`);
-    params = params.append("$skip", `${skip}`);
+    params = params.append('$count', 'true');
+    params = params.append('$select', 'ID,Owner,Title,Status,Brief,CreatedAt');
+    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+    params = params.append('$top', `${top}`);
+    params = params.append('$skip', `${skip}`);
 
     return this.http
       .get(apiUrl, {
@@ -443,7 +354,7 @@ export class BlogOdataService {
 
           const arsts: BlogPost[] = [];
           const rjs: any = response;
-          const amt = rjs["@odata.count"];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: BlogPost = new BlogPost();
@@ -463,12 +374,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -480,14 +386,11 @@ export class BlogOdataService {
   public createPost(post: BlogPost): Observable<BlogPost> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + "/BlogPosts";
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
     post.owner = this.authService.authSubject.getValue().getUserId();
     const jdata = post.writeAPIJson();
     return this.http
@@ -511,12 +414,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -528,15 +426,11 @@ export class BlogOdataService {
   public changePost(post: BlogPost): Observable<BlogPost> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string =
-      environment.ApiUrl + "/BlogPosts/" + post.id!.toString();
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts/' + post.id!.toString();
     post.owner = this.authService.authSubject.getValue().getUserId();
     const jdata = post.writeAPIJson();
     return this.http
@@ -560,27 +454,18 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deployPost(postid: number): Observable<string> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string =
-      environment.ApiUrl + "/BlogPosts(" + postid.toString() + ")/Deploy()";
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/Deploy()';
     return this.http
       .get(apiUrl, {
         headers,
@@ -592,7 +477,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.debug
           );
 
-          return ""; // Empty means success
+          return ''; // Empty means success
         }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
@@ -600,30 +485,18 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public revokeDeployPost(postid: number): Observable<string> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string =
-      environment.ApiUrl +
-      "/BlogPosts(" +
-      postid.toString() +
-      ")/ClearDeploy()";
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/ClearDeploy()';
     return this.http
       .get(apiUrl, {
         headers,
@@ -635,7 +508,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.debug
           );
 
-          return ""; // Empty means success
+          return ''; // Empty means success
         }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
@@ -643,12 +516,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -658,25 +526,20 @@ export class BlogOdataService {
    * @param id ID of the Post to be read
    */
   public readPost(id: number): Observable<BlogPost> {
-    const apiUrl: string = environment.ApiUrl + "/BlogPosts";
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append(
-      "$filter",
-      `Owner eq '${this.authService.authSubject
-        .getValue()
-        .getUserId()}' and ID eq ${id}`
+      '$filter',
+      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`
     );
-    params = params.append("$expand", "BlogPostCollections,BlogPostTags");
+    params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
 
     return this.http
       .get(apiUrl, {
@@ -692,11 +555,7 @@ export class BlogOdataService {
 
           const hd: BlogPost = new BlogPost();
           const repdata = response as any;
-          if (
-            repdata &&
-            repdata.value instanceof Array &&
-            repdata.value.length === 1
-          ) {
+          if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
             hd.onSetData(repdata.value[0]);
           }
 
@@ -708,12 +567,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -723,25 +577,19 @@ export class BlogOdataService {
    * @param top The maximum amount of returned entries
    * @param skip The offset position
    */
-  public fetchAllPostTags(
-    top: number,
-    skip: number
-  ): Observable<{ totalCount: number; contentList: BlogPostTag[] }> {
-    const apiUrl: string = environment.ApiUrl + "/BlogPostTags";
+  public fetchAllPostTags(top: number, skip: number): Observable<{ totalCount: number; contentList: BlogPostTag[] }> {
+    const apiUrl: string = environment.ApiUrl + '/BlogPostTags';
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this.authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append("$count", "true");
+    params = params.append('$count', 'true');
     // params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
-    params = params.append("$top", `${top}`);
-    params = params.append("$skip", `${skip}`);
+    params = params.append('$top', `${top}`);
+    params = params.append('$skip', `${skip}`);
 
     return this.http
       .get(apiUrl, {
@@ -757,7 +605,7 @@ export class BlogOdataService {
 
           const arsts: BlogPostTag[] = [];
           const rjs: any = response;
-          const amt = rjs["@odata.count"];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst = si as BlogPostTag;
@@ -776,12 +624,7 @@ export class BlogOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }

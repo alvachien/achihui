@@ -1,26 +1,21 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
-import { Router } from "@angular/router";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import {
-  BaseListModel,
-  Book,
-  ConsoleLogTypeEnum,
-  ModelUtility,
-} from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
-import { BorrowRecordCreateDlgComponent } from "../../borrow-record/borrow-record-create-dlg";
-import { NzTableQueryParams } from "ng-zorro-antd/table";
+import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-record-create-dlg';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-  selector: "hih-book-list",
-  templateUrl: "./book-list.component.html",
-  styleUrls: ["./book-list.component.less"],
+  selector: 'hih-book-list',
+  templateUrl: './book-list.component.html',
+  styleUrls: ['./book-list.component.less'],
 })
 export class BookListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -39,7 +34,7 @@ export class BookListComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -47,10 +42,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookListComponent OnInit...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit...', ConsoleLogTypeEnum.debug);
     this._destroyed$ = new ReplaySubject(1);
 
     this.loadDataFromServer(this.pageIndex, this.pageSize, null, null, null);
@@ -58,7 +50,7 @@ export class BookListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering BookListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering BookListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -85,7 +77,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: BaseListModel<Book>) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering BookListComponent OnInit fetchBooks...",
+            'AC_HIH_UI [Debug]: Entering BookListComponent OnInit fetchBooks...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -98,7 +90,7 @@ export class BookListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -114,7 +106,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
 
   onDisplay(bid: number): void {
-    this.router.navigate(["/library/book/display/" + bid.toString()]);
+    this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
   onEdit(bid: number): void {}
   onCreateBorrowRecord(bid: number): void {
@@ -125,7 +117,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       }
     });
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Library.CreateBorrowRecord"),
+      nzTitle: translate('Library.CreateBorrowRecord'),
       nzWidth: 600,
       nzContent: BorrowRecordCreateDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -134,7 +126,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       },
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, OK button...",
+          'AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, OK button...',
           ConsoleLogTypeEnum.debug
         );
         // this.listPresses = [];
@@ -148,7 +140,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       },
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, cancelled...",
+          'AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, cancelled...',
           ConsoleLogTypeEnum.debug
         );
       },
@@ -158,23 +150,23 @@ export class BookListComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((result: any) => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...",
+        'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',
         ConsoleLogTypeEnum.debug
       );
     });
   }
   onDelete(bid: number): void {
     this.modal.confirm({
-      nzTitle: translate("Common.DeleteConfirmation"),
-      nzContent: translate("Common.ConfirmToDeleteSelectedItem"),
-      nzOkText: translate("Common.Yes"),
-      nzOkType: "primary",
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteBook(bid).subscribe({
           next: (data) => {
             const sdlg = this.modalService.success({
-              nzTitle: translate("Common.Success"),
+              nzTitle: translate('Common.Success'),
             });
             sdlg.afterClose.subscribe(() => {
               const dix = this.listData.findIndex((p) => p.ID === bid);
@@ -191,14 +183,14 @@ export class BookListComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
       },
-      nzCancelText: translate("Common.No"),
+      nzCancelText: translate('Common.No'),
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering BookListComponent onDelete cancelled`,

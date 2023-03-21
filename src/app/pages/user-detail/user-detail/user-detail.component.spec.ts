@@ -1,20 +1,18 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NzDescriptionsModule } from "ng-zorro-antd/descriptions";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 
-import { UserDetailComponent } from "./user-detail.component";
-import { AuthService } from "../../../services";
-import { FakeDataHelper, getTranslocoModule } from "../../../../testing";
-import { BehaviorSubject } from "rxjs";
-import { UserAuthInfo } from "../../../model";
+import { UserDetailComponent } from './user-detail.component';
+import { AuthService } from '../../../services';
+import { FakeDataHelper, getTranslocoModule } from '../../../../testing';
+import { BehaviorSubject } from 'rxjs';
+import { UserAuthInfo } from '../../../model';
 
-describe("UserDetailComponent", () => {
+describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
   let fixture: ComponentFixture<UserDetailComponent>;
   let fakeData: FakeDataHelper;
@@ -51,7 +49,7 @@ describe("UserDetailComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

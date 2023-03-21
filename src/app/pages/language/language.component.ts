@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
 
-import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from "../../model";
-import { LanguageOdataService } from "../../services";
+import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../../model';
+import { LanguageOdataService } from '../../services';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-  selector: "hih-language",
-  templateUrl: "./language.component.html",
-  styleUrls: ["./language.component.less"],
+  selector: 'hih-language',
+  templateUrl: './language.component.html',
+  styleUrls: ['./language.component.less'],
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -20,10 +20,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 
-  constructor(
-    public odataService: LanguageOdataService,
-    public modalService: NzModalService
-  ) {
+  constructor(public odataService: LanguageOdataService, public modalService: NzModalService) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LanguageComponent constructor...`,
       ConsoleLogTypeEnum.debug
@@ -33,10 +30,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering LanguageComponent OnInit...`,
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering LanguageComponent OnInit...`, ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -63,7 +57,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });

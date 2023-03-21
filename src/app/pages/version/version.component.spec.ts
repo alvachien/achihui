@@ -1,11 +1,11 @@
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NzTimelineModule } from "ng-zorro-antd/timeline";
-import { NzBackTopModule } from "ng-zorro-antd/back-top";
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 
-import { getTranslocoModule } from "../../../testing";
-import { VersionComponent } from "./version.component";
+import { getTranslocoModule } from '../../../testing';
+import { VersionComponent } from './version.component';
 
-describe("VersionComponent", () => {
+describe('VersionComponent', () => {
   let component: VersionComponent;
   let fixture: ComponentFixture<VersionComponent>;
 
@@ -22,7 +22,7 @@ describe("VersionComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

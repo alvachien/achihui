@@ -1,12 +1,12 @@
-import { TestBed, inject } from "@angular/core/testing";
-import { BehaviorSubject } from "rxjs";
+import { TestBed, inject } from '@angular/core/testing';
+import { BehaviorSubject } from 'rxjs';
 
-import { AuthGuardService } from "./auth-guard.service";
-import { AuthService } from "./auth.service";
-import { UserAuthInfo } from "../model";
-import { UIStatusService } from "./uistatus.service";
+import { AuthGuardService } from './auth-guard.service';
+import { AuthService } from './auth.service';
+import { UserAuthInfo } from '../model';
+import { UIStatusService } from './uistatus.service';
 
-describe("AuthGuardService", () => {
+describe('AuthGuardService', () => {
   const uiServiceStub: Partial<UIStatusService> = {};
 
   beforeAll(() => {
@@ -25,10 +25,7 @@ describe("AuthGuardService", () => {
     });
   });
 
-  it("should be created", inject(
-    [AuthGuardService],
-    (service: AuthGuardService) => {
-      expect(service).toBeTruthy();
-    }
-  ));
+  it('should be created', inject([AuthGuardService], (service: AuthGuardService) => {
+    expect(service).toBeTruthy();
+  }));
 });

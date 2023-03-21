@@ -7,20 +7,20 @@ import {
   inject,
   flush,
   discardPeriodicTasks,
-} from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { NgxEchartsModule } from "ngx-echarts";
-import * as echarts from "echarts";
-import { NzProgressModule } from "ng-zorro-antd/progress";
+} from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
-import { FinanceUIModule } from "../finance-ui.module";
+import { FinanceUIModule } from '../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -28,24 +28,19 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../services";
+} from '../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../services';
 import {
   UserAuthInfo,
   FinanceReportByAccount,
   FinanceReportByControlCenter,
   FinanceReportByOrder,
   FinanceReportEntryByTransactionType,
-} from "../../../model";
-import { MessageDialogComponent } from "../../message-dialog";
-import { ReportComponent } from "./report.component";
+} from '../../../model';
+import { MessageDialogComponent } from '../../message-dialog';
+import { ReportComponent } from './report.component';
 
-describe("ReportComponent", () => {
+describe('ReportComponent', () => {
   let component: ReportComponent;
   let fixture: ComponentFixture<ReportComponent>;
   let fakeData: FakeDataHelper;
@@ -71,28 +66,23 @@ describe("ReportComponent", () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj("FinanceOdataService", [
+    storageService = jasmine.createSpyObj('FinanceOdataService', [
       // 'fetchAllReportsByAccount',
       // 'fetchAllReportsByControlCenter',
       // 'fetchAllReportsByOrder',
-      "fetchReportByTransactionType",
-      "fetchAllAccountCategories",
-      "fetchAllAccounts",
-      "fetchAllControlCenters",
-      "fetchAllOrders",
+      'fetchReportByTransactionType',
+      'fetchAllAccountCategories',
+      'fetchAllAccounts',
+      'fetchAllControlCenters',
+      'fetchAllOrders',
     ]);
     // fetchAllReportsByAccountSpy = storageService.fetchAllReportsByAccount.and.returnValue(of([]));
     // fetchAllReportsByControlCenterSpy = storageService.fetchAllReportsByControlCenter.and.returnValue(of([]));
     // fetchAllReportsByOrderSpy = storageService.fetchAllReportsByOrder.and.returnValue(of([]));
-    fetchReportByTransactionTypeSpy =
-      storageService.fetchReportByTransactionType.and.returnValue(of([]));
-    fetchAllAccountCategoriesSpy =
-      storageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(
-      of([])
-    );
-    fetchAllControlCentersSpy =
-      storageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchReportByTransactionTypeSpy = storageService.fetchReportByTransactionType.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub = {
@@ -137,11 +127,11 @@ describe("ReportComponent", () => {
     // fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe("2. shall work with data", () => {
+  xdescribe('2. shall work with data', () => {
     const arRptAccount: FinanceReportByAccount[] = [];
     const arRptControlCenter: FinanceReportByControlCenter[] = [];
     const arRptOrder: FinanceReportByOrder[] = [];
@@ -203,21 +193,17 @@ describe("ReportComponent", () => {
       // }
       // fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptOrder));
 
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    it("should not show data before OnInit", () => {
+    it('should not show data before OnInit', () => {
       expect(component.dataReportByAccount.length).toEqual(0);
     });
 
-    it("should show data after OnInit", fakeAsync(() => {
+    it('should show data after OnInit', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
@@ -226,16 +212,14 @@ describe("ReportComponent", () => {
 
       expect(component.dataReportByAccount.length).toBeGreaterThan(0);
       expect(component.dataReportByAccount.length).toEqual(arRptAccount.length);
-      expect(component.dataReportByControlCenter.length).toEqual(
-        arRptControlCenter.length
-      );
+      expect(component.dataReportByControlCenter.length).toEqual(arRptControlCenter.length);
       expect(component.dataReportByOrder.length).toEqual(arRptOrder.length);
 
       flush();
     }));
   });
 
-  describe("3. shall display error dialog for exception", () => {
+  describe('3. shall display error dialog for exception', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -252,157 +236,119 @@ describe("ReportComponent", () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it("should display error when Report by tran type Service fails", fakeAsync(() => {
+    it('should display error when Report by tran type Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchReportByTransactionTypeSpy.and.returnValue(
-        asyncError<string>("Service failed")
-      );
+      fetchReportByTransactionTypeSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(1);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
       flush();
 
       // OK button
-      const closeBtn = overlayContainerElement.querySelector(
-        ElementClass_DialogCloseButton
-      ) as HTMLButtonElement;
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       flush();
       tick();
       fixture.detectChanges();
-      expect(
-        overlayContainerElement.querySelectorAll(ElementClass_DialogContent)
-          .length
-      ).toBe(0);
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       discardPeriodicTasks();
       flush();
     }));
   });
 
-  it("drilldown to account", () => {
+  it('drilldown to account', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToAccount();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "/finance/report/account",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/account']);
   });
 
-  it("drilldown to accountmom", () => {
+  it('drilldown to accountmom', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToAccountMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "/finance/report/accountmom",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/accountmom']);
   });
 
-  it("drilldown to tran type mom", () => {
+  it('drilldown to tran type mom', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToTranTypeMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "finance",
-      "report",
-      "trantypemom",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'trantypemom']);
   });
 
-  it("drilldown to control center", () => {
+  it('drilldown to control center', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToControlCenter();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "/finance/report/controlcenter",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/controlcenter']);
   });
 
-  it("drilldown to control center MOM", () => {
+  it('drilldown to control center MOM', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToControlCenterMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "/finance/report/controlcentermom",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/controlcentermom']);
   });
 
-  it("drilldown to order", () => {
+  it('drilldown to order', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToOrder();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith(["/finance/report/order"]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/report/order']);
   });
 
-  it("drilldown to tran type", () => {
+  it('drilldown to tran type', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToTranType();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "finance",
-      "report",
-      "trantype",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'trantype']);
   });
 
-  it("drilldown to cash", () => {
+  it('drilldown to cash', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToCash();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "finance",
-      "report",
-      "cash",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cash']);
   });
 
-  it("drilldown to cash MOM", () => {
+  it('drilldown to cash MOM', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToCashMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "finance",
-      "report",
-      "cashmom",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'cashmom']);
   });
 
-  it("drilldown to income statement", () => {
+  it('drilldown to income statement', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, "navigate");
+    spyOn(routerstub, 'navigate');
 
     component.onDrillDownToStatementOfIncomeExpenseMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
-    expect(routerstub.navigate).toHaveBeenCalledWith([
-      "finance",
-      "report",
-      "statementofincexpmom",
-    ]);
+    expect(routerstub.navigate).toHaveBeenCalledWith(['finance', 'report', 'statementofincexpmom']);
   });
 });

@@ -1,1 +1,1 @@
-export * from "./person-selection-dlg.component";
+export * from './person-selection-dlg.component';

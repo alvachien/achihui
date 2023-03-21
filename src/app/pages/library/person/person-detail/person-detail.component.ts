@@ -1,38 +1,25 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  getUIModeString,
-  Person,
-  PersonRole,
-} from "../../../../model";
-import {
-  HomeDefOdataService,
-  LibraryStorageService,
-} from "../../../../services";
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '../../../../model';
+import { HomeDefOdataService, LibraryStorageService } from '../../../../services';
 
 @Component({
-  selector: "hih-person-detail",
-  templateUrl: "./person-detail.component.html",
-  styleUrls: ["./person-detail.component.less"],
+  selector: 'hih-person-detail',
+  templateUrl: './person-detail.component.html',
+  styleUrls: ['./person-detail.component.less'],
 })
 export class PersonDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
   listRoles: PersonRole[] = [];
@@ -50,43 +37,40 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering PersonDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nnameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(100),
-      ]),
-      cnameControl: new UntypedFormControl("", [Validators.maxLength(100)]),
+      nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
       chnIsNativeControl: new UntypedFormControl(false),
-      detailControl: new UntypedFormControl("", [Validators.maxLength(100)]),
+      detailControl: new UntypedFormControl('', [Validators.maxLength(100)]),
     });
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
       );
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -99,35 +83,24 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
         case UIMode.Display: {
           this.isLoadingResults = true;
 
-          forkJoin([
-            this.storageService.fetchAllPersonRoles(),
-            this.storageService.readPerson(this.routerID),
-          ])
+          forkJoin([this.storageService.fetchAllPersonRoles(), this.storageService.readPerson(this.routerID)])
             .pipe(
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
             .subscribe({
-              next: (e: any) => {
+              next: (e) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit forkJoin.`,
                   ConsoleLogTypeEnum.debug
                 );
                 this.allRoles = e[0];
 
-                this.detailFormGroup.get("idControl")?.setValue(e[1].ID);
-                this.detailFormGroup
-                  .get("nnameControl")
-                  ?.setValue(e[1].NativeName);
-                this.detailFormGroup
-                  .get("cnameControl")
-                  ?.setValue(e[1].ChineseName);
-                this.detailFormGroup
-                  .get("chnIsNativeControl")
-                  ?.setValue(e[1].ChineseIsNative);
-                this.detailFormGroup
-                  .get("detailControl")
-                  ?.setValue(e[1].Detail);
+                this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
+                this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
+                this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
+                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
+                this.detailFormGroup.get('detailControl')?.setValue(e[1].Detail);
                 if (e[1].Roles) {
                   this.listRoles = e[1].Roles.slice();
                 }
@@ -136,7 +109,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
@@ -145,7 +118,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -169,7 +142,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.debug
                 );
                 this.allRoles = rtndata;
-                this.detailFormGroup.get("idControl")?.setValue("NEW OBJECT");
+                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
               },
               error: (err) => {
                 ModelUtility.writeConsoleLog(
@@ -177,7 +150,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -191,7 +164,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonDetailComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering PersonDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -214,15 +187,14 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonDetailComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering PersonDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
     const objtbo = new Person();
-    objtbo.ChineseName = this.detailFormGroup.get("cnameControl")?.value;
-    objtbo.NativeName = this.detailFormGroup.get("nnameControl")?.value;
-    objtbo.ChineseIsNative =
-      this.detailFormGroup.get("chnIsNativeControl")?.value;
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID!;
     objtbo.Roles = this.listRoles.slice();
 
@@ -233,9 +205,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate([
-              "/library/person/display/" + e.ID.toString(),
-            ]);
+            this.router.navigate(['/library/person/display/' + e.ID.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
@@ -243,7 +213,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });

@@ -1,11 +1,9 @@
 <nz-page-header nzBackIcon>
-  <nz-page-header-title>{{ "Blog.Post" | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Common.ListView" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Blog.Post' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button nzType="primary" (click)="onCreate()">
-      {{ "Common.Create" | transloco }}
+      {{ 'Common.Create' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
@@ -25,11 +23,11 @@
   >
     <thead>
       <tr>
-        <th>{{ "Common.ID" | transloco }}</th>
-        <th>{{ "Common.Title" | transloco }}</th>
-        <th>{{ "Common.Status" | transloco }}</th>
-        <th>{{ "Common.Abstract" | transloco }}</th>
-        <th>{{ "Common.CreatedAt" | transloco }}</th>
+        <th>{{ 'Common.ID' | transloco }}</th>
+        <th>{{ 'Common.Title' | transloco }}</th>
+        <th>{{ 'Common.Status' | transloco }}</th>
+        <th>{{ 'Common.Abstract' | transloco }}</th>
+        <th>{{ 'Common.CreatedAt' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
@@ -38,20 +36,20 @@
           {{ data.id! }}
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" (click)="onDisplay(data.id!)">
-            {{ "Common.Display" | transloco }}
+            {{ 'Common.Display' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onEdit(data.id!)">
-            {{ "Common.Edit" | transloco }}
+            {{ 'Common.Edit' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onDelete(data.id!)" nzDanger>
-            {{ "Common.Delete" | transloco }}
+            {{ 'Common.Delete' | transloco }}
           </button>
           <nz-divider nzType="vertical"></nz-divider>
           <button nz-button nzType="link" (click)="onDeploy(data.id!)">
-            {{ "Common.Deploy" | transloco }}
+            {{ 'Common.Deploy' | transloco }}
           </button>
           <button nz-button nzType="link" (click)="onRevokeDeploy(data.id!)">
-            {{ "Common.RevokeDeploy" | transloco }}
+            {{ 'Common.RevokeDeploy' | transloco }}
           </button>
         </td>
         <td>{{ data.title }}</td>

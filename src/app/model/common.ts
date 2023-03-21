@@ -1,19 +1,19 @@
-import * as moment from "moment";
-import { UIMode } from "actslib";
+import * as moment from 'moment';
+import { UIMode } from 'actslib';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
-export const typeParentSplitter: string = " > ";
-export const idSplitChar: string = ",";
+export const typeParentSplitter: string = ' > ';
+export const idSplitChar: string = ',';
 
-export const dateSplitChar: string = "-";
+export const dateSplitChar: string = '-';
 
-export const languageEn: string = "en";
-export const languageZh: string = "zh";
-export const languageZhCN: string = "zh-cn";
+export const languageEn: string = 'en';
+export const languageZh: string = 'zh';
+export const languageZhCN: string = 'zh-cn';
 
-export const momentDateFormat: string = "YYYY-MM-DD";
+export const momentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope {
   All = 1,
@@ -87,16 +87,16 @@ export enum OverviewScopeEnum {
 export function getUIModeString(mode: UIMode): string {
   switch (mode) {
     case UIMode.Create:
-      return "Common.Create";
+      return 'Common.Create';
 
     case UIMode.Update:
-      return "Common.Change";
+      return 'Common.Change';
 
     case UIMode.Display:
-      return "Common.Display";
+      return 'Common.Display';
 
     default:
-      return "";
+      return '';
   }
 }
 
@@ -305,11 +305,7 @@ export class BaseModel {
     }
   }
 
-  protected _addMessage(
-    msgtype: MessageType,
-    msgtitle: string,
-    msgcontent: string
-  ): void {
+  protected _addMessage(msgtype: MessageType, msgtitle: string, msgcontent: string): void {
     const msg: InfoMessage = new InfoMessage();
     msg.MsgType = msgtype;
     msg.MsgTitle = msgtitle;
@@ -367,7 +363,7 @@ export class Tag {
   get LinkTarget(): string {
     switch (this.TagType) {
       case TagTypeEnum.LearnQuestionBank:
-        return "/learn/questionbank/display/" + this.TagID?.toString();
+        return '/learn/questionbank/display/' + this.TagID?.toString();
 
       // case TagTypeEnum.EnglishWord:
       //   return '/learn/enword/display/' + this.TagID.toString();
@@ -376,10 +372,10 @@ export class Tag {
       //   return '/learn/ensent/display/' + this.TagID.toString();
 
       case TagTypeEnum.FinanceDocumentItem:
-        return "/finance/document/display/" + this.TagID?.toString();
+        return '/finance/document/display/' + this.TagID?.toString();
 
       default:
-        throw new Error("Unsupportted tag type");
+        throw new Error('Unsupportted tag type');
     }
   }
 
@@ -503,8 +499,8 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  private _nativeName: string = "";
-  private _chineseName: string = "";
+  private _nativeName: string = '';
+  private _chineseName: string = '';
   private _chineseIsNative: boolean = false;
 
   get NativeName(): string {
@@ -532,8 +528,8 @@ export class MultipleNamesObject extends BaseModel {
 
   public override onInit(): void {
     super.onInit();
-    this._nativeName = "";
-    this._chineseName = "";
+    this._nativeName = '';
+    this._chineseName = '';
     this._chineseIsNative = false;
   }
 
@@ -586,60 +582,55 @@ export interface IOverviewScopeRange {
   EndDate: moment.Moment;
 }
 
-export function getOverviewScopeRange(
-  scope: OverviewScopeEnum
-): IOverviewScopeRange {
+export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeRange {
   let bgn: any = moment();
   let end: any = moment();
 
   if (scope === OverviewScopeEnum.CurrentMonth) {
-    bgn.startOf("month");
-    end.endOf("month");
+    bgn.startOf('month');
+    end.endOf('month');
   } else if (scope === OverviewScopeEnum.CurrentYear) {
-    bgn.startOf("year");
-    end.endOf("year");
+    bgn.startOf('year');
+    end.endOf('year');
   } else if (scope === OverviewScopeEnum.PreviousMonth) {
-    bgn.subtract(1, "M");
-    bgn.startOf("month");
+    bgn.subtract(1, 'M');
+    bgn.startOf('month');
 
     end = bgn.clone();
-    end.endOf("month");
+    end.endOf('month');
   } else if (scope === OverviewScopeEnum.PreviousYear) {
-    bgn.subtract(1, "y");
-    bgn.startOf("year");
+    bgn.subtract(1, 'y');
+    bgn.startOf('year');
 
     end = bgn.clone();
-    end.endOf("year");
+    end.endOf('year');
   } else if (scope === OverviewScopeEnum.CurrentQuarter) {
-    bgn.startOf("quarter");
-    end.endOf("quarter");
+    bgn.startOf('quarter');
+    end.endOf('quarter');
   } else if (scope === OverviewScopeEnum.PreviousQuarter) {
-    bgn.startOf("quarter");
-    bgn.subtract(1, "Q");
+    bgn.startOf('quarter');
+    bgn.subtract(1, 'Q');
 
     end = bgn.clone();
-    end.endOf("quarter");
+    end.endOf('quarter');
   } else if (scope === OverviewScopeEnum.CurrentWeek) {
-    bgn.startOf("week");
-    end.endOf("week");
+    bgn.startOf('week');
+    end.endOf('week');
   } else if (scope === OverviewScopeEnum.PreviousWeek) {
-    bgn.startOf("week");
-    bgn.subtract(1, "w");
+    bgn.startOf('week');
+    bgn.subtract(1, 'w');
 
     end = bgn.clone();
-    end.endOf("week");
+    end.endOf('week');
   } else if (scope === OverviewScopeEnum.All) {
-    bgn = moment("19710101");
-    end = moment("99991231");
+    bgn = moment('19710101');
+    end = moment('99991231');
   }
 
   return { BeginDate: bgn, EndDate: end };
 }
 
-export function isOverviewDateInScope(
-  dt: moment.Moment,
-  scope: OverviewScopeEnum
-): boolean {
+export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnum): boolean {
   const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
 
   if (dt.isBefore(end) && dt.isAfter(bgn)) {

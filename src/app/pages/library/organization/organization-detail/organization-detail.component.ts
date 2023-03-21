@@ -1,35 +1,25 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-} from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { forkJoin, ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { UIMode, isUIEditable } from "actslib";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { UIMode, isUIEditable } from 'actslib';
 
-import {
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  getUIModeString,
-  Organization,
-  OrganizationType,
-} from "../../../../model";
-import { HomeDefOdataService, LibraryStorageService } from "src/app/services";
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Organization, OrganizationType } from '../../../../model';
+import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: "hih-organization-detail",
-  templateUrl: "./organization-detail.component.html",
-  styleUrls: ["./organization-detail.component.less"],
+  selector: 'hih-organization-detail',
+  templateUrl: './organization-detail.component.html',
+  styleUrls: ['./organization-detail.component.less'],
 })
 export class OrganizationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
-  public currentMode = "";
+  public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
   listTypes: OrganizationType[] = [];
@@ -43,17 +33,14 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nnameControl: new UntypedFormControl("", [
-        Validators.required,
-        Validators.maxLength(100),
-      ]),
-      cnameControl: new UntypedFormControl("", [Validators.maxLength(100)]),
+      nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
       chnIsNativeControl: new UntypedFormControl(false),
     });
   }
@@ -64,26 +51,26 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
       );
 
       if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
+        if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
-        } else if (x[0].path === "edit") {
+        } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Update;
-        } else if (x[0].path === "display") {
+        } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
           this.uiMode = UIMode.Display;
@@ -107,23 +94,17 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
               next: (e: any) => {
                 this.allTypes = e[0];
 
-                this.detailFormGroup.get("idControl")?.setValue(e[1].ID);
-                this.detailFormGroup
-                  .get("nnameControl")
-                  ?.setValue(e[1].NativeName);
-                this.detailFormGroup
-                  .get("cnameControl")
-                  ?.setValue(e[1].ChineseName);
-                this.detailFormGroup
-                  .get("chnIsNativeControl")
-                  ?.setValue(e[1].ChineseIsNative);
+                this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
+                this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
+                this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
+                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
                 this.listTypes = e[1].Types.slice();
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
                 } else if (this.uiMode === UIMode.Update) {
                   this.detailFormGroup.enable();
-                  this.detailFormGroup.get("idControl")?.disable();
+                  this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
@@ -132,7 +113,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -156,7 +137,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.debug
                 );
                 this.allTypes = rtndata;
-                this.detailFormGroup.get("idControl")?.setValue("NEW OBJECT");
+                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
               },
               error: (err) => {
                 ModelUtility.writeConsoleLog(
@@ -164,7 +145,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
-                  nzTitle: translate("Common.Error"),
+                  nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
                   nzClosable: true,
                 });
@@ -177,7 +158,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationDetailComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -200,21 +181,22 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   onTypeModeChanged(tid: any) {
     const tidx = this.allTypes.findIndex((p) => p.ID === +tid);
     if (tidx !== -1) {
+      // TBD
     } else {
+      // TBD
     }
   }
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
     const objtbo = new Organization();
-    objtbo.ChineseIsNative =
-      this.detailFormGroup.get("chnIsNativeControl")?.value;
-    objtbo.ChineseName = this.detailFormGroup.get("cnameControl")?.value;
-    objtbo.NativeName = this.detailFormGroup.get("nnameControl")?.value;
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.Types = this.listTypes.slice();
     objtbo.HID = this.homeService.ChosedHome?.ID!;
 
@@ -225,9 +207,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate([
-              "/library/organization/display/" + e.ID.toString(),
-            ]);
+            this.router.navigate(['/library/organization/display/' + e.ID.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
@@ -235,14 +215,14 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
-              nzTitle: translate("Common.Error"),
+              nzTitle: translate('Common.Error'),
               nzContent: err.toString(),
               nzClosable: true,
             });
           },
         });
     } else if (this.uiMode === UIMode.Update) {
-      objtbo.ID = this.detailFormGroup.get("idControl")?.value;
+      objtbo.ID = this.detailFormGroup.get('idControl')?.value;
     }
   }
 }

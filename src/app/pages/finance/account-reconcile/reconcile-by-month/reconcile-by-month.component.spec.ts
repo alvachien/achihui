@@ -1,38 +1,33 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NzBreadCrumbModule } from "ng-zorro-antd/breadcrumb";
-import { NzButtonModule } from "ng-zorro-antd/button";
-import { NzElementPatchModule } from "ng-zorro-antd/core/element-patch";
-import { NzDatePickerModule } from "ng-zorro-antd/date-picker";
-import { NzDividerModule } from "ng-zorro-antd/divider";
-import { NzFormModule } from "ng-zorro-antd/form";
-import { en_US, NZ_I18N } from "ng-zorro-antd/i18n";
-import { NzIconModule } from "ng-zorro-antd/icon";
-import { NzInputModule } from "ng-zorro-antd/input";
-import { NzInputNumberModule } from "ng-zorro-antd/input-number";
-import { NzModalModule, NzModalService } from "ng-zorro-antd/modal";
-import { NzPageHeaderModule } from "ng-zorro-antd/page-header";
-import { NzSelectModule } from "ng-zorro-antd/select";
-import { NzStepsModule } from "ng-zorro-antd/steps";
-import { NzSwitchModule } from "ng-zorro-antd/switch";
-import { NzTableModule } from "ng-zorro-antd/table";
-import { NzToolTipModule } from "ng-zorro-antd/tooltip";
-import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
-import { UserAuthInfo } from "src/app/model";
-import {
-  AuthService,
-  FinanceOdataService,
-  HomeDefOdataService,
-  UIStatusService,
-} from "src/app/services";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzElementPatchModule } from 'ng-zorro-antd/core/element-patch';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { UserAuthInfo } from 'src/app/model';
+import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
 
-import { FakeDataHelper, getTranslocoModule } from "src/testing";
-import { ReconcileByMonthComponent } from "./reconcile-by-month.component";
+import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { ReconcileByMonthComponent } from './reconcile-by-month.component';
 
-describe("ReconcileByMonthComponent", () => {
+describe('ReconcileByMonthComponent', () => {
   let component: ReconcileByMonthComponent;
   let fixture: ComponentFixture<ReconcileByMonthComponent>;
   let fakeData: FakeDataHelper;
@@ -44,9 +39,9 @@ describe("ReconcileByMonthComponent", () => {
   });
 
   beforeEach(async () => {
-    const odataService: any = jasmine.createSpyObj("FinanceOdataService", [
-      "fetchAllAccountCategories",
-      "fetchAllAccounts",
+    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+      'fetchAllAccountCategories',
+      'fetchAllAccounts',
     ]);
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
@@ -97,7 +92,7 @@ describe("ReconcileByMonthComponent", () => {
     //fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

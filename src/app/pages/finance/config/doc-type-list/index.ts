@@ -1,1 +1,1 @@
-export * from "./doc-type-list.component";
+export * from './doc-type-list.component';

@@ -1,30 +1,23 @@
-import { TestBed, inject } from "@angular/core/testing";
-import {
-  OidcSecurityService,
-  PublicEventsService,
-} from "angular-auth-oidc-client";
-import { of } from "rxjs";
+import { TestBed, inject } from '@angular/core/testing';
+import { OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
+import { of } from 'rxjs';
 
-import { AuthService } from "./auth.service";
+import { AuthService } from './auth.service';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-describe("AuthService", () => {
+describe('AuthService', () => {
   let securService: any;
   let eventService: any;
   let checkAuthSpy: any;
   let registerForEventsSpy: any;
 
   beforeAll(() => {
-    securService = jasmine.createSpyObj("OidcSecurityService", ["checkAuth"]);
+    securService = jasmine.createSpyObj('OidcSecurityService', ['checkAuth']);
     checkAuthSpy = securService.checkAuth.and.returnValue(of({}));
 
-    eventService = jasmine.createSpyObj("PublicEventsService", [
-      "registerForEvents",
-    ]);
-    registerForEventsSpy = eventService.registerForEvents.and.returnValue(
-      of({})
-    );
+    eventService = jasmine.createSpyObj('PublicEventsService', ['registerForEvents']);
+    registerForEventsSpy = eventService.registerForEvents.and.returnValue(of({}));
   });
 
   beforeEach(() => {
@@ -37,7 +30,7 @@ describe("AuthService", () => {
     });
   });
 
-  it("should be created", inject([AuthService], (service: AuthService) => {
+  it('should be created', inject([AuthService], (service: AuthService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -1,21 +1,11 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewContainerRef,
-  Input,
-  ChangeDetectorRef,
-} from "@angular/core";
-import { Router } from "@angular/router";
-import { ReplaySubject, forkJoin } from "rxjs";
-import {
-  takeUntil,
-  finalize,
-} from "rxjs/operators";
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { translate } from "@ngneat/transloco";
-import * as moment from "moment";
+import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
 
 import {
   ModelUtility,
@@ -29,12 +19,8 @@ import {
   Account,
   BuildupOrderForSelection,
   momentDateFormat,
-} from "../../model";
-import {
-  FinanceOdataService,
-  UIStatusService,
-  HomeDefOdataService,
-} from "../../services";
+} from '../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 
 class DateCellData {
   public CurrentDate: moment.Moment | null = null;
@@ -43,9 +29,9 @@ class DateCellData {
 }
 
 @Component({
-  selector: "hih-finance",
-  templateUrl: "./finance.component.html",
-  styleUrls: ["./finance.component.less"],
+  selector: 'hih-finance',
+  templateUrl: './finance.component.html',
+  styleUrls: ['./finance.component.less'],
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -82,10 +68,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering FinanceComponent ngOnInit...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
@@ -102,10 +85,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering FinanceComponent OnDestroy...",
-      ConsoleLogTypeEnum.debug
-    );
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceComponent OnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -186,7 +166,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
             TranCurr: rst.TranCurr!,
             TranDate: moment(rst.TranDate).format(momentDateFormat),
             HID: rst.HID,
-            Desp: "",
+            Desp: '',
           });
         });
         this.createAssetDepreciationDlg(
@@ -203,7 +183,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         );
 
         this.modalService.error({
-          nzTitle: translate("Common.Error"),
+          nzTitle: translate('Common.Error'),
           nzContent: err.toString(),
           nzClosable: true,
         });
@@ -218,7 +198,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     orders: UIOrderForSelection[]
   ): void {
     const modal: NzModalRef = this.modal.create({
-      nzTitle: translate("Sys.DocTy.AssetDeprec"),
+      nzTitle: translate('Sys.DocTy.AssetDeprec'),
       nzWidth: 900,
       nzContent: FinanceAssetDepreciationDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
@@ -231,8 +211,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
       nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
       nzFooter: [
         {
-          label: translate("Common.Close"),
-          shape: "round",
+          label: translate('Common.Close'),
+          shape: 'round',
           onClick: () => modal.destroy(),
         },
         //   {
@@ -244,11 +224,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
       ],
     });
     const instance = modal.getContentComponent();
-    modal.afterOpen.subscribe(() => console.log("[afterOpen] emitted!"));
+    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) =>
-      console.log("[afterClose] The result is:", result)
-    );
+    modal.afterClose.subscribe((result: any) => console.log('[afterClose] The result is:', result));
 
     // delay until modal instance created
     // setTimeout(() => {
@@ -259,8 +237,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
   fetchData(forceReload = false): void {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
-    dtbgn.startOf("month");
-    dtend.endOf("month");
+    dtbgn.startOf('month');
+    dtend.endOf('month');
 
     this.isLoadingResults = true;
     forkJoin([
@@ -274,10 +252,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         TransactionDateEnd: dtend,
         IsPosted: false,
       }),
-      this.odataService.fetchOverviewKeyfigure(
-        this.excludeTransfer,
-        forceReload
-      ),
+      this.odataService.fetchOverviewKeyfigure(this.excludeTransfer, forceReload),
     ])
       .pipe(
         takeUntil(this._destroyed$!),
@@ -291,9 +266,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           if (rsts[0] instanceof Array && rsts[0].length > 0) {
             rsts[0].forEach((val: TemplateDocADP) => {
               const idx = this.listDate.findIndex((cell) => {
-                return cell
-                  .CurrentDate!.startOf("date")
-                  .isSame(val.TranDate!.startOf("date"));
+                return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
@@ -309,9 +282,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           if (rsts[1] instanceof Array && rsts[1].length > 0) {
             rsts[1].forEach((val: TemplateDocLoan) => {
               const idx = this.listDate.findIndex((cell) => {
-                return cell
-                  .CurrentDate!.startOf("date")
-                  .isSame(val.TranDate!.startOf("date"));
+                return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
@@ -333,7 +304,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -346,44 +317,33 @@ export class FinanceComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {
-          this.messageService.success(translate("Finance.DocumentPosted"));
+          this.messageService.success(translate('Finance.DocumentPosted'));
           // Remove the doc
           const idx = this.listDate.findIndex((cell) => {
-            return cell
-              .CurrentDate!.startOf("date")
-              .isSame(val.TranDate.startOf("date"));
+            return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
           });
           if (idx !== -1) {
             const secidx = this.listDate[idx].DPDocs.findIndex((doc) => {
-              return (
-                doc.DocId === dpdoc.DocId &&
-                doc.AccountId === dpdoc.AccountId &&
-                doc.HID === dpdoc.HID
-              );
+              return doc.DocId === dpdoc.DocId && doc.AccountId === dpdoc.AccountId && doc.HID === dpdoc.HID;
             });
             if (secidx !== -1) {
               this.listDate[idx].DPDocs.splice(secidx, 1);
             }
 
-            if (
-              this.listDate[idx].DPDocs.length === 0 &&
-              this.listDate[idx].LoanDocs.length === 0
-            ) {
+            if (this.listDate[idx].DPDocs.length === 0 && this.listDate[idx].LoanDocs.length === 0) {
               this.listDate.splice(idx, 1);
             }
           }
         },
         error: (err) => {
-          this.messageService.error("Document failed to post");
+          this.messageService.error('Document failed to post');
         },
       });
   }
   doPostLoanDoc(loandoc: TemplateDocLoan) {
     // It shall just jump to repay page
     this.uiService.SelectedLoanTmp = loandoc;
-    this.router.navigate([
-      "/finance/document/createloanrepay/" + loandoc.DocId!.toString(),
-    ]);
+    this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId!.toString()]);
   }
 
   private _updateSelectedDate() {
@@ -394,9 +354,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
 }
 
 @Component({
-  selector: "hih-finance-asset-deprec-dlg",
-  templateUrl: "./finance-asset-deprec.dlg.html",
-  styleUrls: ["./finance-asset-deprec.dlg.less"],
+  selector: 'hih-finance-asset-deprec-dlg',
+  templateUrl: './finance-asset-deprec.dlg.html',
+  styleUrls: ['./finance-asset-deprec.dlg.less'],
 })
 export class FinanceAssetDepreciationDlgComponent {
   @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];
@@ -412,11 +372,11 @@ export class FinanceAssetDepreciationDlgComponent {
   ) {}
 
   destroyModal(): void {
-    this.modal.destroy({ data: "" });
+    this.modal.destroy({ data: '' });
   }
 
   getAccountNmae(accountid: number): string {
-    let acntname = "";
+    let acntname = '';
     let bfound = false;
     this.accounts.forEach((acnt) => {
       if (!bfound) {
@@ -433,8 +393,7 @@ export class FinanceAssetDepreciationDlgComponent {
       return false;
     }
     if (
-      (docitem.ControlCenterId !== undefined &&
-        docitem.OrderId !== undefined) ||
+      (docitem.ControlCenterId !== undefined && docitem.OrderId !== undefined) ||
       (docitem.ControlCenterId === undefined && docitem.OrderId === undefined)
     ) {
       return false;
@@ -448,10 +407,8 @@ export class FinanceAssetDepreciationDlgComponent {
     if (this.isValid(docitem)) {
       this.odataSrv.createAssetDepreciationDoc(docitem).subscribe({
         next: (val) => {
-          this.messageService.success(translate("Finance.DocumentPosted"));
-          const idx = this.listItems.findIndex(
-            (p) => p.AssetAccountId === docitem.AssetAccountId
-          );
+          this.messageService.success(translate('Finance.DocumentPosted'));
+          const idx = this.listItems.findIndex((p) => p.AssetAccountId === docitem.AssetAccountId);
           if (idx !== -1) {
             this.listItems.splice(idx, 1);
             this.changeDetectRef.detectChanges();

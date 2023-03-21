@@ -1,18 +1,17 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { UserSettingComponent } from "./user-setting";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { UserSettingComponent } from './user-setting';
 
 const routes: Routes = [
-  { path: "", component: UserSettingComponent },
-  { path: "setting", component: UserSettingComponent },
+  { path: '', component: UserSettingComponent },
+  { path: 'setting', component: UserSettingComponent },
   {
-    path: "collection",
-    loadChildren: () =>
-      import("./collection/collection.module").then((m) => m.CollectionModule),
+    path: 'collection',
+    loadChildren: () => import('./collection/collection.module').then((m) => m.CollectionModule),
   },
   {
-    path: "post",
-    loadChildren: () => import("./post/post.module").then((m) => m.PostModule),
+    path: 'post',
+    loadChildren: () => import('./post/post.module').then((m) => m.PostModule),
   },
 ];
 

@@ -1,1 +1,1 @@
-export * from "./recur-event-list.component";
+export * from './recur-event-list.component';

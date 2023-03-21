@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { BehaviorSubject, of } from "rxjs";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { NgxEchartsModule } from "ngx-echarts";
-import * as echarts from "echarts";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { BehaviorSubject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
-import { FinanceUIModule } from "../../finance-ui.module";
+import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -18,24 +18,14 @@ import {
   asyncError,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,
-} from "../../../../../testing";
-import {
-  AuthService,
-  UIStatusService,
-  FinanceOdataService,
-  HomeDefOdataService,
-} from "../../../../services";
-import {
-  UserAuthInfo,
-  FinanceReportByOrder,
-  Order,
-  FinanceReportEntryByTransactionType,
-} from "../../../../model";
-import { MessageDialogComponent } from "../../../message-dialog";
+} from '../../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { UserAuthInfo, FinanceReportByOrder, Order, FinanceReportEntryByTransactionType } from '../../../../model';
+import { MessageDialogComponent } from '../../../message-dialog';
 
-import { CashReportComponent } from "./cash-report.component";
+import { CashReportComponent } from './cash-report.component';
 
-xdescribe("CashReportComponent", () => {
+xdescribe('CashReportComponent', () => {
   let component: CashReportComponent;
   let fixture: ComponentFixture<CashReportComponent>;
 
@@ -51,7 +41,7 @@ xdescribe("CashReportComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

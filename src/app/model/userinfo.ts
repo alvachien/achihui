@@ -3,13 +3,13 @@
  */
 export class UserDetail {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  public UserId = "";
+  public UserId = '';
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  public DisplayAs = "";
+  public DisplayAs = '';
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  public Email = "";
+  public Email = '';
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  public Others = "";
+  public Others = '';
 
   public onSetData(data: any): void {
     this.UserId = data.userID;
@@ -40,11 +40,7 @@ export class UserAuthInfo {
 
   public isAuthorized = false;
 
-  public setContent(user: {
-    userId?: string;
-    userName?: string;
-    accessToken?: string;
-  }): void {
+  public setContent(user: { userId?: string; userName?: string; accessToken?: string }): void {
     if (user) {
       this.isAuthorized = true;
 

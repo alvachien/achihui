@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder,
   UntypedFormGroup,
@@ -13,20 +7,13 @@ import {
   ValidatorFn,
   AbstractControl,
   ValidationErrors,
-} from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, forkJoin, merge, ReplaySubject, Subscription } from "rxjs";
-import {
-  catchError,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  finalize,
-} from "rxjs/operators";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   Account,
@@ -53,29 +40,24 @@ import {
   financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo,
   AccountStatusEnum,
-} from "../../../../model";
-import { costObjectValidator } from "../../../../uimodel";
-import {
-  HomeDefOdataService,
-  FinanceOdataService,
-  UIStatusService,
-  AuthService,
-} from "../../../../services";
-import { popupDialog } from "../../../message-dialog";
-import * as moment from "moment";
-import { AccountExtraLoanComponent } from "../../account/account-extra-loan";
+} from '../../../../model';
+import { costObjectValidator } from '../../../../uimodel';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
+import * as moment from 'moment';
+import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 
 @Component({
-  selector: "hih-document-loan-create",
-  templateUrl: "./document-loan-create.component.html",
-  styleUrls: ["./document-loan-create.component.less"],
+  selector: 'hih-document-loan-create',
+  templateUrl: './document-loan-create.component.html',
+  styleUrls: ['./document-loan-create.component.less'],
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   public curDocType: number;
 
-  public documentTitle = "";
+  public documentTitle = '';
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -88,7 +70,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[] = [];
   arDocTypes: DocumentType[] = [];
   arCurrencies: Currency[] = [];
-  baseCurrency = "";
+  baseCurrency = '';
   curMode: UIMode = UIMode.Create;
   // Step: Generic info
   public firstFormGroup: UntypedFormGroup;
@@ -101,21 +83,17 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public isDocPosting = false;
   // Step: Result
   public docIdCreated?: number;
-  public docPostingFailed = "";
+  public docPostingFailed = '';
   currentStep = 0;
 
   get tranAmount(): number {
-    return (
-      this.firstFormGroup && this.firstFormGroup.get("amountControl")?.value
-    );
+    return this.firstFormGroup && this.firstFormGroup.get('amountControl')?.value;
   }
   get controlCenterID(): number {
-    return this.firstFormGroup && this.firstFormGroup.get("ccControl")?.value;
+    return this.firstFormGroup && this.firstFormGroup.get('ccControl')?.value;
   }
   get orderID(): number {
-    return (
-      this.firstFormGroup && this.firstFormGroup.get("orderControl")?.value
-    );
+    return this.firstFormGroup && this.firstFormGroup.get('orderControl')?.value;
   }
 
   constructor(
@@ -129,7 +107,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -138,10 +116,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
     this.firstFormGroup = new UntypedFormGroup(
       {
-        headerControl: new UntypedFormControl(
-          new Document(),
-          Validators.required
-        ),
+        headerControl: new UntypedFormControl(new Document(), Validators.required),
         amountControl: new UntypedFormControl(0, [Validators.required]),
         legacyControl: new UntypedFormControl(false),
         accountControl: new UntypedFormControl(undefined),
@@ -157,7 +132,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -187,10 +162,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           this.arCurrencies = rst[6];
 
           // Accounts
-          this.arUIAccount = BuildupAccountForSelection(
-            this.arAccounts,
-            rst[0]
-          );
+          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
           this.uiAccountStatusFilter = undefined;
           this.uiAccountCtgyFilter = undefined;
           // Orders
@@ -199,16 +171,16 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
           this._activateRoute.url.subscribe((x: any) => {
             if (x instanceof Array && x.length > 0) {
-              if (x[0].path === "createbrwfrm") {
+              if (x[0].path === 'createbrwfrm') {
                 this.curDocType = financeDocTypeBorrowFrom;
-              } else if (x[0].path === "createlendto") {
+              } else if (x[0].path === 'createlendto') {
                 this.curDocType = financeDocTypeLendTo;
               }
 
               if (this.curDocType === financeDocTypeBorrowFrom) {
-                this.documentTitle = "Sys.DocTy.BorrowFrom";
+                this.documentTitle = 'Sys.DocTy.BorrowFrom';
               } else if (this.curDocType === financeDocTypeLendTo) {
-                this.documentTitle = "Sys.DocTy.LendTo";
+                this.documentTitle = 'Sys.DocTy.LendTo';
               }
             }
 
@@ -222,7 +194,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -232,7 +204,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -275,8 +247,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       case 0: {
         if (this.accountExtraLoanCtrl) {
           this.accountExtraLoanCtrl.setLegacyLoanMode(
-            this.firstFormGroup.get("headerControl")?.get("dateControl")
-              ?.value as Date
+            this.firstFormGroup.get('headerControl')?.get('dateControl')?.value as Date
           );
         }
         this.currentStep++;
@@ -297,36 +268,32 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  private _legacyDateValidator: ValidatorFn = (
-    group: AbstractControl
-  ): ValidationErrors | null => {
+  private _legacyDateValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _legacyDateValidator",
+      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _legacyDateValidator',
       ConsoleLogTypeEnum.debug
     );
 
     if (this.isLegacyLoan) {
-      const datBuy: any = group.get("headerControl")?.value.TranDate;
+      const datBuy: any = group.get('headerControl')?.value.TranDate;
       if (!datBuy) {
         return { dateisinvalid: true };
       }
-      if (datBuy.startOf("day").isSameOrAfter(moment().startOf("day"))) {
+      if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
         return { dateisinvalid: true };
       }
     }
 
     return null;
   };
-  private _accountValidator: ValidatorFn = (
-    group: AbstractControl
-  ): ValidationErrors | null => {
+  private _accountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _accountValidator",
+      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _accountValidator',
       ConsoleLogTypeEnum.debug
     );
 
     if (!this.isLegacyLoan) {
-      const acntid: any = group.get("accountControl")?.value;
+      const acntid: any = group.get('accountControl')?.value;
       if (acntid === undefined) {
         return { accountisinvalid: true };
       }
@@ -353,11 +320,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         })
       ) {
         // Show a dialog for error details
-        popupDialog(
-          this.modalService,
-          translate("Common.Error"),
-          docObj.VerifiedMsgs
-        );
+        popupDialog(this.modalService, translate('Common.Error'), docObj.VerifiedMsgs);
         this.isDocPosting = false;
 
         return;
@@ -375,18 +338,10 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
-    acntobj.ExtraInfo = this.extraFormGroup.get("loanAccountControl")
-      ?.value as AccountExtraLoan;
+    acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl')?.value as AccountExtraLoan;
 
     this.odataService
-      .createLoanDocument(
-        docObj,
-        acntobj,
-        this.isLegacyLoan,
-        this.tranAmount,
-        this.controlCenterID,
-        this.orderID
-      )
+      .createLoanDocument(docObj, acntobj, this.isLegacyLoan, this.tranAmount, this.controlCenterID, this.orderID)
       .pipe(
         takeUntil(this._destroyed$!),
         finalize(() => {
@@ -402,7 +357,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           );
 
           this.docIdCreated = nid.Id;
-          this.docPostingFailed = "";
+          this.docPostingFailed = '';
         },
         error: (error: any) => {
           // Show error message
@@ -418,9 +373,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   get isLegacyLoan(): boolean {
-    return (
-      this.firstFormGroup && this.firstFormGroup.get("legacyControl")?.value
-    );
+    return this.firstFormGroup && this.firstFormGroup.get('legacyControl')?.value;
   }
   onIsLegacyChecked(checked: any): void {
     const chked = checked as boolean;
@@ -430,14 +383,14 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     );
 
     if (chked) {
-      this.firstFormGroup.get("accountControl")?.disable();
+      this.firstFormGroup.get('accountControl')?.disable();
     } else {
-      this.firstFormGroup.get("accountControl")?.enable();
+      this.firstFormGroup.get('accountControl')?.enable();
     }
   }
 
   private _generateDocument(): Document {
-    const doc: Document = this.firstFormGroup.get("headerControl")?.value;
+    const doc: Document = this.firstFormGroup.get('headerControl')?.value;
     doc.HID = this.homeService.ChosedHome!.ID;
     doc.DocType = this.curDocType;
     doc.Items = [];
@@ -445,15 +398,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (!this.isLegacyLoan) {
       const fitem: DocumentItem = new DocumentItem();
       fitem.ItemId = 1;
-      fitem.AccountId = this.firstFormGroup.get("accountControl")?.value;
-      fitem.ControlCenterId = this.firstFormGroup.get("ccControl")?.value;
-      fitem.OrderId = this.firstFormGroup.get("orderControl")?.value;
+      fitem.AccountId = this.firstFormGroup.get('accountControl')?.value;
+      fitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
+      fitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
       if (this.curDocType === financeDocTypeLendTo) {
         fitem.TranType = financeTranTypeLendTo;
       } else {
         fitem.TranType = financeTranTypeBorrowFrom;
       }
-      fitem.TranAmount = this.firstFormGroup.get("amountControl")?.value;
+      fitem.TranAmount = this.firstFormGroup.get('amountControl')?.value;
       fitem.Desp = doc.Desp;
       doc.Items.push(fitem);
     }
@@ -462,22 +415,18 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   private _updateConfirmInfo() {
-    const doc: Document = this.firstFormGroup.get("headerControl")?.value;
+    const doc: Document = this.firstFormGroup.get('headerControl')?.value;
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;
-    this.confirmInfo.tranAmount =
-      this.firstFormGroup.get("amountControl")?.value;
-    this.confirmInfo.controlCenterID =
-      this.firstFormGroup.get("ccControl")?.value;
-    this.confirmInfo.orderID = this.firstFormGroup.get("orderControl")?.value;
+    this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl')?.value;
+    this.confirmInfo.controlCenterID = this.firstFormGroup.get('ccControl')?.value;
+    this.confirmInfo.orderID = this.firstFormGroup.get('orderControl')?.value;
   }
 
   public onDisplayCreatedDoc(): void {
     if (this.docIdCreated) {
-      this._router.navigate([
-        "/finance/document/display/" + this.docIdCreated.toString(),
-      ]);
+      this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
     }
   }
   public onCreateAnotherDoc(): void {}

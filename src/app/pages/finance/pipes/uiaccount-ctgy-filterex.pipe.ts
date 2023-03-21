@@ -1,17 +1,11 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import {
-  UIAccountForSelection,
-  IAccountCategoryFilterEx,
-} from "../../../model";
+import { Pipe, PipeTransform } from '@angular/core';
+import { UIAccountForSelection, IAccountCategoryFilterEx } from '../../../model';
 
 @Pipe({
-  name: "uiAccountCtgyFilterEx",
+  name: 'uiAccountCtgyFilterEx',
 })
 export class UIAccountCtgyFilterExPipe implements PipeTransform {
-  transform(
-    allAccounts: UIAccountForSelection[],
-    args?: IAccountCategoryFilterEx
-  ): UIAccountForSelection[] {
+  transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilterEx): UIAccountForSelection[] {
     return allAccounts
       ? allAccounts.filter((value: UIAccountForSelection) => {
           if (args !== undefined) {

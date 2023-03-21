@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -6,13 +6,13 @@ import {
   ValidationErrors,
   ValidatorFn,
   AbstractControl,
-} from "@angular/forms";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { translate } from "@ngneat/transloco";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { UIMode, isUIEditable } from "actslib";
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate } from '@ngneat/transloco';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { UIMode, isUIEditable } from 'actslib';
 
 import {
   financeDocTypeTransfer,
@@ -32,19 +32,15 @@ import {
   BuildupOrderForSelection,
   financeTranTypeTransferOut,
   financeTranTypeTransferIn,
-} from "../../../../model";
-import { costObjectValidator } from "../../../../uimodel";
-import {
-  HomeDefOdataService,
-  UIStatusService,
-  FinanceOdataService,
-} from "../../../../services";
-import { popupDialog } from "../../../message-dialog";
+} from '../../../../model';
+import { costObjectValidator } from '../../../../uimodel';
+import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 
 @Component({
-  selector: "hih-document-transfer-create",
-  templateUrl: "./document-transfer-create.component.html",
-  styleUrls: ["./document-transfer-create.component.less"],
+  selector: 'hih-document-transfer-create',
+  templateUrl: './document-transfer-create.component.html',
+  styleUrls: ['./document-transfer-create.component.less'],
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -60,7 +56,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arUIAccounts: UIAccountForSelection[] = [];
   public arOrders: Order[] = [];
-  public baseCurrency = "";
+  public baseCurrency = '';
   public currentStep = 0;
   // public docCreateSucceed = false;
   public docIdCreated?: number;
@@ -83,21 +79,16 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     public router: Router
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
     this.headerFormGroup = new UntypedFormGroup({
-      headerControl: new UntypedFormControl(new Document(), [
-        Validators.required,
-      ]),
-      amountControl: new UntypedFormControl(0, [
-        Validators.required,
-        Validators.min(0.01),
-      ]),
+      headerControl: new UntypedFormControl(new Document(), [Validators.required]),
+      amountControl: new UntypedFormControl(0, [Validators.required, Validators.min(0.01)]),
     });
     this.fromFormGroup = new UntypedFormGroup(
       {
-        accountControl: new UntypedFormControl("", [Validators.required]),
+        accountControl: new UntypedFormControl('', [Validators.required]),
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
@@ -105,7 +96,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     );
     this.toFormGroup = new UntypedFormGroup(
       {
-        accountControl: new UntypedFormControl("", [Validators.required]),
+        accountControl: new UntypedFormControl('', [Validators.required]),
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
@@ -127,7 +118,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -171,7 +162,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -181,7 +172,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -193,7 +184,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave...",
+      'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -212,11 +203,11 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       })
     ) {
       ModelUtility.writeConsoleLog(
-        "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave, onVerify failed...",
+        'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave, onVerify failed...',
         ConsoleLogTypeEnum.debug
       );
 
-      popupDialog(this.modalService, "Common.Error", detailObject.VerifiedMsgs);
+      popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
       this.isDocPosting = false;
 
       return;
@@ -235,7 +226,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (doc) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...",
+            'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...',
             ConsoleLogTypeEnum.debug
           );
           this.docIdCreated = doc.Id;
@@ -283,9 +274,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     }
   }
   public onDisplayCreatedDoc(): void {
-    this.router.navigate([
-      "/finance/document/display/" + this.docIdCreated?.toString(),
-    ]);
+    this.router.navigate(['/finance/document/display/' + this.docIdCreated?.toString()]);
   }
 
   private _updateConfirmInfo(): void {
@@ -310,45 +299,41 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     });
   }
   private _generateDocObject(): Document {
-    const detailObject: Document = this.headerFormGroup.get("headerControl")
-      ?.value as Document;
+    const detailObject: Document = this.headerFormGroup.get('headerControl')?.value as Document;
     detailObject.HID = this.homeService.ChosedHome!.ID;
     detailObject.DocType = this.curDocType;
     detailObject.Items = [];
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;
-    docitem.AccountId = this.fromFormGroup.get("accountControl")?.value;
-    docitem.ControlCenterId = this.fromFormGroup.get("ccControl")?.value;
-    docitem.OrderId = this.fromFormGroup.get("orderControl")?.value;
+    docitem.AccountId = this.fromFormGroup.get('accountControl')?.value;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl')?.value;
+    docitem.OrderId = this.fromFormGroup.get('orderControl')?.value;
     docitem.TranType = financeTranTypeTransferOut;
-    docitem.TranAmount = this.headerFormGroup.get("amountControl")?.value;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
     docitem.Desp = detailObject.Desp;
     detailObject.Items.push(docitem);
 
     docitem = new DocumentItem();
     docitem.ItemId = 2;
-    docitem.AccountId = this.toFormGroup.get("accountControl")?.value;
+    docitem.AccountId = this.toFormGroup.get('accountControl')?.value;
     docitem.TranType = financeTranTypeTransferIn;
-    docitem.ControlCenterId = this.toFormGroup.get("ccControl")?.value;
-    docitem.OrderId = this.toFormGroup.get("orderControl")?.value;
-    docitem.TranAmount = this.headerFormGroup.get("amountControl")?.value;
+    docitem.ControlCenterId = this.toFormGroup.get('ccControl')?.value;
+    docitem.OrderId = this.toFormGroup.get('orderControl')?.value;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl')?.value;
     docitem.Desp = detailObject.Desp;
     detailObject.Items.push(docitem);
 
     return detailObject;
   }
-  private _duplicateAccountValidator: ValidatorFn = (
-    group: AbstractControl
-  ): ValidationErrors | null => {
+  private _duplicateAccountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent _duplicateAccountValidator`,
       ConsoleLogTypeEnum.debug
     );
 
-    const account: any = group.get("accountControl")?.value;
-    const fromAccount: any =
-      this.fromFormGroup && this.fromFormGroup.get("accountControl")?.value;
+    const account: any = group.get('accountControl')?.value;
+    const fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl')?.value;
     if (account && fromAccount && account === fromAccount) {
       return { duplicatedccount: true };
     }

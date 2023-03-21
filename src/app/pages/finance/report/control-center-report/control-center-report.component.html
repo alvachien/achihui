@@ -1,28 +1,18 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{
-        "Common.Overview" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
     >
     <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{
-        "Finance.Reports" | transloco
-      }}</a></nz-breadcrumb-item
+      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
     >
-    <nz-breadcrumb-item>{{
-      "Finance.ControlCenter" | transloco
-    }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'Finance.ControlCenter' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
-  <nz-page-header-title>{{
-    "Finance.Reports" | transloco
-  }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{
-    "Finance.ControlCenter" | transloco
-  }}</nz-page-header-subtitle>
+  <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
+  <nz-page-header-subtitle>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button (click)="onLoadData(true)">
-      {{ "Common.Refresh" | transloco }}
+      {{ 'Common.Refresh' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
@@ -32,10 +22,10 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{ "Common.Name" | transloco }}</th>
-        <th>{{ "Finance.In" | transloco }}</th>
-        <th>{{ "Finance.Out" | transloco }}</th>
-        <th>{{ "Finance.Balance" | transloco }}</th>
+        <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Finance.In' | transloco }}</th>
+        <th>{{ 'Finance.Out' | transloco }}</th>
+        <th>{{ 'Finance.Balance' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
@@ -43,43 +33,24 @@
         <td>
           {{ data.ControlCenterId }}
           <nz-divider nzType="vertical"></nz-divider>
-          <button
-            nz-button
-            nzType="link"
-            (click)="onDisplayMasterData(data.ControlCenterId)"
-          >
-            {{ "Common.Display" | transloco }}
+          <button nz-button nzType="link" (click)="onDisplayMasterData(data.ControlCenterId)">
+            {{ 'Common.Display' | transloco }}
           </button>
         </td>
         <td>{{ data.ControlCenterName }}</td>
         <td>
-          <button
-            nz-button
-            nzType="link"
-            (click)="onDisplayDebitData(data.ControlCenterId)"
-          >
-            {{ data.DebitBalance | number : "1.2-2"
-            }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+          <button nz-button nzType="link" (click)="onDisplayDebitData(data.ControlCenterId)">
+            {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
           </button>
         </td>
         <td>
-          <button
-            nz-button
-            nzType="link"
-            (click)="onDisplayCreditData(data.ControlCenterId)"
-          >
-            {{ data.CreditBalance | number : "1.2-2"
-            }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+          <button nz-button nzType="link" (click)="onDisplayCreditData(data.ControlCenterId)">
+            {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
           </button>
         </td>
         <td>
-          <button
-            nz-button
-            nzType="link"
-            (click)="onDisplayBalanceData(data.ControlCenterId)"
-          >
-            {{ data.Balance | number : "1.2-2"
-            }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+          <button nz-button nzType="link" (click)="onDisplayBalanceData(data.ControlCenterId)">
+            {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
           </button>
         </td>
       </tr>

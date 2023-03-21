@@ -1,1 +1,1 @@
-export * from "./document-loan-create.component";
+export * from './document-loan-create.component';

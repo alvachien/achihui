@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { NzTableQueryParams } from "ng-zorro-antd/table";
-import { translate } from "@ngneat/transloco";
-import { ReplaySubject, forkJoin } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { translate } from '@ngneat/transloco';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-import { FinanceOdataService, UIStatusService } from "../../../services";
+import { FinanceOdataService, UIStatusService } from '../../../services';
 import {
   Account,
   ModelUtility,
@@ -16,12 +16,12 @@ import {
   TranType,
   ControlCenter,
   Order,
-} from "../../../model";
+} from '../../../model';
 
 @Component({
-  selector: "hih-fin-document-item-view",
-  templateUrl: "./document-item-view.component.html",
-  styleUrls: ["./document-item-view.component.less"],
+  selector: 'hih-fin-document-item-view',
+  templateUrl: './document-item-view.component.html',
+  styleUrls: ['./document-item-view.component.less'],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -31,7 +31,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   set filterDocItem(flters: GeneralFilterItem[]) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent filterDocItem setter: ${
-        flters ? "NOT NULL and length is " + flters.length : "NULL"
+        flters ? 'NOT NULL and length is ' + flters.length : 'NULL'
       }`,
       ConsoleLogTypeEnum.debug
     );
@@ -59,16 +59,12 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   incomeAmount = 0;
   outgoAmount = 0;
-  incomeCurrency = "";
-  outgoCurrency = "";
+  incomeCurrency = '';
+  outgoCurrency = '';
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  constructor(private odataService: FinanceOdataService, private modalService: NzModalService, private router: Router) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
     if (this._destroyed$ === null) {
@@ -78,7 +74,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -89,7 +85,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -103,31 +99,31 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     const acntObj = this.arAccounts.find((acnt) => {
       return acnt.Id === acntid;
     });
-    return acntObj && acntObj.Name ? acntObj.Name : "";
+    return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
     const ccObj = this.arControlCenters.find((cc) => {
       return cc.Id === ccid;
     });
-    return ccObj ? ccObj.Name : "";
+    return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
     const orderObj = this.arOrders.find((ord) => {
       return ord.Id === ordid;
     });
-    return orderObj ? orderObj.Name : "";
+    return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
     const tranTypeObj = this.arTranType.find((tt) => {
       return tt.Id === ttid;
     });
 
-    return tranTypeObj ? tranTypeObj.Name : "";
+    return tranTypeObj ? tranTypeObj.Name : '';
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -138,39 +134,39 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       const currentSort = sort.find((item) => item.value !== null);
       const sortField = (currentSort && currentSort.key) || null;
       const sortOrder = (currentSort && currentSort.value) || null;
-      let fieldName = "";
+      let fieldName = '';
       switch (sortField) {
-        case "desp":
-          fieldName = "ItemDesp";
+        case 'desp':
+          fieldName = 'ItemDesp';
           break;
-        case "date":
-          fieldName = "TransactionDate";
+        case 'date':
+          fieldName = 'TransactionDate';
           break;
-        case "trantype":
-          fieldName = "TransactionType";
+        case 'trantype':
+          fieldName = 'TransactionType';
           break;
-        case "amount":
-          fieldName = "Amount";
+        case 'amount':
+          fieldName = 'Amount';
           break;
-        case "account":
-          fieldName = "AccountID";
+        case 'account':
+          fieldName = 'AccountID';
           break;
-        case "controlcenter":
-          fieldName = "ControlCenterID";
+        case 'controlcenter':
+          fieldName = 'ControlCenterID';
           break;
-        case "order":
-          fieldName = "OrderID";
+        case 'order':
+          fieldName = 'OrderID';
           break;
         default:
           break;
       }
-      let fieldOrder = "";
+      let fieldOrder = '';
       switch (sortOrder) {
-        case "ascend":
-          fieldOrder = "asc";
+        case 'ascend':
+          fieldOrder = 'asc';
           break;
-        case "descend":
-          fieldOrder = "desc";
+        case 'descend':
+          fieldOrder = 'desc';
           break;
         default:
           break;
@@ -187,7 +183,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   }
   fetchDocItems(orderby?: { field: string; order: string }): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...",
+      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -226,8 +222,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           this.listDocItem = [];
           this.incomeAmount = 0;
           this.outgoAmount = 0;
-          this.incomeCurrency = "";
-          this.outgoCurrency = "";
+          this.incomeCurrency = '';
+          this.outgoCurrency = '';
           if (revdata[0]) {
             if (revdata[0].totalCount) {
               this.totalDocumentItemCount = +revdata[0].totalCount;
@@ -238,7 +234,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
             this.listDocItem = revdata[0].contentList;
             this.listDocItem.forEach((eachitem) => {
               if (eachitem.Amount < 0) {
-                if (this.outgoCurrency === "") {
+                if (this.outgoCurrency === '') {
                   this.outgoCurrency = eachitem.Currency;
                   this.outgoAmount += eachitem.Amount;
                 } else {
@@ -247,7 +243,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
                   }
                 }
               } else {
-                if (this.incomeCurrency === "") {
+                if (this.incomeCurrency === '') {
                   this.incomeCurrency = eachitem.Currency;
                   this.incomeAmount += eachitem.Amount;
                 } else {
@@ -269,7 +265,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: error.toString(),
             nzClosable: true,
           });
@@ -277,6 +273,6 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       });
   }
   public onDisplayDocument(docid: number) {
-    this.router.navigate(["/finance/document/display/" + docid.toString()]);
+    this.router.navigate(['/finance/document/display/' + docid.toString()]);
   }
 }

@@ -1,1 +1,1 @@
-export * from "./account-hierarchy.component";
+export * from './account-hierarchy.component';

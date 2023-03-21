@@ -1,1 +1,1 @@
-export * from "./person-role-list.component";
+export * from './person-role-list.component';

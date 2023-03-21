@@ -2,28 +2,24 @@
   <nz-page-header nzBackIcon [nzTitle]="'Finance.Currency' | transloco">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{
-          "Common.Overview" | transloco
-        }}</a></nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
       >
-      <nz-breadcrumb-item>{{
-        "Finance.Currencies" | transloco
-      }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'Finance.Currencies' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-content>
       <div class="wrap">
         <div class="content">
           <div class="content">
             <p nz-paragraph>
-              {{ "Finance.Currencies" | transloco }}
+              {{ 'Finance.Currencies' | transloco }}
             </p>
             <div>
               <nz-table #basicTable [nzData]="dataSource">
                 <thead>
                   <tr>
-                    <th>{{ "Finance.Currency" | transloco }}</th>
-                    <th>{{ "Common.Name" | transloco }}</th>
-                    <th>{{ "Finance.CurrencySymbol" | transloco }}</th>
+                    <th>{{ 'Finance.Currency' | transloco }}</th>
+                    <th>{{ 'Common.Name' | transloco }}</th>
+                    <th>{{ 'Finance.CurrencySymbol' | transloco }}</th>
                   </tr>
                 </thead>
                 <tbody>

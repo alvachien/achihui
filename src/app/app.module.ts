@@ -1,35 +1,27 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { LOCALE_ID, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { registerLocaleData } from "@angular/common";
-import en from "@angular/common/locales/en";
-import zh from "@angular/common/locales/zh";
-import {
-  TranslocoModule,
-  translocoConfig,
-  TRANSLOCO_CONFIG,
-} from "@ngneat/transloco";
-import { NzLayoutModule } from "ng-zorro-antd/layout";
-import { NzMenuModule } from "ng-zorro-antd/menu";
-import { NzIconModule } from "ng-zorro-antd/icon";
-import { NzInputModule } from "ng-zorro-antd/input";
-import { NzDropDownModule } from "ng-zorro-antd/dropdown";
-import { NzTableModule } from "ng-zorro-antd/table";
-import {
-  NzModalConfirmContainerComponent,
-  NzModalModule,
-  NzModalService,
-} from "ng-zorro-antd/modal";
-import { en_US, zh_CN, NZ_I18N } from "ng-zorro-antd/i18n";
-import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
-import { NgxEchartsModule } from "ngx-echarts";
-import * as echarts from "echarts";
+import { BrowserModule } from '@angular/platform-browser';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+import zh from '@angular/common/locales/zh';
+import { TranslocoModule, translocoConfig, TRANSLOCO_CONFIG } from '@ngneat/transloco';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { en_US, zh_CN, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { IconsProviderModule } from "./icons-provider.module";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { IconsProviderModule } from './icons-provider.module';
 import {
   AuthService,
   AuthGuardService,
@@ -41,12 +33,12 @@ import {
   FinanceOdataService,
   HomeDefOdataService,
   LanguageOdataService,
-} from "./services";
-import { environment } from "../environments/environment";
-import { translocoLoader } from "./transloco-loader";
-import { MessageDialogComponent } from "./pages/message-dialog";
-import { AppInitializerProvider } from "./app-initializer.service";
-import { AuthConfigModule } from "./auth/auth-config.module";
+} from './services';
+import { environment } from '../environments/environment';
+import { translocoLoader } from './transloco-loader';
+import { MessageDialogComponent } from './pages/message-dialog';
+import { AppInitializerProvider } from './app-initializer.service';
+import { AuthConfigModule } from './auth/auth-config.module';
 
 registerLocaleData(zh);
 registerLocaleData(en);
@@ -93,10 +85,10 @@ registerLocaleData(en);
       provide: NZ_I18N,
       useFactory: (localId: string) => {
         switch (localId) {
-          case "en":
+          case 'en':
             return en_US;
           /** 与 angular.json i18n/locales 配置一致 **/
-          case "zh":
+          case 'zh':
             return zh_CN;
           default:
             return en_US;
@@ -117,10 +109,8 @@ registerLocaleData(en);
     {
       provide: TRANSLOCO_CONFIG,
       useValue: translocoConfig({
-        availableLangs: ["en", "zh"],
-        defaultLang: environment.DefaultLanguage
-          ? environment.DefaultLanguage
-          : "en",
+        availableLangs: ['en', 'zh'],
+        defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
         reRenderOnLangChange: true,
         prodMode: environment.production,
       }),

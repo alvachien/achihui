@@ -1,16 +1,16 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { ReplaySubject } from "rxjs";
-import { takeUntil, finalize } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from "src/app/model";
-import { LibraryStorageService, UIStatusService } from "src/app/services";
+import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from 'src/app/model';
+import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: "hih-person-role-list",
-  templateUrl: "./person-role-list.component.html",
-  styleUrls: ["./person-role-list.component.less"],
+  selector: 'hih-person-role-list',
+  templateUrl: './person-role-list.component.html',
+  styleUrls: ['./person-role-list.component.less'],
 })
 export class PersonRoleListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -23,7 +23,7 @@ export class PersonRoleListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonRoleListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering PersonRoleListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -32,7 +32,7 @@ export class PersonRoleListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnInit...",
+      'AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
@@ -47,20 +47,20 @@ export class PersonRoleListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (x: PersonRole[]) => {
           ModelUtility.writeConsoleLog(
-            "AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnInit fetchAllPersonRoles...",
+            'AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnInit fetchAllPersonRoles...',
             ConsoleLogTypeEnum.debug
           );
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering PersonRoleListComponent fetchAllPersonRoles failed ${error}`,
+            `AC_HIH_UI [Error]: Entering PersonRoleListComponent fetchAllPersonRoles failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
-            nzContent: error.toString(),
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -69,7 +69,7 @@ export class PersonRoleListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnDestroy...",
+      'AC_HIH_UI [Debug]: Entering PersonRoleListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 

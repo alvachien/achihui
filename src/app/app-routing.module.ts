@@ -1,104 +1,78 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
-import {
-  AuthGuardService,
-  HomeChoseGuardService,
-  CanDeactivateGuardService,
-} from "./services";
+import { AuthGuardService, HomeChoseGuardService, CanDeactivateGuardService } from './services';
 
 const routes: Routes = [
-  { path: "", pathMatch: "full", redirectTo: "/welcome" },
+  { path: '', pathMatch: 'full', redirectTo: '/welcome' },
   {
-    path: "welcome",
-    loadChildren: () =>
-      import("./pages/welcome/welcome.module").then((m) => m.WelcomeModule),
+    path: 'welcome',
+    loadChildren: () => import('./pages/welcome/welcome.module').then((m) => m.WelcomeModule),
   },
   {
-    path: "about",
-    loadChildren: () =>
-      import("./pages/about/about.module").then((m) => m.AboutModule),
+    path: 'about',
+    loadChildren: () => import('./pages/about/about.module').then((m) => m.AboutModule),
   },
   {
-    path: "version",
-    loadChildren: () =>
-      import("./pages/version/version.module").then((m) => m.VersionModule),
+    path: 'version',
+    loadChildren: () => import('./pages/version/version.module').then((m) => m.VersionModule),
   },
   {
-    path: "credits",
-    loadChildren: () =>
-      import("./pages/credits/credits.module").then((m) => m.CreditsModule),
+    path: 'credits',
+    loadChildren: () => import('./pages/credits/credits.module').then((m) => m.CreditsModule),
   },
   {
-    path: "languages",
-    loadChildren: () =>
-      import("./pages/language/language.module").then((m) => m.LanguageModule),
+    path: 'languages',
+    loadChildren: () => import('./pages/language/language.module').then((m) => m.LanguageModule),
   },
   {
-    path: "userdetail",
-    loadChildren: () =>
-      import("./pages/user-detail/user-detail.module").then(
-        (m) => m.UserDetailModule
-      ),
+    path: 'userdetail',
+    loadChildren: () => import('./pages/user-detail/user-detail.module').then((m) => m.UserDetailModule),
   },
 
   {
-    path: "homedef",
+    path: 'homedef',
     canActivate: [AuthGuardService],
-    loadChildren: () =>
-      import("./pages/home-def/home-def.module").then((m) => m.HomeDefModule),
+    loadChildren: () => import('./pages/home-def/home-def.module').then((m) => m.HomeDefModule),
   },
 
   {
-    path: "finance",
+    path: 'finance',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () =>
-      import("./pages/finance/finance.module").then((m) => m.FinanceModule),
+    loadChildren: () => import('./pages/finance/finance.module').then((m) => m.FinanceModule),
   },
 
   {
-    path: "library",
+    path: 'library',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () =>
-      import("./pages/library/library.module").then((m) => m.LibraryModule),
+    loadChildren: () => import('./pages/library/library.module').then((m) => m.LibraryModule),
   },
 
   {
-    path: "event",
+    path: 'event',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () =>
-      import("./pages/event/event.module").then((m) => m.EventModule),
+    loadChildren: () => import('./pages/event/event.module').then((m) => m.EventModule),
   },
 
   {
-    path: "blog",
+    path: 'blog',
     canActivate: [AuthGuardService],
-    loadChildren: () =>
-      import("./pages/blog/blog.module").then((m) => m.BlogModule),
+    loadChildren: () => import('./pages/blog/blog.module').then((m) => m.BlogModule),
   },
 
   {
-    path: "fatalerror",
-    loadChildren: () =>
-      import("./pages/fatal-error/fatal-error.module").then(
-        (m) => m.FatalErrorModule
-      ),
+    path: 'fatalerror',
+    loadChildren: () => import('./pages/fatal-error/fatal-error.module').then((m) => m.FatalErrorModule),
   },
 
   {
-    path: "lackauthority",
-    loadChildren: () =>
-      import("./pages/lack-authority/lack-authority.module").then(
-        (m) => m.LackAuthorityModule
-      ),
+    path: 'lackauthority',
+    loadChildren: () => import('./pages/lack-authority/lack-authority.module').then((m) => m.LackAuthorityModule),
   },
 
   {
-    path: "**",
-    loadChildren: () =>
-      import("./pages/not-found/not-found.module").then(
-        (m) => m.NotFoundModule
-      ),
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then((m) => m.NotFoundModule),
   },
 ];
 

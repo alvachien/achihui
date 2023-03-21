@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { translate } from "@ngneat/transloco";
-import * as moment from "moment";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { finalize, forkJoin, ReplaySubject, takeUntil } from "rxjs";
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { translate } from '@ngneat/transloco';
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { finalize, forkJoin, ReplaySubject, takeUntil } from 'rxjs';
 
 import {
   Account,
@@ -14,8 +14,8 @@ import {
   ModelUtility,
   momentDateFormat,
   UIAccountForSelection,
-} from "src/app/model";
-import { FinanceOdataService, HomeDefOdataService } from "src/app/services";
+} from 'src/app/model';
+import { FinanceOdataService, HomeDefOdataService } from 'src/app/services';
 
 interface FastInputExpectedResult {
   Month: string;
@@ -23,13 +23,11 @@ interface FastInputExpectedResult {
 }
 
 @Component({
-  selector: "hih-reconcile-by-month",
-  templateUrl: "./reconcile-by-month.component.html",
-  styleUrls: ["./reconcile-by-month.component.less"],
+  selector: 'hih-reconcile-by-month',
+  templateUrl: './reconcile-by-month.component.html',
+  styleUrls: ['./reconcile-by-month.component.less'],
 })
-export class ReconcileByMonthComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestroy {
   currentStep = 0;
   processing = false;
   public baseCurrency: string;
@@ -39,7 +37,7 @@ export class ReconcileByMonthComponent
   public arUIAccounts: UIAccountForSelection[] = [];
   selectedAccountId?: number;
   // Step 1. Expect result
-  fastInputResult = "";
+  fastInputResult = '';
   isFastInputDlgVisible = false;
   listExpectResult: AccountReconcileExpect[] = [];
   fastInputSyntax = `[{"Month": month, "Amount": amount }]`;
@@ -77,16 +75,13 @@ export class ReconcileByMonthComponent
   }
 
   done(): void {
-    this.router.navigate(["/finance/document"]);
+    this.router.navigate(['/finance/document']);
   }
 
   ngOnInit(): void {
     this._destroyed$ = new ReplaySubject(1);
 
-    forkJoin([
-      this.odataService.fetchAllAccountCategories(),
-      this.odataService.fetchAllAccounts(),
-    ])
+    forkJoin([this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts()])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: (rst) => {
@@ -100,7 +95,7 @@ export class ReconcileByMonthComponent
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });
@@ -109,13 +104,13 @@ export class ReconcileByMonthComponent
   }
   ngAfterViewInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit...",
+      'AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit...',
       ConsoleLogTypeEnum.debug
     );
     this.activateRoute.url.subscribe({
       next: (x: any) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === "bymonth") {
+          if (x[0].path === 'bymonth') {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit, set selected account ${x[1].path}...`,
               ConsoleLogTypeEnum.debug
@@ -128,7 +123,7 @@ export class ReconcileByMonthComponent
   }
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -144,14 +139,12 @@ export class ReconcileByMonthComponent
   // Step 1. Expect result
   handleFastInputModalSubmit() {
     // Parse the format and insert into table
-    const results = JSON.parse(
-      this.fastInputResult
-    ) as FastInputExpectedResult[];
+    const results = JSON.parse(this.fastInputResult) as FastInputExpectedResult[];
     if (results) {
       const results2: AccountReconcileExpect[] = results.map((origin) => {
         const rst = new AccountReconcileExpect();
-        rst.currentMonth = moment(origin.Month + "-01")
-          .endOf("M")
+        rst.currentMonth = moment(origin.Month + '-01')
+          .endOf('M')
           .toDate();
         rst.expectedAmount = origin.Amount;
         return rst;
@@ -168,10 +161,7 @@ export class ReconcileByMonthComponent
     this.isFastInputDlgVisible = true;
   }
   onAddExpectResultRow() {
-    this.listExpectResult = [
-      ...this.listExpectResult,
-      new AccountReconcileExpect(),
-    ];
+    this.listExpectResult = [...this.listExpectResult, new AccountReconcileExpect()];
   }
   onDeleteRow(row: any) {
     let ridx = -1;
@@ -190,9 +180,7 @@ export class ReconcileByMonthComponent
   // Step 2. Compare the result
   fetchAccountBalanceInfo() {
     if (this.needFetchAccountBalanceInfo()) {
-      const ardates: string[] = this.listExpectResult.map(
-        (val) => val.currentMonthStr
-      );
+      const ardates: string[] = this.listExpectResult.map((val) => val.currentMonthStr);
       this.processing = true;
       this.odataService
         .fetchAccountBalanceEx(this.selectedAccountId!, ardates)
@@ -211,9 +199,7 @@ export class ReconcileByMonthComponent
               cmprst.expectedAmount = rst.expectedAmount;
               cmprst.actualAmount = 0;
 
-              const actrst = val.find(
-                (p) => p.currentMonth === rst.currentMonthStr
-              );
+              const actrst = val.find((p) => p.currentMonth === rst.currentMonthStr);
               cmprst.actualAmount = actrst ? actrst.actualAmount : 0;
               this.compareResult.push(cmprst);
 
@@ -238,17 +224,12 @@ export class ReconcileByMonthComponent
     if (this.prvSentInfo.SelectedAccount !== this.selectedAccountId) {
       return true;
     }
-    if (
-      this.prvSentInfo.inputtedExpectResult.length !==
-      this.listExpectResult.length
-    ) {
+    if (this.prvSentInfo.inputtedExpectResult.length !== this.listExpectResult.length) {
       return true;
     }
     let bdifffound = false;
     this.listExpectResult.forEach((er) => {
-      const prvexp = this.prvSentInfo?.inputtedExpectResult.find(
-        (p) => p.currentMonth === er.currentMonth
-      );
+      const prvexp = this.prvSentInfo?.inputtedExpectResult.find((p) => p.currentMonth === er.currentMonth);
       if (prvexp === undefined) {
         bdifffound = true;
       } else {

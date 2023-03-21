@@ -1,13 +1,8 @@
-import { Injectable } from "@angular/core";
-import {
-  HttpParams,
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from "@angular/common/http";
-import { Observable, of, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { environment } from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 import {
   BookCategory,
@@ -21,12 +16,12 @@ import {
   Location,
   BookBorrowRecord,
   BaseListModel,
-} from "../model";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
+} from '../model';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class LibraryStorageService {
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -71,26 +66,17 @@ export class LibraryStorageService {
   //   return this.listMovieChange.value;
   // }
 
-  readonly personRoleAPIURL: any = environment.ApiUrl + "/LibraryPersonRoles";
-  readonly orgTypeAPIURL: any =
-    environment.ApiUrl + "/LibraryOrganizationTypes";
-  readonly bookCategoryAPIURL: any =
-    environment.ApiUrl + "/LibraryBookCategories";
-  readonly personAPIURL: any = environment.ApiUrl + "/LibraryPersons";
-  readonly organizationAPIURL: any =
-    environment.ApiUrl + "/LibraryOrganizations";
-  readonly bookAPIURL: any = environment.ApiUrl + "/LibraryBooks";
+  readonly personRoleAPIURL: any = environment.ApiUrl + '/LibraryPersonRoles';
+  readonly orgTypeAPIURL: any = environment.ApiUrl + '/LibraryOrganizationTypes';
+  readonly bookCategoryAPIURL: any = environment.ApiUrl + '/LibraryBookCategories';
+  readonly personAPIURL: any = environment.ApiUrl + '/LibraryPersons';
+  readonly organizationAPIURL: any = environment.ApiUrl + '/LibraryOrganizations';
+  readonly bookAPIURL: any = environment.ApiUrl + '/LibraryBooks';
   // readonly movieGenreAPIURL: any = environment.ApiUrl + '/LibMovieGenre';
-  readonly locationAPIURL: string =
-    environment.ApiUrl + "/LibraryBookLocations";
-  readonly bookBorrowRecordAPIURL: string =
-    environment.ApiUrl + "/LibraryBookBorrowRecords";
+  readonly locationAPIURL: string = environment.ApiUrl + '/LibraryBookLocations';
+  readonly bookBorrowRecordAPIURL: string = environment.ApiUrl + '/LibraryBookBorrowRecords';
 
-  constructor(
-    private _http: HttpClient,
-    private _authService: AuthService,
-    private _homeService: HomeDefOdataService
-  ) {
+  constructor(private _http: HttpClient, private _authService: AuthService, private _homeService: HomeDefOdataService) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`,
       ConsoleLogTypeEnum.debug
@@ -117,19 +103,13 @@ export class LibraryStorageService {
     if (!this._isPersonRoleLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
       return this._http
         .get(this.personRoleAPIURL, {
           headers: headers,
@@ -145,11 +125,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listPersonRole = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: PersonRole = new PersonRole();
                 rst.onSetData(si);
@@ -170,12 +146,7 @@ export class LibraryStorageService {
             this._isPersonRoleLoaded = false;
             this._listPersonRole = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -186,25 +157,17 @@ export class LibraryStorageService {
   ///
   /// Organization types
   ///
-  public fetchAllOrganizationTypes(
-    forceReload?: boolean
-  ): Observable<OrganizationType[]> {
+  public fetchAllOrganizationTypes(forceReload?: boolean): Observable<OrganizationType[]> {
     if (!this._isOrganizationTypeLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
       return this._http
         .get(this.orgTypeAPIURL, {
           headers: headers,
@@ -220,11 +183,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listOrganizationType = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: OrganizationType = new OrganizationType();
                 rst.onSetData(si);
@@ -245,12 +204,7 @@ export class LibraryStorageService {
             this._isOrganizationTypeLoaded = false;
             this._listOrganizationType = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -259,25 +213,17 @@ export class LibraryStorageService {
   }
 
   // Book Categories
-  public fetchAllBookCategories(
-    forceReload?: boolean
-  ): Observable<BookCategory[]> {
+  public fetchAllBookCategories(forceReload?: boolean): Observable<BookCategory[]> {
     if (!this._isBookCtgyListLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
       return this._http
         .get(this.bookCategoryAPIURL, {
           headers: headers,
@@ -293,11 +239,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listBookCategories = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: BookCategory = new BookCategory();
                 rst.onSetData(si);
@@ -325,12 +267,7 @@ export class LibraryStorageService {
             this._isBookCtgyListLoaded = false;
             this._listBookCategories = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -343,19 +280,13 @@ export class LibraryStorageService {
     if (!this._isPersonLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
       return this._http
         .get(this.personAPIURL, {
           headers: headers,
@@ -371,11 +302,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listPerson = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Person = new Person();
                 rst.onSetData(si);
@@ -396,12 +323,7 @@ export class LibraryStorageService {
             this._isPersonLoaded = false;
             this._listPerson = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -411,19 +333,13 @@ export class LibraryStorageService {
   public readPerson(pid: number): Observable<Person> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$filter",
-      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`
-    );
-    params = params.append("$expand", `Roles`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`);
+    params = params.append('$expand', `Roles`);
 
     return this._http
       .get(this.personAPIURL, {
@@ -451,24 +367,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public createPerson(objtbc: Person): Observable<Person> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -495,24 +403,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deletePerson(pid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http
       .delete(`${this.personAPIURL}/${pid}`, {
@@ -538,36 +438,23 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
 
   // Organization
-  public fetchAllOrganizations(
-    forceReload?: boolean
-  ): Observable<Organization[]> {
+  public fetchAllOrganizations(forceReload?: boolean): Observable<Organization[]> {
     if (!this._isOrganizationLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
       return this._http
         .get(this.organizationAPIURL, {
           headers: headers,
@@ -583,11 +470,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listOrganization = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Organization = new Organization();
                 rst.onSetData(si);
@@ -608,12 +491,7 @@ export class LibraryStorageService {
             this._isPersonLoaded = false;
             this._listOrganization = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -623,19 +501,13 @@ export class LibraryStorageService {
   public readOrganization(pid: number): Observable<Organization> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$filter",
-      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`
-    );
-    params = params.append("$expand", `Types`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`);
+    params = params.append('$expand', `Types`);
 
     return this._http
       .get(this.organizationAPIURL, {
@@ -663,24 +535,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public createOrganization(objtbc: Organization): Observable<Organization> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -707,24 +571,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deleteOrganization(pid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http
       .delete(`${this.organizationAPIURL}/${pid}`, {
@@ -750,12 +606,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -765,19 +616,13 @@ export class LibraryStorageService {
     if (!this._isLocationListLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
-        .append("Content-Type", "application/json")
-        .append("Accept", "application/json")
-        .append(
-          "Authorization",
-          "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-        );
+        .append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append("$count", "true");
-      params = params.append(
-        "$filter",
-        `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
-      );
+      params = params.append('$count', 'true');
+      params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
       return this._http
         .get(this.locationAPIURL, {
           headers: headers,
@@ -793,11 +638,7 @@ export class LibraryStorageService {
             const rjs: any = <any>response;
             this._listLocation = [];
 
-            if (
-              rjs["@odata.count"] > 0 &&
-              rjs.value instanceof Array &&
-              rjs.value.length > 0
-            ) {
+            if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Location = new Location();
                 rst.onSetData(si);
@@ -818,12 +659,7 @@ export class LibraryStorageService {
             this._isLocationListLoaded = false;
             this._listLocation = [];
 
-            return throwError(
-              () =>
-                new Error(
-                  error.statusText + "; " + error.error + "; " + error.message
-                )
-            );
+            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
           })
         );
     } else {
@@ -833,18 +669,12 @@ export class LibraryStorageService {
   public readLocation(lid: number): Observable<Location> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$filter",
-      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${lid}`
-    );
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${lid}`);
 
     return this._http
       .get(this.locationAPIURL, {
@@ -872,24 +702,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public createLocation(objtbc: Location): Observable<Location> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -921,24 +743,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deleteLocation(pid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http
       .delete(`${this.locationAPIURL}/${pid}`, {
@@ -965,12 +779,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -983,33 +792,24 @@ export class LibraryStorageService {
   ): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$select",
-      "ID,HomeID,NativeName,ChineseName,Detail"
-    );
+    params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
     // params = params.append('$filter', filterstr);
     if (orderby) {
-      params = params.append("$orderby", `${orderby.field} ${orderby.order}`);
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
     if (top) {
-      params = params.append("$top", `${top}`);
+      params = params.append('$top', `${top}`);
     }
     if (skip) {
-      params = params.append("$skip", `${skip}`);
+      params = params.append('$skip', `${skip}`);
     }
-    params = params.append("$count", `true`);
-    params = params.append(
-      "$filter",
-      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`
-    );
+    params = params.append('$count', `true`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
     return this._http
       .get(this.bookAPIURL, {
         headers: headers,
@@ -1025,11 +825,7 @@ export class LibraryStorageService {
           const rjs: any = <any>response;
           const books: Book[] = [];
 
-          if (
-            rjs["@odata.count"] > 0 &&
-            rjs.value instanceof Array &&
-            rjs.value.length > 0
-          ) {
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: Book = new Book();
               rst.onSetData(si);
@@ -1038,7 +834,7 @@ export class LibraryStorageService {
           }
 
           return {
-            totalCount: rjs["@odata.count"],
+            totalCount: rjs['@odata.count'],
             contentList: books,
           };
         }),
@@ -1048,34 +844,20 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public readBook(bid: number): Observable<Book> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$filter",
-      `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${bid}`
-    );
-    params = params.append(
-      "$expand",
-      `Authors,Translators,Presses,Categories,Locations`
-    );
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${bid}`);
+    params = params.append('$expand', `Authors,Translators,Presses,Categories,Locations`);
 
     return this._http
       .get(this.bookAPIURL, {
@@ -1103,24 +885,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public createBook(objtbc: Book): Observable<Book> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -1145,24 +919,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deleteBook(bkid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http
       .delete(`${this.bookAPIURL}/${bkid}`, {
@@ -1183,12 +949,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -1199,30 +960,24 @@ export class LibraryStorageService {
   ): Observable<BaseListModel<BookBorrowRecord>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "$select",
-      "ID,HomeID,BookId,FromOrganization,FromDate,ToDate,Comment"
-    );
+    params = params.append('$select', 'ID,HomeID,BookId,FromOrganization,FromDate,ToDate,Comment');
     const filterstr = `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`;
-    params = params.append("$filter", filterstr);
+    params = params.append('$filter', filterstr);
     if (orderby) {
-      params = params.append("$orderby", `${orderby.field} ${orderby.order}`);
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
     if (top) {
-      params = params.append("$top", `${top}`);
+      params = params.append('$top', `${top}`);
     }
     if (skip) {
-      params = params.append("$skip", `${skip}`);
+      params = params.append('$skip', `${skip}`);
     }
-    params = params.append("$count", `true`);
+    params = params.append('$count', `true`);
     return this._http
       .get(this.bookBorrowRecordAPIURL, {
         headers: headers,
@@ -1238,11 +993,7 @@ export class LibraryStorageService {
           const rjs: any = <any>response;
           const books: BookBorrowRecord[] = [];
 
-          if (
-            rjs["@odata.count"] > 0 &&
-            rjs.value instanceof Array &&
-            rjs.value.length > 0
-          ) {
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: BookBorrowRecord = new BookBorrowRecord();
               rst.onSetData(si);
@@ -1251,7 +1002,7 @@ export class LibraryStorageService {
           }
 
           return {
-            totalCount: rjs["@odata.count"],
+            totalCount: rjs['@odata.count'],
             contentList: books,
           };
         }),
@@ -1261,26 +1012,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
-  public createBookBorrowRecord(
-    objtbc: BookBorrowRecord
-  ): Observable<BookBorrowRecord> {
+  public createBookBorrowRecord(objtbc: BookBorrowRecord): Observable<BookBorrowRecord> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     objtbc.User = this._authService.authSubject.getValue().getUserId()!;
     objtbc.HID = this._homeService.ChosedHome?.ID ?? 0;
@@ -1307,24 +1048,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
   public deleteBookBorrowRecord(bkid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http
       .delete(`${this.bookBorrowRecordAPIURL}/${bkid}`, {
@@ -1345,12 +1078,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(
-            () =>
-              new Error(
-                error.statusText + "; " + error.error + "; " + error.message
-              )
-          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -1365,21 +1093,13 @@ export class LibraryStorageService {
       }
     });
   }
-  private _buildBookCategoryHiercharyImpl(
-    par: BookCategory,
-    listCtgy: BookCategory[],
-    curLevel: number
-  ): void {
+  private _buildBookCategoryHiercharyImpl(par: BookCategory, listCtgy: BookCategory[], curLevel: number): void {
     listCtgy.forEach((value: any) => {
       if (value.ParentID === par.ID) {
         value.HierLevel = curLevel;
-        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
 
-        this._buildBookCategoryHiercharyImpl(
-          value,
-          listCtgy,
-          value.HierLevel + 1
-        );
+        this._buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
       }
     });
   }

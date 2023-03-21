@@ -1,17 +1,13 @@
-import { Component, Input, NgZone, OnInit } from "@angular/core";
-import {
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from "@angular/forms";
-import * as moment from "moment";
-import { NzModalRef } from "ng-zorro-antd/modal";
-import { FinanceOdataService } from "src/app/services";
+import { Component, Input, NgZone, OnInit } from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { FinanceOdataService } from 'src/app/services';
 
 @Component({
-  selector: "hih-document-change-desp-dialog",
-  templateUrl: "./document-change-desp-dialog.component.html",
-  styleUrls: ["./document-change-desp-dialog.component.less"],
+  selector: 'hih-document-change-desp-dialog',
+  templateUrl: './document-change-desp-dialog.component.html',
+  styleUrls: ['./document-change-desp-dialog.component.less'],
 })
 export class DocumentChangeDespDialogComponent implements OnInit {
   // Header forum
@@ -20,21 +16,17 @@ export class DocumentChangeDespDialogComponent implements OnInit {
   @Input() documentdesp?: string;
   isSubmitting = false;
 
-  constructor(
-    private modal: NzModalRef,
-    private _zone: NgZone,
-    private odataService: FinanceOdataService
-  ) {
+  constructor(private modal: NzModalRef, private _zone: NgZone, private odataService: FinanceOdataService) {
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      despControl: new UntypedFormControl("", [Validators.required]),
+      despControl: new UntypedFormControl('', [Validators.required]),
     });
   }
 
   ngOnInit(): void {
     this._zone.run(() => {
-      this.headerFormGroup.get("idControl")?.setValue(this.documentid);
-      this.headerFormGroup.get("despControl")?.setValue(this.documentdesp);
+      this.headerFormGroup.get('idControl')?.setValue(this.documentid);
+      this.headerFormGroup.get('despControl')?.setValue(this.documentdesp);
     });
   }
 
@@ -52,10 +44,7 @@ export class DocumentChangeDespDialogComponent implements OnInit {
     this.isSubmitting = true;
 
     this.odataService
-      .changeDocumentDespViaPatch(
-        this.documentid!,
-        this.headerFormGroup.get("despControl")?.value
-      )
+      .changeDocumentDespViaPatch(this.documentid!, this.headerFormGroup.get('despControl')?.value)
       .subscribe({
         next: (val) => {
           this.modal.destroy();

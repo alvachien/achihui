@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
-import { Router } from "@angular/router";
-import { NzModalService } from "ng-zorro-antd/modal";
-import { ReplaySubject } from "rxjs";
-import { finalize, takeUntil } from "rxjs/operators";
-import { translate } from "@ngneat/transloco";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReplaySubject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { translate } from '@ngneat/transloco';
 
-import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from "../../../model";
-import { AuthService, HomeDefOdataService } from "../../../services";
+import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
-  selector: "hih-home-def-list",
-  templateUrl: "./home-def-list.component.html",
-  styleUrls: ["./home-def-list.component.less"],
+  selector: 'hih-home-def-list',
+  templateUrl: './home-def-list.component.html',
+  styleUrls: ['./home-def-list.component.less'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -27,10 +27,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     return false;
   }
   get IsChildMode(): boolean {
-    if (
-      this.homeService.ChosedHome &&
-      this.homeService.CurrentMemberInChosedHome
-    ) {
+    if (this.homeService.ChosedHome && this.homeService.CurrentMemberInChosedHome) {
       return this.homeService.CurrentMemberInChosedHome!.IsChild!;
     }
     return false;
@@ -43,7 +40,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...",
+      'AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -52,7 +49,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...",
+      'AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -62,7 +59,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...",
+      'AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -74,7 +71,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
   public onChooseHome(row: HomeDef): void {
     ModelUtility.writeConsoleLog(
-      "AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...",
+      'AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...',
       ConsoleLogTypeEnum.debug
     );
     this.homeService.ChosedHome = row;
@@ -84,7 +81,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     this.homeService.ChosedHome.Members.forEach((mem) => {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
         ModelUtility.writeConsoleLog(
-          "AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...",
+          'AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
           ConsoleLogTypeEnum.debug
         );
         this.homeService.CurrentMemberInChosedHome = mem;
@@ -93,11 +90,11 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
     if (this.homeService.RedirectURL) {
       const url: string = this.homeService.RedirectURL;
-      this.homeService.RedirectURL = "";
+      this.homeService.RedirectURL = '';
 
       this.router.navigate([url]);
     } else {
-      this.router.navigate(["/"]);
+      this.router.navigate(['/']);
     }
   }
 
@@ -121,7 +118,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
           );
 
           this.modalService.error({
-            nzTitle: translate("Common.Error"),
+            nzTitle: translate('Common.Error'),
             nzContent: err.toString(),
             nzClosable: true,
           });

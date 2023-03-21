@@ -1,15 +1,10 @@
-import { Injectable } from "@angular/core";
-import {
-  HttpParams,
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import * as moment from "moment";
+import { Injectable } from '@angular/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import * as moment from 'moment';
 
-import { environment } from "../../environments/environment";
+import { environment } from '../../environments/environment';
 import {
   LogLevel,
   Account,
@@ -17,9 +12,9 @@ import {
   momentDateFormat,
   TranTypeReport,
   UINameValuePair,
-} from "../model";
-import { AuthService } from "./auth.service";
-import { HomeDefOdataService } from "./home-def-odata.service";
+} from '../model';
+import { AuthService } from './auth.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -28,25 +23,17 @@ export class FinanceStorageService {
   // Buffer
   private _listAccount: Account[] = [];
 
-  readonly planAPIUrl: string = environment.ApiUrl + "/FinancePlan";
-  readonly documentAPIUrl: string = environment.ApiUrl + "/FinanceDocument";
-  readonly documentMassCreateAPIUrl: string =
-    environment.ApiUrl + "/FinanceNormalDocMassCreate";
-  readonly accountAPIUrl: string = environment.ApiUrl + "/FinanceAccount";
-  readonly controlCenterAPIUrl: string =
-    environment.ApiUrl + "/FinanceControlCenter";
-  readonly orderAPIUrl: string = environment.ApiUrl + "/FinanceOrder";
-  readonly docItemAPIUrl: string = environment.ApiUrl + "/FinanceDocumentItem";
+  readonly planAPIUrl: string = environment.ApiUrl + '/FinancePlan';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/FinanceDocument';
+  readonly documentMassCreateAPIUrl: string = environment.ApiUrl + '/FinanceNormalDocMassCreate';
+  readonly accountAPIUrl: string = environment.ApiUrl + '/FinanceAccount';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/FinanceControlCenter';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/FinanceOrder';
+  readonly docItemAPIUrl: string = environment.ApiUrl + '/FinanceDocumentItem';
 
-  constructor(
-    private _http: HttpClient,
-    private _authService: AuthService,
-    private _homeService: HomeDefOdataService
-  ) {
+  constructor(private _http: HttpClient, private _authService: AuthService, private _homeService: HomeDefOdataService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(
-        "AC_HIH_UI [Debug]: Entering FinanceStorageService constructor..."
-      );
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService constructor...');
     }
   }
 
@@ -54,19 +41,14 @@ export class FinanceStorageService {
    * Update previous document with planned exchange rate
    * @param obj Object for planned exchange rate
    */
-  public updatePreviousDocWithPlanExgRate(
-    obj: DocumentWithPlanExgRateForUpdate
-  ): Observable<any> {
+  public updatePreviousDocWithPlanExgRate(obj: DocumentWithPlanExgRateForUpdate): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + "/FinanceDocWithPlanExgRate";
+    const apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     const jdata: string = JSON && JSON.stringify(obj);
 
     return this._http
@@ -76,9 +58,7 @@ export class FinanceStorageService {
       .pipe(
         map(() => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(
-              `AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`
-            );
+            console.debug(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
           }
 
           // It's an empty Ok();
@@ -94,30 +74,21 @@ export class FinanceStorageService {
   /**
    * Get tran type report
    */
-  public getReportTranType(
-    dtbgn?: moment.Moment,
-    dtend?: moment.Moment
-  ): Observable<any> {
+  public getReportTranType(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
-      .append("Content-Type", "application/json")
-      .append("Accept", "application/json")
-      .append(
-        "Authorization",
-        "Bearer " + this._authService.authSubject.getValue().getAccessToken()
-      );
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + "/FinanceReportTranType";
+    const apiurl: string = environment.ApiUrl + '/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
-    params = params.append(
-      "hid",
-      (this._homeService.ChosedHome?.ID ?? 0).toString()
-    );
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     if (dtbgn) {
-      params = params.append("dtbgn", dtbgn.format(momentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append("dtend", dtend.format(momentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http
@@ -128,21 +99,13 @@ export class FinanceStorageService {
       .pipe(
         map((response: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(
-              `AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`
-            );
+            console.debug(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`);
           }
 
           // Do the grouping here.
           const y: any = <any>response;
-          const mapOut: Map<number, UINameValuePair<number>> = new Map<
-            number,
-            UINameValuePair<number>
-          >();
-          const mapIn: Map<number, UINameValuePair<number>> = new Map<
-            number,
-            UINameValuePair<number>
-          >();
+          const mapOut: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
+          const mapIn: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
 
           if (y instanceof Array && y.length > 0) {
             for (const tt of y) {
