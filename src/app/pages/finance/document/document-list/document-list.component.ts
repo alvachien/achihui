@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
-import { ReplaySubject, forkJoin, of } from 'rxjs';
-import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -33,6 +33,7 @@ import {
 } from '../../../../model';
 import { DocumentChangeDateDialogComponent } from '../document-change-date-dialog';
 import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -114,7 +115,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (val: any) => {
+        next: (val: SafeAny) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
             ConsoleLogTypeEnum.debug
@@ -220,7 +221,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    const { pageSize, pageIndex, sort, filter } = params;
+    const { pageSize, pageIndex, sort } = params;
     this.pageIndex = pageIndex;
     this.pageSize = pageSize;
     const currentSort = sort.find((item) => item.value !== null);

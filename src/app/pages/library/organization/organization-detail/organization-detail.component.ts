@@ -198,7 +198,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.Types = this.listTypes.slice();
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
     if (this.uiMode === UIMode.Create) {
       this.storageService

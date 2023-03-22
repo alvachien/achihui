@@ -1174,7 +1174,9 @@ describe('FinanceOdataService', () => {
       });
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + currentAccount.Id!.toString() + ')';
+        return (
+          requrl.method === 'PUT' && requrl.url === accountAPIURL + '(' + (currentAccount.Id ?? 0).toString() + ')'
+        );
       });
 
       // respond with a 500 and the error message in the body
@@ -3952,7 +3954,9 @@ describe('FinanceOdataService', () => {
 
     it('shall work properly', () => {
       service.changeDocumentDespViaPatch(22, '22').subscribe({
-        next: (val) => {},
+        next: (val) => {
+          // TBD.
+        },
         error: (err) => {
           expect(err).toBeFalsy();
         },

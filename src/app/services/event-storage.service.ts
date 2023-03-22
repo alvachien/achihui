@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { environment } from '../../environments/environment';
@@ -19,8 +19,7 @@ import {
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SafeAny } from 'src/common';
 
 @Injectable({
   providedIn: 'root',
@@ -82,26 +81,26 @@ export class EventStorageService {
       params = params.append('$skip', `${skip}`);
     }
     params = params.append('$count', `true`);
-    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
-    // if (skipfinished !== undefined) {
-    //   params = params.append('skipfinished', skipfinished.toString());
-    // }
-    // if (dtbgn) {
-    //   params = params.append('dtbgn', dtbgn.format(momentDateFormat));
-    // }
-    // if (dtend) {
-    //   params = params.append('dtend', dtend.format(momentDateFormat));
-    // }
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
+    if (skipfinished !== undefined) {
+      //   params = params.append('skipfinished', skipfinished.toString());
+    }
+    if (dtbgn) {
+      //   params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      //   params = params.append('dtend', dtend.format(momentDateFormat));
+    }
 
-    return this._http.get<any>(this.generalEventUrl, { headers: headers, params: params }).pipe(
-      map((data: any) => {
+    return this._http.get<SafeAny>(this.generalEventUrl, { headers: headers, params: params }).pipe(
+      map((data) => {
         const rslts: GeneralEvent[] = [];
         if (data.value && data.value instanceof Array) {
           for (const ci of data.value) {
             const rst: GeneralEvent = new GeneralEvent();
             rst.onSetData(ci);
 
-            this.bufferedGeneralEvents.set(+rst.ID!, rst);
+            this.bufferedGeneralEvents.set(+(rst.ID ?? 0), rst);
 
             rslts.push(rst);
           }
@@ -140,7 +139,7 @@ export class EventStorageService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService readGeneralEvents`,
             ConsoleLogTypeEnum.debug
@@ -179,7 +178,7 @@ export class EventStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService, createGeneralEvent.`,
             ConsoleLogTypeEnum.debug
@@ -188,7 +187,7 @@ export class EventStorageService {
           const hd: GeneralEvent = new GeneralEvent();
           hd.onSetData(response as any);
 
-          this.bufferedGeneralEvents.set(hd.ID!, hd);
+          this.bufferedGeneralEvents.set(hd.ID ?? 0, hd);
 
           return hd;
         }),
@@ -219,7 +218,7 @@ export class EventStorageService {
         headers: headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService, deleteGeneralEvent, map.`,
             ConsoleLogTypeEnum.debug
@@ -242,7 +241,7 @@ export class EventStorageService {
    * Complete general event
    * @param eventid ID of the normal event
    */
-  public completeGeneralEvent(eventid: number): Observable<any> {
+  public completeGeneralEvent(eventid: number): Observable<SafeAny> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
       .append('Content-Type', 'application/json')
@@ -250,7 +249,7 @@ export class EventStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const apiurl: string = this.generalEventUrl + '/MarkAsCompleted';
-    const hid = this._homeService.ChosedHome!.ID;
+    const hid = this._homeService.ChosedHome?.ID ?? 0;
     const jdata = {
       HomeID: hid,
       EventID: eventid,
@@ -263,7 +262,7 @@ export class EventStorageService {
         params: params,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService completeGeneralEvent.`,
             ConsoleLogTypeEnum.debug
@@ -311,17 +310,17 @@ export class EventStorageService {
     }
     params = params.append('$count', `true`);
     params = params.append('$expand', 'RelatedEvents');
-    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome!.ID}`);
+    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
 
     return this._http.get(this.recurEventUrl, { headers: headers, params: params }).pipe(
-      map((data: any) => {
+      map((data: SafeAny) => {
         const rslts: RecurEvent[] = [];
         if (data && data.value && data.value instanceof Array) {
           for (const ci of data.value) {
             const rst: RecurEvent = new RecurEvent();
             rst.onSetData(ci);
 
-            this.bufferedRecurEvents.set(+rst.ID!, rst);
+            this.bufferedRecurEvents.set(+(rst.ID ?? 0), rst);
 
             rslts.push(rst);
           }
@@ -347,7 +346,7 @@ export class EventStorageService {
    * Read recur event
    * @param eventid ID of Event
    */
-  public readRecurEvent(eventid: number): Observable<any> {
+  public readRecurEvent(eventid: number): Observable<SafeAny> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
       .append('Content-Type', 'application/json')
@@ -364,13 +363,13 @@ export class EventStorageService {
         params: params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService readRecurEvent`,
             ConsoleLogTypeEnum.debug
           );
 
-          const repdata: any = <any>response;
+          const repdata: SafeAny = <SafeAny>response;
           const hd: RecurEvent = new RecurEvent();
           hd.onSetData(repdata);
 
@@ -412,7 +411,7 @@ export class EventStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const params: HttpParams = new HttpParams();
-    const jdata: any = objtbc.writeJSONObject();
+    const jdata = objtbc.writeJSONObject();
 
     return this._http
       .post(this.recurEventUrl, jdata, {
@@ -420,7 +419,7 @@ export class EventStorageService {
         params: params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService createRecurEvent`,
             ConsoleLogTypeEnum.debug
@@ -461,7 +460,7 @@ export class EventStorageService {
         params: params,
       })
       .pipe(
-        map((response: any) => {
+        map((response: SafeAny) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService deleteRecurEvent`,
             ConsoleLogTypeEnum.debug
@@ -492,12 +491,12 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     params = params.append('top', top.toString());
     params = params.append('skip', skip.toString());
 
     return this._http.get(this.eventHabitUrl, { headers: headers }).pipe(
-      map((val: any) => {
+      map((val: SafeAny) => {
         const rslts: EventHabit[] = [];
         if (val && val.contentList && val.contentList instanceof Array) {
           for (const ci of val.contentList) {
@@ -523,12 +522,12 @@ export class EventStorageService {
     );
   }
 
-  public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
+  public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<SafeAny> {
     const apiurl: string = environment.ApiUrl + '/HabitEventDetailWithCheckIn';
-    const curhid: number = this._homeService.ChosedHome!.ID;
+    const curhid: number = this._homeService.ChosedHome?.ID ?? 0;
     const bgnstr: string = bgn.format(momentDateFormat);
     const endstr: string = end.format(momentDateFormat);
-    const requestUrl: any = `${apiurl}?hid=${curhid}&dtbgn=${bgnstr}&dtend=${endstr}`;
+    const requestUrl = `${apiurl}?hid=${curhid}&dtbgn=${bgnstr}&dtend=${endstr}`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -536,7 +535,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, { headers: headers });
+    return this._http.get<SafeAny>(requestUrl, { headers: headers });
   }
 
   /**
@@ -552,14 +551,14 @@ export class EventStorageService {
 
     const apiurl: string = this.eventHabitUrl + '/' + eid.toString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     return this._http
       .get(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.debug(`AC_HIH_UI [Debug]: Entering EventStorageService readHabitEvent`);
           }
@@ -592,14 +591,14 @@ export class EventStorageService {
     const apiurl: string = this.eventHabitUrl + '?geneMode=true';
     const jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     return this._http
       .post(apiurl, jdata, {
         headers: headers,
         params: params,
       })
       .pipe(
-        map((val: any) => {
+        map((val) => {
           const arDetail: EventHabitDetail[] = [];
           if (val instanceof Array && val.length > 0) {
             for (const dtl of val) {
@@ -635,14 +634,14 @@ export class EventStorageService {
 
     const jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     return this._http
       .post(this.eventHabitUrl, jdata, {
         headers: headers,
         params: params,
       })
       .pipe(
-        map((val: any) => {
+        map((val) => {
           const gevnt: EventHabit = new EventHabit();
           gevnt.onSetData(val);
           return gevnt;
@@ -668,17 +667,17 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = this.eventHabitUrl + '/' + hevnt.ID!.toString();
+    const apiurl: string = this.eventHabitUrl + '/' + (hevnt.ID ?? 0).toString();
     const jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     return this._http
       .put(apiurl, jdata, {
         headers: headers,
         params: params,
       })
       .pipe(
-        map((val: any) => {
+        map((val) => {
           const gevnt: EventHabit = new EventHabit();
           gevnt.onSetData(val);
           return gevnt;
@@ -697,7 +696,7 @@ export class EventStorageService {
    * Checkin habit event
    * @param hevnt Event to  create
    */
-  public checkInHabitEvent(hevnt: EventHabitCheckin): Observable<any> {
+  public checkInHabitEvent(hevnt: EventHabitCheckin): Observable<SafeAny> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
       .append('Content-Type', 'application/json')
@@ -707,7 +706,7 @@ export class EventStorageService {
     const apiurl: string = environment.ApiUrl + '/eventhabitcheckin';
     const jdata: string = JSON && JSON.stringify(hevnt.writeJSONObject());
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome!.ID.toString());
+    params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     return this._http.post(apiurl, jdata, {
       headers: headers,
       params: params,

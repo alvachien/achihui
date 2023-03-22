@@ -195,7 +195,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Roles = this.listRoles.slice();
 
     if (this.uiMode === UIMode.Create) {

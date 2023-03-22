@@ -1,19 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  AbstractControl,
-} from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin, of, interval, Observable, range } from 'rxjs';
+import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize, mergeAll, map, catchError } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
 
 import {
   financeDocTypeNormal,
@@ -680,5 +672,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         },
       });
   }
-  public onDisplayCreatedDoc(did: number) {}
+  public onDisplayCreatedDoc(did: number) {
+    // TBD.
+  }
 }

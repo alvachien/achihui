@@ -21,13 +21,14 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { PlanListComponent } from './plan-list.component';
+import { SafeAny } from 'src/common';
 
 describe('PlanListComponent', () => {
   let component: PlanListComponent;
   let fixture: ComponentFixture<PlanListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllPlansSpy: any;
+  let storageService: SafeAny;
+  let fetchAllPlansSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};

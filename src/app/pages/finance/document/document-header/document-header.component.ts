@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -12,20 +12,18 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import * as moment from 'moment';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   Document,
-  DocumentItem,
-  getUIModeString,
   Currency,
   financeDocTypeCurrencyExchange,
   financeDocTypeNormal,
   ModelUtility,
   ConsoleLogTypeEnum,
   DocumentType,
-  momentDateFormat,
 } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -48,7 +46,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void = undefined;
-  private _onChange?: (val: any) => void = undefined;
+  private _onChange?: (val: SafeAny) => void = undefined;
   private _doctype?: number;
   private _uiMode: UIMode = UIMode.Invalid;
 

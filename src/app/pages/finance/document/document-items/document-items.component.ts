@@ -1,26 +1,19 @@
-import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input } from '@angular/core';
+import { Component, forwardRef, HostListener, Input } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
-  FormGroup,
-  FormControl,
   Validator,
-  Validators,
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
 import * as moment from 'moment';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
-  Account,
   ControlCenter,
-  Order,
-  AccountCategory,
   Currency,
   TranType,
-  Document,
   DocumentItem,
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -28,6 +21,7 @@ import {
   UIAccountForSelection,
   UIOrderForSelection,
 } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-items',
@@ -53,7 +47,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _tranCurr2?: string;
   private _docType?: number;
   private _onTouched?: () => void = undefined;
-  private _onChange?: (val: any) => void = undefined;
+  private _onChange?: (val: SafeAny) => void = undefined;
   private _uiMode: UIMode = UIMode.Invalid;
   private _docDate: moment.Moment = moment();
 
@@ -66,7 +60,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arControlCenters: ControlCenter[] = [];
   private _arUIAccounts: UIAccountForSelection[] = [];
   public listItems: DocumentItem[] = [];
-  get controlError(): any {
+  get controlError(): SafeAny {
     const err = this.validate();
     if (err) {
       if (err['noitems']) {

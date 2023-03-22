@@ -23,20 +23,20 @@ export class UserDetailComponent implements OnInit {
   ngOnInit() {
     this.authService.authContent.subscribe({
       next: (val) => {
-        this.userID = val.getUserId()!;
-        this.userName = val.getUserName()!;
-        this.userMail = val.getUserMailbox()!;
+        this.userID = val.getUserId() ?? '';
+        this.userName = val.getUserName() ?? '';
+        this.userMail = val.getUserMailbox() ?? '';
       },
     });
 
     if (this.homeService && this.homeService.ChosedHome) {
       this.currentHomeName = this.homeService.ChosedHome.Name;
-      this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome!.DisplayAs;
-      this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome!.IsChild;
+      this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome?.DisplayAs ?? '';
+      this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
 
       const arrels = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
       arrels.forEach((val) => {
-        if (val.value === this.homeService.CurrentMemberInChosedHome!.Relation) {
+        if (val.value === this.homeService.CurrentMemberInChosedHome?.Relation) {
           this.currentHomeMemRelI18n = val.i18nterm;
         }
       });

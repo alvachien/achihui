@@ -81,7 +81,9 @@ export class PersonListComponent implements OnInit, OnDestroy {
   public onDisplay(pid: number) {
     this.router.navigate(['/library/person/display/' + pid.toString()]);
   }
-  public onEdit(pid: number) {}
+  public onEdit(pid: number) {
+    // TBD.
+  }
   public onDelete(pid: number) {
     this.modalService.confirm({
       nzTitle: translate('Common.DeleteConfirmation'),

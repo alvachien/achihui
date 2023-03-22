@@ -12,12 +12,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import * as moment from 'moment';
 
@@ -31,32 +29,26 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import {
-  UserAuthInfo,
-  Document,
-  DocumentItem,
-  momentDateFormat,
-  RepeatedDatesAPIOutput,
-  DocumentItemView,
-} from '../../../../model';
+import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
+import { SafeAny } from 'src/common';
 
 describe('DocumentRecurredMassCreateComponent', () => {
   let component: DocumentRecurredMassCreateComponent;
   let fixture: ComponentFixture<DocumentRecurredMassCreateComponent>;
   let fakeData: FakeDataHelper;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let massCreateNormalDocumentSpy: any;
-  let getRepeatedDatesSpy: any;
-  let searchDocItemSpy: any;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let massCreateNormalDocumentSpy: SafeAny;
+  let getRepeatedDatesSpy: SafeAny;
+  let searchDocItemSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();

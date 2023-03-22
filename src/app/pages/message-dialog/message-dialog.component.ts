@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { SafeAny } from 'src/common';
 
 import { InfoMessage } from '../../model';
 
@@ -63,11 +64,11 @@ export function popupDialog(
       footer = [
         {
           label: 'OK',
-          onClick: (componentInstance: any) => componentInstance!.handleOk(),
+          onClick: (componentInstance: SafeAny) => componentInstance!.handleOk(),
         },
         {
           label: 'Cancel',
-          onClick: (componentInstance: any) => componentInstance!.handleCancel(),
+          onClick: (componentInstance: SafeAny) => componentInstance!.handleCancel(),
         },
       ];
       break;
@@ -77,7 +78,7 @@ export function popupDialog(
       footer = [
         {
           label: 'OK',
-          onClick: (componentInstance: any) => componentInstance!.handleOk(),
+          onClick: (componentInstance: SafeAny) => componentInstance!.handleOk(),
         },
       ];
       break;
@@ -99,7 +100,7 @@ export function popupDialog(
   });
 
   // Return a result when closed
-  modal.afterClose.subscribe((result) => {
+  modal.afterClose.subscribe(() => {
     // console.log('[afterClose] The result is:', result);
   });
 

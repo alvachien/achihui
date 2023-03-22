@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -19,17 +18,18 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, FinanceReportByOrder, Order, FinanceReportEntryByTransactionType } from '../../../../model';
+import { UserAuthInfo, FinanceReportEntryByTransactionType } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { TranTypeReportComponent } from './tran-type-report.component';
+import { SafeAny } from 'src/common';
 
 describe('TranTypeReportComponent', () => {
   let component: TranTypeReportComponent;
   let fixture: ComponentFixture<TranTypeReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchReportByTransactionTypeSpy: any;
-  let fetchAllTranTypesSpy: any;
+  let storageService: SafeAny;
+  let fetchReportByTransactionTypeSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

@@ -25,18 +25,19 @@ import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService 
 import { UserAuthInfo } from '../../../../model';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('OrderDetailComponent', () => {
   let component: OrderDetailComponent;
   let fixture: ComponentFixture<OrderDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllControlCentersSpy: any;
-  let readOrderSpy: any;
-  let createOrderSpy: any;
-  let changeOrderSpy: any;
-  let changeOrderByPatchSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let readOrderSpy: SafeAny;
+  let createOrderSpy: SafeAny;
+  let changeOrderSpy: SafeAny;
+  let changeOrderByPatchSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;

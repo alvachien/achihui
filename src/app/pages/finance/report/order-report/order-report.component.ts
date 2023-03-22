@@ -8,17 +8,15 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import {
-  LogLevel,
   FinanceReportByOrder,
   ModelUtility,
   ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
   GeneralFilterItem,
   Order,
 } from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({

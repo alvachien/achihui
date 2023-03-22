@@ -1,19 +1,18 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { ReplaySubject, forkJoin, of, ObservableInput } from 'rxjs';
-import { takeUntil, catchError, map, finalize } from 'rxjs/operators';
+import { ReplaySubject, forkJoin } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   Account,
   Document,
   ControlCenter,
   AccountCategory,
   TranType,
-  OverviewScopeEnum,
   DocumentType,
   Currency,
   Order,

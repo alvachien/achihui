@@ -27,26 +27,27 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('DocumentTransferCreateComponent', () => {
   let component: DocumentTransferCreateComponent;
   let fixture: ComponentFixture<DocumentTransferCreateComponent>;
   let fakeData: FakeDataHelper;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let createDocumentSpy: any;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let createDocumentSpy: SafeAny;
 
   const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeService: Partial<HomeDefOdataService> = {};
-  const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+  const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
     'fetchAllCurrencies',
     'fetchAllDocTypes',
     'fetchAllAccountCategories',

@@ -21,24 +21,25 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, Plan, PlanTypeEnum } from '../../../../model';
+import { UserAuthInfo, PlanTypeEnum } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { PlanDetailComponent } from './plan-detail.component';
+import { SafeAny } from 'src/common';
 
 describe('PlanDetailComponent', () => {
   let component: PlanDetailComponent;
   let fixture: ComponentFixture<PlanDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let readPlanSpy: any;
-  let createPlanSpy: any;
-  let changePlanSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let readPlanSpy: SafeAny;
+  let createPlanSpy: SafeAny;
+  let changePlanSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

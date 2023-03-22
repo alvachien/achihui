@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,18 +16,19 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, FinanceReportByControlCenter, ControlCenter } from '../../../../model';
+import { UserAuthInfo, FinanceReportByControlCenter } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { ControlCenterReportComponent } from './control-center-report.component';
-import { NzModalCloseComponent, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { SafeAny } from 'src/common';
 
 describe('ControlCenterReportComponent', () => {
   let component: ControlCenterReportComponent;
   let fixture: ComponentFixture<ControlCenterReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchReportByControlCenterSpy: any;
-  let fetchAllControlCentersSpy: any;
+  let storageService: SafeAny;
+  let fetchReportByControlCenterSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

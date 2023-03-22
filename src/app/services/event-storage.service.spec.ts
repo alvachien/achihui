@@ -121,7 +121,7 @@ describe('EventStorageService', () => {
       objtbc.ID = 11;
       service.createGeneralEvent(objtbc).subscribe({
         next: (val) => {
-          expect(service.GeneralEventsInBuffer.has(objtbc.ID!)).toBeTrue();
+          expect(service.GeneralEventsInBuffer.has(objtbc.ID ?? 0)).toBeTrue();
         },
         error: (err) => {
           fail('Shall not reach here');

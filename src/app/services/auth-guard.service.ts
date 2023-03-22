@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { environment } from '../../environments/environment';
 
-import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
+import { LogLevel, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { UIStatusService } from './uistatus.service';
 

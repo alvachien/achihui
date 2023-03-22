@@ -1,6 +1,5 @@
 import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,14 +21,10 @@ import {
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
-  FinanceReportByOrder,
-  Order,
-  FinanceReportEntryByTransactionType,
   FinanceReportEntryMoM,
   financePeriodLast6Months,
   financePeriodLast12Months,
 } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { CashMonthOnMonthReportComponent } from './cash-month-on-month-report.component';
 
 describe('CashMonthOnMonthReportComponent', () => {

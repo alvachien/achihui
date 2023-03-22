@@ -1,7 +1,7 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -21,15 +21,16 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
 import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
 import { FinanceComponent } from './finance.component';
+import { SafeAny } from 'src/common';
 
 describe('FinanceComponent', () => {
   let component: FinanceComponent;
   let fixture: ComponentFixture<FinanceComponent>;
   let fakeData: FakeDataHelper;
-  let fetchAllDPTmpDocsSpy: any;
-  let fetchAllLoanTmpDocsSpy: any;
-  let createDocumentFromDPTemplateSpy: any;
-  let fetchOverviewKeyfigureSpy: any;
+  let fetchAllDPTmpDocsSpy: SafeAny;
+  let fetchAllLoanTmpDocsSpy: SafeAny;
+  let createDocumentFromDPTemplateSpy: SafeAny;
+  let fetchOverviewKeyfigureSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -46,7 +47,7 @@ describe('FinanceComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllDPTmpDocs',
       'fetchAllLoanTmpDocs',
       'createDocumentFromDPTemplate',

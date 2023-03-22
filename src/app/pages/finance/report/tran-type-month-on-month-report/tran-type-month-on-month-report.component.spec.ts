@@ -28,15 +28,16 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
+import { SafeAny } from 'src/common';
 
 describe('TranTypeMonthOnMonthReportComponent', () => {
   let component: TranTypeMonthOnMonthReportComponent;
   let fixture: ComponentFixture<TranTypeMonthOnMonthReportComponent>;
 
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchReportByTransactionTypeMoMSpy: any;
-  let fetchAllTranTypesSpy: any;
+  let storageService: SafeAny;
+  let fetchReportByTransactionTypeMoMSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

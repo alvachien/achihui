@@ -30,7 +30,7 @@ import {
   momentDateFormat,
   DocumentItemView,
 } from '../../../../model';
-import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 
 @Component({

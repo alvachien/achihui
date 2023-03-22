@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, ReplaySubject, Subscription, of } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin, ReplaySubject, of } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -12,11 +12,9 @@ import {
   Document,
   DocumentItem,
   Currency,
-  financeDocTypeBorrowFrom,
   ControlCenter,
   Order,
   TranType,
-  financeDocTypeLendTo,
   BuildupAccountForSelection,
   UIAccountForSelection,
   BuildupOrderForSelection,
@@ -25,9 +23,6 @@ import {
   IAccountCategoryFilter,
   AccountExtraLoan,
   ConsoleLogTypeEnum,
-  momentDateFormat,
-  financeTranTypeLendTo,
-  financeTranTypeBorrowFrom,
   ModelUtility,
   financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo,
@@ -39,7 +34,8 @@ import {
   financeTranTypeInterestOut,
   financeTranTypeInterestIn,
 } from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 enum BorrowFromRepayType {
   Principal = 0,
@@ -141,7 +137,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     // Distinguish current mode
     let tmpdocid: number | null = null;
-    this.activedRoute.url.subscribe((x: any) => {
+    this.activedRoute.url.subscribe((x: SafeAny) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -427,6 +423,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           }
         }
       } else {
+        // TBD.
       }
 
       return true;
@@ -458,7 +455,6 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
               next: (val) => {
                 this.amountTotal = val;
               },
-              error: (err) => {},
             });
           }
 

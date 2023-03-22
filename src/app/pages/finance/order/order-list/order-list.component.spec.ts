@@ -15,17 +15,18 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('OrderListComponent', () => {
   let component: OrderListComponent;
   let fixture: ComponentFixture<OrderListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let searchDocItemSpy: any;
+  let storageService: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let searchDocItemSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};

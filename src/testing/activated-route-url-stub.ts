@@ -23,6 +23,6 @@ export class ActivatedRouteUrlStub {
 
   /** Set the url observables's next value */
   setURL(url?: UrlSegment[]): void {
-    this.subject = new BehaviorSubject<UrlSegment[]>(url!);
+    this.subject = new BehaviorSubject<UrlSegment[]>(url ?? []);
   }
 }

@@ -1023,7 +1023,7 @@ export class LibraryStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    objtbc.User = this._authService.authSubject.getValue().getUserId()!;
+    objtbc.User = this._authService.authSubject.getValue().getUserId() ?? '';
     objtbc.HID = this._homeService.ChosedHome?.ID ?? 0;
     const jdata = objtbc.writeJSONObject();
 

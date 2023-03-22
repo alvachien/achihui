@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { UserAuthInfo } from 'src/app/model';
 import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 import { FakeDataHelper, getTranslocoModule } from 'src/testing';
 import { LibraryUIModule } from '../../library-ui.module';
 import { PersonSelectionDlgComponent } from './person-selection-dlg.component';
@@ -16,8 +17,8 @@ describe('PersonSelectionDlgComponent', () => {
   let component: PersonSelectionDlgComponent;
   let fixture: ComponentFixture<PersonSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readBookSpy: any;
+  let storageService: SafeAny;
+  let readBookSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeService: Partial<HomeDefOdataService> = {};

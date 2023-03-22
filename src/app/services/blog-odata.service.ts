@@ -6,8 +6,7 @@ import { environment } from '../../environments/environment';
 
 import { ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost, BlogPostTag, BlogUserSetting } from '../model';
 import { AuthService } from './auth.service';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SafeAny } from 'src/common';
 
 @Injectable({
   providedIn: 'root',
@@ -59,13 +58,13 @@ export class BlogOdataService {
           params,
         })
         .pipe(
-          map((response: any) => {
+          map((response) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering BlogOdataService readUserSetting`,
               ConsoleLogTypeEnum.debug
             );
 
-            const rjs: any = response;
+            const rjs = response as SafeAny;
             if (rjs.value instanceof Array && rjs.value.length > 0) {
               this.setting = new BlogUserSetting();
               this.setting.onSetData(rjs.value[0]);
@@ -104,13 +103,13 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService updateUserSetting`,
             ConsoleLogTypeEnum.debug
           );
 
-          const rjs: any = response;
+          const rjs = response;
           this.setting = new BlogUserSetting();
           this.setting.onSetData(rjs);
           this.isSettingLoaded = true;
@@ -143,7 +142,7 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService deploySetting`,
             ConsoleLogTypeEnum.debug
@@ -184,15 +183,14 @@ export class BlogOdataService {
           params,
         })
         .pipe(
-          map((response: any) => {
+          map((response) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllCollections`,
               ConsoleLogTypeEnum.debug
             );
 
             this.listCollection = [];
-            const rjs: any = response;
-            const amt = rjs['@odata.count'];
+            const rjs = response as SafeAny;
             if (rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: BlogCollection = new BlogCollection();
@@ -240,14 +238,14 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService createCollection`,
             ConsoleLogTypeEnum.debug
           );
 
           const hd: BlogCollection = new BlogCollection();
-          hd.onSetData(response as any);
+          hd.onSetData(response as SafeAny);
           return hd;
         }),
         catchError((error: HttpErrorResponse) => {
@@ -285,14 +283,14 @@ export class BlogOdataService {
         params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService readCollection`,
             ConsoleLogTypeEnum.debug
           );
 
           const hd: BlogCollection = new BlogCollection();
-          const repdata = response as any;
+          const repdata = response as SafeAny;
           if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
             hd.onSetData(repdata.value[0]);
 
@@ -346,14 +344,14 @@ export class BlogOdataService {
         params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPosts`,
             ConsoleLogTypeEnum.debug
           );
 
           const arsts: BlogPost[] = [];
-          const rjs: any = response;
+          const rjs = response as SafeAny;
           const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
@@ -398,14 +396,14 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService createPost`,
             ConsoleLogTypeEnum.debug
           );
 
           const hd: BlogPost = new BlogPost();
-          hd.onSetData(response as any);
+          hd.onSetData(response as SafeAny);
           return hd;
         }),
         catchError((error: HttpErrorResponse) => {
@@ -430,7 +428,7 @@ export class BlogOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const apiUrl: string = environment.ApiUrl + '/BlogPosts/' + post.id!.toString();
+    const apiUrl: string = environment.ApiUrl + '/BlogPosts/' + (post.id ?? 0).toString();
     post.owner = this.authService.authSubject.getValue().getUserId();
     const jdata = post.writeAPIJson();
     return this.http
@@ -438,14 +436,14 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService changePost`,
             ConsoleLogTypeEnum.debug
           );
 
           const hd: BlogPost = new BlogPost();
-          hd.onSetData(response as any);
+          hd.onSetData(response as SafeAny);
           return hd;
         }),
         catchError((error: HttpErrorResponse) => {
@@ -471,7 +469,7 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService deployPost`,
             ConsoleLogTypeEnum.debug
@@ -502,7 +500,7 @@ export class BlogOdataService {
         headers,
       })
       .pipe(
-        map((response: any) => {
+        map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService revokeDeployPost`,
             ConsoleLogTypeEnum.debug
@@ -547,14 +545,14 @@ export class BlogOdataService {
         params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService readPost`,
             ConsoleLogTypeEnum.debug
           );
 
           const hd: BlogPost = new BlogPost();
-          const repdata = response as any;
+          const repdata = response as SafeAny;
           if (repdata && repdata.value instanceof Array && repdata.value.length === 1) {
             hd.onSetData(repdata.value[0]);
           }
@@ -597,14 +595,14 @@ export class BlogOdataService {
         params,
       })
       .pipe(
-        map((response: any) => {
+        map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPostTags`,
             ConsoleLogTypeEnum.debug
           );
 
           const arsts: BlogPostTag[] = [];
-          const rjs: any = response;
+          const rjs = response as SafeAny;
           const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {

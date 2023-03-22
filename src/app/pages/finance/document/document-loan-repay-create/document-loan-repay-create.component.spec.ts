@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,12 +9,9 @@ import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import * as moment from 'moment';
-import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
-import { DocumentHeaderComponent } from '../document-header';
-import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -25,36 +22,29 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import {
-  UserAuthInfo,
-  Document,
-  DocumentItem,
-  Account,
-  AccountExtraLoan,
-  RepaymentMethodEnum,
-  TemplateDocLoan,
-} from '../../../../model';
+import { UserAuthInfo, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create.component';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
+import { SafeAny } from 'src/common';
 
 describe('DocumentLoanRepayCreateComponent', () => {
   let component: DocumentLoanRepayCreateComponent;
   let fixture: ComponentFixture<DocumentLoanRepayCreateComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  let createLoanRepayDocSpy: any;
-  let fetchAllLoanTmpDocsSpy: any;
-  let readAccountSpy: any;
-  let fetchLoanTmpDocCountForAccountSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let createLoanRepayDocSpy: SafeAny;
+  let fetchAllLoanTmpDocsSpy: SafeAny;
+  let readAccountSpy: SafeAny;
+  let fetchLoanTmpDocCountForAccountSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService>;
   const modalClassName = '.ant-modal-body';
@@ -686,6 +676,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall work as expect', () => {});
+    it('shall work as expect', () => {
+      // TBD.
+    });
   });
 });

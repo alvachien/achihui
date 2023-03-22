@@ -1,10 +1,8 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import {
-  FormBuilder,
   UntypedFormGroup,
   UntypedFormControl,
   Validators,
@@ -15,15 +13,13 @@ import {
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   Document,
   DocumentItem,
-  getUIModeString,
   Account,
   financeAccountCategoryAsset,
-  UICommonLabelEnum,
   BuildupAccountForSelection,
   UIAccountForSelection,
   BuildupOrderForSelection,
@@ -31,8 +27,6 @@ import {
   IAccountCategoryFilterEx,
   momentDateFormat,
   DocumentItemWithBalance,
-  InfoMessage,
-  MessageType,
   financeDocTypeAssetValChg,
   financeTranTypeAssetValueIncrease,
   financeTranTypeAssetValueDecrease,
@@ -48,8 +42,9 @@ import {
   DocumentItemView,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 // Assistant class
 class DocItemWithBlance {
@@ -92,7 +87,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | null = null;
   tranAmount = 0;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public existingDocItems: DocItemWithBlance[] = [];
   public isDocPosting = false;
   // Step: Result

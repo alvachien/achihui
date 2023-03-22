@@ -25,22 +25,18 @@ import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { SafeAny } from 'src/common';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
   let fixture: ComponentFixture<HomeDefDetailComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let homeService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let readHomeDefSpy: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let finService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let fetchAllCurrenciesSpy: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let activatedRouteStub: any;
+  let homeService: SafeAny;
+  let readHomeDefSpy: SafeAny;
+  let finService: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();

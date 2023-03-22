@@ -31,15 +31,16 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { AccountReportComponent } from './account-report.component';
+import { SafeAny } from 'src/common';
 
 describe('AccountReportComponent', () => {
   let component: AccountReportComponent;
   let fixture: ComponentFixture<AccountReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchReportByAccountSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
+  let storageService: SafeAny;
+  let fetchReportByAccountSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

@@ -4,30 +4,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
-import {
-  getTranslocoModule,
-  FakeDataHelper,
-  FormGroupHelper,
-  ActivatedRouteUrlStub,
-  asyncData,
-  asyncError,
-} from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
 import { UserAuthInfo } from 'src/app/model';
+import { SafeAny } from 'src/common';
 
 describe('DocumentChangeDateDialogComponent', () => {
   let component: DocumentChangeDateDialogComponent;
   let fixture: ComponentFixture<DocumentChangeDateDialogComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let changeDocumentDateViaPatchSpy: any;
+  let storageService: SafeAny;
+  let changeDocumentDateViaPatchSpy: SafeAny;
   const homeServiceStub: Partial<HomeDefOdataService> = {};
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};

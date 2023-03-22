@@ -165,7 +165,9 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   onDisplay(bid: number): void {
     // this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
-  onEdit(bid: number): void {}
+  onEdit(bid: number): void {
+    // TBD.
+  }
   onDelete(bid: number): void {
     this.modal.confirm({
       nzTitle: translate('Common.DeleteConfirmation'),

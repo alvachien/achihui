@@ -1,19 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  FormControl,
-  UntypedFormGroup,
-  Validators,
-  UntypedFormArray,
-  AbstractControl,
-} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   financeDocTypeNormal,
@@ -31,14 +24,12 @@ import {
   DocumentType,
   BuildupAccountForSelection,
   BuildupOrderForSelection,
-  UIDisplayStringUtil,
-  FinanceDocumentMassCreateConfirm,
   FinanceNormalDocItemMassCreate,
   momentDateFormat,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-document-normal-mass-create',
@@ -111,8 +102,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllDocTypes(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (rst: any) => {
+      .subscribe({
+        next: (rst: SafeAny) => {
           // Accounts
           this.arAccounts = rst[2];
           this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
@@ -133,18 +124,18 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
           // Create first item
           this.createItem();
         },
-        (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
-        }
-      );
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -461,5 +452,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         },
       });
   }
-  public onDisplayCreatedDoc(docid: number): void {}
+  public onDisplayCreatedDoc(docid: number): void {
+    // TBD.
+  }
 }

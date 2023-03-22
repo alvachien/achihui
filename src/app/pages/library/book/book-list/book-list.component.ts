@@ -108,7 +108,9 @@ export class BookListComponent implements OnInit, OnDestroy {
   onDisplay(bid: number): void {
     this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
-  onEdit(bid: number): void {}
+  onEdit(bid: number): void {
+    // TBD.
+  }
   onCreateBorrowRecord(bid: number): void {
     let bkobj: Book | null = null;
     this.listData.forEach((ds) => {
@@ -147,7 +149,7 @@ export class BookListComponent implements OnInit, OnDestroy {
     });
     const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',

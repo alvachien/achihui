@@ -23,7 +23,6 @@ import { OrganizationSelectionDlgComponent } from '../../organization/organizati
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
 import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 @Component({
   selector: 'hih-book-detail',
   templateUrl: './book-detail.component.html',

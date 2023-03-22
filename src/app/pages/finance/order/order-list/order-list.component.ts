@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 
 import {
@@ -15,7 +15,7 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
 } from '../../../../model';
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 import * as moment from 'moment';
 
@@ -74,15 +74,15 @@ export class OrderListComponent implements OnInit, OnDestroy {
         next: (x: Order[]) => {
           this.dataSet = x.slice();
         },
-        error: (error: any) => {
+        error: (err: any) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${error}`,
+            `AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -135,7 +135,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
       .deleteOrder(rid)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (val) => {
+        next: () => {
           // Delete item from list
           const exts = this.dataSet.slice();
           const extidx = exts.findIndex((ext) => {
@@ -186,7 +186,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

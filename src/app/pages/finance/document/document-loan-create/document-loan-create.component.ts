@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {
-  FormBuilder,
   UntypedFormGroup,
   Validators,
   UntypedFormControl,
@@ -9,11 +8,11 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   Account,
@@ -33,7 +32,6 @@ import {
   IAccountCategoryFilter,
   AccountExtraLoan,
   ConsoleLogTypeEnum,
-  momentDateFormat,
   financeTranTypeLendTo,
   financeTranTypeBorrowFrom,
   ModelUtility,
@@ -46,6 +44,7 @@ import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService 
 import { popupDialog } from '../../../message-dialog';
 import * as moment from 'moment';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -79,7 +78,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   accountExtraLoanCtrl: AccountExtraLoanComponent | null = null;
   public extraFormGroup: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public isDocPosting = false;
   // Step: Result
   public docIdCreated?: number;
@@ -169,7 +168,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
           this.uiOrderFilter = undefined;
 
-          this._activateRoute.url.subscribe((x: any) => {
+          this._activateRoute.url.subscribe((x: SafeAny) => {
             if (x instanceof Array && x.length > 0) {
               if (x[0].path === 'createbrwfrm') {
                 this.curDocType = financeDocTypeBorrowFrom;
@@ -429,5 +428,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this._router.navigate(['/finance/document/display/' + this.docIdCreated.toString()]);
     }
   }
-  public onCreateAnotherDoc(): void {}
+  public onCreateAnotherDoc(): void {
+    // TBD.
+  }
 }

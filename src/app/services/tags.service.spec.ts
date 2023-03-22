@@ -61,17 +61,14 @@ describe('TagsService', () => {
     });
 
     it('should return expected tags (called once)', () => {
-      service.fetchAllTags(true).subscribe(
-        (curries: any) => {
-          expect(curries.length).toEqual(fakeData.tagsFromAPI.length, 'should return expected tags');
+      service.fetchAllTags(true).subscribe({
+        next: (curries) => {
+          expect(curries.length).withContext('should return expected tags').toEqual(fakeData.tagsFromAPI.length);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
       // Service should have made one request to GET tags from expected URL
-      const req: any = httpTestingController.expectOne((requrl: any) => {
+      const req = httpTestingController.expectOne((requrl) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -81,16 +78,13 @@ describe('TagsService', () => {
     });
 
     it('should be OK returning no tags', () => {
-      service.fetchAllTags(true).subscribe(
-        (curries: any) => {
-          expect(curries.length).toEqual(0, 'should have empty tags array');
+      service.fetchAllTags(true).subscribe({
+        next: (curries) => {
+          expect(curries.length).withContext('should have empty tags array').toEqual(0);
         },
-        (fail: any) => {
-          // Empty
-        }
-      );
+      });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
+      const req = httpTestingController.expectOne((requrl) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -100,16 +94,16 @@ describe('TagsService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'Deliberate 404';
-      service.fetchAllTags(true).subscribe(
-        (curries: any) => {
+      service.fetchAllTags(true).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
-        }
-      );
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
 
-      const req: any = httpTestingController.expectOne((requrl: any) => {
+      const req = httpTestingController.expectOne((requrl) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
       });
 

@@ -53,10 +53,10 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
     );
 
     forkJoin([this.oDataService.fetchAllAccountCategories(), this.oDataService.fetchAllAccounts()]).subscribe({
-      next: (rsts: any) => {
+      next: (rsts) => {
         this.arUIAccounts = BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]);
       },
-      error: (err: any) => {
+      error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent forkJoin failed ${err}`,
           ConsoleLogTypeEnum.error

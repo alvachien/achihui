@@ -19,6 +19,7 @@ import {
 } from '../../../../model';
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-order-detail',
@@ -93,7 +94,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     );
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x: SafeAny) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug

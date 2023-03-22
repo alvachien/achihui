@@ -81,7 +81,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/plan/edit/' + rid.toString()]);
   }
 
-  onDelete(rid: number): void {}
+  onDelete(rid: number): void {
+    // TBD.
+  }
 
   onCheckProgress(planData: Plan): void {
     if (planData && planData.AccountID) {

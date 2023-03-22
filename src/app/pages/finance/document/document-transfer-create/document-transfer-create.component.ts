@@ -12,7 +12,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   financeDocTypeTransfer,
@@ -36,6 +36,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -69,7 +70,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   // Step: To
   public toFormGroup: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
 
   constructor(
     public homeService: HomeDefOdataService,

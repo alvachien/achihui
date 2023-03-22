@@ -1295,7 +1295,7 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${ordid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${ordid}`);
     params = params.append('$expand', `SRule`);
     return this.http
       .get(this.orderAPIUrl, {
@@ -1533,7 +1533,7 @@ export class FinanceOdataService {
    */
   public fetchAllPlans(forceReload?: boolean): Observable<Plan[]> {
     if (!this.isPlanListLoaded || forceReload) {
-      const hid = this.homeService.ChosedHome!.ID;
+      const hid = this.homeService.ChosedHome?.ID ?? 0;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers
         .append('Content-Type', 'application/json')
@@ -1629,7 +1629,7 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${planid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${planid}`);
     return this.http.get(this.planAPIUrl, { headers, params }).pipe(
       map((response: SafeAny) => {
         ModelUtility.writeConsoleLog(
@@ -1684,8 +1684,8 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-    const hid = this.homeService.ChosedHome!.ID;
-    let filterstr = `HomeID eq ${this.homeService.ChosedHome!.ID}`;
+    const hid = this.homeService.ChosedHome?.ID ?? 0;
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0}`;
     const subfilter = getFilterString(filters);
     if (subfilter) {
       filterstr += ` and ${subfilter}`;
@@ -1748,7 +1748,7 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome!.ID} and ID eq ${docid}`);
+    params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${docid}`);
     params = params.append('$expand', `Items`);
     return this.http.get(this.documentAPIUrl, { headers, params }).pipe(
       map((response: SafeAny) => {
@@ -1786,7 +1786,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome!.ID;
+    const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
     filterstrs.push(`HomeID eq ${hid}`);
     if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
@@ -1854,7 +1854,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome!.ID;
+    const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
     filterstrs.push(`HomeID eq ${hid}`);
     filterstrs.push(`AccountID eq ${accountid}`);
@@ -1899,7 +1899,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome!.ID;
+    const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
     filterstrs.push(`HomeID eq ${hid}`);
     if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
@@ -2021,7 +2021,7 @@ export class FinanceOdataService {
         {
           AccountID: tpDoc.AccountId,
           DocumentID: tpDoc.DocId,
-          HomeID: this.homeService.ChosedHome!.ID,
+          HomeID: this.homeService.ChosedHome?.ID ?? 0,
         },
         {
           headers,
@@ -2109,7 +2109,7 @@ export class FinanceOdataService {
     const sobj: SafeAny = {};
     sobj.DocumentInfo = docObj.writeJSONObject(); // Document first
     const acntobj: Account = new Account();
-    acntobj.HID = this.homeService.ChosedHome!.ID;
+    acntobj.HID = this.homeService.ChosedHome?.ID ?? 0;
     if (isADP) {
       acntobj.CategoryId = financeAccountCategoryAdvancePayment;
     } else {
@@ -2120,7 +2120,7 @@ export class FinanceOdataService {
     acntobj.OwnerId = this.authService.authSubject.getValue().getUserId();
     for (const tmpitem of acntExtraObject.dpTmpDocs) {
       tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
-      tmpitem.OrderId = docObj.Items[0].OrderId!;
+      tmpitem.OrderId = docObj.Items[0].OrderId ?? 0;
     }
     acntobj.ExtraInfo = acntExtraObject;
     sobj.AccountInfo = acntobj.writeJSONObject();
@@ -2234,7 +2234,7 @@ export class FinanceOdataService {
         {
           DocumentInfo: doc.writeJSONObject(),
           LoanTemplateDocumentID: tmpdocid,
-          HomeID: this.homeService.ChosedHome!.ID,
+          HomeID: this.homeService.ChosedHome?.ID ?? 0,
         },
         {
           headers,
@@ -2928,7 +2928,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       const jdata: { HomeID: number; OrderID?: number } = {
-        HomeID: this.homeService.ChosedHome?.ID!,
+        HomeID: this.homeService.ChosedHome?.ID ?? 0,
       };
       if (orderid !== undefined) {
         jdata.OrderID = orderid;
@@ -3907,7 +3907,7 @@ export class FinanceOdataService {
       '$select',
       'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp'
     );
-    let filterstr = `HomeID eq ${this.homeService.ChosedHome!.ID}`;
+    let filterstr = `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0}`;
     const subfilter = getFilterString(filters);
     if (subfilter) {
       filterstr += ` and ${subfilter}`;
@@ -4013,7 +4013,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const hid = this.homeService.ChosedHome!.ID;
+    const hid = this.homeService.ChosedHome?.ID ?? 0;
     const jdata = {
       HomeID: hid,
       Year: year,

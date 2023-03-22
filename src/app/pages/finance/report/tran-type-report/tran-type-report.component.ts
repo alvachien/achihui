@@ -153,6 +153,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     const armaps: Map<number, number> = new Map<number, number>();
 
     if (this.groupLevel === '3') {
+      // TBD.
     } else if (this.groupLevel === '2') {
       this.arTranType.forEach((trantype) => {
         if (trantype.HierLevel === 2) {

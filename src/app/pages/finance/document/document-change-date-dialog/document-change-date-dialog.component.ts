@@ -47,10 +47,10 @@ export class DocumentChangeDateDialogComponent implements OnInit {
     this.odataService
       .changeDocumentDateViaPatch(this.documentid!, moment(this.headerFormGroup.get('dateControl')?.value))
       .subscribe({
-        next: (val) => {
+        next: () => {
           this.modal.destroy();
         },
-        error: (err) => {
+        error: () => {
           this.isSubmitting = false;
           // Show error
           // this.modalService.warning({
@@ -65,5 +65,7 @@ export class DocumentChangeDateDialogComponent implements OnInit {
     // Close the dialog
     this.modal.destroy();
   }
-  destroyModal() {}
+  destroyModal() {
+    // TBD
+  }
 }

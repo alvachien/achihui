@@ -27,15 +27,16 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report.component';
+import { SafeAny } from 'src/common';
 
 describe('AccountMonthOnMonthReportComponent', () => {
   let component: AccountMonthOnMonthReportComponent;
   let fixture: ComponentFixture<AccountMonthOnMonthReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchReportByAccountMoMSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchReportByAccountMoMSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush, async } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -6,30 +6,17 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { UIMode } from 'actslib';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
-import {
-  getTranslocoModule,
-  FakeDataHelper,
-  FormGroupHelper,
-  ActivatedRouteUrlStub,
-  asyncData,
-} from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import {
-  UserAuthInfo,
-  financeDocTypeNormal,
-  financeDocTypeCurrencyExchange,
-  Document,
-  DocumentItem,
-} from '../../../../model';
+import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;
@@ -40,17 +27,17 @@ describe('DocumentDetailComponent', () => {
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let readDocumentSpy: any;
-  let readAccountSpy: any;
-  let isDocumentChangableSpy: any;
-  let changeDocumentSpy: any;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let readDocumentSpy: SafeAny;
+  let readAccountSpy: SafeAny;
+  let isDocumentChangableSpy: SafeAny;
+  let changeDocumentSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
