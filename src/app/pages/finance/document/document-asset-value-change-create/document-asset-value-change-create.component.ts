@@ -106,7 +106,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   curMode: UIMode = UIMode.Create;
 
   get NewEstimatedAmount(): number | undefined {
-    const amtctrl: any = this.firstFormGroup.get('amountControl');
+    const amtctrl = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
@@ -124,8 +124,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ConsoleLogTypeEnum.debug
     );
 
-    this.arMembersInChosedHome = this._homeService.ChosedHome!.Members.slice();
-    this.baseCurrency = this._homeService.ChosedHome!.BaseCurrency;
+    this.arMembersInChosedHome = this._homeService.ChosedHome?.Members.slice() ?? [];
+    this.baseCurrency = this._homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -159,7 +159,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: (rst: any) => {
+        next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
             ConsoleLogTypeEnum.debug
@@ -187,15 +187,15 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
           this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
           this.uiOrderFilter = null;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

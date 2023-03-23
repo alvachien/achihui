@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -7,11 +7,10 @@ import {
   UntypedFormControl,
   Validator,
   Validators,
-  AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -29,6 +28,7 @@ import {
   UIDisplayStringUtil,
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-account-extra-loan',
@@ -52,7 +52,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void;
-  private _onChange?: (val: any) => void;
+  private _onChange?: (val: SafeAny) => void;
   private _refDocID?: number;
 
   isLoadingTmpDocs = false;
@@ -72,8 +72,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     const objrst = new AccountExtraLoan();
     let controlVal = this.loanInfoForm.get('dateRangeControl')?.value;
     if (controlVal) {
-      objrst.startDate = moment((controlVal as any[])[0]);
-      objrst.endDate = moment((controlVal as any[])[1]);
+      objrst.startDate = moment((controlVal as SafeAny[])[0]);
+      objrst.endDate = moment((controlVal as SafeAny[])[1]);
     }
     controlVal = this.loanInfoForm.get('totalMonthControl')?.value;
     if (controlVal) {
@@ -154,7 +154,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     return true;
   }
-  get controlError(): any {
+  get controlError(): SafeAny {
     const err = this.validate();
     if (err) {
       ModelUtility.writeConsoleLog(
@@ -265,7 +265,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
-  public onRepaymentMethodChanged(selectedOption: any) {
+  public onRepaymentMethodChanged(selectedOption: SafeAny) {
     switch (selectedOption) {
       case RepaymentMethodEnum.Informal:
         this.loanInfoForm.get('endDateControl')?.disable();
@@ -452,7 +452,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnChange`,
       ConsoleLogTypeEnum.debug
@@ -460,7 +460,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     this._onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnTouched`,
       ConsoleLogTypeEnum.debug

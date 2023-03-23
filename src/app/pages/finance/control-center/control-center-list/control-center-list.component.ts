@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 
 @Component({
@@ -20,7 +20,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   dataSet: ControlCenter[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(
@@ -56,15 +56,15 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
           this.dataSet = value.slice();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${error}`,
+            `AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -109,7 +109,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
       .deleteControlCenter(rid)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (val) => {
+        next: () => {
           const extccs = this.dataSet.slice();
           const extidx = extccs.findIndex((val2) => {
             return val2.Id === rid;

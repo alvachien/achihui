@@ -1,14 +1,7 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  ValidatorFn,
-  ValidationErrors,
-} from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -16,25 +9,18 @@ import { UIMode, isUIEditable } from 'actslib';
 import * as moment from 'moment';
 
 import {
-  LogLevel,
   ModelUtility,
   ConsoleLogTypeEnum,
   UIDisplayStringUtil,
   GeneralEvent,
-  momentDateFormat,
   getUIModeString,
   RecurEvent,
   RepeatedDatesAPIInput,
   RepeatFrequencyEnum,
   RepeatedDatesAPIOutput,
 } from '../../../../model';
-import {
-  AuthService,
-  HomeDefOdataService,
-  EventStorageService,
-  UIStatusService,
-  FinanceOdataService,
-} from '../../../../services';
+import { HomeDefOdataService, EventStorageService, FinanceOdataService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-recur-event-detail',
@@ -173,7 +159,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSimulateGeneratedEvents(): void {
-    const dtrange = this.detailFormGroup.get('dateControl')?.value as any[];
+    const dtrange = this.detailFormGroup.get('dateControl')?.value as SafeAny[];
 
     const datinput: RepeatedDatesAPIInput = {
       StartDate: moment(dtrange[0] as Date),
@@ -236,7 +222,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate(['/event/normal-event/display/' + e.ID!.toString()]);
+            this.router.navigate(['/event/normal-event/display/' + (e.ID ?? 0).toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(

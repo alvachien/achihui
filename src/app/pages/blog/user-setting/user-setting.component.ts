@@ -1,21 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  ValidatorFn,
-  ValidationErrors,
-} from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
-import { ModelUtility, ConsoleLogTypeEnum, BlogPost, BlogUserSetting } from '../../../model';
-import { BlogOdataService, UIStatusService } from '../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '../../../model';
+import { BlogOdataService } from '../../../services';
 
 @Component({
   selector: 'hih-user-setting',
@@ -61,16 +53,16 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .readUserSetting()
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: (next) => {
-          if (next !== null) {
+        next: (val) => {
+          if (val !== null) {
             this.uiMode = UIMode.Update;
-            this.detailFormGroup.get('userControl')?.setValue(next.owner);
-            this.detailFormGroup.get('deployControl')?.setValue(next.deploy);
-            this.detailFormGroup.get('titleControl')?.setValue(next.title);
-            this.detailFormGroup.get('footerControl')?.setValue(next.footer);
-            this.detailFormGroup.get('authorControl')?.setValue(next.author);
-            this.detailFormGroup.get('authorDespControl')?.setValue(next.authordesp);
-            this.detailFormGroup.get('authorImageControl')?.setValue(next.authorimage);
+            this.detailFormGroup.get('userControl')?.setValue(val.owner);
+            this.detailFormGroup.get('deployControl')?.setValue(val.deploy);
+            this.detailFormGroup.get('titleControl')?.setValue(val.title);
+            this.detailFormGroup.get('footerControl')?.setValue(val.footer);
+            this.detailFormGroup.get('authorControl')?.setValue(val.author);
+            this.detailFormGroup.get('authorDespControl')?.setValue(val.authordesp);
+            this.detailFormGroup.get('authorImageControl')?.setValue(val.authorimage);
             this.detailFormGroup.enable();
             this.detailFormGroup.get('userControl')?.disable();
             this.detailFormGroup.get('deployControl')?.disable();
@@ -129,15 +121,15 @@ export class UserSettingComponent implements OnInit, OnDestroy {
       .updateUserSetting(settings)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (next) => {
+        next: () => {
           this.modalService.confirm({
             nzTitle: translate('Common.Confirm'),
             nzContent: translate('Blog.DeployContentNow'),
             nzOkText: 'OK',
             nzCancelText: translate('Comon.Cancel'),
-            nzOnOk: (okrst) => {
+            nzOnOk: () => {
               this.odataService.deploySetting(settings.owner).subscribe({
-                next: (rst) => {
+                next: () => {
                   // Show success dialog
                   const ref: NzModalRef = this.modalService.success({
                     nzTitle: translate('Blog.DeploySuccess'),
@@ -156,7 +148,9 @@ export class UserSettingComponent implements OnInit, OnDestroy {
                 },
               });
             },
-            nzOnCancel: (cancrst) => {},
+            nzOnCancel: () => {
+              // Do nothing
+            },
           });
         },
         error: (err) => {

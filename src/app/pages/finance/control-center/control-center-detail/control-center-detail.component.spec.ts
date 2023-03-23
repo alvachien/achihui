@@ -21,16 +21,17 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('ControlCenterDetailComponent', () => {
   let component: ControlCenterDetailComponent;
   let fixture: ComponentFixture<ControlCenterDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllControlCentersSpy: any;
-  let readControlCenterSpy: any;
-  let createControlCenterSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let readControlCenterSpy: SafeAny;
+  let createControlCenterSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;

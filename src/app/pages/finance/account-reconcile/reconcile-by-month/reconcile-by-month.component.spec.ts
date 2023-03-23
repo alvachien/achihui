@@ -39,10 +39,7 @@ describe('ReconcileByMonthComponent', () => {
   });
 
   beforeEach(async () => {
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
-      'fetchAllAccountCategories',
-      'fetchAllAccounts',
-    ]);
+    const odataService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,

@@ -231,7 +231,7 @@ export class BlogOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogCollections';
-    coll.owner = this.authService.authSubject.getValue().getUserId()!;
+    coll.owner = this.authService.authSubject.getValue().getUserId() ?? '';
     const jdata = coll.writeAPIJson();
     return this.http
       .post(apiUrl, jdata, {

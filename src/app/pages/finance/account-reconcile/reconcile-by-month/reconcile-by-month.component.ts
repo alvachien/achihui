@@ -12,10 +12,10 @@ import {
   BuildupAccountForSelection,
   ConsoleLogTypeEnum,
   ModelUtility,
-  momentDateFormat,
   UIAccountForSelection,
 } from 'src/app/model';
 import { FinanceOdataService, HomeDefOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 
 interface FastInputExpectedResult {
   Month: string;
@@ -58,7 +58,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
     private router: Router
   ) {
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
   // Step 2. Compare result
   pre(): void {
@@ -108,7 +108,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
       ConsoleLogTypeEnum.debug
     );
     this.activateRoute.url.subscribe({
-      next: (x: any) => {
+      next: (x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'bymonth') {
             ModelUtility.writeConsoleLog(
@@ -163,7 +163,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   onAddExpectResultRow() {
     this.listExpectResult = [...this.listExpectResult, new AccountReconcileExpect()];
   }
-  onDeleteRow(row: any) {
+  onDeleteRow(row: SafeAny) {
     let ridx = -1;
     this.listExpectResult.forEach((rst, idx) => {
       if (rst === row) {
@@ -183,7 +183,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
       const ardates: string[] = this.listExpectResult.map((val) => val.currentMonthStr);
       this.processing = true;
       this.odataService
-        .fetchAccountBalanceEx(this.selectedAccountId!, ardates)
+        .fetchAccountBalanceEx(this.selectedAccountId ?? 0, ardates)
         .pipe(finalize(() => (this.processing = false)))
         .subscribe({
           next: (val) => {
@@ -210,7 +210,10 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
             });
           },
           error: (err) => {
-            console.error(err.toString());
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering ReconcileByMonthComponent fetchAccountBalanceInfo, fetchAccountBalanceEx ${err}`,
+              ConsoleLogTypeEnum.error
+            );
           },
         });
     }

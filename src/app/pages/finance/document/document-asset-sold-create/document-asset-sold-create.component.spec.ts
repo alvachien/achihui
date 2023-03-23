@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,21 +20,22 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, Account, financeAccountCategoryAsset } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('DocumentAssetSoldCreateComponent', () => {
   let component: DocumentAssetSoldCreateComponent;
   let fixture: ComponentFixture<DocumentAssetSoldCreateComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAssetCategoriesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  let createAssetSoldoutDocumentSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAssetCategoriesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let createAssetSoldoutDocumentSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;

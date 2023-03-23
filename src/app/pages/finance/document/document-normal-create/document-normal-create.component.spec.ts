@@ -63,7 +63,7 @@ describe('DocumentNormalCreateComponent', () => {
     const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',
@@ -315,7 +315,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.headerForm.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -580,7 +580,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Currency service failed',
         'Expected dialog to show the error message: Currency service failed'
@@ -605,7 +605,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Account category service failed',
         'Expected snack bar to show the error message: Account category service failed'
@@ -630,7 +630,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Doc type service failed',
         'Expected snack bar to show the error message: Doc type service failed'
@@ -655,7 +655,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Tran type service failed',
         'Expected snack bar to show the error message: Tran type service failed'
@@ -680,7 +680,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Account service failed',
         'Expected snack bar to show the error message: Account service failed'
@@ -705,7 +705,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Control center service failed',
         'Expected snack bar to show the error message: Control center service failed'
@@ -732,7 +732,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // tick();
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement.textContent).toContain(
         'Order service failed',
         'Expected snack bar to show the error message: Order service failed'

@@ -43,12 +43,12 @@ export class DocumentChangeDespDialogComponent implements OnInit {
     this.isSubmitting = true;
 
     this.odataService
-      .changeDocumentDespViaPatch(this.documentid!, this.headerFormGroup.get('despControl')?.value)
+      .changeDocumentDespViaPatch(this.documentid ?? 0, this.headerFormGroup.get('despControl')?.value)
       .subscribe({
-        next: (val) => {
+        next: () => {
           this.modal.destroy();
         },
-        error: (err) => {
+        error: () => {
           this.isSubmitting = false;
           // Show error
           // this.modalService.warning({
@@ -63,5 +63,7 @@ export class DocumentChangeDespDialogComponent implements OnInit {
     // Close the dialog
     this.modal.destroy();
   }
-  destroyModal() {}
+  destroyModal() {
+    // TBD.
+  }
 }

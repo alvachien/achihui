@@ -77,7 +77,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     );
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.confirmInfo = [];
   }
 

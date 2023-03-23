@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../services';
+import { HomeDefOdataService } from '../../../services';
 
 @Component({
   selector: 'hih-finance-config',
@@ -11,6 +11,6 @@ export class ConfigComponent {
   constructor(private homeService: HomeDefOdataService) {}
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 }

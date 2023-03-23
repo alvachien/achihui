@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import {
   UntypedFormGroup,
@@ -14,17 +13,13 @@ import {
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   Document,
   DocumentItem,
-  getUIModeString,
   Account,
   financeAccountCategoryAsset,
-  AccountExtraAsset,
-  RepeatFrequencyEnum,
-  UICommonLabelEnum,
   BuildupAccountForSelection,
   UIAccountForSelection,
   BuildupOrderForSelection,
@@ -41,11 +36,11 @@ import {
   Order,
   DocumentType,
   Currency,
-  financeTranTypeAssetSoldoutIncome,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-asset-sold-create',
@@ -65,7 +60,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   // Step: Items
   public itemFormGroup: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public isDocPosting = false;
   // Step: Result
   public docIdCreated?: number;
@@ -103,9 +98,9 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this.arMembersInChosedHome = this.homeService.ChosedHome!.Members.slice();
+    this.arMembersInChosedHome = this.homeService.ChosedHome?.Members.slice() ?? [];
     this._docDate = moment();
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -145,7 +140,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (rst: any) => {
+        next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
             ConsoleLogTypeEnum.debug
@@ -177,15 +172,15 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
           this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
           this.uiOrderFilter = undefined;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

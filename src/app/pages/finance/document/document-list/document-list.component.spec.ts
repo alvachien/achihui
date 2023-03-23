@@ -33,20 +33,21 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { SafeAny } from 'src/common';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
   let fixture: ComponentFixture<DocumentListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllDocumentsSpy: any;
+  let storageService: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllDocumentsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   // const uiServiceStub: Partial<UIStatusService> = {};
   const ardocs: BaseListModel<Document> = {

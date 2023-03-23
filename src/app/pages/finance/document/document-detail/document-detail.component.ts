@@ -70,7 +70,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     );
 
     this.currentDocument = new Document();
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.docFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ disabled: true }),
       headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
@@ -169,7 +169,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                       })
                     )
                     .subscribe({
-                      next: (acnts) => {
+                      next: () => {
                         this.arUIAccounts = [];
                         this.arUIAccounts = BuildupAccountForSelection(
                           this.odataService.Accounts,

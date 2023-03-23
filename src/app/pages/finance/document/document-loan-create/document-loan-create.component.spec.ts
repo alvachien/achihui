@@ -381,7 +381,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -425,7 +425,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -490,7 +490,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -560,7 +560,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -660,7 +660,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -737,7 +737,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Go to next page
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 

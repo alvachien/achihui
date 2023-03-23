@@ -21,14 +21,15 @@ import { AuthService, UIStatusService, BlogOdataService } from '../../../../serv
 import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { SafeAny } from 'src/common';
 
 describe('CollectionListComponent', () => {
   let component: CollectionListComponent;
   let fixture: ComponentFixture<CollectionListComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllCollectionsSpy: any;
+  let storageService: SafeAny;
+  let fetchAllCollectionsSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();

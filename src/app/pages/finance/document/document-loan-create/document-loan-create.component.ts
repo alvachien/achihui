@@ -147,7 +147,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: (rst: any) => {
+        next: (rst) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit, forkJoin`,
             ConsoleLogTypeEnum.debug
@@ -186,15 +186,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
             this._cdr.detectChanges();
           });
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

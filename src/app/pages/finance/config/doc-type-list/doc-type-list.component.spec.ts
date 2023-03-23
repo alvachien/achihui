@@ -14,13 +14,14 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('DocTypeListComponent', () => {
   let component: DocTypeListComponent;
   let fixture: ComponentFixture<DocTypeListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllDocTypesSpy: any;
+  let storageService: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 

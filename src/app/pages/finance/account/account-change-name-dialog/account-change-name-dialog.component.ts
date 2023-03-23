@@ -3,6 +3,7 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-account-change-name-dialog',
@@ -46,7 +47,7 @@ export class AccountChangeNameDialogComponent implements OnInit {
   onSubmit(): void {
     this.isSubmitting = true;
 
-    const arcontent: any = {};
+    const arcontent: SafeAny = {};
     if (this.headerFormGroup.get('nameControl')?.dirty) {
       arcontent.Name = this.headerFormGroup.get('nameControl')?.value;
     }
@@ -54,12 +55,12 @@ export class AccountChangeNameDialogComponent implements OnInit {
       arcontent.Comment = this.headerFormGroup.get('cmtControl')?.value;
     }
 
-    this.odataService.changeAccountByPatch(this.accountid!, arcontent).subscribe({
-      next: (val) => {
+    this.odataService.changeAccountByPatch(this.accountid ?? 0, arcontent).subscribe({
+      next: () => {
         // Close the dialog
         this.modal.destroy();
       },
-      error: (err) => {
+      error: () => {
         // Show error
         // this.modalService.warning({
         //   nzTitle: translate('Common.Warning'),
@@ -74,5 +75,7 @@ export class AccountChangeNameDialogComponent implements OnInit {
     // Close the dialog
     this.modal.destroy();
   }
-  destroyModal() {}
+  destroyModal() {
+    // Do nothing
+  }
 }

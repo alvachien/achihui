@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import * as moment from 'moment';
 
@@ -10,7 +10,6 @@ import {
   UIDisplayStringUtil,
   GeneralFilterValueType,
   TranType,
-  UICommonLabelEnum,
   Account,
   ControlCenter,
   Order,
@@ -22,6 +21,7 @@ import {
 import { UITableColumnItem } from '../../../uimodel';
 import { translate } from '@ngneat/transloco';
 import { HomeDefOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-document-item-search',
@@ -33,7 +33,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   // Filter
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
-  allFields: any[] = [];
+  allFields: SafeAny[] = [];
   realFilters: GeneralFilterItem[] = [];
   // Table
   isLoadingDocItems = false;
@@ -47,7 +47,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(private modalService: NzModalService, private homeService: HomeDefOdataService) {

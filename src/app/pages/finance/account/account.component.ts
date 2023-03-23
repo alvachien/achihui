@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-finance-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.less'],
 })
-export class AccountComponent {
-  constructor() {}
-}
+export class AccountComponent {}

@@ -1,30 +1,15 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  ValidatorFn,
-  ValidationErrors,
-} from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 import * as moment from 'moment';
 
-import {
-  LogLevel,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
-  GeneralEvent,
-  momentDateFormat,
-  getUIModeString,
-} from '../../../../model';
-import { AuthService, HomeDefOdataService, EventStorageService, UIStatusService } from '../../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from '../../../../model';
+import { HomeDefOdataService, EventStorageService } from '../../../../services';
 
 @Component({
   selector: 'hih-normal-event-detail',
@@ -71,7 +56,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug

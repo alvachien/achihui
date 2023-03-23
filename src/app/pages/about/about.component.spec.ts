@@ -35,8 +35,8 @@ describe('AboutComponent', () => {
   });
 
   it('check current version', () => {
-    const compiled: any = fixture.debugElement.nativeElement;
-    const p: any = compiled.querySelector('#curversion');
+    const compiled = fixture.debugElement.nativeElement;
+    const p = compiled.querySelector('#curversion');
     expect(p.textContent.trim()).toEqual(environment.CurrentVersion.trim());
   });
 });

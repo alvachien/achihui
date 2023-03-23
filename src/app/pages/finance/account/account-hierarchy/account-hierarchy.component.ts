@@ -23,11 +23,11 @@ import {
   OverviewScopeEnum,
   getOverviewScopeRange,
   momentDateFormat,
-  BuildupAccountForSelection,
   ControlCenter,
 } from '../../../../model';
 import * as moment from 'moment';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
+import { SafeAny } from 'src/common';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -73,7 +73,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   arControlCenters: ControlCenter[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(
@@ -93,7 +93,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.arrayScopes = UIDisplayStringUtil.getOverviewScopeStrings();
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit(): void {
@@ -129,7 +129,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       data.isExpanded = !data.isExpanded;
     } else {
       const node = data.node;
-      this.activatedNode = data.node!;
+      this.activatedNode = data.node ?? undefined;
       if (node) {
         node.isExpanded = !node.isExpanded;
       }
@@ -143,7 +143,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   ///
   /// Context menu
-  onNodeContextMenu(event: any, menu: NzDropdownMenuComponent): void {
+  onNodeContextMenu(event: SafeAny, menu: NzDropdownMenuComponent): void {
     this.nzContextMenuService.create(event, menu);
   }
   onDisplayAccount(): void {
@@ -355,7 +355,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAccountStatusFilterChanged(selectedStatus: any[]): void {
+  onAccountStatusFilterChanged(selectedStatus: SafeAny[]): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
       ConsoleLogTypeEnum.debug
@@ -363,7 +363,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this._refreshTreeCore();
   }
 
-  onScopeChanged(event: any): void {
+  onScopeChanged(event: SafeAny): void {
     this.refreshDocumentItemView();
   }
 
@@ -381,7 +381,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (data: any) => {
+        next: () => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
             ConsoleLogTypeEnum.debug
@@ -389,7 +389,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
           this._refreshTreeCore();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
             ConsoleLogTypeEnum.error
@@ -397,7 +397,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

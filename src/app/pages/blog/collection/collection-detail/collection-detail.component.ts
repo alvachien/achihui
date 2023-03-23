@@ -1,29 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  ValidatorFn,
-  ValidationErrors,
-} from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate } from '@ngneat/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
-import {
-  LogLevel,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
-  BlogCollection,
-  momentDateFormat,
-  getUIModeString,
-} from '../../../../model';
-import { BlogOdataService, UIStatusService } from '../../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } from '../../../../model';
+import { BlogOdataService } from '../../../../services';
 
 @Component({
   selector: 'hih-blog-collection-detail',
@@ -65,7 +50,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug

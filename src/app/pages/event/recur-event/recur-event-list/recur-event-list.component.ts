@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { translate } from '@ngneat/transloco';
@@ -82,15 +82,15 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
           this.totalCount = x.totalCount;
           this.dataSet = x.contentList;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering RecurEventListComponent fetchGeneralEvents failed ${error}`,
+            `AC_HIH_UI [Error]: Entering RecurEventListComponent fetchGeneralEvents failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -117,7 +117,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteRecurEvent(eventid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });
@@ -144,7 +144,9 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
         });
       },
       nzCancelText: 'No',
-      nzOnCancel: () => console.log('Cancel'),
+      nzOnCancel: () => {
+        // DO nothing
+      },
     });
   }
 }

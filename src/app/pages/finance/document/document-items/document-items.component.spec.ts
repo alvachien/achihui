@@ -28,6 +28,7 @@ import {
   BuildupOrderForSelection,
   financeDocTypeNormal,
 } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 describe('DocumentItemsComponent', () => {
   let component: DocumentItemsComponent;
@@ -54,7 +55,7 @@ describe('DocumentItemsComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -115,7 +116,7 @@ describe('DocumentItemsComponent', () => {
       tick();
       fixture.detectChanges();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.noitems).toBeTruthy();
     }));
@@ -133,7 +134,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutaccount).toBeTruthy('Expect itemwithoutaccount is true');
     }));
@@ -152,7 +153,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithouttrantype).toBeTruthy('Expect itemwithouttrantype is true');
     }));
@@ -171,7 +172,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutamount).toBeTruthy('Expect itemwithoutamount is true');
     }));
@@ -190,7 +191,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
     }));
@@ -210,7 +211,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
     }));
@@ -229,7 +230,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutdesp).toBeTruthy('Expect itemwithoutdesp is true');
     }));
@@ -269,7 +270,7 @@ describe('DocumentItemsComponent', () => {
       component.listItems = [ditem];
       component.onChange();
 
-      const err: any = component.validate(undefined);
+      const err: SafeAny = component.validate(undefined);
       expect(err).toBeNull();
     }));
     xit('createItem method', fakeAsync(() => {

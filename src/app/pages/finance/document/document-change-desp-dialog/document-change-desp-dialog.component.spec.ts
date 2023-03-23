@@ -81,5 +81,6 @@ describe('DocumentChangeDespDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(changeDocumentDespViaPatchSpy).not.toHaveBeenCalled();
   });
 });

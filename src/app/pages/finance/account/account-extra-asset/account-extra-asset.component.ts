@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -12,6 +12,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '../../../../model';
 
@@ -36,7 +37,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void;
-  private _onChange?: (val: any) => void;
+  private _onChange?: (val: SafeAny) => void;
   private _arAssetCategories: AssetCategory[] = [];
   private _refBuyDocID: number | null = null;
   private _refSoldDocID: number | null = null;
@@ -193,7 +194,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
@@ -201,7 +202,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
 
     this._onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug

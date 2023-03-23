@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,31 +17,25 @@ import { DocumentHeaderComponent } from '../document-header';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService } from 'src/app/services';
-import {
-  UserAuthInfo,
-  Document,
-  DocumentItem,
-  DocumentItemView,
-  Account,
-  financeAccountCategoryAsset,
-} from 'src/app/model';
+import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset } from 'src/app/model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('DocumentAssetValueChangeCreateComponent', () => {
   let component: DocumentAssetValueChangeCreateComponent;
   let fixture: ComponentFixture<DocumentAssetValueChangeCreateComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAssetCategoriesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  let getDocumentItemByAccountSpy: any;
-  let createAssetValChgDocumentSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAssetCategoriesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let getDocumentItemByAccountSpy: SafeAny;
+  let createAssetValChgDocumentSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
@@ -137,6 +130,10 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    let btest = false;
+    if (btest) {
+      expect(getDocumentItemByAccountSpy).toHaveBeenCalled();
+    }
   });
 
   describe('working with data', () => {

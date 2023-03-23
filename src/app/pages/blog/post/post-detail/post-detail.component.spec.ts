@@ -13,11 +13,11 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
-import { MarkdownModule, KatexOptions } from 'ngx-markdown';
+import { MarkdownModule } from 'ngx-markdown';
 import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
@@ -26,16 +26,17 @@ import { PostDetailComponent } from './post-detail.component';
 import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;
   let fixture: ComponentFixture<PostDetailComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readPostSpy: any;
-  let fetchAllCollectionsSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let readPostSpy: SafeAny;
+  let fetchAllCollectionsSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -87,6 +88,8 @@ describe('PostDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(readPostSpy).not.toHaveBeenCalled();
   });
 
   describe('create mode', () => {

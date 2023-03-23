@@ -215,8 +215,6 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     );
   }
 
-  constructor() {}
-
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...',
@@ -247,14 +245,14 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
     );
     this._onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug

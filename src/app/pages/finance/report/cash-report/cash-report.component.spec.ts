@@ -70,5 +70,6 @@ xdescribe('CashReportComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(fetchCashReportMoMSpy).not.toHaveBeenCalled();
   });
 });

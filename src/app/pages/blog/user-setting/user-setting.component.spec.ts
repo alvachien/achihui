@@ -9,16 +9,17 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { BlogUIModule } from '../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { UserSettingComponent } from './user-setting.component';
-import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
+import { AuthService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
+import { SafeAny } from 'src/common';
 
 describe('UserSettingComponent', () => {
   let component: UserSettingComponent;
   let fixture: ComponentFixture<UserSettingComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readUserSettingSpy: any;
+  let storageService: SafeAny;
+  let readUserSettingSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -55,5 +56,7 @@ describe('UserSettingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(readUserSettingSpy).toHaveBeenCalled();
   });
 });

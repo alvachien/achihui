@@ -117,6 +117,8 @@ describe('PlanDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(changePlanSpy).not.toHaveBeenCalled();
   });
 
   describe('1. create mode', () => {

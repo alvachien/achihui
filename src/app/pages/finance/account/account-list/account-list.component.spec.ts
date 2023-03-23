@@ -22,16 +22,17 @@ import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountListComponent } from './account-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum } from '../../../../model';
+import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('AccountListComponent', () => {
   let component: AccountListComponent;
   let fixture: ComponentFixture<AccountListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -134,9 +135,9 @@ describe('AccountListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onDisplay(fakeData.finAccounts[0].Id!);
+      component.onDisplay(fakeData.finAccounts[0].Id ?? 0);
       expect(routerstub.navigate).toHaveBeenCalledWith([
-        '/finance/account/display/' + fakeData.finAccounts[0].Id!.toString(),
+        '/finance/account/display/' + (fakeData.finAccounts[0].Id ?? 0).toString(),
       ]);
 
       discardPeriodicTasks();
@@ -154,10 +155,10 @@ describe('AccountListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onEdit(fakeData.finAccounts[0].Id!);
+      component.onEdit(fakeData.finAccounts[0].Id ?? 0);
 
       expect(routerstub.navigate).toHaveBeenCalledWith([
-        '/finance/account/edit/' + fakeData.finAccounts[0].Id!.toString(),
+        '/finance/account/edit/' + (fakeData.finAccounts[0].Id ?? 0).toString(),
       ]);
 
       discardPeriodicTasks();

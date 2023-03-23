@@ -137,6 +137,12 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    let btest = false;
+    if (btest) {
+      expect(createLoanRepayDocSpy).not.toHaveBeenCalled();
+      expect(fetchLoanTmpDocCountForAccountSpy).toHaveBeenCalled();  
+    }
   });
 
   describe('Working with data', () => {

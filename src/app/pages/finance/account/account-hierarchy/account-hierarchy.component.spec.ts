@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -12,20 +11,21 @@ import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountHierarchyComponent } from './account-hierarchy.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum } from '../../../../model';
+import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('AccountHierarchyComponent', () => {
   let component: AccountHierarchyComponent;
   let fixture: ComponentFixture<AccountHierarchyComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let searchDocItemSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let searchDocItemSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};

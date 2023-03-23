@@ -45,7 +45,7 @@ export class DocumentChangeDateDialogComponent implements OnInit {
     this.isSubmitting = true;
 
     this.odataService
-      .changeDocumentDateViaPatch(this.documentid!, moment(this.headerFormGroup.get('dateControl')?.value))
+      .changeDocumentDateViaPatch(this.documentid ?? 0, moment(this.headerFormGroup.get('dateControl')?.value))
       .subscribe({
         next: () => {
           this.modal.destroy();

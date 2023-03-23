@@ -1,7 +1,7 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { ViewChild, Component } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
@@ -14,13 +14,7 @@ import * as moment from 'moment';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
-import {
-  getTranslocoModule,
-  ActivatedRouteUrlStub,
-  FakeDataHelper,
-  asyncData,
-  asyncError,
-} from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -30,14 +24,15 @@ import {
   RepaymentMethodEnum,
   TemplateDocLoan,
 } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 describe('AccountExtraLoanComponent', () => {
   let testcomponent: AccountExtraLoanTestFormComponent;
   let fixture: ComponentFixture<AccountExtraLoanTestFormComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
+  let storageService: SafeAny;
   let homeService: Partial<HomeDefOdataService>;
-  let calcLoanTmpDocsSpy: any;
+  let calcLoanTmpDocsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let arUIAccounts: UIAccountForSelection[];

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -36,7 +36,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   listOfColumns: UITableColumnItem<Account>[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(

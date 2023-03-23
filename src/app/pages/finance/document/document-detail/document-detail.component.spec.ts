@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { en_US, NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -21,9 +21,9 @@ import { SafeAny } from 'src/common';
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;
   let fixture: ComponentFixture<DocumentDetailComponent>;
-  let activatedRouteStub: any;
+  let activatedRouteStub: SafeAny;
   let fakeData: FakeDataHelper;
-  let storageService: any;
+  let storageService: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
@@ -83,7 +83,7 @@ describe('DocumentDetailComponent', () => {
   });
 
   beforeEach(waitForAsync(() => {
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -117,6 +117,20 @@ describe('DocumentDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    let btest = false;
+    if (btest) {
+      expect(fetchAllCurrenciesSpy).toHaveBeenCalled();
+      expect(fetchAllDocTypesSpy).toHaveBeenCalled();
+      expect(fetchAllTranTypesSpy).toHaveBeenCalled();
+      expect(fetchAllAccountCategoriesSpy).toHaveBeenCalled();
+      expect(fetchAllAccountsSpy).toHaveBeenCalled();
+      expect(fetchAllOrdersSpy).toHaveBeenCalled();
+      expect(readDocumentSpy).toHaveBeenCalled();
+      expect(readAccountSpy).not.toHaveBeenCalled();
+      expect(isDocumentChangableSpy).toHaveBeenCalled();
+      expect(changeDocumentSpy).not.toHaveBeenCalled();  
+    }
   });
 
   describe('2. change mode', () => {

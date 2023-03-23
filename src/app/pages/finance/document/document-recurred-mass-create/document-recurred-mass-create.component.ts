@@ -36,7 +36,7 @@ import {
   UIDisplayString,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
-import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 
 class DocumentCountByDateRange {
   StartDate: moment.Moment | null = null;

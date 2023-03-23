@@ -21,14 +21,15 @@ import { AuthService, UIStatusService, BlogOdataService } from '../../../../serv
 import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { SafeAny } from 'src/common';
 
 describe('PostListComponent', () => {
   let component: PostListComponent;
   let fixture: ComponentFixture<PostListComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllPostsSpy: any;
+  let storageService: SafeAny;
+  let fetchAllPostsSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -105,8 +106,8 @@ describe('PostListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onDisplay(fakeData.blogPost[0].id!);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/display/' + fakeData.blogPost[0].id!.toString()]);
+      component.onDisplay(fakeData.blogPost[0].id ?? 0);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/display/' + (fakeData.blogPost[0].id ?? 0).toString()]);
 
       discardPeriodicTasks();
       flush();
@@ -123,8 +124,8 @@ describe('PostListComponent', () => {
       spyOn(routerstub, 'navigate');
 
       // Display
-      component.onEdit(fakeData.blogPost[0].id!);
-      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/edit/' + fakeData.blogPost[0].id!.toString()]);
+      component.onEdit(fakeData.blogPost[0].id ?? 0);
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/blog/post/edit/' + (fakeData.blogPost[0].id ?? 0).toString()]);
 
       discardPeriodicTasks();
       flush();

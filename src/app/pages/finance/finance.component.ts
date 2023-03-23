@@ -46,7 +46,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   listDate: DateCellData[] = [];
   keyfigure: FinanceOverviewKeyfigure | null = null;
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(

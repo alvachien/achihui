@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,7 +15,6 @@ import { AccountDetailComponent } from './account-detail.component';
 import {
   getTranslocoModule,
   FakeDataHelper,
-  FormGroupHelper,
   ActivatedRouteUrlStub,
   asyncData,
   asyncError,
@@ -24,21 +23,22 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, AccountStatusEnum, financeAccountCategoryCash } from '../../../../model';
+import { UserAuthInfo, financeAccountCategoryCash } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
   let fixture: ComponentFixture<AccountDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let readAccountSpy: any;
-  let fetchAllAssetCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let readAccountSpy: SafeAny;
+  let fetchAllAssetCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const homeServiceStub: Partial<HomeDefOdataService> = {};
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};

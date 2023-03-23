@@ -1,22 +1,13 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { EventUIModule } from '../../event-ui.module';
 import {
@@ -27,26 +18,19 @@ import {
   ActivatedRouteUrlStub,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService } from '../../../../services';
-import {
-  UserAuthInfo,
-  financeAccountCategoryCash,
-  Account,
-  AccountStatusEnum,
-  Book,
-  GeneralEvent,
-} from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
+import { UserAuthInfo, GeneralEvent } from '../../../../model';
 import { NormalEventDetailComponent } from './normal-event-detail.component';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { SafeAny } from 'src/common';
 
 describe('NormalEventDetailComponent', () => {
   let component: NormalEventDetailComponent;
   let fixture: ComponentFixture<NormalEventDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readGeneralEventSpy: any;
-  let createGeneralEventSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let readGeneralEventSpy: SafeAny;
+  let createGeneralEventSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -104,6 +88,8 @@ describe('NormalEventDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(createGeneralEventSpy).not.toHaveBeenCalled();
   });
 
   describe('01. Create mode', () => {

@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,7 +14,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper, asyncData, asyncError } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -23,14 +23,15 @@ import {
   RepeatFrequencyEnum,
   RepeatedDatesWithAmountAPIOutput,
 } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 describe('AccountExtraDownpaymentComponent', () => {
   let testcomponent: FinanceAccountExtraDPTestFormComponent;
   let fixture: ComponentFixture<FinanceAccountExtraDPTestFormComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
+  let storageService: SafeAny;
   let homeService: Partial<HomeDefOdataService>;
-  let calcADPTmpDocsSpy: any;
+  let calcADPTmpDocsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -84,6 +85,11 @@ describe('AccountExtraDownpaymentComponent', () => {
 
   it('should create', () => {
     expect(testcomponent).toBeTruthy();
+
+    let btest = false;
+    if (btest) {
+      expect(calcADPTmpDocsSpy).toHaveBeenCalled();
+    }
   });
 
   it('shall work with data 1: init status', fakeAsync(() => {

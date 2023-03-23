@@ -58,7 +58,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arUIOrders: UIOrderForSelection[] = [];
   public arTranTypes: TranType[] = [];
-  public selectedRange: any[] = [];
+  public selectedRange: SafeAny[] = [];
   // Table
   pageIndex = 1;
   pageSize = 20;
@@ -68,7 +68,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   listDocTypeFilters: ITableFilterValues[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(

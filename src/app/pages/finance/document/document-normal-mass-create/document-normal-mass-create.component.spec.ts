@@ -23,19 +23,20 @@ import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
+import { SafeAny } from 'src/common';
 
 describe('DocumentNormalMassCreateComponent', () => {
   let component: DocumentNormalMassCreateComponent;
   let fixture: ComponentFixture<DocumentNormalMassCreateComponent>;
   let fakeData: FakeDataHelper;
-  let fetchAllCurrenciesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let massCreateNormalDocumentSpy: any;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let massCreateNormalDocumentSpy: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -53,7 +54,7 @@ describe('DocumentNormalMassCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',

@@ -6,7 +6,7 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-import { FinanceOdataService, UIStatusService } from '../../../services';
+import { FinanceOdataService } from '../../../services';
 import {
   Account,
   ModelUtility,
@@ -128,7 +128,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     );
 
     if (this.filterDocItem.length > 0) {
-      const { pageSize, pageIndex, sort, filter } = params;
+      const { pageSize, pageIndex, sort } = params;
       this.pageIndex = pageIndex;
       this.pageSize = pageSize;
       const currentSort = sort.find((item) => item.value !== null);
@@ -208,7 +208,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
         finalize(() => (this.isLoadingDocItems = false))
       )
       .subscribe({
-        next: (revdata: any) => {
+        next: (revdata) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems succeed.`,
             ConsoleLogTypeEnum.debug
@@ -258,15 +258,15 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
             this.listDocItem = [];
           }
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${error}...`,
+            `AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${err}...`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

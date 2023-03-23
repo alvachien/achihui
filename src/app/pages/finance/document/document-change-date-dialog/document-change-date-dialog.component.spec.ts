@@ -80,5 +80,6 @@ describe('DocumentChangeDateDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(changeDocumentDateViaPatchSpy).not.toHaveBeenCalled();
   });
 });

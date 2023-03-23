@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 
 import { ModelUtility, ConsoleLogTypeEnum, TranType } from '../../../../model';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
@@ -55,14 +55,14 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
             this.ttTreeNodes = this._buildTree(x, 1);
           }
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes failed ${error}`,
+            `AC_HIH_UI [Error]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -89,8 +89,8 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (!val.ParId) {
           // Root nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id!.toString(),
-            title: val.Name + '(' + val.Id!.toString() + ')',
+            key: (val.Id ?? 0).toString(),
+            title: val.Name + '(' + (val.Id ?? 0).toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
           if (node.children && node.children.length > 0) {
@@ -107,8 +107,8 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         if (val.ParId === id) {
           // Child nodes!
           const node: NzTreeNodeOptions = {
-            key: val.Id!.toString(),
-            title: val.Name + '(' + val.Id!.toString() + ')',
+            key: (val.Id ?? 0).toString(),
+            title: val.Name + '(' + (val.Id ?? 0).toString() + ')',
           };
           node.children = this._buildTree(value, level + 1, val.Id);
           if (node.children && node.children.length > 0) {

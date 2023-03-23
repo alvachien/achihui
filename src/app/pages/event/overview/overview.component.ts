@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NzCalendarMode } from 'ng-zorro-antd/calendar';
 
 @Component({
@@ -7,8 +7,6 @@ import { NzCalendarMode } from 'ng-zorro-antd/calendar';
   styleUrls: ['./overview.component.less'],
 })
 export class OverviewComponent {
-  constructor() {}
-
   selectedDate = new Date();
   mode: NzCalendarMode = 'month';
 

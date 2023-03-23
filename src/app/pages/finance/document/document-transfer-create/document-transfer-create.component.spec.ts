@@ -25,7 +25,7 @@ import { DocumentHeaderComponent } from '../document-header';
 import { DocumentTransferCreateComponent } from './document-transfer-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
+import { UserAuthInfo, Document } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 

@@ -5,7 +5,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
+import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UIMode } from 'actslib';
 
@@ -14,16 +14,17 @@ import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../..
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
+import { SafeAny } from 'src/common';
 
 describe('CollectionDetailComponent', () => {
   let component: CollectionDetailComponent;
   let fixture: ComponentFixture<CollectionDetailComponent>;
   const authServiceStub: Partial<AuthService> = {};
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readCollectionSpy: any;
-  let createCollectionSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let readCollectionSpy: SafeAny;
+  let createCollectionSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -70,6 +71,9 @@ describe('CollectionDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    expect(readCollectionSpy).not.toHaveBeenCalled();
+    expect(createCollectionSpy).not.toHaveBeenCalled();
   });
 
   describe('create mode', () => {

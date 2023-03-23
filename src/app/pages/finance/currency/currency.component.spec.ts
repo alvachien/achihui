@@ -13,13 +13,14 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('CurrencyComponent', () => {
   let component: CurrencyComponent;
   let fixture: ComponentFixture<CurrencyComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllCurrenciesSpy: any;
+  let storageService: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
 

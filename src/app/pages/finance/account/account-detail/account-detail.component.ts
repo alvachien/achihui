@@ -1,15 +1,7 @@
-import { Component, OnInit, OnDestroy, QueryList, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  ValidatorFn,
-  ValidationErrors,
-  AbstractControl,
-} from '@angular/forms';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, Subscription, ReplaySubject } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
@@ -23,7 +15,6 @@ import {
   financeAccountCategoryAdvancePayment,
   financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo,
-  UICommonLabelEnum,
   ModelUtility,
   UIDisplayString,
   UIDisplayStringUtil,
@@ -54,12 +45,13 @@ import {
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
 } from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
 import { costObjectValidator } from 'src/app/uimodel';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -209,7 +201,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       ConsoleLogTypeEnum.debug
     );
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
@@ -237,7 +229,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           ])
             .pipe(takeUntil(this._destroyed$!))
             .subscribe({
-              next: (rst: any[]) => {
+              next: (rst: SafeAny[]) => {
                 this.arAccountCategories = rst[0];
                 this.arAssetCategories = rst[1];
                 this.arTranTypes = rst[2];
@@ -528,7 +520,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     // Check the dirty control
-    const arcontent: any = {};
+    const arcontent: SafeAny = {};
     // ctgyControl: new FormControl(undefined, [
     //   Validators.required,
     //   // this.categoryValidator,
@@ -552,7 +544,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // Save it
     this.odataService
-      .changeAccountByPatch(acntobj.Id!, arcontent)
+      .changeAccountByPatch(acntobj.Id ?? 0, arcontent)
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {

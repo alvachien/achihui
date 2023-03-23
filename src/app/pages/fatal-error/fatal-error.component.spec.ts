@@ -2,7 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzResultModule } from 'ng-zorro-antd/result';
 
 import { FatalErrorComponent } from './fatal-error.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { getTranslocoModule } from '../../../testing';
 import { UIStatusService } from '../../services';
 
 describe('FatalErrorComponent', () => {

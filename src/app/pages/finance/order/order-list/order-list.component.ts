@@ -7,7 +7,6 @@ import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 
 import {
-  LogLevel,
   Order,
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -31,7 +30,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   dataSet: Order[] = [];
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
   invalidOrder(ord: Order): boolean {
     if (ord) {

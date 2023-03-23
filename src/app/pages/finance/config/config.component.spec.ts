@@ -8,7 +8,7 @@ import { DocTypeListComponent } from './doc-type-list';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
 import { TranTypeListComponent } from './tran-type-list';
 import { ConfigComponent } from './config.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { HomeDefOdataService } from '../../../services';
 
 describe('ConfigComponent', () => {

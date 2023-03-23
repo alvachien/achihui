@@ -26,15 +26,16 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month.component';
+import { SafeAny } from 'src/common';
 
 describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {
   let component: StatementOfIncomeExpenseMonthOnMonthComponent;
   let fixture: ComponentFixture<StatementOfIncomeExpenseMonthOnMonthComponent>;
 
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchStatementOfIncomeAndExposeMoMSpy: any;
-  let fetchDailyStatementOfIncomeAndExpenseSpy: any;
+  let storageService: SafeAny;
+  let fetchStatementOfIncomeAndExposeMoMSpy: SafeAny;
+  let fetchDailyStatementOfIncomeAndExpenseSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

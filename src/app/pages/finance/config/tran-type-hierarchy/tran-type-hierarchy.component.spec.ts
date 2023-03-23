@@ -21,13 +21,14 @@ import {
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('TranTypeHierarchyComponent', () => {
   let component: TranTypeHierarchyComponent;
   let fixture: ComponentFixture<TranTypeHierarchyComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllTranTypesSpy: any;
+  let storageService: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
 
   beforeAll(() => {

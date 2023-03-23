@@ -1,20 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
 
-import {
-  LogLevel,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
-  BlogCollection,
-  momentDateFormat,
-} from '../../../../model';
-import { BlogOdataService, UIStatusService } from '../../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '../../../../model';
+import { BlogOdataService } from '../../../../services';
 
 @Component({
   selector: 'hih-blog-collection-list',
@@ -55,15 +47,15 @@ export class CollectionListComponent implements OnInit, OnDestroy {
         next: (x: BlogCollection[]) => {
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering CollectionListComponent ngOnInit, fetchAllCollections failed ${error}`,
+            `AC_HIH_UI [Error]: Entering CollectionListComponent ngOnInit, fetchAllCollections failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -91,7 +83,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/blog/collection/edit/' + rid.toString()]);
   }
-  onDelete(rid: number) {
+  onDelete() {
     // TBD.
   }
 }

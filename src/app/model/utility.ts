@@ -117,10 +117,10 @@ export class ModelUtility {
    * @returns true indicates duplicated entries exist
    */
   public static hasDuplicatesInStringArray(strarray: string): boolean {
-    const valuesSoFar: any = Object.create(null);
+    const valuesSoFar = Object.create(null);
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < strarray.length; i++) {
-      const value: any = strarray[i];
+      const value = strarray[i];
       if (value in valuesSoFar) {
         return true;
       }

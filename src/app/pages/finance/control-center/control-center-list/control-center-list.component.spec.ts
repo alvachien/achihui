@@ -10,23 +10,18 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { ControlCenterListComponent } from './control-center-list.component';
-import {
-  getTranslocoModule,
-  RouterLinkDirectiveStub,
-  FakeDataHelper,
-  asyncData,
-  asyncError,
-} from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('ControlCenterListComponent', () => {
   let component: ControlCenterListComponent;
   let fixture: ComponentFixture<ControlCenterListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllControlCentersSpy: any;
+  let storageService: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};

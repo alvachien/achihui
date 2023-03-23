@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import { LogLevel, AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
@@ -54,14 +54,14 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering AccountCategoryListComponent fetchAllAccountCategories failed ${error}`,
+            `AC_HIH_UI [Error]: Entering AccountCategoryListComponent fetchAllAccountCategories failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

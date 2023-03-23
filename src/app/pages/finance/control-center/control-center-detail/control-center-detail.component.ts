@@ -47,7 +47,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
     this.isLoadingResults = false;
-    this.arMembers = this.homeService.ChosedHome!.Members.slice();
+    this.arMembers = (this.homeService.ChosedHome?.Members ?? []).slice();
 
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl(),
@@ -67,7 +67,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -75,6 +75,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
+          // Do nothing
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
@@ -96,7 +97,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 finalize(() => (this.isLoadingResults = false))
               )
               .subscribe({
-                next: (rsts: any[]) => {
+                next: (rsts) => {
                   this.existedCC = rsts[0];
 
                   this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
@@ -111,15 +112,15 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                     this.detailFormGroup.enable();
                   }
                 },
-                error: (error: any) => {
+                error: (err) => {
                   ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`,
+                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${err}`,
                     ConsoleLogTypeEnum.error
                   );
 
                   this.modalService.create({
                     nzTitle: translate('Common.Error'),
-                    nzContent: error.toString(),
+                    nzContent: err.toString(),
                     nzClosable: true,
                   });
                 },
@@ -146,15 +147,15 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                   // Load all control centers.
                   this.existedCC = cclist;
                 },
-                error: (error: any) => {
+                error: (err) => {
                   ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${error}`,
+                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${err}`,
                     ConsoleLogTypeEnum.error
                   );
 
                   this.modalService.create({
                     nzTitle: translate('Common.Error'),
-                    nzContent: error.toString(),
+                    nzContent: err.toString(),
                     nzClosable: true,
                   });
                 },
@@ -253,8 +254,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           // Finalized
         })
       )
-      .subscribe(
-        (x: ControlCenter) => {
+      .subscribe({
+        next: (x: ControlCenter) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _createControlCenter`,
             ConsoleLogTypeEnum.debug
@@ -263,27 +264,27 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           // Show the result dialog
           this.router.navigate(['/finance/controlcenter/display/', x.Id]);
         },
-        (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _createControlCenter failed: ${error}`,
+            `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _createControlCenter failed: ${err}`,
             ConsoleLogTypeEnum.error
           );
           // Show error message
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
-        }
-      );
+        },
+      });
   }
 
   private _updateControlCenter(changedContent: any): void {
     this.odataService
       .changeControlCenterByPatch(this.routerID, changedContent)
       .pipe(takeUntil(this._destroyed$!))
-      .subscribe(
-        (x: any) => {
+      .subscribe({
+        next: (x) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _updateControlCenter`,
             ConsoleLogTypeEnum.error
@@ -292,7 +293,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           // Show the result dialog
           this.router.navigate(['/finance/controlcenter/display/', x.Id]);
         },
-        (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _updateControlCenter`,
             ConsoleLogTypeEnum.error
@@ -300,10 +301,10 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           // Show error message
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
-        }
-      );
+        },
+      });
   }
 }

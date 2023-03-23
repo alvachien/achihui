@@ -66,7 +66,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   chartOrderOption?: EChartsOption;
 
   get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
   constructor(

@@ -185,7 +185,7 @@ export class EventStorageService {
           );
 
           const hd: GeneralEvent = new GeneralEvent();
-          hd.onSetData(response as any);
+          hd.onSetData(response);
 
           this.bufferedGeneralEvents.set(hd.ID ?? 0, hd);
 
@@ -495,7 +495,7 @@ export class EventStorageService {
     params = params.append('top', top.toString());
     params = params.append('skip', skip.toString());
 
-    return this._http.get(this.eventHabitUrl, { headers: headers }).pipe(
+    return this._http.get(this.eventHabitUrl, { headers: headers, params: params }).pipe(
       map((val: SafeAny) => {
         const rslts: EventHabit[] = [];
         if (val && val.contentList && val.contentList instanceof Array) {
@@ -517,7 +517,7 @@ export class EventStorageService {
           console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllHabitEvents failed ${error}`);
         }
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       })
     );
   }
@@ -572,7 +572,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService readHabitEvent failed ${error}`);
           }
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -616,7 +616,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -651,7 +651,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -687,7 +687,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }

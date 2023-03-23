@@ -320,14 +320,11 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.fetchAllHabitEvents(100, 0).subscribe(
-        (data: any) => {
+      service.fetchAllHabitEvents(100, 0).subscribe({
+        next: (data) => {
           expect(data.totalCount).toEqual(0);
-        },
-        (fail: any) => {
-          // Empty
         }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -340,14 +337,14 @@ describe('EventStorageService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.fetchAllHabitEvents(100, 0).subscribe(
-        (data: any) => {
+      service.fetchAllHabitEvents(100, 0).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
         }
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.eventHabitUrl;
@@ -369,14 +366,11 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.readHabitEvent(1).subscribe(
-        (data: any) => {
+      service.readHabitEvent(1).subscribe({
+        next: (data) => {
           expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
         }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -389,14 +383,14 @@ describe('EventStorageService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.readHabitEvent(1).subscribe(
-        (data: any) => {
+      service.readHabitEvent(1).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
         }
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.eventHabitUrl + '/1' && requrl.params.has('hid');
@@ -425,14 +419,11 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.generateHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.generateHabitEvent(hevnt).subscribe({
+        next: (data) => {
           expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
         }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -457,14 +448,14 @@ describe('EventStorageService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.generateHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.generateHabitEvent(hevnt).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
         }
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return (
@@ -497,14 +488,11 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.createHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.createHabitEvent(hevnt).subscribe({
+        next: (data) => {
           expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
         }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -517,14 +505,14 @@ describe('EventStorageService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.createHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.createHabitEvent(hevnt).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
         }
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === service.eventHabitUrl && requrl.params.has('hid');
@@ -554,14 +542,11 @@ describe('EventStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.updateHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.updateHabitEvent(hevnt).subscribe({
+        next: (data) => {
           expect(data).toBeTruthy();
-        },
-        (fail: any) => {
-          // Empty
         }
-      );
+      });
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -574,14 +559,14 @@ describe('EventStorageService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'server failed';
-      service.updateHabitEvent(hevnt).subscribe(
-        (data: any) => {
+      service.updateHabitEvent(hevnt).subscribe({
+        next: () => {
           fail('expected to fail');
         },
-        (error: any) => {
-          expect(error).toContain(msg);
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
         }
-      );
+      });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === service.eventHabitUrl + '/11' && requrl.params.has('hid');

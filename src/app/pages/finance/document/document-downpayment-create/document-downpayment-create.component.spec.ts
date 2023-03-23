@@ -149,6 +149,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(fetchAllAssetCategoriesSpy).not.toHaveBeenCalled();
   });
 
   describe('working with data', () => {
@@ -463,7 +464,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Now go to step 1
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 

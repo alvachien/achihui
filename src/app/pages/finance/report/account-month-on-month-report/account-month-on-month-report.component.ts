@@ -7,6 +7,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin } from 'rxjs';
 
 import { FinanceOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -71,7 +72,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
     });
   }
 
-  onChanges(event: any): void {
+  onChanges(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent onChanges with ${this.selectedAccountID}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug
@@ -93,9 +94,9 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
         // Fetch out data
         const arAxis: string[] = [];
 
-        const arIn: any[] = [];
-        const arOut: any[] = [];
-        const arBal: any[] = [];
+        const arIn: SafeAny[] = [];
+        const arOut: SafeAny[] = [];
+        const arBal: SafeAny[] = [];
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
@@ -232,7 +233,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
           ],
         };
       },
-      error: (err: any) => {
+      error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent refreshData failed ${err}`,
           ConsoleLogTypeEnum.error

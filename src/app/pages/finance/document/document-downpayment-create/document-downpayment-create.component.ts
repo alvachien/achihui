@@ -33,6 +33,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-downpayment-create',
@@ -65,7 +66,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // Step: Account Extra Info
   public accountExtraInfoFormGroup: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public isDocPosting = false;
   // Step: Result
   public docIdCreated?: number;

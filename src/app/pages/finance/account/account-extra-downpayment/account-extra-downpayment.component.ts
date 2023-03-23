@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -16,7 +16,6 @@ import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
 
 import {
   AccountExtraAdvancePayment,
@@ -28,8 +27,10 @@ import {
   ModelUtility,
   TranType,
   RepeatFrequencyEnum,
+  UIDisplayString,
 } from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-account-extra-downpayment',
@@ -52,12 +53,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
-  private _onChange?: (val: any) => void;
+  private _onChange?: (val: SafeAny) => void;
   private _onTouched?: () => void;
   private _refDocID: number | null = null;
 
   public currentMode = '';
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public arFrequencies: UIDisplayString[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   get refDocId(): number | null {
     return this._refDocID;
   }
@@ -181,7 +182,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     const datInput: RepeatedDatesWithAmountAPIInput = {
       StartDate: objval.StartDate.clone(),
       EndDate: objval.EndDate.clone(),
-      RepeatType: objval.RepeatType!,
+      RepeatType: objval.RepeatType ?? RepeatFrequencyEnum.Day,
       Desp: objval.Comment,
       TotalAmount: this.tranAmount,
     };
@@ -196,9 +197,9 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
             rsts.forEach((rst: RepeatedDatesWithAmountAPIOutput, idx: number) => {
               const item: TemplateDocADP = new TemplateDocADP();
-              item.HID = this.homeService.ChosedHome!.ID;
+              item.HID = this.homeService.ChosedHome?.ID ?? 0;
               item.DocId = idx + 1;
-              item.TranType = this.tranType!;
+              item.TranType = this.tranType ?? 0;
               item.TranDate = rst.TranDate;
               item.TranAmount = rst.TranAmount;
               item.Desp = rst.Desp;
@@ -270,7 +271,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
@@ -279,7 +280,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     this._onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug

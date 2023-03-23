@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
-import { LogLevel, TranType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { TranType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
@@ -54,14 +54,14 @@ export class TranTypeListComponent implements OnInit, OnDestroy {
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering TranTypeListComponent OnInit, fetchAllTranTypes failed ${error}`,
+            `AC_HIH_UI [Error]: Entering TranTypeListComponent OnInit, fetchAllTranTypes failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

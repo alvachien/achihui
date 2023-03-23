@@ -1,36 +1,25 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { EventUIModule } from 'src/app/pages/event/event-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, financeAccountCategoryCash, Account, AccountStatusEnum } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
+import { UserAuthInfo } from '../../../../model';
 import { NormalEventListComponent } from './normal-event-list.component';
+import { SafeAny } from 'src/common';
 
 describe('NormalEventListComponent', () => {
   let component: NormalEventListComponent;
   let fixture: ComponentFixture<NormalEventListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchGeneralEventsSpy: any;
+  let storageService: SafeAny;
+  let fetchGeneralEventsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};

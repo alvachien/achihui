@@ -9,7 +9,6 @@ import {
   discardPeriodicTasks,
 } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,29 +32,29 @@ import {
   financeAccountCategoryAsset,
   Document,
   DocumentItem,
-  Account,
   AccountExtraAsset,
 } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('DocumentAssetBuyCreateComponent', () => {
   let component: DocumentAssetBuyCreateComponent;
   let fixture: ComponentFixture<DocumentAssetBuyCreateComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAssetCategoriesSpy: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  let createAssetBuyinDocumentSpy: any;
+  let storageService: SafeAny;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAssetCategoriesSpy: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  let createAssetBuyinDocumentSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  let assetAccount: any;
+  let assetAccount: SafeAny;
   const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 

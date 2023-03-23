@@ -19,17 +19,18 @@ import {
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 describe('ControlCenterHierarchyComponent', () => {
   let component: ControlCenterHierarchyComponent;
   let fixture: ComponentFixture<ControlCenterHierarchyComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllOrdersSpy: any;
-  let searchDocItemSpy: any;
+  let storageService: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let searchDocItemSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
 

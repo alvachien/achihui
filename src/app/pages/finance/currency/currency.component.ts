@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, finalize } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
 
@@ -36,11 +36,11 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this.currService
       .fetchAllCurrencies()
       .pipe(
-        takeUntil(this._destroyed$!),
+        takeUntil(this._destroyed$),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: any) => {
+        next: (x) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering CurrencyComponent OnInit fetchAllCurrencies...`,
             ConsoleLogTypeEnum.debug
@@ -49,15 +49,15 @@ export class CurrencyComponent implements OnInit, OnDestroy {
             this.dataSource = x;
           }
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${error}...`,
+            `AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${err}...`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

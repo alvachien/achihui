@@ -1,46 +1,36 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../services';
-import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel } from '../../../model';
+import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from './document-item-view.component';
+import { SafeAny } from 'src/common';
 
 describe('DocumentItemViewComponent', () => {
   let component: DocumentItemViewComponent;
   let fixture: ComponentFixture<DocumentItemViewComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllDocTypesSpy: any;
-  let fetchAllCurrenciesSpy: any;
-  // let fetchAllAccountCategoriesSpy: any;
-  let fetchAllTranTypesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  // let fetchAllDocumentsSpy: any;
-  let searchDocItemSpy: any;
+  let storageService: SafeAny;
+  let fetchAllDocTypesSpy: SafeAny;
+  let fetchAllCurrenciesSpy: SafeAny;
+  // let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllTranTypesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  // let fetchAllDocumentsSpy: SafeAny;
+  let searchDocItemSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
 
   beforeAll(() => {
@@ -145,6 +135,7 @@ describe('DocumentItemViewComponent', () => {
       fixture.detectChanges();
 
       expect(component.listDocItem.length).toEqual(0);
+      expect(searchDocItemSpy).not.toHaveBeenCalled();
     }));
 
     xit('should display error when Service fails on Account', fakeAsync(() => {

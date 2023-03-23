@@ -35,7 +35,6 @@ import {
   FinanceReportByAccount,
   FinanceReportByControlCenter,
   FinanceReportByOrder,
-  FinanceReportEntryByTransactionType,
 } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { ReportComponent } from './report.component';

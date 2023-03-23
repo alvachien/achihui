@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import {
-  FormBuilder,
   UntypedFormGroup,
   Validators,
   UntypedFormControl,
@@ -14,15 +13,13 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate } from '@ngneat/transloco';
-import { UIMode, isUIEditable } from 'actslib';
+import { UIMode } from 'actslib';
 
 import {
   Document,
   DocumentItem,
-  getUIModeString,
   Account,
   AccountExtraAsset,
-  UICommonLabelEnum,
   ModelUtility,
   AssetCategory,
   BuildupAccountForSelection,
@@ -43,6 +40,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-asset-buy-create',
@@ -61,7 +59,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   // Step: Items
   public itemFormGroup: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public isDocPosting = false;
   // Step: Result
   public docIdCreated?: number;
@@ -110,7 +108,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this._docDate = moment();
     this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
     // this.assetAccount = new AccountExtraAsset();
-    this.arMembers = this.homeService.ChosedHome!.Members.slice();
+    this.arMembers = this.homeService.ChosedHome?.Members.slice() ?? [];
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -151,7 +149,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-        next: (rst: any) => {
+        next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
             ConsoleLogTypeEnum.debug
@@ -172,15 +170,15 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
           this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
           this.uiOrderFilter = undefined;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -370,7 +368,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     );
 
     if (this.IsLegacyAsset) {
-      const datBuy: any = group.get('headerControl')?.value.TranDate;
+      const datBuy = group.get('headerControl')?.value.TranDate;
       if (!datBuy) {
         return { dateisinvalid: true };
       }
