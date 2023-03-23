@@ -20,6 +20,7 @@ import {
   BlogPostTag,
 } from '../../../../model';
 import { BlogOdataService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-blog-post-detail',
@@ -110,6 +111,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             // this.odataService.fetchAllPostTags(10, 0),
           ])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -168,6 +170,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           this.odataService
             .fetchAllCollections()
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -214,21 +217,29 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       if (this.uiMode === UIMode.Create) {
         this.instancePost = new BlogPost();
       }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.instancePost!.title = frmvalue.titleControl;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.instancePost!.brief = frmvalue.briefControl;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.instancePost!.content = frmvalue.contentControl;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.instancePost!.format = 1;
       if (frmvalue.statusControl === 'PublicPublish') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.instancePost!.status = BlogPostStatus_PublishAsPublic;
       } else if (frmvalue.statusControl === 'PrivatePublish') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.instancePost!.status = BlogPostStatus_PublishAsPrivate;
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.instancePost!.status = BlogPostStatus_Draft;
       }
       // Collection
-      const arcoll = frmvalue.collectionControl as any[];
+      const arcoll = frmvalue.collectionControl as SafeAny[];
       if (arcoll) {
         arcoll.forEach((element) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.instancePost!.BlogPostCollections.push({
             CollectionID: element,
             PostID: this.instancePost!.id,
@@ -236,11 +247,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         });
       }
       // Tags
-      const artags = frmvalue.tagControl as any[];
+      const artags = frmvalue.tagControl as SafeAny[];
       if (artags) {
         artags.forEach((tag) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.instancePost!.BlogPostTags.push({
             Tag: tag,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             PostID: this.instancePost!.id,
           } as BlogPostTag);
         });
@@ -248,28 +261,32 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
       if (this.uiMode === UIMode.Create) {
         this.odataService
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .createPost(this.instancePost!)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .pipe(takeUntil(this._destroyed$!))
           .subscribe({
             next: (e) => {
               // Succeed.
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
                 this.modalService.confirm({
                   nzTitle: translate('Common.Confirm'),
                   nzContent: translate('Blog.DeployContentNow'),
                   nzOkText: 'OK',
                   nzCancelText: translate('Common.Cancel'),
-                  nzOnOk: (okrst) => {
+                  nzOnOk: () => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     this.odataService.deployPost(e.id!).subscribe({
-                      next: (rst) => {
+                      next: () => {
                         // Show success dialog
                         const ref: NzModalRef = this.modalService.success({
                           nzTitle: translate('Blog.DeploySuccess'),
                           nzContent: translate('Common.WillCloseIn1Second'),
                         });
                         ref.afterClose.subscribe({
-                          next: (next) => {
-                            this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                          next: () => {
+                            this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
                           },
                         });
                         setTimeout(() => {
@@ -285,12 +302,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       },
                     });
                   },
-                  nzOnCancel: (cancrst) => {
-                    this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                  nzOnCancel: () => {
+                    this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
                   },
                 });
               } else {
-                this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
               }
             },
             error: (err) => {
@@ -306,30 +323,35 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             },
           });
       } else if (this.uiMode === UIMode.Update) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.instancePost!.id = this.routerID;
         this.odataService
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .changePost(this.instancePost!)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           .pipe(takeUntil(this._destroyed$!))
           .subscribe({
             next: (e) => {
               // Succeed.
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               if (this.instancePost!.status === BlogPostStatus_PublishAsPublic) {
                 this.modalService.confirm({
                   nzTitle: translate('Common.Confirm'),
                   nzContent: translate('Blog.DeployContentNow'),
                   nzOkText: 'OK',
                   nzCancelText: translate('Common.Cancel'),
-                  nzOnOk: (okrst) => {
+                  nzOnOk: () => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     this.odataService.deployPost(e.id!).subscribe({
-                      next: (rst) => {
+                      next: () => {
                         // Show success dialog
                         const ref: NzModalRef = this.modalService.success({
                           nzTitle: translate('Blog.DeploySuccess'),
                           nzContent: translate('Common.WillCloseIn1Second'),
                         });
                         ref.afterClose.subscribe({
-                          next: (next) => {
-                            this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                          next: () => {
+                            this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
                           },
                         });
                         setTimeout(() => {
@@ -345,12 +367,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                       },
                     });
                   },
-                  nzOnCancel: (cancrst) => {
-                    this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                  nzOnCancel: () => {
+                    this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
                   },
                 });
               } else {
-                this.router.navigate(['/blog/post/display/' + e.id!.toString()]);
+                this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
               }
             },
             error: (err) => {

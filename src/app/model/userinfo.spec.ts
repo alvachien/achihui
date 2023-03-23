@@ -2,6 +2,7 @@
 // Unit test for userinfo.ts
 //
 
+import { SafeAny } from 'src/common';
 import { UserDetail, UserAuthInfo } from './userinfo';
 
 describe('UserDetail', () => {
@@ -31,7 +32,7 @@ describe('UserDetail', () => {
 
 describe('UserAuthInfo', () => {
   let authinfo: UserAuthInfo;
-  let usrvalue: any;
+  let usrvalue: SafeAny;
 
   beforeEach(() => {
     authinfo = new UserAuthInfo();

@@ -55,14 +55,14 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllOrganizations failed ${error}`,
+            `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllOrganizations failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -96,7 +96,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteOrganization(pid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });

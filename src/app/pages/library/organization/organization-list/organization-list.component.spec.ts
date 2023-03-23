@@ -72,5 +72,10 @@ describe('OrganizationListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchAllOrganizationsSpy).not.toHaveBeenCalled();
+    }
   });
 });

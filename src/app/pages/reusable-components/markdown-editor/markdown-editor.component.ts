@@ -24,14 +24,14 @@ import * as moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const monaco: any;
 
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 import { translate } from '@ngneat/transloco';
+import { SafeAny } from 'src/common';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -67,7 +67,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     errorColor: '#cc0000',
   };
 
-  get uploadHeader(): any {
+  get uploadHeader(): SafeAny {
     return {
       Accept: 'application/json',
       Authorization: 'Bearer ' + this.authService.authSubject.getValue().getAccessToken(),
@@ -75,7 +75,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  private _onChange?: (val: any) => void;
+  private _onChange?: (val: SafeAny) => void;
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _onTouched?: () => void;
 
@@ -153,31 +153,36 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     );
   }
 
-  onEditorInit(e: any): void {
+  onEditorInit(e: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit...',
       ConsoleLogTypeEnum.debug
     );
 
     this.editor = e;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.editor!.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
     this.setEditorReadOnly();
     if (this.content) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.editor!.setValue(this.content);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.editor!.onDidChangeModelContent((ec) => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
         ConsoleLogTypeEnum.debug
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.content = this.editor!.getValue();
       this.changeDetect.detectChanges();
 
       this.onChange();
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.editor!.onDidScrollChange((ec) => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
@@ -192,12 +197,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       } else {
         const percent = ec.scrollTop / ec.scrollHeight;
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.previewElement!.nativeElement.scrollTop = percent * this.previewElement!.nativeElement.scrollHeight;
       }
     });
   }
 
-  writeValue(val: any): void {
+  writeValue(val: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
       ConsoleLogTypeEnum.debug
@@ -205,14 +211,14 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
 
     this.value = val;
   }
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
     );
     this._onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug
@@ -270,6 +276,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -293,6 +300,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -316,6 +324,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -338,6 +347,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -379,6 +389,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -402,6 +413,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -425,6 +437,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -448,6 +461,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -471,6 +485,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -494,6 +509,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -516,6 +532,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -538,6 +555,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -560,6 +578,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -583,6 +602,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -611,6 +631,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
@@ -638,6 +659,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
         if (filename) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           cursels!.forEach((sel) => {
             arrst.push({
               range: sel,
@@ -646,6 +668,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
           });
           curmodel.pushEditOperations(cursels, arrst, () => null);
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           cursels!.forEach((sel) => {
             arrst.push({
               range: sel,
@@ -680,6 +703,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const isLt2M = file.size! / 1024 / 1024 < 2;
       if (!isLt2M) {
         // TBD.
@@ -727,6 +751,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       const cursels = this.editor.getSelections();
       if (curmodel) {
         const arrst: editor.IIdentifiedSingleEditOperation[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,

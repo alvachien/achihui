@@ -10,6 +10,7 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '../../../../model';
 import { popupDialog } from '../../../message-dialog';
 import { translate } from '@ngneat/transloco';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-control-center-detail',
@@ -93,6 +94,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
             forkJoin([this.odataService.fetchAllControlCenters(), this.odataService.readControlCenter(this.routerID)])
               .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
                 finalize(() => (this.isLoadingResults = false))
               )
@@ -134,6 +136,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             this.odataService
               .fetchAllControlCenters()
               .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
                 finalize(() => (this.isLoadingResults = false))
               )
@@ -237,7 +240,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private _generateObject(): ControlCenter {
     const detailObject: ControlCenter = new ControlCenter();
-    detailObject.HID = this.homeService.ChosedHome!.ID;
+    detailObject.HID = this.homeService.ChosedHome?.ID ?? 0;
     detailObject.Name = this.detailFormGroup.get('nameControl')?.value;
     detailObject.Comment = this.detailFormGroup.get('cmtControl')?.value;
     detailObject.ParentId = this.detailFormGroup.get('parentControl')?.value;
@@ -249,6 +252,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this.odataService
       .createControlCenter(detailObject)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           // Finalized
@@ -279,9 +283,10 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _updateControlCenter(changedContent: any): void {
+  private _updateControlCenter(changedContent: SafeAny): void {
     this.odataService
       .changeControlCenterByPatch(this.routerID, changedContent)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (x) => {

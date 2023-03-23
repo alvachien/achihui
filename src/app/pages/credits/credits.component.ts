@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-credits',
@@ -6,7 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./credits.component.less'],
 })
 export class CreditsComponent {
-  creditApp: any[] = [
+  creditApp: SafeAny[] = [
     {
       name: 'Angular',
       url: 'https://angular.io',
@@ -43,6 +44,4 @@ export class CreditsComponent {
       desp: 'Free. Cross-platform. Open source. A developer platform for building all your apps.',
     },
   ];
-
-  constructor() {}
 }

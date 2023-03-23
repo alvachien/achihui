@@ -34,7 +34,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
   public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public arFrequencies: SafeAny[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSet: GeneralEvent[] = [];
 
   get isEditable(): boolean {
@@ -71,7 +71,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -99,6 +99,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .readRecurEvent(this.routerID)
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -211,13 +212,14 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
     if (enddt) {
       objtbo.EndDate = moment(enddt);
     }
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Content = this.detailFormGroup.get('contentControl')?.value;
     objtbo.repeatType = this.detailFormGroup.get('frqControl')?.value as RepeatFrequencyEnum;
 
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createRecurEvent(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

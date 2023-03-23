@@ -107,6 +107,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
     this.odataService
       .deleteControlCenter(rid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: () => {

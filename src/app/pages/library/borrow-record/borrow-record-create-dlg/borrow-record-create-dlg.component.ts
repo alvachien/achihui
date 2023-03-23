@@ -116,8 +116,8 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
 
   handleOk() {
     const record: BookBorrowRecord = new BookBorrowRecord();
-    record.BookID = this.selectedBook?.ID!;
-    record.BorrowFrom = this.selectedOrg?.ID!;
+    record.BookID = this.selectedBook?.ID ?? 0;
+    record.BorrowFrom = this.selectedOrg?.ID ?? 0;
     record.Comment = this.detailFormGroup.get('cmtControl')?.value;
     const [startdt, enddt] = this.detailFormGroup.get('dateRangeControl')?.value;
     record.FromDate = moment(startdt);
@@ -125,10 +125,10 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     record.HasReturned = this.detailFormGroup.get('hasRtnedControl')?.value;
 
     this.storageService.createBookBorrowRecord(record).subscribe({
-      next: (val) => {
+      next: () => {
         this.modal.triggerOk();
       },
-      error: (err) => {
+      error: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',
           ConsoleLogTypeEnum.error

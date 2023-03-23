@@ -1,5 +1,6 @@
 import * as hih from './common';
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 
@@ -131,7 +132,7 @@ export class Currency extends hih.BaseModel {
     this._symbol = null;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._curr === null || this._curr.length <= 0) {
@@ -149,7 +150,7 @@ export class Currency extends hih.BaseModel {
   }
 
   public override writeJSONObject(): CurrencyJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.Curr = this.Currency;
     rstObj.Name = this.Name;
     rstObj.Symbol = this.Symbol;
@@ -236,7 +237,7 @@ export class AccountCategory extends hih.BaseModel {
     this._comment = null;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length <= 0) {
@@ -248,7 +249,7 @@ export class AccountCategory extends hih.BaseModel {
   }
 
   public override writeJSONObject(): AccountCategoryJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.ID = this.ID;
     rstObj.HomeID = this.HID;
     rstObj.Name = this.Name;
@@ -332,7 +333,7 @@ export class DocumentType extends hih.BaseModel {
     this._comment = null;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length <= 0) {
@@ -344,7 +345,7 @@ export class DocumentType extends hih.BaseModel {
   }
 
   public override writeJSONObject(): DocumentTypeJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.HomeID = this.HID;
     rstObj.ID = this.Id;
     rstObj.Name = this.Name;
@@ -423,7 +424,7 @@ export class AssetCategory extends hih.BaseModel {
     this._desp = null;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length < 0) {
@@ -435,7 +436,7 @@ export class AssetCategory extends hih.BaseModel {
   }
 
   public override writeJSONObject(): AssetCategoryJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.ID = this.ID;
     rstObj.HomeID = this.HID;
     rstObj.Name = this._name;
@@ -510,9 +511,9 @@ export interface AccountJson extends hih.BaseModelJson {
   Status?: string;
 
   // Extra. info
-  ExtraDP?: any;
-  ExtraAsset?: any;
-  ExtraLoan?: any;
+  ExtraDP?: SafeAny;
+  ExtraAsset?: SafeAny;
+  ExtraLoan?: SafeAny;
 }
 
 /**
@@ -604,7 +605,7 @@ export class Account extends hih.BaseModel {
       if (this.CategoryId) {
         if (context && context.Categories instanceof Array && context.Categories.length > 0) {
           let bCategory = false;
-          for (const ctgy of context.Categories) {
+          for (const ctgy of context.Categories) {            
             if (+ctgy.ID! === +this.CategoryId) {
               bCategory = true;
               break;
@@ -639,7 +640,7 @@ export class Account extends hih.BaseModel {
   }
 
   public override writeJSONObject(): AccountJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.Status = AccountStatusEnum[this.Status];
@@ -852,8 +853,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     return aobj;
   }
 
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj: SafeAny = super.writeJSONObject();
     rstobj.Direct = this.Direct;
     rstobj.StartDate = this._startDate.format(hih.momentDateFormat);
     rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
@@ -863,14 +864,14 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     rstobj.Comment = this.Comment;
     rstobj.DPTmpDocs = [];
     for (const tdoc of this.dpTmpDocs) {
-      const tdocjson: any = tdoc.writeJSONObject();
+      const tdocjson = tdoc.writeJSONObject();
       rstobj.DPTmpDocs.push(tdocjson);
     }
 
     return rstobj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Direct) {
@@ -979,7 +980,7 @@ export class AccountExtraAsset extends AccountExtra {
   }
 
   public override writeJSONObject(): AccountExtraAssetJson {
-    const rstobj: any = super.writeJSONObject();
+    const rstobj: SafeAny = super.writeJSONObject();
     rstobj.CategoryID = this.CategoryID;
     rstobj.Name = this.Name;
     rstobj.Comment = this.Comment;
@@ -1047,7 +1048,7 @@ export interface AccountExtraLoanJson extends AccountExtraBaseJson {
   PayingAccount?: number;
   Partner: string;
 
-  LoanTmpDocs: any[];
+  LoanTmpDocs: SafeAny[];
 }
 
 /**
@@ -1265,7 +1266,7 @@ export class AccountExtraLoan extends AccountExtra {
     }
     rstobj.LoanTmpDocs = [];
     for (const tdoc of this.loanTmpDocs) {
-      const tdocjson: any = tdoc.writeJSONObject();
+      const tdocjson = tdoc.writeJSONObject();
       rstobj.LoanTmpDocs.push(tdocjson);
     }
     // if (this._firstRepayDate) {
@@ -1428,7 +1429,7 @@ export class ControlCenter extends hih.BaseModel {
     this._parid = undefined;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let bRst = super.onVerify(context);
     if (bRst) {
       // HID
@@ -1472,7 +1473,7 @@ export class ControlCenter extends hih.BaseModel {
   }
 
   public override writeJSONObject(): ControlCenterJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.HomeID = this.HID;
     rstObj.ID = this.Id;
     rstObj.Name = this.Name;
@@ -1644,7 +1645,7 @@ export class Order extends hih.BaseModel {
       // S. Rules
       if (this.SRules.length > 0) {
         // Check for duplicated IDs
-        let idMap: Map<number, any> = new Map();
+        let idMap: Map<number, SafeAny> = new Map();
         this.SRules.forEach((val: SettlementRule) => {
           if (val.RuleId && !idMap.has(val.RuleId)) {
             idMap.set(val.RuleId, undefined);
@@ -1698,7 +1699,7 @@ export class Order extends hih.BaseModel {
   }
 
   public override writeJSONObject(): OrderJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.Name = this.Name;
@@ -1708,7 +1709,7 @@ export class Order extends hih.BaseModel {
     rstObj.SRule = [];
 
     for (const srule of this.SRules) {
-      const sruleinfo: any = srule.writeJSONObject();
+      const sruleinfo = srule.writeJSONObject();
       // sruleinfo.ordId = this.Id;
       rstObj.SRule.push(sruleinfo);
     }
@@ -1822,7 +1823,7 @@ export class SettlementRule {
     // Control center
     if (context !== undefined && context.ControlCenters && context.ControlCenters.length > 0) {
       if (
-        context.ControlCenters.findIndex((value: any) => {
+        context.ControlCenters.findIndex((value) => {
           return value.Id === this.ControlCenterId;
         }) !== -1
       ) {
@@ -1863,7 +1864,7 @@ export class SettlementRule {
   }
 
   public writeJSONObject(): SettlementRuleJson {
-    const rstObj: any = {};
+    const rstObj: SafeAny = {};
     rstObj.RuleID = this.RuleId;
     rstObj.ControlCenterID = this.ControlCenterId;
     rstObj.Precent = this.Precent;
@@ -1964,7 +1965,7 @@ export class TranType extends hih.BaseModel {
     super.onInit();
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (!this._name) {
@@ -1976,7 +1977,7 @@ export class TranType extends hih.BaseModel {
   }
 
   public override writeJSONObject(): TranTypeJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     return rstObj;
   }
 
@@ -2264,7 +2265,7 @@ export class Document extends hih.BaseModel {
       if (this.Items instanceof Array && this.Items.length > 0) {
         // Check for duplicated IDs
         if (this.Items.length > 1) {
-          const idMap: Map<number, any> = new Map();
+          const idMap: Map<number, SafeAny> = new Map();
           this.Items.forEach((val: DocumentItem) => {
             if (val.ItemId && !idMap.has(val.ItemId)) {
               idMap.set(val.ItemId, undefined);
@@ -2347,7 +2348,7 @@ export class Document extends hih.BaseModel {
   }
 
   public override writeJSONObject(): DocumentJson {
-    const rstObj: any = super.writeJSONObject();
+    const rstObj = super.writeJSONObject();
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.DocType = this.DocType;
@@ -2372,7 +2373,7 @@ export class Document extends hih.BaseModel {
 
     rstObj.Items = [];
     for (const di of this.Items) {
-      const item: any = di.writeJSONObject();
+      const item = di.writeJSONObject();
       rstObj.Items.push(item);
     }
 
@@ -2718,7 +2719,7 @@ export class DocumentItem {
   }
 
   public writeJSONObject(): DocumentItemJson {
-    const rstObj: any = {
+    const rstObj: SafeAny = {
       // DocID: this.DocId,
       ItemID: this.ItemId,
       // AccountID: this.AccountId,
@@ -2872,16 +2873,17 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     this.TranDate = moment();
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     const vrst = super.onVerify(context);
     if (vrst) {
+      // DO nothing
     }
 
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstObj = super.writeJSONObject();
     if (this.DocId) {
       rstObj.DocumentID = this.DocId;
     }
@@ -2903,7 +2905,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     return rstObj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.DocumentID) {
@@ -2944,7 +2946,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
  * Tempalte doc for Advance payment
  */
 export class TemplateDocADP extends TemplateDocBase {
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -2972,14 +2974,14 @@ export class TemplateDocLoan extends TemplateDocBase {
     this._amtInterest = amt;
   }
 
-  public override writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstObj = super.writeJSONObject();
     rstObj.InterestAmount = this.InterestAmount;
 
     return rstObj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.InterestAmount) {
@@ -3099,7 +3101,7 @@ export class Plan extends hih.BaseModel {
     this._startDate = moment().startOf('day');
     this._targetDate = moment().add(1, 'y').startOf('day');
   }
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let bsuccess = super.onVerify(context);
     if (bsuccess) {
       // Check dates
@@ -3117,8 +3119,8 @@ export class Plan extends hih.BaseModel {
 
     return bsuccess;
   }
-  public override writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstObj = super.writeJSONObject();
 
     rstObj.ID = this.ID;
     rstObj.HomeID = this.HID;
@@ -3146,7 +3148,7 @@ export class Plan extends hih.BaseModel {
     rstObj.Description = this.Description;
     return rstObj;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
     if (data && data.ID) {
       this.ID = +data.ID;
@@ -3246,7 +3248,7 @@ export class FinanceReportBase {
     this._balance = bal;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.DebitBalance) {
       this.DebitBalance = +data.DebitBalance;
     } else {
@@ -3279,7 +3281,7 @@ export class FinanceReportByAccount extends FinanceReportBase {
   set AccountId(acid: number | undefined) {
     this._accountID = acid;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.AccountID) {
@@ -3291,7 +3293,7 @@ export class FinanceReportByAccount extends FinanceReportBase {
 export class FinanceReportByAccountMOM extends FinanceReportByAccount {
   public Month = 0;
 
-  public override onSetData(val: any) {
+  public override onSetData(val: SafeAny) {
     super.onSetData(val);
 
     if (val && val.Month) {
@@ -3334,7 +3336,7 @@ export class BalanceSheetReport extends FinanceReportBase {
     this._accountCtgyName = ctgyName;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.accountID) {
@@ -3365,7 +3367,7 @@ export class FinanceReportByControlCenter extends FinanceReportBase {
     this._ccID = ccid;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.ControlCenterID) {
@@ -3377,7 +3379,7 @@ export class FinanceReportByControlCenter extends FinanceReportBase {
 export class FinanceReportByControlCenterMOM extends FinanceReportByControlCenter {
   public Month = 0;
 
-  public override onSetData(val: any) {
+  public override onSetData(val: SafeAny) {
     super.onSetData(val);
 
     if (val && val.Month) {
@@ -3399,7 +3401,7 @@ export class FinanceReportByOrder extends FinanceReportBase {
     this._orderID = oid;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.OrderID) {
@@ -3444,7 +3446,7 @@ export class TranTypeReport {
 
   public TranDate?: moment.Moment;
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.tranType) {
       this.TranType = +data.tranType;
     }
@@ -3472,7 +3474,7 @@ export class MonthOnMonthReport {
   public expense = false;
   public tranAmount = 0;
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.year) {
       this.year = data.year;
     }
@@ -3502,7 +3504,7 @@ export class ReportTrendExData {
   expense = false;
   tranAmount = 0;
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.tranDate) {
       this.tranDate = moment(data.tranDate, hih.momentDateFormat);
     }
@@ -3559,7 +3561,7 @@ export class DocumentItemWithBalance {
     return this._tranDate.format(hih.momentDateFormat);
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.accountID) {
       this.AccountId = +data.accountID;
     }
@@ -3644,7 +3646,7 @@ export class DocumentWithPlanExgRate {
   public ExgRate2 = 0;
   public ExgRate_Plan2 = false;
 
-  public onSetData(jdata: any): void {
+  public onSetData(jdata: SafeAny): void {
     if (jdata && jdata.hid) {
       this.HID = +jdata.hid;
     }
@@ -3699,7 +3701,7 @@ export class DocumentCreatedFrequenciesByUser {
   public week: string | null = null;
   public amountOfDocuments: number | null = null;
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.userID) {
       this.userID = data.userID;
     }
@@ -3731,8 +3733,8 @@ export abstract class FinanceAssetDocumentAPIBase {
 
   public Items: DocumentItem[] = [];
 
-  public writeJSONObject(): any {
-    const rst: any = {
+  public writeJSONObject(): SafeAny {
+    const rst: SafeAny = {
       HID: this.HID,
       TranCurr: this.TranCurr,
       TranDate: this.TranDate,
@@ -3761,8 +3763,8 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
   public AccountOwner = '';
   public AccountAsset: AccountExtraAsset | null = null;
 
-  public override writeJSONObject(): any {
-    const rst: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rst = super.writeJSONObject();
     if (this.IsLegacy) {
       rst.IsLegacy = true;
     }
@@ -3780,8 +3782,8 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
   public AssetAccountID = 0;
   public TranAmount = 0;
 
-  public override writeJSONObject(): any {
-    const rst: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rst = super.writeJSONObject();
     rst.AssetAccountID = this.AssetAccountID;
     rst.TranAmount = this.TranAmount;
 
@@ -3795,8 +3797,8 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
 export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
   public AssetAccountID = 0;
 
-  public override writeJSONObject(): any {
-    const rst: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rst = super.writeJSONObject();
     rst.AssetAccountID = this.AssetAccountID;
     return rst;
   }
@@ -3887,7 +3889,7 @@ export class FinanceReportEntry {
   public HomeID = 0;
   public InAmount = 0;
   public OutAmount = 0;
-  public onSetData(val: any) {
+  public onSetData(val: SafeAny) {
     if (val && val.HomeID) {
       this.HomeID = val.HomeID;
     }
@@ -3902,7 +3904,7 @@ export class FinanceReportEntry {
 
 export class FinanceReportEntryMoM extends FinanceReportEntry {
   public Month = 0;
-  public override onSetData(val: any) {
+  public override onSetData(val: SafeAny) {
     super.onSetData(val);
     if (val && val.Month) {
       this.Month = val.Month;
@@ -3912,7 +3914,7 @@ export class FinanceReportEntryMoM extends FinanceReportEntry {
 
 export class FinanceReportEntryPerDate extends FinanceReportEntry {
   public transactionDate: moment.Moment = moment();
-  public override onSetData(val: any): void {
+  public override onSetData(val: SafeAny): void {
     super.onSetData(val);
     if (val && val.TransactionDate) {
       this.transactionDate = moment(val.TransactionDate, hih.momentDateFormat);
@@ -3924,7 +3926,7 @@ export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
   public TransactionType = 0;
   public TransactionTypeName = '';
 
-  public override onSetData(val: any) {
+  public override onSetData(val: SafeAny) {
     super.onSetData(val);
 
     if (val && val.TransactionType) {
@@ -3939,7 +3941,7 @@ export class FinanceReportEntryByTransactionType extends FinanceReportEntry {
 export class FinanceReportEntryByTransactionTypeMoM extends FinanceReportEntryByTransactionType {
   public Month = 0;
 
-  public override onSetData(val: any) {
+  public override onSetData(val: SafeAny) {
     super.onSetData(val);
 
     if (val && val.Month) {
@@ -3961,7 +3963,7 @@ export class FinanceReportEntryByAccountAndExpense {
   public IsExpense = false;
   public Balance = 0;
 
-  public onSetData(val: any): void {
+  public onSetData(val: SafeAny): void {
     if (val && val.HomeID) {
       this.HomeID = val.HomeID;
     }
@@ -3991,7 +3993,7 @@ export class FinanceOverviewKeyfigure {
   public CurrentMonthIncomePrecentage = 0;
   public CurrentMonthOutgoPrecentage = 0;
 
-  public onSetData(val: any): void {
+  public onSetData(val: SafeAny): void {
     if (val && val.HomeID) {
       this.HomeID = val.HomeID;
     }

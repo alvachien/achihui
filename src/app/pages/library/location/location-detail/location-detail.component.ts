@@ -65,7 +65,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -93,6 +93,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .readLocation(this.routerID)
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -157,11 +158,12 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
     objtbo.Comment = this.detailFormGroup.get('cmtControl')?.value;
     objtbo.LocType = this.detailFormGroup.get('locTypeControl')?.value as LocationTypeEnum;
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createLocation(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

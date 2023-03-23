@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit', ConsoleLogTypeEnum.debug);
 
-    this._authService.authContent.subscribe((x: any) => {
+    this._authService.authContent.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         'AC HIH UI [Debug]: Entering AppComponent authService.authContent subscribe',
         ConsoleLogTypeEnum.debug

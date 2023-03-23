@@ -129,6 +129,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterFn: null,
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           a
             .TransactionDate!.format(moment.HTML5_FMT.DATE)
             .localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
@@ -140,6 +141,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         listOfFilter: [],
         filterFn: null,
         filterMultiple: false,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         sortFn: (a: DocumentItemView, b: DocumentItemView) => a.TransactionType! - b.TransactionType!,
       },
       {
@@ -159,6 +161,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterFn: null,
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.getAccountName(a.AccountID!).localeCompare(this.getAccountName(b.AccountID!)),
       },
       {
@@ -169,6 +172,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterFn: null,
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.getControlCenterName(a.ControlCenterID!).localeCompare(this.getControlCenterName(b.ControlCenterID!)),
       },
       {
@@ -179,6 +183,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterFn: null,
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.getOrderName(a.OrderID!).localeCompare(this.getOrderName(b.OrderID!)),
       },
     ];

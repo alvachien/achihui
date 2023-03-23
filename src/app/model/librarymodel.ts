@@ -1,5 +1,6 @@
 import { Dictionary } from 'actslib';
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 import * as hih from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -56,7 +57,7 @@ export class PersonRole extends hih.BaseModel {
     this._cmt = '';
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
@@ -70,8 +71,8 @@ export class PersonRole extends hih.BaseModel {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstObj = super.writeJSONObject();
     if (this.ID > 0) {
       rstObj.Id = this.ID;
     }
@@ -85,7 +86,7 @@ export class PersonRole extends hih.BaseModel {
     return rstObj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -149,7 +150,7 @@ export class OrganizationType extends hih.BaseModel {
     this._cmt = '';
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
@@ -163,8 +164,8 @@ export class OrganizationType extends hih.BaseModel {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstObj = super.writeJSONObject();
     if (this.ID > 0) {
       rstObj.Id = this.ID;
     }
@@ -178,7 +179,7 @@ export class OrganizationType extends hih.BaseModel {
     return rstObj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -249,7 +250,7 @@ export class Person extends hih.MultipleNamesObject {
     this.Roles = [];
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       // Check types
@@ -275,7 +276,7 @@ export class Person extends hih.MultipleNamesObject {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
+  public override writeJSONObject(): SafeAny {
     const rst = super.writeJSONObject();
     if (this._id > 0) {
       rst.Id = this.ID;
@@ -299,7 +300,7 @@ export class Person extends hih.MultipleNamesObject {
 
     return rst;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
     if (data && data.Id) {
       this.ID = data.Id;
@@ -357,7 +358,7 @@ export class Organization extends hih.MultipleNamesObject {
     this.Types = [];
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       // Check types
@@ -382,7 +383,7 @@ export class Organization extends hih.MultipleNamesObject {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
+  public override writeJSONObject(): SafeAny {
     const rst = super.writeJSONObject();
     if (this._id > 0) {
       rst.Id = this.ID;
@@ -409,7 +410,7 @@ export class Organization extends hih.MultipleNamesObject {
 
     return rst;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
     if (data && data.Id) {
       this.ID = data.Id;
@@ -494,7 +495,7 @@ export class Location extends hih.BaseModel {
     this._cmt = '';
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (!this._hid) {
@@ -508,8 +509,8 @@ export class Location extends hih.BaseModel {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj = super.writeJSONObject();
     rstobj.Id = this.ID;
     rstobj.HomeID = this.HID;
     rstobj.Name = this.Name;
@@ -520,7 +521,7 @@ export class Location extends hih.BaseModel {
     return rstobj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -594,7 +595,7 @@ export class BookCategory extends hih.BaseModel {
     this._parid = null;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (this._name === null || this._name.length <= 0 || this._name.length > 30) {
@@ -608,8 +609,8 @@ export class BookCategory extends hih.BaseModel {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj = super.writeJSONObject();
     rstobj.Id = this.ID;
     if (this.HID !== null) {
       rstobj.HomeID = this.HID;
@@ -625,7 +626,7 @@ export class BookCategory extends hih.BaseModel {
     return rstobj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -736,7 +737,7 @@ export class Book extends hih.MultipleNamesObject {
     this.Locations = [];
     this.Presses = [];
   }
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (!this._hid) {
@@ -745,8 +746,8 @@ export class Book extends hih.MultipleNamesObject {
     }
     return vrst;
   }
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj = super.writeJSONObject();
     if (this._id > 0) {
       rstobj.Id = this._id;
     }
@@ -827,7 +828,7 @@ export class Book extends hih.MultipleNamesObject {
 
     return rstobj;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -999,7 +1000,7 @@ export class BookBorrowRecord extends hih.BaseModel {
     this.initCore();
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let vrst = super.onVerify(context);
     if (vrst) {
       if (!this._hid) {
@@ -1031,8 +1032,8 @@ export class BookBorrowRecord extends hih.BaseModel {
     return vrst;
   }
 
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj = super.writeJSONObject();
     if (this._id > 0) {
       rstobj.Id = this._id;
     }
@@ -1061,7 +1062,7 @@ export class BookBorrowRecord extends hih.BaseModel {
 
     return rstobj;
   }
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
     if (data && data.Id) {
       this.ID = data.Id;

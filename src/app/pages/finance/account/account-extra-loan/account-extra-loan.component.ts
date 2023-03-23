@@ -347,7 +347,9 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         monthPaid++;
         arKeepItems.push(tdl);
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (topDocID < tdl.DocId!) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           topDocID = tdl.DocId!;
         }
       }
@@ -357,8 +359,11 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     const val = this.value;
     const di: RepeatDatesWithAmountAndInterestAPIInput = {
       TotalAmount: this.tranAmount - amtTotal + amtPaid,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       TotalMonths: val.TotalMonths! - monthPaid,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       InterestRate: val.annualRate! / 100,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       StartDate: val.startDate!.clone(),
       InterestFreeLoan: val.InterestFree ? true : false,
       RepaymentMethod: val.RepayMethod,
@@ -374,6 +379,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
     this.odataService
       .calcLoanTmpDocs(di)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (x) => {
@@ -381,7 +387,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
           for (const rst of x) {
             ++rstidx;
             const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
-            tmpdoc.HID = this.homeService.ChosedHome!.ID;
+            tmpdoc.HID = this.homeService.ChosedHome?.ID ?? 0;
             tmpdoc.InterestAmount = rst.InterestAmount;
             tmpdoc.TranAmount = rst.TranAmount;
             tmpdoc.TranDate = rst.TranDate;

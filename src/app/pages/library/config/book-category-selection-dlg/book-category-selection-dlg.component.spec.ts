@@ -23,7 +23,7 @@ describe('BookCategorySelectionDlgComponent', () => {
   let readBookSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
-  const homeService: Partial<HomeDefOdataService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -33,9 +33,8 @@ describe('BookCategorySelectionDlgComponent', () => {
   });
 
   beforeEach(async () => {
-    const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const homeService: Partial<HomeDefOdataService> = {
+    homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],

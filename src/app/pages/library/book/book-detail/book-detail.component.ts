@@ -102,6 +102,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .readBook(this.routerID)
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -197,7 +198,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     });
     const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...',
@@ -205,7 +206,9 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       );
     });
   }
-  onAssignTranslator() {}
+  onAssignTranslator() {
+    // TBD.
+  }
   onAssignPress(): void {
     const setPress: Set<number> = new Set<number>();
     this.listPresses.forEach((prs) => {
@@ -356,6 +359,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createBook(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

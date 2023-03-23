@@ -269,9 +269,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
             let acntCtgyId = 0;
             let acntCtgyName = '';
             if (acntidx !== -1) {
-              acntName = arAcnts[acntidx].Name!;
-              acntCtgyId = arAcnts[acntidx].CategoryId!;
-              acntCtgyName = arAcnts[acntidx].CategoryName!;
+              acntName = arAcnts[acntidx].Name ?? '';
+              acntCtgyId = arAcnts[acntidx].CategoryId ?? 0;
+              acntCtgyName = arAcnts[acntidx].CategoryName ?? '';
             }
             this.arControlCenters = rst[2];
 
@@ -282,7 +282,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
               AccountCategoryName: acntCtgyName,
               SettleDate: new Date(),
               Amount: 0,
-              Currency: this.homeService.ChosedHome!.BaseCurrency,
+              Currency: this.homeService.ChosedHome?.BaseCurrency ?? '',
             };
             this.isAccountSettleDlgVisible = true;
           },
@@ -313,7 +313,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.selectedAccountForSettle.AccountID,
           moment(this.selectedAccountForSettle.SettleDate),
           this.selectedAccountForSettle.Amount,
-          this.selectedAccountForSettle.ControlCenterID!
+          this.selectedAccountForSettle.ControlCenterID ?? 0
         )
         .subscribe({
           next: (val) => {
@@ -377,6 +377,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
     forkJoin([this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -440,7 +441,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           // Child nodes!
           const node: NzTreeNodeOptions = {
             key: `a${val.Id}`,
-            title: val.Name!,
+            title: val.Name ?? '',
             isLeaf: true,
           };
           //node['closed'] = val.isClosed;

@@ -1,5 +1,6 @@
 import * as hih from './common';
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 
 /**
  * General event
@@ -111,14 +112,15 @@ export class GeneralEvent extends hih.BaseModel {
     this._ispublic = false;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     const vrst = super.onVerify(context);
     if (vrst) {
+      // Do nothing
     }
     return vrst;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -153,8 +155,8 @@ export class GeneralEvent extends hih.BaseModel {
     }
   }
 
-  public override writeJSONObject(): any {
-    const robj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const robj = super.writeJSONObject();
     robj.Id = this._id;
     robj.HomeID = this._hid;
     robj.Name = this._name;
@@ -266,7 +268,7 @@ export class RecurEvent extends hih.BaseModel {
     this._ispublic = false;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.Id) {
@@ -300,7 +302,7 @@ export class RecurEvent extends hih.BaseModel {
     }
     this._listEvents = [];
     if (data && data.RelatedEvents && data.RelatedEvents instanceof Array && data.RelatedEvents.length > 0) {
-      data.RelatedEvents.forEach((re: any) => {
+      data.RelatedEvents.forEach((re: SafeAny) => {
         const gevent: GeneralEvent = new GeneralEvent();
         gevent.onSetData(re);
         this._listEvents.push(gevent);
@@ -308,8 +310,8 @@ export class RecurEvent extends hih.BaseModel {
     }
   }
 
-  public override writeJSONObject(): any {
-    const robj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const robj = super.writeJSONObject();
     robj.Id = this._id;
     robj.HomeID = this._hid;
     robj.Name = this._name;
@@ -397,7 +399,7 @@ export class EventHabit extends hih.BaseModel {
     this._endDate = moment();
   }
 
-  override onSetData(data: any): void {
+  override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -454,8 +456,8 @@ export class EventHabit extends hih.BaseModel {
     }
   }
 
-  override writeJSONObject(): any {
-    const robj: any = super.writeJSONObject();
+  override writeJSONObject(): SafeAny {
+    const robj = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;
@@ -526,7 +528,7 @@ export class EventHabitDetail {
     this._name = name;
   }
 
-  onSetData(data: any): void {
+  onSetData(data: SafeAny): void {
     if (data && data.id) {
       this._id = +data.id;
     }
@@ -562,7 +564,7 @@ export class EventHabitCheckin {
     return '';
   }
 
-  onSetData(data: any): void {
+  onSetData(data: SafeAny): void {
     if (data && data.id) {
       this.id = data.id;
     }
@@ -583,8 +585,8 @@ export class EventHabitCheckin {
     }
   }
 
-  writeJSONObject(): any {
-    const robj: any = {};
+  writeJSONObject(): SafeAny {
+    const robj: SafeAny = {};
     if (this.id) {
       robj.id = this.id;
     }
@@ -627,7 +629,7 @@ export class HabitEventDetailWithCheckInStatistics {
     return '';
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.HID) {
       this.HID = +data.HID;
     }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -84,6 +84,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .readGeneralEvent(this.routerID)
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -159,17 +160,18 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     if (enddt) {
       objtbo.EndDate = moment(enddt);
     }
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Content = this.detailFormGroup.get('contentControl')?.value;
 
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createGeneralEvent(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate(['/event/normal-event/display/' + e.ID!.toString()]);
+            this.router.navigate(['/event/normal-event/display/' + (e.ID ?? 0).toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(

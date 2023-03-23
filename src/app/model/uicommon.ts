@@ -17,6 +17,7 @@ import {
 import { HomeMemberRelationEnum } from './homedef';
 import * as moment from 'moment';
 import { LocationTypeEnum } from './librarymodel';
+import { SafeAny } from 'src/common';
 
 /**
  * UI Status
@@ -73,7 +74,7 @@ export class CreditsComponent {
 export class UIRadioButton {
   public id = '';
   public name = '';
-  public value: any;
+  public value: SafeAny;
   public label = '';
   public checked = false;
   public disabled = false;
@@ -82,7 +83,7 @@ export class UIRadioButton {
 
 export class UIRadioButtonGroup {
   public selected: UIRadioButton | null = null;
-  public value: any;
+  public value: SafeAny;
   public disabled = false;
 }
 
@@ -97,7 +98,7 @@ export class UIRouteLink {
  */
 export interface ITableFilterValues {
   text: string;
-  value: any;
+  value: SafeAny;
   byDefault?: boolean;
 }
 
@@ -691,8 +692,8 @@ export enum GeneralFilterValueType {
 export class GeneralFilterItem {
   fieldName = '';
   operator: GeneralFilterOperatorEnum = GeneralFilterOperatorEnum.Equal;
-  lowValue: any;
-  highValue: any;
+  lowValue: SafeAny;
+  highValue: SafeAny;
   valueType: GeneralFilterValueType = GeneralFilterValueType.string;
 }
 
@@ -937,9 +938,9 @@ export function BuildupAccountForSelection(
   if (acnts && acnts.length > 0) {
     for (const acnt of acnts) {
       const rst: UIAccountForSelection = new UIAccountForSelection();
-      rst.CategoryId = acnt.CategoryId!;
-      rst.Id = acnt.Id!;
-      rst.Name = acnt.Name!;
+      rst.CategoryId = acnt.CategoryId ?? 0;
+      rst.Id = acnt.Id ?? 0;
+      rst.Name = acnt.Name ?? '';
       rst.Status = acnt.Status;
 
       // Skip some categories
@@ -968,8 +969,8 @@ export function BuildupAccountForSelection(
       if (acntctg && acntctg.length > 0) {
         for (const ctgy of acntctg) {
           if (ctgy.ID === rst.CategoryId) {
-            rst.CategoryName = ctgy.Name!;
-            rst.AssetFlag = ctgy.AssetFlag!;
+            rst.CategoryName = ctgy.Name ?? '';
+            rst.AssetFlag = ctgy.AssetFlag ?? true;
           }
         }
       }
@@ -1006,8 +1007,8 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
         rst.Id = ord.Id;
       }
       rst.Name = ord.Name;
-      rst._validFrom = ord.ValidFrom!.clone();
-      rst._validTo = ord.ValidTo!.clone();
+      rst._validFrom = ord.ValidFrom?.clone() ?? moment();
+      rst._validTo = ord.ValidTo?.clone() ?? moment();
 
       // Skip some categories
       if (skipinv) {

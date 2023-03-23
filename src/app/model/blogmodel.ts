@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 import { momentDateFormat } from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -127,8 +128,8 @@ export interface BlogPostAPIJson {
   Brief?: string;
   Content?: string;
   Status?: number;
-  CreatedAt?: any;
-  UpdatedAt?: any;
+  CreatedAt?: SafeAny;
+  UpdatedAt?: SafeAny;
   BlogPostCollections: BlogPostCollection[];
   BlogPostTags: BlogPostTag[];
 }

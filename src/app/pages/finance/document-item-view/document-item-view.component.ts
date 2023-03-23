@@ -204,6 +204,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
     ])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingDocItems = false))
       )

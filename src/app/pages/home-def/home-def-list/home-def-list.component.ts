@@ -28,7 +28,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
   get IsChildMode(): boolean {
     if (this.homeService.ChosedHome && this.homeService.CurrentMemberInChosedHome) {
-      return this.homeService.CurrentMemberInChosedHome!.IsChild!;
+      return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
     }
     return false;
   }
@@ -104,6 +104,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     this.homeService
       .fetchAllHomeDef(forceLoad)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )

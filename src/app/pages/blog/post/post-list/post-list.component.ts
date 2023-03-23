@@ -74,6 +74,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchAllPosts(this.pageSize, this.pageIndex * this.pageSize)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -115,7 +116,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/blog/post/edit/' + rid.toString()]);
   }
-  onDelete(rid: number) {
+  onDelete() {
     // TBD.
   }
   onDeploy(rid: number) {

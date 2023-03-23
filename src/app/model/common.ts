@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { UIMode } from 'actslib';
+import { SafeAny } from 'src/common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
@@ -253,7 +254,7 @@ export class BaseModel {
     // Emtpy
   }
 
-  public onVerify(context?: any): boolean {
+  public onVerify(context?: SafeAny): boolean {
     this.VerifiedMsgs = [];
 
     return true;
@@ -263,8 +264,8 @@ export class BaseModel {
     // Empty
   }
 
-  public writeJSONObject(): any {
-    const rstobj: any = {};
+  public writeJSONObject(): SafeAny {
+    const rstobj: SafeAny = {};
 
     if (this._createdAt) {
       rstobj.CreatedAt = this._createdAt.format(momentDateFormat);
@@ -283,14 +284,14 @@ export class BaseModel {
   }
 
   public writeJSONString(): string {
-    const forJSON: any = this.writeJSONObject();
+    const forJSON: SafeAny = this.writeJSONObject();
     if (forJSON) {
       return JSON && JSON.stringify(forJSON);
     }
     return JSON && JSON.stringify(this);
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.Createdby) {
       this.Createdby = data.Createdby;
     }
@@ -379,7 +380,7 @@ export class Tag {
     }
   }
 
-  public onSetData(data?: any): void {
+  public onSetData(data?: SafeAny): void {
     if (data && data.tagType) {
       this.TagType = data.tagType as TagTypeEnum;
     }
@@ -416,7 +417,7 @@ export class TagCount {
     this._termcount = tc;
   }
 
-  public onSetData(data?: any): void {
+  public onSetData(data?: SafeAny): void {
     if (data && data.term) {
       this.Term = data.term;
     }
@@ -533,7 +534,7 @@ export class MultipleNamesObject extends BaseModel {
     this._chineseIsNative = false;
   }
 
-  public override onVerify(context?: any): boolean {
+  public override onVerify(context?: SafeAny): boolean {
     let rst = super.onVerify(context);
 
     if (rst) {
@@ -545,8 +546,8 @@ export class MultipleNamesObject extends BaseModel {
     return rst;
   }
 
-  public override writeJSONObject(): any {
-    const rstobj: any = super.writeJSONObject();
+  public override writeJSONObject(): SafeAny {
+    const rstobj: SafeAny = super.writeJSONObject();
 
     if (this.NativeName.length > 0) {
       rstobj.NativeName = this.NativeName;
@@ -559,7 +560,7 @@ export class MultipleNamesObject extends BaseModel {
     return rstobj;
   }
 
-  public override onSetData(data: any): void {
+  public override onSetData(data: SafeAny): void {
     super.onSetData(data);
 
     if (data && data.NativeName) {
@@ -583,8 +584,8 @@ export interface IOverviewScopeRange {
 }
 
 export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeRange {
-  let bgn: any = moment();
-  let end: any = moment();
+  let bgn: moment.Moment = moment();
+  let end: moment.Moment = moment();
 
   if (scope === OverviewScopeEnum.CurrentMonth) {
     bgn.startOf('month');

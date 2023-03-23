@@ -85,6 +85,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
 
           forkJoin([this.storageService.fetchAllPersonRoles(), this.storageService.readPerson(this.routerID)])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -132,6 +133,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .fetchAllPersonRoles()
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -201,6 +203,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createPerson(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

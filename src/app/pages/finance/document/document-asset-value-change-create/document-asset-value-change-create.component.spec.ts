@@ -130,7 +130,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    let btest = false;
+    const btest = false;
     if (btest) {
       expect(getDocumentItemByAccountSpy).toHaveBeenCalled();
     }

@@ -189,7 +189,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
           next: (val) => {
             this.compareResult = [];
             this.prvSentInfo = {
-              SelectedAccount: this.selectedAccountId!,
+              SelectedAccount: this.selectedAccountId ?? 0,
               inputtedExpectResult: [],
             };
 

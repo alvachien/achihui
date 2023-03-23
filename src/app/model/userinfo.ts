@@ -1,3 +1,5 @@
+import { SafeAny } from 'src/common';
+
 /**
  * User detail
  */
@@ -11,15 +13,15 @@ export class UserDetail {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   public Others = '';
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     this.UserId = data.userID;
     this.DisplayAs = data.displayAs;
     this.Email = data.email;
     this.Others = data.others;
   }
 
-  public onGetData(): any {
-    const data: any = {};
+  public onGetData(): SafeAny {
+    const data: SafeAny = {};
     data.userID = this.UserId;
     data.displayAs = this.DisplayAs;
     data.email = this.Email;

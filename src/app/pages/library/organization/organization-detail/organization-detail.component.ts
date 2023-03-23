@@ -9,6 +9,7 @@ import { UIMode, isUIEditable } from 'actslib';
 
 import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Organization, OrganizationType } from '../../../../model';
 import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-organization-detail',
@@ -87,11 +88,12 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
             this.storageService.readOrganization(this.routerID),
           ])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
             .subscribe({
-              next: (e: any) => {
+              next: (e) => {
                 this.allTypes = e[0];
 
                 this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
@@ -127,6 +129,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .fetchAllOrganizationTypes()
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -178,7 +181,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
       this.listTypes = [...this.listTypes];
     }
   }
-  onTypeModeChanged(tid: any) {
+  onTypeModeChanged(tid: SafeAny) {
     const tidx = this.allTypes.findIndex((p) => p.ID === +tid);
     if (tidx !== -1) {
       // TBD
@@ -203,6 +206,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this.storageService
         .createOrganization(objtbo)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

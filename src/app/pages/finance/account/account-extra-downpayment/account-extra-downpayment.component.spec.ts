@@ -71,6 +71,7 @@ describe('AccountExtraDownpaymentComponent', () => {
         { provide: AuthService, useValue: authServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
+        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
       ],
@@ -86,7 +87,7 @@ describe('AccountExtraDownpaymentComponent', () => {
   it('should create', () => {
     expect(testcomponent).toBeTruthy();
 
-    let btest = false;
+    const btest = false;
     if (btest) {
       expect(calcADPTmpDocsSpy).toHaveBeenCalled();
     }

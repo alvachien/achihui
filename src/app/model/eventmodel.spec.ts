@@ -4,7 +4,6 @@
 
 import { GeneralEvent, RecurEvent, EventHabit, EventHabitDetail } from './eventmodel';
 import * as moment from 'moment';
-import * as hih from './common';
 
 describe('GeneralEvent', () => {
   let instance: GeneralEvent;
@@ -47,7 +46,7 @@ describe('GeneralEvent', () => {
     expect(instance.StartDateDisplayString).toBeTruthy();
     expect(instance.EndDateDisplayString).toEqual('');
 
-    const jsondata: any = instance.writeJSONObject();
+    const jsondata = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
     const instance2: GeneralEvent = new GeneralEvent();
@@ -76,7 +75,7 @@ describe('RecurEvent', () => {
     instance.Content = 'test_content';
     expect(instance.EndDateDisplayString).toEqual('');
 
-    const jsondata: any = instance.writeJSONObject();
+    const jsondata = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
     const instance2: RecurEvent = new RecurEvent();
@@ -99,7 +98,7 @@ describe('EventHabit', () => {
     instance.assignee = 'test';
     instance.content = 'test_content';
 
-    const jsondata: any = instance.writeJSONObject();
+    const jsondata = instance.writeJSONObject();
     expect(jsondata).toBeTruthy();
 
     const instance2: EventHabit = new EventHabit();
@@ -120,7 +119,7 @@ describe('EventHabitDetail', () => {
     instance.ID = 1;
     instance.HabitID = 1;
 
-    const jsondata: any = {};
+    const jsondata = {};
     expect(jsondata).toBeTruthy();
 
     const instance2: EventHabitDetail = new EventHabitDetail();

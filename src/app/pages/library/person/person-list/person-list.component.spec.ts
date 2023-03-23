@@ -72,5 +72,10 @@ describe('PersonListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchAllPersonsSpy).not.toHaveBeenCalled();
+    }
   });
 });

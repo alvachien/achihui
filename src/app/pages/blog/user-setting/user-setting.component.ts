@@ -119,6 +119,7 @@ export class UserSettingComponent implements OnInit, OnDestroy {
 
     this.odataService
       .updateUserSetting(settings)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: () => {

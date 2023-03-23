@@ -64,10 +64,12 @@ export function popupDialog(
       footer = [
         {
           label: 'OK',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           onClick: (componentInstance: SafeAny) => componentInstance!.handleOk(),
         },
         {
           label: 'Cancel',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           onClick: (componentInstance: SafeAny) => componentInstance!.handleCancel(),
         },
       ];
@@ -78,6 +80,7 @@ export function popupDialog(
       footer = [
         {
           label: 'OK',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           onClick: (componentInstance: SafeAny) => componentInstance!.handleOk(),
         },
       ];

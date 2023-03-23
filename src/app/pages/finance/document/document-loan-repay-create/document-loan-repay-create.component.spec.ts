@@ -138,10 +138,10 @@ describe('DocumentLoanRepayCreateComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    let btest = false;
+    const btest = false;
     if (btest) {
       expect(createLoanRepayDocSpy).not.toHaveBeenCalled();
-      expect(fetchLoanTmpDocCountForAccountSpy).toHaveBeenCalled();  
+      expect(fetchLoanTmpDocCountForAccountSpy).toHaveBeenCalled();
     }
   });
 

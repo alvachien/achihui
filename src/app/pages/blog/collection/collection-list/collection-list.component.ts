@@ -40,7 +40,8 @@ export class CollectionListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchAllCollections()
       .pipe(
-        takeUntil(this._destroyed$!),
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        takeUntil(this._destroyed$),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({

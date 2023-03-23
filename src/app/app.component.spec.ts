@@ -7,7 +7,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,13 +17,12 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzModalConfirmContainerComponent, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 
-import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { getTranslocoModule } from '../testing';
-import { AuthService, HomeDefOdataService, UIStatusService } from '../app/services';
+import { AuthService, UIStatusService } from '../app/services';
 import { UserAuthInfo } from './model';
 
 describe('AppComponent', () => {
@@ -40,8 +39,12 @@ describe('AppComponent', () => {
     };
     authinfo.setContent(usrvalue);
     authServiceStub.authContent = new BehaviorSubject(authinfo);
-    authServiceStub.doLogin = () => {};
-    authServiceStub.doLogout = () => {};
+    authServiceStub.doLogin = () => {
+      // Do nothing
+    };
+    authServiceStub.doLogout = () => {
+      // Do nothing
+    };
   });
 
   beforeEach(waitForAsync(() => {

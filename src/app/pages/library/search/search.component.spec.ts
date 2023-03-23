@@ -12,15 +12,14 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { SearchComponent } from './search.component';
+import { SafeAny } from 'src/common';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
   let fakeData: FakeDataHelper;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let storageService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let fetchAllPersonsSpy: any;
+  let storageService: SafeAny;
+  let fetchAllPersonsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -73,5 +72,10 @@ describe('SearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchAllPersonsSpy).not.toHaveBeenCalled();
+    }
   });
 });

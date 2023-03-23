@@ -387,7 +387,7 @@ describe('AccountExtraAdvancePayment', () => {
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
     instance.Comment = 'test';
 
-    const jdata: any = instance.writeJSONObject();
+    const jdata = instance.writeJSONObject();
 
     const instance2: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     instance2.onSetData(jdata);
@@ -423,13 +423,13 @@ describe('AccountExtraAsset', () => {
     expect(instance.Comment).toBeFalsy();
   });
   it('#3. clone shall work', () => {
-    const instance2: any = instance.clone();
+    const instance2 = instance.clone();
     expect(instance2).not.toBeFalsy();
   });
   it('#4. writeJSONObject and onSetData shall work', () => {
     instance.Name = 'test';
     instance.Comment = 'test';
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
 
     expect(dataJson).not.toBeFalsy();
     const instance2: AccountExtraAsset = new AccountExtraAsset();
@@ -458,14 +458,14 @@ describe('AccountExtraLoan', () => {
     expect(instance.startDate).not.toBeFalsy();
   });
   it('#3. clone shall work', () => {
-    const instance2: any = instance.clone();
+    const instance2 = instance.clone();
     expect(instance2).not.toBeFalsy();
   });
   it('#4. writeJSONObject and onSetData shall work', () => {
     instance.Comment = 'test';
     instance.Partner = 'partner';
     instance.TotalMonths = 30;
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: AccountExtraLoan = new AccountExtraLoan();
     instance2.onSetData(dataJson);
@@ -510,7 +510,7 @@ describe('ControlCenter', () => {
     instance.Comment = 'test';
     instance.Name = 'test';
 
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: ControlCenter = new ControlCenter();
     instance2.onSetData(dataJson);
@@ -554,7 +554,7 @@ describe('Order', () => {
     instance.Comment = 'test';
     instance.Name = 'test';
 
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: ControlCenter = new ControlCenter();
     instance2.onSetData(dataJson);
@@ -688,7 +688,7 @@ describe('SettlementRule', () => {
     instance.RuleId = 1;
     instance.ControlCenterId = 1;
 
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: SettlementRule = new SettlementRule();
     instance2.onSetData(dataJson);
@@ -776,7 +776,7 @@ describe('Document', () => {
   });
   it('#4. onVerify: Doc type must be fetched', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -799,7 +799,7 @@ describe('Document', () => {
   });
   it('#5. onVerify: Desp is a must', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     // instance.Desp = 'test';
@@ -822,7 +822,7 @@ describe('Document', () => {
   });
   it('#6. onVerify: Desp larger than 44', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'testttttttttttttttttttttttttttttttttttttttttttttttttt';
@@ -845,7 +845,7 @@ describe('Document', () => {
   });
   it('#7. onVerify: currency is a must', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     // instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -868,7 +868,7 @@ describe('Document', () => {
   });
   it('#8. onVerify: currency should be valid', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = 'DEM'; // Invalid currency
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -891,7 +891,7 @@ describe('Document', () => {
   });
   it('#9. onVerify: currency should be fetched', () => {
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -915,7 +915,7 @@ describe('Document', () => {
   it('#10. onVerify: item ID shall not duplicated', () => {
     // Ref: https://github.com/alvachien/achihui/issues/244
     instance.Id = 1;
-    instance.DocType = fakeData.finDocTypes[0].Id!;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
     instance.TranDate = moment();
     instance.Desp = 'test';
@@ -1020,7 +1020,7 @@ describe('DocumentItem', () => {
   });
 
   it('#3. writeJSONObject and onSetData shall work', () => {
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: DocumentItem = new DocumentItem();
     instance2.onSetData(dataJson);
@@ -1459,7 +1459,7 @@ describe('TemplateDocLoan', () => {
   });
 
   it('#3. writeJSONObject and onSetData shall work', () => {
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     const instance2: TemplateDocLoan = new TemplateDocLoan();
     instance2.onSetData(dataJson);
@@ -1483,7 +1483,7 @@ describe('Plan', () => {
   });
 
   it('#3. writeJSONObject and onSetData shall work', () => {
-    const dataJson: any = instance.writeJSONObject();
+    const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();
     // let instance2: Plan = new Plan();
     // instance2.onSetData(dataJson);
@@ -1544,7 +1544,7 @@ describe('FinanceReportBase', () => {
   });
 
   it('#3. writeJSONObject and onSetData shall work', () => {
-    const dataJson: any = {};
+    const dataJson = {};
 
     const instance2: FinanceReportBase = new FinanceReportBase();
     instance2.onSetData(dataJson);

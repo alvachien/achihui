@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { SafeAny } from 'src/common';
 import * as hih from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -20,7 +21,7 @@ export interface IHomeMemberJson {
   HomeID: number;
   User: string;
   DisplayAs: string;
-  Relation: any;
+  Relation: SafeAny;
   IsChild?: boolean;
 }
 
@@ -78,8 +79,6 @@ export class HomeMember {
     return true;
   }
 
-  constructor() {}
-
   public parseJSONData(data: IHomeMemberJson): void {
     this._hid = data.HomeID;
     this._user = data.User;
@@ -100,6 +99,7 @@ export class HomeMember {
       HomeID: this._hid,
       User: this._user,
       DisplayAs: this._displayas,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Relation: HomeMemberRelationEnum[this._relation!],
     };
     if (this._ischild !== null) {
@@ -228,6 +228,7 @@ export class HomeDef extends hih.BaseModel {
   }
 
   public parseJSONData(data: HomeDefJson): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._id = data.ID!;
     this._name = data.Name;
     this._details = data.Details;
@@ -256,6 +257,7 @@ export class HomeDef extends hih.BaseModel {
     if (this._listMembers) {
       for (const mem of this._listMembers) {
         const memjson: IHomeMemberJson = mem.generateJSONData();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         jdata.HomeMembers!.push(memjson);
       }
     }
@@ -361,7 +363,7 @@ export class HomeMsg {
     this._readflag = rf;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.id) {
       this._id = +data.id;
     }
@@ -442,7 +444,7 @@ export class HomeKeyFigure {
     return this._myCompletedEvents;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SafeAny): void {
     if (data && data.totalAsset) {
       this._totalAssets = +data.totalAsset;
     }

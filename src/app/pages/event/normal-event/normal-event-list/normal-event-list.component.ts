@@ -69,6 +69,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchGeneralEvents(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -82,14 +83,14 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
           this.totalCount = x.totalCount;
           this.dataSet = x.contentList;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering NormalEventListComponent fetchGeneralEvents failed ${error}`,
+            `AC_HIH_UI [Error]: Entering NormalEventListComponent fetchGeneralEvents failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -127,7 +128,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteGeneralEvent(eventid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });

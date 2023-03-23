@@ -152,7 +152,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     );
 
     this.arStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
-    this.arMembers = this.homeSevice.ChosedHome!.Members;
+    this.arMembers = this.homeSevice.ChosedHome?.Members ?? [];
 
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl(),
@@ -227,6 +227,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             this.odataService.fetchAllTranTypes(),
             this.odataService.readAccount(this.routerID),
           ])
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .pipe(takeUntil(this._destroyed$!))
             .subscribe({
               next: (rst: SafeAny[]) => {
@@ -339,6 +340,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             this.odataService.fetchAllControlCenters(),
             this.odataService.fetchAllOrders(),
           ])
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .pipe(takeUntil(this._destroyed$!))
             .subscribe({
               next: (rst) => {
@@ -445,6 +447,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // Save it
     this.odataService
       .createAccount(acntobj)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {
@@ -452,10 +455,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           if (this.isInitAmountRequired) {
             // Create a document for initial amount.
             const doc: Document = new Document();
-            doc.Desp = val.Name!;
+            doc.Desp = val.Name ?? '';
             doc.DocType = financeDocTypeNormal;
             doc.HID = this.homeSevice.ChosedHome?.ID;
-            doc.TranCurr = this.homeSevice.ChosedHome?.BaseCurrency!;
+            doc.TranCurr = this.homeSevice.ChosedHome?.BaseCurrency ?? '';
             doc.TranDate = moment(this.amountFormGroup.get('dateControl')?.value as Date);
             const docitem: DocumentItem = new DocumentItem();
             docitem.AccountId = nacntid;
@@ -510,11 +513,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
 
-    if (
-      !acntobj.onVerify({
-        Categories: this.arAccountCategories,
-      })
-    ) {
+    if (!acntobj.onVerify({ Categories: this.arAccountCategories })) {
       popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
       return;
     }
@@ -545,6 +544,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // Save it
     this.odataService
       .changeAccountByPatch(acntobj.Id ?? 0, arcontent)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {

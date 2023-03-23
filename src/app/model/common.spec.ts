@@ -144,10 +144,7 @@ describe('TagCount', () => {
 });
 
 describe('getOverviewScopeRange', () => {
-  let curdata: moment.Moment;
-
   beforeEach(() => {
-    curdata = moment();
   });
 
   it('CurrentMonth', () => {

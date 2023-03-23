@@ -118,6 +118,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (event.keys!.length > 0) {
       const evtkey = +event.keys![0];
       const arflt = [];

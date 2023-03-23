@@ -79,6 +79,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         listOfFilter: [],
         filterFn: null,
         filterMultiple: false,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         sortFn: (a: Account, b: Account): number => a.Name!.localeCompare(b.Name!),
       },
       {
@@ -108,6 +109,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         listOfFilter: [],
         filterFn: null,
         filterMultiple: false,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         sortFn: (a: Account, b: Account) => a.Comment!.localeCompare(b.Comment!),
       },
     ];
@@ -194,6 +196,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchAllAccounts(isreload)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -205,15 +208,15 @@ export class AccountListComponent implements OnInit, OnDestroy {
           );
           this.dataSet = data.slice();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering AccountListComponent onRefresh fetchAllAccounts failed ${error}`,
+            `AC_HIH_UI [Error]: Entering AccountListComponent onRefresh fetchAllAccounts failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -236,6 +239,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     // After the pop confirm
     this.odataService
       .deleteAccount(rid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {

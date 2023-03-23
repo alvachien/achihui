@@ -323,7 +323,7 @@ describe('EventStorageService', () => {
       service.fetchAllHabitEvents(100, 0).subscribe({
         next: (data) => {
           expect(data.totalCount).toEqual(0);
-        }
+        },
       });
 
       // Service should have made one request to GET cc from expected URL
@@ -343,7 +343,7 @@ describe('EventStorageService', () => {
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
-        }
+        },
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -369,7 +369,7 @@ describe('EventStorageService', () => {
       service.readHabitEvent(1).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-        }
+        },
       });
 
       // Service should have made one request to GET cc from expected URL
@@ -389,7 +389,7 @@ describe('EventStorageService', () => {
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
-        }
+        },
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -422,7 +422,7 @@ describe('EventStorageService', () => {
       service.generateHabitEvent(hevnt).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-        }
+        },
       });
 
       // Service should have made one request to GET cc from expected URL
@@ -454,7 +454,7 @@ describe('EventStorageService', () => {
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
-        }
+        },
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -491,7 +491,7 @@ describe('EventStorageService', () => {
       service.createHabitEvent(hevnt).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-        }
+        },
       });
 
       // Service should have made one request to GET cc from expected URL
@@ -511,7 +511,7 @@ describe('EventStorageService', () => {
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
-        }
+        },
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -545,7 +545,7 @@ describe('EventStorageService', () => {
       service.updateHabitEvent(hevnt).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-        }
+        },
       });
 
       // Service should have made one request to GET cc from expected URL
@@ -565,7 +565,7 @@ describe('EventStorageService', () => {
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
-        }
+        },
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {

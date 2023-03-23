@@ -146,6 +146,7 @@ describe('MarkdownEditorComponent', () => {
         testingComponent.editorComponent.onToolbarUndo();
         testingComponent.editorComponent.onToolbarUpperCase();
         testingComponent.editorComponent.onToolbarPicture();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         testingComponent.editorComponent.setDisabledState!(false);
         testingComponent.editorComponent.onChange();
         testingComponent.editorComponent.onTouched();

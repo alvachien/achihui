@@ -149,6 +149,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
           forkJoin([this.finService.fetchAllCurrencies(), this.storageService.readHomeDef(this.routerID)])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -191,6 +192,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           this.finService
             .fetchAllCurrencies()
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -263,6 +265,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       this.storageService
         .createHomeDef(hdobj)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (val) => {
@@ -300,6 +303,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       this.storageService
         .changeHomeDef(hdobj)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (val) => {

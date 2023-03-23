@@ -78,6 +78,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
           this.odataService
             .readCollection(this.routerID)
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -144,6 +145,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this.odataService
         .createCollection(objColl)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {

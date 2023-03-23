@@ -112,11 +112,17 @@ describe('BlogPost', () => {
 
     const instance2: BlogPost = new BlogPost();
     instance2.onSetData(apidata);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.id).toEqual(instance2.id!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.format).toEqual(instance2.format!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.owner).toEqual(instance2.owner!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.title).toEqual(instance2.title!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.brief).toEqual(instance2.brief!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(instance.content).toEqual(instance2.content!);
   });
 });

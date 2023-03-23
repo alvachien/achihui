@@ -466,7 +466,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -518,7 +518,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -590,7 +590,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -657,7 +657,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -727,7 +727,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -828,7 +828,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -908,7 +908,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -993,7 +993,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 

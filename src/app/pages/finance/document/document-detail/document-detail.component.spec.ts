@@ -118,7 +118,7 @@ describe('DocumentDetailComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    let btest = false;
+    const btest = false;
     if (btest) {
       expect(fetchAllCurrenciesSpy).toHaveBeenCalled();
       expect(fetchAllDocTypesSpy).toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('DocumentDetailComponent', () => {
       expect(readDocumentSpy).toHaveBeenCalled();
       expect(readAccountSpy).not.toHaveBeenCalled();
       expect(isDocumentChangableSpy).toHaveBeenCalled();
-      expect(changeDocumentSpy).not.toHaveBeenCalled();  
+      expect(changeDocumentSpy).not.toHaveBeenCalled();
     }
   });
 
