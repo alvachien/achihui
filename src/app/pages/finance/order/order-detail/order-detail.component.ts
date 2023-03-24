@@ -327,6 +327,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe({
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           next: (x: Order) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
@@ -370,6 +371,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe({
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           next: (x: Order) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
@@ -440,7 +442,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
   private _generateOrder(): Order {
     const ordInstance: Order = new Order();
-    ordInstance.HID = this.homeService.ChosedHome!.ID;
+    ordInstance.HID = this.homeService.ChosedHome?.ID ?? 0;
     if (this.uiMode === UIMode.Update) {
       ordInstance.Id = this.routerID;
     }

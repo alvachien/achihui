@@ -53,7 +53,7 @@ describe('DocumentLoanCreateComponent', () => {
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  const modalClassName = '.ant-modal-body';
+  // const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 
   beforeAll(() => {

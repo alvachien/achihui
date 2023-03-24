@@ -225,6 +225,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent validate...',

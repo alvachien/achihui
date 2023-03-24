@@ -122,7 +122,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
     const selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
     this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).subscribe({
       next: (val: FinanceReportByControlCenterMOM[]) => {

@@ -356,6 +356,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAccountStatusFilterChanged(selectedStatus: SafeAny[]): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
@@ -364,6 +365,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this._refreshTreeCore();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onScopeChanged(event: SafeAny): void {
     this.refreshDocumentItemView();
   }

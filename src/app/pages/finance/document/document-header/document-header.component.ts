@@ -326,6 +326,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent validate.',
@@ -371,6 +372,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private exchangeRateMissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isForeignCurrency) {
       if (!this.headerForm.get('exgControl')?.value) {
@@ -380,6 +382,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     return null;
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private exchangeRate2MissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument && this.isForeignCurrency2) {
       if (!this.headerForm.get('exg2Control')?.value) {
@@ -389,6 +393,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     return null;
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private curr2MissingValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
       if (!this.headerForm.get('curr2Control')?.value) {
@@ -398,6 +404,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     return null;
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private currencyMustDiffForExchgValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     if (this.isCurrencyExchangeDocument) {
       if (

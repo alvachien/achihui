@@ -271,6 +271,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(c?: AbstractControl): ValidationErrors | null {
     // ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
 

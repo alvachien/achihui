@@ -62,7 +62,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  const modalClassName = '.ant-modal-body';
+  //const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 
   beforeAll(() => {

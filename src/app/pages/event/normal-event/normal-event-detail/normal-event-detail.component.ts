@@ -152,7 +152,9 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
 
     const objtbo = new GeneralEvent();
     objtbo.IsPublic = true;
+    // eslint-disable-next-line no-unsafe-optional-chaining
     objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateControl')?.value;
     if (startdt) {
       objtbo.StartDate = moment(startdt);

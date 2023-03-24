@@ -119,6 +119,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     record.BookID = this.selectedBook?.ID ?? 0;
     record.BorrowFrom = this.selectedOrg?.ID ?? 0;
     record.Comment = this.detailFormGroup.get('cmtControl')?.value;
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateRangeControl')?.value;
     record.FromDate = moment(startdt);
     record.ToDate = moment(enddt);

@@ -205,6 +205,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
     const objtbo = new RecurEvent();
     objtbo.IsPublic = true;
     objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateControl')?.value;
     if (startdt) {
       objtbo.StartDate = moment(startdt);

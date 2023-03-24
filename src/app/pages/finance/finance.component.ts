@@ -94,6 +94,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getMonthData(date: Date): number | null {
     return null;
   }
@@ -129,6 +130,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     return mdate.daysInMonth() === mdate.date();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSelectChange(event: SafeAny) {
     // Check
     const prvyear = this._selectedYear;
@@ -140,6 +142,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onPanelChange(event: SafeAny) {
     // Do nothing so far.
   }

@@ -75,8 +75,11 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
   private loadDataFromServer(
     pageIndex: number,
     pageSize: number,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortField: string | null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortOrder: string | null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     filter: Array<{ key: string; value: string[] }> | null
   ): void {
     this.isLoadingResults = true;

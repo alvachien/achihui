@@ -91,7 +91,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
     if (planData && planData.AccountID) {
       this.currentPlan = planData;
       this.isProgressDlgVisible = true;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
       this.odataService.fetchAccountBalance(this.currentPlan?.AccountID!).subscribe({
         next: (val) => {
           this.currentPlanActualBalance = +val;

@@ -65,6 +65,7 @@ describe('DocumentHeaderComponent', () => {
 
   describe('Enable Mode for normal document', () => {
     let overlayContainer: OverlayContainer;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let overlayContainerElement: HTMLElement;
     let curDocument: Document;
 
@@ -285,6 +286,7 @@ describe('DocumentHeaderComponent', () => {
 
   describe('Enable Mode for currency exchange document', () => {
     let overlayContainer: OverlayContainer;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let overlayContainerElement: HTMLElement;
     let curDocument: Document;
 

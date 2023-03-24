@@ -342,9 +342,10 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl')?.value;
     this.confirmInfo.tranCurrency = doc.TranCurr;
     this.confirmInfo.soldoutAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
-    this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find((val: Account) => {
-      return val.Id === this.confirmInfo.soldoutAssetAccountID;
-    })!.Name;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find(
+      (val) => val.Id === this.confirmInfo.soldoutAssetAccountID
+    )!.Name;
   }
 
   private _generateDoc(): Document {
@@ -384,9 +385,8 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     if (items) {
       for (const item of items) {
         if (item.TranType) {
-          const bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
-            return valtt.Id === item.TranType;
-          })!.Expense;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const bExpense: boolean = this.arTranTypes.find((valtt) => valtt.Id === item.TranType)!.Expense;
           if (bExpense) {
             totalAmt -= item.TranAmount;
           } else {

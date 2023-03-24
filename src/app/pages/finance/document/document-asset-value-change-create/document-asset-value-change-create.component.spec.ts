@@ -52,10 +52,8 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
-    assetAccount = fakeData.finAccounts.find((val) => {
-      return val.CategoryId === financeAccountCategoryAsset;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    })!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    assetAccount = fakeData.finAccounts.find((val) => val.CategoryId === financeAccountCategoryAsset)!;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',

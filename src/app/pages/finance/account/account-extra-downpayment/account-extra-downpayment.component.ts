@@ -305,6 +305,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unused-vars 
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...',

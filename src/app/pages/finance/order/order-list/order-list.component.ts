@@ -156,6 +156,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onDisplayDocItem(rid: number, rname: string) {
     const fltrs = [];
     fltrs.push({

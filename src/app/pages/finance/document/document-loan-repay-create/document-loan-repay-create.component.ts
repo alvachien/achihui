@@ -455,7 +455,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           } else if (this.legacyLoan) {
             this.amountSelectedItem = 0;
             this.interestAmountSelectedItem = 0;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
             this.odataService.fetchAccountBalance(this.selectedLoanAccount?.Id!).subscribe({
               next: (val) => {
                 this.amountTotal = val;
@@ -559,6 +559,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         di = new DocumentItem();
         di.ItemId = curItemIdx++;
         di.AccountId = this.listItems[idx].AccountId;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (this.selectedLoanAccount!.CategoryId === financeAccountCategoryBorrowFrom) {
           if (this.listItems[idx].TranType === BorrowFromRepayType.RepaymentOut) {
             di.TranType = financeTranTypeRepaymentOut;

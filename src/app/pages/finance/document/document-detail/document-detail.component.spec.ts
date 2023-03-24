@@ -135,6 +135,7 @@ describe('DocumentDetailComponent', () => {
 
   describe('2. change mode', () => {
     let overlayContainer: OverlayContainer;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let overlayContainerElement: HTMLElement;
     let docobj: Document;
 

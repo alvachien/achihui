@@ -636,6 +636,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
   describe('Working with data about navigation', () => {
     let overlayContainer: OverlayContainer;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let overlayContainerElement: HTMLElement;
     let loanTmpDoc: TemplateDocLoan;
 

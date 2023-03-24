@@ -334,6 +334,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
             this.arDocItem.forEach((di2) => {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               if (
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 di.AccountId! === di2.AccountID! &&
                 Math.abs(di.TranAmount) === Math.abs(di2.Amount) &&
                 di.TranType === di2.TransactionType

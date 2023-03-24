@@ -344,6 +344,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onRangeChange(event: SafeAny): void {
     this.fetchData();
   }
@@ -381,6 +382,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/createloanrepay']);
   }
   public onDisplayDocument(doc: Document): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.onDisplay(doc.Id!);
   }
   public onMassCreateNormalDocument(): void {
@@ -459,6 +461,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
   public onOpenShortCutDocID(): void {
     if (this.shortcutDocID) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.onDisplay(this.shortcutDocID!);
     }
   }
