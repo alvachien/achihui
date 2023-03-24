@@ -111,7 +111,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     );
 
     this.curDocType = financeDocTypeBorrowFrom;
-    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -274,7 +274,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     );
 
     if (this.isLegacyLoan) {
-      const datBuy: any = group.get('headerControl')?.value.TranDate;
+      const datBuy = group.get('headerControl')?.value.TranDate;
       if (!datBuy) {
         return { dateisinvalid: true };
       }
@@ -292,7 +292,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     );
 
     if (!this.isLegacyLoan) {
-      const acntid: any = group.get('accountControl')?.value;
+      const acntid = group.get('accountControl')?.value;
       if (acntid === undefined) {
         return { accountisinvalid: true };
       }
@@ -315,7 +315,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           DocumentTypes: this.arDocTypes,
           TransactionTypes: this.arTranTypes,
           Currencies: this.arCurrencies,
-          BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+          BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
         // Show a dialog for error details
@@ -327,7 +327,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
 
     const acntobj: Account = new Account();
-    acntobj.HID = this.homeService.ChosedHome!.ID;
+    acntobj.HID = this.homeService.ChosedHome?.ID ?? 0;
     if (this.curDocType === financeDocTypeLendTo) {
       acntobj.CategoryId = financeAccountCategoryLendTo;
     } else {
@@ -342,6 +342,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createLoanDocument(docObj, acntobj, this.isLegacyLoan, this.tranAmount, this.controlCenterID, this.orderID)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.currentStep = 3;
@@ -358,15 +359,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           this.docIdCreated = nid.Id;
           this.docPostingFailed = '';
         },
-        error: (error: any) => {
+        error: (err) => {
           // Show error message
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.docIdCreated = undefined;
-          this.docPostingFailed = error;
+          this.docPostingFailed = err;
         },
       });
   }
@@ -374,7 +375,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   get isLegacyLoan(): boolean {
     return this.firstFormGroup && this.firstFormGroup.get('legacyControl')?.value;
   }
-  onIsLegacyChecked(checked: any): void {
+  onIsLegacyChecked(checked: SafeAny): void {
     const chked = checked as boolean;
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onIsLegacyChecked: ${checked}`,
@@ -390,7 +391,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
   private _generateDocument(): Document {
     const doc: Document = this.firstFormGroup.get('headerControl')?.value;
-    doc.HID = this.homeService.ChosedHome!.ID;
+    doc.HID = this.homeService.ChosedHome?.ID ?? 0;
     doc.DocType = this.curDocType;
     doc.Items = [];
 

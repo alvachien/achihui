@@ -157,8 +157,8 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCurrencies(),
     ])
       .pipe(takeUntil(this._destroyed$))
-      .subscribe(
-        (rst: any) => {
+      .subscribe({
+        next: (rst) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`,
             ConsoleLogTypeEnum.debug
@@ -182,9 +182,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
           // Document type
           this.arDocTypes = rst[1];
           // Base currency
-          this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+          this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
-          this._activateRoute.url.subscribe((x: any) => {
+          this._activateRoute.url.subscribe((x) => {
             if (x instanceof Array && x.length > 0) {
               if (x[0].path === 'createadp' || x[0].path === 'createadr') {
                 if (x[0].path === 'createadp') {
@@ -206,18 +206,18 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
             }
           });
         },
-        (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
             ConsoleLogTypeEnum.error
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
-        }
-      );
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -274,7 +274,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranType,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       } as DocumentVerifyContext)
     ) {
       popupDialog(this.modalService, 'Common.Error', docObj.VerifiedMsgs);
@@ -286,6 +286,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createADPDocument(docObj, accountExtra, this._isADP)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.currentStep = 3;
@@ -302,10 +303,10 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
           this.docIdCreated = ndoc.Id;
           this.docPostingFailed = undefined;
         },
-        error: (error: any) => {
+        error: (err) => {
           // Show error message
           this.docIdCreated = undefined;
-          this.docPostingFailed = error;
+          this.docPostingFailed = err;
         },
       });
   }
@@ -322,7 +323,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
 
   private _geneateDocument(): Document {
     const doc: Document = this.headerFormGroup.get('headerControl')?.value;
-    doc.HID = this.homeService.ChosedHome!.ID;
+    doc.HID = this.homeService.ChosedHome?.ID ?? 0;
     doc.DocType = this.curDocType;
     doc.Items = [];
 

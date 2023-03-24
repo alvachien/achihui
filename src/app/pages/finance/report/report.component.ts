@@ -28,6 +28,7 @@ import { FinanceOdataService, HomeDefOdataService } from '../../../services';
 import * as moment from 'moment';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../document-item-view';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-report',
@@ -81,7 +82,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
     this.isLoadingResults = false;
   }
 
@@ -153,13 +154,14 @@ export class ReportComponent implements OnInit, OnDestroy {
       this.odataService.fetchReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
     ])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (val: any[]) => {
+        next: (val) => {
           // Current month
-          val[0].forEach((item: any) => {
+          val[0].forEach((item) => {
             if (item.InAmount !== 0) {
               this.totalIncomeInCurrentMonth += item.InAmount;
             }
@@ -167,7 +169,7 @@ export class ReportComponent implements OnInit, OnDestroy {
               this.totalOutgoInCurrentMonth += item.OutAmount;
             }
           });
-          val[0].forEach((item: any) => {
+          val[0].forEach((item) => {
             if (item.InAmount !== 0) {
               const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
               entry.Amount = item.InAmount;
@@ -195,7 +197,7 @@ export class ReportComponent implements OnInit, OnDestroy {
             this.reportByMostOutgoInCurrentMonth.splice(3);
           }
           // Last month
-          val[1].forEach((item: any) => {
+          val[1].forEach((item: SafeAny) => {
             if (item.InAmount !== 0) {
               this.totalIncomeInLastMonth += item.InAmount;
             }
@@ -203,7 +205,7 @@ export class ReportComponent implements OnInit, OnDestroy {
               this.totalOutgoInLastMonth += item.OutAmount;
             }
           });
-          val[1].forEach((item: any) => {
+          val[1].forEach((item: SafeAny) => {
             if (item.InAmount !== 0) {
               const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
               entry.Amount = item.InAmount;
@@ -308,7 +310,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

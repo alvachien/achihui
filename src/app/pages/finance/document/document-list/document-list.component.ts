@@ -131,10 +131,11 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arUIAccounts = BuildupAccountForSelection(this.arAccounts, this.arAccountCategories);
           this.arUIOrders = BuildupOrderForSelection(this.arOrders);
 
-          let arfilters: any[] = [];
+          let arfilters: SafeAny[] = [];
           this.arCurrencies.forEach((cur) => {
             arfilters.push({
               value: cur.Currency,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               text: translate(cur.Name!),
             });
           });
@@ -144,21 +145,22 @@ export class DocumentListComponent implements OnInit, OnDestroy {
           this.arDocTypes.forEach((dt) => {
             arfilters.push({
               value: dt.Id,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               text: translate(dt.Name!),
             });
           });
           this.listDocTypeFilters = arfilters.slice();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           // Error
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -181,12 +183,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     const curobj = this.arCurrencies.find((c) => {
       return c.Currency === curr;
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return curobj ? translate(curobj.Name!) + `(${curr})` : curr;
   }
   public getDocTypeName(dtid: number) {
     const dtobj = this.arDocTypes.find((dt) => {
       return dt.Id === dtid;
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return dtobj ? translate(dtobj.Name!) : dtid.toString();
   }
   public getAccountName(acntid: number): string {
@@ -286,10 +290,12 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       highValue: end.format(momentDateFormat),
       valueType: GeneralFilterValueType.number,
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (this.homeService.CurrentMemberInChosedHome!.IsChild) {
       this._filterDocItem.push({
         fieldName: 'Createdby',
         operator: GeneralFilterOperatorEnum.Equal,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         lowValue: `${this.homeService.CurrentMemberInChosedHome!.User}`,
         highValue: ``,
         valueType: GeneralFilterValueType.string,
@@ -304,6 +310,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         orderby
       )
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -322,22 +329,22 @@ export class DocumentListComponent implements OnInit, OnDestroy {
             this.listOfDocs = [];
           }
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${error}...`,
+            `AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${err}...`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
       });
   }
 
-  public onRangeChange(event: any): void {
+  public onRangeChange(event: SafeAny): void {
     this.fetchData();
   }
   public onCreateNormalDocument(): void {
@@ -390,7 +397,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   }
   public onDelete(docid: number): void {
     this.odataService.deleteDocument(docid).subscribe({
-      next: (val) => {
+      next: () => {
         // Show dialog.
         const ref: NzModalRef = this.modalService.success({
           nzTitle: translate('Common.Success'),
@@ -430,7 +437,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });
-    modal.afterClose.subscribe((result) => {
+    modal.afterClose.subscribe(() => {
       this.fetchData();
     });
   }
@@ -446,7 +453,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });
-    modal.afterClose.subscribe((result) => {
+    modal.afterClose.subscribe(() => {
       this.fetchData();
     });
   }

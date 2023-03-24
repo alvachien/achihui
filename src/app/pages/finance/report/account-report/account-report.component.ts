@@ -21,6 +21,7 @@ import {
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 import { NumberUtility } from 'actslib';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-report-account',
@@ -31,7 +32,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
-  dataSet: any[] = [];
+  dataSet: SafeAny[] = [];
   arAccounts: Account[] = [];
   arAccountCategories: AccountCategory[] = [];
   arReportByAccount: FinanceReportByAccount[] = [];
@@ -57,7 +58,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit() {
@@ -124,7 +125,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -168,7 +169,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -205,7 +206,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -213,22 +214,22 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAssetsCategoryChartClicked(event: any) {
+  onAssetsCategoryChartClicked(event: SafeAny) {
     if (event && event.data && event.data.category) {
       this.filterReportByAccountTable([event.data.category], []);
     }
   }
-  onLiabilitiesCategoryChartClicked(event: any) {
+  onLiabilitiesCategoryChartClicked(event: SafeAny) {
     if (event && event.data && event.data.category) {
       this.filterReportByAccountTable([event.data.category], []);
     }
   }
-  onAssetsAccountChartClicked(event: any) {
+  onAssetsAccountChartClicked(event: SafeAny) {
     if (event && event.data && event.data.category) {
       this.filterReportByAccountTable([], [event.data.category]);
     }
   }
-  onLiabilitiesAccountChartClicked(event: any) {
+  onLiabilitiesAccountChartClicked(event: SafeAny) {
     if (event && event.data && event.data.category) {
       this.filterReportByAccountTable([], [event.data.category]);
     }
@@ -256,17 +257,19 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllAccounts(),
     ])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: any[]) => {
+        next: (x) => {
           this.arReportByAccount = x[0] as FinanceReportByAccount[];
           this.arAccountCategories = x[1];
           this.arAccounts = x[2];
 
           this.arAccountCategories.forEach((val: AccountCategory) => {
             this.listCategoryFilter.push({
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               text: translate(val.Name!),
               value: val.ID,
             });
@@ -278,15 +281,15 @@ export class AccountReportComponent implements OnInit, OnDestroy {
           this.buildLiabilityChart();
           this.buildLiabilityAccountChart();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${error}`,
+            `AC_HIH_UI [Error]: Entering AccountReportComponent ngOnInit forkJoin failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -295,7 +298,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
 
   private buildAssetChart() {
     const namevalues: Array<{ category: number; name: string; value: number }> = [];
-    const names: any[] = [];
+    const names: SafeAny[] = [];
 
     let ctgyAmt = 0;
     let ctgyUsed = false;
@@ -315,11 +318,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });
 
         if (ctgyUsed) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const ctgyName = translate(ctgy.Name!);
           names.push(ctgyName);
 
           namevalues.push({
-            category: ctgy.ID!,
+            category: ctgy.ID ?? 0,
             name: ctgyName as string,
             value: ctgyAmt,
           });
@@ -360,7 +364,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     };
   }
   private buildLiabilityChart() {
-    const names: any[] = [];
+    const names: SafeAny[] = [];
     const namevalues: Array<{ category: number; name: string; value: number }> = [];
 
     let ctgyAmt = 0;
@@ -382,10 +386,12 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });
 
         if (ctgyUsed) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const ctgyName = translate(ctgy.Name!);
           names.push(ctgyName);
 
           namevalues.push({
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             category: ctgy.ID!,
             name: ctgyName as string,
             value: -1 * ctgyAmt,
@@ -428,7 +434,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   }
   private buildAssetAccountChart() {
     const namevalues: Array<{ category: number; name: string; value: number }> = [];
-    const names: any[] = [];
+    const names: SafeAny[] = [];
 
     this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
       const acntobj = this.arAccounts.find((acnt: Account) => {
@@ -441,7 +447,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         names.push(acntobj?.Name);
 
         namevalues.push({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           category: rpt.AccountId!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: acntobj?.Name!,
           value: rpt.Balance,
         });
@@ -481,7 +489,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
     };
   }
   private buildLiabilityAccountChart() {
-    const names: any[] = [];
+    const names: SafeAny[] = [];
     const namevalues: Array<{ category: number; name: string; value: number }> = [];
 
     this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
@@ -495,7 +503,9 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         names.push(acntobj?.Name);
 
         namevalues.push({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           category: rpt.AccountId!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: acntobj?.Name!,
           value: -1 * rpt.Balance,
         });
@@ -547,6 +557,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
         });
 
         if (this.selectedCategoryFilter.length > 0 && ctgyobj !== undefined) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           if (this.selectedCategoryFilter.indexOf(ctgyobj.ID!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,
@@ -558,6 +569,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
             });
           }
         } else if (this.selectedAccountFilter.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           if (this.selectedAccountFilter.indexOf(acntobj.Id!) !== -1) {
             this.dataSet.push({
               AccountId: baldata.AccountId,

@@ -18,6 +18,7 @@ import {
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-account-list',
@@ -120,7 +121,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     });
     return ctgyobj && ctgyobj.Name ? ctgyobj.Name : '';
   }
-  public getStatusString(sts: any): string {
+  public getStatusString(sts: SafeAny): string {
     const stsobj = this.arrayStatus.find((val) => {
       return val.value === sts;
     });
@@ -152,6 +153,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
           this.arCategories = val;
           this.arCategories.forEach((val2: AccountCategory) => {
             this.listCategoryFilter.push({
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               text: translate(val2.Name!),
               value: val2.ID,
             });
@@ -242,7 +244,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (val) => {
+        next: () => {
           // Just remove the item
           const acnts = this.dataSet.slice();
           const extidx = acnts.findIndex((val2) => {
@@ -280,7 +282,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         },
         // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
       });
-      const instance = modal.getContentComponent();
+      //const instance = modal.getContentComponent();
       modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
       // Return a result when closed
       modal.afterClose.subscribe((result) => console.log('[afterClose] The result is:', result));

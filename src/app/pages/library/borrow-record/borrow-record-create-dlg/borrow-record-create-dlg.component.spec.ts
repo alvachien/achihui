@@ -82,5 +82,10 @@ describe('BorrowRecordCreateDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(createBookBorrowRecordSpy).not.toHaveBeenCalled();
+    }
   });
 });

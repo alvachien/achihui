@@ -72,5 +72,10 @@ describe('LocationDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(readLocationSpy).not.toHaveBeenCalled();
+    }
   });
 });

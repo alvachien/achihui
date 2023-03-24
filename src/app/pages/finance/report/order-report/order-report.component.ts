@@ -18,6 +18,7 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-report-order',
@@ -28,7 +29,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
-  dataSet: any[] = [];
+  dataSet: SafeAny[] = [];
   arReportByOrder: FinanceReportByOrder[] = [];
   arOrder: Order[] = [];
   baseCurrency: string;
@@ -48,7 +49,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     );
 
     this.isLoadingResults = false;
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit() {
@@ -67,21 +68,21 @@ export class OrderReportComponent implements OnInit, OnDestroy {
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: any[]) => {
+        next: (x) => {
           this.arReportByOrder = x[0] as FinanceReportByOrder[];
           this.arOrder = x[1] as Order[];
 
           this.buildReportList();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering OrderReportComponent ngOnInit forkJoin failed ${error}`,
+            `AC_HIH_UI [Error]: Entering OrderReportComponent ngOnInit forkJoin failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },
@@ -151,7 +152,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -195,7 +196,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -232,7 +233,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -243,6 +244,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     this.dataSet = [];
     const dt = moment();
     const ords = this.arOrder.filter((value) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return this.validOrderOnly ? value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt) : true;
     });
     this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {

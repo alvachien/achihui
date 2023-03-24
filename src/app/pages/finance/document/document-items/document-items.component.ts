@@ -342,7 +342,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     this.onChange();
   }
 
-  public onDeleteDocItem(di: any): void {
+  public onDeleteDocItem(di: SafeAny): void {
     let idx = -1;
     const exitems: DocumentItem[] = this.listItems.slice();
     idx = exitems.findIndex((di2: DocumentItem) => {

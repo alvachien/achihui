@@ -23,7 +23,9 @@ describe('HomeNotChildGuardService', () => {
 
   beforeEach(() => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    authServiceStub.doLogin = () => {};
+    authServiceStub.doLogin = () => {
+      // EMPTY
+    };
     homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({

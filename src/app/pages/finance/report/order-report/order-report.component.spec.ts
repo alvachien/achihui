@@ -20,14 +20,15 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByOrder } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { OrderReportComponent } from './order-report.component';
+import { SafeAny } from 'src/common';
 
 describe('OrderReportComponent', () => {
   let component: OrderReportComponent;
   let fixture: ComponentFixture<OrderReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchReportByOrderSpy: any;
-  let fetchAllOrdersSpy: any;
+  let storageService: SafeAny;
+  let fetchReportByOrderSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};

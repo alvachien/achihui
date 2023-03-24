@@ -452,7 +452,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       }
       this.loanInfoForm.get('partnerControl')?.setValue(val.Partner);
       this.loanInfoForm.get('cmtControl')?.setValue(val.Comment);
-      this._refDocID = val.RefDocId!;
+      this._refDocID = val.RefDocId ?? 0;
 
       this.listTmpDocs = val.loanTmpDocs.slice();
     }

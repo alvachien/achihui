@@ -26,6 +26,7 @@ import {
   DocumentItem,
 } from '../../../../model';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-detail',
@@ -86,7 +87,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
     this.cd.detectChanges();
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -125,6 +126,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.odataService.readDocument(this.routerID),
           ])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
@@ -150,12 +152,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 const listNIDs: number[] = [];
                 listAcntIDs.forEach((acntid) => {
                   if (this.arUIAccounts.findIndex((acnt) => acnt.Id === acntid) === -1) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     listNIDs.push(acntid!);
                   }
                 });
 
                 if (listNIDs.length > 0) {
-                  const listRst: any = [];
+                  const listRst: SafeAny = [];
                   listNIDs.forEach((nid) => {
                     listRst.push(this.odataService.readAccount(nid));
                   });
@@ -163,6 +166,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   // Read the account
                   forkJoin(listRst)
                     .pipe(
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       takeUntil(this._destroyed$!),
                       finalize(() => {
                         this.onSetData();

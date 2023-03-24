@@ -386,7 +386,9 @@ describe('DocumentItemsComponent', () => {
       expect(component.listItems[0].TranAmount).toEqual(20);
     }));
     xit('onChange method', fakeAsync(() => {
-      const changefn = () => {};
+      const changefn = () => {
+        // TBD.
+      };
       component.registerOnChange(changefn);
       spyOn(component, 'onChange').and.callThrough();
 

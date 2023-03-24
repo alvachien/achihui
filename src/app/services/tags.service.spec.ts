@@ -48,6 +48,7 @@ describe('TagsService', () => {
 
   it('1. should be created', () => {
     expect(service).toBeTruthy();
+    expect(httpClient).toBeTruthy();
   });
 
   /// TagsService method tests begin ///

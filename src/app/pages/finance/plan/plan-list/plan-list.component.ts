@@ -82,13 +82,16 @@ export class PlanListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(rid: number): void {
-    // TBD.
+    if (rid) {
+      // TBD.
+    }
   }
 
   onCheckProgress(planData: Plan): void {
     if (planData && planData.AccountID) {
       this.currentPlan = planData;
       this.isProgressDlgVisible = true;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.odataService.fetchAccountBalance(this.currentPlan?.AccountID!).subscribe({
         next: (val) => {
           this.currentPlanActualBalance = +val;
@@ -108,6 +111,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchAllPlans(refresh)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -115,15 +119,15 @@ export class PlanListComponent implements OnInit, OnDestroy {
         next: (x: Plan[]) => {
           this.dataSet = x;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering PlanListComponent onRefresh failed ${error}`,
+            `AC_HIH_UI [Error]: Entering PlanListComponent onRefresh failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

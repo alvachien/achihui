@@ -10,8 +10,6 @@ import { LibraryStorageService, UIStatusService } from 'src/app/services';
 import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 @Component({
   selector: 'hih-borrow-record-list',
   templateUrl: './borrow-record-list.component.html',
@@ -89,6 +87,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       this.storageService.fetchBookBorrowRecords(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0),
     ])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -152,9 +151,9 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',
@@ -163,10 +162,15 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
     });
   }
   onDisplay(bid: number): void {
+    if (bid) {
+      // TBD.
+    }
     // this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
   onEdit(bid: number): void {
-    // TBD.
+    if (bid) {
+      // TBD.
+    }
   }
   onDelete(bid: number): void {
     this.modal.confirm({
@@ -177,7 +181,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.storageService.deleteBookBorrowRecord(bid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modal.success({
               nzTitle: translate('Common.Success'),
             });

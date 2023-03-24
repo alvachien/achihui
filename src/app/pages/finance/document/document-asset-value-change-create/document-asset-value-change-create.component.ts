@@ -273,7 +273,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranTypes,
         Currencies: this.arCurrencies,
-        BaseCurrency: this._homeService.ChosedHome!.BaseCurrency,
+        BaseCurrency: this._homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
       popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
@@ -283,7 +283,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     // Do the real submit.
     this.detailObject = new FinanceAssetValChgDocumentAPI();
-    this.detailObject.HID = this._homeService.ChosedHome!.ID;
+    this.detailObject.HID = this._homeService.ChosedHome?.ID ?? 0;
     this.detailObject.TranDate = docobj.TranDateFormatString;
     this.detailObject.TranCurr = docobj.TranCurr;
     this.detailObject.Desp = docobj.Desp;
@@ -291,12 +291,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.detailObject.ControlCenterID = this.firstFormGroup.get('ccControl')?.value;
     this.detailObject.OrderID = this.firstFormGroup.get('orderControl')?.value;
     docobj.Items.forEach((val: DocumentItem) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.detailObject!.Items.push(val);
     });
 
     this._storageService
       .createAssetValChgDocument(this.detailObject)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.currentStep = 2;
@@ -333,6 +335,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     );
 
     this.confirmInfo.targetAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.confirmInfo.targetAssetAccountName = this.arAccounts.find((val: Account) => {
       return val.Id === this.confirmInfo.targetAssetAccountID;
     })!.Name;
@@ -341,8 +344,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     // Fetch the existing items
     this._storageService
       .getDocumentItemByAccount(this.confirmInfo.targetAssetAccountID)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x: any) => {
+      .subscribe((x) => {
         // Get the output
         if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
           this._workOutExistingDocs(x.contentList);
@@ -350,7 +354,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       });
   }
 
-  private _workOutExistingDocs(prvdocitems: any[]) {
+  private _workOutExistingDocs(prvdocitems: SafeAny[]) {
     this.existingDocItems = [];
 
     let docitems: DocumentItemView[] = [];
@@ -405,17 +409,20 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     this.existingDocItems.push(fakebalance);
 
     // Sorting
-    this.existingDocItems = this.existingDocItems.sort((a: any, b: any) => {
+    this.existingDocItems = this.existingDocItems.sort((a: SafeAny, b: SafeAny) => {
       return a.tranDate.localeCompare(b.tranDate);
     });
 
     let curbal = 0;
     for (let idx = 0; idx < this.existingDocItems.length; idx++) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       curbal += this.existingDocItems[idx].tranAmount!;
       if (this.existingDocItems[idx].docId) {
         this.existingDocItems[idx].newBalance = curbal;
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.existingDocItems[idx].tranAmount = this.existingDocItems[idx].newBalance! - curbal;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.tranAmount = this.existingDocItems[idx].tranAmount!;
       }
     }
@@ -423,7 +430,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
   private _generateDoc(): Document {
     const ndoc: Document = this.firstFormGroup.get('headerControl')?.value;
-    ndoc.HID = this._homeService.ChosedHome!.ID;
+    ndoc.HID = this._homeService.ChosedHome?.ID ?? 0;
     ndoc.DocType = this.curDocType;
     ndoc.Items = [];
 
@@ -434,13 +441,17 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl')?.value;
     ndocitem.OrderId = this.firstFormGroup.get('orderControl')?.value;
     ndocitem.Desp = ndoc.Desp;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const gitem = this.existingDocItems.find((val: DocItemWithBlance) => {
       return val.docId === 0;
     })!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (gitem.tranAmount! > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ndocitem.TranAmount = gitem.tranAmount!;
       ndocitem.TranType = financeTranTypeAssetValueIncrease;
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ndocitem.TranAmount = Math.abs(gitem.tranAmount!);
       ndocitem.TranType = financeTranTypeAssetValueDecrease;
     }
@@ -454,7 +465,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       ConsoleLogTypeEnum.debug
     );
 
-    const amt: any = group.get('amountControl')?.value;
+    const amt = group.get('amountControl')?.value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }

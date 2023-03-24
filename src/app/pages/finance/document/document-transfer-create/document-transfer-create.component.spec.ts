@@ -155,7 +155,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Currency service failed',
       //   'Expected snack bar to show the error message: Currency service failed');
@@ -179,7 +180,8 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Account category service failed',
       //   'Expected snack bar to show the error message: Account category service failed');
@@ -204,7 +206,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Doc type service failed',
       //   'Expected snack bar to show the error message: Doc type service failed');
@@ -229,7 +232,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Tran type service failed',
       //   'Expected snack bar to show the error message: Tran type service failed');
@@ -254,7 +258,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Account service failed',
       //   'Expected snack bar to show the error message: Account service failed');
@@ -279,7 +284,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Control center service failed',
       //   'Expected snack bar to show the error message: Control center service failed');
@@ -304,7 +310,8 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
       // expect(messageElement.textContent).toContain('Order service failed',
       //   'Expected snack bar to show the error message: Order service failed');
@@ -390,13 +397,15 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.valid).toBeFalsy('Expect header form is invalid because amount is missing');
+      expect(component.headerFormGroup.valid)
+        .withContext('Expect header form is invalid because amount is missing')
+        .toBeFalsy();
       fixture.detectChanges();
 
       // Click the next button
       expect(component.nextButtonEnabled).toBeFalse();
 
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -419,12 +428,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -450,11 +459,11 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
 
       nextButtonNativeEl.click();
@@ -476,14 +485,14 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
-      expect(component.headerFormGroup.valid).toBeTruthy('Expect header from is valid');
-      expect(component.nextButtonEnabled).toBeTruthy('Expect next button is enabled');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.valid).withContext('Expect header from is valid').toBeTruthy();
+      expect(component.nextButtonEnabled).withContext('Expect next button is enabled').toBeTruthy();
       expect(component.currentStep).toBe(0);
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -516,12 +525,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -552,13 +561,13 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -591,13 +600,13 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -633,14 +642,16 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header form');
+      expect(component.headerFormGroup.get('headerControl')?.valid)
+        .withContext('Expect a valid header form')
+        .toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       expect(component.headerFormGroup.valid).toBeTruthy('Expect a valid header step');
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -682,13 +693,13 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -727,12 +738,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -773,12 +784,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -827,12 +838,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -872,7 +883,8 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // Trigers the generate document object, and it failed
 
       // Expect an error dialog
-      const messageElement: any = overlayContainerElement.querySelector(modalClassName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const messageElement = overlayContainerElement.querySelector(modalClassName)!;
       expect(messageElement).toBeTruthy();
 
       // Close the dialog
@@ -907,12 +919,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -986,12 +998,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy('Expect a valid header');
+      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -1036,8 +1048,8 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(4);
-      expect(component.isDocPosting).toBeFalsy('expect variable isDocPosting is false');
-      expect(component.docIdCreated).toBeFalsy('expect variable docIdCreated is null');
+      expect(component.isDocPosting).withContext('expect variable isDocPosting is false').toBeFalsy();
+      expect(component.docIdCreated).withContext('expect variable docIdCreated is null').toBeFalsy();
       expect(component.docPostingFailed).toEqual('failed in creation');
 
       flush();

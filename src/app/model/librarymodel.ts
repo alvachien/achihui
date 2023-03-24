@@ -919,13 +919,13 @@ export class BookBorrowRecord extends hih.BaseModel {
     this._id = id;
   }
   get HID(): number {
-    return this._hid!;
+    return this._hid ?? 0;
   }
   set HID(hid: number) {
     this._hid = hid;
   }
   get BookID(): number {
-    return this._bookid!;
+    return this._bookid ?? 0;
   }
   set BookID(bid: number) {
     this._bookid = bid;

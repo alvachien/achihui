@@ -37,6 +37,7 @@ import {
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
+import { SafeAny } from 'src/common';
 
 class DocumentCountByDateRange {
   StartDate: moment.Moment | null = null;
@@ -106,7 +107,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     );
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.searchFormGroup = new UntypedFormGroup({
       dateRangeControl: new UntypedFormControl([new Date(), new Date()], [Validators.required]),
@@ -244,7 +245,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     } else if (this.currentStep === 2) {
       return this.defaultValueFormGroup.valid;
     } else if (this.currentStep === 3) {
-      return this.itemsFormGroup!.valid;
+      return this.itemsFormGroup?.valid ?? false;
     } else if (this.currentStep === 4) {
       return true;
     } else {
@@ -290,7 +291,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   private fetchAllDocItemView(): void {
     const filters: GeneralFilterItem[] = [];
     // Date range
-    const dtrange = this.searchFormGroup.get('dateRangeControl')?.value as any[];
+    const dtrange = this.searchFormGroup.get('dateRangeControl')?.value as SafeAny[];
     filters.push({
       fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
@@ -351,11 +352,12 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     forkJoin([this.odataService.getRepeatedDates(datinput), this.odataService.searchDocItem(filters)])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isReadingExistingItem = false))
       )
       .subscribe({
-        next: (x: any[]) => {
+        next: (x: SafeAny[]) => {
           this.listDates = x[0];
           const arallitems = x[1].contentList;
           this.listExistingDocItems = [];
@@ -418,7 +420,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     const defval = this.defaultValueFormGroup.value;
     this.listExistingDocItems.forEach((docitems) => {
       if (docitems.ItemsCount === 0) {
-        const newItem: any = this.initItem();
+        const newItem: SafeAny = this.initItem();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         let stdat = docitems.StartDate!.clone();
         if (defval.dayOffsetControl) {
           stdat = stdat.add(defval.dayOffsetControl, 'days');
@@ -466,6 +469,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.copyItem(i!);
   }
 
@@ -474,12 +478,13 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.removeItem(i!);
   }
 
   private createItem(): number {
     const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
-    const addrCtrl: any = this.initItem();
+    const addrCtrl = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
@@ -569,7 +574,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         docObj = new Document();
         docObj.Desp = item.tranDate.format(momentDateFormat);
         docObj.DocType = financeDocTypeNormal;
-        docObj.HID = this.homeService.ChosedHome!.ID;
+        docObj.HID = this.homeService.ChosedHome?.ID ?? 0;
         docObj.TranCurr = this.baseCurrency;
         docObj.TranDate = moment(item.tranDate);
         const docitem = new DocumentItem();
@@ -604,7 +609,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
           DocumentTypes: this.arDocTypes,
           TransactionTypes: this.arTranType,
           Currencies: this.arCurrencies,
-          BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+          BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
         errorOccur = true;
@@ -621,6 +626,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.confirmInfo)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isDocPosting = false))
       )
@@ -651,6 +657,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.docIdFailed)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isDocPosting = false))
       )
@@ -673,6 +680,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
   }
   public onDisplayCreatedDoc(did: number) {
-    // TBD.
+    if (did) {
+      // TBD.
+    }
   }
 }

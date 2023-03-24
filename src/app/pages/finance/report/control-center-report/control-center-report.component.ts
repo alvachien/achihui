@@ -17,6 +17,7 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-finance-report-controlcenter',
@@ -27,7 +28,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
-  dataSet: any[] = [];
+  dataSet: SafeAny[] = [];
   arReportByControlCenter: FinanceReportByControlCenter[] = [];
   arControlCenter: ControlCenter[] = [];
   baseCurrency: string;
@@ -45,7 +46,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
     );
 
     this.isLoadingResults = false;
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit() {
@@ -112,7 +113,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -156,7 +157,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -193,7 +194,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;
@@ -209,25 +210,26 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     forkJoin([this.odataService.fetchReportByControlCenter(forceReload), this.odataService.fetchAllControlCenters()])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: any[]) => {
+        next: (x) => {
           this.arReportByControlCenter = x[0];
           this.arControlCenter = x[1];
 
           this.buildReportList();
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${error}`,
+            `AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.modalService.error({
             nzTitle: translate('Common.Error'),
-            nzContent: error.toString(),
+            nzContent: err.toString(),
             nzClosable: true,
           });
         },

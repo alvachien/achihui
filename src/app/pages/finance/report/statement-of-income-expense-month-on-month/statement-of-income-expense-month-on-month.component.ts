@@ -22,6 +22,7 @@ import {
 import { FinanceOdataService } from 'src/app/services';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-statement-of-income-expense-month-on-month',
@@ -81,6 +82,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     this.odataService
       .fetchStatementOfIncomeAndExposeMoM(this.selectedPeriod, this.excludeTransfer, forceReload)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -104,11 +106,14 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       });
   }
 
-  onChanges(event: any): void {
+  onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onChanges with ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug
     );
+    if (event) {
+      // TBD.
+    }
     this.onLoadData(true);
   }
 
@@ -116,9 +121,9 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     // Fetch out data
     const arAxis: string[] = [];
 
-    const arIn: any[] = [];
-    const arOut: any[] = [];
-    const arBal: any[] = [];
+    const arIn: SafeAny[] = [];
+    const arOut: SafeAny[] = [];
+    const arBal: SafeAny[] = [];
     if (this.selectedPeriod === financePeriodLast12Months) {
       // Last 12 months
       for (let imonth = 11; imonth >= 0; imonth--) {
@@ -263,7 +268,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     };
   }
 
-  onChartClick(event: any) {
+  onChartClick(event: SafeAny) {
     const dtmonth = moment(event.name + '.01');
     if (event.seriesId === 'in') {
       this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
@@ -313,7 +318,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

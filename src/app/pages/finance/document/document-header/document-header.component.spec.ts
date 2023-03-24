@@ -180,7 +180,9 @@ describe('DocumentHeaderComponent', () => {
     }));
 
     it('OnChange method', fakeAsync(() => {
-      const changefn = () => {};
+      const changefn = () => {
+        // TBD.
+      };
       component.registerOnChange(changefn);
       spyOn(component, 'onChange').and.callThrough();
 
@@ -415,7 +417,9 @@ describe('DocumentHeaderComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      const changefn = () => {};
+      const changefn = () => {
+        // TBD.
+      };
       component.registerOnChange(changefn);
       spyOn(component, 'onChange').and.callThrough();
 

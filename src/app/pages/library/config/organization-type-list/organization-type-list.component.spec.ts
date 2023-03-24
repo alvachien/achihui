@@ -12,15 +12,14 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { OrganizationTypeListComponent } from './organization-type-list.component';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SafeAny } from 'src/common';
 
 describe('OrganizationTypeListComponent', () => {
   let component: OrganizationTypeListComponent;
   let fixture: ComponentFixture<OrganizationTypeListComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllOrganizationTypesSpy: any;
+  let storageService: SafeAny;
+  let fetchAllOrganizationTypesSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -73,5 +72,10 @@ describe('OrganizationTypeListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchAllOrganizationTypesSpy).not.toHaveBeenCalled();
+    }
   });
 });

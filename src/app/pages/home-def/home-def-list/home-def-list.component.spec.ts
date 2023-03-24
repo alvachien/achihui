@@ -23,7 +23,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefListComponent } from './home-def-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
-import { AuthService, UIStatusService, HomeDefOdataService } from '../../../services';
+import { AuthService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 
@@ -36,7 +36,7 @@ describe('HomeDefListComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let homeService: any;
   let authServiceStub: Partial<AuthService>;
-  let uiServiceStub: Partial<UIStatusService>;
+  //let uiServiceStub: Partial<UIStatusService>;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -46,7 +46,7 @@ describe('HomeDefListComponent', () => {
 
     authServiceStub = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    uiServiceStub = {};
+    //uiServiceStub = {};
     homeService = jasmine.createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;

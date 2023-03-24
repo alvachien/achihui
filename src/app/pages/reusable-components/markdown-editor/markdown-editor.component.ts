@@ -169,7 +169,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.editor!.onDidChangeModelContent((ec) => {
+    this.editor!.onDidChangeModelContent(() => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
         ConsoleLogTypeEnum.debug
@@ -712,6 +712,10 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         return;
       }
 
+      if (fileList) {
+        // EMPTY
+      }
+
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
     });
@@ -769,6 +773,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent validate...',
       ConsoleLogTypeEnum.debug
     );
+    if (control) {
+      // TBD.
+    }
     return null;
   }
   registerOnValidatorChange?(fn: () => void): void {
@@ -776,6 +783,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnValidatorChange...',
       ConsoleLogTypeEnum.debug
     );
+    if (!fn) {
+      // EMPTY
+    }
     // throw new Error("Method not implemented.");
   }
 }

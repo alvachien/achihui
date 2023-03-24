@@ -497,7 +497,9 @@ export abstract class AccountExtra {
     // Empty
   }
   public onSetData(data: AccountExtraBaseJson): void {
-    // Empty
+    if (data) {
+      // TBD.
+    }
   }
 }
 
@@ -605,8 +607,8 @@ export class Account extends hih.BaseModel {
       if (this.CategoryId) {
         if (context && context.Categories instanceof Array && context.Categories.length > 0) {
           let bCategory = false;
-          for (const ctgy of context.Categories) {            
-            if (+ctgy.ID! === +this.CategoryId) {
+          for (const ctgy of context.Categories) {
+            if (+(ctgy.ID ?? 0) === +this.CategoryId) {
               bCategory = true;
               break;
             }
@@ -1077,7 +1079,7 @@ export class AccountExtraLoan extends AccountExtra {
   }
   get StartDateFormatString(): string | null {
     if (this._startDate !== null) {
-      return this._startDate!.format(hih.momentDateFormat);
+      return this._startDate.format(hih.momentDateFormat);
     }
     return null;
   }
@@ -1240,7 +1242,7 @@ export class AccountExtraLoan extends AccountExtra {
 
   public override writeJSONObject(): AccountExtraLoanJson {
     const rstobj: AccountExtraLoanJson = super.writeJSONObject() as AccountExtraLoanJson;
-    rstobj.StartDate = this._startDate!.format(hih.momentDateFormat);
+    rstobj.StartDate = this._startDate?.format(hih.momentDateFormat) ?? '';
     if (this._endDate) {
       rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
     }
@@ -2287,6 +2289,7 @@ export class Document extends hih.BaseModel {
           } else {
             // Amount
             let amtItem = 0;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             for (const tt of context!.TransactionTypes) {
               const ftt: TranType = tt as TranType;
               if (ftt.Id === fit.TranType) {
@@ -2317,6 +2320,7 @@ export class Document extends hih.BaseModel {
             // Order valid check
             if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
               const vordidx: number = context.Orders.findIndex((ord: Order) => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return +fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo);
               });
 
@@ -2849,8 +2853,8 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     this._tranDate = td;
   }
   get TranDateFormatString(): string | null {
-    if (this._tranDate !== null) {
-      return this._tranDate!.format(hih.momentDateFormat);
+    if (this._tranDate) {
+      return this._tranDate.format(hih.momentDateFormat);
     }
     return null;
   }
@@ -2890,7 +2894,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.HomeID = this.HID;
     rstObj.ReferenceDocumentID = this.RefDocId;
     rstObj.AccountID = this.AccountId;
-    rstObj.TransactionDate = this._tranDate?.format(hih.momentDateFormat);
+    rstObj.TransactionDate = this._tranDate?.format(hih.momentDateFormat) ?? '';
     rstObj.TransactionType = this.TranType;
     rstObj.TransactionAmount = this.TranAmount;
     rstObj.TranAmount = this.TranAmount;

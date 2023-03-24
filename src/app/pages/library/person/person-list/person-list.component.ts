@@ -82,7 +82,9 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/library/person/display/' + pid.toString()]);
   }
   public onEdit(pid: number) {
-    // TBD.
+    if (pid) {
+      // TBD.
+    }
   }
   public onDelete(pid: number) {
     this.modalService.confirm({
@@ -93,7 +95,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deletePerson(pid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });

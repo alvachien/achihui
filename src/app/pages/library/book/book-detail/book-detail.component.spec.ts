@@ -24,18 +24,17 @@ import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
 import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SafeAny } from 'src/common';
 
 describe('BookDetailComponent', () => {
   let component: BookDetailComponent;
   let fixture: ComponentFixture<BookDetailComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readBookSpy: any;
-  let createBookSpy: any;
-  let fetchAllPersonsSpy: any;
-  let activatedRouteStub: any;
+  let storageService: SafeAny;
+  let readBookSpy: SafeAny;
+  let createBookSpy: SafeAny;
+  let fetchAllPersonsSpy: SafeAny;
+  let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -108,6 +107,11 @@ describe('BookDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchAllPersonsSpy).toHaveBeenCalled();
+    }
   });
 
   describe('create mode', () => {

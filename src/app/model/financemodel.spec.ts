@@ -1546,6 +1546,10 @@ describe('FinanceReportBase', () => {
   it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson = {};
 
+    if (instance) {
+      // TBD.
+    }
+
     const instance2: FinanceReportBase = new FinanceReportBase();
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();

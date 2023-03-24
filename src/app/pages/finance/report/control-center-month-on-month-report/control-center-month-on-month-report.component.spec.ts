@@ -28,15 +28,16 @@ import {
 } from '../../../../model';
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report.component';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
+import { SafeAny } from 'src/common';
 
 describe('ControlCenterMonthOnMonthReportComponent', () => {
   let component: ControlCenterMonthOnMonthReportComponent;
   let fixture: ComponentFixture<ControlCenterMonthOnMonthReportComponent>;
 
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchReportByControlCenterMoMSpy: any;
+  let storageService: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchReportByControlCenterMoMSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeServiceStub: Partial<HomeDefOdataService> = {};
@@ -102,63 +103,63 @@ describe('ControlCenterMonthOnMonthReportComponent', () => {
       ndata.DebitBalance = 100;
       ndata.CreditBalance = 20;
       ndata.Month = 1;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 120;
       ndata.CreditBalance = 30;
       ndata.Month = 2;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 110;
       ndata.CreditBalance = 50;
       ndata.Month = 3;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 150;
       ndata.CreditBalance = 150;
       ndata.Month = 4;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 250;
       ndata.CreditBalance = 10;
       ndata.Month = 6;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 250;
       ndata.CreditBalance = 10;
       ndata.Month = 8;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 250;
       ndata.CreditBalance = 10;
       ndata.Month = 10;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 250;
       ndata.CreditBalance = 110;
       ndata.Month = 11;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       ndata = new FinanceReportByControlCenterMOM();
       ndata.HomeID = fakeData.chosedHome.ID;
       ndata.DebitBalance = 250;
       ndata.CreditBalance = 210;
       ndata.Month = 12;
-      ndata.ControlCenterId = fakeData.finControlCenters[0].Id!;
+      ndata.ControlCenterId = fakeData.finControlCenters[0].Id ?? 0;
       arRptData.push(ndata);
       fetchReportByControlCenterMoMSpy.and.returnValue(asyncData(arRptData));
     });
@@ -176,7 +177,7 @@ describe('ControlCenterMonthOnMonthReportComponent', () => {
 
       expect(component.arControlCenters.length).toBeGreaterThan(0);
 
-      component.selectedControlCenters = [fakeData.finControlCenters[0].Id!];
+      component.selectedControlCenters = [fakeData.finControlCenters[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
       tick();
@@ -195,7 +196,7 @@ describe('ControlCenterMonthOnMonthReportComponent', () => {
 
       expect(component.arControlCenters.length).toBeGreaterThan(0);
 
-      component.selectedControlCenters = [fakeData.finControlCenters[0].Id!];
+      component.selectedControlCenters = [fakeData.finControlCenters[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast6Months;
       component.refreshData();
       tick();
@@ -261,7 +262,7 @@ describe('ControlCenterMonthOnMonthReportComponent', () => {
       tick();
       fixture.detectChanges();
 
-      component.selectedControlCenters = [fakeData.finControlCenters[0].Id!];
+      component.selectedControlCenters = [fakeData.finControlCenters[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
       tick();

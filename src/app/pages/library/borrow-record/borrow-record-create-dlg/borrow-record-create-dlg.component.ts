@@ -103,9 +103,9 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Do nothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',

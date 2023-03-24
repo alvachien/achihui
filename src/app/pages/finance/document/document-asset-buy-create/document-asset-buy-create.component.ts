@@ -87,10 +87,10 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   }
 
   get IsLegacyAsset(): boolean {
-    return this.firstFormGroup && this.firstFormGroup.get('legacyControl')!.value;
+    return this.firstFormGroup && (this.firstFormGroup.get('legacyControl')?.value ?? false);
   }
   get tranAmount(): number {
-    return this.firstFormGroup && this.firstFormGroup.get('amountControl')!.value;
+    return this.firstFormGroup && (this.firstFormGroup.get('amountControl')?.value ?? 0);
   }
 
   constructor(
@@ -106,7 +106,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     );
 
     this._docDate = moment();
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     // this.assetAccount = new AccountExtraAsset();
     this.arMembers = this.homeService.ChosedHome?.Members.slice() ?? [];
 
@@ -277,7 +277,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
           DocumentTypes: this.arDocTypes,
           TransactionTypes: this.arTranTypes,
           Currencies: this.arCurrencies,
-          BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+          BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
         popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
@@ -290,7 +290,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this.isDocPosting = true;
     // Do the real submit.
     const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
-    apidetail.HID = this.homeService.ChosedHome!.ID;
+    apidetail.HID = this.homeService.ChosedHome?.ID ?? 0;
     apidetail.TranDate = docobj.TranDateFormatString;
     apidetail.TranCurr = docobj.TranCurr;
     apidetail.TranAmount = this.firstFormGroup.get('amountControl')?.value;
@@ -308,6 +308,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createAssetBuyinDocument(apidetail)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.isDocPosting = false;
@@ -346,12 +347,12 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl')?.value;
     this.confirmInfo.tranCurrency = doc.TranCurr;
-    this.confirmInfo.assetName = this.firstFormGroup.get('assetAccountControl')?.value!.Name;
+    this.confirmInfo.assetName = this.firstFormGroup.get('assetAccountControl')?.value?.Name ?? '';
   }
 
   private _generateDoc(): Document {
     const ndoc: Document = this.firstFormGroup.get('headerControl')?.value;
-    ndoc.HID = this.homeService.ChosedHome!.ID;
+    ndoc.HID = this.homeService.ChosedHome?.ID ?? 0;
     ndoc.DocType = financeDocTypeAssetBuyIn;
     ndoc.Items = [];
     // Add items
@@ -386,7 +387,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     );
 
     if (!this.IsLegacyAsset) {
-      const amt: any = group.get('amountControl')?.value;
+      const amt = group.get('amountControl')?.value;
       if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
         return { amountisinvalid: true };
       }

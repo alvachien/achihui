@@ -242,7 +242,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.instancePost!.BlogPostCollections.push({
             CollectionID: element,
-            PostID: this.instancePost!.id,
+            PostID: this.instancePost?.id ?? 0,
           } as BlogPostCollection);
         });
       }

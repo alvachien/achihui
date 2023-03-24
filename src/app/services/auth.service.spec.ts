@@ -1,16 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
+import { SafeAny } from 'src/common';
 
 import { AuthService } from './auth.service';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 describe('AuthService', () => {
-  let securService: any;
-  let eventService: any;
-  let checkAuthSpy: any;
-  let registerForEventsSpy: any;
+  let securService: SafeAny;
+  let eventService: SafeAny;
+  let checkAuthSpy: SafeAny;
+  let registerForEventsSpy: SafeAny;
 
   beforeAll(() => {
     securService = jasmine.createSpyObj('OidcSecurityService', ['checkAuth']);
@@ -32,5 +31,11 @@ describe('AuthService', () => {
 
   it('should be created', inject([AuthService], (service: AuthService) => {
     expect(service).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(checkAuthSpy).not.toHaveBeenCalled();
+      expect(registerForEventsSpy).not.toHaveBeenCalled();
+    }
   }));
 });

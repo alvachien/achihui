@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { UserAuthInfo } from 'src/app/model';
 import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 import { FakeDataHelper, getTranslocoModule } from 'src/testing';
 import { LibraryUIModule } from '../../library-ui.module';
 
@@ -17,10 +18,10 @@ describe('LocationSelectionDlgComponent', () => {
   let component: LocationSelectionDlgComponent;
   let fixture: ComponentFixture<LocationSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
-  let readBookSpy: any;
+  //let storageService: any;
+  let readBookSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
+  //const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
@@ -75,5 +76,10 @@ describe('LocationSelectionDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(readBookSpy).not.toHaveBeenCalled();
+    }
   });
 });

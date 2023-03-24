@@ -21,6 +21,7 @@ import {
   momentDateFormat,
 } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
+import { SafeAny } from 'src/common';
 
 class DateCellData {
   public CurrentDate: moment.Moment | null = null;
@@ -102,6 +103,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (cell.CurrentDate!.isSame(mcell)) {
         dpdocs.push(...cell.DPDocs);
       }
@@ -114,6 +116,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (cell.CurrentDate!.isSame(mcell)) {
         dpdocs.push(...cell.LoanDocs);
       }
@@ -126,7 +129,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     return mdate.daysInMonth() === mdate.date();
   }
 
-  onSelectChange(event: any) {
+  onSelectChange(event: SafeAny) {
     // Check
     const prvyear = this._selectedYear;
     const prvmonth = this._selectedMonth;
@@ -137,7 +140,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPanelChange(event: any) {
+  onPanelChange(event: SafeAny) {
     // Do nothing so far.
   }
 
@@ -162,7 +165,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
         returnResults[8].forEach((rst) => {
           arItems.push({
             AssetAccountId: rst.AssetAccountID,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TranAmount: rst.TranAmount!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TranCurr: rst.TranCurr!,
             TranDate: moment(rst.TranDate).format(momentDateFormat),
             HID: rst.HID,
@@ -223,10 +228,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
         //   }
       ],
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => console.log('[afterClose] The result is:', result));
+    modal.afterClose.subscribe((result: SafeAny) => console.log('[afterClose] The result is:', result));
 
     // delay until modal instance created
     // setTimeout(() => {
@@ -255,21 +260,24 @@ export class FinanceComponent implements OnInit, OnDestroy {
       this.odataService.fetchOverviewKeyfigure(this.excludeTransfer, forceReload),
     ])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (rsts: any[]) => {
+        next: (rsts) => {
           this.listDate = [];
 
           // DP template doc
           if (rsts[0] instanceof Array && rsts[0].length > 0) {
             rsts[0].forEach((val: TemplateDocADP) => {
               const idx = this.listDate.findIndex((cell) => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ncell.CurrentDate = val.TranDate!.clone();
                 ncell.DPDocs.push(val);
                 this.listDate.push(ncell);
@@ -282,10 +290,12 @@ export class FinanceComponent implements OnInit, OnDestroy {
           if (rsts[1] instanceof Array && rsts[1].length > 0) {
             rsts[1].forEach((val: TemplateDocLoan) => {
               const idx = this.listDate.findIndex((cell) => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ncell.CurrentDate = val.TranDate!.clone();
                 ncell.LoanDocs.push(val);
                 this.listDate.push(ncell);
@@ -314,12 +324,14 @@ export class FinanceComponent implements OnInit, OnDestroy {
   doPostDPDoc(dpdoc: TemplateDocADP) {
     this.odataService
       .createDocumentFromDPTemplate(dpdoc)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {
           this.messageService.success(translate('Finance.DocumentPosted'));
           // Remove the doc
           const idx = this.listDate.findIndex((cell) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
           });
           if (idx !== -1) {
@@ -335,7 +347,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
             }
           }
         },
-        error: (err) => {
+        error: () => {
           this.messageService.error('Document failed to post');
         },
       });
@@ -343,6 +355,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   doPostLoanDoc(loandoc: TemplateDocLoan) {
     // It shall just jump to repay page
     this.uiService.SelectedLoanTmp = loandoc;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId!.toString()]);
   }
 
@@ -382,6 +395,7 @@ export class FinanceAssetDepreciationDlgComponent {
       if (!bfound) {
         if (acnt.Id === accountid) {
           bfound = true;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           acntname = acnt.Name!;
         }
       }
@@ -406,7 +420,7 @@ export class FinanceAssetDepreciationDlgComponent {
   createDoc(docitem: FinanceAssetDepreciationCreationItem): void {
     if (this.isValid(docitem)) {
       this.odataSrv.createAssetDepreciationDoc(docitem).subscribe({
-        next: (val) => {
+        next: () => {
           this.messageService.success(translate('Finance.DocumentPosted'));
           const idx = this.listItems.findIndex((p) => p.AssetAccountId === docitem.AssetAccountId);
           if (idx !== -1) {

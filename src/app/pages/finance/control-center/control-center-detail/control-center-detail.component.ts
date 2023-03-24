@@ -215,7 +215,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       this._createControlCenter(detailObject);
     } else if (this.uiMode === UIMode.Update) {
       // Check the dirty control
-      const arcontent: any = {};
+      const arcontent: SafeAny = {};
       // nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
       // cmtControl: new FormControl('', Validators.maxLength(45)),
       // parentControl: new FormControl(),

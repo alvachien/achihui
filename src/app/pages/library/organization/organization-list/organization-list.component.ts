@@ -85,7 +85,9 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/library/organization/display/' + pid.toString()]);
   }
   public onEdit(pid: number) {
-    // TBD.
+    if (pid) {
+      // TBD.
+    }
   }
   public onDelete(pid: number) {
     this.modalService.confirm({

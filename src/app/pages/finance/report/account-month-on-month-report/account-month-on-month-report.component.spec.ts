@@ -179,7 +179,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
 
       expect(component.arUIAccounts.length).toBeGreaterThan(0);
 
-      component.selectedAccountID = fakeData.finAccounts[0].Id!;
+      component.selectedAccountID = fakeData.finAccounts[0].Id ?? 0;
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
       tick();
@@ -198,7 +198,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
 
       expect(component.arUIAccounts.length).toBeGreaterThan(0);
 
-      component.selectedAccountID = fakeData.finAccounts[0].Id!;
+      component.selectedAccountID = fakeData.finAccounts[0].Id ?? 0;
       component.selectedPeriod = financePeriodLast6Months;
       component.refreshData();
       tick();
@@ -293,7 +293,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
       tick();
       fixture.detectChanges();
 
-      component.selectedAccountID = fakeData.finAccounts[0].Id!;
+      component.selectedAccountID = fakeData.finAccounts[0].Id ?? 0;
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
       tick();

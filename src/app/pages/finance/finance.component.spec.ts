@@ -177,6 +177,7 @@ describe('FinanceComponent', () => {
       component.doPostDPDoc(dp1);
       expect(createDocumentFromDPTemplateSpy).toHaveBeenCalled();
       expect(component.listDate.length).toEqual(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(component.listDate[0].CurrentDate!.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
 
       // Post the Loan doc

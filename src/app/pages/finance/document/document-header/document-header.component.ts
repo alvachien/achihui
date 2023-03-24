@@ -165,6 +165,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     // insobj.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
     insobj.TranDate = moment(this.headerForm.get('dateControl')?.value as Date);
     insobj.Desp = this.headerForm.get('despControl')?.value;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     insobj.DocType = this.docType!;
     if (this.isForeignCurrency) {
       insobj.ExgRate = this.headerForm.get('exgControl')?.value;
@@ -211,6 +212,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       this.headerForm &&
       this.headerForm.get('curr2Control') &&
       this.headerForm.get('curr2Control')?.value &&
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.baseCurrency !== this.headerForm!.get('curr2Control')?.value
     );
   }
@@ -295,14 +297,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnChange...',
       ConsoleLogTypeEnum.debug
     );
     this._onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnTouched...',
       ConsoleLogTypeEnum.debug
@@ -344,9 +346,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
   }
 
-  onCurrencyChange(event: any): void {
+  onCurrencyChange(event: SafeAny): void {
     if (event) {
       if (event.Currency) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.currencyChanged.emit((event as Currency).Currency!);
       } else {
         this.currencyChanged.emit(event);
@@ -355,9 +358,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       this.onChange();
     }
   }
-  onCurrency2Change(event: any): void {
+  onCurrency2Change(event: SafeAny): void {
     if (event) {
       if (event.Currency) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.currency2Changed.emit((event as Currency).Currency!);
       } else {
         this.currency2Changed.emit(event);

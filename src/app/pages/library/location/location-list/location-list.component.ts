@@ -85,7 +85,9 @@ export class LocationListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/library/location/display/' + pid.toString()]);
   }
   public onEdit(pid: number) {
-    // TBD.
+    if (pid) {
+      // TBD.
+    }
   }
   public onDelete(pid: number) {
     this.modalService.confirm({
@@ -96,7 +98,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteLocation(pid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });

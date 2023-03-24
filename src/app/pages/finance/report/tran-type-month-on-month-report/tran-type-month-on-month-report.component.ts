@@ -7,6 +7,7 @@ import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -119,11 +120,14 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
     });
   }
 
-  onChanges(event: any): void {
+  onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent onChanges with ${this.selectedTranTypes}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug
     );
+    if (event) {
+      // TBD.
+    }
     this.refreshData();
   }
 
@@ -149,7 +153,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           }
         });
 
-        const arSeries: any[] = [];
+        const arSeries: SafeAny[] = [];
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
@@ -296,7 +300,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
           series: arSeries,
         };
       },
-      error: (err: any) => {
+      error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering TranTypeMonthOnMonthReportComponent refreshData failed ${err}`,
           ConsoleLogTypeEnum.error
@@ -311,7 +315,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
     });
   }
 
-  onChartClick(event: any) {
+  onChartClick(event: SafeAny) {
     console.log(event);
     // Month
     const dtmonth = moment(event.name + '.01');
@@ -363,7 +367,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

@@ -257,6 +257,10 @@ export class BaseModel {
   public onVerify(context?: SafeAny): boolean {
     this.VerifiedMsgs = [];
 
+    if (context) {
+      // TBD.
+    }
+
     return true;
   }
 

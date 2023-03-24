@@ -247,13 +247,15 @@ export class HomeDef extends hih.BaseModel {
 
   public generateJSONData(createmode?: boolean): HomeDefJson {
     const jdata: HomeDefJson = {
-      ID: this._id,
       Name: this._name,
       Details: this._details,
       Host: this._host,
       BaseCurrency: this._basecurr,
       HomeMembers: [],
     };
+    if (!createmode) {
+      jdata.ID = this._id;
+    }
     if (this._listMembers) {
       for (const mem of this._listMembers) {
         const memjson: IHomeMemberJson = mem.generateJSONData();

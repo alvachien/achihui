@@ -163,6 +163,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.copyItem(i!);
   }
 
@@ -171,6 +172,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.removeItem(i!);
   }
 
@@ -203,7 +205,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       }
       return controlArray.valid;
     } else if (this.currentStep === 1) {
-      return this.itemsFormGroup!.valid;
+      return this.itemsFormGroup?.valid ?? false;
     } else {
       return true;
     }
@@ -254,7 +256,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
   private createItem(): number {
     const control: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
-    const addrCtrl: any = this.initItem();
+    const addrCtrl = this.initItem();
 
     control.push(addrCtrl);
     return control.length - 1;
@@ -349,7 +351,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         docObj = new Document();
         docObj.Desp = item.tranDate.format(momentDateFormat);
         docObj.DocType = financeDocTypeNormal;
-        docObj.HID = this.homeService.ChosedHome!.ID;
+        docObj.HID = this.homeService.ChosedHome?.ID ?? 0;
         docObj.TranCurr = this.baseCurrency;
         docObj.TranDate = moment(item.tranDate);
         const docitem = new DocumentItem();
@@ -384,7 +386,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
           DocumentTypes: this.arDocTypes,
           TransactionTypes: this.arTranType,
           Currencies: this.arCurrencies,
-          BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+          BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
         errorOccur = true;
@@ -401,6 +403,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.confirmInfo)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isDocPosting = false))
       )
@@ -431,6 +434,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.docIdFailed)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isDocPosting = false))
       )
@@ -453,6 +457,8 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       });
   }
   public onDisplayCreatedDoc(docid: number): void {
-    // TBD.
+    if (docid) {
+      // TBD.
+    }
   }
 }

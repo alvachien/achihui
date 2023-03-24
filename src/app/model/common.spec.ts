@@ -145,6 +145,7 @@ describe('TagCount', () => {
 
 describe('getOverviewScopeRange', () => {
   beforeEach(() => {
+    // TBD.
   });
 
   it('CurrentMonth', () => {

@@ -138,6 +138,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (rst) => {
@@ -265,7 +266,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranTypes,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
       popupDialog(this.modalService, 'Common.Error', docobj.VerifiedMsgs);
@@ -275,7 +276,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
     // Do the real submit.
     this.detailObject = new FinanceAssetSoldoutDocumentAPI();
-    this.detailObject.HID = this.homeService.ChosedHome!.ID;
+    this.detailObject.HID = this.homeService.ChosedHome?.ID ?? 0;
     this.detailObject.TranDate = docobj.TranDate.format(momentDateFormat);
     this.detailObject.TranCurr = docobj.TranCurr;
     this.detailObject.TranAmount = this.firstFormGroup.get('amountControl')?.value;
@@ -290,12 +291,14 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.detailObject.OrderID = norder;
     }
     docobj.Items.forEach((val: DocumentItem) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.detailObject!.Items.push(val);
     });
 
     this.odataService
       .createAssetSoldoutDocument(this.detailObject)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.currentStep = 3;
@@ -346,7 +349,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
 
   private _generateDoc(): Document {
     const ndoc: Document = this.firstFormGroup.get('headerControl')?.value;
-    ndoc.HID = this.homeService.ChosedHome!.ID;
+    ndoc.HID = this.homeService.ChosedHome?.ID ?? 0;
     ndoc.DocType = this.curDocType;
 
     ndoc.Items = [];
@@ -361,7 +364,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    const amt: any = group.get('amountControl')?.value;
+    const amt = group.get('amountControl')?.value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }
@@ -374,7 +377,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    const amt: any = this.firstFormGroup.get('amountControl')?.value;
+    const amt = this.firstFormGroup.get('amountControl')?.value;
     const items: DocumentItem[] = group.get('itemControl')?.value;
 
     let totalAmt = 0;

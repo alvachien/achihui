@@ -22,6 +22,7 @@ import * as moment from 'moment';
 import { NumberUtility } from 'actslib';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { DocumentItemViewComponent } from '../../document-item-view';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-cash-month-on-month-report',
@@ -80,6 +81,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchCashReportMoM(this.selectedPeriod, forceReload)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -103,11 +105,14 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
       });
   }
 
-  onChanges(event: any): void {
+  onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChanges with ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug
     );
+    if (event) {
+      // TBD
+    }
     this.onLoadData(true);
   }
 
@@ -115,9 +120,9 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     // Fetch out data
     const arAxis: string[] = [];
 
-    const arIn: any[] = [];
-    const arOut: any[] = [];
-    const arBal: any[] = [];
+    const arIn: SafeAny[] = [];
+    const arOut: SafeAny[] = [];
+    const arBal: SafeAny[] = [];
     if (this.selectedPeriod === financePeriodLast12Months) {
       // Last 12 months
       for (let imonth = 11; imonth >= 0; imonth--) {
@@ -262,7 +267,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     };
   }
 
-  onChartClick(event: any) {
+  onChartClick(event: SafeAny) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChartClick`,
       ConsoleLogTypeEnum.debug
@@ -332,7 +337,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

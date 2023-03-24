@@ -124,6 +124,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
           forkJoin([this.odataService.fetchAllControlCenters(), this.odataService.readOrder(this.routerID)])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
@@ -135,7 +136,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
                 this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
                 this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom!.toDate());
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo!.toDate());
                 if (rsts[1].Comment) {
                   this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
@@ -173,6 +176,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             this.odataService
               .fetchAllControlCenters()
               .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
                 finalize(() => (this.isLoadingResults = false))
               )
@@ -279,15 +283,15 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           this.orderIdCreated = neword.Id;
           this.orderSavedFailed = '';
         },
-        error: (error: any) => {
+        error: (err) => {
           // Show error message
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${error}`,
+            `AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.orderIdCreated = undefined;
-          this.orderSavedFailed = error;
+          this.orderSavedFailed = err;
         },
       });
   }
@@ -332,18 +336,18 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             this.orderSavedFailed = '';
             this.orderIdCreated = ordObj.Id;
           },
-          error: (error: any) => {
+          error: (err) => {
             // Show error message
             ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${err}`,
               ConsoleLogTypeEnum.error
             );
 
-            this.orderSavedFailed = error;
+            this.orderSavedFailed = err;
           },
         });
     } else {
-      const arcontent: any = {};
+      const arcontent: SafeAny = {};
       if (this.detailFormGroup.get('nameControl')?.dirty) {
         arcontent.Name = ordObj.Name;
       }
@@ -375,14 +379,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             this.orderSavedFailed = '';
             this.orderIdCreated = ordObj.Id;
           },
-          error: (error: any) => {
+          error: (err) => {
             // Show error message
             ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${error}`,
+              `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${err}`,
               ConsoleLogTypeEnum.error
             );
 
-            this.orderSavedFailed = error;
+            this.orderSavedFailed = err;
           },
         });
     }

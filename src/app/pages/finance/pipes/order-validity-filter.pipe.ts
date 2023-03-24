@@ -12,9 +12,11 @@ export class OrderValidityFilterPipe implements PipeTransform {
       ? allOrders.filter((value: Order) => {
           if (args !== undefined) {
             if (moment.isMoment(args)) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               return value.ValidFrom!.isBefore(args) && value.ValidTo!.isAfter(args);
             } else if (args) {
               const dt = moment();
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               return value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt);
             }
           }

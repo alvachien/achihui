@@ -107,7 +107,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NzModalService
   ) {
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.searchFormGroup = new UntypedFormGroup({
       docIDControl: new UntypedFormControl(),
       dateRangeControl: new UntypedFormControl([new Date(), new Date()], Validators.required),
@@ -152,9 +152,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         this.odataService.fetchAllOrders(),
         this.odataService.fetchAllCurrencies(),
       ])
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
-          next: (rst: any) => {
+          next: (rst) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
               ConsoleLogTypeEnum.debug
@@ -180,12 +181,12 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
                 if (x.length === 2 && this.uiService.SelectedLoanTmp) {
                   tmpdocid = +x[1].path;
                   this.searchFormGroup.get('docIDControl')?.setValue(tmpdocid);
-                  this.searchFormGroup
-                    .get('dateRangeControl')
-                    ?.setValue([
-                      this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
-                      this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
-                    ]);
+                  this.searchFormGroup.get('dateRangeControl')?.setValue([
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                  ]);
                   this.searchFormGroup
                     .get('accountControl')
                     ?.setValue(this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.AccountId : undefined);
@@ -298,7 +299,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
   // Step 0: Search items
   public onSearchLoanTmp() {
-    const dtranges: any[] = this.searchFormGroup.get('dateRangeControl')?.value;
+    const dtranges: SafeAny[] = this.searchFormGroup.get('dateRangeControl')?.value;
     const acntid = this.searchFormGroup.get('accountControl')?.value;
     const docid = this.searchFormGroup.get('docIDControl')?.value;
     const ccid = this.searchFormGroup.get('ccControl')?.value;
@@ -321,9 +322,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         OrderID: orderid,
       }),
     ])
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
-        next: (respdata: any[]) => {
+        next: (respdata) => {
           if (respdata[0] === 0) {
             this.legacyLoan = true;
           }
@@ -350,7 +352,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     return this.listOfLoanTmpDoc.length > 0 && this.selectedLoanTmpDoc.length === 1;
   }
 
-  public onTmpLoanDocRowSelectChanged(event: any, tmpdoc: TemplateDocLoan) {
+  public onTmpLoanDocRowSelectChanged(event: SafeAny, tmpdoc: TemplateDocLoan) {
     const bval = event as boolean;
     if (bval) {
       this.selectedLoanTmpDoc.push(tmpdoc);
@@ -435,12 +437,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   private readLoanAccountInfo() {
     let acntid = 0;
     if (this.selectedLoanTmpDoc.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       acntid = this.selectedLoanTmpDoc[0].AccountId!;
     } else {
       acntid = this.searchFormGroup.get('accountControl')?.value;
     }
     this.odataService
       .readAccount(acntid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (val) => {
@@ -451,6 +455,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           } else if (this.legacyLoan) {
             this.amountSelectedItem = 0;
             this.interestAmountSelectedItem = 0;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.odataService.fetchAccountBalance(this.selectedLoanAccount?.Id!).subscribe({
               next: (val) => {
                 this.amountTotal = val;
@@ -506,6 +511,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     } as PayingAccountItem;
 
     if (this.legacyLoan) {
+      // TBD.
     } else {
       nitem.ControlCenterId = this.selectedLoanTmpDoc[0].ControlCenterId;
       nitem.OrderId = this.selectedLoanTmpDoc[0].OrderId;
@@ -519,10 +525,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo = new Document();
 
     // Header
-    this.confirmInfo.HID = this.homeService.ChosedHome!.ID;
+    this.confirmInfo.HID = this.homeService.ChosedHome?.ID ?? 0;
     this.confirmInfo.DocType = financeDocTypeRepay;
     this.confirmInfo.TranDate = moment(this.headerFormGroup.get('dateControl')?.value as Date);
-    this.confirmInfo.TranCurr = this.homeService.ChosedHome!.BaseCurrency;
+    this.confirmInfo.TranCurr = this.homeService.ChosedHome?.BaseCurrency ?? '';
     if (this.legacyLoan) {
       this.confirmInfo.Desp = 'Repay';
     } else {
@@ -580,6 +586,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     // Now go to the real posting
     let postrst = null;
     if (this.selectedLoanTmpDoc.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       postrst = this.odataService.createLoanRepayDoc(this.confirmInfo, this.selectedLoanTmpDoc[0].DocId!);
     } else {
       postrst = this.odataService.createDocument(this.confirmInfo);
@@ -587,6 +594,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     postrst
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.isDocPosting = false;

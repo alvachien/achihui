@@ -38,20 +38,21 @@ import {
 } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { ReportComponent } from './report.component';
+import { SafeAny } from 'src/common';
 
 describe('ReportComponent', () => {
   let component: ReportComponent;
   let fixture: ComponentFixture<ReportComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: any;
+  let storageService: SafeAny;
   // let fetchAllReportsByAccountSpy: any;
   // let fetchAllReportsByControlCenterSpy: any;
   // let fetchAllReportsByOrderSpy: any;
-  let fetchAllAccountCategoriesSpy: any;
-  let fetchAllAccountsSpy: any;
-  let fetchAllControlCentersSpy: any;
-  let fetchAllOrdersSpy: any;
-  let fetchReportByTransactionTypeSpy: any;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  let fetchAllControlCentersSpy: SafeAny;
+  let fetchAllOrdersSpy: SafeAny;
+  let fetchReportByTransactionTypeSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeServiceStub: Partial<HomeDefOdataService> = {};

@@ -55,7 +55,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
   let assetAccount: SafeAny;
-  const modalClassName = '.ant-modal-body';
+  //const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 
   beforeAll(() => {

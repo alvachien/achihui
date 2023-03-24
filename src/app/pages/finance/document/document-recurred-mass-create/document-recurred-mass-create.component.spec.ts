@@ -64,10 +64,10 @@ describe('DocumentRecurredMassCreateComponent', () => {
   beforeEach(waitForAsync(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const uiServiceStub: Partial<UIStatusService> = {};
+    //const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService: any = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = jasmine.createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',

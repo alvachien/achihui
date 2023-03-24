@@ -47,8 +47,8 @@ describe('DocumentLoanRepayCreateComponent', () => {
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   let homeService: Partial<HomeDefOdataService>;
-  const modalClassName = '.ant-modal-body';
-  const nextButtonId = '#button_next_step';
+  // const modalClassName = '.ant-modal-body';
+  // const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();

@@ -16,6 +16,7 @@ import {
   ModelUtility,
 } from 'src/app/model';
 import { FinanceOdataService } from 'src/app/services';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-control-center-month-on-month-report',
@@ -121,6 +122,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
     this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).subscribe({
       next: (val: FinanceReportByControlCenterMOM[]) => {
@@ -133,7 +135,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
           }
         });
 
-        const arSeries: any[] = [];
+        const arSeries: SafeAny[] = [];
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
@@ -383,7 +385,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
           series: arSeries,
         };
       },
-      error: (err: any) => {
+      error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent refreshData failed ${err}`,
           ConsoleLogTypeEnum.error

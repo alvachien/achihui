@@ -17,10 +17,10 @@ describe('PersonSelectionDlgComponent', () => {
   let component: PersonSelectionDlgComponent;
   let fixture: ComponentFixture<PersonSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
-  let storageService: SafeAny;
+  //let storageService: SafeAny;
   let readBookSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
+  // const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
@@ -75,5 +75,10 @@ describe('PersonSelectionDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(readBookSpy).not.toHaveBeenCalled();
+    }
   });
 });

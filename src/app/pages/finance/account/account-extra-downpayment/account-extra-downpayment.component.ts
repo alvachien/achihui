@@ -189,6 +189,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     this.odataService
       .calcADPTmpDocs(datInput)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: (rsts: RepeatedDatesWithAmountAPIOutput[]) => {

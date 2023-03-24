@@ -168,7 +168,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         const acntidx = this.odataService.Accounts.findIndex((p) => p.Id === acntid);
         if (acntidx !== -1) {
           // Change the account name
-          const modal = this.modalService.create({
+          this.modalService.create({
             nzTitle: translate('Finance.ChangeAccountName'),
             nzContent: AccountChangeNameDialogComponent,
             nzViewContainerRef: this.viewContainerRef,
@@ -351,6 +351,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   onResize({ col }: NzResizeEvent): void {
     cancelAnimationFrame(this.id);
     this.id = requestAnimationFrame(() => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.col = col!;
     });
   }
@@ -429,9 +430,11 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         // Root nodes!
         const node: NzTreeNodeOptions = {
           key: `c${val.ID}`,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           title: translate(val.Name!),
           isLeaf: false,
         };
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         node.children = this._buildAccountTree(arctgy, aracnt, level + 1, +val.ID!);
         data.push(node);
       });

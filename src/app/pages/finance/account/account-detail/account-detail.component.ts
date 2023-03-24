@@ -586,7 +586,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _generateAccount(): Account {
     const acntObj: Account = new Account();
-    acntObj.HID = this.homeSevice.ChosedHome!.ID;
+    acntObj.HID = this.homeSevice.ChosedHome?.ID ?? 0;
     if (this.uiMode === UIMode.Update) {
       acntObj.Id = this.routerID;
     }

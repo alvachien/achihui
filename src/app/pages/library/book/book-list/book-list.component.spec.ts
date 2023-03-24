@@ -73,5 +73,10 @@ describe('BookListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(fetchBooksSpy).toHaveBeenCalled();
+    }
   });
 });

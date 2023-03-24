@@ -233,7 +233,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   /// Filter
   ///
   onFieldSelectionChanged(filter: GeneralFilterItem) {
-    this.allFields.forEach((value: any) => {
+    this.allFields.forEach((value) => {
       if (value.value === filter.fieldName) {
         filter.valueType = value.valueType;
       }

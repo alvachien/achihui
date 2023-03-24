@@ -96,8 +96,8 @@ describe('TranTypeReportComponent', () => {
       rpt1.InAmount = 200;
       rpt1.OutAmount = 100;
       if (fakeData.finTranTypes.length > 0) {
-        rpt1.TransactionType = fakeData.finTranTypes[0].Id!;
-        rpt1.TransactionTypeName = fakeData.finTranTypes[0].Name!;
+        rpt1.TransactionType = fakeData.finTranTypes[0].Id ?? 0;
+        rpt1.TransactionTypeName = fakeData.finTranTypes[0].Name ?? '';
       }
       arRptData.push(rpt1);
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
@@ -134,8 +134,8 @@ describe('TranTypeReportComponent', () => {
       rpt1.InAmount = 200;
       rpt1.OutAmount = 100;
       if (fakeData.finTranTypes.length > 0) {
-        rpt1.TransactionType = fakeData.finTranTypes[0].Id!;
-        rpt1.TransactionTypeName = fakeData.finTranTypes[0].Name!;
+        rpt1.TransactionType = fakeData.finTranTypes[0].Id ?? 0;
+        rpt1.TransactionTypeName = fakeData.finTranTypes[0].Name ?? '';
       }
       arRptData.push(rpt1);
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));

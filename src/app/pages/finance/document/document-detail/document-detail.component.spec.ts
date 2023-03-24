@@ -151,7 +151,7 @@ describe('DocumentDetailComponent', () => {
       item1.ItemId = 1;
       item1.AccountId = fakeData.finAccounts[0].Id;
       item1.TranAmount = 100;
-      item1.TranType = fakeData.finTranTypes[0].Id!;
+      item1.TranType = fakeData.finTranTypes[0].Id ?? 0;
       item1.Desp = 'test';
       docobj.Items.push(item1);
 

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuardService, HomeChoseGuardService, CanDeactivateGuardService } from './services';
+import { AuthGuardService, HomeChoseGuardService } from './services';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/welcome' },

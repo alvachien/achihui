@@ -580,11 +580,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Currency service failed',
-        'Expected dialog to show the error message: Currency service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected dialog to show the error message: Currency service failed')
+        .toContain('Currency service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -605,11 +605,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Account category service failed',
-        'Expected snack bar to show the error message: Account category service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Account category service failed')
+        .toContain('Account category service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -630,11 +630,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Doc type service failed',
-        'Expected snack bar to show the error message: Doc type service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Doc type service failed')
+        .toContain('Doc type service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -655,11 +655,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Tran type service failed',
-        'Expected snack bar to show the error message: Tran type service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Tran type service failed')
+        .toContain('Tran type service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -680,11 +680,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Account service failed',
-        'Expected snack bar to show the error message: Account service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Account service failed')
+        .toContain('Account service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -705,11 +705,11 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Control center service failed',
-        'Expected snack bar to show the error message: Control center service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Control center service failed')
+        .toContain('Control center service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;
@@ -732,11 +732,11 @@ describe('DocumentNormalCreateComponent', () => {
 
       // tick();
       fixture.detectChanges();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent).toContain(
-        'Order service failed',
-        'Expected snack bar to show the error message: Order service failed'
-      );
+      expect(messageElement.textContent)
+        .withContext('Expected snack bar to show the error message: Order service failed')
+        .toContain('Order service failed');
 
       // Close the dialog
       const closeBtn = overlayContainerElement.querySelector('button') as HTMLButtonElement;

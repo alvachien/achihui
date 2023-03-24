@@ -10,8 +10,6 @@ import { LibraryStorageService, UIStatusService } from 'src/app/services';
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-record-create-dlg';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 @Component({
   selector: 'hih-book-list',
   templateUrl: './book-list.component.html',
@@ -71,6 +69,7 @@ export class BookListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchBooks(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
@@ -84,7 +83,7 @@ export class BookListComponent implements OnInit, OnDestroy {
           this.totalCount = x.totalCount;
           this.listData = x.contentList;
         },
-        error: (err: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${err}`,
             ConsoleLogTypeEnum.error
@@ -109,7 +108,9 @@ export class BookListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/library/book/display/' + bid.toString()]);
   }
   onEdit(bid: number): void {
-    // TBD.
+    if (bid) {
+      // TBD.
+    }
   }
   onCreateBorrowRecord(bid: number): void {
     let bkobj: Book | null = null;
@@ -147,7 +148,7 @@ export class BookListComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
     modal.afterClose.subscribe(() => {
       // Donothing by now.
@@ -166,7 +167,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       nzOkDanger: true,
       nzOnOk: () => {
         this.odataService.deleteBook(bid).subscribe({
-          next: (data) => {
+          next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
             });

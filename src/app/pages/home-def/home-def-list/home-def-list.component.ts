@@ -76,7 +76,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     );
     this.homeService.ChosedHome = row;
     // Set current home member
-    const usrid = this.authService.authSubject.value.getUserId();
+    // const usrid = this.authService.authSubject.value.getUserId();
     // console.debug(usrid);
     this.homeService.ChosedHome.Members.forEach((mem) => {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
@@ -112,7 +112,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
         next: (arHomeDef: HomeDef[]) => {
           this.dataSource = arHomeDef;
         },
-        error: (err: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefListComponent ngOnInit, fetchAllHomeDef failed: ${err}`,
             ConsoleLogTypeEnum.error

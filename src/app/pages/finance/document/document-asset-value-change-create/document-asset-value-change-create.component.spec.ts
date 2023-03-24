@@ -40,7 +40,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService>;
   let assetAccount: Account;
-  const modalClassName = '.ant-modal-body';
+  //const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 
   beforeAll(() => {
@@ -54,6 +54,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
     fakeData.buildFinOrders();
     assetAccount = fakeData.finAccounts.find((val) => {
       return val.CategoryId === financeAccountCategoryAsset;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     })!;
 
     storageService = jasmine.createSpyObj('FinanceOdataService', [
@@ -394,7 +395,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Now go to step 1
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -466,7 +467,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -539,7 +540,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -610,7 +611,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -708,7 +709,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -790,7 +791,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
 
       // Click the next button
-      const nextButtonNativeEl: any = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
+      const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 

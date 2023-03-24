@@ -32,6 +32,7 @@ import {
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-document-normal-create',
@@ -62,7 +63,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public doccur2?: string = '';
   public itemsForm: UntypedFormGroup;
   // Step: Confirm
-  public confirmInfo: any = {};
+  public confirmInfo: SafeAny = {};
   public arDocItem: DocumentItemView[] = [];
   // Step: Result
   public isDocPosting = false;
@@ -81,7 +82,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     );
 
     // Set the default currency
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
     const docObj: Document = new Document();
     docObj.TranCurr = this.baseCurrency;
@@ -177,7 +178,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranType,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
       ModelUtility.writeConsoleLog(
@@ -195,6 +196,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createDocument(detailObject)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.isDocPosting = false;
@@ -210,13 +212,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
           this.docIdCreated = doc.Id;
           this.docPostingFailed = '';
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.docIdCreated = undefined;
-          this.docPostingFailed = error;
+          this.docPostingFailed = err;
         },
       });
   }
@@ -293,6 +295,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     const aracntid: number[] = [];
     doc.Items.forEach((val: DocumentItem) => {
       if (val.AccountId) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (aracntid.findIndex((p) => p === val.AccountId!) !== -1) {
           aracntid.push(val.AccountId);
         }
@@ -329,6 +332,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
           // Check whether same amount exist
           doc.Items.forEach((di) => {
             this.arDocItem.forEach((di2) => {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               if (
                 di.AccountId! === di2.AccountID! &&
                 Math.abs(di.TranAmount) === Math.abs(di2.Amount) &&
@@ -347,14 +351,14 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
             });
           });
         },
-        error: (err) => {
+        error: () => {
           // Simply discard it.
         },
       });
   }
   private _generateDocObject(): Document {
     const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
-    detailObject.HID = this.homeService.ChosedHome!.ID;
+    detailObject.HID = this.homeService.ChosedHome?.ID ?? 0;
     detailObject.DocType = this.curDocType;
     detailObject.Items = this.itemsForm.get('itemControl')?.value as DocumentItem[];
 

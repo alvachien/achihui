@@ -73,7 +73,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
         next: (x: Order[]) => {
           this.dataSet = x.slice();
         },
-        error: (err: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${err}`,
             ConsoleLogTypeEnum.error
@@ -132,6 +132,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
     );
     this.odataService
       .deleteOrder(rid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .pipe(takeUntil(this._destroyed$!))
       .subscribe({
         next: () => {

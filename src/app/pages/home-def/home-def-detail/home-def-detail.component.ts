@@ -127,7 +127,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
           this.uiMode = UIMode.Create;
@@ -154,7 +154,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               finalize(() => (this.isLoadingResults = false))
             )
             .subscribe({
-              next: (rsts: any[]) => {
+              next: (rsts) => {
                 this.arCurrencies = rsts[0];
 
                 this.detailFormGroup.get('idControl')?.setValue(rsts[1].ID);
@@ -174,11 +174,11 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
                 this.listMembers = rsts[1].Members.slice();
               },
-              error: (error: any) => {
+              error: (err) => {
                 // Show error dialog
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: error.toString(),
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
               },
@@ -203,16 +203,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                 // Insert one home member by default
                 this.listMembers = [];
                 const nm = new HomeMember();
-                nm.User = this.authService.authSubject.getValue().getUserId()!;
+                nm.User = this.authService.authSubject.getValue().getUserId() ?? '';
                 nm.Relation = HomeMemberRelationEnum.Self;
                 nm.DisplayAs = nm.User;
                 this.listMembers.push(nm);
               },
-              error: (error: any) => {
+              error: (err) => {
                 // Show error dialog
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: error.toString(),
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
               },
@@ -306,7 +306,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
-          next: (val) => {
+          next: () => {
             // Shall create successfully.
             this.router.navigate(['/homedef/display/' + hdobj.ID.toString()]);
           },

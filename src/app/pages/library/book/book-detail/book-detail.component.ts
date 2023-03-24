@@ -74,7 +74,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -196,7 +196,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
     modal.afterClose.subscribe(() => {
       // Donothing by now.
@@ -243,9 +243,9 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...',
@@ -287,9 +287,9 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...',
@@ -331,9 +331,9 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         );
       },
     });
-    const instance = modal.getContentComponent();
+    //const instance = modal.getContentComponent();
     // Return a result when closed
-    modal.afterClose.subscribe((result: any) => {
+    modal.afterClose.subscribe(() => {
       // Do nothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...',
@@ -349,7 +349,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
-    objtbo.HID = this.homeService.ChosedHome?.ID!;
+    objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Authors = this.listAuthors.slice();
     objtbo.Translators = this.listTranslators.slice();
     objtbo.Categories = this.listCategories.slice();

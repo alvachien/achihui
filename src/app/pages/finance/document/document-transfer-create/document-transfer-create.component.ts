@@ -155,7 +155,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
           this.arDocTypes = rst[6];
 
           // Set the default currency
-          this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+          this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -200,7 +200,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         DocumentTypes: this.arDocTypes,
         TransactionTypes: this.arTranType,
         Currencies: this.arCurrencies,
-        BaseCurrency: this.homeService.ChosedHome!.BaseCurrency,
+        BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
       ModelUtility.writeConsoleLog(
@@ -219,6 +219,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createDocument(detailObject)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.isDocPosting = false;
@@ -233,12 +234,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
           this.docIdCreated = doc.Id;
           this.docPostingFailed = null;
         },
-        error: (error: any) => {
+        error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${error}`,
+            `AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${err}`,
             ConsoleLogTypeEnum.error
           );
-          this.docPostingFailed = error;
+          this.docPostingFailed = err;
           this.docIdCreated = undefined;
           this.isDocPosting = false;
         },
@@ -301,7 +302,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   }
   private _generateDocObject(): Document {
     const detailObject: Document = this.headerFormGroup.get('headerControl')?.value as Document;
-    detailObject.HID = this.homeService.ChosedHome!.ID;
+    detailObject.HID = this.homeService.ChosedHome?.ID ?? 0;
     detailObject.DocType = this.curDocType;
     detailObject.Items = [];
 
@@ -333,8 +334,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    const account: any = group.get('accountControl')?.value;
-    const fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl')?.value;
+    const account = group.get('accountControl')?.value;
+    const fromAccount = this.fromFormGroup && this.fromFormGroup.get('accountControl')?.value;
     if (account && fromAccount && account === fromAccount) {
       return { duplicatedccount: true };
     }

@@ -18,11 +18,11 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
   let fixture: ComponentFixture<OrganizationTypeSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let storageService: any;
+  //let storageService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let readBookSpy: any;
   const authServiceStub: Partial<AuthService> = {};
-  const uiServiceStub: Partial<UIStatusService> = {};
+  //const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
@@ -77,5 +77,10 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const btest = false;
+    if (btest) {
+      expect(readBookSpy).not.toHaveBeenCalled();
+    }
   });
 });

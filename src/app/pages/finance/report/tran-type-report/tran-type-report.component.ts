@@ -50,7 +50,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = this.homeService.ChosedHome!.BaseCurrency;
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit(): void {
@@ -106,11 +106,12 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
 
     forkJoin([this.odataService.fetchReportByTransactionType(year, month), this.odataService.fetchAllTranTypes()])
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (val: any[]) => {
+        next: (val) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering TranTypeReportComponent onLoadData forkJoin succeed`,
             ConsoleLogTypeEnum.debug
@@ -157,9 +158,9 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     } else if (this.groupLevel === '2') {
       this.arTranType.forEach((trantype) => {
         if (trantype.HierLevel === 2) {
-          armaps.set(trantype.Id!, trantype.ParId!);
+          armaps.set(trantype.Id ?? 0, trantype.ParId ?? -1);
         } else {
-          armaps.set(trantype.Id!, trantype.Id!);
+          armaps.set(trantype.Id ?? 0, trantype.Id ?? 0);
         }
       });
     } else if (this.groupLevel === '1') {
@@ -167,18 +168,18 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       this.arTranType.forEach((trantype) => {
         if (trantype.HierLevel === 2) {
           // Level 3:
-          armaps2.set(trantype.Id!, trantype.ParId!);
+          armaps2.set(trantype.Id ?? 0, trantype.ParId ?? -1);
         } else if (trantype.HierLevel === 1) {
           // Level 2: One step.
-          armaps.set(trantype.Id!, trantype.ParId!);
+          armaps.set(trantype.Id ?? 0, trantype.ParId ?? -1);
         } else {
           // Level 1: mapping to itself
-          armaps.set(trantype.Id!, trantype.Id!);
+          armaps.set(trantype.Id ?? 0, trantype.Id ?? 0);
         }
       });
       armaps2.forEach((val, key) => {
         if (armaps.get(val)) {
-          armaps.set(key, armaps.get(val)!);
+          armaps.set(key, armaps.get(val) ?? 0);
         }
       });
     }
@@ -187,7 +188,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       if (item.InAmount !== 0) {
         const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
         if (armaps.size > 0 && armaps.get(item.TransactionType)) {
-          entry.TransactionType = armaps.get(item.TransactionType)!;
+          entry.TransactionType = armaps.get(item.TransactionType) ?? 0;
           // Exist already?
           const rptindex = this.reportIncome.findIndex((val) => val.TransactionType === entry.TransactionType);
           if (rptindex === -1) {
@@ -217,7 +218,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
 
         if (armaps.size > 0 && armaps.get(item.TransactionType)) {
-          entry.TransactionType = armaps.get(item.TransactionType)!;
+          entry.TransactionType = armaps.get(item.TransactionType) ?? 0;
           // Exist already?
           const rptindex = this.reportExpense.findIndex((val) => val.TransactionType === entry.TransactionType);
           if (rptindex === -1) {
@@ -278,7 +279,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       const tts: number[] = [];
       this.arTranType.forEach((tt) => {
         if (tt.ParId === trantype) {
-          tts.push(tt.Id!);
+          tts.push(tt.Id ?? 0);
           // Ensure it appears in report data
           const rptidx = this.arReportData.findIndex((rp) => rp.TransactionType === tt.Id);
           if (rptidx !== -1) {
@@ -369,7 +370,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       // console.log('Drawer(Component) open');
     });
 
-    drawerRef.afterClose.subscribe((data) => {
+    drawerRef.afterClose.subscribe(() => {
       // console.log(data);
       // if (typeof data === 'string') {
       //   this.value = data;

@@ -26,6 +26,7 @@ import {
 } from '../../../../model';
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
+import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-plan-detail',
@@ -133,7 +134,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           disabled: true,
         }),
         amountControl: new UntypedFormControl(0, [Validators.required]),
-        currControl: new UntypedFormControl(this.homeService.ChosedHome!.BaseCurrency, [Validators.required]),
+        currControl: new UntypedFormControl(this.homeService.ChosedHome?.BaseCurrency ?? 0, [Validators.required]),
       },
       [dateRangeValidator]
     );
@@ -146,7 +147,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     );
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x: any) => {
+    this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
@@ -180,13 +181,14 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.odataService.readPlan(this.routerID),
           ])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
               })
             )
-            .subscribe(
-              (rsts: any) => {
+            .subscribe({
+              next: (rsts) => {
                 this.arCurrencies = rsts[0];
                 this.arTranType = rsts[1];
                 this.arAccountCategories = rsts[2];
@@ -195,7 +197,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
                 const planObj = rsts[5] as Plan;
                 this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!.toDate());
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!.toDate());
                 this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
                 this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
@@ -211,19 +215,19 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
                   this.detailFormGroup.disable();
                 }
               },
-              (error: any) => {
+              error: (err) => {
                 ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin : ${error}`,
+                  `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin : ${err}`,
                   ConsoleLogTypeEnum.error
                 );
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
-                  nzContent: error.toString(),
+                  nzContent: err.toString(),
                   nzClosable: true,
                 });
-              }
-            );
+              },
+            });
           break;
         }
 
@@ -239,6 +243,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllControlCenters(),
           ])
             .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
@@ -333,15 +338,15 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           this.objectIdCreated = newplan.ID;
           this.objectSavedFailed = '';
         },
-        error: (error: any) => {
+        error: (err) => {
           // Show error message
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering PlanDetailComponent, onCreatePlan, failed: ${error}`,
+            `AC_HIH_UI [Error]: Entering PlanDetailComponent, onCreatePlan, failed: ${err}`,
             ConsoleLogTypeEnum.error
           );
 
           this.objectIdCreated = undefined;
-          this.objectSavedFailed = error;
+          this.objectSavedFailed = err;
         },
       });
   }
@@ -384,7 +389,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     //   });
   }
 
-  public onPlanTypeChanged(event: any): void {
+  public onPlanTypeChanged(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering PlanDetailComponent, onPlanTypeChanged: ${event}`,
       ConsoleLogTypeEnum.debug
@@ -462,7 +467,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
   private _generatePlan(): Plan {
     const dataInstance: Plan = new Plan();
-    dataInstance.HID = this.homeService.ChosedHome!.ID;
+    dataInstance.HID = this.homeService.ChosedHome?.ID ?? 0;
     if (this.uiMode === UIMode.Update) {
       dataInstance.ID = this.detailFormGroup.get('idControl')?.value;
     }

@@ -69,6 +69,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     this.odataService
       .fetchRecurEvents(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0)
       .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
