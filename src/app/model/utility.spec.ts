@@ -2,6 +2,7 @@
 // Unit test for utility.ts
 //
 
+import * as moment from 'moment';
 import { DocumentItem } from './financemodel';
 import { ModelUtility } from './utility';
 
@@ -72,5 +73,15 @@ describe('Unit test for ModelUtility in Model', () => {
 
     const nextid = ModelUtility.getFinanceNextItemID(items);
     expect(nextid).toEqual(3);
+  });
+
+  it('#11. Utility.getDateDisplayString', () => {
+    let curdate: moment.Moment | undefined;
+    let tgtstr = ModelUtility.getDateDisplayString(curdate);
+    expect(tgtstr).toEqual('');
+
+    curdate = moment();
+    tgtstr = ModelUtility.getDateDisplayString(curdate);
+    expect(tgtstr).not.toEqual('');
   });
 });

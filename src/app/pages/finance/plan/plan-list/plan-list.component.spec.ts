@@ -29,6 +29,7 @@ describe('PlanListComponent', () => {
   let fakeData: FakeDataHelper;
   let storageService: SafeAny;
   let fetchAllPlansSpy: SafeAny;
+  let fetchAllAccountSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -39,8 +40,14 @@ describe('PlanListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildFinPlans();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans']);
+    storageService = jasmine.createSpyObj(
+      'FinanceOdataService', 
+      [
+        'fetchAllPlans',
+        'fetchAllAccounts',
+      ]);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
+    fetchAllAccountSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -91,6 +98,7 @@ describe('PlanListComponent', () => {
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllPlansSpy.and.returnValue(asyncData(fakeData.finPlans));
+      fetchAllAccountSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
 
     it('should not show data before OnInit', () => {
@@ -115,6 +123,7 @@ describe('PlanListComponent', () => {
 
     beforeEach(() => {
       fetchAllPlansSpy.and.returnValue(asyncData(fakeData.finPlans));
+      fetchAllAccountSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
 
     beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
@@ -126,9 +135,33 @@ describe('PlanListComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it('should display error when fetchAllPlans fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllPlansSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      tick(); // complete the Observable in ngOnInit
+      fixture.detectChanges();
+
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+
+      flush();
+    }));
+
+    it('should display error when fetchAllAccounts fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       tick(); // complete the Observable in ngOnInit

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -13,6 +13,7 @@ import {
   UIDisplayStringUtil,
   PlanTypeEnum,
   momentDateFormat,
+  Account,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 
@@ -31,6 +32,9 @@ export class PlanListComponent implements OnInit, OnDestroy {
   progressModalTitle = '';
   currentPlanActualBalance = 0;
   currentPlan?: Plan;
+  public arAccounts: Account[] = [];
+  getDateDisplayString = ModelUtility.getDateDisplayString;
+  getPlanTypeDisplayString = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString;
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
@@ -100,6 +104,19 @@ export class PlanListComponent implements OnInit, OnDestroy {
     }
   }
 
+  get currentDifferenceWithTarget(): number {
+    if (this.currentPlan) {
+      return this.currentPlanActualBalance - this.currentPlan.TargetBalance;
+    }
+    return 0;
+  }
+  public getAccountName(acntid: number): string {
+    const acntObj = this.arAccounts.find((acnt) => {
+      return acnt.Id === acntid;
+    });
+    return acntObj && acntObj.Name ? acntObj.Name : '';
+  }
+
   handleProgressModalCancel() {
     this.isProgressDlgVisible = false;
   }
@@ -108,16 +125,19 @@ export class PlanListComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent onRefresh`, ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = true;
-    this.odataService
-      .fetchAllPlans(refresh)
+    forkJoin([
+      this.odataService.fetchAllAccounts(),
+      this.odataService.fetchAllPlans(refresh),
+    ])
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: Plan[]) => {
-          this.dataSet = x;
+        next: (x) => {
+          this.arAccounts = x[0];
+          this.dataSet = x[1];
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -132,15 +152,5 @@ export class PlanListComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  public getPlanTypeDisplayString(pt: PlanTypeEnum): string {
-    return UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString(pt);
-  }
-  public getDateDisplayString(dt: moment.Moment): string {
-    if (dt) {
-      return dt.format(momentDateFormat);
-    }
-    return '';
   }
 }

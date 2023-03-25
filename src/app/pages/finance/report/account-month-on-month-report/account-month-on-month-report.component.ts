@@ -72,11 +72,14 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
     });
   }
 
-  onChanges(): void {
+  onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent onChanges with ${this.selectedAccountID}, ${this.selectedPeriod}`,
       ConsoleLogTypeEnum.debug
     );
+    if (event) {
+      // TBD.
+    }
     this.refreshData();
   }
 

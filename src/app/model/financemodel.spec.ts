@@ -1482,6 +1482,21 @@ describe('Plan', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
   });
 
+  it('#2. date and string', () => {
+    let sdtstring = instance.StartDateString;
+    expect(sdtstring).not.toEqual('');
+    sdtstring = instance.TargetDateString;
+    expect(sdtstring).not.toEqual('');
+
+    instance.StartDate = undefined;
+    sdtstring = instance.StartDateString;
+    expect(sdtstring).toEqual('');
+
+    instance.TargetDate = undefined;
+    sdtstring = instance.TargetDateString;
+    expect(sdtstring).toEqual('');
+  });
+
   it('#3. writeJSONObject and onSetData shall work', () => {
     const dataJson = instance.writeJSONObject();
     expect(dataJson).not.toBeFalsy();

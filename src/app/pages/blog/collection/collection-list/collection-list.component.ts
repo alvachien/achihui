@@ -84,7 +84,9 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/blog/collection/edit/' + rid.toString()]);
   }
-  onDelete() {
-    // TBD.
+  onDelete(rid: number) {
+    if (rid) {
+      // TBD.
+    }
   }
 }

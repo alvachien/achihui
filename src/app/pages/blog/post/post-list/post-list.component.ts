@@ -116,8 +116,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     this.router.navigate(['/blog/post/edit/' + rid.toString()]);
   }
-  onDelete() {
-    // TBD.
+  onDelete(rid: number): void {
+    if (rid) {
+      // TBD.
+    }
   }
   onDeploy(rid: number) {
     this.odataService.deployPost(rid).subscribe({

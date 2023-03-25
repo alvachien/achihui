@@ -1,4 +1,4 @@
-import { dateSplitChar, LogLevel } from './common';
+import { dateSplitChar, LogLevel, momentDateFormat } from './common';
 import { DocumentItem } from './financemodel';
 import { environment } from '../../environments/environment';
 
@@ -151,6 +151,14 @@ export class ModelUtility {
    */
   public static getYearMonthDisplayString(y: number, m: number): string {
     return y.toString() + dateSplitChar + (m < 10 ? '0' + m : m).toString();
+  }
+
+  /**
+   * Get a display string for a date
+   * @param dateInput: Inputted date
+   */
+  public static getDateDisplayString(dateInput?: moment.Moment): string {
+    return dateInput ? dateInput.format(momentDateFormat) : '';
   }
 
   /**

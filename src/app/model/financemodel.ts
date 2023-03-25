@@ -3070,11 +3070,17 @@ export class Plan extends hih.BaseModel {
   set StartDate(sd: moment.Moment | undefined) {
     this._startDate = sd;
   }
+  get StartDateString(): string {
+    return this._startDate ? this._startDate.format(hih.momentDateFormat) : '';
+  }
   get TargetDate(): moment.Moment | undefined {
     return this._targetDate;
   }
   set TargetDate(td: moment.Moment | undefined) {
     this._targetDate = td;
+  }
+  get TargetDateString(): string {
+    return this._targetDate ? this._targetDate.format(hih.momentDateFormat) : '';
   }
   get TargetBalance(): number {
     return this._tagetBalance;

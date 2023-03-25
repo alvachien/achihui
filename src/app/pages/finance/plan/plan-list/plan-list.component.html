@@ -70,8 +70,7 @@
   [nzTitle]="progressModalTitle"
   [nzContent]="progressModalContent"
   [nzFooter]="progressModalFooter"
-  (nzOnCancel)="handleProgressModalCancel()"
->
+  (nzOnCancel)="handleProgressModalCancel()">
   <ng-template #progressModalTitle>{{ 'Common.Progress' | transloco }}</ng-template>
 
   <ng-template #progressModalContent>
@@ -87,7 +86,7 @@
       <!-- Type -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Type' | transloco }}</nz-form-label>
-        <nz-form-control [nzSpan]="12">
+        <nz-form-control [nzSpan]="12" [nzExtra]="getPlanTypeDisplayString(currentPlan?.PlanType!) | transloco">
           <input nz-input nzBorderless readonly [ngModel]="currentPlan?.PlanType" />
         </nz-form-control>
       </nz-form-item>
@@ -96,7 +95,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidFrom' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.StartDate" />
+          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.StartDateString" />
         </nz-form-control>
       </nz-form-item>
 
@@ -104,7 +103,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidTo' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.TargetDate" />
+          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.TargetDateString" />
         </nz-form-control>
       </nz-form-item>
 
@@ -119,7 +118,7 @@
       <!-- Account -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Account' | transloco }}</nz-form-label>
-        <nz-form-control [nzSpan]="12">
+        <nz-form-control [nzSpan]="12" [nzExtra]="getAccountName(currentPlan?.AccountID!)">
           <input nz-input nzBorderless readonly [ngModel]="currentPlan?.AccountID" />
         </nz-form-control>
       </nz-form-item>
@@ -140,6 +139,18 @@
         <nz-form-control [nzSpan]="12">
           <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
             <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance"></nz-input-number>
+          </nz-input-number-group> 
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-divider></nz-divider>
+
+      <!-- Difference -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{ 'Finance.Difference' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
+            <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget"></nz-input-number>
           </nz-input-number-group>
         </nz-form-control>
       </nz-form-item>
