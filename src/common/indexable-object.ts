@@ -1,4 +1,4 @@
-import { SafeAny } from "./any";
+import { SafeAny } from './any';
 
 export interface IndexableObject {
     [key: string]: SafeAny;

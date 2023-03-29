@@ -40,12 +40,7 @@ describe('PlanListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildFinPlans();
 
-    storageService = jasmine.createSpyObj(
-      'FinanceOdataService', 
-      [
-        'fetchAllPlans',
-        'fetchAllAccounts',
-      ]);
+    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts']);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
     fetchAllAccountSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
