@@ -1,8 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item>
+      <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Overview' | transloco }}</nz-page-header-title>
   <nz-page-header-extra>
@@ -11,8 +10,8 @@
       [(ngModel)]="excludeTransfer"
       [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
       [nzUnCheckedChildren]="'Common.All' | transloco"
-      (ngModelChange)="fetchData(true)"
-    ></nz-switch>
+      (ngModelChange)="fetchData(true)">
+    </nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -29,11 +28,14 @@
     <nz-row [nzGutter]="16">
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
-          <nz-statistic
-            [nzValue]="(keyfigure!.CurrentMonthIncome | number : '1.2-2')!"
+          <nz-statistic            
             [nzSuffix]="keyfigure!.BaseCurrency"
             [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"
-          ></nz-statistic>
+            [nzValueTemplate]="tmplValueIncome">
+          </nz-statistic>
+          <ng-template #tmplValueIncome>
+            <a (click)="onOpenInsight()">{{keyfigure!.CurrentMonthIncome | number : '1.2-2'}}</a>            
+          </ng-template>
         </nz-card>
       </nz-col>
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">

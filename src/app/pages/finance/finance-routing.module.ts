@@ -44,6 +44,10 @@ const routes: Routes = [
     path: 'plan',
     loadChildren: () => import('./plan/plan.module').then((m) => m.PlanModule),
   },
+  {
+    path: 'insight',
+    loadChildren: () => import('./document-item-insight/document-item-insight.module').then((m) => m.DocumentItemInsightModule),
+  },
 ];
 
 @NgModule({

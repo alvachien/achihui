@@ -362,6 +362,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
     this.router.navigate(['/finance/document/createloanrepay/' + loandoc.DocId!.toString()]);
   }
 
+  // Open the insight
+  onOpenInsight() {
+    this.router.navigate(['/finance/insight']);    
+  }
+
   private _updateSelectedDate() {
     const mt = moment(this.selectedDate);
     this._selectedYear = mt.year();
