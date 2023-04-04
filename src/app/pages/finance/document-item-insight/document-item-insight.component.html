@@ -15,7 +15,66 @@
 
 <nz-divider nzText="With Options"></nz-divider>
 
-<nz-segmented [nzOptions]="options" (nzValueChange)="handleOptionChange($event)"></nz-segmented>
+<!-- <nz-segmented [nzOptions]="options" (nzValueChange)="handleOptionChange($event)"></nz-segmented> -->
+<nz-transfer
+  [nzDataSource]="listGroupFields"
+  [nzTitles]="['Available', 'Target']"
+  [nzTargetKeys]="selectedGroupFieldKeys"
+  (nzChange)="onGroupSelectChanged($event)">
+</nz-transfer>
 
 <nz-divider nzText="With Data"></nz-divider>
 
+<nz-table
+  #resultTable
+  nzShowSizeChanger
+  [nzData]="listData"
+  [nzFrontPagination]="false"
+  [nzLoading]="isLoadingData"
+  [nzTotal]="totalDataCount"
+  [nzPageIndex]="pageIndex"
+  [nzPageSize]="pageSize"
+  [nzFooter]="footerTpl"
+  (nzQueryParams)="onQueryParamsChange($event)">
+  <thead>
+    <tr>
+      <th nzColumnKey="date" [nzSortFn]="true">
+        {{ 'Common.Date' | transloco }}
+      </th>
+      <th nzColumnKey="trantype">
+        {{ 'Finance.TransactionType' | transloco }}
+      </th>
+      <th nzColumnKey="account" [nzSortFn]="true">
+        {{ 'Finance.Account' | transloco }}
+      </th>
+      <th nzColumnKey="amount" [nzSortFn]="true">
+        {{ 'Finance.Amount' | transloco }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of resultTable.data">
+      <td>{{ data.TransactionDate }}</td>
+      <td>
+        {{ getTranTypeName(data.TransactionType!) }}<small>({{ data.TransactionType }})</small>
+      </td>
+      <td>
+        {{ getAccountName(data.AccountID!) }}
+        <small>({{ data.AccountID }})</small>
+      </td>
+      <td>
+        {{ data.Amount | number : '1.2-2' }} <small>{{ data.Currency }}</small>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #footerTpl let-control>
+  <div nz-row>
+    <div nz-col nzFlex="3">
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number : '1.2-2' }} ({{ incomeCurrency }})
+    </div>
+    <div nz-col nzFlex="3">
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number : '1.2-2' }} ({{ outgoCurrency }})
+    </div>
+  </div>
+</ng-template>

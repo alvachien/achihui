@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FinanceUIModule } from '../finance-ui.module';
 import { TranslocoModule } from '@ngneat/transloco';
-import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { NzTransferModule } from 'ng-zorro-antd/transfer';
 
 import { DocumentItemInsightComponent } from './document-item-insight.component';
 import { DocumentItemInsightRoutingModule } from './document-item-insight-routing.module';
@@ -18,7 +18,7 @@ import { DocumentItemInsightRoutingModule } from './document-item-insight-routin
     ReactiveFormsModule, 
     FinanceUIModule, 
     TranslocoModule,
-    NzSegmentedModule,
+    NzTransferModule,
     DocumentItemInsightRoutingModule,
   ]
 })
