@@ -18,10 +18,6 @@ interface InsightRecord {
   styleUrls: ['./document-item-insight.component.less'],
 })
 export class DocumentItemInsightComponent {
-  // options = [
-  //   { label: 'By Calendar Date', value: 'Date', icon: 'calendar' },
-  //   { label: 'By Account', value: 'Account', icon: 'account-book' }
-  // ];
   listGroupFields: TransferItem[] = [];
   listData: InsightRecord[] = [];
   isLoadingData = false;
@@ -72,7 +68,19 @@ export class DocumentItemInsightComponent {
   }
 
   onGroupSelectChanged(ret: {}): void {
-    console.log(ret);
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onGroupSelectChanged: ${ret}...`,
+      ConsoleLogTypeEnum.debug
+    );
+
+    this.selectedGroupFieldKeys = [];
+    this.listGroupFields.forEach(field => {
+      if (field.direction === 'right') {
+        this.selectedGroupFieldKeys.push(field['key']);
+      }
+    });
+
+    // Need refresh data!
   }
 
   onQueryParamsChange(event: any): void {
