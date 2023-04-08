@@ -11,7 +11,9 @@
 
 <nz-divider nzText="With Restrictions"></nz-divider>
 
-<p>Restriction</p>
+<p>
+  Date Range: {{insightOption?.SelectedDataRange}}
+</p>
 
 <nz-divider nzText="With Options"></nz-divider>
 
@@ -19,7 +21,7 @@
   [nzDataSource]="listGroupFields"
   [nzTitles]="['Available', 'Target']"
   [nzTargetKeys]="selectedGroupFieldKeys"
-  (nzChange)="onGroupSelectChanged($event)">
+  (nzChange)="onTransferChanged($event)">
 </nz-transfer>
 
 <nz-divider nzText="With Data"></nz-divider>

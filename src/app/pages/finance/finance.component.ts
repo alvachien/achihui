@@ -363,7 +363,22 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   // Open the insight
-  onOpenInsight() {
+  onOpenInsight(ncell: number) {
+    const dtbgn: moment.Moment = moment(this.selectedDate);
+    const dtend: moment.Moment = moment(this.selectedDate);
+    dtbgn.startOf('month');
+    dtend.endOf('month');
+
+    switch(ncell) {
+      case 1: 
+        this.uiService.docInsightOption = {
+          SelectedDataRange: [dtbgn.toDate(), dtend.toDate()],
+          ExcludeTransfer: this.excludeTransfer,
+        };
+        break;
+      default:
+        break;
+    }
     this.router.navigate(['/finance/insight']);    
   }
 

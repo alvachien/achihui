@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 
 import { Account, ConsoleLogTypeEnum, ModelUtility, TranType } from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
+import { DocInsightOption, FinanceOdataService, UIStatusService } from 'src/app/services';
 
 interface InsightRecord {
   TransactionDate: string;
@@ -17,7 +17,7 @@ interface InsightRecord {
   templateUrl: './document-item-insight.component.html',
   styleUrls: ['./document-item-insight.component.less'],
 })
-export class DocumentItemInsightComponent {
+export class DocumentItemInsightComponent implements OnInit {
   listGroupFields: TransferItem[] = [];
   listData: InsightRecord[] = [];
   isLoadingData = false;
@@ -32,8 +32,10 @@ export class DocumentItemInsightComponent {
   incomeCurrency = '';
   outgoCurrency = '';
   selectedGroupFieldKeys: string[] = [];
+  insightOption: DocInsightOption | null = null;
 
-  constructor(private odataService: FinanceOdataService) {
+  constructor(private odataService: FinanceOdataService,
+    private uiStatusService: UIStatusService) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent constructor`,
       ConsoleLogTypeEnum.debug
@@ -67,18 +69,21 @@ export class DocumentItemInsightComponent {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
 
-  onGroupSelectChanged(ret: {}): void {
+  ngOnInit(): void {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onGroupSelectChanged: ${ret}...`,
+      `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent ngOnInit...`,
+      ConsoleLogTypeEnum.debug
+    );
+    // Options
+    this.insightOption = this.uiStatusService.docInsightOption ? this.uiStatusService.docInsightOption : null;
+  }
+
+  onTransferChanged(ret: {}): void {
+    ModelUtility.writeConsoleLog(
+      `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onTransferChanged: ${ret}...`,
       ConsoleLogTypeEnum.debug
     );
 
-    this.selectedGroupFieldKeys = [];
-    this.listGroupFields.forEach(field => {
-      if (field.direction === 'right') {
-        this.selectedGroupFieldKeys.push(field['key']);
-      }
-    });
 
     // Need refresh data!
   }

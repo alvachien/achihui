@@ -34,7 +34,7 @@
             [nzValueTemplate]="tmplValueIncome">
           </nz-statistic>
           <ng-template #tmplValueIncome>
-            <a (click)="onOpenInsight()">{{keyfigure!.CurrentMonthIncome | number : '1.2-2'}}</a>            
+            <a (click)="onOpenInsight(1)">{{keyfigure!.CurrentMonthIncome | number : '1.2-2'}}</a>            
           </ng-template>
         </nz-card>
       </nz-col>

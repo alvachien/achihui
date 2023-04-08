@@ -4,6 +4,14 @@ import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum }
 import { TranslocoService } from '@ngneat/transloco';
 import { Router } from '@angular/router';
 
+export interface DocInsightOption {
+  SelectedDataRange: Date[];
+  SelectedAccount?: number;
+  TransactionDirection?: boolean;
+  TrnasactionType?: number;
+  ExcludeTransfer?: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -59,6 +67,15 @@ export class UIStatusService {
 
   // Document list page
   docListDateRange: Date[] = [];
+
+  // Document insight option
+  _docInsightOption?: DocInsightOption;
+  get docInsightOption(): DocInsightOption | undefined {
+    return this._docInsightOption;
+  }
+  set docInsightOption(option: DocInsightOption | undefined) {
+    this._docInsightOption = option;
+  }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
