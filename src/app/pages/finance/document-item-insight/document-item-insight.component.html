@@ -9,13 +9,17 @@
   <nz-page-header-extra> </nz-page-header-extra>
 </nz-page-header>
 
-<nz-divider nzText="With Restrictions"></nz-divider>
+<nz-divider></nz-divider>
 
-<p>
+<div>
   Date Range: {{insightOption?.SelectedDataRange}}
-</p>
+  <br/>
+  <div *ngIf="insightOption?.TransactionDirection">Income: {{insightOption?.TransactionDirection}}</div>
+  <br/>
+  <div *ngIf="insightOption?.ExcludeTransfer">Exclude Transfer. Deprec.</div>  
+</div>
 
-<nz-divider nzText="With Options"></nz-divider>
+<nz-divider nzText="Options"></nz-divider>
 
 <nz-transfer
   [nzDataSource]="listGroupFields"
@@ -24,42 +28,26 @@
   (nzChange)="onTransferChanged($event)">
 </nz-transfer>
 
-<nz-divider nzText="With Data"></nz-divider>
+<nz-divider></nz-divider>
 
-<nz-table
-  #resultTable
-  nzShowSizeChanger
-  [nzData]="listData"
-  [nzFrontPagination]="false"
+<nz-table #resultTable nzShowSizeChanger [nzData]="listDisplayData"
   [nzLoading]="isLoadingData"
-  [nzTotal]="totalDataCount"
-  [nzPageIndex]="pageIndex"
-  [nzPageSize]="pageSize"
-  [nzFooter]="footerTpl"
-  (nzQueryParams)="onQueryParamsChange($event)">
+  [nzFooter]="footerTpl">
   <thead>
     <tr>
-      <th nzColumnKey="date" [nzSortFn]="true">
-        {{ 'Common.Date' | transloco }}
-      </th>
-      <th nzColumnKey="trantype">
-        {{ 'Finance.TransactionType' | transloco }}
-      </th>
-      <th nzColumnKey="account" [nzSortFn]="true">
-        {{ 'Finance.Account' | transloco }}
-      </th>
-      <th nzColumnKey="amount" [nzSortFn]="true">
-        {{ 'Finance.Amount' | transloco }}
-      </th>
+      <th nzColumnKey="date" *ngIf="isTranDateVisible">{{ 'Common.Date' | transloco }}</th>
+      <th nzColumnKey="trantype" *ngIf="isTranTypeVisible">{{ 'Finance.TransactionType' | transloco }}</th>
+      <th nzColumnKey="account" *ngIf="isAccountVisible">{{ 'Finance.Account' | transloco }}</th>
+      <th nzColumnKey="amount">{{ 'Finance.Amount' | transloco }}</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let data of resultTable.data">
-      <td>{{ data.TransactionDate }}</td>
-      <td>
+      <td *ngIf="isTranDateVisible">{{ data.TransactionDate }}</td>
+      <td *ngIf="isTranTypeVisible">
         {{ getTranTypeName(data.TransactionType!) }}<small>({{ data.TransactionType }})</small>
       </td>
-      <td>
+      <td *ngIf="isAccountVisible">
         {{ getAccountName(data.AccountID!) }}
         <small>({{ data.AccountID }})</small>
       </td>
@@ -72,10 +60,10 @@
 <ng-template #footerTpl let-control>
   <div nz-row>
     <div nz-col nzFlex="3">
-      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number : '1.2-2' }} ({{ incomeCurrency }})
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number : '1.2-2' }} ({{ baseCurrency }})
     </div>
     <div nz-col nzFlex="3">
-      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number : '1.2-2' }} ({{ outgoCurrency }})
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number : '1.2-2' }} ({{ baseCurrency }})
     </div>
   </div>
 </ng-template>

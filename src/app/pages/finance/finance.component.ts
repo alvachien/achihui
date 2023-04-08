@@ -372,8 +372,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
     switch(ncell) {
       case 1: 
         this.uiService.docInsightOption = {
-          SelectedDataRange: [dtbgn.toDate(), dtend.toDate()],
+          SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.excludeTransfer,
+          TransactionDirection: true,
         };
         break;
       default:

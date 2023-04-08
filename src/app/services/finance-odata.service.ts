@@ -3941,7 +3941,9 @@ export class FinanceOdataService {
           const ardi: DocumentItemView[] = [];
           if (data && data.value && data.value instanceof Array && data.value.length > 0) {
             for (const di of data.value) {
-              ardi.push(di as DocumentItemView);
+              let div: DocumentItemView = di as DocumentItemView;
+              div.TransactionDate = moment(di.TransactionDate);
+              ardi.push(div);
             }
           }
           return {
@@ -3956,7 +3958,7 @@ export class FinanceOdataService {
           );
 
           const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
-          return throwError(errmsg);
+          return throwError(() => new Error(errmsg));
         })
       );
   }
