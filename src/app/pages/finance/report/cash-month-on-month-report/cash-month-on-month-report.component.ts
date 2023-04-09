@@ -2,6 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
+import { translate } from '@ngneat/transloco';
+import { EChartsOption } from 'echarts';
+import * as moment from 'moment';
+import { NumberUtility } from 'actslib';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 import {
   ConsoleLogTypeEnum,
@@ -15,12 +21,7 @@ import {
   ModelUtility,
   momentDateFormat,
 } from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
-import { translate } from '@ngneat/transloco';
-import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
-import { NumberUtility } from 'actslib';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { FinanceOdataService, UIStatusService } from 'src/app/services';
 import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
 
@@ -39,7 +40,9 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   constructor(
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    public drawerService: NzDrawerService
+    public drawerService: NzDrawerService,
+    private uiStatusService: UIStatusService,
+    private router: Router,
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...',
@@ -288,11 +291,11 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     // seriesType: "bar"
     // type: "click"
     // value: -200
-    const dtmonth = moment(event.name + '.01');
+    const dtmonth = moment((event.name + '.01').replace('.', '-'));
     if (event.seriesId === 'in') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), false);
     } else if (event.seriesId === 'out') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), true);
     } else if (event.seriesId === 'total') {
       // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
     } else {
@@ -300,48 +303,58 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
     }
   }
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
-    const fltrs: GeneralFilterItem[] = [];
-    fltrs.push({
-      fieldName: 'IsExpense',
-      operator: GeneralFilterOperatorEnum.Equal,
-      lowValue: isexp,
-      highValue: isexp,
-      valueType: GeneralFilterValueType.boolean,
-    });
-    fltrs.push({
-      fieldName: 'TransactionDate',
-      operator: GeneralFilterOperatorEnum.Between,
-      lowValue: beginDate,
-      highValue: endDate,
-      valueType: GeneralFilterValueType.date,
-    });
+    this.uiStatusService.docInsightOption = {
+      SelectedDataRange: [
+        moment(beginDate),
+        moment(endDate),
+      ],
+      TransactionDirection: isexp ? false : true,
+      ExcludeTransfer: true,
+    };
+    this.router.navigate(['/finance/insight']);
 
-    const drawerRef = this.drawerService.create<
-      DocumentItemViewComponent,
-      {
-        filterDocItem: GeneralFilterItem[];
-      },
-      string
-    >({
-      nzTitle: translate('Finance.Documents'),
-      nzContent: DocumentItemViewComponent,
-      nzContentParams: {
-        filterDocItem: fltrs,
-      },
-      nzWidth: '100%',
-      nzHeight: '50%',
-      nzPlacement: 'bottom',
-    });
+    // const fltrs: GeneralFilterItem[] = [];
+    // fltrs.push({
+    //   fieldName: 'IsExpense',
+    //   operator: GeneralFilterOperatorEnum.Equal,
+    //   lowValue: isexp,
+    //   highValue: isexp,
+    //   valueType: GeneralFilterValueType.boolean,
+    // });
+    // fltrs.push({
+    //   fieldName: 'TransactionDate',
+    //   operator: GeneralFilterOperatorEnum.Between,
+    //   lowValue: beginDate,
+    //   highValue: endDate,
+    //   valueType: GeneralFilterValueType.date,
+    // });
 
-    drawerRef.afterOpen.subscribe(() => {
-      // console.log('Drawer(Component) open');
-    });
+    // const drawerRef = this.drawerService.create<
+    //   DocumentItemViewComponent,
+    //   {
+    //     filterDocItem: GeneralFilterItem[];
+    //   },
+    //   string
+    // >({
+    //   nzTitle: translate('Finance.Documents'),
+    //   nzContent: DocumentItemViewComponent,
+    //   nzContentParams: {
+    //     filterDocItem: fltrs,
+    //   },
+    //   nzWidth: '100%',
+    //   nzHeight: '50%',
+    //   nzPlacement: 'bottom',
+    // });
 
-    drawerRef.afterClose.subscribe(() => {
-      // console.log(data);
-      // if (typeof data === 'string') {
-      //   this.value = data;
-      // }
-    });
+    // drawerRef.afterOpen.subscribe(() => {
+    //   // console.log('Drawer(Component) open');
+    // });
+
+    // drawerRef.afterClose.subscribe(() => {
+    //   // console.log(data);
+    //   // if (typeof data === 'string') {
+    //   //   this.value = data;
+    //   // }
+    // });
   }
 }

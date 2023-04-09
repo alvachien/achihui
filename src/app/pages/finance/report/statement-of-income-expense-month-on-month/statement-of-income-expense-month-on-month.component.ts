@@ -272,11 +272,11 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   }
 
   onChartClick(event: SafeAny) {
-    const dtmonth = moment(event.name + '.01');
+    const dtmonth = moment((event.name + '.01').replace('.', '-'));
     if (event.seriesId === 'in') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), false);
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), false);
     } else if (event.seriesId === 'out') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), true);
     } else if (event.seriesId === 'total') {
       // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
     } else {
