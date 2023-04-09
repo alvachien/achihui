@@ -29,7 +29,7 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
+import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
@@ -177,7 +177,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'days'),
+        TransactionDate: moment().add(1, 'days').format(momentDateFormat),
         DocumentDesp: 'doc 1',
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,
@@ -193,7 +193,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
         DocumentID: 2,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'weeks'),
+        TransactionDate: moment().add(1, 'weeks').format(momentDateFormat),
         DocumentDesp: 'doc 2',
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,

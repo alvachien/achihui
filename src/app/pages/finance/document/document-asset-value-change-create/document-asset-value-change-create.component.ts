@@ -373,15 +373,17 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       di.ItemID = element.ItemID;
       di.OrderID = element.OrderID;
       di.OriginAmount = element.OriginAmount;
-      di.TransactionDate = moment(element.TransactionDate);
+      di.TransactionDate = element.TransactionDate;
       di.TransactionType = element.TransactionType;
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      if (a.TransactionDate?.isBefore(b.TransactionDate)) {
+      let amoment = moment(a.TransactionDate);
+      let bmoment = moment(b.TransactionDate);
+      if (amoment.isBefore(bmoment)) {
         return -1;
       }
-      if (a.TransactionDate?.isAfter(b.TransactionDate)) {
+      if (moment(amoment).isAfter(bmoment)) {
         return 1;
       }
       return 0;
@@ -390,7 +392,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
     for (const ditem of docitems) {
       const dbal: DocItemWithBlance = new DocItemWithBlance();
       dbal.docId = ditem.DocumentID;
-      dbal.tranDate = ditem.TransactionDate?.format(momentDateFormat);
+      dbal.tranDate = ditem.TransactionDate;
       dbal.tranAmount = ditem.Amount;
       dbal.balance = curbal2;
       dbal.newBalance = dbal.balance + ditem.Amount;

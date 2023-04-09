@@ -3942,7 +3942,6 @@ export class FinanceOdataService {
           if (data && data.value && data.value instanceof Array && data.value.length > 0) {
             for (const di of data.value) {
               let div: DocumentItemView = di as DocumentItemView;
-              div.TransactionDate = moment(di.TransactionDate);
               ardi.push(div);
             }
           }

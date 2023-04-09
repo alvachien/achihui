@@ -132,9 +132,9 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           a
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .TransactionDate!.format(moment.HTML5_FMT.DATE)
+            .TransactionDate! //!.format(moment.HTML5_FMT.DATE)
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .localeCompare(b.TransactionDate!.format(moment.HTML5_FMT.DATE)),
+            .localeCompare(b.TransactionDate! ), // .format(moment.HTML5_FMT.DATE)),
       },
       {
         name: 'Finance.TransactionType',

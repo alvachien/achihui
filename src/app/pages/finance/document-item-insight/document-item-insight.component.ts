@@ -5,7 +5,7 @@ import { TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
 
 import { Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
-  TranType, momentDateFormat } from 'src/app/model';
+  TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease, financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from 'src/app/model';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
 
 interface InsightRecord {
@@ -52,16 +52,16 @@ export class DocumentItemInsightComponent implements OnInit {
 
     this.listGroupFields.push({
       key: 'date',
-      title: `Transaction Date`,
+      title: translate(`Common.Date`),
       direction: 'right'
     });
     this.listGroupFields.push({
       key: 'trantype',
-      title: `Transaction Type`
+      title: translate(`Finance.TransactionType`),
     });
     this.listGroupFields.push({
       key: 'account',
-      title: `Account`
+      title: translate(`Finance.Account`),
     });
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
@@ -87,6 +87,12 @@ export class DocumentItemInsightComponent implements OnInit {
   }
   get isTranTypeVisible(): boolean {
     return this.listGroupFields.findIndex(p => p['key'] === 'trantype' && p.direction === 'right') !== -1;
+  }
+  get insideDateRangeString(): string {
+    if (this.insightOption !== null) {
+      return this.insightOption.SelectedDataRange[0].format(momentDateFormat) + ' - ' + this.insightOption.SelectedDataRange[1].format(momentDateFormat);
+    }
+    return '';
   }
 
   ngOnInit(): void {
@@ -211,44 +217,61 @@ export class DocumentItemInsightComponent implements OnInit {
     this.listDisplayData = [];
 
     this.listData.forEach(p => {
-      if (p.IsExpense) {
-        this.outgoAmount += p.Amount;
-      } else {
-        this.incomeAmount += p.Amount;
+
+      let bcont = true;
+      if (this.insightOption?.ExcludeTransfer === true) {
+        if (p.TransactionType === financeTranTypeOpeningAsset
+          || p.TransactionType === financeTranTypeOpeningLiability
+          || p.TransactionType === financeTranTypeTransferIn
+          || p.TransactionType === financeTranTypeTransferOut
+          || p.TransactionType === financeTranTypeAdvancePaymentOut
+          || p.TransactionType === financeTranTypeAdvanceReceiveIn
+          || p.TransactionType === financeTranTypeAssetValueDecrease
+          || p.TransactionType === financeTranTypeAssetValueIncrease) {
+          bcont = false;
+        }        
       }
 
-      const idx = this.listDisplayData.findIndex(data => {
-        if (needdate && data.TransactionDate !== p.TransactionDate?.format(momentDateFormat)) {
-          return false;
+      if (bcont) {
+        if (p.IsExpense) {
+          this.outgoAmount += p.Amount;
+        } else {
+          this.incomeAmount += p.Amount;
         }
-        if (needacnt && data.AccountID !== p.AccountID) {
-          return false;
-        }
-        if (needtype && data.TransactionType !== p.TransactionType) {
-          return false;
-        }
-        return true;
-      });
-
-      if (idx !== -1) {
-        this.listDisplayData[idx].Amount += p.Amount;
-      } else {
-        let ndata: InsightRecord = {
-          Amount: p.Amount,
-          Currency: this.baseCurrency,
-        };
-        if (needdate) {
-          ndata.TransactionDate = p.TransactionDate?.format(momentDateFormat);
-        }
-        if (needacnt) {
-          ndata.AccountID = p.AccountID;
-        }
-        if (needtype) {
-          ndata.TransactionType = p.TransactionType;
-        }
-
-        this.listDisplayData.push(ndata);
-      }      
+  
+        const idx = this.listDisplayData.findIndex(data => {
+          if (needdate && data.TransactionDate !== p.TransactionDate) {
+            return false;
+          }
+          if (needacnt && data.AccountID !== p.AccountID) {
+            return false;
+          }
+          if (needtype && data.TransactionType !== p.TransactionType) {
+            return false;
+          }
+          return true;
+        });
+  
+        if (idx !== -1) {
+          this.listDisplayData[idx].Amount += p.Amount;
+        } else {
+          let ndata: InsightRecord = {
+            Amount: p.Amount,
+            Currency: this.baseCurrency,
+          };
+          if (needdate) {
+            ndata.TransactionDate = p.TransactionDate;
+          }
+          if (needacnt) {
+            ndata.AccountID = p.AccountID;
+          }
+          if (needtype) {
+            ndata.TransactionType = p.TransactionType;
+          }
+  
+          this.listDisplayData.push(ndata);
+        }          
+      }
     });
   }
 }

@@ -366,15 +366,42 @@ export class FinanceComponent implements OnInit, OnDestroy {
   onOpenInsight(ncell: number) {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
-    dtbgn.startOf('month');
-    dtend.endOf('month');
 
     switch(ncell) {
       case 1: 
+        dtbgn.startOf('month');
+        dtend.endOf('month');
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.excludeTransfer,
           TransactionDirection: true,
+        };
+        break;
+      case 2: 
+        dtbgn.startOf('month');
+        dtend.endOf('month');
+        this.uiService.docInsightOption = {
+          SelectedDataRange: [dtbgn, dtend],
+          ExcludeTransfer: this.excludeTransfer,
+          TransactionDirection: false,
+        };
+        break;
+      case 3: 
+        dtbgn.startOf('year');
+        dtend.endOf('year');
+        this.uiService.docInsightOption = {
+          SelectedDataRange: [dtbgn, dtend],
+          ExcludeTransfer: this.excludeTransfer,
+          TransactionDirection: true,
+        };
+        break;
+      case 4: 
+        dtbgn.startOf('year');
+        dtend.endOf('year');
+        this.uiService.docInsightOption = {
+          SelectedDataRange: [dtbgn, dtend],
+          ExcludeTransfer: this.excludeTransfer,
+          TransactionDirection: false,
         };
         break;
       default:

@@ -17,7 +17,7 @@ import { DocumentHeaderComponent } from '../document-header';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService } from 'src/app/services';
-import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset } from 'src/app/model';
+import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, momentDateFormat } from 'src/app/model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
@@ -417,7 +417,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y'),
+        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -488,7 +488,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y'),
+        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -561,7 +561,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y'),
+        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -659,7 +659,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y'),
+        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -740,7 +740,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y'),
+        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,

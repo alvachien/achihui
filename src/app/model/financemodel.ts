@@ -3210,7 +3210,7 @@ export class DocumentItemView {
   public DocumentID?: number;
   public ItemID = 0;
   public HomeID?: number;
-  public TransactionDate?: moment.Moment;
+  public TransactionDate?: string;
   public DocumentDesp = '';
   public AccountID?: number;
   public TransactionType?: number;

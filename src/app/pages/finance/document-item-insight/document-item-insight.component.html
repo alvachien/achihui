@@ -12,11 +12,9 @@
 <nz-divider></nz-divider>
 
 <div>
-  Date Range: {{insightOption?.SelectedDataRange}}
-  <br/>
-  <div *ngIf="insightOption?.TransactionDirection">Income: {{insightOption?.TransactionDirection}}</div>
-  <br/>
-  <div *ngIf="insightOption?.ExcludeTransfer">Exclude Transfer. Deprec.</div>  
+  <div>Date Range: {{insideDateRangeString}}</div>
+  <div *ngIf="insightOption?.TransactionDirection !== undefined">Income: {{insightOption?.TransactionDirection}}</div>
+  <div nzTooltipTitle="prompt text" nz-tooltip *ngIf="insightOption?.ExcludeTransfer !== undefined">Exclude Transfer. Deprec: {{insightOption?.ExcludeTransfer}}</div>  
 </div>
 
 <nz-divider nzText="Options"></nz-divider>

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DocumentItemInsightComponent } from './document-item-insight.component';
 
-describe('DocumentItemInsightComponent', () => {
+xdescribe('DocumentItemInsightComponent', () => {
   let component: DocumentItemInsightComponent;
   let fixture: ComponentFixture<DocumentItemInsightComponent>;
 

@@ -41,10 +41,13 @@
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
           <nz-statistic
-            [nzValue]="(keyfigure!.CurrentMonthOutgo | number : '1.2-2')!"
             [nzSuffix]="keyfigure!.BaseCurrency"
             [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"
-          ></nz-statistic>
+            [nzValueTemplate]="tmplValueOutgo">
+          </nz-statistic>
+          <ng-template #tmplValueOutgo>
+            <a (click)="onOpenInsight(2)">{{keyfigure!.CurrentMonthOutgo | number : '1.2-2'}}</a>            
+          </ng-template>
         </nz-card>
       </nz-col>
     </nz-row>
@@ -83,19 +86,24 @@
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
           <nz-statistic
-            [nzValue]="(keyfigure!.IncomeYTD | number : '1.2-2')!"
             [nzSuffix]="keyfigure!.BaseCurrency"
             [nzTitle]="'Finance.IncomeYTD' | transloco"
-          ></nz-statistic>
+            [nzValueTemplate]="tmplYTDValueIncome">
+          </nz-statistic>
+          <ng-template #tmplYTDValueIncome>
+            <a (click)="onOpenInsight(3)">{{keyfigure!.IncomeYTD | number : '1.2-2'}}</a>            
+          </ng-template>
         </nz-card>
       </nz-col>
       <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
         <nz-card>
           <nz-statistic
-            [nzValue]="(keyfigure!.OutgoYTD | number : '1.2-2')!"
             [nzSuffix]="keyfigure!.BaseCurrency"
             [nzTitle]="'Finance.OutgoYTD' | transloco"
-          ></nz-statistic>
+            [nzValueTemplate]="tmplYTDValueOutgo"></nz-statistic>
+          <ng-template #tmplYTDValueOutgo>
+            <a (click)="onOpenInsight(4)">{{keyfigure!.OutgoYTD | number : '1.2-2'}}</a>            
+          </ng-template>
         </nz-card>
       </nz-col>
     </nz-row>
@@ -106,8 +114,7 @@
   <nz-calendar
     [(ngModel)]="selectedDate"
     (nzSelectChange)="onSelectChange($event)"
-    (nzPanelChange)="onPanelChange($event)"
-  >
+    (nzPanelChange)="onPanelChange($event)">
     <ul *nzDateCell="let date" class="events">
       <li *ngFor="let item of getDPDocsByDate(date)">
         <div>
@@ -116,8 +123,7 @@
             nz-popconfirm
             [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
             (nzOnConfirm)="doPostDPDoc(item)"
-            nzShape="circle"
-          >
+            nzShape="circle">
             <i nz-icon nzType="export"></i>
           </button>
           <span>{{ item.Desp }}</span>
@@ -129,8 +135,7 @@
             nz-button
             nz-popconfirm
             [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
-            (nzOnConfirm)="doPostLoanDoc(item)"
-          >
+            (nzOnConfirm)="doPostLoanDoc(item)">
             <i nz-icon nzType="export"></i>
           </button>
           <span>{{ item.Desp }}</span>

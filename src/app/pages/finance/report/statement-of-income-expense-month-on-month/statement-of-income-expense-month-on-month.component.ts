@@ -6,6 +6,7 @@ import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate } from '@ngneat/transloco';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 import {
   ConsoleLogTypeEnum,
@@ -19,7 +20,7 @@ import {
   ModelUtility,
   momentDateFormat,
 } from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
+import { FinanceOdataService, UIStatusService } from 'src/app/services';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
@@ -40,7 +41,9 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   constructor(
     private odataService: FinanceOdataService,
     private modalService: NzModalService,
-    private drawerService: NzDrawerService
+    private drawerService: NzDrawerService,
+    private uiStatusService: UIStatusService,
+    private router: Router,
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
@@ -281,48 +284,57 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     }
   }
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
-    const fltrs: GeneralFilterItem[] = [];
-    fltrs.push({
-      fieldName: 'IsExpense',
-      operator: GeneralFilterOperatorEnum.Equal,
-      lowValue: isexp,
-      highValue: isexp,
-      valueType: GeneralFilterValueType.boolean,
-    });
-    fltrs.push({
-      fieldName: 'TransactionDate',
-      operator: GeneralFilterOperatorEnum.Between,
-      lowValue: beginDate,
-      highValue: endDate,
-      valueType: GeneralFilterValueType.date,
-    });
+    this.uiStatusService.docInsightOption = {
+      SelectedDataRange: [
+        moment(beginDate),
+        moment(endDate),
+      ],
+      TransactionDirection: isexp ? false : true,
+    };
+    this.router.navigate(['/finance/insight']);
+    
+    // const fltrs: GeneralFilterItem[] = [];
+    // fltrs.push({
+    //   fieldName: 'IsExpense',
+    //   operator: GeneralFilterOperatorEnum.Equal,
+    //   lowValue: isexp,
+    //   highValue: isexp,
+    //   valueType: GeneralFilterValueType.boolean,
+    // });
+    // fltrs.push({
+    //   fieldName: 'TransactionDate',
+    //   operator: GeneralFilterOperatorEnum.Between,
+    //   lowValue: beginDate,
+    //   highValue: endDate,
+    //   valueType: GeneralFilterValueType.date,
+    // });
 
-    const drawerRef = this.drawerService.create<
-      DocumentItemViewComponent,
-      {
-        filterDocItem: GeneralFilterItem[];
-      },
-      string
-    >({
-      nzTitle: translate('Finance.Documents'),
-      nzContent: DocumentItemViewComponent,
-      nzContentParams: {
-        filterDocItem: fltrs,
-      },
-      nzWidth: '100%',
-      nzHeight: '50%',
-      nzPlacement: 'bottom',
-    });
+    // const drawerRef = this.drawerService.create<
+    //   DocumentItemViewComponent,
+    //   {
+    //     filterDocItem: GeneralFilterItem[];
+    //   },
+    //   string
+    // >({
+    //   nzTitle: translate('Finance.Documents'),
+    //   nzContent: DocumentItemViewComponent,
+    //   nzContentParams: {
+    //     filterDocItem: fltrs,
+    //   },
+    //   nzWidth: '100%',
+    //   nzHeight: '50%',
+    //   nzPlacement: 'bottom',
+    // });
 
-    drawerRef.afterOpen.subscribe(() => {
-      // console.log('Drawer(Component) open');
-    });
+    // drawerRef.afterOpen.subscribe(() => {
+    //   // console.log('Drawer(Component) open');
+    // });
 
-    drawerRef.afterClose.subscribe(() => {
-      // console.log(data);
-      // if (typeof data === 'string') {
-      //   this.value = data;
-      // }
-    });
+    // drawerRef.afterClose.subscribe(() => {
+    //   // console.log(data);
+    //   // if (typeof data === 'string') {
+    //   //   this.value = data;
+    //   // }
+    // });
   }
 }

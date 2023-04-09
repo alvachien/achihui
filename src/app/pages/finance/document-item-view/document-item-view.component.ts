@@ -206,7 +206,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingDocItems = false))
+        finalize(() => this.isLoadingDocItems = false)
       )
       .subscribe({
         next: (revdata) => {
@@ -232,8 +232,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
               this.totalDocumentItemCount = 0;
             }
 
-            this.listDocItem = revdata[0].contentList;
-            this.listDocItem.forEach((eachitem) => {
+            revdata[0].contentList.forEach((eachitem: DocumentItemView) => {
               if (eachitem.Amount < 0) {
                 if (this.outgoCurrency === '') {
                   this.outgoCurrency = eachitem.Currency;
@@ -253,6 +252,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
                   }
                 }
               }
+              this.listDocItem.push(eachitem);
             });
           } else {
             this.totalDocumentItemCount = 0;
