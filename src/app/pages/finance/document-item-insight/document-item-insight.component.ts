@@ -217,7 +217,6 @@ export class DocumentItemInsightComponent implements OnInit {
     this.listDisplayData = [];
 
     this.listData.forEach(p => {
-
       let bcont = true;
       if (this.insightOption?.ExcludeTransfer === true) {
         if (p.TransactionType === financeTranTypeOpeningAsset
@@ -233,7 +232,8 @@ export class DocumentItemInsightComponent implements OnInit {
       }
 
       if (bcont) {
-        if (p.IsExpense) {
+        let isexps = this.arTranType.find(tt => tt.Id === p.TransactionType)?.Expense;
+        if (isexps) {
           this.outgoAmount += p.Amount;
         } else {
           this.incomeAmount += p.Amount;
@@ -272,6 +272,31 @@ export class DocumentItemInsightComponent implements OnInit {
           this.listDisplayData.push(ndata);
         }          
       }
+    });
+
+    this.listDisplayData.sort((item1, item2) => {
+      let ndatecmp = 0;
+      if (needdate) {
+        ndatecmp = item1.TransactionDate!.localeCompare(item2.TransactionDate ?? '');
+      }
+
+      if (ndatecmp === 0) {
+        let nacntcmp = 0;
+        if (needacnt) {
+          nacntcmp = item1.AccountID! - item2.AccountID!;
+
+          if (nacntcmp === 0) {
+            let nttcmp = 0;
+            if (needtype) {
+              nttcmp = item1.TransactionType! - item2.TransactionType!;
+            }
+            return nttcmp;
+          }
+
+          return nacntcmp;
+        }
+      }
+      return ndatecmp;
     });
   }
 }

@@ -4010,28 +4010,28 @@ export class FinanceOverviewKeyfigure {
     if (val && val.Currency) {
       this.BaseCurrency = val.Currency;
     }
-    if (val && val.CurrentMonthIncome) {
-      this.CurrentMonthIncome = val.CurrentMonthIncome;
+    if (val && val.CurrentMonthIncome !== undefined && val.CurrentMonthIncome !== null) {
+      this.CurrentMonthIncome = +val.CurrentMonthIncome;
     }
-    if (val && val.CurrentMonthOutgo) {
-      this.CurrentMonthOutgo = val.CurrentMonthOutgo;
+    if (val && val.CurrentMonthOutgo !== undefined && val.CurrentMonthOutgo !== null) {
+      this.CurrentMonthOutgo = +val.CurrentMonthOutgo;
     }
-    if (val && val.LastMonthIncome) {
-      this.LastMonthIncome = val.LastMonthIncome;
+    if (val && val.LastMonthIncome !== undefined && val.LastMonthIncome !== null) {
+      this.LastMonthIncome = +val.LastMonthIncome;
     }
-    if (val && val.LastMonthOutgo) {
-      this.LastMonthOutgo = val.LastMonthOutgo;
+    if (val && val.LastMonthOutgo !== undefined && val.LastMonthOutgo !== null) {
+      this.LastMonthOutgo = +val.LastMonthOutgo;
     }
-    if (val && val.IncomeYTD) {
-      this.IncomeYTD = val.IncomeYTD;
+    if (val && val.IncomeYTD !== undefined && val.IncomeYTD !== null) {
+      this.IncomeYTD = +val.IncomeYTD;
     }
-    if (val && val.OutgoYTD) {
-      this.OutgoYTD = val.OutgoYTD;
+    if (val && val.OutgoYTD !== undefined && val.OutgoYTD !== null) {
+      this.OutgoYTD = +val.OutgoYTD;
     }
-    if (val && val.CurrentMonthIncomePrecentage) {
+    if (val && val.CurrentMonthIncomePrecentage !== undefined && val.CurrentMonthIncomePrecentage !== null) {
       this.CurrentMonthIncomePrecentage = val.CurrentMonthIncomePrecentage;
     }
-    if (val && val.CurrentMonthOutgoPrecentage) {
+    if (val && val.CurrentMonthOutgoPrecentage !== undefined && val.CurrentMonthOutgoPrecentage !== null) {
       this.CurrentMonthOutgoPrecentage = val.CurrentMonthOutgoPrecentage;
     }
   }
