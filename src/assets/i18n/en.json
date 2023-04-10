@@ -226,7 +226,8 @@
     "Step3": "Step 3",
     "Example": "Example",
     "Usage": "Usage",
-    "Progress": "Progress"
+    "Progress": "Progress",
+    "DateRange": "Date Range"
   },
   "Sys": {
     "Currency": {
@@ -660,7 +661,8 @@
     "CompareResults": "Compare Results",
     "CompareResultsDesp": "Compare result between inputted one with actual ones",
     "Difference": "Difference",
-    "BackToDocumentListView": "Back to Document List"
+    "BackToDocumentListView": "Back to Document List",
+    "Analysis": "Analysis"
   },
   "Library": {
     "BookCategories": "Book Categories",

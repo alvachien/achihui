@@ -2,17 +2,17 @@
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item>
       <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>Insight</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.Analysis' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>Insight</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{'Finance.Analysis' | transloco}}</nz-page-header-subtitle>
   <nz-page-header-extra> </nz-page-header-extra>
 </nz-page-header>
 
 <nz-divider></nz-divider>
 
 <div>
-  <div>Date Range: {{insideDateRangeString}}</div>
+  <div>{{'Common.DateRange' | transloco}}: {{insideDateRangeString}}</div>
   <div *ngIf="insightOption?.TransactionDirection !== undefined">Income: {{insightOption?.TransactionDirection}}</div>
   <div nzTooltipTitle="prompt text" nz-tooltip *ngIf="insightOption?.ExcludeTransfer !== undefined">Exclude Transfer. Deprec: {{insightOption?.ExcludeTransfer}}</div>  
 </div>
@@ -28,7 +28,7 @@
 
 <nz-divider></nz-divider>
 
-<nz-table #resultTable nzShowSizeChanger [nzData]="listDisplayData"
+<nz-table #resultTable nzBordered nzShowSizeChanger [nzData]="listDisplayData"
   [nzLoading]="isLoadingData"
   [nzFooter]="footerTpl">
   <thead>

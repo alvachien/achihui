@@ -1,11 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.Account' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
@@ -22,12 +18,9 @@
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
         <div nz-col [nzSpan]="24">
-          <div
-            echarts
-            [options]="chartAssetOption!"
+          <div echarts [options]="chartAssetOption!"
             style="height: 320px"
-            (chartClick)="onAssetsCategoryChartClicked($event)"
-          ></div>
+            (chartClick)="onAssetsCategoryChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
@@ -38,8 +31,7 @@
             echarts
             [options]="chartLiabilitiesOption!"
             style="height: 320px"
-            (chartClick)="onLiabilitiesCategoryChartClicked($event)"
-          ></div>
+            (chartClick)="onLiabilitiesCategoryChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
@@ -54,8 +46,7 @@
             echarts
             [options]="chartAssetAccountOption!"
             style="height: 320px"
-            (chartClick)="onAssetsAccountChartClicked($event)"
-          ></div>
+            (chartClick)="onAssetsAccountChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
@@ -66,8 +57,7 @@
             echarts
             [options]="chartLiabilitiesAccountOption!"
             style="height: 320px"
-            (chartClick)="onLiabilitiesAccountChartClicked($event)"
-          ></div>
+            (chartClick)="onLiabilitiesAccountChartClicked($event)"></div>
         </div>
       </nz-card>
     </div>
@@ -75,7 +65,7 @@
   <nz-divider></nz-divider>
 
   <div nz-row style="padding-top: 30px">
-    <nz-table #basicTable nzBordered [nzData]="dataSet">
+    <nz-table #basicTable nzBordered [nzData]="dataSet" nzShowSizeChanger>
       <thead>
         <tr>
           <th>#</th>

@@ -226,7 +226,8 @@
     "Step3": "第三步",
     "Example": "示例",
     "Usage": "用法",
-    "Progress": "进度"
+    "Progress": "进度",
+    "DateRange": "日期范围"
   },
   "Sys": {
     "Currency": {
@@ -660,7 +661,8 @@
     "CompareResults": "结果对比",
     "CompareResultsDesp": "对比预期账户余额与实际的账户余额",
     "Difference": "差额",
-    "BackToDocumentListView": "返回凭证列表"
+    "BackToDocumentListView": "返回凭证列表",
+    "Analysis": "分析"
   },
   "Library": {
     "BookCategories": "图书种类",
