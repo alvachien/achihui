@@ -103,6 +103,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       },
       [costObjectValidator, this._duplicateAccountValidator]
     );
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   get nextButtonEnabled(): boolean {
@@ -153,9 +154,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
           this.arCurrencies = rst[5];
           // Doc. type
           this.arDocTypes = rst[6];
-
-          // Set the default currency
-          this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

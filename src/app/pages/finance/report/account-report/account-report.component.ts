@@ -58,7 +58,7 @@ export class AccountReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
   ngOnInit() {
@@ -435,6 +435,10 @@ export class AccountReportComponent implements OnInit, OnDestroy {
   private buildAssetAccountChart() {
     const namevalues: Array<{ category: number; name: string; value: number }> = [];
     const names: SafeAny[] = [];
+
+    // let aracnts = [];
+    // this.arReportByAccount.forEach(val => {
+    // });
 
     this.arReportByAccount.forEach((rpt: FinanceReportByAccount) => {
       const acntobj = this.arAccounts.find((acnt: Account) => {

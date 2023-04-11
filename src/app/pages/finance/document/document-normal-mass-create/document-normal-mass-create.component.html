@@ -1,10 +1,9 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
+    <nz-breadcrumb-item>
+      <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.FreelyMassCreateNormalDocs' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
@@ -28,16 +27,14 @@
             <nz-collapse-panel
               *ngFor="let item of getItemControls; index as i; first as isFirst; last as isLast"
               [nzHeader]="headerTpl"
-              [nzActive]="true"
-            >
+              [nzActive]="true">
               <hih-document-normal-mass-create-item
                 [itemFormGroup]="getItemControls[i]"
                 [arUIAccounts]="arUIAccounts"
                 [arUIOrders]="arUIOrders"
                 [arControlCenters]="arControlCenters"
                 [baseCurrency]="baseCurrency"
-                [arTranType]="arTranType"
-              >
+                [arTranType]="arTranType">
               </hih-document-normal-mass-create-item>
               <ng-template #headerTpl>
                 <button nz-button nzType="primary" (click)="onCopyItem($event, i)">
@@ -92,8 +89,7 @@
         <nz-result
           nzStatus="success"
           [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco"
-        >
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
               <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
@@ -118,8 +114,7 @@
         <nz-result
           [nzTitle]="'Common.SubmissionFailed' | transloco"
           nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco"
-        >
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
           <div nz-result-content>
             <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
               <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
