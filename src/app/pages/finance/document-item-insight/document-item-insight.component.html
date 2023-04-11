@@ -13,8 +13,8 @@
 
 <div>
   <div>{{'Common.DateRange' | transloco}}: {{insideDateRangeString}}</div>
-  <div *ngIf="insightOption?.TransactionDirection !== undefined">Income: {{insightOption?.TransactionDirection}}</div>
-  <div nzTooltipTitle="prompt text" nz-tooltip *ngIf="insightOption?.ExcludeTransfer !== undefined">Exclude Transfer. Deprec: {{insightOption?.ExcludeTransfer}}</div>  
+  <div *ngIf="insightOption?.TransactionDirection !== undefined">{{'Finance.Income' | transloco}}: {{insightOption?.TransactionDirection}}</div>
+  <div [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco" nz-tooltip *ngIf="insightOption?.ExcludeTransfer !== undefined">{{'Finance.ExcludeTransfer' | transloco}}: {{insightOption?.ExcludeTransfer}}</div>  
 </div>
 
 <nz-divider nzText="Options"></nz-divider>

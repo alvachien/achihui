@@ -77,6 +77,14 @@ export class UIStatusService {
   set docInsightOption(option: DocInsightOption | undefined) {
     this._docInsightOption = option;
   }
+  // Finance overview option
+  _finOverviewExcludeTransfer = false;
+  get FinanceOverviewExcludeTransfer(): boolean {
+    return this._finOverviewExcludeTransfer;
+  }
+  set FinanceOverviewExcludeTransfer(exc_tran: boolean) {
+    this._finOverviewExcludeTransfer = exc_tran;
+  }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 

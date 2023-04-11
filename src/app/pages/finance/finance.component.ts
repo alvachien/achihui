@@ -38,8 +38,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _selectedYear: number | null = null;
-  private _selectedMonth: number | null = null;
-  excludeTransfer = false;
+  private _selectedMonth: number | null = null;  
 
   public selectedDate: Date | null = null;
   isLoadingResults: boolean;
@@ -48,6 +47,13 @@ export class FinanceComponent implements OnInit, OnDestroy {
   keyfigure: FinanceOverviewKeyfigure | null = null;
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+  }
+
+  get ExcludeTransfer(): boolean {
+    return this.uiService.FinanceOverviewExcludeTransfer;
+  }
+  set ExcludeTransfer(extran: boolean) {
+    this.uiService.FinanceOverviewExcludeTransfer = extran;
   }
 
   constructor(
@@ -260,7 +266,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         TransactionDateEnd: dtend,
         IsPosted: false,
       }),
-      this.odataService.fetchOverviewKeyfigure(this.excludeTransfer, forceReload),
+      this.odataService.fetchOverviewKeyfigure(this.ExcludeTransfer, forceReload),
     ])
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -373,7 +379,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         dtend.endOf('month');
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
-          ExcludeTransfer: this.excludeTransfer,
+          ExcludeTransfer: this.ExcludeTransfer,
           TransactionDirection: true,
         };
         break;
@@ -382,7 +388,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         dtend.endOf('month');
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
-          ExcludeTransfer: this.excludeTransfer,
+          ExcludeTransfer: this.ExcludeTransfer,
           TransactionDirection: false,
         };
         break;
@@ -391,7 +397,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         dtend.endOf('year');
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
-          ExcludeTransfer: this.excludeTransfer,
+          ExcludeTransfer: this.ExcludeTransfer,
           TransactionDirection: true,
         };
         break;
@@ -400,7 +406,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         dtend.endOf('year');
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
-          ExcludeTransfer: this.excludeTransfer,
+          ExcludeTransfer: this.ExcludeTransfer,
           TransactionDirection: false,
         };
         break;

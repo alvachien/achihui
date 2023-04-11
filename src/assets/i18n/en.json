@@ -227,7 +227,9 @@
     "Example": "Example",
     "Usage": "Usage",
     "Progress": "Progress",
-    "DateRange": "Date Range"
+    "DateRange": "Date Range",
+    "Yes": "Yes",
+    "No": "No"
   },
   "Sys": {
     "Currency": {
@@ -526,7 +528,8 @@
     "IsExpense": "Is Expense",
     "IsAsset": "Is Asset",
     "InvalidOnes": "Invalid Ones",
-    "ExcludeTransfer": "Exclude transfer",
+    "ExcludeTransfer": "Exclude transfer, depreciation, etc",
+    "ExcludeTransferHint": "Exclude transaction, including: internal transfer, depreciation, asset value change, advance payment",
     "AccountStatusNormal": "Normal",
     "AccountStatusClosed": "Closed",
     "AccountStatusFrozen": "Fronze",

@@ -7,9 +7,10 @@
   <nz-page-header-extra>
     <nz-switch
       *ngIf="!isChildMode"
-      [(ngModel)]="excludeTransfer"
+      [(ngModel)]="ExcludeTransfer"
       [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
       [nzUnCheckedChildren]="'Common.All' | transloco"
+      [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco" nz-tooltip
       (ngModelChange)="fetchData(true)">
     </nz-switch>
   </nz-page-header-extra>

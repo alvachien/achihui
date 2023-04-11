@@ -227,7 +227,9 @@
     "Example": "示例",
     "Usage": "用法",
     "Progress": "进度",
-    "DateRange": "日期范围"
+    "DateRange": "日期范围",
+    "Yes": "是",
+    "No": "否"
   },
   "Sys": {
     "Currency": {
@@ -526,7 +528,8 @@
     "IsExpense": "开销",
     "IsAsset": "资产",
     "InvalidOnes": "失效项",
-    "ExcludeTransfer": "排除转账类开支",
+    "ExcludeTransfer": "排除内部转账、折旧等",
+    "ExcludeTransferHint": "排除以下交易：内部转账，折旧，资产价值变动，预付款分摊",
     "AccountStatusNormal": "正常",
     "AccountStatusClosed": "已关闭账户",
     "AccountStatusFrozen": "已冻结账户",
