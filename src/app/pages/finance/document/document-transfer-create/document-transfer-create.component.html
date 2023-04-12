@@ -2,8 +2,8 @@
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item>
       <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
+    <nz-breadcrumb-item>
+      <a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
     </nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Common.Create' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
@@ -140,8 +140,7 @@
         <nz-result
           nzStatus="success"
           [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco"
-        >
+          [nzSubTitle]="'Finance.DocumentPosted' | transloco">
           <div nz-result-extra>
             <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
               {{ 'Common.Display' | transloco }}

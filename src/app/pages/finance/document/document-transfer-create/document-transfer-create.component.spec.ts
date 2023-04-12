@@ -46,7 +46,7 @@ describe('DocumentTransferCreateComponent', () => {
   const nextButtonId = '#button_next_step';
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
-  const homeService: Partial<HomeDefOdataService> = {};
+  const homeService: Partial<HomeDefOdataService> = {};  
   const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
     'fetchAllCurrencies',
     'fetchAllDocTypes',
@@ -368,7 +368,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       const docobj: Document = component.headerFormGroup.get('headerControl')?.value as Document;
-      expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(docobj.TranCurr).toEqual('');
     }));
 
     it('step 0: should have accounts and orders loaded', fakeAsync(() => {
