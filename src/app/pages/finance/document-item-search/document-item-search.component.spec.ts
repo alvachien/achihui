@@ -111,17 +111,17 @@ describe('DocumentItemSearchComponent', () => {
 
   describe('working with data', () => {
     beforeEach(() => {
-      fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
-      fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(
         asyncData(fakeData.finAccountCategories)
       );
-      fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
-      fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(
         asyncData(fakeData.finControlCenters)
       );
-      fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
     });
 

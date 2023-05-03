@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,22 +24,42 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UserAuthInfo } from 'src/app/model';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
 
-import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { FakeDataHelper, asyncData, getTranslocoModule } from 'src/testing';
 import { ReconcileByMonthComponent } from './reconcile-by-month.component';
+import { SafeAny } from 'src/common';
+import { of } from 'rxjs';
 
 describe('ReconcileByMonthComponent', () => {
   let component: ReconcileByMonthComponent;
   let fixture: ComponentFixture<ReconcileByMonthComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllAccountCategoriesSpy: SafeAny;
+  let fetchAllAccountsSpy: SafeAny;
+  const authServiceStub: Partial<AuthService> = {};
+  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
-    fakeData.buildChosedHome();
+    fakeData.buildCurrencies();
     fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+
+    homeService = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+    };
   });
 
   beforeEach(async () => {
     const odataService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
+
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -91,5 +111,20 @@ describe('ReconcileByMonthComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('work with data', () => {
+    beforeEach(() => {
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+    });
+
+    it('1. shall initialize the data', fakeAsync(() => {
+      fixture.detectChanges(); // ngOninit
+      tick();
+      fixture.detectChanges();
+
+      expect(component.arAccounts.length).toEqual(fakeData.finAccounts.length);
+    }));
   });
 });

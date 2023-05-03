@@ -5,7 +5,8 @@ import { TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
 
 import { Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
-  TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease, financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from 'src/app/model';
+  TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
+  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from 'src/app/model';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
 
 interface InsightRecord {
@@ -116,7 +117,7 @@ export class DocumentItemInsightComponent implements OnInit {
       },
       error: (err) => {
         ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering FinanceComponent onAssetDeprec forkJoin failed ${err}...`,
+          `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent ngOnInit forkJoin failed ${err}...`,
           ConsoleLogTypeEnum.error
         );
 
@@ -185,7 +186,16 @@ export class DocumentItemInsightComponent implements OnInit {
                   }
                 },
                 error: err => {
-                  // TBD.
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+                    ConsoleLogTypeEnum.error
+                  );
+          
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
                 }
               })
 
@@ -199,7 +209,16 @@ export class DocumentItemInsightComponent implements OnInit {
           }
         },
         error: err => {
-          // TBD.
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+            ConsoleLogTypeEnum.error
+          );
+  
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
         }
       })
     }
