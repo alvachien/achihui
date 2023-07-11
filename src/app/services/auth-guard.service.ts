@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 import { LogLevel, ModelUtility, ConsoleLogTypeEnum } from '../model';
@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 import { UIStatusService } from './uistatus.service';
 
 @Injectable()
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService  {
   constructor(private uiService: UIStatusService, private authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       ModelUtility.writeConsoleLog(

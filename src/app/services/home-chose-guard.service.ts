@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
@@ -7,7 +7,7 @@ import { HomeDefOdataService } from './home-def-odata.service';
 import { UIStatusService } from './uistatus.service';
 
 @Injectable()
-export class HomeChoseGuardService implements CanActivate {
+export class HomeChoseGuardService  {
   constructor(
     private authService: AuthService,
     private homeService: HomeDefOdataService,
