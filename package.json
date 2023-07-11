@@ -17,7 +17,8 @@
     "test": "ng test",
     "devtest": "ng test --code-coverage",
     "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "bundle-analyzer": "webpack-bundle-analyzer ./dist/achihui/stats.json"
   },
   "dependencies": {
     "@angular/animations": "^15.1.5",
