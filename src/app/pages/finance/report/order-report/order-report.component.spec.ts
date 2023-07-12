@@ -66,13 +66,13 @@ describe('OrderReportComponent', () => {
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

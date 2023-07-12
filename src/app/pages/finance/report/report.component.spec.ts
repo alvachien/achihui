@@ -112,13 +112,13 @@ describe('ReportComponent', () => {
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

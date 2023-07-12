@@ -132,13 +132,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

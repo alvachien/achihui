@@ -85,13 +85,13 @@ describe('HomeDefDetailComponent', () => {
         Overlay,
         NzModalService,
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

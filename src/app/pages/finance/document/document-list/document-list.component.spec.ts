@@ -113,13 +113,13 @@ describe('DocumentListComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

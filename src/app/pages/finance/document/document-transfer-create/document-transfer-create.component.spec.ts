@@ -100,13 +100,13 @@ describe('DocumentTransferCreateComponent', () => {
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

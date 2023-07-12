@@ -52,13 +52,13 @@ describe('LanguageComponent', () => {
       ],
       declarations: [LanguageComponent, MessageDialogComponent],
       providers: [{ provide: LanguageOdataService, useValue: langService }, Overlay, NzModalService],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {

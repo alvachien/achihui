@@ -120,13 +120,13 @@ describe('DocumentLoanCreateComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
       ],
-    });
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [MessageDialogComponent],
-      },
     }).compileComponents();
+
+    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    //   set: {
+    //     entryComponents: [MessageDialogComponent],
+    //   },
+    // }).compileComponents();
   }));
 
   beforeEach(() => {
