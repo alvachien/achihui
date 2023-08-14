@@ -24,6 +24,7 @@ import {
   ConsoleLogTypeEnum,
   getUIModeString,
   DocumentItem,
+  BuildupOrderForSelectionEx,
 } from '../../../../model';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { SafeAny } from 'src/common';
@@ -140,10 +141,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.arAccountCategories = rsts[3] as AccountCategory[];
                 this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
                 this.arControlCenters = rsts[5] as ControlCenter[];
-                const arorders = rsts[6] as Order[];
-                this.arUIOrders = BuildupOrderForSelection(arorders, true);
-
                 this.currentDocument = rsts[7] as Document;
+                const arorders = rsts[6] as Order[];
+                this.arUIOrders = BuildupOrderForSelectionEx(arorders, this.currentDocument.TranDate);
 
                 // Check the accounts in use
                 const listAcntIDs = this.currentDocument.Items.map((item) => {

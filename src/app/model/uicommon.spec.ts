@@ -2,6 +2,8 @@
 // Unit test for utility.ts
 //
 
+import * as moment from 'moment';
+import { Order } from './financemodel';
 import {
   UIDisplayStringUtil,
   UIDisplayString,
@@ -13,6 +15,7 @@ import {
   UIRadioButton,
   UIRadioButtonGroup,
   UIRouteLink,
+  BuildupOrderForSelectionEx,
 } from './uicommon';
 
 describe('UIDisplayStringUtil', () => {
@@ -390,5 +393,37 @@ describe('UIRouteLink', () => {
 
   it('shall create successfully', () => {
     expect(btn).toBeTruthy();
+  });
+});
+
+describe('BuildupOrderForSelectionEx', () => {
+  let arorders: Order[] = [];
+
+  beforeAll(() => {
+    let ord = new Order();
+    ord.Name = 'Test1';
+    ord.Id = 1;
+    ord.ValidFrom = moment('20210101');
+    ord.ValidTo = moment('20211231');
+    arorders.push(ord);
+
+    ord = new Order();
+    ord.Name = 'Test2';
+    ord.Id = 2;
+    ord.ValidFrom = moment('20220101');
+    ord.ValidTo = moment('20221231');
+    arorders.push(ord);
+  });
+
+  it('Order in 2021', () => {
+    let uiords = BuildupOrderForSelectionEx(arorders, moment('20210601'));
+    expect(uiords.length).toEqual(1);
+    expect(uiords[0].Id).toEqual(1);
+  });
+
+  it('Order in 2022', () => {
+    let uiords = BuildupOrderForSelectionEx(arorders, moment('20220601'));
+    expect(uiords.length).toEqual(1);
+    expect(uiords[0].Id).toEqual(2);
   });
 });

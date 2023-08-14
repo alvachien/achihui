@@ -993,7 +993,7 @@ export class UIOrderForSelection {
 }
 
 /**
- * Buildup accounts for select
+ * Buildup orders for select
  * @param orders Orders
  * @param skipinv Skip invalid orders
  */
@@ -1015,6 +1015,36 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
         if (rst._validFrom > moment() || rst._validTo < moment()) {
           continue;
         }
+      }
+
+      arrst.push(rst);
+    }
+  }
+
+  return arrst;
+}
+
+/**
+ * Buildup orders for select
+ * @param orders Orders
+ * @param momentCreation moment of creation
+ */
+export function BuildupOrderForSelectionEx(orders: Order[], momentCreation: moment.Moment): UIOrderForSelection[] {
+  const arrst: UIOrderForSelection[] = [];
+
+  if (orders && orders.length > 0) {
+    for (const ord of orders) {
+      const rst: UIOrderForSelection = new UIOrderForSelection();
+      if (ord.Id) {
+        rst.Id = ord.Id;
+      }
+      rst.Name = ord.Name;
+      rst._validFrom = ord.ValidFrom?.clone() ?? moment();
+      rst._validTo = ord.ValidTo?.clone() ?? moment();
+
+      // Skip some orders
+      if (rst._validFrom.isSameOrAfter(momentCreation) || rst._validTo.isBefore(momentCreation)) {
+        continue;
       }
 
       arrst.push(rst);
