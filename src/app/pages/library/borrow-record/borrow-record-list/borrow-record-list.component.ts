@@ -132,7 +132,7 @@ export class BorrowRecordListComponent implements OnInit, OnDestroy {
       nzWidth: 600,
       nzContent: BorrowRecordCreateDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {},
+      nzData: {},
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, OK button...',

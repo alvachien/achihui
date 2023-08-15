@@ -433,7 +433,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       nzTitle: translate('Finance.ChangeDate'),
       nzContent: DocumentChangeDateDialogComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         documentid: docid,
         documentdate: docdate.toDate(),
       },
@@ -449,7 +449,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       nzTitle: translate('Finance.ChangeDate'),
       nzContent: DocumentChangeDespDialogComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         documentid: docid,
         documentdesp: docdesp,
       },

@@ -89,7 +89,7 @@ export function popupDialog(
   const modal = modalService.create({
     nzTitle: title,
     nzContent: MessageDialogComponent,
-    nzComponentParams: {
+    nzData: {
       title,
       infoMessages: msgs,
     },

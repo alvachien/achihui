@@ -127,7 +127,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       nzWidth: 600,
       nzContent: BorrowRecordCreateDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         selectedBook: bkobj,
       },
       nzOnOk: () => {

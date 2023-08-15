@@ -216,7 +216,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzContent: FinanceAssetDepreciationDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         listItems: item,
         arUIOrders: orders,
         arControlCenters: controlCenters,

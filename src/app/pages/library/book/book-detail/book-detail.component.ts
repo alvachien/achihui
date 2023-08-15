@@ -172,7 +172,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzContent: PersonSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         setOfCheckedId: setPerson,
       },
       nzOnOk: () => {
@@ -219,7 +219,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzContent: OrganizationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         setOfCheckedId: setPress,
       },
       nzOnOk: () => {
@@ -263,7 +263,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzContent: BookCategorySelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         setOfCheckedId: setCategory,
       },
       nzOnOk: () => {
@@ -307,7 +307,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzWidth: 900,
       nzContent: LocationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         setOfCheckedId: setLocation,
       },
       nzOnOk: () => {

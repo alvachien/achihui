@@ -275,7 +275,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         nzTitle: translate('Finance.ChangeAccountName'),
         nzContent: AccountChangeNameDialogComponent,
         nzViewContainerRef: this.viewContainerRef,
-        nzComponentParams: {
+        nzData: {
           accountid: acntid,
           name: this.odataService.Accounts[acntidx].Name,
           comment: this.odataService.Accounts[acntidx].Comment,

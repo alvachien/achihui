@@ -80,7 +80,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       nzWidth: 900,
       nzContent: OrganizationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
+      nzData: {
         setOfCheckedId: setPress,
         singleSelection: selectSingle,
       },
