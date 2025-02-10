@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,6 +10,7 @@ import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraAssetComponent } from './account-extra-asset.component';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AssetCategory, AccountExtraAsset } from '../../../../model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountExtraAssetComponent', () => {
   let testingComponent: FinanceAccountExtraAssetTestFormComponent;
@@ -27,18 +28,16 @@ describe('AccountExtraAssetComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [AccountExtraAssetComponent, FinanceAccountExtraAssetTestFormComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [AccountExtraAssetComponent, FinanceAccountExtraAssetTestFormComponent],
-    }).compileComponents();
+        getTranslocoModule()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

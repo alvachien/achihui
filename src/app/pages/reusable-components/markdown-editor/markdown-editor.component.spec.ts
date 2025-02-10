@@ -23,7 +23,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MarkdownModule } from 'ngx-markdown';
 import { BehaviorSubject } from 'rxjs';
 
@@ -31,6 +31,7 @@ import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { AuthService } from '../../../services';
 import { UserAuthInfo } from '../../../../app/model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: ` <form [formGroup]="formGrp">
@@ -65,9 +66,8 @@ describe('MarkdownEditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        getTranslocoModule(),
+    declarations: [MarkdownEditorComponent, MarkdownEditorTestFormComponent],
+    imports: [getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
@@ -82,11 +82,9 @@ describe('MarkdownEditorComponent', () => {
         NzSwitchModule,
         NzLayoutModule,
         NzUploadModule,
-        MarkdownModule.forRoot(),
-      ],
-      declarations: [MarkdownEditorComponent, MarkdownEditorTestFormComponent],
-      providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }],
-    }).compileComponents();
+        MarkdownModule.forRoot()],
+    providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

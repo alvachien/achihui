@@ -8,7 +8,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -34,6 +34,7 @@ import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentRecurredMassCreateComponent', () => {
   let component: DocumentRecurredMassCreateComponent;
@@ -95,29 +96,28 @@ describe('DocumentRecurredMassCreateComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [
+        DocumentNormalMassCreateItemComponent,
+        MessageDialogComponent,
+        DocumentRecurredMassCreateComponent,
+    ],
+    imports: [FormsModule,
         FinanceUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
-        DocumentNormalMassCreateItemComponent,
-        MessageDialogComponent,
-        DocumentRecurredMassCreateComponent,
-      ],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

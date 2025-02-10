@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +11,7 @@ import { AuthService } from '../../../services';
 import { FakeDataHelper, getTranslocoModule } from '../../../../testing';
 import { BehaviorSubject } from 'rxjs';
 import { UserAuthInfo } from '../../../model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
@@ -28,19 +29,16 @@ describe('UserDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UserDetailComponent],
-      imports: [
-        NoopAnimationsModule,
-        HttpClientTestingModule,
+    declarations: [UserDetailComponent],
+    imports: [NoopAnimationsModule,
         NzDescriptionsModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NzPageHeaderModule,
-        getTranslocoModule(),
-      ],
-      providers: [{ provide: AuthService, useValue: authServiceStub }],
-    }).compileComponents();
+        getTranslocoModule()],
+    providers: [{ provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

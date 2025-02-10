@@ -8,7 +8,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,6 +28,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService 
 import { UserAuthInfo, Document } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentTransferCreateComponent', () => {
   let component: DocumentTransferCreateComponent;
@@ -82,25 +83,24 @@ describe('DocumentTransferCreateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [DocumentHeaderComponent, DocumentTransferCreateComponent, MessageDialogComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentHeaderComponent, DocumentTransferCreateComponent, MessageDialogComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         NzModalService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

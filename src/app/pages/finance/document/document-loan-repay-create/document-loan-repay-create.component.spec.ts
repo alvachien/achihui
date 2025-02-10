@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +27,7 @@ import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create.component';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentLoanRepayCreateComponent', () => {
   let component: DocumentLoanRepayCreateComponent;
@@ -96,22 +97,19 @@ describe('DocumentLoanRepayCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createloanrepay', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
+    declarations: [
         DocumentLoanRepayCreateComponent,
         MessageDialogComponent,
         UIAccountCtgyFilterExPipe,
         UIAccountStatusFilterPipe,
-      ],
-      providers: [
+    ],
+    imports: [RouterTestingModule,
+        FormsModule,
+        FinanceUIModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
@@ -119,8 +117,10 @@ describe('DocumentLoanRepayCreateComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

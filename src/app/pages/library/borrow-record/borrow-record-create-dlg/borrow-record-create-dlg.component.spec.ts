@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,6 +12,7 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { BorrowRecordCreateDlgComponent } from './borrow-record-create-dlg.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BorrowRecordCreateDlgComponent', () => {
   let component: BorrowRecordCreateDlgComponent;
@@ -44,34 +45,32 @@ describe('BorrowRecordCreateDlgComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [BorrowRecordCreateDlgComponent],
+    imports: [FormsModule,
         EventUIModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [BorrowRecordCreateDlgComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-          provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) =>
-            modalSvc.create({
-              nzClosable: true,
-              nzContent: 'test',
+            provide: NzModalRef,
+            useFactory: (modalSvc: NzModalService) => modalSvc.create({
+                nzClosable: true,
+                nzContent: 'test',
             }),
-          deps: [NzModalService],
+            deps: [NzModalService],
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

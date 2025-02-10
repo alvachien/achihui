@@ -8,7 +8,7 @@ import {
   inject,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -43,6 +43,7 @@ import {
 } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentDownpaymentCreateComponent', () => {
   let component: DocumentDownpaymentCreateComponent;
@@ -107,23 +108,20 @@ describe('DocumentDownpaymentCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
+    declarations: [
         AccountExtraDownpaymentComponent,
         DocumentHeaderComponent,
         DocumentItemsComponent,
         DocumentDownpaymentCreateComponent,
         MessageDialogComponent,
-      ],
-      providers: [
+    ],
+    imports: [RouterTestingModule,
+        FormsModule,
+        FinanceUIModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -131,8 +129,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

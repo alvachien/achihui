@@ -8,7 +8,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -29,6 +29,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService 
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -85,30 +86,29 @@ describe('DocumentNormalCreateComponent', () => {
     searchDocItemSpy = odataService.searchDocItem.and.returnValue(of({ contentList: [] }));
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-        ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
+    declarations: [
         DocumentHeaderComponent,
         DocumentItemsComponent,
         DocumentNormalCreateComponent,
         MessageDialogComponent,
-      ],
-      providers: [
+    ],
+    imports: [FormsModule,
+        FinanceUIModule,
+        NoopAnimationsModule,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

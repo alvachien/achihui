@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
@@ -17,6 +17,7 @@ import { SafeAny } from 'src/common';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import * as moment from 'moment';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemInsightComponent', () => {
   let component: DocumentItemInsightComponent;
@@ -62,9 +63,8 @@ describe('DocumentItemInsightComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [DocumentItemInsightComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         NzTransferModule,
         NzToolTipModule,
@@ -72,18 +72,18 @@ describe('DocumentItemInsightComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [ DocumentItemInsightComponent ],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ],
-    })
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(DocumentItemInsightComponent);

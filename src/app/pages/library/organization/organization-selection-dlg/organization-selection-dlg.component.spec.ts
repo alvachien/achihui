@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,6 +11,7 @@ import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/servi
 import { FakeDataHelper, getTranslocoModule } from 'src/testing';
 import { LibraryUIModule } from '../../library-ui.module';
 import { OrganizationSelectionDlgComponent } from './organization-selection-dlg.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OrganizationSelectionDlgComponent', () => {
   let component: OrganizationSelectionDlgComponent;
@@ -40,32 +41,30 @@ describe('OrganizationSelectionDlgComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [OrganizationSelectionDlgComponent],
+    imports: [FormsModule,
         LibraryUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [OrganizationSelectionDlgComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-          provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) =>
-            modalSvc.create({
-              nzClosable: true,
-              nzContent: 'test',
+            provide: NzModalRef,
+            useFactory: (modalSvc: NzModalService) => modalSvc.create({
+                nzClosable: true,
+                nzContent: 'test',
             }),
-          deps: [NzModalService],
+            deps: [NzModalService],
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

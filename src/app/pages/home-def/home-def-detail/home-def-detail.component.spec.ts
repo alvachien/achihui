@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,6 +26,7 @@ import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
@@ -56,9 +57,8 @@ describe('HomeDefDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [HomeDefDetailComponent, MessageDialogComponent],
+    imports: [FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -74,18 +74,18 @@ describe('HomeDefDetailComponent', () => {
         NzDividerModule,
         NzCheckboxModule,
         NzButtonModule,
-        getTranslocoModule(),
-      ],
-      declarations: [HomeDefDetailComponent, MessageDialogComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: finService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         Overlay,
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

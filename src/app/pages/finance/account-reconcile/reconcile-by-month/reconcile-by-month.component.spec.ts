@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,6 +28,7 @@ import { FakeDataHelper, asyncData, getTranslocoModule } from 'src/testing';
 import { ReconcileByMonthComponent } from './reconcile-by-month.component';
 import { SafeAny } from 'src/common';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReconcileByMonthComponent', () => {
   let component: ReconcileByMonthComponent;
@@ -69,9 +70,8 @@ describe('ReconcileByMonthComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [ReconcileByMonthComponent],
+    imports: [FormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
@@ -91,18 +91,18 @@ describe('ReconcileByMonthComponent', () => {
         NzFormModule,
         NzElementPatchModule,
         NzDatePickerModule,
-        getTranslocoModule(),
-      ],
-      declarations: [ReconcileByMonthComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         UIStatusService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ReconcileByMonthComponent);
     component = fixture.componentInstance;

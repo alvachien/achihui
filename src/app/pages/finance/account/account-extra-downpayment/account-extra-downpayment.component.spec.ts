@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
@@ -24,6 +24,7 @@ import {
   RepeatedDatesWithAmountAPIOutput,
 } from '../../../../model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountExtraDownpaymentComponent', () => {
   let testcomponent: FinanceAccountExtraDPTestFormComponent;
@@ -55,27 +56,26 @@ describe('AccountExtraDownpaymentComponent', () => {
   beforeEach(waitForAsync(() => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [AccountExtraDownpaymentComponent, FinanceAccountExtraDPTestFormComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [AccountExtraDownpaymentComponent, FinanceAccountExtraDPTestFormComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

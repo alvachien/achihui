@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,6 +15,7 @@ import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService 
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { UserAuthInfo } from 'src/app/model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentChangeDespDialogComponent', () => {
   let component: DocumentChangeDespDialogComponent;
@@ -42,18 +43,15 @@ describe('DocumentChangeDespDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [DocumentChangeDespDialogComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentChangeDespDialogComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -61,16 +59,17 @@ describe('DocumentChangeDespDialogComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
         {
-          provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) =>
-            modalSvc.create({
-              nzClosable: true,
-              nzContent: DocumentChangeDespDialogComponent,
+            provide: NzModalRef,
+            useFactory: (modalSvc: NzModalService) => modalSvc.create({
+                nzClosable: true,
+                nzContent: DocumentChangeDespDialogComponent,
             }),
-          deps: [NzModalService],
+            deps: [NzModalService],
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

@@ -10,7 +10,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
@@ -27,6 +27,7 @@ import { MarkdownEditorComponent } from '../../../reusable-components/markdown-e
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;
@@ -56,9 +57,8 @@ describe('PostDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        getTranslocoModule(),
+    declarations: [MarkdownEditorComponent, PostDetailComponent],
+    imports: [getTranslocoModule(),
         FormsModule,
         BlogUIModule,
         ReactiveFormsModule,
@@ -67,17 +67,17 @@ describe('PostDetailComponent', () => {
         BrowserDynamicTestingModule,
         NzResizableModule,
         NzCodeEditorModule,
-        MarkdownModule.forRoot(),
-      ],
-      declarations: [MarkdownEditorComponent, PostDetailComponent],
-      providers: [
+        MarkdownModule.forRoot()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: BlogOdataService, useValue: storageService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

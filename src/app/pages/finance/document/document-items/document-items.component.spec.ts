@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
@@ -29,6 +29,7 @@ import {
   financeDocTypeNormal,
 } from '../../../../model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemsComponent', () => {
   let component: DocumentItemsComponent;
@@ -58,23 +59,22 @@ describe('DocumentItemsComponent', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
+    declarations: [DocumentItemsComponent],
+    imports: [NoopAnimationsModule,
         RouterTestingModule,
-        HttpClientTestingModule,
         FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentItemsComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

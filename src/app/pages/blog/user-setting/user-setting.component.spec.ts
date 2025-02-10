@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,6 +12,7 @@ import { UserSettingComponent } from './user-setting.component';
 import { AuthService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UserSettingComponent', () => {
   let component: UserSettingComponent;
@@ -34,18 +35,15 @@ describe('UserSettingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        getTranslocoModule(),
+    declarations: [UserSettingComponent],
+    imports: [getTranslocoModule(),
         FormsModule,
         BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
-        RouterTestingModule,
-      ],
-      declarations: [UserSettingComponent],
-      providers: [{ provide: BlogOdataService, useValue: storageService }, NzModalService],
-    }).compileComponents();
+        RouterTestingModule],
+    providers: [{ provide: BlogOdataService, useValue: storageService }, NzModalService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

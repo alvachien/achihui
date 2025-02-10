@@ -8,7 +8,7 @@ import {
   inject,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -36,6 +36,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService 
 import { UserAuthInfo, Document, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
@@ -96,22 +97,19 @@ describe('DocumentLoanCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createbrwfrm', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
+    declarations: [
         DocumentHeaderComponent,
         AccountExtraLoanComponent,
         DocumentLoanCreateComponent,
         MessageDialogComponent,
-      ],
-      providers: [
+    ],
+    imports: [RouterTestingModule,
+        FormsModule,
+        FinanceUIModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
@@ -119,8 +117,10 @@ describe('DocumentLoanCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

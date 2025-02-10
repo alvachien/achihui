@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
@@ -17,6 +17,7 @@ import { DocumentItemViewComponent } from '../document-item-view/document-item-v
 import { DocumentItemSearchComponent } from './document-item-search.component';
 import { ReusableComponentsModule } from '../../reusable-components/reusable-components.module';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemSearchComponent', () => {
   let component: DocumentItemSearchComponent;
@@ -76,27 +77,26 @@ describe('DocumentItemSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
+    imports: [FormsModule,
         FinanceUIModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         ReusableComponentsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

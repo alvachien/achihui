@@ -8,7 +8,7 @@ import {
   flush,
   inject,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,6 +22,7 @@ import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PostListComponent', () => {
   let component: PostListComponent;
@@ -45,15 +46,17 @@ describe('PostListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NoopAnimationsModule, BlogUIModule, getTranslocoModule(), RouterTestingModule],
-      declarations: [PostListComponent],
-      providers: [
+    declarations: [PostListComponent],
+    imports: [NoopAnimationsModule, BlogUIModule, getTranslocoModule(), RouterTestingModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
         { provide: BlogOdataService, useValue: storageService },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

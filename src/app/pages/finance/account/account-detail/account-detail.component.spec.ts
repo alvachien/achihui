@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -26,6 +26,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, financeAccountCategoryCash } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
@@ -74,24 +75,21 @@ describe('AccountDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
+    declarations: [
         AccountDetailComponent,
         AccountExtraAssetComponent,
         AccountExtraDownpaymentComponent,
         AccountExtraLoanComponent,
         MessageDialogComponent,
-      ],
-      providers: [
+    ],
+    imports: [FormsModule,
+        FinanceUIModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        BrowserDynamicTestingModule,
+        RouterTestingModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -99,8 +97,10 @@ describe('AccountDetailComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

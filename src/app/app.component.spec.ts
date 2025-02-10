@@ -7,7 +7,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,6 +24,7 @@ import { AppComponent } from './app.component';
 import { getTranslocoModule } from '../testing';
 import { AuthService, UIStatusService } from '../app/services';
 import { UserAuthInfo } from './model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -49,9 +50,8 @@ describe('AppComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+    declarations: [AppComponent],
+    imports: [RouterTestingModule,
         NzLayoutModule,
         NzMenuModule,
         NzIconModule,
@@ -60,15 +60,15 @@ describe('AppComponent', () => {
         NzTableModule,
         NzModalModule,
         NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [AppComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

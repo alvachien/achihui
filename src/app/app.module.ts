@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
@@ -42,80 +42,74 @@ import { AuthConfigModule } from './auth/auth-config.module';
 registerLocaleData(zh);
 registerLocaleData(en);
 
-@NgModule({
-  declarations: [AppComponent, MessageDialogComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    IconsProviderModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslocoModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzIconModule,
-    NzInputModule,
-    NzDropDownModule,
-    NzTableModule,
-    NzModalModule,
-    NgxEchartsModule.forRoot({
-      echarts,
-    }),
-    MarkdownModule.forRoot({
-      markedOptions: {
-        provide: MarkedOptions,
-        useValue: {
-          gfm: true,
-          breaks: true,
-          pedantic: false,
-          smartLists: true,
-          smartypants: false,
+@NgModule({ declarations: [AppComponent, MessageDialogComponent],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        IconsProviderModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        TranslocoModule,
+        NzLayoutModule,
+        NzMenuModule,
+        NzIconModule,
+        NzInputModule,
+        NzDropDownModule,
+        NzTableModule,
+        NzModalModule,
+        NgxEchartsModule.forRoot({
+            echarts,
+        }),
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    gfm: true,
+                    breaks: true,
+                    pedantic: false,
+                    smartLists: true,
+                    smartypants: false,
+                },
+            },
+        }),
+        AuthConfigModule], providers: [
+        //{ provide: NZ_I18N, useValue: en_US },
+        AppInitializerProvider,
+        {
+            provide: NZ_I18N,
+            useFactory: (localId: string) => {
+                switch (localId) {
+                    case 'en':
+                        return en_US;
+                    /** 与 angular.json i18n/locales 配置一致 **/
+                    case 'zh':
+                        return zh_CN;
+                    default:
+                        return en_US;
+                }
+            },
+            deps: [LOCALE_ID],
         },
-      },
-    }),
-    AuthConfigModule,
-  ],
-  providers: [
-    //{ provide: NZ_I18N, useValue: en_US },
-    AppInitializerProvider,
-    {
-      provide: NZ_I18N,
-      useFactory: (localId: string) => {
-        switch (localId) {
-          case 'en':
-            return en_US;
-          /** 与 angular.json i18n/locales 配置一致 **/
-          case 'zh':
-            return zh_CN;
-          default:
-            return en_US;
-        }
-      },
-      deps: [LOCALE_ID],
-    },
-    AuthService,
-    AuthGuardService,
-    HomeChoseGuardService,
-    CanDeactivateGuardService,
-    UIStatusService,
-    LanguageOdataService,
-    HomeDefOdataService,
-    FinanceOdataService,
-    NzModalService,
-    BlogOdataService,
-    {
-      provide: TRANSLOCO_CONFIG,
-      useValue: translocoConfig({
-        availableLangs: ['en', 'zh'],
-        defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
-        reRenderOnLangChange: true,
-        prodMode: environment.production,
-      }),
-    },
-    translocoLoader,
-  ],
-  bootstrap: [AppComponent],
-})
+        AuthService,
+        AuthGuardService,
+        HomeChoseGuardService,
+        CanDeactivateGuardService,
+        UIStatusService,
+        LanguageOdataService,
+        HomeDefOdataService,
+        FinanceOdataService,
+        NzModalService,
+        BlogOdataService,
+        {
+            provide: TRANSLOCO_CONFIG,
+            useValue: translocoConfig({
+                availableLangs: ['en', 'zh'],
+                defaultLang: environment.DefaultLanguage ? environment.DefaultLanguage : 'en',
+                reRenderOnLangChange: true,
+                prodMode: environment.production,
+            }),
+        },
+        translocoLoader,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {}

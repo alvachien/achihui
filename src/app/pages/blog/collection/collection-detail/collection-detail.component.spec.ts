@@ -2,7 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed, tick, fakeAsync } from '@angul
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
@@ -15,6 +15,7 @@ import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CollectionDetailComponent', () => {
   let component: CollectionDetailComponent;
@@ -42,25 +43,24 @@ describe('CollectionDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        getTranslocoModule(),
+    declarations: [CollectionDetailComponent],
+    imports: [getTranslocoModule(),
         FormsModule,
         BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        BrowserDynamicTestingModule,
-      ],
-      declarations: [CollectionDetailComponent],
-      providers: [
+        BrowserDynamicTestingModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         UIStatusService,
         { provide: BlogOdataService, useValue: storageService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

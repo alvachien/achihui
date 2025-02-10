@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService 
 import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, momentDateFormat } from 'src/app/model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentAssetValueChangeCreateComponent', () => {
   let component: DocumentAssetValueChangeCreateComponent;
@@ -88,31 +89,30 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        getTranslocoModule(),
-        RouterTestingModule,
-      ],
-      declarations: [
+    declarations: [
         UIAccountCtgyFilterExPipe,
         UIAccountStatusFilterPipe,
         DocumentHeaderComponent,
         DocumentAssetValueChangeCreateComponent,
         MessageDialogComponent,
-      ],
-      providers: [
+    ],
+    imports: [FormsModule,
+        FinanceUIModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        getTranslocoModule(),
+        RouterTestingModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

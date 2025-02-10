@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 import * as moment from 'moment';
 
@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { EventHabit, EventHabitDetail, BaseListModel, GeneralEvent } from '../model';
 import { FakeDataHelper } from '../../testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
@@ -28,13 +29,15 @@ describe('EventStorageService', () => {
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         EventStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(EventStorageService);

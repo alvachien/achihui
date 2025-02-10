@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
@@ -26,6 +26,7 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { AuthService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HomeDefListComponent', () => {
   let component: HomeDefListComponent;
@@ -54,9 +55,8 @@ describe('HomeDefListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        HttpClientTestingModule,
+    declarations: [HomeDefListComponent, MessageDialogComponent],
+    imports: [NoopAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
@@ -71,18 +71,18 @@ describe('HomeDefListComponent', () => {
         NzDividerModule,
         NzCheckboxModule,
         NzButtonModule,
-        getTranslocoModule(),
-      ],
-      declarations: [HomeDefListComponent, MessageDialogComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         // { provide: UIStatusService, useValue: uiServiceStub },
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         Overlay,
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

@@ -6,7 +6,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -17,6 +17,7 @@ import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../..
 import { LanguageComponent } from './language.component';
 import { LanguageOdataService } from '../../services';
 import { MessageDialogComponent } from '../message-dialog';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -36,9 +37,8 @@ describe('LanguageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    declarations: [LanguageComponent, MessageDialogComponent],
+    imports: [FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
@@ -48,11 +48,9 @@ describe('LanguageComponent', () => {
         NzBreadCrumbModule,
         NzPageHeaderModule,
         NzSwitchModule,
-        getTranslocoModule(),
-      ],
-      declarations: [LanguageComponent, MessageDialogComponent],
-      providers: [{ provide: LanguageOdataService, useValue: langService }, Overlay, NzModalService],
-    }).compileComponents();
+        getTranslocoModule()],
+    providers: [{ provide: LanguageOdataService, useValue: langService }, Overlay, NzModalService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

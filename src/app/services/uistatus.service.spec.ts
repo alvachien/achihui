@@ -1,17 +1,18 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslocoService } from '@ngneat/transloco';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { getTranslocoModule } from '../../testing';
 import { UIStatusService } from './uistatus.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UIStatusService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, getTranslocoModule()],
-      providers: [UIStatusService, TranslocoService],
-    });
+    imports: [RouterTestingModule, getTranslocoModule()],
+    providers: [UIStatusService, TranslocoService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
   });
 
   it('should be created', inject([UIStatusService], (service: UIStatusService) => {
