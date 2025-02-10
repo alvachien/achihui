@@ -104,16 +104,16 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "achihui:build",
             "port": 29521,
-            "host": "localhost"
+            "host": "localhost",
+            "buildTarget": "achihui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "achihui:build:production"
+              "buildTarget": "achihui:build:production"
             },
             "development": {
-              "browserTarget": "achihui:build:development"
+              "buildTarget": "achihui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -121,7 +121,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "achihui:build"
+            "buildTarget": "achihui:build"
           }
         },
         "test": {
