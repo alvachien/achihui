@@ -6,9 +6,10 @@ import { FinanceOdataService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-account-change-name-dialog',
-  templateUrl: './account-change-name-dialog.component.html',
-  styleUrls: ['./account-change-name-dialog.component.less'],
+    selector: 'hih-account-change-name-dialog',
+    templateUrl: './account-change-name-dialog.component.html',
+    styleUrls: ['./account-change-name-dialog.component.less'],
+    standalone: false
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum

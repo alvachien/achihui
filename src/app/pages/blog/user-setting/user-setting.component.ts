@@ -10,9 +10,10 @@ import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '../../../mode
 import { BlogOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-user-setting',
-  templateUrl: './user-setting.component.html',
-  styleUrls: ['./user-setting.component.less'],
+    selector: 'hih-user-setting',
+    templateUrl: './user-setting.component.html',
+    styleUrls: ['./user-setting.component.less'],
+    standalone: false
 })
 export class UserSettingComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

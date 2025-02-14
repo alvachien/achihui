@@ -8,9 +8,10 @@ import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-person-role-list',
-  templateUrl: './person-role-list.component.html',
-  styleUrls: ['./person-role-list.component.less'],
+    selector: 'hih-person-role-list',
+    templateUrl: './person-role-list.component.html',
+    styleUrls: ['./person-role-list.component.less'],
+    standalone: false
 })
 export class PersonRoleListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -19,9 +19,10 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'hih-fin-order-list',
-  templateUrl: './order-list.component.html',
-  styleUrls: ['./order-list.component.less'],
+    selector: 'hih-fin-order-list',
+    templateUrl: './order-list.component.html',
+    styleUrls: ['./order-list.component.less'],
+    standalone: false
 })
 export class OrderListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

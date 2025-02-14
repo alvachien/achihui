@@ -39,9 +39,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-document-transfer-create',
-  templateUrl: './document-transfer-create.component.html',
-  styleUrls: ['./document-transfer-create.component.less'],
+    selector: 'hih-document-transfer-create',
+    templateUrl: './document-transfer-create.component.html',
+    styleUrls: ['./document-transfer-create.component.less'],
+    standalone: false
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

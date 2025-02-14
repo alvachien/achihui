@@ -11,9 +11,10 @@ import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } fro
 import { BlogOdataService } from '../../../../services';
 
 @Component({
-  selector: 'hih-blog-collection-detail',
-  templateUrl: './collection-detail.component.html',
-  styleUrls: ['./collection-detail.component.less'],
+    selector: 'hih-blog-collection-detail',
+    templateUrl: './collection-detail.component.html',
+    styleUrls: ['./collection-detail.component.less'],
+    standalone: false
 })
 export class CollectionDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

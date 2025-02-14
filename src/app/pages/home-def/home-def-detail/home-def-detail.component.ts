@@ -21,9 +21,10 @@ import {
 import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-home-def-detail',
-  templateUrl: './home-def-detail.component.html',
-  styleUrls: ['./home-def-detail.component.less'],
+    selector: 'hih-home-def-detail',
+    templateUrl: './home-def-detail.component.html',
+    styleUrls: ['./home-def-detail.component.less'],
+    standalone: false
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

@@ -29,9 +29,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-plan-detail',
-  templateUrl: './plan-detail.component.html',
-  styleUrls: ['./plan-detail.component.less'],
+    selector: 'hih-plan-detail',
+    templateUrl: './plan-detail.component.html',
+    styleUrls: ['./plan-detail.component.less'],
+    standalone: false
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

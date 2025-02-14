@@ -21,9 +21,10 @@ import { AccountChangeNameDialogComponent } from '../account-change-name-dialog'
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-account-list',
-  templateUrl: './account-list.component.html',
-  styleUrls: ['./account-list.component.less'],
+    selector: 'hih-fin-account-list',
+    templateUrl: './account-list.component.html',
+    styleUrls: ['./account-list.component.less'],
+    standalone: false
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

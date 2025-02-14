@@ -17,21 +17,22 @@ import { SafeAny } from 'src/common';
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '../../../../model';
 
 @Component({
-  selector: 'hih-finance-account-extra-asset',
-  templateUrl: './account-extra-asset.component.html',
-  styleUrls: ['./account-extra-asset.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => AccountExtraAssetComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => AccountExtraAssetComponent),
-      multi: true,
-    },
-  ],
+    selector: 'hih-finance-account-extra-asset',
+    templateUrl: './account-extra-asset.component.html',
+    styleUrls: ['./account-extra-asset.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AccountExtraAssetComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => AccountExtraAssetComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

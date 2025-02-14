@@ -47,9 +47,10 @@ import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-document-loan-create',
-  templateUrl: './document-loan-create.component.html',
-  styleUrls: ['./document-loan-create.component.less'],
+    selector: 'hih-document-loan-create',
+    templateUrl: './document-loan-create.component.html',
+    styleUrls: ['./document-loan-create.component.less'],
+    standalone: false
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

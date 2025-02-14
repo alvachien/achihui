@@ -23,9 +23,10 @@ import { BlogOdataService } from '../../../../services';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-blog-post-detail',
-  templateUrl: './post-detail.component.html',
-  styleUrls: ['./post-detail.component.less'],
+    selector: 'hih-blog-post-detail',
+    templateUrl: './post-detail.component.html',
+    styleUrls: ['./post-detail.component.less'],
+    standalone: false
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

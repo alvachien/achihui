@@ -6,9 +6,10 @@ import { BookCategory } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-book-category-selection-dlg',
-  templateUrl: './book-category-selection-dlg.component.html',
-  styleUrls: ['./book-category-selection-dlg.component.less'],
+    selector: 'hih-book-category-selection-dlg',
+    templateUrl: './book-category-selection-dlg.component.html',
+    styleUrls: ['./book-category-selection-dlg.component.less'],
+    standalone: false
 })
 export class BookCategorySelectionDlgComponent implements OnInit {
   checked = false;

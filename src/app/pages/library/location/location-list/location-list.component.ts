@@ -9,9 +9,10 @@ import { ConsoleLogTypeEnum, Location, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-location-list',
-  templateUrl: './location-list.component.html',
-  styleUrls: ['./location-list.component.less'],
+    selector: 'hih-location-list',
+    templateUrl: './location-list.component.html',
+    styleUrls: ['./location-list.component.less'],
+    standalone: false
 })
 export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -34,22 +34,23 @@ import { translate } from '@ngneat/transloco';
 import { SafeAny } from 'src/common';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'ac-markdown-editor',
-  templateUrl: './markdown-editor.component.html',
-  styleUrls: ['./markdown-editor.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => MarkdownEditorComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => MarkdownEditorComponent),
-      multi: true,
-    },
-  ],
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'ac-markdown-editor',
+    templateUrl: './markdown-editor.component.html',
+    styleUrls: ['./markdown-editor.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MarkdownEditorComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => MarkdownEditorComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() editorID = '';

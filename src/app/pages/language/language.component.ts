@@ -10,9 +10,10 @@ import { LanguageOdataService } from '../../services';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-  selector: 'hih-language',
-  templateUrl: './language.component.html',
-  styleUrls: ['./language.component.less'],
+    selector: 'hih-language',
+    templateUrl: './language.component.html',
+    styleUrls: ['./language.component.less'],
+    standalone: false
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

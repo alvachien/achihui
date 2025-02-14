@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 import { HomeDefOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-finance-config',
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.less'],
+    selector: 'hih-finance-config',
+    templateUrl: './config.component.html',
+    styleUrls: ['./config.component.less'],
+    standalone: false
 })
 export class ConfigComponent {
   constructor(private homeService: HomeDefOdataService) {}

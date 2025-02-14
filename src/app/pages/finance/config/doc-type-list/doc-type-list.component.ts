@@ -8,9 +8,10 @@ import { DocumentType, ModelUtility, ConsoleLogTypeEnum } from '../../../../mode
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: 'hih-fin-doc-type-list',
-  templateUrl: './doc-type-list.component.html',
-  styleUrls: ['./doc-type-list.component.less'],
+    selector: 'hih-fin-doc-type-list',
+    templateUrl: './doc-type-list.component.html',
+    styleUrls: ['./doc-type-list.component.less'],
+    standalone: false
 })
 export class DocTypeListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

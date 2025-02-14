@@ -9,9 +9,10 @@ import { ModelUtility, ConsoleLogTypeEnum, TranType } from '../../../../model';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: 'hih-fin-tran-type-hierarchy',
-  templateUrl: './tran-type-hierarchy.component.html',
-  styleUrls: ['./tran-type-hierarchy.component.less'],
+    selector: 'hih-fin-tran-type-hierarchy',
+    templateUrl: './tran-type-hierarchy.component.html',
+    styleUrls: ['./tran-type-hierarchy.component.less'],
+    standalone: false
 })
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

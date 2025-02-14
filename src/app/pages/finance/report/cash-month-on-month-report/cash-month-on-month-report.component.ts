@@ -26,9 +26,10 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-cash-month-on-month-report',
-  templateUrl: './cash-month-on-month-report.component.html',
-  styleUrls: ['./cash-month-on-month-report.component.less'],
+    selector: 'hih-cash-month-on-month-report',
+    templateUrl: './cash-month-on-month-report.component.html',
+    styleUrls: ['./cash-month-on-month-report.component.less'],
+    standalone: false
 })
 export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

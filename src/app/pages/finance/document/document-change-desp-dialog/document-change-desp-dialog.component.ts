@@ -4,9 +4,10 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { FinanceOdataService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-document-change-desp-dialog',
-  templateUrl: './document-change-desp-dialog.component.html',
-  styleUrls: ['./document-change-desp-dialog.component.less'],
+    selector: 'hih-document-change-desp-dialog',
+    templateUrl: './document-change-desp-dialog.component.html',
+    styleUrls: ['./document-change-desp-dialog.component.less'],
+    standalone: false
 })
 export class DocumentChangeDespDialogComponent implements OnInit {
   // Header forum

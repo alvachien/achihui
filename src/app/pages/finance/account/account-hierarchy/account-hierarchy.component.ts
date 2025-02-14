@@ -42,9 +42,10 @@ interface ISettleAccountDetail {
 }
 
 @Component({
-  selector: 'hih-fin-account-hierarchy',
-  templateUrl: './account-hierarchy.component.html',
-  styleUrls: ['./account-hierarchy.component.less'],
+    selector: 'hih-fin-account-hierarchy',
+    templateUrl: './account-hierarchy.component.html',
+    styleUrls: ['./account-hierarchy.component.less'],
+    standalone: false
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -32,9 +32,10 @@ import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../..
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-document-normal-mass-create',
-  templateUrl: './document-normal-mass-create.component.html',
-  styleUrls: ['./document-normal-mass-create.component.less'],
+    selector: 'hih-document-normal-mass-create',
+    templateUrl: './document-normal-mass-create.component.html',
+    styleUrls: ['./document-normal-mass-create.component.less'],
+    standalone: false
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

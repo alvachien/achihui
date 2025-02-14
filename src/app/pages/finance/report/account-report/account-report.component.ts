@@ -24,9 +24,10 @@ import { NumberUtility } from 'actslib';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-finance-report-account',
-  templateUrl: './account-report.component.html',
-  styleUrls: ['./account-report.component.less'],
+    selector: 'hih-finance-report-account',
+    templateUrl: './account-report.component.html',
+    styleUrls: ['./account-report.component.less'],
+    standalone: false
 })
 export class AccountReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

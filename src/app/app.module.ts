@@ -43,7 +43,8 @@ registerLocaleData(zh);
 registerLocaleData(en);
 
 @NgModule({ declarations: [AppComponent, MessageDialogComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent], imports: [
+        BrowserModule,
         AppRoutingModule,
         IconsProviderModule,
         FormsModule,

@@ -23,9 +23,10 @@ import { HomeDefOdataService, EventStorageService, FinanceOdataService } from '.
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-recur-event-detail',
-  templateUrl: './recur-event-detail.component.html',
-  styleUrls: ['./recur-event-detail.component.less'],
+    selector: 'hih-recur-event-detail',
+    templateUrl: './recur-event-detail.component.html',
+    styleUrls: ['./recur-event-detail.component.less'],
+    standalone: false
 })
 export class RecurEventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

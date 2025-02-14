@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-credits',
-  templateUrl: './credits.component.html',
-  styleUrls: ['./credits.component.less'],
+    selector: 'hih-credits',
+    templateUrl: './credits.component.html',
+    styleUrls: ['./credits.component.less'],
+    standalone: false
 })
 export class CreditsComponent {
   creditApp: SafeAny[] = [

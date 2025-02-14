@@ -56,9 +56,10 @@ class DocumentCountByDateRange {
 }
 
 @Component({
-  selector: 'hih-document-recurred-mass-create',
-  templateUrl: './document-recurred-mass-create.component.html',
-  styleUrls: ['./document-recurred-mass-create.component.less'],
+    selector: 'hih-document-recurred-mass-create',
+    templateUrl: './document-recurred-mass-create.component.html',
+    styleUrls: ['./document-recurred-mass-create.component.less'],
+    standalone: false
 })
 export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

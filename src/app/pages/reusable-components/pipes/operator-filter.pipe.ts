@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../../../model';
 
 @Pipe({
-  name: 'operatorFilter',
+    name: 'operatorFilter',
+    standalone: false
 })
 export class OperatorFilterPipe implements PipeTransform {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

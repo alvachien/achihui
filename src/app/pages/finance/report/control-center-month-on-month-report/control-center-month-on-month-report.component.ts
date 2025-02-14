@@ -19,9 +19,10 @@ import { FinanceOdataService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-control-center-month-on-month-report',
-  templateUrl: './control-center-month-on-month-report.component.html',
-  styleUrls: ['./control-center-month-on-month-report.component.less'],
+    selector: 'hih-control-center-month-on-month-report',
+    templateUrl: './control-center-month-on-month-report.component.html',
+    styleUrls: ['./control-center-month-on-month-report.component.less'],
+    standalone: false
 })
 export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   constructor(private odataService: FinanceOdataService, private modalService: NzModalService) {

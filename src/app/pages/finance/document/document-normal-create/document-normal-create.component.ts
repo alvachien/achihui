@@ -35,9 +35,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-normal-create',
-  templateUrl: './document-normal-create.component.html',
-  styleUrls: ['./document-normal-create.component.less'],
+    selector: 'hih-fin-document-normal-create',
+    templateUrl: './document-normal-create.component.html',
+    styleUrls: ['./document-normal-create.component.less'],
+    standalone: false
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

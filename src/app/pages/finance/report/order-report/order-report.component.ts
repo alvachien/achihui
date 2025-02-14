@@ -21,9 +21,10 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-finance-report-order',
-  templateUrl: './order-report.component.html',
-  styleUrls: ['./order-report.component.less'],
+    selector: 'hih-finance-report-order',
+    templateUrl: './order-report.component.html',
+    styleUrls: ['./order-report.component.less'],
+    standalone: false
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

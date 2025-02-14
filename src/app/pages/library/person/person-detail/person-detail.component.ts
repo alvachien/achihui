@@ -11,9 +11,10 @@ import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole }
 import { HomeDefOdataService, LibraryStorageService } from '../../../../services';
 
 @Component({
-  selector: 'hih-person-detail',
-  templateUrl: './person-detail.component.html',
-  styleUrls: ['./person-detail.component.less'],
+    selector: 'hih-person-detail',
+    templateUrl: './person-detail.component.html',
+    styleUrls: ['./person-detail.component.less'],
+    standalone: false
 })
 export class PersonDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

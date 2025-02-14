@@ -26,21 +26,22 @@ import {
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-header',
-  templateUrl: './document-header.component.html',
-  styleUrls: ['./document-header.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DocumentHeaderComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => DocumentHeaderComponent),
-      multi: true,
-    },
-  ],
+    selector: 'hih-fin-document-header',
+    templateUrl: './document-header.component.html',
+    styleUrls: ['./document-header.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DocumentHeaderComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => DocumentHeaderComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

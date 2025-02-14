@@ -31,21 +31,22 @@ import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../..
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-finance-account-extra-loan',
-  templateUrl: './account-extra-loan.component.html',
-  styleUrls: ['./account-extra-loan.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => AccountExtraLoanComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => AccountExtraLoanComponent),
-      multi: true,
-    },
-  ],
+    selector: 'hih-finance-account-extra-loan',
+    templateUrl: './account-extra-loan.component.html',
+    styleUrls: ['./account-extra-loan.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AccountExtraLoanComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => AccountExtraLoanComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

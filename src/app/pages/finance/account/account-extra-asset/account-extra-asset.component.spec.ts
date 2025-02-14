@@ -162,12 +162,13 @@ describe('AccountExtraAssetComponent', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-asset formControlName="infoControl" [arAssetCategories]="arAssetCategories">
       </hih-finance-account-extra-asset>
     </form>
   `,
+    standalone: false
 })
 export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: UntypedFormGroup;

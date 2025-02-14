@@ -22,9 +22,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-order-detail',
-  templateUrl: './order-detail.component.html',
-  styleUrls: ['./order-detail.component.less'],
+    selector: 'hih-fin-order-detail',
+    templateUrl: './order-detail.component.html',
+    styleUrls: ['./order-detail.component.less'],
+    standalone: false
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

@@ -8,9 +8,10 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { FinanceOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-finance-currency',
-  templateUrl: './currency.component.html',
-  styleUrls: ['./currency.component.less'],
+    selector: 'hih-finance-currency',
+    templateUrl: './currency.component.html',
+    styleUrls: ['./currency.component.less'],
+    standalone: false
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

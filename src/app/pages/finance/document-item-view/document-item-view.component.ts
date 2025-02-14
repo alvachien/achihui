@@ -19,9 +19,10 @@ import {
 } from '../../../model';
 
 @Component({
-  selector: 'hih-fin-document-item-view',
-  templateUrl: './document-item-view.component.html',
-  styleUrls: ['./document-item-view.component.less'],
+    selector: 'hih-fin-document-item-view',
+    templateUrl: './document-item-view.component.html',
+    styleUrls: ['./document-item-view.component.less'],
+    standalone: false
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

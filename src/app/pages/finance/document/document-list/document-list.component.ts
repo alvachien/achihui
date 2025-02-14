@@ -36,9 +36,10 @@ import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialo
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-list',
-  templateUrl: './document-list.component.html',
-  styleUrls: ['./document-list.component.less'],
+    selector: 'hih-fin-document-list',
+    templateUrl: './document-list.component.html',
+    styleUrls: ['./document-list.component.less'],
+    standalone: false
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

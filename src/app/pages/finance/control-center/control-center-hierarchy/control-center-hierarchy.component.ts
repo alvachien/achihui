@@ -17,9 +17,10 @@ import {
 } from '../../../../model';
 
 @Component({
-  selector: 'hih-fin-control-center-hierarchy',
-  templateUrl: './control-center-hierarchy.component.html',
-  styleUrls: ['./control-center-hierarchy.component.less'],
+    selector: 'hih-fin-control-center-hierarchy',
+    templateUrl: './control-center-hierarchy.component.html',
+    styleUrls: ['./control-center-hierarchy.component.less'],
+    standalone: false
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

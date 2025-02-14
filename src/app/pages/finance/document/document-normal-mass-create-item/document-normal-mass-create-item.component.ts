@@ -4,9 +4,10 @@ import { UntypedFormGroup } from '@angular/forms';
 import { UIAccountForSelection, UIOrderForSelection, ControlCenter, TranType } from '../../../../model';
 
 @Component({
-  selector: 'hih-document-normal-mass-create-item',
-  templateUrl: './document-normal-mass-create-item.component.html',
-  styleUrls: ['./document-normal-mass-create-item.component.less'],
+    selector: 'hih-document-normal-mass-create-item',
+    templateUrl: './document-normal-mass-create-item.component.html',
+    styleUrls: ['./document-normal-mass-create-item.component.less'],
+    standalone: false
 })
 export class DocumentNormalMassCreateItemComponent {
   @Input()

@@ -6,9 +6,10 @@ import { Person } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-person-selection-dlg',
-  templateUrl: './person-selection-dlg.component.html',
-  styleUrls: ['./person-selection-dlg.component.less'],
+    selector: 'hih-person-selection-dlg',
+    templateUrl: './person-selection-dlg.component.html',
+    styleUrls: ['./person-selection-dlg.component.less'],
+    standalone: false
 })
 export class PersonSelectionDlgComponent implements OnInit {
   checked = false;

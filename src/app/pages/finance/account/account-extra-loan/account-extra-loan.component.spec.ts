@@ -369,7 +369,7 @@ describe('AccountExtraLoanComponent', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-loan
         formControlName="extraControl"
@@ -381,6 +381,7 @@ describe('AccountExtraLoanComponent', () => {
       </hih-finance-account-extra-loan>
     </form>
   `,
+    standalone: false
 })
 export class AccountExtraLoanTestFormComponent {
   public formGroup: UntypedFormGroup;

@@ -9,9 +9,10 @@ import { LibraryStorageService } from 'src/app/services';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
 @Component({
-  selector: 'hih-borrow-record-create-dlg',
-  templateUrl: './borrow-record-create-dlg.component.html',
-  styleUrls: ['./borrow-record-create-dlg.component.less'],
+    selector: 'hih-borrow-record-create-dlg',
+    templateUrl: './borrow-record-create-dlg.component.html',
+    styleUrls: ['./borrow-record-create-dlg.component.less'],
+    standalone: false
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {
   detailFormGroup: UntypedFormGroup;

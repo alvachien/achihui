@@ -13,9 +13,10 @@ import { translate } from '@ngneat/transloco';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-control-center-detail',
-  templateUrl: './control-center-detail.component.html',
-  styleUrls: ['./control-center-detail.component.less'],
+    selector: 'hih-fin-control-center-detail',
+    templateUrl: './control-center-detail.component.html',
+    styleUrls: ['./control-center-detail.component.less'],
+    standalone: false
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

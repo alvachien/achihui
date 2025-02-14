@@ -65,9 +65,10 @@ class DocItemWithBlance {
 }
 
 @Component({
-  selector: 'hih-document-asset-value-change-create',
-  templateUrl: './document-asset-value-change-create.component.html',
-  styleUrls: ['./document-asset-value-change-create.component.less'],
+    selector: 'hih-document-asset-value-change-create',
+    templateUrl: './document-asset-value-change-create.component.html',
+    styleUrls: ['./document-asset-value-change-create.component.less'],
+    standalone: false
 })
 export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

@@ -5,9 +5,10 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { FinanceOdataService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-document-change-date-dialog',
-  templateUrl: './document-change-date-dialog.component.html',
-  styleUrls: ['./document-change-date-dialog.component.less'],
+    selector: 'hih-document-change-date-dialog',
+    templateUrl: './document-change-date-dialog.component.html',
+    styleUrls: ['./document-change-date-dialog.component.less'],
+    standalone: false
 })
 export class DocumentChangeDateDialogComponent implements OnInit {
   // Header forum

@@ -12,9 +12,10 @@ import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from 
 import { HomeDefOdataService, EventStorageService } from '../../../../services';
 
 @Component({
-  selector: 'hih-normal-event-detail',
-  templateUrl: './normal-event-detail.component.html',
-  styleUrls: ['./normal-event-detail.component.less'],
+    selector: 'hih-normal-event-detail',
+    templateUrl: './normal-event-detail.component.html',
+    styleUrls: ['./normal-event-detail.component.less'],
+    standalone: false
 })
 export class NormalEventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { UIAccountForSelection, IAccountCategoryFilterEx } from '../../../model';
 
 @Pipe({
-  name: 'uiAccountCtgyFilterEx',
+    name: 'uiAccountCtgyFilterEx',
+    standalone: false
 })
 export class UIAccountCtgyFilterExPipe implements PipeTransform {
   transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilterEx): UIAccountForSelection[] {

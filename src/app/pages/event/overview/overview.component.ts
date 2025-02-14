@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { NzCalendarMode } from 'ng-zorro-antd/calendar';
 
 @Component({
-  selector: 'hih-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.less'],
+    selector: 'hih-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.less'],
+    standalone: false
 })
 export class OverviewComponent {
   selectedDate = new Date();

@@ -11,9 +11,10 @@ import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
-  selector: 'hih-borrow-record-list',
-  templateUrl: './borrow-record-list.component.html',
-  styleUrls: ['./borrow-record-list.component.less'],
+    selector: 'hih-borrow-record-list',
+    templateUrl: './borrow-record-list.component.html',
+    styleUrls: ['./borrow-record-list.component.less'],
+    standalone: false
 })
 export class BorrowRecordListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

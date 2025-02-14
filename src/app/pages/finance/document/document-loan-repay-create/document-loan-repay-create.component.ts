@@ -53,9 +53,10 @@ interface PayingAccountItem {
 }
 
 @Component({
-  selector: 'hih-document-loan-repay-create',
-  templateUrl: './document-loan-repay-create.component.html',
-  styleUrls: ['./document-loan-repay-create.component.less'],
+    selector: 'hih-document-loan-repay-create',
+    templateUrl: './document-loan-repay-create.component.html',
+    styleUrls: ['./document-loan-repay-create.component.less'],
+    standalone: false
 })
 export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'hih-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css'],
+    selector: 'hih-welcome',
+    templateUrl: './welcome.component.html',
+    styleUrls: ['./welcome.component.css'],
+    standalone: false
 })
 export class WelcomeComponent {
   gridFinanceStyle = {

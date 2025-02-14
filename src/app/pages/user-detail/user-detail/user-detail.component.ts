@@ -4,9 +4,10 @@ import { UIDisplayStringUtil } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-user-detail',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.less'],
+    selector: 'hih-user-detail',
+    templateUrl: './user-detail.component.html',
+    styleUrls: ['./user-detail.component.less'],
+    standalone: false
 })
 export class UserDetailComponent implements OnInit {
   userID: string | null = null;

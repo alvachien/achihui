@@ -31,9 +31,10 @@ import { DocumentItemViewComponent } from '../document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-finance-report',
-  templateUrl: './report.component.html',
-  styleUrls: ['./report.component.less'],
+    selector: 'hih-finance-report',
+    templateUrl: './report.component.html',
+    styleUrls: ['./report.component.less'],
+    standalone: false
 })
 export class ReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

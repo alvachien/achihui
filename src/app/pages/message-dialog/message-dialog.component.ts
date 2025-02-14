@@ -27,9 +27,10 @@ export interface MessageDialogInfo {
 }
 
 @Component({
-  selector: 'hih-message-dialog',
-  templateUrl: './message-dialog.component.html',
-  styleUrls: ['./message-dialog.component.less'],
+    selector: 'hih-message-dialog',
+    templateUrl: './message-dialog.component.html',
+    styleUrls: ['./message-dialog.component.less'],
+    standalone: false
 })
 export class MessageDialogComponent {
   @Input() title = '';

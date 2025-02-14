@@ -18,9 +18,10 @@ interface InsightRecord {
 }
 
 @Component({
-  selector: 'hih-document-item-insight',
-  templateUrl: './document-item-insight.component.html',
-  styleUrls: ['./document-item-insight.component.less'],
+    selector: 'hih-document-item-insight',
+    templateUrl: './document-item-insight.component.html',
+    styleUrls: ['./document-item-insight.component.less'],
+    standalone: false
 })
 export class DocumentItemInsightComponent implements OnInit {
   listGroupFields: TransferItem[] = [];

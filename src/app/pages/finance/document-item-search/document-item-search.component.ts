@@ -24,9 +24,10 @@ import { HomeDefOdataService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-document-item-search',
-  templateUrl: './document-item-search.component.html',
-  styleUrls: ['./document-item-search.component.less'],
+    selector: 'hih-document-item-search',
+    templateUrl: './document-item-search.component.html',
+    styleUrls: ['./document-item-search.component.less'],
+    standalone: false
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

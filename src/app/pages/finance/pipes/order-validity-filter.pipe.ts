@@ -4,7 +4,8 @@ import * as moment from 'moment';
 import { Order } from '../../../model';
 
 @Pipe({
-  name: 'orderValidityFilter',
+    name: 'orderValidityFilter',
+    standalone: false
 })
 export class OrderValidityFilterPipe implements PipeTransform {
   transform(allOrders: Order[], args?: moment.Moment | boolean): Order[] {

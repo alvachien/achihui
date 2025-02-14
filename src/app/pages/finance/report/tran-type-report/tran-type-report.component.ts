@@ -22,9 +22,10 @@ import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: 'hih-finance-report-trantype',
-  templateUrl: './tran-type-report.component.html',
-  styleUrls: ['./tran-type-report.component.less'],
+    selector: 'hih-finance-report-trantype',
+    templateUrl: './tran-type-report.component.html',
+    styleUrls: ['./tran-type-report.component.less'],
+    standalone: false
 })
 export class TranTypeReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

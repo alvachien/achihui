@@ -8,9 +8,10 @@ import { AssetCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../mod
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: 'hih-fin-asset-category-list',
-  templateUrl: './asset-category-list.component.html',
-  styleUrls: ['./asset-category-list.component.less'],
+    selector: 'hih-fin-asset-category-list',
+    templateUrl: './asset-category-list.component.html',
+    styleUrls: ['./asset-category-list.component.less'],
+    standalone: false
 })
 export class AssetCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

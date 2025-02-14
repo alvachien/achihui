@@ -8,9 +8,10 @@ import { AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../m
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 
 @Component({
-  selector: 'hih-fin-account-category-list',
-  templateUrl: './account-category-list.component.html',
-  styleUrls: ['./account-category-list.component.less'],
+    selector: 'hih-fin-account-category-list',
+    templateUrl: './account-category-list.component.html',
+    styleUrls: ['./account-category-list.component.less'],
+    standalone: false
 })
 export class AccountCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

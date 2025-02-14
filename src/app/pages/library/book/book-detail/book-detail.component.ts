@@ -24,9 +24,10 @@ import { BookCategorySelectionDlgComponent } from '../../config/book-category-se
 import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
 
 @Component({
-  selector: 'hih-book-detail',
-  templateUrl: './book-detail.component.html',
-  styleUrls: ['./book-detail.component.less'],
+    selector: 'hih-book-detail',
+    templateUrl: './book-detail.component.html',
+    styleUrls: ['./book-detail.component.less'],
+    standalone: false
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

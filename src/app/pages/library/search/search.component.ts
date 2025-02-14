@@ -4,9 +4,10 @@ import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { HomeDefOdataService, LibraryStorageService } from '../../../services';
 
 @Component({
-  selector: 'hih-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.less'],
+    selector: 'hih-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.less'],
+    standalone: false
 })
 export class SearchComponent {
   constructor(private storageService: LibraryStorageService, private homeService: HomeDefOdataService) {

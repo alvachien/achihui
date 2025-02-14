@@ -23,9 +23,10 @@ interface FastInputExpectedResult {
 }
 
 @Component({
-  selector: 'hih-reconcile-by-month',
-  templateUrl: './reconcile-by-month.component.html',
-  styleUrls: ['./reconcile-by-month.component.less'],
+    selector: 'hih-reconcile-by-month',
+    templateUrl: './reconcile-by-month.component.html',
+    styleUrls: ['./reconcile-by-month.component.less'],
+    standalone: false
 })
 export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestroy {
   currentStep = 0;

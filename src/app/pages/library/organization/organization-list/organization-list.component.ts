@@ -9,9 +9,10 @@ import { ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-organization-list',
-  templateUrl: './organization-list.component.html',
-  styleUrls: ['./organization-list.component.less'],
+    selector: 'hih-organization-list',
+    templateUrl: './organization-list.component.html',
+    styleUrls: ['./organization-list.component.less'],
+    standalone: false
 })
 export class OrganizationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

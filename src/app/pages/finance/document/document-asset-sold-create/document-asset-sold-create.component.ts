@@ -43,9 +43,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-asset-sold-create',
-  templateUrl: './document-asset-sold-create.component.html',
-  styleUrls: ['./document-asset-sold-create.component.less'],
+    selector: 'hih-fin-document-asset-sold-create',
+    templateUrl: './document-asset-sold-create.component.html',
+    styleUrls: ['./document-asset-sold-create.component.less'],
+    standalone: false
 })
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

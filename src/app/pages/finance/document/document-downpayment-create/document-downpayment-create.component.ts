@@ -36,9 +36,10 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-downpayment-create',
-  templateUrl: './document-downpayment-create.component.html',
-  styleUrls: ['./document-downpayment-create.component.less'],
+    selector: 'hih-fin-document-downpayment-create',
+    templateUrl: './document-downpayment-create.component.html',
+    styleUrls: ['./document-downpayment-create.component.less'],
+    standalone: false
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match

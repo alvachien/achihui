@@ -12,9 +12,10 @@ import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-organization-detail',
-  templateUrl: './organization-detail.component.html',
-  styleUrls: ['./organization-detail.component.less'],
+    selector: 'hih-organization-detail',
+    templateUrl: './organization-detail.component.html',
+    styleUrls: ['./organization-detail.component.less'],
+    standalone: false
 })
 export class OrganizationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -10,9 +10,10 @@ import { EventStorageService, UIStatusService } from 'src/app/services';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
-  selector: 'hih-normal-event-list',
-  templateUrl: './normal-event-list.component.html',
-  styleUrls: ['./normal-event-list.component.less'],
+    selector: 'hih-normal-event-list',
+    templateUrl: './normal-event-list.component.html',
+    styleUrls: ['./normal-event-list.component.less'],
+    standalone: false
 })
 export class NormalEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

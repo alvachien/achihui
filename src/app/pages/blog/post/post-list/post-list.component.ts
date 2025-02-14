@@ -15,9 +15,10 @@ import {
 import { BlogOdataService } from '../../../../services';
 
 @Component({
-  selector: 'hih-blog-post-list',
-  templateUrl: './post-list.component.html',
-  styleUrls: ['./post-list.component.less'],
+    selector: 'hih-blog-post-list',
+    templateUrl: './post-list.component.html',
+    styleUrls: ['./post-list.component.less'],
+    standalone: false
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

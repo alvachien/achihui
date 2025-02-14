@@ -9,9 +9,10 @@ import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 
 @Component({
-  selector: 'hih-control-center-list',
-  templateUrl: './control-center-list.component.html',
-  styleUrls: ['./control-center-list.component.less'],
+    selector: 'hih-control-center-list',
+    templateUrl: './control-center-list.component.html',
+    styleUrls: ['./control-center-list.component.less'],
+    standalone: false
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

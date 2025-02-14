@@ -26,9 +26,10 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-statement-of-income-expense-month-on-month',
-  templateUrl: './statement-of-income-expense-month-on-month.component.html',
-  styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
+    selector: 'hih-statement-of-income-expense-month-on-month',
+    templateUrl: './statement-of-income-expense-month-on-month.component.html',
+    styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
+    standalone: false
 })
 export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

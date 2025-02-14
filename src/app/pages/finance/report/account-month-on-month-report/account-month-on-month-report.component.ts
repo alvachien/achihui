@@ -22,9 +22,10 @@ import {
 } from '../../../../model';
 
 @Component({
-  selector: 'hih-account-month-on-month-report',
-  templateUrl: './account-month-on-month-report.component.html',
-  styleUrls: ['./account-month-on-month-report.component.less'],
+    selector: 'hih-account-month-on-month-report',
+    templateUrl: './account-month-on-month-report.component.html',
+    styleUrls: ['./account-month-on-month-report.component.less'],
+    standalone: false
 })
 export class AccountMonthOnMonthReportComponent implements OnInit {
   constructor(private oDataService: FinanceOdataService, private modalService: NzModalService) {

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { UIAccountForSelection, AccountStatusEnum } from '../../../model';
 
 @Pipe({
-  name: 'uiAccountStatusFilter',
+    name: 'uiAccountStatusFilter',
+    standalone: false
 })
 export class UIAccountStatusFilterPipe implements PipeTransform {
   transform(allAccounts: UIAccountForSelection[], args?: string): UIAccountForSelection[] {

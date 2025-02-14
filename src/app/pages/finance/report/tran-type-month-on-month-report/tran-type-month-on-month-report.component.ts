@@ -24,9 +24,10 @@ import {
 import { DocumentItemViewComponent } from '../../document-item-view';
 
 @Component({
-  selector: 'hih-tran-type-month-on-month-report',
-  templateUrl: './tran-type-month-on-month-report.component.html',
-  styleUrls: ['./tran-type-month-on-month-report.component.less'],
+    selector: 'hih-tran-type-month-on-month-report',
+    templateUrl: './tran-type-month-on-month-report.component.html',
+    styleUrls: ['./tran-type-month-on-month-report.component.less'],
+    standalone: false
 })
 export class TranTypeMonthOnMonthReportComponent implements OnInit {
   constructor(

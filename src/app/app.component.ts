@@ -8,9 +8,10 @@ import { ModelUtility, ConsoleLogTypeEnum } from './model';
 import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
 
 @Component({
-  selector: 'hih-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less'],
+    selector: 'hih-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.less'],
+    standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;

@@ -6,9 +6,10 @@ import { Location } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-location-selection-dlg',
-  templateUrl: './location-selection-dlg.component.html',
-  styleUrls: ['./location-selection-dlg.component.less'],
+    selector: 'hih-location-selection-dlg',
+    templateUrl: './location-selection-dlg.component.html',
+    styleUrls: ['./location-selection-dlg.component.less'],
+    standalone: false
 })
 export class LocationSelectionDlgComponent implements OnInit {
   checked = false;

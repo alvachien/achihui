@@ -30,9 +30,10 @@ class DateCellData {
 }
 
 @Component({
-  selector: 'hih-finance',
-  templateUrl: './finance.component.html',
-  styleUrls: ['./finance.component.less'],
+    selector: 'hih-finance',
+    templateUrl: './finance.component.html',
+    styleUrls: ['./finance.component.less'],
+    standalone: false
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -424,9 +425,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
 }
 
 @Component({
-  selector: 'hih-finance-asset-deprec-dlg',
-  templateUrl: './finance-asset-deprec.dlg.html',
-  styleUrls: ['./finance-asset-deprec.dlg.less'],
+    selector: 'hih-finance-asset-deprec-dlg',
+    templateUrl: './finance-asset-deprec.dlg.html',
+    styleUrls: ['./finance-asset-deprec.dlg.less'],
+    standalone: false
 })
 export class FinanceAssetDepreciationDlgComponent {
   @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];

@@ -30,9 +30,10 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.less'],
+    selector: 'hih-fin-document-detail',
+    templateUrl: './document-detail.component.html',
+    styleUrls: ['./document-detail.component.less'],
+    standalone: false
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

@@ -9,9 +9,10 @@ import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
-  selector: 'hih-home-def-list',
-  templateUrl: './home-def-list.component.html',
-  styleUrls: ['./home-def-list.component.less'],
+    selector: 'hih-home-def-list',
+    templateUrl: './home-def-list.component.html',
+    styleUrls: ['./home-def-list.component.less'],
+    standalone: false
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

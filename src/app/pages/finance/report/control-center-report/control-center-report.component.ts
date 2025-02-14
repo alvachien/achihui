@@ -20,9 +20,10 @@ import { DocumentItemViewComponent } from '../../document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-finance-report-controlcenter',
-  templateUrl: './control-center-report.component.html',
-  styleUrls: ['./control-center-report.component.less'],
+    selector: 'hih-finance-report-controlcenter',
+    templateUrl: './control-center-report.component.html',
+    styleUrls: ['./control-center-report.component.less'],
+    standalone: false
 })
 export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

@@ -24,21 +24,22 @@ import {
 import { SafeAny } from 'src/common';
 
 @Component({
-  selector: 'hih-fin-document-items',
-  templateUrl: './document-items.component.html',
-  styleUrls: ['./document-items.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DocumentItemsComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => DocumentItemsComponent),
-      multi: true,
-    },
-  ],
+    selector: 'hih-fin-document-items',
+    templateUrl: './document-items.component.html',
+    styleUrls: ['./document-items.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DocumentItemsComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => DocumentItemsComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

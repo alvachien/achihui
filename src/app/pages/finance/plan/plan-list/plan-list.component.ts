@@ -15,9 +15,10 @@ import {
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 
 @Component({
-  selector: 'hih-plan-list',
-  templateUrl: './plan-list.component.html',
-  styleUrls: ['./plan-list.component.less'],
+    selector: 'hih-plan-list',
+    templateUrl: './plan-list.component.html',
+    styleUrls: ['./plan-list.component.less'],
+    standalone: false
 })
 export class PlanListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

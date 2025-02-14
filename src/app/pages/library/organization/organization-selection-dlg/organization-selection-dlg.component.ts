@@ -6,9 +6,10 @@ import { Organization } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
 
 @Component({
-  selector: 'hih-organization-selection-dlg',
-  templateUrl: './organization-selection-dlg.component.html',
-  styleUrls: ['./organization-selection-dlg.component.less'],
+    selector: 'hih-organization-selection-dlg',
+    templateUrl: './organization-selection-dlg.component.html',
+    styleUrls: ['./organization-selection-dlg.component.less'],
+    standalone: false
 })
 export class OrganizationSelectionDlgComponent implements OnInit {
   checked = false;
