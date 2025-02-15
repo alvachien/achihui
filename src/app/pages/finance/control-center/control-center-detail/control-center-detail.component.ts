@@ -1,22 +1,38 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '../../../../model';
 import { popupDialog } from '../../../message-dialog';
-import { translate } from '@ngneat/transloco';
 import { SafeAny } from 'src/common';
 
 @Component({
-    selector: 'hih-fin-control-center-detail',
-    templateUrl: './control-center-detail.component.html',
-    styleUrls: ['./control-center-detail.component.less'],
-    standalone: false
+  selector: 'hih-fin-control-center-detail',
+  templateUrl: './control-center-detail.component.html',
+  styleUrls: ['./control-center-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    TranslocoModule,
+  ]
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

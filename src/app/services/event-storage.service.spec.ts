@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';

@@ -3,9 +3,9 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Router } from '@angular/router';
 
 import {
@@ -22,14 +22,30 @@ import {
 } from 'src/app/model';
 import { FinanceOdataService, UIStatusService } from 'src/app/services';
 import { NumberUtility } from 'actslib';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { FormsModule } from '@angular/forms';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
-    selector: 'hih-statement-of-income-expense-month-on-month',
-    templateUrl: './statement-of-income-expense-month-on-month.component.html',
-    styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
-    standalone: false
+  selector: 'hih-statement-of-income-expense-month-on-month',
+  templateUrl: './statement-of-income-expense-month-on-month.component.html',
+  styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSwitchModule,
+    FormsModule,
+    NzRadioModule,
+    NzGridModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
 export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -293,7 +309,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       TransactionDirection: isexp ? false : true,
     };
     this.router.navigate(['/finance/insight']);
-    
+
     // const fltrs: GeneralFilterItem[] = [];
     // fltrs.push({
     //   fieldName: 'IsExpense',

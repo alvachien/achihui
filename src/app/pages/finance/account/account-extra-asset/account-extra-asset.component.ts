@@ -9,30 +9,47 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SafeAny } from 'src/common';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '../../../../model';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'hih-finance-account-extra-asset',
-    templateUrl: './account-extra-asset.component.html',
-    styleUrls: ['./account-extra-asset.component.less'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => AccountExtraAssetComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => AccountExtraAssetComponent),
-            multi: true,
-        },
-    ],
-    standalone: false
+  selector: 'hih-finance-account-extra-asset',
+  templateUrl: './account-extra-asset.component.html',
+  styleUrls: ['./account-extra-asset.component.less'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AccountExtraAssetComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => AccountExtraAssetComponent),
+      multi: true,
+    },
+  ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    TranslocoModule,
+  ]
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -119,8 +136,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
   set arAssetCategories(ctgy: AssetCategory[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${
-        ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
       }`,
       ConsoleLogTypeEnum.debug
     );

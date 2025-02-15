@@ -2,16 +2,22 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { BookCategory, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
     selector: 'hih-book-category-list',
     templateUrl: './book-category-list.component.html',
     styleUrls: ['./book-category-list.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzTableModule,
+      TranslocoModule,
+    ]
 })
 export class BookCategoryListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

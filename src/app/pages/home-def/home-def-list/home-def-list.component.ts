@@ -1,18 +1,31 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
     selector: 'hih-home-def-list',
     templateUrl: './home-def-list.component.html',
     styleUrls: ['./home-def-list.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzTableModule,
+      TranslocoModule,
+      NzDividerModule,
+      RouterModule,
+    ]
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

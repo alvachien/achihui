@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { getTranslocoModule } from '../../testing';

@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
     selector: 'hih-organization-type-selection-dlg',
     templateUrl: './organization-type-selection-dlg.component.html',
     styleUrls: ['./organization-type-selection-dlg.component.less'],
-    standalone: false
+    imports: [
+        
+    ]
 })
 export class OrganizationTypeSelectionDlgComponent {}

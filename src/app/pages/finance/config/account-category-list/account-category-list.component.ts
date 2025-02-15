@@ -2,16 +2,26 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'hih-fin-account-category-list',
-    templateUrl: './account-category-list.component.html',
-    styleUrls: ['./account-category-list.component.less'],
-    standalone: false
+  selector: 'hih-fin-account-category-list',
+  templateUrl: './account-category-list.component.html',
+  styleUrls: ['./account-category-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzTableModule,
+    NzSwitchModule,
+    FormsModule,
+    TranslocoModule
+  ]
 })
 export class AccountCategoryListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

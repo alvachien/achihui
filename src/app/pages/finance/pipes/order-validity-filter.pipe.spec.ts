@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { OrderValidityFilterPipe } from './order-validity-filter.pipe';
 import { Order } from '../../../model';

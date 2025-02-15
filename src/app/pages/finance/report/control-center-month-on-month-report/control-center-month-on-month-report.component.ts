@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { FormsModule } from '@angular/forms';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
-import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import moment from 'moment';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 import {
   ConsoleLogTypeEnum,
@@ -19,10 +26,20 @@ import { FinanceOdataService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-    selector: 'hih-control-center-month-on-month-report',
-    templateUrl: './control-center-month-on-month-report.component.html',
-    styleUrls: ['./control-center-month-on-month-report.component.less'],
-    standalone: false
+  selector: 'hih-control-center-month-on-month-report',
+  templateUrl: './control-center-month-on-month-report.component.html',
+  styleUrls: ['./control-center-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzCascaderModule,
+    NzRadioModule,
+    FormsModule,
+    NzGridModule,
+    NgxEchartsModule,
+    NzButtonModule,
+    TranslocoModule,
+  ]
 })
 export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   constructor(private odataService: FinanceOdataService, private modalService: NzModalService) {

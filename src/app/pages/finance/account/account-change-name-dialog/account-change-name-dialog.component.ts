@@ -1,15 +1,24 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from 'src/app/services';
 import { SafeAny } from 'src/common';
 
 @Component({
-    selector: 'hih-account-change-name-dialog',
-    templateUrl: './account-change-name-dialog.component.html',
-    styleUrls: ['./account-change-name-dialog.component.less'],
-    standalone: false
+  selector: 'hih-account-change-name-dialog',
+  templateUrl: './account-change-name-dialog.component.html',
+  styleUrls: ['./account-change-name-dialog.component.less'],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    TranslocoModule,
+  ]
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum

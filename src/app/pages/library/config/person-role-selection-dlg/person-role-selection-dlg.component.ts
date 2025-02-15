@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
     selector: 'hih-person-role-selection-dlg',
     templateUrl: './person-role-selection-dlg.component.html',
     styleUrls: ['./person-role-selection-dlg.component.less'],
-    standalone: false
+    imports: [
+        
+    ]
 })
 export class PersonRoleSelectionDlgComponent {}

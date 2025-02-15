@@ -2,16 +2,26 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { FinanceOdataService } from '../../../services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
     selector: 'hih-finance-currency',
     templateUrl: './currency.component.html',
     styleUrls: ['./currency.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzTableModule,
+      TranslocoModule,
+    ]
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

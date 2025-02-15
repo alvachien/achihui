@@ -4,7 +4,7 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   FinanceReportByControlCenter,
@@ -16,14 +16,30 @@ import {
   GeneralFilterItem,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'hih-finance-report-controlcenter',
-    templateUrl: './control-center-report.component.html',
-    styleUrls: ['./control-center-report.component.less'],
-    standalone: false
+  selector: 'hih-finance-report-controlcenter',
+  templateUrl: './control-center-report.component.html',
+  styleUrls: ['./control-center-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzTableModule,
+    NzDividerModule,
+    NzButtonModule,
+    DecimalPipe,
+    TranslocoModule,
+  ]
 })
 export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

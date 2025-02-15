@@ -2,7 +2,7 @@
 // Unit test for utility.ts
 //
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { Order } from './financemodel';
 import {
   UIDisplayStringUtil,

@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { Order } from '../../../model';
 
 @Pipe({
-    name: 'orderValidityFilter',
-    standalone: false
+  name: 'orderValidityFilter',
+  standalone: true
 })
 export class OrderValidityFilterPipe implements PipeTransform {
   transform(allOrders: Order[], args?: moment.Moment | boolean): Order[] {

@@ -3,16 +3,32 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @Component({
     selector: 'hih-control-center-list',
     templateUrl: './control-center-list.component.html',
     styleUrls: ['./control-center-list.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzButtonModule,
+      NzTableModule,
+      NzPopconfirmModule,
+      NzDividerModule,
+      TranslocoModule,
+    ]
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

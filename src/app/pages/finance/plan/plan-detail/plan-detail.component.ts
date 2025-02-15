@@ -1,12 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
@@ -27,12 +35,28 @@ import {
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 @Component({
-    selector: 'hih-plan-detail',
-    templateUrl: './plan-detail.component.html',
-    styleUrls: ['./plan-detail.component.less'],
-    standalone: false
+  selector: 'hih-plan-detail',
+  templateUrl: './plan-detail.component.html',
+  styleUrls: ['./plan-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzInputNumberModule,
+    NzResultModule,
+    TranslocoModule,
+  ]
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

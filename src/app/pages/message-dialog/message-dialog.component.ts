@@ -3,6 +3,8 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from 'src/common';
 
 import { InfoMessage } from '../../model';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { TranslocoModule } from '@jsverse/transloco';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -30,7 +32,10 @@ export interface MessageDialogInfo {
     selector: 'hih-message-dialog',
     templateUrl: './message-dialog.component.html',
     styleUrls: ['./message-dialog.component.less'],
-    standalone: false
+    imports: [
+      NzTableModule,
+      TranslocoModule,
+    ]
 })
 export class MessageDialogComponent {
   @Input() title = '';

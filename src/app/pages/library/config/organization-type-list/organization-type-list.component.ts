@@ -2,16 +2,22 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { ConsoleLogTypeEnum, ModelUtility, OrganizationType } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
     selector: 'hih-organization-type-list',
     templateUrl: './organization-type-list.component.html',
     styleUrls: ['./organization-type-list.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzTableModule,
+      TranslocoModule,
+    ]
 })
 export class OrganizationTypeListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -2,11 +2,20 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
 import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { DecimalPipe } from '@angular/common';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import {
   FinanceReportByAccount,
@@ -25,16 +34,27 @@ import {
   GeneralFilterValueType,
 } from '../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../services';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NumberUtility } from 'actslib';
-import { DocumentItemViewComponent } from '../document-item-view';
+import { DocumentItemViewComponent } from '../document/document-item-view';
 import { SafeAny } from 'src/common';
 
 @Component({
     selector: 'hih-finance-report',
     templateUrl: './report.component.html',
     styleUrls: ['./report.component.less'],
-    standalone: false
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzDropDownModule,
+      NzSpinModule,
+      NzResultModule,
+      NzListModule,
+      NzProgressModule,
+      NzGridModule,
+      DecimalPipe,
+      TranslocoModule,
+    ]
 })
 export class ReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

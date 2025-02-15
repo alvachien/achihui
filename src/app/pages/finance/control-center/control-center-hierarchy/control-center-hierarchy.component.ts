@@ -1,10 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
@@ -17,10 +23,20 @@ import {
 } from '../../../../model';
 
 @Component({
-    selector: 'hih-fin-control-center-hierarchy',
-    templateUrl: './control-center-hierarchy.component.html',
-    styleUrls: ['./control-center-hierarchy.component.less'],
-    standalone: false
+  selector: 'hih-fin-control-center-hierarchy',
+  templateUrl: './control-center-hierarchy.component.html',
+  styleUrls: ['./control-center-hierarchy.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzResizableModule,
+    NzSpinModule,
+    NzTreeModule,
+    NzGridModule,
+    NzButtonModule,
+    DocumentItemViewComponent,
+    TranslocoModule,
+  ]
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

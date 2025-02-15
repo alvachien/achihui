@@ -13,8 +13,7 @@
         nz-input
         class="shotcut-id"
         placeholder="{{ 'Common.ShortcutID' | transloco }}"
-        [(ngModel)]="shortcutDocID"
-      />
+        [(ngModel)]="shortcutDocID" />
       <button nz-button nzType="text" [disabled]="!shortcutDocID" (click)="onOpenShortCutDocID()">
         <i nz-icon nzType="folder-open" nzTheme="outline"></i>
       </button>

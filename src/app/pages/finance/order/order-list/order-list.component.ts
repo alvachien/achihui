@@ -4,7 +4,19 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NgClass } from '@angular/common';
+import { OrderValidityFilterPipe } from '../../pipes';
 
 import {
   Order,
@@ -15,14 +27,27 @@ import {
   GeneralFilterValueType,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { DocumentItemViewComponent } from '../../document-item-view';
-import * as moment from 'moment';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 
 @Component({
-    selector: 'hih-fin-order-list',
-    templateUrl: './order-list.component.html',
-    styleUrls: ['./order-list.component.less'],
-    standalone: false
+  selector: 'hih-fin-order-list',
+  templateUrl: './order-list.component.html',
+  styleUrls: ['./order-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzResultModule,
+    NzSwitchModule,
+    NzDividerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSpinModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NgClass,
+    OrderValidityFilterPipe,
+    TranslocoModule,
+  ]
 })
 export class OrderListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -10,7 +10,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
@@ -381,7 +381,11 @@ describe('AccountExtraLoanComponent', () => {
       </hih-finance-account-extra-loan>
     </form>
   `,
-    standalone: false
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraLoanComponent,
+    ]
 })
 export class AccountExtraLoanTestFormComponent {
   public formGroup: UntypedFormGroup;

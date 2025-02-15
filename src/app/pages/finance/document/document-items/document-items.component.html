@@ -4,8 +4,7 @@
       nzType="error"
       [nzMessage]="controlError.value | transloco"
       [nzDescription]="controlError.value | transloco"
-      nzShowIcon
-    >
+      nzShowIcon>
     </nz-alert>
   </div>
 
@@ -47,8 +46,7 @@
                 style="width: 100%"
                 [nzDisabled]="!isAccountIDEditable"
                 [(ngModel)]="data.AccountId"
-                (ngModelChange)="onChange()"
-              >
+                (ngModelChange)="onChange()">
                 <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
               </nz-select>
               <ng-template #accountTpl let-control>
@@ -66,8 +64,7 @@
                 style="width: 100%"
                 [nzDisabled]="!isTranTypeEditable"
                 [(ngModel)]="data.TranType"
-                (ngModelChange)="onChange()"
-              >
+                (ngModelChange)="onChange()">
                 <nz-option *ngFor="let tt of arTranType" [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
               </nz-select>
               <ng-template #trantypeTpl let-control>
@@ -87,8 +84,7 @@
                 [(ngModel)]="data.TranAmount"
                 [nzPlaceHolder]="'Finance.Amount' | transloco"
                 (ngModelChange)="onChange()"
-                [nzDisabled]="!isAmountEditable"
-              >
+                [nzDisabled]="!isAmountEditable">
               </nz-input-number>
               <ng-template #amountTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
@@ -119,8 +115,7 @@
             [(ngModel)]="data.ControlCenterId"
             (ngModelChange)="data.ControlCenterId = $event === null ? undefined : $event; onChange()"
             [nzDisabled]="!isFieldChangable"
-            nzAllowClear
-          >
+            nzAllowClear>
             <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>
@@ -129,8 +124,7 @@
             [(ngModel)]="data.OrderId"
             (ngModelChange)="data.OrderId = $event === null ? undefined : $event; onChange()"
             [nzDisabled]="!isFieldChangable"
-            nzAllowClear
-          >
+            nzAllowClear>
             <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
           </nz-select>
         </td>

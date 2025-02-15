@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
-import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import moment from 'moment';
+import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -21,13 +21,28 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
 } from '../../../../model';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { FormsModule } from '@angular/forms';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
-    selector: 'hih-tran-type-month-on-month-report',
-    templateUrl: './tran-type-month-on-month-report.component.html',
-    styleUrls: ['./tran-type-month-on-month-report.component.less'],
-    standalone: false
+  selector: 'hih-tran-type-month-on-month-report',
+  templateUrl: './tran-type-month-on-month-report.component.html',
+  styleUrls: ['./tran-type-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzCascaderModule,
+    NzRadioModule,
+    FormsModule,
+    NzGridModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
 export class TranTypeMonthOnMonthReportComponent implements OnInit {
   constructor(

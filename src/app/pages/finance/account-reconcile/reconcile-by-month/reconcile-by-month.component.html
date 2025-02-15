@@ -1,11 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/account">{{ 'Finance.Accounts' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/account">{{ 'Finance.Accounts' | transloco }}</a></nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Account' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>{{ 'Finance.AccountReconcile' | transloco }}</nz-page-header-subtitle>
@@ -16,18 +12,15 @@
   <nz-step
     [nzTitle]="'Common.Step1' | transloco"
     [nzSubtitle]="'Finance.TargetAccount' | transloco"
-    [nzDescription]="'Finance.TargetAccountDesp' | transloco"
-  ></nz-step>
+    [nzDescription]="'Finance.TargetAccountDesp' | transloco"></nz-step>
   <nz-step
     [nzTitle]="'Common.Step2' | transloco"
     [nzSubtitle]="'Finance.ExpectedResult' | transloco"
-    [nzDescription]="'Finance.ExpectedResultDesp' | transloco"
-  ></nz-step>
+    [nzDescription]="'Finance.ExpectedResultDesp' | transloco"></nz-step>
   <nz-step
     [nzTitle]="'Common.Step3' | transloco"
     [nzSubtitle]="'Finance.CompareResults' | transloco"
-    [nzDescription]="'Finance.CompareResultsDesp' | transloco"
-  ></nz-step>
+    [nzDescription]="'Finance.CompareResultsDesp' | transloco"></nz-step>
 </nz-steps>
 
 <div class="steps-action">
@@ -89,9 +82,9 @@
                 <a nz-button nzType="link" nzDanger (click)="onDeleteRow(data)">{{ 'Common.Delete' | transloco }}</a>
               </td>
               <td>
-                <nz-input-number-group [nzAddOnAfter]="baseCurrency">
-                  <nz-input-number [(ngModel)]="data.expectedAmount" [nzStep]="0.01"></nz-input-number>
-                </nz-input-number-group>
+                <nz-input-number [(ngModel)]="data.expectedAmount" [nzStep]="0.01">
+                  <span nzInputAddonAfter>{{baseCurrency}}</span>
+                </nz-input-number>
               </td>
             </tr>
           </tbody>

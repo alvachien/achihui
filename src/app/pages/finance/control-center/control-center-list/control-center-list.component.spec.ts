@@ -8,12 +8,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from '../../finance-ui.module';
+import { FinanceUIModule } from '../finance-ui.module';
 import { ControlCenterListComponent } from './control-center-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
-import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
+import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../services';
+import { UserAuthInfo } from '../../../model';
+import { MessageDialogComponent } from '../../message-dialog';
 import { SafeAny } from 'src/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 

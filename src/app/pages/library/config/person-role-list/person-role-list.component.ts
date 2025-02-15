@@ -2,16 +2,22 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from 'src/app/model';
 import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
     selector: 'hih-person-role-list',
     templateUrl: './person-role-list.component.html',
     styleUrls: ['./person-role-list.component.less'],
-    standalone: false
+    imports: [
+      NzSpinModule,
+      NzTableModule,
+      TranslocoModule,
+    ]
 })
 export class PersonRoleListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

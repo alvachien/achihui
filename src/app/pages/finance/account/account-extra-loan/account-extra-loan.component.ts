@@ -8,13 +8,15 @@ import {
   Validator,
   Validators,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   AccountExtraLoan,
@@ -29,24 +31,40 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
 import { SafeAny } from 'src/common';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'hih-finance-account-extra-loan',
-    templateUrl: './account-extra-loan.component.html',
-    styleUrls: ['./account-extra-loan.component.less'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => AccountExtraLoanComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => AccountExtraLoanComponent),
-            multi: true,
-        },
-    ],
-    standalone: false
+  selector: 'hih-finance-account-extra-loan',
+  templateUrl: './account-extra-loan.component.html',
+  styleUrls: ['./account-extra-loan.component.less'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AccountExtraLoanComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => AccountExtraLoanComponent),
+      multi: true,
+    },
+  ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzAlertModule,
+    NzSelectModule,
+    NzTableModule,
+    NzInputNumberModule,
+    DecimalPipe,
+    TranslocoModule,
+  ]
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

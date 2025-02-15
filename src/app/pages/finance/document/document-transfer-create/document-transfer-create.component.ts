@@ -6,10 +6,12 @@ import {
   ValidationErrors,
   ValidatorFn,
   AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { UIMode } from 'actslib';
@@ -37,12 +39,43 @@ import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { DocumentHeaderComponent } from '../document-header';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { DecimalPipe } from '@angular/common';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
-    selector: 'hih-document-transfer-create',
-    templateUrl: './document-transfer-create.component.html',
-    styleUrls: ['./document-transfer-create.component.less'],
-    standalone: false
+  selector: 'hih-document-transfer-create',
+  templateUrl: './document-transfer-create.component.html',
+  styleUrls: ['./document-transfer-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    DocumentHeaderComponent,
+    NzInputNumberModule,
+    NzSelectModule,
+    NzInputNumberModule,
+    NzSpinModule,
+    NzResultModule,
+    DecimalPipe,
+    NzTypographyModule,
+    NzButtonModule,
+    NzIconModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

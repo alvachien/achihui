@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -33,12 +33,40 @@ import {
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { DecimalPipe } from '@angular/common';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
-    selector: 'hih-fin-document-normal-create',
-    templateUrl: './document-normal-create.component.html',
-    styleUrls: ['./document-normal-create.component.less'],
-    standalone: false
+  selector: 'hih-fin-document-normal-create',
+  templateUrl: './document-normal-create.component.html',
+  styleUrls: ['./document-normal-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    DocumentHeaderComponent,
+    DocumentItemsComponent,
+    NzAlertModule,
+    NzTypographyModule,
+    DecimalPipe,
+    NzDividerModule,
+    NzResultModule,
+    NzSpinModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -343,11 +371,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
                 this.confirmInfo.warningExist = true;
                 this.confirmInfo.duplicatedItems.push(
                   'Account: ' +
-                    di.AccountId.toString() +
-                    '; Amount: ' +
-                    di.TranAmount.toString() +
-                    '; Tran. type: ' +
-                    di.TranType?.toString()
+                  di.AccountId.toString() +
+                  '; Amount: ' +
+                  di.TranAmount.toString() +
+                  '; Tran. type: ' +
+                  di.TranType?.toString()
                 );
               }
             });

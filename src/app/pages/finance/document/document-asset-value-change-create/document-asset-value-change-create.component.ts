@@ -9,10 +9,12 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -45,6 +47,19 @@ import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 // Assistant class
 class DocItemWithBlance {
@@ -65,10 +80,26 @@ class DocItemWithBlance {
 }
 
 @Component({
-    selector: 'hih-document-asset-value-change-create',
-    templateUrl: './document-asset-value-change-create.component.html',
-    styleUrls: ['./document-asset-value-change-create.component.less'],
-    standalone: false
+  selector: 'hih-document-asset-value-change-create',
+  templateUrl: './document-asset-value-change-create.component.html',
+  styleUrls: ['./document-asset-value-change-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    DocumentHeaderComponent,
+    NzDividerModule,
+    NzInputNumberModule,
+    NzSpinModule,
+    NzTableModule,
+    NzResultModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

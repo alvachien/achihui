@@ -3,9 +3,9 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {
   FinanceReportByOrder,
@@ -17,14 +17,34 @@ import {
   Order,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { FormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'hih-finance-report-order',
-    templateUrl: './order-report.component.html',
-    styleUrls: ['./order-report.component.less'],
-    standalone: false
+  selector: 'hih-finance-report-order',
+  templateUrl: './order-report.component.html',
+  styleUrls: ['./order-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzTableModule,
+    NzSwitchModule,
+    NzDividerModule,
+    FormsModule,
+    NzButtonModule,
+    DecimalPipe,
+    TranslocoModule,
+  ]
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

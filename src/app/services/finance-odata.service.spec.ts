@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {
   Document,

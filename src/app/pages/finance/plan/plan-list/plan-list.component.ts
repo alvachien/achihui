@@ -2,8 +2,16 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 import {
   Plan,
@@ -13,12 +21,30 @@ import {
   Account,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { FormsModule } from '@angular/forms';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
-    selector: 'hih-plan-list',
-    templateUrl: './plan-list.component.html',
-    styleUrls: ['./plan-list.component.less'],
-    standalone: false
+  selector: 'hih-plan-list',
+  templateUrl: './plan-list.component.html',
+  styleUrls: ['./plan-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzButtonModule,
+    NzDividerModule,
+    NzResultModule,
+    NzInputModule,
+    NzTableModule,
+    NzInputNumberModule,
+    NzModalModule,
+    NzFormModule,
+    FormsModule,
+    NzSpinModule,
+    NzInputNumberModule,
+    TranslocoModule,
+  ]
 })
 export class PlanListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

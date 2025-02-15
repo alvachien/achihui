@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -30,12 +30,32 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 
 @Component({
-    selector: 'hih-document-normal-mass-create',
-    templateUrl: './document-normal-mass-create.component.html',
-    styleUrls: ['./document-normal-mass-create.component.less'],
-    standalone: false
+  selector: 'hih-document-normal-mass-create',
+  templateUrl: './document-normal-mass-create.component.html',
+  styleUrls: ['./document-normal-mass-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzCollapseModule,
+    NzDescriptionsModule,
+    NzDividerModule,
+    NzResultModule,
+    DocumentNormalMassCreateItemComponent,
+    TranslocoModule,
+  ]
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

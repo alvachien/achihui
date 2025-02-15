@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeModule, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
-import { translate } from '@ngneat/transloco';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
@@ -25,9 +25,21 @@ import {
   momentDateFormat,
   ControlCenter,
 } from '../../../../model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { DecimalPipe } from '@angular/common';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -42,10 +54,29 @@ interface ISettleAccountDetail {
 }
 
 @Component({
-    selector: 'hih-fin-account-hierarchy',
-    templateUrl: './account-hierarchy.component.html',
-    styleUrls: ['./account-hierarchy.component.less'],
-    standalone: false
+  selector: 'hih-fin-account-hierarchy',
+  templateUrl: './account-hierarchy.component.html',
+  styleUrls: ['./account-hierarchy.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSelectModule,
+    NzSpinModule,
+    NzTreeModule,
+    NzResizableModule,
+    NzDropDownModule,
+    NzModalModule,
+    NzDescriptionsModule,
+    NzFormModule,
+    FormsModule,
+    NzIconModule,
+    ReactiveFormsModule,
+    NzDividerModule,
+    NzButtonModule,
+    DecimalPipe,
+    DocumentItemViewComponent,
+    TranslocoModule,
+  ]
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -1,11 +1,8 @@
 <div>
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-      >
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'Common.Create' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -31,8 +28,7 @@
           formControlName="headerControl"
           [arDocTypes]="arDocTypes"
           [arCurrencies]="arCurrencies"
-          [baseCurrency]="baseCurrency"
-        >
+          [baseCurrency]="baseCurrency">
         </hih-fin-document-header>
         <ng-template #headerErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -138,8 +134,7 @@
         [tranAmount]="tranAmount"
         [controlCenterID]="controlCenterID"
         [orderID]="orderID"
-        [arUIAccount]="arUIAccount"
-      >
+        [arUIAccount]="arUIAccount">
       </hih-finance-account-extra-loan>
     </form>
 

@@ -3,7 +3,7 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
@@ -26,14 +26,32 @@ import {
   DocumentItem,
   BuildupOrderForSelectionEx,
 } from '../../../../model';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'hih-fin-document-detail',
-    templateUrl: './document-detail.component.html',
-    styleUrls: ['./document-detail.component.less'],
-    standalone: false
+  selector: 'hih-fin-document-detail',
+  templateUrl: './document-detail.component.html',
+  styleUrls: ['./document-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DocumentHeaderComponent,
+    DocumentItemsComponent,
+    NzInputModule,
+    NzButtonModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

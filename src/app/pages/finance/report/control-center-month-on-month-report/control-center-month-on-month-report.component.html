@@ -1,11 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.ControlCenterMonthOnMonth' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
@@ -20,8 +16,7 @@
       nzChangeOnSelect
       [nzShowSearch]="true"
       [(ngModel)]="selectedControlCenters"
-      [nzOptions]="availableControlCenters"
-    >
+      [nzOptions]="availableControlCenters">
     </nz-cascader>
   </div>
   <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">

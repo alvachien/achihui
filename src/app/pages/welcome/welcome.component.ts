@@ -1,19 +1,33 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+
 import { environment } from 'src/environments/environment';
 
 @Component({
-    selector: 'hih-welcome',
-    templateUrl: './welcome.component.html',
-    styleUrls: ['./welcome.component.css'],
-    standalone: false
+  selector: 'hih-welcome',
+  templateUrl: './welcome.component.html',
+  styleUrls: ['./welcome.component.css'],
+  imports: [
+    NzGridModule,
+    NzDividerModule,
+    NzTypographyModule,
+    NzCardModule,
+    NzImageModule,
+    TranslocoModule
+  ]
 })
 export class WelcomeComponent {
   gridFinanceStyle = {
     width: '33%',
     textAlign: 'center',
   };
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   get accountImage(): string {
     return `${environment.AppHost}/assets/img/Accounts.png`;

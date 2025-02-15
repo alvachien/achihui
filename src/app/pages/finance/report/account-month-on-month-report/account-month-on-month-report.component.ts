@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin } from 'rxjs';
 
@@ -20,12 +20,28 @@ import {
   financePeriodLast6Months,
   financePeriodLast3Months,
 } from '../../../../model';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzRadioGroupComponent } from 'ng-zorro-antd/radio';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { FormsModule } from '@angular/forms';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
-    selector: 'hih-account-month-on-month-report',
-    templateUrl: './account-month-on-month-report.component.html',
-    styleUrls: ['./account-month-on-month-report.component.less'],
-    standalone: false
+  selector: 'hih-account-month-on-month-report',
+  templateUrl: './account-month-on-month-report.component.html',
+  styleUrls: ['./account-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSelectModule,
+    NzRadioGroupComponent,
+    NzGridModule,
+    FormsModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
 export class AccountMonthOnMonthReportComponent implements OnInit {
   constructor(private oDataService: FinanceOdataService, private modalService: NzModalService) {

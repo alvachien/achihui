@@ -1,9 +1,7 @@
 <div *transloco="let t">
   <nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')">
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item
-        ><a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item><a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a></nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Nav.Home' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
@@ -60,8 +58,7 @@
           <nz-option
             *ngFor="let cr of arCurrencies"
             [nzValue]="cr.Currency"
-            [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"
-          ></nz-option>
+            [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
         </nz-select>
         <ng-template #currTpl let-control>
           <ng-container *ngIf="control.hasError('required')">

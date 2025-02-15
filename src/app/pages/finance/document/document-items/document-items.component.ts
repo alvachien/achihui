@@ -6,8 +6,10 @@ import {
   Validator,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { UIMode } from 'actslib';
 
 import {
@@ -22,24 +24,41 @@ import {
   UIOrderForSelection,
 } from '../../../../model';
 import { SafeAny } from 'src/common';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 @Component({
-    selector: 'hih-fin-document-items',
-    templateUrl: './document-items.component.html',
-    styleUrls: ['./document-items.component.less'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => DocumentItemsComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => DocumentItemsComponent),
-            multi: true,
-        },
-    ],
-    standalone: false
+  selector: 'hih-fin-document-items',
+  templateUrl: './document-items.component.html',
+  styleUrls: ['./document-items.component.less'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DocumentItemsComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => DocumentItemsComponent),
+      multi: true,
+    },
+  ],
+  imports: [
+    NzAlertModule,
+    NzTableModule,
+    NzDividerModule,
+    NzFormModule,
+    NzSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputNumberModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

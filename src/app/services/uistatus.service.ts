@@ -1,9 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum } from '../model';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 
 export interface DocInsightOption {
   SelectedDataRange: moment.Moment[];

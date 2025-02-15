@@ -65,7 +65,7 @@
   <!-- Ref doc. ID -->
   <div class="achih-control-full-width" *ngIf="refDocId">
     <label>{{ 'Finance.RefDoc' | transloco }}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">
+    <button nz-button nzType="link" (click)="onRefDocClick(refDocId!)">
       {{ refDocId }}
     </button>
   </div>

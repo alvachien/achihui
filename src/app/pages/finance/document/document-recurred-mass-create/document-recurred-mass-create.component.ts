@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, UntypedFormArray, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   financeDocTypeNormal,
@@ -38,6 +38,19 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 class DocumentCountByDateRange {
   StartDate: moment.Moment | null = null;
@@ -56,10 +69,27 @@ class DocumentCountByDateRange {
 }
 
 @Component({
-    selector: 'hih-document-recurred-mass-create',
-    templateUrl: './document-recurred-mass-create.component.html',
-    styleUrls: ['./document-recurred-mass-create.component.less'],
-    standalone: false
+  selector: 'hih-document-recurred-mass-create',
+  templateUrl: './document-recurred-mass-create.component.html',
+  styleUrls: ['./document-recurred-mass-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzTableModule,
+    NzCollapseModule,
+    DocumentNormalMassCreateItemComponent,
+    NzInputNumberModule,
+    NzDescriptionsModule,
+    NzResultModule,
+    NzDividerModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

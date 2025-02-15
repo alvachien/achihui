@@ -89,7 +89,7 @@ export function HttpLoaderTestFactory(http: HttpClient): TranslateHttpLoader {
 The following code snipets coming from here <https://netbasal.gitbook.io/transloco/general/unit-testing.>
 
 ```typescript
-import { TranslocoTestingModule } from '@ngneat/transloco';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import en from '../assets/i18n/en.json';
 import es from '../assets/i18n/es.json';
 

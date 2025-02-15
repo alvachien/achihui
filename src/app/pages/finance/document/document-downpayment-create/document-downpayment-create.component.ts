@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -34,12 +34,40 @@ import { costObjectValidator } from '../../../../uimodel';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { DocumentHeaderComponent } from '../document-header';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 
 @Component({
-    selector: 'hih-fin-document-downpayment-create',
-    templateUrl: './document-downpayment-create.component.html',
-    styleUrls: ['./document-downpayment-create.component.less'],
-    standalone: false
+  selector: 'hih-fin-document-downpayment-create',
+  templateUrl: './document-downpayment-create.component.html',
+  styleUrls: ['./document-downpayment-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputNumberModule,
+    NzDividerModule,
+    DocumentHeaderComponent,
+    AccountExtraDownpaymentComponent,
+    NzSelectModule,
+    NzSpinModule,
+    NzResultModule,
+    NzButtonModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match

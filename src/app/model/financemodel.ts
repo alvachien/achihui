@@ -1,5 +1,5 @@
 import * as hih from './common';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SafeAny } from 'src/common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

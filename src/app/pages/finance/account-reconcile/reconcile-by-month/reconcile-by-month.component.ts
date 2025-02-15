@@ -1,8 +1,23 @@
+import { CurrencyPipe, NgSwitch } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { finalize, forkJoin, ReplaySubject, takeUntil } from 'rxjs';
 
 import {
@@ -23,10 +38,31 @@ interface FastInputExpectedResult {
 }
 
 @Component({
-    selector: 'hih-reconcile-by-month',
-    templateUrl: './reconcile-by-month.component.html',
-    styleUrls: ['./reconcile-by-month.component.less'],
-    standalone: false
+  selector: 'hih-reconcile-by-month',
+  templateUrl: './reconcile-by-month.component.html',
+  styleUrls: ['./reconcile-by-month.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    TranslocoModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzInputModule,
+    NzTableModule,
+    NzDividerModule,
+    NzSwitchModule,
+    NzModalModule,
+    NzToolTipModule,
+    NzSwitchModule,
+    NzIconModule,
+    NgSwitch,
+    CurrencyPipe,
+    NzInputNumberModule,
+  ]
 })
 export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestroy {
   currentStep = 0;

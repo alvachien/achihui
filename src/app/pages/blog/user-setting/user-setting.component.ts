@@ -1,19 +1,31 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '../../../model';
 import { BlogOdataService } from '../../../services';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
 
 @Component({
-    selector: 'hih-user-setting',
-    templateUrl: './user-setting.component.html',
-    styleUrls: ['./user-setting.component.less'],
-    standalone: false
+  selector: 'hih-user-setting',
+  templateUrl: './user-setting.component.html',
+  styleUrls: ['./user-setting.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    TranslocoModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule
+  ]
 })
 export class UserSettingComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

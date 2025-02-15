@@ -16,15 +16,13 @@
         <td>
           <nz-form-item>
             <nz-form-control nzHasFeedback [nzErrorTip]="amountTpl">
-              <nz-input-number-group [nzAddOnAfter]="data.TranCurr">
-                <nz-input-number
-                  [nzMin]="0.01"
-                  [nzStep]="0.01"
-                  [(ngModel)]="data.TranAmount"
-                  [nzPlaceHolder]="'Finance.Amount' | transloco"
-                >
-                </nz-input-number>
-              </nz-input-number-group>
+              <nz-input-number
+                [nzMin]="0.01"
+                [nzStep]="0.01"
+                [(ngModel)]="data.TranAmount"
+                [nzPlaceHolder]="'Finance.Amount' | transloco">
+                <span nzInputAddonAfter [ngModel]="data.TranCurr"></span>
+              </nz-input-number>
               <ng-template #amountTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
                   {{ 'Common.FieldIsMandatory' | transloco }}

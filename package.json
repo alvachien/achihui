@@ -32,7 +32,7 @@
     "@angular/platform-browser": "^19.1.5",
     "@angular/platform-browser-dynamic": "^19.1.5",
     "@angular/router": "^19.1.5",
-    "@ngneat/transloco": "^6.0.4",
+    "@jsverse/transloco": "^7.5.1",
     "actslib": "^0.5.66",
     "angular-auth-oidc-client": "^19.0.0",
     "echarts": "^5.6.0",

@@ -4,9 +4,9 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
@@ -34,12 +34,36 @@ import {
 import { DocumentChangeDateDialogComponent } from '../document-change-date-dialog';
 import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialog';
 import { SafeAny } from 'src/common';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { DecimalPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'hih-fin-document-list',
-    templateUrl: './document-list.component.html',
-    styleUrls: ['./document-list.component.less'],
-    standalone: false
+  selector: 'hih-fin-document-list',
+  templateUrl: './document-list.component.html',
+  styleUrls: ['./document-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzInputModule,
+    NzDividerModule,
+    NzDropDownModule,
+    NzTableModule,
+    NzDatePickerModule,
+    NzPopconfirmModule,
+    DecimalPipe,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -265,9 +289,9 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.fetchData(
         fieldName && fieldOrder
           ? {
-              field: fieldName,
-              order: fieldOrder,
-            }
+            field: fieldName,
+            order: fieldOrder,
+          }
           : undefined
       );
     }

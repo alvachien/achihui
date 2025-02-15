@@ -20,7 +20,7 @@ import {
 import { KatexOptions } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
@@ -30,7 +30,7 @@ declare const monaco: any;
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { SafeAny } from 'src/common';
 
 @Component({
@@ -50,7 +50,9 @@ import { SafeAny } from 'src/common';
             multi: true,
         },
     ],
-    standalone: false
+    imports: [
+      TranslocoModule
+    ]
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() editorID = '';

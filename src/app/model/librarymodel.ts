@@ -1,5 +1,5 @@
 import { Dictionary } from 'actslib';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SafeAny } from 'src/common';
 import * as hih from './common';
 

@@ -3,9 +3,9 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NumberUtility } from 'actslib';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
@@ -22,14 +22,28 @@ import {
   momentDateFormat,
 } from 'src/app/model';
 import { FinanceOdataService, UIStatusService } from 'src/app/services';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { FormsModule } from '@angular/forms';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
-    selector: 'hih-cash-month-on-month-report',
-    templateUrl: './cash-month-on-month-report.component.html',
-    styleUrls: ['./cash-month-on-month-report.component.less'],
-    standalone: false
+  selector: 'hih-cash-month-on-month-report',
+  templateUrl: './cash-month-on-month-report.component.html',
+  styleUrls: ['./cash-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzRadioModule,
+    NzGridModule,
+    FormsModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
 export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

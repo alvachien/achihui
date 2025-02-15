@@ -4,8 +4,8 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 
 import {
   ModelUtility,
@@ -22,6 +22,28 @@ import {
 } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { DecimalPipe } from '@angular/common';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzCalendarModule } from 'ng-zorro-antd/calendar';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 class DateCellData {
   public CurrentDate: moment.Moment | null = null;
@@ -30,16 +52,33 @@ class DateCellData {
 }
 
 @Component({
-    selector: 'hih-finance',
-    templateUrl: './finance.component.html',
-    styleUrls: ['./finance.component.less'],
-    standalone: false
+  selector: 'hih-finance',
+  templateUrl: './finance.component.html',
+  styleUrls: ['./finance.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSwitchModule,
+    NzResultModule,
+    NzCardModule,
+    NzStatisticModule,
+    NzDividerModule,
+    NzCalendarModule,
+    FormsModule,
+    NzPopconfirmModule,
+    NzToolTipModule,
+    NzIconModule,
+    NzTypographyModule,
+    DecimalPipe,
+    NzGridModule,
+    TranslocoModule,
+  ]
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _selectedYear: number | null = null;
-  private _selectedMonth: number | null = null;  
+  private _selectedMonth: number | null = null;
 
   public selectedDate: Date | null = null;
   isLoadingResults: boolean;
@@ -374,8 +413,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
 
-    switch(ncell) {
-      case 1: 
+    switch (ncell) {
+      case 1:
         dtbgn.startOf('month');
         dtend.endOf('month');
         this.uiService.docInsightOption = {
@@ -384,7 +423,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: true,
         };
         break;
-      case 2: 
+      case 2:
         dtbgn.startOf('month');
         dtend.endOf('month');
         this.uiService.docInsightOption = {
@@ -393,7 +432,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: false,
         };
         break;
-      case 3: 
+      case 3:
         dtbgn.startOf('year');
         dtend.endOf('year');
         this.uiService.docInsightOption = {
@@ -402,7 +441,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: true,
         };
         break;
-      case 4: 
+      case 4:
         dtbgn.startOf('year');
         dtend.endOf('year');
         this.uiService.docInsightOption = {
@@ -414,7 +453,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       default:
         break;
     }
-    this.router.navigate(['/finance/insight']);    
+    this.router.navigate(['/finance/insight']);
   }
 
   private _updateSelectedDate() {
@@ -425,10 +464,28 @@ export class FinanceComponent implements OnInit, OnDestroy {
 }
 
 @Component({
-    selector: 'hih-finance-asset-deprec-dlg',
-    templateUrl: './finance-asset-deprec.dlg.html',
-    styleUrls: ['./finance-asset-deprec.dlg.less'],
-    standalone: false
+  selector: 'hih-finance-asset-deprec-dlg',
+  templateUrl: './finance-asset-deprec.dlg.html',
+  styleUrls: ['./finance-asset-deprec.dlg.less'],
+  imports: [
+    NzTableModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzSelectModule,
+    NzButtonModule,
+    NzIconModule, 
+    DecimalPipe, 
+    NzGridModule,
+    NzCalendarModule,
+    NzSwitchModule,
+    NzToolTipModule,
+    NzLayoutModule,
+    NzIconModule,
+    TranslocoModule,
+  ]
 })
 export class FinanceAssetDepreciationDlgComponent {
   @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];
@@ -441,7 +498,7 @@ export class FinanceAssetDepreciationDlgComponent {
     private odataSrv: FinanceOdataService,
     private messageService: NzMessageService,
     private changeDetectRef: ChangeDetectorRef
-  ) {}
+  ) { }
 
   destroyModal(): void {
     this.modal.destroy({ data: '' });

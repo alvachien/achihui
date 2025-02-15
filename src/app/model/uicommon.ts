@@ -15,7 +15,7 @@ import {
   financeAccountCategoryLendTo,
 } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
-import * as moment from 'moment';
+import moment from 'moment';
 import { LocationTypeEnum } from './librarymodel';
 import { SafeAny } from 'src/common';
 

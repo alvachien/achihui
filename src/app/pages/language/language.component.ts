@@ -2,10 +2,16 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../../model';
 import { LanguageOdataService } from '../../services';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -13,7 +19,16 @@ import { LanguageOdataService } from '../../services';
     selector: 'hih-language',
     templateUrl: './language.component.html',
     styleUrls: ['./language.component.less'],
-    standalone: false
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      TranslocoModule,
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzTableModule,
+      NzBreadCrumbModule,
+      NzSwitchModule,
+    ]
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

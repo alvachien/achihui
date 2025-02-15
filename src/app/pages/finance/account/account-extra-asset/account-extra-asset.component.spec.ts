@@ -168,7 +168,11 @@ describe('AccountExtraAssetComponent', () => {
       </hih-finance-account-extra-asset>
     </form>
   `,
-    standalone: false
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraAssetComponent,
+    ]
 })
 export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: UntypedFormGroup;

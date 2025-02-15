@@ -1,8 +1,6 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Common.Plan' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Plan' | transloco }}</nz-page-header-title>
@@ -126,9 +124,9 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.ExpectedResult' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
-            <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlan?.TargetBalance"></nz-input-number>
-          </nz-input-number-group>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlan?.TargetBalance">
+            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          </nz-input-number>
         </nz-form-control>
       </nz-form-item>
 
@@ -137,9 +135,9 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Amount' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
-            <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance"></nz-input-number>
-          </nz-input-number-group>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance">
+            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          </nz-input-number>
         </nz-form-control>
       </nz-form-item>
 
@@ -149,9 +147,9 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Difference' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number-group [nzAddOnAfter]="currentPlan?.TranCurrency">
-            <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget"></nz-input-number>
-          </nz-input-number-group>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget">
+            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          </nz-input-number>            
         </nz-form-control>
       </nz-form-item>
     </div>

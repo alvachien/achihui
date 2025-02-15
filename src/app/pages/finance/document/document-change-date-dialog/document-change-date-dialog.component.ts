@@ -1,14 +1,27 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import * as moment from 'moment';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { FinanceOdataService } from 'src/app/services';
 
 @Component({
-    selector: 'hih-document-change-date-dialog',
-    templateUrl: './document-change-date-dialog.component.html',
-    styleUrls: ['./document-change-date-dialog.component.less'],
-    standalone: false
+  selector: 'hih-document-change-date-dialog',
+  templateUrl: './document-change-date-dialog.component.html',
+  styleUrls: ['./document-change-date-dialog.component.less'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzButtonModule,
+    NzInputModule,
+    NzDatePickerModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentChangeDateDialogComponent implements OnInit {
   // Header forum

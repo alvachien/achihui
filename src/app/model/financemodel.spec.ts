@@ -48,7 +48,7 @@ import {
   FinanceReportByAccount,
   BalanceSheetReport,
 } from './financemodel';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
 

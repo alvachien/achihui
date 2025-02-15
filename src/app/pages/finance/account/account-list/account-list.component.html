@@ -1,9 +1,9 @@
 <nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item>
+        <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a>
+      </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'Finance.Accounts' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Finance.Account' | transloco }}</nz-page-header-title>
@@ -55,9 +55,7 @@
               nzPopconfirmPlacement="bottom"
               (nzOnConfirm)="onDelete(data.Id!)"
               nzType="link"
-              nzDanger
-              >{{ 'Common.Delete' | transloco }}</a
-            >
+              nzDanger>{{ 'Common.Delete' | transloco }}</a>
             <nz-dropdown-menu #menuForChange="nzDropdownMenu">
               <ul nz-menu>
                 <li nz-menu-item (click)="onEdit(data.Id!)">

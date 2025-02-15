@@ -2,7 +2,7 @@
 // Unit test for librarymodel.ts
 //
 
-import * as moment from 'moment';
+import moment from 'moment';
 import {
   Location,
   BookCategory,

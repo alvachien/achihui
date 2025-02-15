@@ -9,7 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { ViewChild, Component } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
@@ -397,7 +397,11 @@ describe('AccountExtraDownpaymentComponent', () => {
       </hih-finance-account-extra-downpayment>
     </form>
   `,
-    standalone: false
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraDownpaymentComponent,
+    ]
 })
 export class FinanceAccountExtraDPTestFormComponent {
   public formGroup: UntypedFormGroup;

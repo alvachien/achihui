@@ -3,8 +3,8 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 
 import {
   ModelUtility,
@@ -19,13 +19,35 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { NumberUtility } from 'actslib';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { FormsModule } from '@angular/forms';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'hih-finance-report-trantype',
-    templateUrl: './tran-type-report.component.html',
-    styleUrls: ['./tran-type-report.component.less'],
-    standalone: false
+  selector: 'hih-finance-report-trantype',
+  templateUrl: './tran-type-report.component.html',
+  styleUrls: ['./tran-type-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzRadioModule,
+    NzTableModule,
+    FormsModule,
+    NzDividerModule,
+    NzGridModule,
+    NzProgressModule,
+    DecimalPipe,
+    TranslocoModule,
+  ]
 })
 export class TranTypeReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -1,12 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
@@ -22,10 +30,22 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
 
 @Component({
-    selector: 'hih-fin-order-detail',
-    templateUrl: './order-detail.component.html',
-    styleUrls: ['./order-detail.component.less'],
-    standalone: false
+  selector: 'hih-fin-order-detail',
+  templateUrl: './order-detail.component.html',
+  styleUrls: ['./order-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzFormModule,
+    NzInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzTableModule,
+    NzSelectModule,
+    NzResultModule,
+    TranslocoModule,
+  ]
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

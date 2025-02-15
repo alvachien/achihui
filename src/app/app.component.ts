@@ -1,17 +1,34 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
-import { TranslocoService } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { Router, RouterModule } from '@angular/router';
 
 import { environment } from '../environments/environment';
 import { ModelUtility, ConsoleLogTypeEnum } from './model';
 import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
-    selector: 'hih-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.less'],
-    standalone: false
+  selector: 'hih-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.less'],
+  imports: [
+    TranslocoModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzIconModule,
+    NzInputModule,
+    NzDropDownModule,
+    NzTableModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;

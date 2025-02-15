@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
@@ -19,12 +19,32 @@ import {
 import { UITableColumnItem } from '../../../../uimodel';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 import { SafeAny } from 'src/common';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'hih-fin-account-list',
-    templateUrl: './account-list.component.html',
-    styleUrls: ['./account-list.component.less'],
-    standalone: false
+  selector: 'hih-fin-account-list',
+  templateUrl: './account-list.component.html',
+  styleUrls: ['./account-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzDividerModule,
+    NzTableModule,
+    NzButtonModule,
+    NzPopconfirmModule,
+    NzDropDownModule,
+    NgClass,
+    TranslocoModule,
+  ]
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

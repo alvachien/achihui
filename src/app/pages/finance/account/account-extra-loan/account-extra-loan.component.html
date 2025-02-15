@@ -121,7 +121,7 @@
   <!-- Ref doc. ID -->
   <div *ngIf="refDocId">
     <label>{{ 'Finance.RefDoc' | transloco }}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">
+    <button nz-button nzType="link" (click)="onRefDocClick(refDocId!)">
       {{ refDocId }}
     </button>
   </div>

@@ -4,7 +4,7 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
 
 import {
@@ -19,15 +19,35 @@ import {
   GeneralFilterOperatorEnum,
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { NumberUtility } from 'actslib';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'hih-finance-report-account',
-    templateUrl: './account-report.component.html',
-    styleUrls: ['./account-report.component.less'],
-    standalone: false
+  selector: 'hih-finance-report-account',
+  templateUrl: './account-report.component.html',
+  styleUrls: ['./account-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzCardModule,
+    NzGridModule,
+    NgxEchartsModule,
+    NzDividerModule,
+    NzTableModule,
+    DecimalPipe,
+    TranslocoModule,
+  ]
 })
 export class AccountReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { BookCategory } from 'src/app/model';
 import { LibraryStorageService } from 'src/app/services';
@@ -9,7 +12,11 @@ import { LibraryStorageService } from 'src/app/services';
     selector: 'hih-book-category-selection-dlg',
     templateUrl: './book-category-selection-dlg.component.html',
     styleUrls: ['./book-category-selection-dlg.component.less'],
-    standalone: false
+    imports: [
+      NzTableModule,
+      NzCheckboxModule,
+      TranslocoModule,
+    ]
 })
 export class BookCategorySelectionDlgComponent implements OnInit {
   checked = false;

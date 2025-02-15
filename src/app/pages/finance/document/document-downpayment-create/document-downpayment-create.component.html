@@ -1,11 +1,8 @@
 <div *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-      >
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'Common.Create' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
@@ -29,8 +26,7 @@
         formControlName="headerControl"
         [arDocTypes]="arDocTypes"
         [arCurrencies]="arCurrencies"
-        [baseCurrency]="baseCurrency"
-      >
+        [baseCurrency]="baseCurrency">
       </hih-fin-document-header>
 
       <nz-divider></nz-divider>
@@ -133,8 +129,7 @@
           <nz-result
             nzStatus="success"
             [nzTitle]="'Finance.DocumentPosted' | transloco"
-            [nzSubTitle]="'Finance.DocumentPosted' | transloco"
-          >
+            [nzSubTitle]="'Finance.DocumentPosted' | transloco">
             <div nz-result-extra>
               <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
                 {{ 'Common.Display' | transloco }}
@@ -149,8 +144,7 @@
           <nz-result
             [nzTitle]="'Common.SubmissionFailed' | transloco"
             nzStatus="error"
-            [nzSubTitle]="'Common.ResubmissionHint' | transloco"
-          >
+            [nzSubTitle]="'Common.ResubmissionHint' | transloco">
             <div nz-result-content>
               <div class="desc">
                 <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
@@ -181,8 +175,7 @@
       id="button_next_step"
       (click)="next()"
       *ngIf="currentStep < 3"
-      [disabled]="!nextButtonEnabled"
-    >
+      [disabled]="!nextButtonEnabled">
       {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
     </button>
   </div>

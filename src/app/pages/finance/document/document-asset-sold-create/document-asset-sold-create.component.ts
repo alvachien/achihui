@@ -9,10 +9,12 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -41,12 +43,38 @@ import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from 'src/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 @Component({
-    selector: 'hih-fin-document-asset-sold-create',
-    templateUrl: './document-asset-sold-create.component.html',
-    styleUrls: ['./document-asset-sold-create.component.less'],
-    standalone: false
+  selector: 'hih-fin-document-asset-sold-create',
+  templateUrl: './document-asset-sold-create.component.html',
+  styleUrls: ['./document-asset-sold-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    DocumentHeaderComponent,
+    DocumentItemsComponent,
+    NzDividerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputNumberModule,
+    NzSpinModule,
+    NzResultModule,
+    TranslocoModule,
+  ]
 })
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

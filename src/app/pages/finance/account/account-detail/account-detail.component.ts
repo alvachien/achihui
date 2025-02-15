@@ -1,12 +1,20 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
-import * as moment from 'moment';
+import moment from 'moment';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 import {
   Account,
@@ -54,10 +62,25 @@ import { costObjectValidator } from 'src/app/uimodel';
 import { SafeAny } from 'src/common';
 
 @Component({
-    selector: 'hih-fin-account-detail',
-    templateUrl: './account-detail.component.html',
-    styleUrls: ['./account-detail.component.less'],
-    standalone: false
+  selector: 'hih-fin-account-detail',
+  templateUrl: './account-detail.component.html',
+  styleUrls: ['./account-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDividerModule,
+    NzInputNumberModule,
+    TranslocoModule,
+    AccountExtraAssetComponent,
+    AccountExtraDownpaymentComponent,
+    AccountExtraLoanComponent,
+  ]
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

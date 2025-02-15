@@ -13,7 +13,7 @@ import {
   TagTypeEnum,
   TagCount,
 } from './common';
-import * as moment from 'moment';
+import moment from 'moment';
 
 describe('isOverviewDateInScope', () => {
   let dt: moment.Moment;
