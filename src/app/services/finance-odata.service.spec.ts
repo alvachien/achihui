@@ -31,7 +31,7 @@ import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 describe('FinanceOdataService', () => {

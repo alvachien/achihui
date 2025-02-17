@@ -10,8 +10,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
-import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from 'src/app/model';
-import { EventStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from '@model/index';
+import { EventStorageService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-recur-event-list',

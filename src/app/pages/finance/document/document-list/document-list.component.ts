@@ -33,7 +33,7 @@ import {
 } from '../../../../model';
 import { DocumentChangeDateDialogComponent } from '../document-change-date-dialog';
 import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';

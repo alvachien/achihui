@@ -3,13 +3,13 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { TranType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
-import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { TranType, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
+import { FinanceOdataService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-fin-tran-type-list',

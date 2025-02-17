@@ -8,7 +8,7 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   Account,
   AccountStatusEnum,
@@ -24,10 +24,10 @@ import {
   getOverviewScopeRange,
   momentDateFormat,
   ControlCenter,
-} from '../../../../model';
+} from '@model/index';
 import moment from 'moment';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSelectModule } from 'ng-zorro-antd/select';

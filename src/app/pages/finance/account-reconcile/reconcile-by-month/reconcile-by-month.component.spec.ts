@@ -21,12 +21,12 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
 import { FakeDataHelper, asyncData, getTranslocoModule } from 'src/testing';
 import { ReconcileByMonthComponent } from './reconcile-by-month.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-
-import { UIStatusService } from '../../services';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+
+import { UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-fatal-error',

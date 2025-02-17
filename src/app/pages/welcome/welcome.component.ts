@@ -7,7 +7,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
-import { environment } from 'src/environments/environment';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'hih-welcome',

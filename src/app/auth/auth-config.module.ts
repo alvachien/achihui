@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
-import { environment } from 'src/environments/environment';
+import { environment } from '@environments/environment';
 
 // "authCallback id token expired" after upgrade to 14.1.5
 // https://github.com/damienbod/angular-auth-oidc-client/issues/1546
@@ -33,4 +33,4 @@ import { environment } from 'src/environments/environment';
   ],
   exports: [AuthModule],
 })
-export class AuthConfigModule {}
+export class AuthConfigModule { }

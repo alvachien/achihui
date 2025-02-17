@@ -14,7 +14,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo } from '../../../../model';
 
 import { CashReportComponent } from './cash-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 xdescribe('CashReportComponent', () => {

@@ -31,7 +31,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { AccountReportComponent } from './account-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountReportComponent', () => {

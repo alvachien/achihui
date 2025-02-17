@@ -28,7 +28,7 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TranTypeMonthOnMonthReportComponent', () => {

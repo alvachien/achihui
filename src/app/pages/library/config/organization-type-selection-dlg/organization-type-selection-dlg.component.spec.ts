@@ -6,8 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { FakeDataHelper, getTranslocoModule } from 'src/testing';
 import { LibraryUIModule } from '../../library-ui.module';
 

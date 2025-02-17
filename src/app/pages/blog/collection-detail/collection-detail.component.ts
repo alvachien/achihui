@@ -6,14 +6,14 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
-
-import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } from '../../../model';
-import { BlogOdataService } from '../../../services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+
+import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } from '@model/index';
+import { BlogOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-blog-collection-detail',

@@ -35,7 +35,7 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentLoanCreateComponent', () => {

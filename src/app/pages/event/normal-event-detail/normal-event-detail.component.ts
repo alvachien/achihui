@@ -14,8 +14,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
-import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from '../../../model';
-import { HomeDefOdataService, EventStorageService } from '../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from '@model/index';
+import { HomeDefOdataService, EventStorageService } from '@services/index';
 
 @Component({
   selector: 'hih-normal-event-detail',

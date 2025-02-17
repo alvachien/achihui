@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, BlogOdataService } from '../../../../serv
 import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CollectionListComponent', () => {

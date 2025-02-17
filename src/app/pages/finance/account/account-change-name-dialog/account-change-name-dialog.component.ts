@@ -5,8 +5,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-account-change-name-dialog',

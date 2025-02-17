@@ -25,7 +25,7 @@ import {
   ConsoleLogTypeEnum,
   DocumentType,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzInputModule } from 'ng-zorro-antd/input';

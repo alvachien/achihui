@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   ITableFilterValues,
   Account,
@@ -15,10 +15,10 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   AccountCategory,
-} from '../../../../model';
-import { UITableColumnItem } from '../../../../uimodel';
+} from '@model/index';
+import { UITableColumnItem } from '@uimodel/index';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';

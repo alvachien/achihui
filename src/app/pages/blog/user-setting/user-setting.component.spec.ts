@@ -11,7 +11,7 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { UserSettingComponent } from './user-setting.component';
 import { AuthService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UserSettingComponent', () => {

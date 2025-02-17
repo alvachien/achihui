@@ -4,9 +4,6 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -14,6 +11,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
 
 @Component({
     selector: 'hih-control-center-list',

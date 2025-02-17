@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 import { InfoMessage } from '../../model';
 import { NzTableModule } from 'ng-zorro-antd/table';

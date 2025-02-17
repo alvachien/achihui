@@ -23,7 +23,7 @@ import {
   UIAccountForSelection,
   UIOrderForSelection,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzTableModule } from 'ng-zorro-antd/table';

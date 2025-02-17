@@ -1,6 +1,6 @@
 import * as hih from './common';
 import moment from 'moment';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /**
  * General event

@@ -6,8 +6,8 @@ import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,

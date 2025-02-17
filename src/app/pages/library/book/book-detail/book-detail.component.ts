@@ -6,6 +6,14 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 import {
   ModelUtility,
@@ -16,20 +24,12 @@ import {
   Organization,
   BookCategory,
   Location,
-} from '../../../model';
-import { HomeDefOdataService, LibraryStorageService } from '../../../services';
-import { PersonSelectionDlgComponent } from '../person-selection-dlg';
-import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg';
-import { BookCategorySelectionDlgComponent } from '../config/book-category-selection-dlg';
-import { LocationSelectionDlgComponent } from '../location-selection-dlg';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzTableModule } from 'ng-zorro-antd/table';
+} from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
+import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
+import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 
 @Component({
     selector: 'hih-book-detail',

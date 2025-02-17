@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { UIMode } from 'actslib';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 /* eslint-disable @typescript-eslint/no-inferrable-types */

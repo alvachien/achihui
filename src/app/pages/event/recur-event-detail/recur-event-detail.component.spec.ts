@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService 
 import { UserAuthInfo, RecurEvent } from '../../../../model';
 import { RecurEventDetailComponent } from './recur-event-detail.component';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('RecurEventDetailComponent', () => {

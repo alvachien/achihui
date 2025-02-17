@@ -9,11 +9,11 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
-import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
-import { UserAuthInfo } from 'src/app/model';
-import { SafeAny } from 'src/common';
+import { UserAuthInfo } from '@model/index';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentChangeDateDialogComponent', () => {

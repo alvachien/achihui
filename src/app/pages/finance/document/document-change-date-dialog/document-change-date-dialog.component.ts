@@ -7,7 +7,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalRef } from 'ng-zorro-antd/modal';
-import { FinanceOdataService } from 'src/app/services';
+import { FinanceOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-document-change-date-dialog',

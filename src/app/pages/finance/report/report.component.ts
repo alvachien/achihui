@@ -5,7 +5,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
-import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
+//import { NzStatisticValueType } from 'ng-zorro-antd/statistic';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -37,7 +37,7 @@ import { FinanceOdataService, HomeDefOdataService } from '../../../services';
 import moment from 'moment';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../document/document-item-view';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
     selector: 'hih-finance-report',
@@ -79,8 +79,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   reportByMostIncomeInLastMonth: FinanceReportMostExpenseEntry[] = [];
   totalIncomeInLastMonth = 0;
   // Card: Account
-  reportAccountAsset: NzStatisticValueType = 0;
-  reportAccountLibility: NzStatisticValueType = 0;
+  reportAccountAsset = 0;
+  reportAccountLibility = 0;
   chartAccountOption?: EChartsOption;
   // Card: Control center
   chartControlCenterOption?: EChartsOption;

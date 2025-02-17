@@ -30,9 +30,9 @@ import {
   TranType,
   RepeatFrequencyEnum,
   UIDisplayString,
-} from '../../../../model';
-import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';

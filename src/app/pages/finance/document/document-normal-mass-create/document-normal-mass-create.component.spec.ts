@@ -23,7 +23,7 @@ import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentNormalMassCreateComponent', () => {

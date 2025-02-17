@@ -5,13 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
-
-import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '../../../model';
-import { BlogOdataService } from '../../../services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
+
+import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '@model/index';
+import { BlogOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-user-setting',

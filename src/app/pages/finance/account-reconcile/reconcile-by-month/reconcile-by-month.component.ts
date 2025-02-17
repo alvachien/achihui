@@ -28,9 +28,9 @@ import {
   ConsoleLogTypeEnum,
   ModelUtility,
   UIAccountForSelection,
-} from 'src/app/model';
-import { FinanceOdataService, HomeDefOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 interface FastInputExpectedResult {
   Month: string;

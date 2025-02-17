@@ -35,7 +35,7 @@ import {
   financeTranTypeInterestIn,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';

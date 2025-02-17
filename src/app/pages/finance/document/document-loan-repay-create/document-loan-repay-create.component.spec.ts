@@ -26,7 +26,7 @@ import { UserAuthInfo, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create.component';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentLoanRepayCreateComponent', () => {

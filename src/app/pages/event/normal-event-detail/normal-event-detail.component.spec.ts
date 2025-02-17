@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService 
 import { UserAuthInfo, GeneralEvent } from '../../../../model';
 import { NormalEventDetailComponent } from './normal-event-detail.component';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('NormalEventDetailComponent', () => {

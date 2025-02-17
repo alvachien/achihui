@@ -28,9 +28,9 @@ import {
   RepeatDatesWithAmountAndInterestAPIInput,
   RepaymentMethodEnum,
   UIDisplayStringUtil,
-} from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSelectModule } from 'ng-zorro-antd/select';

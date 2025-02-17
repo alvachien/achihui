@@ -3,13 +3,13 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
-import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { FormsModule } from '@angular/forms';
+
+import { AccountCategory, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
+import { FinanceOdataService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-fin-account-category-list',

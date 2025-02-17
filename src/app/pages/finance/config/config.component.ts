@@ -3,9 +3,9 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
-
-import { HomeDefOdataService } from '../../../services';
 import { TranslocoModule } from '@jsverse/transloco';
+
+import { HomeDefOdataService } from '@services/index';
 import { AccountCategoryListComponent } from './account-category-list';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { DocTypeListComponent } from './doc-type-list';

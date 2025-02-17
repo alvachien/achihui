@@ -5,31 +5,31 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 
-import { ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, Location, ModelUtility } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
-    selector: 'hih-organization-list',
-    templateUrl: './organization-list.component.html',
-    styleUrls: ['./organization-list.component.less'],
+    selector: 'hih-location-list',
+    templateUrl: './location-list.component.html',
+    styleUrls: ['./location-list.component.less'],
     imports: [
       NzPageHeaderModule,
-      NzSpinModule,
       NzBreadCrumbModule,
+      NzSpinModule,
       NzTableModule,
       NzDividerModule,
       TranslocoModule,
     ]
 })
-export class OrganizationListComponent implements OnInit, OnDestroy {
+export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
-  dataSet: Organization[] = [];
+  dataSet: Location[] = [];
 
   constructor(
     public odataService: LibraryStorageService,
@@ -38,7 +38,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
     public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...',
+      'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -47,22 +47,22 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit...',
+      'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit...',
       ConsoleLogTypeEnum.debug
     );
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
     this.odataService
-      .fetchAllOrganizations()
+      .fetchAllLocations()
       .pipe(
         takeUntil(this._destroyed$),
         finalize(() => (this.isLoadingResults = false))
       )
       .subscribe({
-        next: (x: Organization[]) => {
+        next: (x: Location[]) => {
           ModelUtility.writeConsoleLog(
-            'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit fetchAllOrganizations...',
+            'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit fetchAllLocations...',
             ConsoleLogTypeEnum.debug
           );
 
@@ -70,7 +70,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllOrganizations failed ${err}`,
+            `AC_HIH_UI [Error]: Entering LocationListComponent fetchAllLocations failed ${err}`,
             ConsoleLogTypeEnum.error
           );
           this.modalService.error({
@@ -84,7 +84,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnDestroy...',
+      'AC_HIH_UI [Debug]: Entering LocationListComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -95,7 +95,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   public onDisplay(pid: number) {
-    this.router.navigate(['/library/organization/display/' + pid.toString()]);
+    this.router.navigate(['/library/location/display/' + pid.toString()]);
   }
   public onEdit(pid: number) {
     if (pid) {
@@ -110,7 +110,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.odataService.deleteOrganization(pid).subscribe({
+        this.odataService.deleteLocation(pid).subscribe({
           next: () => {
             const sdlg = this.modalService.success({
               nzTitle: translate('Common.Success'),
@@ -126,7 +126,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering OrganizationList onDelete failed ${err}`,
+              `AC_HIH_UI [Error]: Entering LocationList onDelete failed ${err}`,
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
@@ -140,7 +140,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       nzCancelText: 'No',
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering OrganizationList onDelete cancelled`,
+          `AC_HIH_UI [Debug]: Entering LocationList onDelete cancelled`,
           ConsoleLogTypeEnum.debug
         ),
     });

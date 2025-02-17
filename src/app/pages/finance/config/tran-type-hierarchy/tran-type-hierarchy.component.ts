@@ -4,10 +4,10 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
-
-import { ModelUtility, ConsoleLogTypeEnum, TranType } from '../../../../model';
-import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+
+import { ModelUtility, ConsoleLogTypeEnum, TranType } from '@model/index';
+import { FinanceOdataService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-fin-tran-type-hierarchy',

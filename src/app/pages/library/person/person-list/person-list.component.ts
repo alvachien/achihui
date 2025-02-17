@@ -4,14 +4,14 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-
-import { ConsoleLogTypeEnum, ModelUtility, Person } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+
+import { ConsoleLogTypeEnum, ModelUtility, Person } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
 
 @Component({
     selector: 'hih-person-list',

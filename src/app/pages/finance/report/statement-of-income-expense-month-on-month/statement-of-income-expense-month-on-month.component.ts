@@ -19,11 +19,11 @@ import {
   GeneralFilterValueType,
   ModelUtility,
   momentDateFormat,
-} from 'src/app/model';
-import { FinanceOdataService, UIStatusService } from 'src/app/services';
+} from '@model/index';
+import { FinanceOdataService, UIStatusService } from '@services/index';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';

@@ -13,7 +13,7 @@ import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../te
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, momentDateFormat } from '../../../../model';
 import { DocumentItemInsightComponent } from './document-item-insight.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import moment from 'moment';

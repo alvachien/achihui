@@ -52,14 +52,14 @@ import {
   BuildupOrderForSelection,
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
-} from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
+} from '@model/index';
+import { HomeDefOdataService, FinanceOdataService } from '@services/index';
+import { costObjectValidator } from '@uimodel/index';
+import { SafeAny } from '@common/any';
 import { popupDialog } from '../../../message-dialog';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
-import { costObjectValidator } from 'src/app/uimodel';
-import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-account-detail',

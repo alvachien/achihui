@@ -23,7 +23,7 @@ import {
   RepeatFrequencyEnum,
   RepeatedDatesWithAmountAPIOutput,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountExtraDownpaymentComponent', () => {

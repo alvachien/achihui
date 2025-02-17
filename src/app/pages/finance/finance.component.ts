@@ -21,7 +21,7 @@ import {
   momentDateFormat,
 } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';

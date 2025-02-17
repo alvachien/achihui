@@ -12,7 +12,7 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { BookCategoryListComponent } from './book-category-list.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BookCategoryListComponent', () => {

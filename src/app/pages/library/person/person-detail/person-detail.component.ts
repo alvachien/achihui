@@ -6,9 +6,6 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-
-import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '../../../model';
-import { HomeDefOdataService, LibraryStorageService } from '../../../services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -17,6 +14,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 
 @Component({
     selector: 'hih-person-detail',

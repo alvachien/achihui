@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-
-import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
-import { HomeDefOdataService, LibraryStorageService } from '../../../services';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TranslocoModule } from '@jsverse/transloco';
+
+import { ModelUtility, ConsoleLogTypeEnum } from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 
 @Component({
     selector: 'hih-search',

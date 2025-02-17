@@ -17,7 +17,7 @@ import {
 import { HomeMemberRelationEnum } from './homedef';
 import moment from 'moment';
 import { LocationTypeEnum } from './librarymodel';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /**
  * UI Status

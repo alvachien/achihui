@@ -16,10 +16,10 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipe
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
-import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService } from 'src/app/services';
-import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, momentDateFormat } from 'src/app/model';
+import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService } from '@services/index';
+import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, momentDateFormat } from '@model/index';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentAssetValueChangeCreateComponent', () => {

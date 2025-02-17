@@ -20,7 +20,7 @@ import {
   BlogPostTag,
 } from '../../../model';
 import { BlogOdataService } from '../../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';

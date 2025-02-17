@@ -13,7 +13,7 @@ import { TranTypeListComponent } from './tran-type-list.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TranTypeListComponent', () => {

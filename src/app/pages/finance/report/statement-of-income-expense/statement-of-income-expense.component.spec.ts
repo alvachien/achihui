@@ -13,7 +13,7 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { StatementOfIncomeExpenseComponent } from './statement-of-income-expense.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 xdescribe('StatementOfIncomeExpenseComponent', () => {

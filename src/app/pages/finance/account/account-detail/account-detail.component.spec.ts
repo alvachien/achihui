@@ -25,7 +25,7 @@ import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountDetailComponent', () => {

@@ -21,7 +21,7 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
 import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
 import { FinanceComponent } from './finance.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('FinanceComponent', () => {

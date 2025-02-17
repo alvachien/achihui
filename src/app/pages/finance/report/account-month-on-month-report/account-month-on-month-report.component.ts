@@ -6,8 +6,8 @@ import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin } from 'rxjs';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,

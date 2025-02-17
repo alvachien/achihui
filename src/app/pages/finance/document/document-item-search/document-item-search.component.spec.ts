@@ -16,7 +16,7 @@ import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
 import { DocumentItemSearchComponent } from './document-item-search.component';
 import { ReusableComponentsModule } from '../../../reusable-components/reusable-components.module';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemSearchComponent', () => {

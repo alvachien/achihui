@@ -24,7 +24,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, PlanTypeEnum } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { PlanDetailComponent } from './plan-detail.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PlanDetailComponent', () => {

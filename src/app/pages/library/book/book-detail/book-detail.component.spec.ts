@@ -24,7 +24,7 @@ import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
 import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BookDetailComponent', () => {

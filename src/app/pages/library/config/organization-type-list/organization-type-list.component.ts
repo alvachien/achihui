@@ -4,8 +4,8 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
-import { ConsoleLogTypeEnum, ModelUtility, OrganizationType } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, OrganizationType } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 

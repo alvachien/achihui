@@ -38,11 +38,11 @@ import {
   Order,
   DocumentType,
   Currency,
-} from '../../../../model';
-import { costObjectValidator } from '../../../../uimodel';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+} from '@model/index';
+import { costObjectValidator } from '@uimodel/index';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '@services/index';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';

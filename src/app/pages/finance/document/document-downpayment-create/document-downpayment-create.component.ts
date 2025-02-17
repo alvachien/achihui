@@ -33,7 +33,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';

@@ -20,8 +20,8 @@ import {
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { HomeDefOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';

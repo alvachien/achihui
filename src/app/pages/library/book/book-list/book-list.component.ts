@@ -4,16 +4,16 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
-import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+
+import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 
 @Component({
     selector: 'hih-book-list',

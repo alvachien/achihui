@@ -13,10 +13,10 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '../../../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '@services/index';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '@model/index';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-fin-control-center-detail',

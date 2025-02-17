@@ -4,14 +4,14 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '../../../model';
-import { BlogOdataService } from '../../../services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+
+import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '@model/index';
+import { BlogOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-blog-collection-list',

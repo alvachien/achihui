@@ -34,7 +34,7 @@ import {
 } from '../../../../model';
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzResultModule } from 'ng-zorro-antd/result';
 

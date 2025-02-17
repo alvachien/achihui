@@ -27,7 +27,7 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountMonthOnMonthReportComponent', () => {

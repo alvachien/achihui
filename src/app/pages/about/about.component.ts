@@ -3,9 +3,9 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
-import { environment } from '../../../environments/environment';
-import { UIStatusService } from '../../../app/services';
-import { CheckVersionResult } from '../../../app/model';
+import { environment } from '@environments/environment';
+import { UIStatusService } from '@services/index';
+import { CheckVersionResult } from '@model/index';
 
 @Component({
   selector: 'hih-about',

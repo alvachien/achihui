@@ -33,7 +33,7 @@ import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView, momentDateForma
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentRecurredMassCreateComponent', () => {

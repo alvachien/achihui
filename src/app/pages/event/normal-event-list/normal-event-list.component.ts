@@ -11,8 +11,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
-import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from 'src/app/model';
-import { EventStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from '@model/index';
+import { EventStorageService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-normal-event-list',

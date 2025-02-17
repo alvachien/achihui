@@ -31,7 +31,7 @@ import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

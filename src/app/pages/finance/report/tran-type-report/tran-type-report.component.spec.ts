@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportEntryByTransactionType } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { TranTypeReportComponent } from './tran-type-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TranTypeReportComponent', () => {

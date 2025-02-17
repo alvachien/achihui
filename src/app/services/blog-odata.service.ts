@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 import { ConsoleLogTypeEnum, ModelUtility, BlogCollection, BlogPost, BlogPostTag, BlogUserSetting } from '../model';
 import { AuthService } from './auth.service';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Injectable({
   providedIn: 'root',

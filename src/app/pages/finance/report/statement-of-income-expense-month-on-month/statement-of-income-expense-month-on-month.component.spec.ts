@@ -26,7 +26,7 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { StatementOfIncomeExpenseMonthOnMonthComponent } from './statement-of-income-expense-month-on-month.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StatementOfIncomeExpenseMonthOnMonthComponent', () => {

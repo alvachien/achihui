@@ -15,7 +15,7 @@ import { AuthService, UIStatusService, FinanceOdataService } from '../../../../s
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentItemViewComponent } from './document-item-view.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemViewComponent', () => {

@@ -12,7 +12,7 @@ import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   ControlCenter,
   ModelUtility,
@@ -20,7 +20,7 @@ import {
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
-} from '../../../../model';
+} from '@model/index';
 
 @Component({
   selector: 'hih-fin-control-center-hierarchy',

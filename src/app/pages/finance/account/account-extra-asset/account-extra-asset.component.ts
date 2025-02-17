@@ -14,9 +14,9 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import moment from 'moment';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
-import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '../../../../model';
+import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '@model/index';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { TranslocoModule } from '@jsverse/transloco';

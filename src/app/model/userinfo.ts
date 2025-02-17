@@ -1,4 +1,4 @@
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /**
  * User detail

@@ -27,7 +27,7 @@ import {
   RepeatedDatesAPIOutput,
 } from '../../../model';
 import { HomeDefOdataService, EventStorageService, FinanceOdataService } from '../../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-recur-event-detail',

@@ -46,7 +46,7 @@ import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService 
 import { popupDialog } from '../../../message-dialog';
 import moment from 'moment';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';

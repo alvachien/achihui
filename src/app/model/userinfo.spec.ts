@@ -2,7 +2,7 @@
 // Unit test for userinfo.ts
 //
 
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { UserDetail, UserAuthInfo } from './userinfo';
 
 describe('UserDetail', () => {

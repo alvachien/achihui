@@ -12,7 +12,7 @@ import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { SearchComponent } from './search.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SearchComponent', () => {

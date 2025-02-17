@@ -21,9 +21,9 @@ import {
   financePeriodLast6Months,
   FinanceReportByControlCenterMOM,
   ModelUtility,
-} from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-control-center-month-on-month-report',

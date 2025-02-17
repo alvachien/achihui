@@ -1,53 +1,51 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-
-import {
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
-  getUIModeString,
-  Location,
-  UIDisplayString,
-  LocationTypeEnum,
-} from '../../../model';
-import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Organization, OrganizationType } from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
-    selector: 'hih-location-detail',
-    templateUrl: './location-detail.component.html',
-    styleUrls: ['./location-detail.component.less'],
+    selector: 'hih-organization-detail',
+    templateUrl: './organization-detail.component.html',
+    styleUrls: ['./organization-detail.component.less'],
     imports: [
       NzPageHeaderModule,
       NzBreadCrumbModule,
-      NzSpinModule,
       NzFormModule,
       FormsModule,
       ReactiveFormsModule,
+      NzInputModule,
       NzButtonModule,
+      TranslocoModule,
+      NzTableModule,
       NzSelectModule,
-      TranslocoModule
+      NzDividerModule,
     ]
 })
-export class LocationDetailComponent implements OnInit, OnDestroy {
+export class OrganizationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults = false;
   public routerID = -1; // Current object ID in routing
   public currentMode = '';
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
-  arLocationStrings: UIDisplayString[] = [];
+  listTypes: OrganizationType[] = [];
+  allTypes: OrganizationType[] = [];
 
   constructor(
     private storageService: LibraryStorageService,
@@ -57,16 +55,15 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
-    this.arLocationStrings = UIDisplayStringUtil.getLocationTypeEnumDisplayStrings();
     this.detailFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
-      nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
-      locTypeControl: new UntypedFormControl(LocationTypeEnum.PaperBook, [Validators.required]),
-      cmtControl: new UntypedFormControl('', [Validators.maxLength(100)]),
+      nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
+      cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
+      chnIsNativeControl: new UntypedFormControl(false),
     });
   }
 
@@ -76,7 +73,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit...',
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -84,7 +81,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit activateRoute: ${x}`,
+        `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug
       );
 
@@ -107,19 +104,24 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
         case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults = true;
-          this.storageService
-            .readLocation(this.routerID)
+          forkJoin([
+            this.storageService.fetchAllOrganizationTypes(),
+            this.storageService.readOrganization(this.routerID),
+          ])
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
               finalize(() => (this.isLoadingResults = false))
             )
             .subscribe({
-              next: (e: Location) => {
-                this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                this.detailFormGroup.get('cmtControl')?.setValue(e.Comment);
-                this.detailFormGroup.get('locTypeControl')?.setValue(e.LocType);
+              next: (e) => {
+                this.allTypes = e[0];
+
+                this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
+                this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
+                this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
+                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
+                this.listTypes = e[1].Types.slice();
 
                 if (this.uiMode === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -130,7 +132,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
               },
               error: (err) => {
                 ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering LocationDetailComponent ngOnInit readLocation failed ${err}...`,
+                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit readOrganization failed ${err}...`,
                   ConsoleLogTypeEnum.error
                 );
                 this.modalService.error({
@@ -145,9 +147,34 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-
-          break;
+          this.storageService
+            .fetchAllOrganizationTypes()
+            .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              takeUntil(this._destroyed$!),
+              finalize(() => (this.isLoadingResults = false))
+            )
+            .subscribe({
+              next: (rtndata) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
+                  ConsoleLogTypeEnum.debug
+                );
+                this.allTypes = rtndata;
+                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes ${err}...`,
+                  ConsoleLogTypeEnum.error
+                );
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
         }
       }
     });
@@ -155,7 +182,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationDetailComponent OnDestroy...',
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent OnDestroy...',
       ConsoleLogTypeEnum.debug
     );
 
@@ -165,31 +192,51 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAssignType(): void {
+    this.listTypes = [...this.listTypes, new OrganizationType()];
+  }
+  onRemoveTypeAssignment(tid: number): void {
+    const ntypeidx = this.listTypes.findIndex((p) => p.ID === tid);
+    if (ntypeidx !== -1) {
+      this.listTypes.splice(ntypeidx, 1);
+      this.listTypes = [...this.listTypes];
+    }
+  }
+  onTypeModeChanged(tid: SafeAny) {
+    const tidx = this.allTypes.findIndex((p) => p.ID === +tid);
+    if (tidx !== -1) {
+      // TBD
+    } else {
+      // TBD
+    }
+  }
+
   onSave(): void {
     ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationDetailComponent onSave...',
+      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onSave...',
       ConsoleLogTypeEnum.debug
     );
 
-    const objtbo = new Location();
-    objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
-    objtbo.Comment = this.detailFormGroup.get('cmtControl')?.value;
-    objtbo.LocType = this.detailFormGroup.get('locTypeControl')?.value as LocationTypeEnum;
+    const objtbo = new Organization();
+    objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
+    objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
+    objtbo.Types = this.listTypes.slice();
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
     if (this.uiMode === UIMode.Create) {
       this.storageService
-        .createLocation(objtbo)
+        .createOrganization(objtbo)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (e) => {
             // Succeed.
-            this.router.navigate(['/library/location/display/' + e.ID.toString()]);
+            this.router.navigate(['/library/organization/display/' + e.ID.toString()]);
           },
           error: (err) => {
             ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering LocationDetailComponent onSave createLocation failed ${err}...`,
+              `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit createOrganization failed ${err}...`,
               ConsoleLogTypeEnum.error
             );
             this.modalService.error({
@@ -200,8 +247,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
           },
         });
     } else if (this.uiMode === UIMode.Update) {
-      objtbo.ID = this.routerID;
-      // TBD.
+      objtbo.ID = this.detailFormGroup.get('idControl')?.value;
     }
   }
 }

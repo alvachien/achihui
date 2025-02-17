@@ -14,8 +14,8 @@ import {
   Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
   TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
   financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat
-} from 'src/app/model';
-import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+} from '@model/index';
+import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
 interface InsightRecord {
   TransactionDate?: string;

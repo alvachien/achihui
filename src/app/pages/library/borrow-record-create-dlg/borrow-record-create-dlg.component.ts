@@ -3,13 +3,13 @@ import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup 
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-
-import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
-import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+
+import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
+import { LibraryStorageService } from '@services/index';
+import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg';
 
 @Component({
     selector: 'hih-borrow-record-create-dlg',

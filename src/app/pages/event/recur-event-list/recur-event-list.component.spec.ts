@@ -12,7 +12,7 @@ import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../te
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { RecurEventListComponent } from './recur-event-list.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('RecurEventListComponent', () => {

@@ -5,8 +5,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
-import { BookCategory } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { BookCategory } from '@model/index';
+import { LibraryStorageService } from '@services/index';
 
 @Component({
     selector: 'hih-book-category-selection-dlg',

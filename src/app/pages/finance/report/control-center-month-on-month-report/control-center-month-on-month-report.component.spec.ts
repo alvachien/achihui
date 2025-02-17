@@ -28,7 +28,7 @@ import {
 } from '../../../../model';
 import { ControlCenterMonthOnMonthReportComponent } from './control-center-month-on-month-report.component';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ControlCenterMonthOnMonthReportComponent', () => {

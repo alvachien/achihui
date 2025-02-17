@@ -17,7 +17,7 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSpinModule } from 'ng-zorro-antd/spin';

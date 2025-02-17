@@ -20,7 +20,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByOrder } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { OrderReportComponent } from './order-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OrderReportComponent', () => {

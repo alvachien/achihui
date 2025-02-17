@@ -16,7 +16,7 @@ import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } 
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
 import moment from 'moment';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentDetailComponent', () => {

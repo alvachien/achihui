@@ -10,10 +10,10 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AccountChangeNameDialogComponent } from './account-change-name-dialog.component';
-import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { UserAuthInfo } from 'src/app/model';
+import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { UserAuthInfo } from '@model/index';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountChangeNameDialogComponent', () => {

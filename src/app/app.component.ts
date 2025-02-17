@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
@@ -36,16 +36,16 @@ export class AppComponent implements OnInit, OnDestroy {
   public isLoggedIn?: boolean;
   public titleLogin?: string;
   public userDisplayAs?: string;
+  private readonly i18n = inject(NzI18nService);
+  private readonly translocoService = inject(TranslocoService);
+  private readonly _authService = inject(AuthService);
+  private readonly _homeService = inject(HomeDefOdataService);
+  private readonly uiService = inject(UIStatusService);
+  private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
+  private readonly _zone = inject(NgZone);
 
   constructor(
-    private i18n: NzI18nService,
-    private translocoService: TranslocoService,
-    private _authService: AuthService,
-    public _homeService: HomeDefOdataService,
-    private uiService: UIStatusService,
-    private router: Router,
-    private themeService: ThemeService,
-    private _zone: NgZone
   ) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
 
@@ -135,3 +135,4 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 }
+

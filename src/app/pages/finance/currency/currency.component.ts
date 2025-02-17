@@ -3,13 +3,13 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { Currency, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
-import { FinanceOdataService } from '../../../services';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
+
+import { Currency, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
+import { FinanceOdataService } from '@services/index';
 
 @Component({
     selector: 'hih-finance-currency',

@@ -20,7 +20,7 @@ import { UserAuthInfo, FinanceReportByControlCenter } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { ControlCenterReportComponent } from './control-center-report.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ControlCenterReportComponent', () => {

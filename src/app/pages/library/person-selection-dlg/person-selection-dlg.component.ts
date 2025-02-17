@@ -5,8 +5,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
-import { Person } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { Person } from '@model/index';
+import { LibraryStorageService } from '@services/index';
 
 @Component({
     selector: 'hih-person-selection-dlg',

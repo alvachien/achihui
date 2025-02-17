@@ -4,6 +4,11 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import {
   ModelUtility,
@@ -11,13 +16,8 @@ import {
   BlogPost,
   BlogPostStatus_PublishAsPublic,
   BlogPostStatus_PublishAsPrivate,
-} from '../../../model';
-import { BlogOdataService } from '../../../services';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+} from '@model/index';
+import { BlogOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-blog-post-list',
