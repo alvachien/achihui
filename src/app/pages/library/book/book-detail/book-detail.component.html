@@ -25,12 +25,16 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="nnameControl" maxlength="100" required />
         <ng-template #nameTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -41,9 +45,11 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="cnameControl" maxlength="100" />
         <ng-template #nameTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -77,12 +83,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of authorTable.data">
-              <td>{{ data.ID }}</td>
-              <td>{{ data.NativeName }}</td>
-              <td>{{ data.ChineseName }}</td>
-              <td>{{ data.Detail }}</td>
-            </tr>
+            @for(data of authorTable.data; track $index) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ data.NativeName }}</td>
+                <td>{{ data.ChineseName }}</td>
+                <td>{{ data.Detail }}</td>
+              </tr>  
+            }
           </tbody>
         </nz-table>
       </div>
@@ -104,12 +112,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of tranTable.data">
-              <td>{{ data.ID }}</td>
-              <td>{{ data.NativeName }}</td>
-              <td>{{ data.ChineseName }}</td>
-              <td>{{ data.Detail }}</td>
-            </tr>
+            @for(data of tranTable.data; track $index) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ data.NativeName }}</td>
+                <td>{{ data.ChineseName }}</td>
+                <td>{{ data.Detail }}</td>
+              </tr>  
+            }
           </tbody>
         </nz-table>
       </div>
@@ -129,10 +139,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of ctgyTable.data">
-              <td>{{ data.ID }}</td>
-              <td>{{ data.Name | transloco }}</td>
-            </tr>
+            @for(data of ctgyTable.data; track $index) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ data.Name | transloco }}</td>
+              </tr>  
+            }
           </tbody>
         </nz-table>
       </div>
@@ -154,12 +166,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of pressTable.data">
-              <td>{{ data.ID }}</td>
-              <td>{{ data.NativeName }}</td>
-              <td>{{ data.ChineseName }}</td>
-              <td>{{ data.Detail }}</td>
-            </tr>
+            @for(data of pressTable.data; track $index) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ data.NativeName }}</td>
+                <td>{{ data.ChineseName }}</td>
+                <td>{{ data.Detail }}</td>
+              </tr>  
+            }
           </tbody>
         </nz-table>
       </div>
@@ -179,10 +193,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of locTable.data">
-              <td>{{ data.ID }}</td>
-              <td>{{ data.Name }}</td>
-            </tr>
+            @for(data of locTable.data; track $index) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ data.Name }}</td>
+              </tr>  
+            }
           </tbody>
         </nz-table>
       </div>

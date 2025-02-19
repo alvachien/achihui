@@ -22,15 +22,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let data of langTable.data">
-                <td>{{ data.Lcid }}</td>
-                <td>{{ data.IsoName }}</td>
-                <td>{{ data.EnglishName }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>
-                  <nz-switch [ngModel]="data.AppFlag" nzDisabled></nz-switch>
-                </td>
-              </tr>
+              @for(data of langTable.data; track $index) {
+                <tr>
+                  <td>{{ data.Lcid }}</td>
+                  <td>{{ data.IsoName }}</td>
+                  <td>{{ data.EnglishName }}</td>
+                  <td>{{ data.NativeName }}</td>
+                  <td>
+                    <nz-switch [ngModel]="data.AppFlag" nzDisabled></nz-switch>
+                  </td>
+                </tr>  
+              }
             </tbody>
           </nz-table>
         </div>

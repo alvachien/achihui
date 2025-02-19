@@ -25,31 +25,33 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{ data.ControlCenterId }}
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplayMasterData(data.ControlCenterId)">
-            {{ 'Common.Display' | transloco }}
-          </button>
-        </td>
-        <td>{{ data.ControlCenterName }}</td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayDebitData(data.ControlCenterId)">
-            {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayCreditData(data.ControlCenterId)">
-            {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayBalanceData(data.ControlCenterId)">
-            {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>
+            {{ data.ControlCenterId }}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplayMasterData(data.ControlCenterId)">
+              {{ 'Common.Display' | transloco }}
+            </button>
+          </td>
+          <td>{{ data.ControlCenterName }}</td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayDebitData(data.ControlCenterId)">
+              {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayCreditData(data.ControlCenterId)">
+              {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayBalanceData(data.ControlCenterId)">
+              {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </nz-spin>

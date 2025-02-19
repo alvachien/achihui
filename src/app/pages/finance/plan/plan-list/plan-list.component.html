@@ -14,54 +14,60 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<div *ngIf="isChildMode">
-  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-    <div nz-result-extra>
-      <button nz-button nzType="primary">OK</button>
-    </div>
-  </nz-result>
-</div>
+@if(isChildMode) {
+  <div>
+    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+      <div nz-result-extra>
+        <button nz-button nzType="primary">OK</button>
+      </div>
+    </nz-result>
+  </div>  
+}
 
-<div *ngIf="!isChildMode">
-  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-    <nz-table #basicTable [nzData]="dataSet">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>{{ 'Common.Type' | transloco }}</th>
-          <th>{{ 'Common.Start' | transloco }}</th>
-          <th>{{ 'Common.Stop' | transloco }}</th>
-          <th>{{ 'Common.Description' | transloco }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td>
-            {{ data.ID }}
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onCheckProgress(data)">
-              {{ 'Common.Progress' | transloco }}
-            </button>
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplay(data.ID!)">
-              {{ 'Common.Display' | transloco }}
-            </button>
-            <button nz-button nzType="link" (click)="onEdit(data.ID!)">
-              {{ 'Common.Edit' | transloco }}
-            </button>
-            <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>
-              {{ 'Common.Delete' | transloco }}
-            </button>
-          </td>
-          <td>{{ getPlanTypeDisplayString(data.PlanType) | transloco }}</td>
-          <td>{{ getDateDisplayString(data.StartDate!) }}</td>
-          <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
-          <td>{{ data.Description }}</td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </nz-spin>
-</div>
+@if(!isChildMode) {
+  <div>
+    <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+      <nz-table #basicTable [nzData]="dataSet">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{ 'Common.Type' | transloco }}</th>
+            <th>{{ 'Common.Start' | transloco }}</th>
+            <th>{{ 'Common.Stop' | transloco }}</th>
+            <th>{{ 'Common.Description' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(data of basicTable.data; track $index) {
+            <tr>
+              <td>
+                {{ data.ID }}
+                <nz-divider nzType="vertical"></nz-divider>
+                <button nz-button nzType="link" (click)="onCheckProgress(data)">
+                  {{ 'Common.Progress' | transloco }}
+                </button>
+                <nz-divider nzType="vertical"></nz-divider>
+                <button nz-button nzType="link" (click)="onDisplay(data.ID!)">
+                  {{ 'Common.Display' | transloco }}
+                </button>
+                <button nz-button nzType="link" (click)="onEdit(data.ID!)">
+                  {{ 'Common.Edit' | transloco }}
+                </button>
+                <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>
+                  {{ 'Common.Delete' | transloco }}
+                </button>
+              </td>
+              <td>{{ getPlanTypeDisplayString(data.PlanType) | transloco }}</td>
+              <td>{{ getDateDisplayString(data.StartDate!) }}</td>
+              <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
+              <td>{{ data.Description }}</td>
+            </tr>  
+          }
+        </tbody>
+      </nz-table>
+    </nz-spin>
+  </div>  
+}
 
 <nz-modal
   [(nzVisible)]="isProgressDlgVisible"

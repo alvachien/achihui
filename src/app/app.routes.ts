@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuardService, HomeChoseGuardService } from './services';
+import { autoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 
 const routeConfig: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/welcome' },
@@ -30,7 +31,7 @@ const routeConfig: Routes = [
 
   {
     path: 'homedef',
-    canActivate: [AuthGuardService],
+    canActivate: [autoLoginPartialRoutesGuard],
     loadChildren: () => import('./pages/home-def/home-def.routes').then(m => m.HOMEDEF_ROUTES)
   },
 
@@ -54,7 +55,7 @@ const routeConfig: Routes = [
 
   {
     path: 'blog',
-    canActivate: [AuthGuardService],
+    canActivate: [autoLoginPartialRoutesGuard],
     loadChildren: () => import('./pages/blog/blog.routes').then(m => m.BLOG_ROUTES)
   },
 

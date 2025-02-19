@@ -23,27 +23,35 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of basicTable.data">
-            <td>
-              <span>{{ row.ID }}</span>
-              <nz-divider nzType="vertical"></nz-divider>
-              <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">{{ 'Common.ChooseThisHome' | transloco }}</a>
-              <a nz-button nzType="link" routerLink="/homedef/display/{{ row.ID }}" *ngIf="IsCurrentHomeChosed">{{
-                'Common.Display' | transloco
-              }}</a>
-              <a
-                nz-button
-                nzType="link"
-                routerLink="/homedef/edit/{{ row.ID }}"
-                *ngIf="IsCurrentHomeChosed && !IsChildMode"
-                >{{ 'Common.Edit' | transloco }}</a
-              >
-            </td>
-            <td>{{ row.Name }}</td>
-            <td>{{ row.CreatorDisplayAs }}</td>
-            <td>{{ row.BaseCurrency }}</td>
-            <td>{{ row.Details }}</td>
-          </tr>
+          @for(row of basicTable.data; track $index) {
+            <tr>
+              <td>
+                <span>{{ row.ID }}</span>
+                <nz-divider nzType="vertical"></nz-divider>
+                @if(!IsCurrentHomeChosed) {
+                  <a (click)="onChooseHome(row)">{{ 'Common.ChooseThisHome' | transloco }}</a>
+                }
+                
+                @if(IsCurrentHomeChosed) {
+                  <a nz-button nzType="link" routerLink="/homedef/display/{{ row.ID }}">
+                    {{ 'Common.Display' | transloco }}
+                  </a>  
+                }
+                @if(IsCurrentHomeChosed && !IsChildMode) {
+                  <a
+                    nz-button
+                    nzType="link"
+                    routerLink="/homedef/edit/{{ row.ID }}">
+                    {{ 'Common.Edit' | transloco }}
+                  </a>
+                }
+              </td>
+              <td>{{ row.Name }}</td>
+              <td>{{ row.CreatorDisplayAs }}</td>
+              <td>{{ row.BaseCurrency }}</td>
+              <td>{{ row.Details }}</td>
+            </tr>  
+          }
         </tbody>
       </nz-table>
     </div>

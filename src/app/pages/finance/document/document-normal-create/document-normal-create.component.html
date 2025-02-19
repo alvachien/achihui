@@ -72,72 +72,80 @@
           {{ confirmInfo?.outAmount | number : '1.2-2' }}
           {{ confirmInfo?.tranCurrency }}
         </h2>
-        <div *ngIf="confirmInfo?.warningExist">
-          <nz-divider></nz-divider>
-          <p nz-paragraph *ngFor="let item of confirmInfo?.duplicatedItems">
-            <i nz-icon nzType="right-circle" nzTheme="outline"></i>
-            <span nz-typography nzType="warning">{{ item }}</span>
-          </p>
-        </div>
+        @if(confirmInfo?.warningExist) {
+          <div>
+            <nz-divider></nz-divider>
+            <p nz-paragraph *ngFor="let item of confirmInfo?.duplicatedItems">
+              <i nz-icon nzType="right-circle" nzTheme="outline"></i>
+              <span nz-typography nzType="warning">{{ item }}</span>
+            </p>
+          </div>  
+        }
       </div>
     </div>
 
     <!-- Result -->
     <div [hidden]="currentStep !== 3">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
-        <div *ngIf="docIdCreated">
-          <nz-result
-            nzStatus="success"
-            [nzTitle]="'Finance.DocumentPosted' | transloco"
-            [nzSubTitle]="'Finance.DocumentPosted' | transloco">
-            <div nz-result-extra>
-              <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
-                {{ 'Common.Display' | transloco }}
-              </button>
-              <button nz-button (click)="onReset()">
-                {{ 'Common.CreateAnotherOne' | transloco }}
-              </button>
-            </div>
-          </nz-result>
-        </div>
-        <div *ngIf="!docIdCreated">
-          <nz-result
-            [nzTitle]="'Common.SubmissionFailed' | transloco"
-            nzStatus="error"
-            [nzSubTitle]="'Common.ResubmissionHint' | transloco">
-            <div nz-result-content>
-              <div class="desc">
-                <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
-                <p nz-paragraph>
-                  <i nz-icon nzType="close-circle"></i>
-                  {{ docPostingFailed }}
-                </p>
+        @if(docIdCreated) {
+          <div>
+            <nz-result
+              nzStatus="success"
+              [nzTitle]="'Finance.DocumentPosted' | transloco"
+              [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+              <div nz-result-extra>
+                <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
+                  {{ 'Common.Display' | transloco }}
+                </button>
+                <button nz-button (click)="onReset()">
+                  {{ 'Common.CreateAnotherOne' | transloco }}
+                </button>
               </div>
-            </div>
-            <div nz-result-extra>
-              <button nz-button nzType="primary" (click)="pre()">
-                <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-              </button>
-            </div>
-          </nz-result>
-        </div>
+            </nz-result>
+          </div>  
+        }
+        @if(!docIdCreated) {
+          <div>
+            <nz-result
+              [nzTitle]="'Common.SubmissionFailed' | transloco"
+              nzStatus="error"
+              [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+              <div nz-result-content>
+                <div class="desc">
+                  <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
+                  <p nz-paragraph>
+                    <i nz-icon nzType="close-circle"></i>
+                    {{ docPostingFailed }}
+                  </p>
+                </div>
+              </div>
+              <div nz-result-extra>
+                <button nz-button nzType="primary" (click)="pre()">
+                  <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+                </button>
+              </div>
+            </nz-result>
+          </div>  
+        }
       </nz-spin>
     </div>
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
-      <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-    </button>
-    <button
-      nz-button
-      nzType="primary"
-      id="button_next_step"
-      (click)="next()"
-      [disabled]="!nextButtonEnabled"
-      *ngIf="currentStep < 3"
-    >
-      {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
-    </button>
+    @if(currentStep > 0 && currentStep < 3) {
+      <button nz-button (click)="pre()">
+        <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+      </button>  
+    }
+    @if(currentStep < 3) {
+      <button
+        nz-button
+        nzType="primary"
+        id="button_next_step"
+        (click)="next()"
+        [disabled]="!nextButtonEnabled">
+        {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
+      </button>
+    }
   </div>
 </div>

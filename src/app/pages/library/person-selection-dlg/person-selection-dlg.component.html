@@ -15,12 +15,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of tablePerson.data">
-        <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.NativeName }}</td>
-        <td>{{ data.ChineseName }}</td>
-      </tr>
+      @for(data of tablePerson.data; track $index) {
+        <tr>
+          <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
+          <td>{{ data.ID }}</td>
+          <td>{{ data.NativeName }}</td>
+          <td>{{ data.ChineseName }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </div>

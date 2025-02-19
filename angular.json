@@ -135,6 +135,7 @@
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "less",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"

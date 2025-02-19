@@ -2,10 +2,6 @@ import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
-
-import { environment } from '../environments/environment';
-import { ModelUtility, ConsoleLogTypeEnum } from './model';
-import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -13,6 +9,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+
+import { environment } from '../environments/environment';
+import { ModelUtility, ConsoleLogTypeEnum } from './model';
+import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from './services';
 
 @Component({
   selector: 'hih-root',

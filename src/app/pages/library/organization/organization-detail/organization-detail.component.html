@@ -24,12 +24,12 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nnameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{ 'Common.FieldIsMandatory' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength')) {
+          <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
+        }
+        @if(control.hasError('required')) {
+          <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -40,12 +40,12 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="cnameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{ 'Common.FieldIsMandatory' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength')) {
+          <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
+        }
+        @if(control.hasError('required')) {
+          <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -76,20 +76,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of typeTable.data">
-        <td>
-          <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
-            <nz-option *ngFor="let coll of allTypes" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
-          </nz-select>
-
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveTypeAssignment(data.ID)">
-            {{ 'Common.Delete' | transloco }}
-          </button>
-        </td>
-        <td>{{ data.Name }}</td>
-        <td>{{ data.Comment }}</td>
-      </tr>
+      @for(data of typeTable.data; track $index) {
+        <tr>
+          <td>
+            <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
+              @for(coll of allTypes; track coll.ID) {
+                <nz-option [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
+              }
+            </nz-select>
+  
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveTypeAssignment(data.ID)">
+              {{ 'Common.Delete' | transloco }}
+            </button>
+          </td>
+          <td>{{ data.Name }}</td>
+          <td>{{ data.Comment }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </div>

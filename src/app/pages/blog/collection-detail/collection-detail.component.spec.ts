@@ -12,8 +12,8 @@ import { UIMode } from 'actslib';
 import { BlogUIModule } from '../../blog-ui.module';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
-import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { AuthService, UIStatusService, BlogOdataService } from '@services/index';
+import { UserAuthInfo } from '@model/index';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 

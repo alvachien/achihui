@@ -1,8 +1,8 @@
 <nz-result
   nzStatus="404"
   *transloco="let t"
-  [nzTitle]="t('Common.PageNotFoundHeader')"
-  [nzSubTitle]="t('Common.PageNotFoundContent')">
+  [nzTitle]="'Common.PageNotFoundHeader' | transloco"
+  [nzSubTitle]="'Common.PageNotFoundContent' | transloco">
   <div nz-result-extra>
     <button nz-button nzType="primary">{{ 'Common.Back' | transloco }}</button>
   </div>

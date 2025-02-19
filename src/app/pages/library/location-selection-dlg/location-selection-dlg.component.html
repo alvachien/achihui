@@ -14,11 +14,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of tableLocation.data">
-        <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name }}</td>
-      </tr>
+      @for(data of tableLocation.data; track $index) {
+        <tr>
+          <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
+          <td>{{ data.ID }}</td>
+          <td>{{ data.Name }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </div>

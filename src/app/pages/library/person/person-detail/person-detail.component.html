@@ -24,12 +24,18 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nnameTpl">
       <input nz-input formControlName="nnameControl" maxlength="100" required />
       <ng-template #nnameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{ 'Common.FieldIsMandatory' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength'))
+        {
+          <ng-container>
+            {{ 'Common.FieldMaxLength' | transloco }}
+          </ng-container>  
+        }
+        @if(control.hasError('required'))
+        {
+          <ng-container>
+            {{ 'Common.FieldIsMandatory' | transloco }}
+          </ng-container>  
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -40,12 +46,18 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cnameTpl">
       <input nz-input formControlName="cnameControl" maxlength="100" />
       <ng-template #cnameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{ 'Common.FieldIsMandatory' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength'))
+        {
+          <ng-container>
+            {{ 'Common.FieldMaxLength' | transloco }}
+          </ng-container>
+        }
+        @if(control.hasError('required'))
+        {
+          <ng-container>
+            {{ 'Common.FieldIsMandatory' | transloco }}
+          </ng-container>  
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -65,9 +77,12 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="detailTpl">
       <input nz-input formControlName="detailControl" maxlength="100" />
       <ng-template #detailTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength'))
+        {
+          <ng-container>
+            {{ 'Common.FieldMaxLength' | transloco }}
+          </ng-container>  
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -88,20 +103,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of roleTable.data">
-        <td>
-          <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
-            <nz-option *ngFor="let coll of allRoles" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
-          </nz-select>
-
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveRoleAssignment(data.ID)">
-            {{ 'Common.Delete' | transloco }}
-          </button>
-        </td>
-        <td>{{ data.Name }}</td>
-        <td>{{ data.Comment }}</td>
-      </tr>
+      @for(data of roleTable.data; track $index)
+      {
+        <tr>
+          <td>
+            <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
+              <nz-option *ngFor="let coll of allRoles" [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
+            </nz-select>
+  
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveRoleAssignment(data.ID)">
+              {{ 'Common.Delete' | transloco }}
+            </button>
+          </td>
+          <td>{{ data.Name }}</td>
+          <td>{{ data.Comment }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </div>

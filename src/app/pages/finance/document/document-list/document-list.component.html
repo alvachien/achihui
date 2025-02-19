@@ -1,9 +1,7 @@
 <nz-spin [nzSpinning]="isLoadingResults">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item
-        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-      >
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
       <nz-breadcrumb-item>{{ 'Finance.Documents' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
@@ -89,8 +87,7 @@
       [nzTotal]="totalDocumentCount"
       [nzPageIndex]="pageIndex"
       [nzPageSize]="pageSize"
-      (nzQueryParams)="onQueryParamsChange($event)"
-    >
+      (nzQueryParams)="onQueryParamsChange($event)">
       <thead>
         <tr>
           <th nzShowExpand></th>
@@ -128,8 +125,7 @@
                 nz-popconfirm
                 [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
                 (nzOnConfirm)="onDelete(data.Id!)"
-                nzDanger
-              >
+                nzDanger>
                 {{ 'Common.Delete' | transloco }}
               </button>
               <nz-dropdown-menu #menuForChange="nzDropdownMenu">

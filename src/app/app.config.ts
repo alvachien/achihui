@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom, isDevMode } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom, isDevMode, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import routeConfig from './app.routes';
@@ -12,6 +12,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
+import { LogLevel, provideAuth } from 'angular-auth-oidc-client';
+import { environment } from '@environments/environment';
+import { ThemeService } from '@services/theme.service';
 
 registerLocaleData(en);
 
@@ -24,7 +27,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule), 
     provideAnimationsAsync(), 
     provideHttpClient(), 
-    provideHttpClient(), 
+    provideHttpClient(),
     provideTransloco({
       config: { 
         availableLangs: ['en'],
@@ -34,6 +37,34 @@ export const appConfig: ApplicationConfig = {
         prodMode: !isDevMode(),
       },
       loader: TranslocoHttpLoader
-    })
+    }),
+    provideAppInitializer(() => {
+      const themeService = inject(ThemeService);
+      themeService.loadTheme();
+    }),
+    provideAuth({
+      config: {
+        authority: environment.IDServerUrl,
+
+        redirectUrl: environment.AppHost, // window.location.origin,
+        postLogoutRedirectUri: environment.AppHost,
+
+        clientId: 'achihui.js',
+        scope: 'openid profile api.hih offline_access', // 'openid profile ' + your scopes
+        responseType: 'code',
+
+        silentRenew: true,
+        useRefreshToken: true,
+        // silentRenewUrl: window.location.origin + '/silent-renew.html',
+        // renewTimeBeforeTokenExpiresInSeconds: 666,
+        // tokenRefreshInSeconds: 600,
+
+        // disableIdTokenValidation: true,
+        // ignoreNonceAfterRefresh: true, // this is required if the id_token is not returned
+        // // allowUnsafeReuseRefreshToken: true, // this is required if the refresh token is not rotated
+        // triggerRefreshWhenIdTokenExpired: false, // required to refresh the browser if id_token is not updated after the first authentication
+        logLevel: LogLevel.Warn,      
+      }
+    }),
   ]
 };

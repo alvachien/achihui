@@ -40,9 +40,11 @@
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
                 <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
                 <ng-template #dateRangeErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -57,11 +59,9 @@
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
                 <nz-select formControlName="accountControl">
                   <nz-option
-                    *ngFor="
-                      let acnt of arUIAccount
+                    *ngFor="let acnt of arUIAccount
                         | uiAccountCtgyFilterEx : acntCategoryFilter
-                        | uiAccountStatusFilter : acntFilterFilter
-                    "
+                        | uiAccountStatusFilter : acntFilterFilter"
                     [nzValue]="acnt.Id"
                     [nzLabel]="acnt.Name"
                   ></nz-option>

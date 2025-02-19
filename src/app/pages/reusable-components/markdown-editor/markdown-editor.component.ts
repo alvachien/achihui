@@ -17,7 +17,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { KatexOptions } from 'ngx-markdown';
+import { KatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import moment from 'moment';
@@ -32,6 +32,10 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -51,6 +55,11 @@ import { SafeAny } from '@common/any';
         },
     ],
     imports: [
+      NzButtonModule,
+      NzDividerModule,
+      NzCodeEditorModule,
+      MarkdownModule,
+      NzGridModule,
       TranslocoModule
     ]
 })
