@@ -8,11 +8,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name | transloco }}</td>
-        <td>{{ data.Desp }}</td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>{{ data.ID }}</td>
+          <td>{{ data.Name | transloco }}</td>
+          <td>{{ data.Desp }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </nz-spin>

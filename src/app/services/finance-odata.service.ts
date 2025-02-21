@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -172,7 +172,11 @@ export class FinanceOdataService {
     return this.listReportByOrder;
   }
 
-  constructor(private http: HttpClient, private authService: AuthService, private homeService: HomeDefOdataService) {
+  private readonly http = inject(HttpClient);
+  private readonly authService  = inject(AuthService);
+  private readonly homeService = inject(HomeDefOdataService);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...',
       ConsoleLogTypeEnum.debug

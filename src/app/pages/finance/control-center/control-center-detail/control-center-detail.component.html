@@ -29,12 +29,16 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="nameControl" maxlength="30" required />
         <ng-template #nameTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -45,9 +49,11 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="cmtControl" maxlength="45" />
         <ng-template #cmtTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -60,9 +66,11 @@
           <nz-option *ngFor="let cc of existedCC" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
         </nz-select>
         <ng-template #parentTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -75,9 +83,11 @@
           <nz-option *ngFor="let usr of arMembers" [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
         </nz-select>
         <ng-template #ownerTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>

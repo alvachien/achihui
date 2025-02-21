@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { UIDisplayStringUtil } from '../../model';
 import { AuthService, HomeDefOdataService } from '../../services';
@@ -35,7 +35,10 @@ export class UserDetailComponent implements OnInit {
   currentHomeMemIsChild: boolean | null = null;
   currentHomeMemRelI18n: string | null = null;
 
-  constructor(private authService: AuthService, private homeService: HomeDefOdataService) {}
+  private readonly authService = inject(AuthService);
+  private readonly homeService = inject(HomeDefOdataService);
+  
+  constructor() {}
 
   ngOnInit() {
     this.authService.authContent.subscribe({

@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import {
@@ -37,7 +37,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
       ReactiveFormsModule,
       NzButtonModule,
       NzSelectModule,
-      TranslocoModule
+      NzModalModule,
+      TranslocoModule,
+      RouterModule,
     ]
 })
 export class LocationDetailComponent implements OnInit, OnDestroy {
@@ -49,13 +51,13 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
   detailFormGroup: UntypedFormGroup;
   arLocationStrings: UIDisplayString[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

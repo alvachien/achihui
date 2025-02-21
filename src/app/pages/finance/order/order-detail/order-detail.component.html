@@ -1,8 +1,6 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.Activities' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Activity' | transloco }}</nz-page-header-title>
@@ -14,161 +12,166 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-spin *ngIf="!(isOrderSubmitting || isOrderSubmitted)" [nzSpinning]="isLoadingResults">
-  <form nz-form [formGroup]="detailFormGroup">
-    <!-- ID -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ID' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12">
-        <input nz-input formControlName="idControl" readonly />
-      </nz-form-control>
-    </nz-form-item>
-
-    <!-- Name -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Name' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
-        <input nz-input formControlName="nameControl" maxlength="30" required />
-        <ng-template #nameTpl let-control>
-          @if(control.hasError('maxlength')) {
-            <ng-container>{{ 'Common.FieldMaxLength' | transloco }} </ng-container>
-          }
-          @if(control.hasError('required')) {
-            <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
-          }
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <!-- Valid from -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidFrom' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validfromErrorTpl">
-        <nz-date-picker formControlName="startDateControl"></nz-date-picker>
-        <ng-template #validfromErrorTpl let-control>
-          @if(control.hasError('required')) {
-            <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
-          }
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <!-- Valid to -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidTo' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validtoErrorTpl">
-        <nz-date-picker formControlName="endDateControl"></nz-date-picker>
-        <ng-template #validtoErrorTpl let-control>
-          @if(control.hasError('required')) {
-            <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
-          }
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <!-- Comment -->
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
-        <input nz-input formControlName="cmtControl" maxlength="45" />
-        <ng-template #cmtTpl let-control>
-          @if(control.hasError('maxlength')) {
-            <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>  
-          }
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-
-  <div class="toolbar_buttons">
-    <button nz-button nzType="primary" (click)="onCreateRule()" [disabled]="!isFieldChangable">
-      {{ 'Finance.CreateItem' | transloco }}
-    </button>
-  </div>
-
-  <nz-table #basicTable nzBordered [nzData]="listRules">
-    <thead>
-      <tr>
-        <th nz-width="50">#</th>
-        <th nz-width="150">{{ 'Finance.ControlCenter' | transloco }}</th>
-        <th nz-width="200">{{ 'Common.Precent' | transloco }}</th>
-        <th nz-width="250">{{ 'Common.Comment' | transloco }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{ data.RuleId }}
-        </td>
-        <td>
-          <nz-select [(ngModel)]="data.ControlCenterId" [disabled]="!isFieldChangable" style="width: 100%">
-            <nz-option *ngFor="let cc of arControlCenters" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
-          </nz-select>
-          <ng-template #parentTpl let-control>
+@if(!(isOrderSubmitting || isOrderSubmitted)) {
+  <nz-spin [nzSpinning]="isLoadingResults">
+    <form nz-form [formGroup]="detailFormGroup">
+      <!-- ID -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ID' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input formControlName="idControl" readonly />
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Name -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Name' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
+          <input nz-input formControlName="nameControl" maxlength="30" required />
+          <ng-template #nameTpl let-control>
+            @if(control.hasError('maxlength')) {
+              <ng-container>{{ 'Common.FieldMaxLength' | transloco }} </ng-container>
+            }
             @if(control.hasError('required')) {
-              <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+              <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
             }
           </ng-template>
-        </td>
-        <td>
-          <input
-            nz-input
-            [(ngModel)]="data.Precent"
-            (ngModelChange)="onRuleContentChange()"
-            [disabled]="!isFieldChangable"
-          />
-        </td>
-        <td>
-          <input
-            nz-input
-            [(ngModel)]="data.Comment"
-            (ngModelChange)="onRuleContentChange()"
-            [disabled]="!isFieldChangable"
-          />
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-</nz-spin>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Valid from -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidFrom' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validfromErrorTpl">
+          <nz-date-picker formControlName="startDateControl"></nz-date-picker>
+          <ng-template #validfromErrorTpl let-control>
+            @if(control.hasError('required')) {
+              <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Valid to -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidTo' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="validtoErrorTpl">
+          <nz-date-picker formControlName="endDateControl"></nz-date-picker>
+          <ng-template #validtoErrorTpl let-control>
+            @if(control.hasError('required')) {
+              <ng-container>{{ 'Common.FieldIsMandatory' | transloco }} </ng-container>
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <!-- Comment -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
+          <input nz-input formControlName="cmtControl" maxlength="45" />
+          <ng-template #cmtTpl let-control>
+            @if(control.hasError('maxlength')) {
+              <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>  
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" (click)="onCreateRule()" [disabled]="!isFieldChangable">
+        {{ 'Finance.CreateItem' | transloco }}
+      </button>
+    </div>
+  
+    <nz-table #basicTable nzBordered [nzData]="listRules">
+      <thead>
+        <tr>
+          <th nz-width="50">#</th>
+          <th nz-width="150">{{ 'Finance.ControlCenter' | transloco }}</th>
+          <th nz-width="200">{{ 'Common.Precent' | transloco }}</th>
+          <th nz-width="250">{{ 'Common.Comment' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(data of basicTable.data; track $index) {
+          <tr>
+            <td>
+              {{ data.RuleId }}
+            </td>
+            <td>
+              <nz-select [(ngModel)]="data.ControlCenterId" [disabled]="!isFieldChangable" style="width: 100%">
+                <nz-option *ngFor="let cc of arControlCenters" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+              </nz-select>
+              <ng-template #parentTpl let-control>
+                @if(control.hasError('required')) {
+                  <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+                }
+              </ng-template>
+            </td>
+            <td>
+              <input
+                nz-input
+                [(ngModel)]="data.Precent"
+                (ngModelChange)="onRuleContentChange()"
+                [disabled]="!isFieldChangable"
+              />
+            </td>
+            <td>
+              <input
+                nz-input
+                [(ngModel)]="data.Comment"
+                (ngModelChange)="onRuleContentChange()"
+                [disabled]="!isFieldChangable"
+              />
+            </td>
+          </tr>  
+        }
+      </tbody>
+    </nz-table>
+  </nz-spin>  
+}
 
-<nz-spin *ngIf="isOrderSubmitting || isOrderSubmitted" [nzSpinning]="isOrderSubmitting">
-  @if(orderIdCreated) {
-    <div>
-      <nz-result
-        nzStatus="success"
-        [nzTitle]="'Finance.ActivitySaved' | transloco"
-        [nzSubTitle]="'Finance.ActivitySaved' | transloco"
-      >
-        <div nz-result-extra>
-          <button nz-button (click)="onDisplayOrder()" nzType="primary">
-            {{ 'Common.Display' | transloco }}
-          </button>
-          <button nz-button (click)="onCreateAnotherOrder()">Create another Activity</button>
-        </div>
-      </nz-result>
-    </div>  
-  }
-  @if(!orderIdCreated) {
-    <div>
-      <nz-result
-        [nzTitle]="'Common.SubmissionFailed' | transloco"
-        nzStatus="error"
-        [nzSubTitle]="'Common.ResubmissionHint' | transloco">
-        <div nz-result-content>
-          <div class="desc">
-            <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
-            <p nz-paragraph>
-              <i nz-icon nzType="close-circle"></i>
-              {{ orderSavedFailed }}
-            </p>
+@if(isOrderSubmitting || isOrderSubmitted) {
+  <nz-spin [nzSpinning]="isOrderSubmitting">
+    @if(orderIdCreated) {
+      <div>
+        <nz-result
+          nzStatus="success"
+          [nzTitle]="'Finance.ActivitySaved' | transloco"
+          [nzSubTitle]="'Finance.ActivitySaved' | transloco">
+          <div nz-result-extra>
+            <button nz-button (click)="onDisplayOrder()" nzType="primary">
+              {{ 'Common.Display' | transloco }}
+            </button>
+            <button nz-button (click)="onCreateAnotherOrder()">Create another Activity</button>
           </div>
-        </div>
-        <div nz-result-extra>
-          <button nz-button nzType="primary" (click)="goBack()">
-            <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-          </button>
-        </div>
-      </nz-result>
-    </div>  
-  }
-</nz-spin>
+        </nz-result>
+      </div>  
+    }
+    @if(!orderIdCreated) {
+      <div>
+        <nz-result
+          [nzTitle]="'Common.SubmissionFailed' | transloco"
+          nzStatus="error"
+          [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+          <div nz-result-content>
+            <div class="desc">
+              <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
+              <p nz-paragraph>
+                <i nz-icon nzType="close-circle"></i>
+                {{ orderSavedFailed }}
+              </p>
+            </div>
+          </div>
+          <div nz-result-extra>
+            <button nz-button nzType="primary" (click)="goBack()">
+              <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+            </button>
+          </div>
+        </nz-result>
+      </div>  
+    }
+  </nz-spin>  
+}

@@ -1,17 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-
-import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
-import { AuthService, HomeDefOdataService } from '../../../services';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+
+import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
+import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
     selector: 'hih-home-def-list',
@@ -24,12 +24,17 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
       NzTableModule,
       TranslocoModule,
       NzDividerModule,
+      NzModalModule,
       RouterModule,
     ]
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
+  private readonly authService = inject(AuthService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
 
   isLoadingResults: boolean;
   public dataSource: HomeDef[] = [];
@@ -47,12 +52,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  constructor(
-    private authService: AuthService,
-    private homeService: HomeDefOdataService,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
       ConsoleLogTypeEnum.debug

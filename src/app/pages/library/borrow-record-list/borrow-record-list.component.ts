@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -24,6 +24,7 @@ import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
       NzBreadCrumbModule,
       TranslocoModule,
       NzTableModule,
+      NzModalModule,
       NzDividerModule,
     ]
 })

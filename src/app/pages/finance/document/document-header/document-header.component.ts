@@ -32,6 +32,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -58,6 +60,8 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     NzInputNumberModule,
     NzDatePickerModule,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {

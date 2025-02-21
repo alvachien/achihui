@@ -5,8 +5,7 @@
     nzBreakpoint="lg"
     [nzCollapsedWidth]="0"
     nzWidth="256px"
-    [(nzCollapsed)]="isCollapsed"
-  >
+    [(nzCollapsed)]="isCollapsed">
     <div class="sidebar-logo">
       <a href="/hih/" target="_blank">
         <img src="favicon.ico" alt="logo" />
@@ -134,8 +133,7 @@
                 nz-icon
                 [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
                 style="font-size: 24px"
-                (click)="isCollapsed = !isCollapsed"
-              ></i>
+                (click)="isCollapsed = !isCollapsed"></i>
             </div>
           </li>
         </ul>
@@ -249,6 +247,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - 2025, Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - {{currentYear}}, Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

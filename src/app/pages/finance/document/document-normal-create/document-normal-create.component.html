@@ -9,7 +9,7 @@
   <nz-page-header-subtitle>{{ 'Common.Create' | transloco }}</nz-page-header-subtitle>
 </nz-page-header>
 
-<div *transloco="let t">
+<div>
   <nz-steps [nzCurrent]="currentStep">
     <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
@@ -43,23 +43,21 @@
         [arControlCenters]="arControlCenters"
         [arTranType]="arTranType"
         [arUIOrders]="arUIOrders"
-        [docType]="curDocType"
-      >
+        [docType]="curDocType">
       </hih-fin-document-items>
     </form>
 
     <!-- Review and Confirm -->
     <div [hidden]="currentStep !== 2">
       <div>
-        <nz-alert
-          *ngIf="confirmInfo?.warningExist"
-          nzType="warning"
-          [nzMessage]="'Common.Warning' | transloco"
-          nzDescription="{{
-            confirmInfo?.duplicatedItems.length
-          }} items found same amount and same tran. type posted to same account on same date."
-          nzShowIcon>
-        </nz-alert>
+        @if(confirmInfo?.warningExist) {
+          <nz-alert 
+            nzType="warning"
+            [nzMessage]="'Common.Warning' | transloco"
+            nzDescription="{{confirmInfo?.duplicatedItems.length}} items found same amount and same tran. type posted to same account on same date."
+            nzShowIcon>
+          </nz-alert>
+        }
         <h3 nz-title>{{ 'Common.Date' | transloco }}: {{ confirmInfo?.tranDateString }}</h3>
         <h2 nz-title>{{ 'Common.Description' | transloco }}: {{ confirmInfo?.tranDesp }}</h2>
         <h2 nz-title>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -83,7 +83,10 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure | null = null;
 
-  constructor(private _http: HttpClient, private _authService: AuthService) {
+  private readonly _http = inject(HttpClient);
+  private readonly _authService = inject(AuthService);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`,
       ConsoleLogTypeEnum.debug

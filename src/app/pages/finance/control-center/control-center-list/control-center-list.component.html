@@ -7,12 +7,8 @@
     <nz-page-header-title>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/controlcenter/create">{{
-        'Common.Create' | transloco
-      }}</a>
-      <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{
-        'Common.HierarchyView' | transloco
-      }}</a>
+      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/controlcenter/create">{{'Common.Create' | transloco}}</a>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
     </nz-page-header-extra>
   </nz-page-header>
 
@@ -26,29 +22,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td>
-            {{ data.Id }}
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
-              {{ 'Common.Display' | transloco }}
-            </button>
-            <button nz-button nzType="link" [disabled]="isChildMode" (click)="onEdit(data.Id!)">
-              {{ 'Common.Edit' | transloco }}
-            </button>
-            <a
-              nz-button
-              nz-popconfirm
-              [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-              nzPopconfirmPlacement="bottom"
-              *ngIf="!isChildMode"
-              (nzOnConfirm)="onDelete(data.Id!)"
-              nzType="link"
-              nzDanger>{{ 'Common.Delete' | transloco }}</a>
-          </td>
-          <td>{{ data.Name }}</td>
-          <td>{{ data.Comment }}</td>
-        </tr>
+        @for(data of basicTable.data; track $index) {
+          <tr>
+            <td>
+              {{ data.Id }}
+              <nz-divider nzType="vertical"></nz-divider>
+              <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
+                {{ 'Common.Display' | transloco }}
+              </button>
+              <button nz-button nzType="link" [disabled]="isChildMode" (click)="onEdit(data.Id!)">
+                {{ 'Common.Edit' | transloco }}
+              </button>
+
+              @if(!isChildMode) {
+                <a
+                  nz-button
+                  nz-popconfirm
+                  [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
+                  nzPopconfirmPlacement="bottom"                
+                  (nzOnConfirm)="onDelete(data.Id!)"
+                  nzType="link"
+                  nzDanger>{{ 'Common.Delete' | transloco }}</a>
+              }
+            </td>
+            <td>{{ data.Name }}</td>
+            <td>{{ data.Comment }}</td>
+          </tr>  
+        }
       </tbody>
     </nz-table>
   </div>

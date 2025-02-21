@@ -11,6 +11,7 @@ import { AssetCategoryListComponent } from './asset-category-list';
 import { DocTypeListComponent } from './doc-type-list';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
 import { TranTypeListComponent } from './tran-type-list';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'hih-finance-config',
@@ -27,6 +28,7 @@ import { TranTypeListComponent } from './tran-type-list';
     TranTypeHierarchyComponent,
     TranTypeListComponent,
     TranslocoModule,
+    NzModalModule,
   ]
 })
 export class ConfigComponent {

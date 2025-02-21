@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -67,6 +67,8 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
     NzResultModule,
     NzButtonModule,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
@@ -139,13 +141,13 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     return isEnabled;
   }
 
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly _activateRoute = inject(ActivatedRoute);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly _router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
   constructor(
-    private odataService: FinanceOdataService,
-    private _activateRoute: ActivatedRoute,
-    private _cdr: ChangeDetectorRef,
-    private homeService: HomeDefOdataService,
-    private _router: Router,
-    private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,

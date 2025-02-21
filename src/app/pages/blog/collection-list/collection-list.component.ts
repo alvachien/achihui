@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -22,8 +22,10 @@ import { BlogOdataService } from '@services/index';
     NzSpinModule,
     NzTableModule,
     NzDividerModule,
+    NzModalModule,
     NzButtonModule,
     TranslocoModule,
+    RouterModule,
   ]
 })
 export class CollectionListComponent implements OnInit, OnDestroy {

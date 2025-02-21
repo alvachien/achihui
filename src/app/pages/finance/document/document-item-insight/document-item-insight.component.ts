@@ -1,9 +1,9 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -16,6 +16,7 @@ import {
   financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat
 } from '@model/index';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { RouterModule } from '@angular/router';
 
 interface InsightRecord {
   TransactionDate?: string;
@@ -38,6 +39,8 @@ interface InsightRecord {
     NzTableModule,
     DecimalPipe,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class DocumentItemInsightComponent implements OnInit {
@@ -60,10 +63,12 @@ export class DocumentItemInsightComponent implements OnInit {
   // Display
   listDisplayData: InsightRecord[] = [];
 
-  constructor(private odataService: FinanceOdataService,
-    private uiStatusService: UIStatusService,
-    private modalService: NzModalService,
-    private homeService: HomeDefOdataService,) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly uiStatusService = inject(UIStatusService);
+  private readonly modalService = inject(NzModalService);
+  private readonly homeService = inject(HomeDefOdataService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent constructor`,
       ConsoleLogTypeEnum.debug

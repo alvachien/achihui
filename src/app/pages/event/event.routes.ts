@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 
 export const EVENT_ROUTES: Routes = [
     {
+        path: '',
+        loadComponent: () => import('./event.component').then((m) => m.EventComponent),
+    },
+    {
+        path: 'overview',
+        loadComponent: () => import('./event.component').then((m) => m.EventComponent),
+    },
+    {
         path: 'normal-event',
         loadComponent: () => import('./normal-event-list/').then((m) => m.NormalEventListComponent),
         children: [

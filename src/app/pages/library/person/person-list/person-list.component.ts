@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -23,6 +23,8 @@ import { LibraryStorageService, UIStatusService } from '@services/index';
       NzTableModule,
       NzBreadCrumbModule,
       NzDividerModule,
+      NzModalModule,
+      RouterModule,
       TranslocoModule,
     ]
 })

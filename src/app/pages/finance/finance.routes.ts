@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 
 export const FINANCE_ROUTES: Routes = [
   {
+    path: '',
+    loadComponent: () => import('./finance.component').then((m) => m.FinanceComponent),
+  },
+  {
+    path: 'overview',
+    loadComponent: () => import('./finance.component').then((m) => m.FinanceComponent),
+  },
+  {
     path: 'currency',
     loadComponent: () => import('./currency').then((m) => m.CurrencyComponent),
   },

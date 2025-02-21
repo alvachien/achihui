@@ -32,6 +32,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from 
 })
 export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;
+  currentYear = 0;
   searchContent?: string;
   public isLoggedIn?: boolean;
   public titleLogin?: string;
@@ -49,6 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
 
+    this.currentYear = new Date().getFullYear();
     // Randomize the theme
     if (Math.random() > 0.5) {
       this.toggleTheme();

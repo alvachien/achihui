@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { Organization } from '@model/index';
@@ -18,6 +18,7 @@ import { LibraryStorageService } from '@services/index';
     NzCheckboxModule,
     NzButtonModule,
     TranslocoModule,
+    NzModalModule,
   ]
 })
 export class OrganizationSelectionDlgComponent implements OnInit {
@@ -68,11 +69,10 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     return this.setOfCheckedId.size >= 1;
   }
 
-  constructor(
-    private modal: NzModalRef,
-    private storageSrv: LibraryStorageService,
-    private messageService: NzMessageService
-  ) { }
+  private readonly modal = inject(NzModalRef);
+  private readonly storageSrv = inject(LibraryStorageService);
+
+  constructor() { }
 
   ngOnInit(): void {
     this.storageSrv.fetchAllOrganizations().subscribe({

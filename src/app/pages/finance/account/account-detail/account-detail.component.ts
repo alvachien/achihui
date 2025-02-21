@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 import moment from 'moment';
@@ -80,6 +80,8 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
     AccountExtraAssetComponent,
     AccountExtraDownpaymentComponent,
     AccountExtraLoanComponent,
+    RouterModule,
+    NzModalModule
   ]
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -162,14 +164,14 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return this._arUIOrders;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private activateRoute: ActivatedRoute,
-    private homeSevice: HomeDefOdataService,
-    private modalService: NzModalService,
-    private router: Router,
-    private changeDetectRef: ChangeDetectorRef
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly homeSevice = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug

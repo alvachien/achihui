@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -11,11 +11,11 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
@@ -64,6 +64,8 @@ import { DecimalPipe } from '@angular/common';
     NzInputNumberModule,
     DecimalPipe,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
@@ -211,13 +213,13 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     );
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly uiStatusService = inject(UIStatusService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
       ConsoleLogTypeEnum.debug

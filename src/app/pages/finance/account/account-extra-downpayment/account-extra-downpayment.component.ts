@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -12,11 +12,11 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
@@ -62,6 +62,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzDatePickerModule,
     NzTableModule,
     TranslocoModule,
+    RouterModule,
+    NzModalModule,
   ]
 })
 export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
@@ -129,12 +131,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }
     return true;
   }
+  private readonly router = inject(Router);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
 
   constructor(
-    public router: Router,
-    public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService,
-    public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',

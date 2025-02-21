@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalService, NzModalRef, NzModalModule } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -24,6 +24,7 @@ import { BlogOdataService } from '@services/index';
     NzButtonModule,
     NzFormModule,
     FormsModule,
+    NzModalModule,
     ReactiveFormsModule
   ]
 })
@@ -33,12 +34,14 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   detailFormGroup: UntypedFormGroup;
   uiMode: UIMode = UIMode.Invalid;
+  private readonly odataService = inject(BlogOdataService);
+  private readonly modalService = inject(NzModalService);
 
   get isSaveButtonEnabled(): boolean {
     return this.uiMode === UIMode.Update && this.detailFormGroup.enabled && this.detailFormGroup.valid;
   }
 
-  constructor(private odataService: BlogOdataService, private modalService: NzModalService) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...',
       ConsoleLogTypeEnum.debug

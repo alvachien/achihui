@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -46,7 +46,9 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
       NzButtonModule,
       NzDividerModule,
       NzTabsModule,
-      NzTableModule
+      NzTableModule,
+      RouterModule,
+      NzModalModule,
     ]
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
@@ -62,14 +64,14 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   listCategories: BookCategory[] = [];
   listLocations: Location[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef,
-    private homeService: HomeDefOdataService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly homeService = inject(HomeDefOdataService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

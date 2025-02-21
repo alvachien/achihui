@@ -6,6 +6,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { BookCategoryListComponent } from './book-category-list';
 import { OrganizationTypeListComponent } from './organization-type-list';
 import { PersonRoleListComponent } from './person-role-list';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'hih-config',
@@ -15,6 +16,7 @@ import { PersonRoleListComponent } from './person-role-list';
         NzPageHeaderModule,
         NzBreadCrumbModule,
         NzTabsModule,
+        NzModalModule,
         TranslocoModule,
         BookCategoryListComponent,
         OrganizationTypeListComponent,

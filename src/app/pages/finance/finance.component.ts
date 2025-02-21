@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
@@ -44,6 +44,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 class DateCellData {
   public CurrentDate: moment.Moment | null = null;
@@ -71,7 +72,10 @@ class DateCellData {
     NzTypographyModule,
     DecimalPipe,
     NzGridModule,
+    RouterModule,
+    NzDrawerModule,
     TranslocoModule,
+    NzModalModule,
   ]
 })
 export class FinanceComponent implements OnInit, OnDestroy {
@@ -96,16 +100,16 @@ export class FinanceComponent implements OnInit, OnDestroy {
     this.uiService.FinanceOverviewExcludeTransfer = extran;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private uiService: UIStatusService,
-    private homeService: HomeDefOdataService,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef,
-    private messageService: NzMessageService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly uiService = inject(UIStatusService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly messageService = inject(NzMessageService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
       ConsoleLogTypeEnum.debug
@@ -484,6 +488,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     NzToolTipModule,
     NzLayoutModule,
     NzIconModule,
+    NzModalModule,
     TranslocoModule,
   ]
 })
@@ -493,11 +498,12 @@ export class FinanceAssetDepreciationDlgComponent {
   @Input() arControlCenters: ControlCenter[] = [];
   @Input() accounts: Account[] = [];
 
+  private readonly modal = inject(NzModalRef);
+  private readonly odataSrv = inject(FinanceOdataService);
+  private readonly messageService = inject(NzMessageService);
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
+
   constructor(
-    private modal: NzModalRef,
-    private odataSrv: FinanceOdataService,
-    private messageService: NzMessageService,
-    private changeDetectRef: ChangeDetectorRef
   ) { }
 
   destroyModal(): void {

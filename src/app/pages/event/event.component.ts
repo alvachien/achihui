@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NzCalendarMode, NzCalendarModule } from 'ng-zorro-antd/calendar';
 
 @Component({
@@ -9,7 +10,8 @@ import { NzCalendarMode, NzCalendarModule } from 'ng-zorro-antd/calendar';
   imports: [
     FormsModule,
     FormsModule,
-    NzCalendarModule
+    NzCalendarModule,
+    RouterModule,
   ]
 })
 export class EventComponent {

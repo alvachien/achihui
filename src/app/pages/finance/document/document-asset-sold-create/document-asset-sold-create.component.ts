@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import {
@@ -13,7 +13,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -74,6 +74,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     NzSpinModule,
     NzResultModule,
     TranslocoModule,
+    RouterModule,
+    NzModalModule,
   ]
 })
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
@@ -115,13 +117,13 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     return this._docDate;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private _uiStatusService: UIStatusService,
-    private homeService: HomeDefOdataService,
-    private _router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly _uiStatusService = inject(UIStatusService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly _router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor',
       ConsoleLogTypeEnum.debug

@@ -21,11 +21,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let data of basicTable.data">
-                    <td>{{ data.Currency }}</td>
-                    <td>{{ data.Name | transloco }}</td>
-                    <td>{{ data.Symbol }}</td>
-                  </tr>
+                  @for(data of basicTable.data; track $index) {
+                    <tr>
+                      <td>{{ data.Currency }}</td>
+                      <td>{{ data.Name | transloco }}</td>
+                      <td>{{ data.Symbol }}</td>
+                    </tr>  
+                  }
                 </tbody>
               </nz-table>
             </div>

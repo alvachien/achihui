@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import moment from 'moment';
 
 import {
@@ -33,6 +33,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { DocumentItemViewComponent } from '../document-item-view';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'hih-document-item-search',
@@ -51,6 +52,8 @@ import { DocumentItemViewComponent } from '../document-item-view';
       NzButtonModule,
       NzIconModule,
       DocumentItemViewComponent,
+      NzModalModule,
+      RouterModule,
       TranslocoModule,
     ]
 })
@@ -76,7 +79,10 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(private modalService: NzModalService, private homeService: HomeDefOdataService) {
+  private readonly modalService = inject(NzModalService);
+  private readonly homeService = inject(HomeDefOdataService);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug

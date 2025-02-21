@@ -39,6 +39,6 @@ export const BLOG_ROUTES: Routes = [
     },
     {
         path: 'setting',
-        loadChildren: () => import('./user-setting').then((m) => m.UserSettingComponent),
+        loadComponent: () => import('./user-setting').then((m) => m.UserSettingComponent),
     }
 ];

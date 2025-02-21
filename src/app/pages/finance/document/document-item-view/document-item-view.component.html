@@ -37,32 +37,34 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of innerTable.data">
-      <td>
-        <button nz-button nzType="link" (click)="onDisplayDocument(data.DocumentID!)">
-          {{ data.DocumentID }}
-        </button>
-      </td>
-      <td>{{ data.ItemID }}</td>
-      <td>{{ data.ItemDesp }}</td>
-      <td>{{ data.TransactionDate }}</td>
-      <td>
-        {{ getTranTypeName(data.TransactionType!) }}<small>({{ data.TransactionType }})</small>
-      </td>
-      <td>
-        {{ getAccountName(data.AccountID!) }}
-        <small>({{ data.AccountID }})</small>
-      </td>
-      <td>
-        {{ data.Amount | number : '1.2-2' }} <small>{{ data.Currency }}</small>
-      </td>
-      <td>
-        {{ getControlCenterName(data.ControlCenterID!) }}<small>({{ data.ControlCenterID }})</small>
-      </td>
-      <td>
-        {{ getOrderName(data.OrderID!) }} <small>({{ data.OrderID }})</small>
-      </td>
-    </tr>
+    @for(data of innerTable.data; track $index) {
+      <tr>
+        <td>
+          <button nz-button nzType="link" (click)="onDisplayDocument(data.DocumentID!)">
+            {{ data.DocumentID }}
+          </button>
+        </td>
+        <td>{{ data.ItemID }}</td>
+        <td>{{ data.ItemDesp }}</td>
+        <td>{{ data.TransactionDate }}</td>
+        <td>
+          {{ getTranTypeName(data.TransactionType!) }}<small>({{ data.TransactionType }})</small>
+        </td>
+        <td>
+          {{ getAccountName(data.AccountID!) }}
+          <small>({{ data.AccountID }})</small>
+        </td>
+        <td>
+          {{ data.Amount | number : '1.2-2' }} <small>{{ data.Currency }}</small>
+        </td>
+        <td>
+          {{ getControlCenterName(data.ControlCenterID!) }}<small>({{ data.ControlCenterID }})</small>
+        </td>
+        <td>
+          {{ getOrderName(data.OrderID!) }} <small>({{ data.OrderID }})</small>
+        </td>
+      </tr>  
+    }
   </tbody>
 </nz-table>
 <ng-template #footerTpl let-control>

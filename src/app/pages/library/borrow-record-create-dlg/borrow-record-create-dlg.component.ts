@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
@@ -22,6 +22,7 @@ import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg
       NzSpaceModule,
       FormsModule,
       ReactiveFormsModule,
+      NzModalModule,
     ]
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -31,7 +31,11 @@ export class FinanceStorageService {
   readonly orderAPIUrl: string = environment.ApiUrl + '/FinanceOrder';
   readonly docItemAPIUrl: string = environment.ApiUrl + '/FinanceDocumentItem';
 
-  constructor(private _http: HttpClient, private _authService: AuthService, private _homeService: HomeDefOdataService) {
+  private readonly _http = inject(HttpClient);
+  private readonly _authService = inject(AuthService);
+  private readonly _homeService = inject(HomeDefOdataService);
+  
+  constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService constructor...');
     }

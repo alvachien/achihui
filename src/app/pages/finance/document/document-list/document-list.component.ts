@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -44,6 +44,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -63,6 +65,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     TranslocoModule,
+    NzButtonModule,
+    NzMenuModule,
+    NzDropDownModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
@@ -96,15 +103,13 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    private router: Router,
-    private modalService: NzModalService,
-    private homeService: HomeDefOdataService,
-    private msgService: NzMessageService,
-    private viewContainerRef: ViewContainerRef
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
       ConsoleLogTypeEnum.debug

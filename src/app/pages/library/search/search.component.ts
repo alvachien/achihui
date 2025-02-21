@@ -4,7 +4,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { ModelUtility, ConsoleLogTypeEnum } from '@model/index';
-import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 
 @Component({
     selector: 'hih-search',
@@ -17,7 +16,7 @@ import { HomeDefOdataService, LibraryStorageService } from '@services/index';
     ]
 })
 export class SearchComponent {
-  constructor(private storageService: LibraryStorageService, private homeService: HomeDefOdataService) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering SearchComponent constructor...',
       ConsoleLogTypeEnum.debug

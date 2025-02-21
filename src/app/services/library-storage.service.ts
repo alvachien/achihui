@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -76,7 +76,11 @@ export class LibraryStorageService {
   readonly locationAPIURL: string = environment.ApiUrl + '/LibraryBookLocations';
   readonly bookBorrowRecordAPIURL: string = environment.ApiUrl + '/LibraryBookBorrowRecords';
 
-  constructor(private _http: HttpClient, private _authService: AuthService, private _homeService: HomeDefOdataService) {
+  private readonly _http = inject(HttpClient);
+  private readonly _authService = inject(AuthService);
+  private readonly _homeService = inject(HomeDefOdataService);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`,
       ConsoleLogTypeEnum.debug

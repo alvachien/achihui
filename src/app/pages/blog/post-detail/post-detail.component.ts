@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
@@ -62,12 +62,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   listOfCollection: BlogCollection[] = [];
   listOfTags: BlogPostTag[] = [];
 
-  constructor(
-    private odataService: BlogOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly odataService = inject(BlogOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

@@ -115,72 +115,74 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data; let idx = index">
-        <td>
-          <nz-form-item>
-            <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
-              <nz-input-group [nzSuffix]="suffixTemplate">
-                <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
-              </nz-input-group>
-              <ng-template #suffixTemplate>
-                <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(idx)">
-                  {{ 'Common.Delete' | transloco }}
-                </button>
-              </ng-template>
-              <ng-template #usrTpl let-control>
-                @if(control.hasError('required')) {
-                  <ng-container>
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>  
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </td>
-        <td>
-          <nz-form-item>
-            <nz-form-control nzHasFeedback [nzErrorTip]="dspurTpl">
-              <input
-                nz-input
-                [(ngModel)]="data.DisplayAs"
-                (ngModelChange)="onChange()"
-                [disabled]="!isFieldChangable"
-              />
-              <ng-template #dspurTpl let-control>
-                @if(control.hasError('required')) {
-                  <ng-container>
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>  
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </td>
-        <td>
-          <nz-form-item>
-            <nz-form-control nzHasFeedback [nzErrorTip]="rltTpl">
-              <nz-select [nzDisabled]="!isFieldChangable" [(ngModel)]="data.Relation" (ngModelChange)="onChange()">
-                <nz-option *ngFor="let tt of listMemRel" [nzValue]="tt.value" [nzLabel]="t(tt.i18nterm)"></nz-option>
-              </nz-select>
-              <ng-template #rltTpl let-control>
-                @if(control.hasError('required')) {
-                  <ng-container>
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>  
-                }
-              </ng-template>
-            </nz-form-control>
-          </nz-form-item>
-        </td>
-        <td>
-          <label
-            nz-checkbox
-            [nzDisabled]="!isFieldChangable"
-            [(ngModel)]="data.IsChild"
-            (ngModelChange)="onChange()"
-          ></label>
-        </td>
-      </tr>
+      @for (data of basicTable.data; track $index; let idx = $index) {
+        <tr>
+          <td>
+            <nz-form-item>
+              <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
+                <nz-input-group [nzSuffix]="suffixTemplate">
+                  <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
+                </nz-input-group>
+                <ng-template #suffixTemplate>
+                  <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(idx)">
+                    {{ 'Common.Delete' | transloco }}
+                  </button>
+                </ng-template>
+                <ng-template #usrTpl let-control>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control nzHasFeedback [nzErrorTip]="dspurTpl">
+                <input
+                  nz-input
+                  [(ngModel)]="data.DisplayAs"
+                  (ngModelChange)="onChange()"
+                  [disabled]="!isFieldChangable"
+                />
+                <ng-template #dspurTpl let-control>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <nz-form-item>
+              <nz-form-control nzHasFeedback [nzErrorTip]="rltTpl">
+                <nz-select [nzDisabled]="!isFieldChangable" [(ngModel)]="data.Relation" (ngModelChange)="onChange()">
+                  <nz-option *ngFor="let tt of listMemRel" [nzValue]="tt.value" [nzLabel]="t(tt.i18nterm)"></nz-option>
+                </nz-select>
+                <ng-template #rltTpl let-control>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </td>
+          <td>
+            <label
+              nz-checkbox
+              [nzDisabled]="!isFieldChangable"
+              [(ngModel)]="data.IsChild"
+              (ngModelChange)="onChange()"
+            ></label>
+          </td>
+        </tr>
+      }
     </tbody>
   </nz-table>
 </div>

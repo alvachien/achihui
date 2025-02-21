@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../../model';
@@ -28,6 +28,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
       NzTableModule,
       NzBreadCrumbModule,
       NzSwitchModule,
+      NzModalModule,
     ]
 })
 export class LanguageComponent implements OnInit, OnDestroy {
@@ -36,7 +37,9 @@ export class LanguageComponent implements OnInit, OnDestroy {
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 
-  constructor(public odataService: LanguageOdataService, public modalService: NzModalService) {
+  private readonly odataService = inject(LanguageOdataService);
+  private readonly modalService = inject(NzModalService);
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LanguageComponent constructor...`,
       ConsoleLogTypeEnum.debug

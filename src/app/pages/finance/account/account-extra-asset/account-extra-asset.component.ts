@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -12,7 +12,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import moment from 'moment';
 import { SafeAny } from '@common/any';
 
@@ -49,6 +49,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzInputNumberModule,
     NzButtonModule,
     TranslocoModule,
+    RouterModule,
   ]
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
@@ -146,7 +147,9 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
   }
 
-  constructor(public router: Router) {
+  public readonly router = inject(Router);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug

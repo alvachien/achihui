@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -16,8 +16,10 @@ export class BlogOdataService {
   private listCollection: BlogCollection[];
   private isSettingLoaded: boolean;
   private setting: BlogUserSetting | null;
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering BlogOdataService constructor...`,
       ConsoleLogTypeEnum.debug

@@ -5,159 +5,179 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Overview' | transloco }}</nz-page-header-title>
   <nz-page-header-extra>
-    <nz-switch
-      *ngIf="!isChildMode"
-      [(ngModel)]="ExcludeTransfer"
-      [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
-      [nzUnCheckedChildren]="'Common.All' | transloco"
-      [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco" nz-tooltip
-      (ngModelChange)="fetchData(true)">
-    </nz-switch>
+    @if(!isChildMode) {
+      <nz-switch 
+        [(ngModel)]="ExcludeTransfer"
+        [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
+        [nzUnCheckedChildren]="'Common.All' | transloco"
+        [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco" nz-tooltip
+        (ngModelChange)="fetchData(true)">
+      </nz-switch>
+    }
   </nz-page-header-extra>
 </nz-page-header>
 
-<div *ngIf="isChildMode">
-  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-    <div nz-result-extra>
-      <button nz-button nzType="primary">OK</button>
-    </div>
-  </nz-result>
-</div>
+@if(isChildMode) {
+  <div>
+    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+      <div nz-result-extra>
+        <button nz-button nzType="primary">OK</button>
+      </div>
+    </nz-result>
+  </div>  
+}
 
-<div *ngIf="!isChildMode">
-  <div *ngIf="keyfigure">
-    <nz-row [nzGutter]="16">
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic            
-            [nzSuffix]="keyfigure!.BaseCurrency"
-            [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"
-            [nzValueTemplate]="tmplValueIncome">
-          </nz-statistic>
-          <ng-template #tmplValueIncome>
-            <a (click)="onOpenInsight(1)">{{keyfigure!.CurrentMonthIncome | number : '1.2-2'}}</a>            
-          </ng-template>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic
-            [nzSuffix]="keyfigure!.BaseCurrency"
-            [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"
-            [nzValueTemplate]="tmplValueOutgo">
-          </nz-statistic>
-          <ng-template #tmplValueOutgo>
-            <a (click)="onOpenInsight(2)">{{keyfigure!.CurrentMonthOutgo | number : '1.2-2'}}</a>            
-          </ng-template>
-        </nz-card>
-      </nz-col>
-    </nz-row>
-  </div>
-  <div *ngIf="keyfigure">
-    <nz-row [nzGutter]="16">
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic
-            [nzValueTemplate]="valueTpl"
-            [nzValue]="(keyfigure!.CurrentMonthIncomePrecentage | number : '1.2-2')!"
-            [nzTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"
-          ></nz-statistic>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic
-            [nzValueTemplate]="valueTpl"
-            [nzValue]="(keyfigure!.CurrentMonthOutgoPrecentage | number : '1.2-2')!"
-            [nzTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"
-          ></nz-statistic>
-        </nz-card>
-      </nz-col>
-      <ng-template #valueTpl let-value>
-        <span [style.color]="value > 0 ? '#3F8600' : '#CF1322'">
-          <i *ngIf="value < 0" nz-icon nzType="arrow-down"></i>
-          <i *ngIf="value > 0" nz-icon nzType="arrow-up"></i>
-          <span>{{ value }}%</span>
-        </span>
-      </ng-template>
-    </nz-row>
-  </div>
-  <div *ngIf="keyfigure">
-    <nz-row [nzGutter]="16">
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic
-            [nzSuffix]="keyfigure!.BaseCurrency"
-            [nzTitle]="'Finance.IncomeYTD' | transloco"
-            [nzValueTemplate]="tmplYTDValueIncome">
-          </nz-statistic>
-          <ng-template #tmplYTDValueIncome>
-            <a (click)="onOpenInsight(3)">{{keyfigure!.IncomeYTD | number : '1.2-2'}}</a>            
-          </ng-template>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <nz-card>
-          <nz-statistic
-            [nzSuffix]="keyfigure!.BaseCurrency"
-            [nzTitle]="'Finance.OutgoYTD' | transloco"
-            [nzValueTemplate]="tmplYTDValueOutgo"></nz-statistic>
-          <ng-template #tmplYTDValueOutgo>
-            <a (click)="onOpenInsight(4)">{{keyfigure!.OutgoYTD | number : '1.2-2'}}</a>            
-          </ng-template>
-        </nz-card>
-      </nz-col>
-    </nz-row>
-  </div>
+@if(!isChildMode) {
+  <div>
+    @if(keyfigure) {
+      <div>
+        <nz-row [nzGutter]="16">
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic            
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"
+                [nzValueTemplate]="tmplValueIncome">
+              </nz-statistic>
+              <ng-template #tmplValueIncome>
+                <a (click)="onOpenInsight(1)">{{keyfigure!.CurrentMonthIncome | number : '1.2-2'}}</a>            
+              </ng-template>
+            </nz-card>
+          </nz-col>
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"
+                [nzValueTemplate]="tmplValueOutgo">
+              </nz-statistic>
+              <ng-template #tmplValueOutgo>
+                <a (click)="onOpenInsight(2)">{{keyfigure!.CurrentMonthOutgo | number : '1.2-2'}}</a>            
+              </ng-template>
+            </nz-card>
+          </nz-col>
+        </nz-row>
+      </div>
 
-  <nz-divider></nz-divider>
+      <div>
+        <nz-row [nzGutter]="16">
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic
+                [nzValueTemplate]="valueTpl"
+                [nzValue]="(keyfigure!.CurrentMonthIncomePrecentage | number : '1.2-2')!"
+                [nzTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"
+              ></nz-statistic>
+            </nz-card>
+          </nz-col>
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic
+                [nzValueTemplate]="valueTpl"
+                [nzValue]="(keyfigure!.CurrentMonthOutgoPrecentage | number : '1.2-2')!"
+                [nzTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"
+              ></nz-statistic>
+            </nz-card>
+          </nz-col>
+          <ng-template #valueTpl let-value>
+            <span [style.color]="value > 0 ? '#3F8600' : '#CF1322'">
+              @if(value < 0) {
+                <i nz-icon nzType="arrow-down"></i>
+              }
+              @if(value > 0) {
+                <i nz-icon nzType="arrow-up"></i>
+              }              
+              <span>{{ value }}%</span>
+            </span>
+          </ng-template>
+        </nz-row>
+      </div>
 
-  <nz-calendar
-    [(ngModel)]="selectedDate"
-    (nzSelectChange)="onSelectChange($event)"
-    (nzPanelChange)="onPanelChange($event)">
-    <ul *nzDateCell="let date" class="events">
-      <li *ngFor="let item of getDPDocsByDate(date)">
+      <div>
+        <nz-row [nzGutter]="16">
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.IncomeYTD' | transloco"
+                [nzValueTemplate]="tmplYTDValueIncome">
+              </nz-statistic>
+              <ng-template #tmplYTDValueIncome>
+                <a (click)="onOpenInsight(3)">{{keyfigure!.IncomeYTD | number : '1.2-2'}}</a>            
+              </ng-template>
+            </nz-card>
+          </nz-col>
+          <nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+            <nz-card>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.OutgoYTD' | transloco"
+                [nzValueTemplate]="tmplYTDValueOutgo"></nz-statistic>
+              <ng-template #tmplYTDValueOutgo>
+                <a (click)="onOpenInsight(4)">{{keyfigure!.OutgoYTD | number : '1.2-2'}}</a>            
+              </ng-template>
+            </nz-card>
+          </nz-col>
+        </nz-row>
+      </div>
+    }
+  
+    <nz-divider></nz-divider>
+  
+    <nz-calendar
+      [(ngModel)]="selectedDate"
+      (nzSelectChange)="onSelectChange($event)"
+      (nzPanelChange)="onPanelChange($event)">
+      <ul *nzDateCell="let date" class="events">
+        @for(item of getDPDocsByDate(date); track $index) {
+          <li>
+            <div>
+              <button
+                nz-button
+                nz-popconfirm
+                [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
+                (nzOnConfirm)="doPostDPDoc(item)"
+                nzShape="circle">
+                <i nz-icon nzType="export"></i>
+              </button>
+              <span>{{ item.Desp }}</span>
+            </div>
+          </li>  
+        }
+        @for(item of getLoanDocsByDate(date); track $index) {
+          <li>
+            <div>
+              <button
+                nz-button
+                nz-popconfirm
+                [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
+                (nzOnConfirm)="doPostLoanDoc(item)">
+                <i nz-icon nzType="export"></i>
+              </button>
+              <span>{{ item.Desp }}</span>
+            </div>
+          </li>  
+        }
+        
+        @if(isLastDateInMonth(date)) {
+          <li>
+            <div>
+              <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(date)">
+                <span nz-icon nzType="audit" nzTheme="outline"></span>
+                {{ 'Sys.DocTy.AssetDeprec' | transloco }}
+              </button>
+            </div>
+          </li>  
+        }
+      </ul>
+      <ng-container *nzMonthCell="let month">
         <div>
-          <button
-            nz-button
-            nz-popconfirm
-            [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
-            (nzOnConfirm)="doPostDPDoc(item)"
-            nzShape="circle">
-            <i nz-icon nzType="export"></i>
-          </button>
-          <span>{{ item.Desp }}</span>
-        </div>
-      </li>
-      <li *ngFor="let item of getLoanDocsByDate(date)">
-        <div>
-          <button
-            nz-button
-            nz-popconfirm
-            [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
-            (nzOnConfirm)="doPostLoanDoc(item)">
-            <i nz-icon nzType="export"></i>
-          </button>
-          <span>{{ item.Desp }}</span>
-        </div>
-      </li>
-      <li *ngIf="isLastDateInMonth(date)">
-        <div>
-          <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(date)">
+          <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(month)">
             <span nz-icon nzType="audit" nzTheme="outline"></span>
             {{ 'Sys.DocTy.AssetDeprec' | transloco }}
           </button>
         </div>
-      </li>
-    </ul>
-    <ng-container *nzMonthCell="let month">
-      <div>
-        <button nz-button nzType="primary" nzShape="round" (click)="onAssetDeprec(month)">
-          <span nz-icon nzType="audit" nzTheme="outline"></span>
-          {{ 'Sys.DocTy.AssetDeprec' | transloco }}
-        </button>
-      </div>
-    </ng-container>
-  </nz-calendar>
-</div>
+      </ng-container>
+    </nz-calendar>
+  </div>  
+}

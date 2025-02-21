@@ -4,168 +4,194 @@
     <nz-breadcrumb-item>{{ 'Finance.Reports' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
-  <nz-page-header-extra *ngIf="!isChildMode">
-    <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
-      {{ 'Finance.DetailReport' | transloco }}
-      <i nz-icon nzType="down"></i>
-    </button>
-    <nz-dropdown-menu #detailReports="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li nz-menu-item (click)="onDrillDownToStatementOfIncomeExpenseMoM()">
-          {{ 'Finance.StatementOfIncomeAndExpenseMonthOnMonth' | transloco }}
-        </li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToCashMoM()">
-          {{ 'Finance.CashMonthOnMonth' | transloco }}
-        </li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToTranType()">
-          {{ 'Finance.TransactionTypes' | transloco }}
-        </li>
-        <li nz-menu-item (click)="onDrillDownToTranTypeMoM()">
-          {{ 'Finance.TranTypeMonthOnMonth' | transloco }}
-        </li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToAccount()">
-          {{ 'Finance.Accounts' | transloco }}
-        </li>
-        <li nz-menu-item (click)="onDrillDownToAccountMoM()">
-          {{ 'Finance.AccountMonthOnMonth' | transloco }}
-        </li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToControlCenter()">
-          {{ 'Finance.ControlCenters' | transloco }}
-        </li>
-        <li nz-menu-item (click)="onDrillDownToControlCenterMoM()">
-          {{ 'Finance.ControlCenterMonthOnMonth' | transloco }}
-        </li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onDrillDownToOrder()">
-          {{ 'Finance.Activity' | transloco }}
-        </li>
-      </ul>
-    </nz-dropdown-menu>
-  </nz-page-header-extra>
+  @if(!isChildMode) {
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
+        {{ 'Finance.DetailReport' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #detailReports="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onDrillDownToStatementOfIncomeExpenseMoM()">
+            {{ 'Finance.StatementOfIncomeAndExpenseMonthOnMonth' | transloco }}
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onDrillDownToCashMoM()">
+            {{ 'Finance.CashMonthOnMonth' | transloco }}
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onDrillDownToTranType()">
+            {{ 'Finance.TransactionTypes' | transloco }}
+          </li>
+          <li nz-menu-item (click)="onDrillDownToTranTypeMoM()">
+            {{ 'Finance.TranTypeMonthOnMonth' | transloco }}
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onDrillDownToAccount()">
+            {{ 'Finance.Accounts' | transloco }}
+          </li>
+          <li nz-menu-item (click)="onDrillDownToAccountMoM()">
+            {{ 'Finance.AccountMonthOnMonth' | transloco }}
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onDrillDownToControlCenter()">
+            {{ 'Finance.ControlCenters' | transloco }}
+          </li>
+          <li nz-menu-item (click)="onDrillDownToControlCenterMoM()">
+            {{ 'Finance.ControlCenterMonthOnMonth' | transloco }}
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onDrillDownToOrder()">
+            {{ 'Finance.Activity' | transloco }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </nz-page-header-extra>  
+  }
 </nz-page-header>
 
-<div *ngIf="isChildMode">
-  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-    <div nz-result-extra>
-      <button nz-button nzType="primary">OK</button>
-    </div>
-  </nz-result>
-</div>
-<div *ngIf="!isChildMode">
-  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
-      <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <div>
-          <nz-list nzBordered nzSize="large">
-            <nz-list-header>{{ 'Finance.Top3IncomeTransactionInCurrentMonth' | transloco }}</nz-list-header>
-            <nz-list-item *ngFor="let item of reportByMostIncomeInCurrentMonth">
-              <div>
-                <div>
-                  <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
-                  <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, false)">
-                    {{ item.Amount | number : '1.2-2' }}
-                  </button>
-                </div>
-                <nz-progress
-                  style="width: 120px"
-                  [nzPercent]="item.Precentage"
-                  [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
-                ></nz-progress>
-              </div>
-            </nz-list-item>
-            <nz-list-empty *ngIf="reportByMostIncomeInCurrentMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>
-              {{ 'Common.Total' | transloco }}: {{ totalIncomeInCurrentMonth | number : '1.2-2' }}
-              <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
-            </nz-list-footer>
-          </nz-list>
+@if(isChildMode) {
+  <div>
+    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+      <div nz-result-extra>
+        <button nz-button nzType="primary">OK</button>
+      </div>
+    </nz-result>  
+  </div>
+}
+@if(!isChildMode) {
+  <div>
+    <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+        <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <div>
+            <nz-list nzBordered nzSize="large">
+              <nz-list-header>{{ 'Finance.Top3IncomeTransactionInCurrentMonth' | transloco }}</nz-list-header>
+              @for(item of reportByMostIncomeInCurrentMonth; track $index) {
+                <nz-list-item>
+                  <div>
+                    <div>
+                      <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
+                      <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, false)">
+                        {{ item.Amount | number : '1.2-2' }}
+                      </button>
+                    </div>
+                    <nz-progress
+                      style="width: 120px"
+                      [nzPercent]="item.Precentage"
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+                    ></nz-progress>
+                  </div>
+                </nz-list-item>  
+              }
+              @if(reportByMostIncomeInCurrentMonth.length === 0) {
+                <nz-list-empty></nz-list-empty>
+              }
+              
+              <nz-list-footer>
+                {{ 'Common.Total' | transloco }}: {{ totalIncomeInCurrentMonth | number : '1.2-2' }}
+                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+              </nz-list-footer>
+            </nz-list>
+          </div>
+        </div>
+        <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <div>
+            <nz-list nzBordered nzSize="large">
+              <nz-list-header>{{ 'Finance.Top3OutgoTransactionInCurrentMonth' | transloco }}</nz-list-header>
+              @for(item of reportByMostOutgoInCurrentMonth; track $index) {
+                <nz-list-item>
+                  <div>
+                    <div>
+                      <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
+                      <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, true)">
+                        {{ item.Amount | number : '1.2-2' }}
+                      </button>
+                    </div>
+                    <nz-progress
+                      style="width: 120px"
+                      [nzPercent]="item.Precentage"
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                  </div>
+                </nz-list-item>  
+              }
+              @if(reportByMostOutgoInCurrentMonth.length === 0) {
+                <nz-list-empty></nz-list-empty>
+              }
+              
+              <nz-list-footer>
+                {{ 'Common.Total' | transloco }}:
+                {{ totalOutgoInCurrentMonth | number : '1.2-2' }}
+                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+              </nz-list-footer>
+            </nz-list>
+          </div>
+        </div>
+        <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <div>
+            <nz-list nzBordered nzSize="large">
+              <nz-list-header>{{ 'Finance.Top3IncomeTransactionInLastMonth' | transloco }}</nz-list-header>
+              @for(item of reportByMostIncomeInLastMonth; track $index) {
+                <nz-list-item>
+                  <div>
+                    <div>
+                      <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
+                      <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, false)">
+                        {{ item.Amount | number : '1.2-2' }}
+                      </button>
+                    </div>
+                    <nz-progress
+                      style="width: 120px"
+                      [nzPercent]="item.Precentage"
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                  </div>
+                </nz-list-item>  
+              }
+              @if(reportByMostIncomeInLastMonth.length === 0) {
+                <nz-list-empty></nz-list-empty>
+              }
+              
+              <nz-list-footer>
+                {{ 'Common.Total' | transloco }}:
+                {{ totalIncomeInLastMonth | number : '1.2-2' }}
+                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+              </nz-list-footer>
+            </nz-list>
+          </div>
+        </div>
+        <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
+          <div>
+            <nz-list nzBordered nzSize="large">
+              <nz-list-header>{{ 'Finance.Top3OutgoTransactionInLastMonth' | transloco }}</nz-list-header>
+              @for(item of reportByMostOutgoInLastMonth; track $index) {
+                <nz-list-item>
+                  <div>
+                    <div>
+                      <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
+                      <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, true)">
+                        {{ item.Amount | number : '1.2-2' }}
+                      </button>
+                    </div>
+                    <nz-progress
+                      style="width: 120px"
+                      [nzPercent]="item.Precentage"
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" ></nz-progress>
+                  </div>
+                </nz-list-item>  
+              }
+              @if(reportByMostOutgoInLastMonth.length === 0) {
+                <nz-list-empty></nz-list-empty>
+              }
+              
+              <nz-list-footer>
+                {{ 'Common.Total' | transloco }}:
+                {{ totalOutgoInLastMonth | number : '1.2-2' }}
+                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+              </nz-list-footer>
+            </nz-list>
+          </div>
         </div>
       </div>
-      <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <div>
-          <nz-list nzBordered nzSize="large">
-            <nz-list-header>{{ 'Finance.Top3OutgoTransactionInCurrentMonth' | transloco }}</nz-list-header>
-            <nz-list-item *ngFor="let item of reportByMostOutgoInCurrentMonth">
-              <div>
-                <div>
-                  <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
-                  <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, true)">
-                    {{ item.Amount | number : '1.2-2' }}
-                  </button>
-                </div>
-                <nz-progress
-                  style="width: 120px"
-                  [nzPercent]="item.Precentage"
-                  [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
-              </div>
-            </nz-list-item>
-            <nz-list-empty *ngIf="reportByMostOutgoInCurrentMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>
-              {{ 'Common.Total' | transloco }}:
-              {{ totalOutgoInCurrentMonth | number : '1.2-2' }}
-              <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
-            </nz-list-footer>
-          </nz-list>
-        </div>
-      </div>
-      <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <div>
-          <nz-list nzBordered nzSize="large">
-            <nz-list-header>{{ 'Finance.Top3IncomeTransactionInLastMonth' | transloco }}</nz-list-header>
-            <nz-list-item *ngFor="let item of reportByMostIncomeInLastMonth">
-              <div>
-                <div>
-                  <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
-                  <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, false)">
-                    {{ item.Amount | number : '1.2-2' }}
-                  </button>
-                </div>
-                <nz-progress
-                  style="width: 120px"
-                  [nzPercent]="item.Precentage"
-                  [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
-              </div>
-            </nz-list-item>
-            <nz-list-empty *ngIf="reportByMostIncomeInLastMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>
-              {{ 'Common.Total' | transloco }}:
-              {{ totalIncomeInLastMonth | number : '1.2-2' }}
-              <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
-            </nz-list-footer>
-          </nz-list>
-        </div>
-      </div>
-      <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-        <div>
-          <nz-list nzBordered nzSize="large">
-            <nz-list-header>{{ 'Finance.Top3OutgoTransactionInLastMonth' | transloco }}</nz-list-header>
-            <nz-list-item *ngFor="let item of reportByMostOutgoInLastMonth">
-              <div>
-                <div>
-                  <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
-                  <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, true)">
-                    {{ item.Amount | number : '1.2-2' }}
-                  </button>
-                </div>
-                <nz-progress
-                  style="width: 120px"
-                  [nzPercent]="item.Precentage"
-                  [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" ></nz-progress>
-              </div>
-            </nz-list-item>
-            <nz-list-empty *ngIf="reportByMostOutgoInLastMonth.length === 0"></nz-list-empty>
-            <nz-list-footer>
-              {{ 'Common.Total' | transloco }}:
-              {{ totalOutgoInLastMonth | number : '1.2-2' }}
-              <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
-            </nz-list-footer>
-          </nz-list>
-        </div>
-      </div>
-    </div>
-  </nz-spin>
-</div>
+    </nz-spin>
+  </div>
+}

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -28,8 +28,10 @@ import { BlogOdataService } from '@services/index';
     TranslocoModule,
     NzButtonModule,
     NzTableModule,
+    NzModalModule,
     NzDividerModule,
     NzSpinModule,
+    RouterModule,
   ]
 })
 export class PostListComponent implements OnInit, OnDestroy {
@@ -41,7 +43,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   totalPostCount = 0;
   dataSet: BlogPost[] = [];
 
-  constructor(private odataService: BlogOdataService, private modalService: NzModalService, private router: Router) {
+  private readonly odataService = inject(BlogOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostListComponent constructor...',
       ConsoleLogTypeEnum.debug

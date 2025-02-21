@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { EChartsOption } from 'echarts';
 //import { NzStatisticValueType } from 'ng-zorro-antd/statistic';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -53,7 +53,10 @@ import { SafeAny } from '@common/any';
       NzProgressModule,
       NzGridModule,
       DecimalPipe,
+      NzModalModule,
+      RouterModule,
       TranslocoModule,
+      NzDrawerModule,
     ]
 })
 export class ReportComponent implements OnInit, OnDestroy {
@@ -91,19 +94,20 @@ export class ReportComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
+  private readonly router = inject(Router);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly drawerService = inject(NzDrawerService);
+
   constructor(
-    public router: Router,
-    public odataService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    public drawerService: NzDrawerService
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.isLoadingResults = false;
   }
 

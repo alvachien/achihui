@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -45,12 +45,13 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
+  private readonly storageService = inject(EventStorageService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
   constructor(
-    private storageService: EventStorageService,
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent constructor...',

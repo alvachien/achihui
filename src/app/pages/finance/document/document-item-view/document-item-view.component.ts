@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 
 import { FinanceOdataService } from '../../../../services';
@@ -27,6 +27,8 @@ import {
       NzTableModule,
       DecimalPipe,     
       TranslocoModule,
+      RouterModule,
+      NzModalModule,
     ]
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
@@ -68,7 +70,10 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   incomeCurrency = '';
   outgoCurrency = '';
 
-  constructor(private odataService: FinanceOdataService, private modalService: NzModalService, private router: Router) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
       ConsoleLogTypeEnum.debug

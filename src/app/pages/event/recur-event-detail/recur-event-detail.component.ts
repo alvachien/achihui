@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -44,6 +44,7 @@ import { SafeAny } from '@common/any';
     NzSelectModule,
     NzInputModule,
     NzTableModule,
+    RouterModule,
   ]
 })
 export class RecurEventDetailComponent implements OnInit, OnDestroy {
@@ -60,14 +61,14 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
-  constructor(
-    private storageService: EventStorageService,
-    private financeService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(EventStorageService);
+  private readonly financeService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering RecurEventDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

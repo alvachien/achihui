@@ -9,7 +9,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
@@ -75,6 +75,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzButtonModule,
     NzIconModule,
     TranslocoModule,
+    RouterModule,    
   ]
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {

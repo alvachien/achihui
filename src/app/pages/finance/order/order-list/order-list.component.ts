@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -28,6 +28,7 @@ import {
 } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'hih-fin-order-list',
@@ -47,6 +48,10 @@ import { DocumentItemViewComponent } from '../../document/document-item-view';
     NgClass,
     OrderValidityFilterPipe,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
+    NzDrawerModule,
+    NzButtonModule,
   ]
 })
 export class OrderListComponent implements OnInit, OnDestroy {
@@ -68,13 +73,13 @@ export class OrderListComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public router: Router,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService,
-    public drawerService: NzDrawerService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly drawerService = inject(NzDrawerService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
       ConsoleLogTypeEnum.debug

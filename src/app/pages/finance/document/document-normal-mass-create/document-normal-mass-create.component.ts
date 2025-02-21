@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -55,6 +55,7 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
     NzResultModule,
     DocumentNormalMassCreateItemComponent,
     TranslocoModule,
+    RouterModule,
   ]
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {

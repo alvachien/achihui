@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -65,6 +65,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzDividerModule,
     NzResultModule,
     NzSpinModule,
+    RouterModule,
     TranslocoModule,
   ]
 })

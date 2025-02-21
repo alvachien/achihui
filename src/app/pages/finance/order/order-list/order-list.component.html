@@ -15,70 +15,74 @@
       <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
     </nz-radio-group> -->
 
-    <nz-switch
-      *ngIf="!isChildMode"
-      [(ngModel)]="validOrderOnly"
-      [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
-      [nzUnCheckedChildren]="'Common.All' | transloco"
-      (ngModelChange)="onOrderValidityChanged()"
-    ></nz-switch>
+    @if(!isChildMode) {
+      <nz-switch 
+        [(ngModel)]="validOrderOnly"
+        [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
+        [nzUnCheckedChildren]="'Common.All' | transloco"
+        (ngModelChange)="onOrderValidityChanged()"></nz-switch>
+    }
   </nz-page-header-extra>
 </nz-page-header>
 
-<div *ngIf="isChildMode">
-  <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-    <div nz-result-extra>
-      <button nz-button nzType="primary">OK</button>
-    </div>
-  </nz-result>
-</div>
+@if(isChildMode) {
+  <div>
+    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+      <div nz-result-extra>
+        <button nz-button nzType="primary">OK</button>
+      </div>
+    </nz-result>
+  </div>  
+}
+@if(!isChildMode) {
+  <div>
+    <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+      <nz-table #basicTable [nzData]="dataSet | orderValidityFilter : validOrderOnly">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{ 'Common.Name' | transloco }}</th>
+            <th>{{ 'Common.ValidFrom' | transloco }}</th>
+            <th>{{ 'Common.ValidTo' | transloco }}</th>
+            <th>{{ 'Common.Comment' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(data of basicTable.data; track $index) {
+            <tr>
+              <td>
+                <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Id }}</span>
+                <nz-divider nzType="vertical"></nz-divider>
+                <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
+                  {{ 'Common.Display' | transloco }}
+                </button>
+                <button nz-button nzType="link" (click)="onEdit(data.Id!)" [disabled]="invalidOrder(data)">
+                  {{ 'Common.Edit' | transloco }}
+                </button>
+                <a
+                  nz-button
+                  nz-popconfirm
+                  [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
+                  nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="onDelete(data.Id!)"
+                  nzType="link"
+                  nzDanger>{{ 'Common.Delete' | transloco }}</a>
+                <nz-divider nzType="vertical"></nz-divider>
+                <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">
+                  {{ 'Finance.Documents' | transloco }}
+                </button>
+              </td>
+              <td>
+                <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Name }}</span>
+              </td>
+              <td>{{ data.ValidFromFormatString }}</td>
+              <td>{{ data.ValidToFormatString }}</td>
+              <td>{{ data.Comment }}</td>
+            </tr>  
+          }
+        </tbody>
+      </nz-table>
+    </nz-spin>
+  </div> 
+}
 
-<div *ngIf="!isChildMode">
-  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-    <nz-table #basicTable [nzData]="dataSet | orderValidityFilter : validOrderOnly">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>{{ 'Common.Name' | transloco }}</th>
-          <th>{{ 'Common.ValidFrom' | transloco }}</th>
-          <th>{{ 'Common.ValidTo' | transloco }}</th>
-          <th>{{ 'Common.Comment' | transloco }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td>
-            <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Id }}</span>
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
-              {{ 'Common.Display' | transloco }}
-            </button>
-            <button nz-button nzType="link" (click)="onEdit(data.Id!)" [disabled]="invalidOrder(data)">
-              {{ 'Common.Edit' | transloco }}
-            </button>
-            <a
-              nz-button
-              nz-popconfirm
-              [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-              nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="onDelete(data.Id!)"
-              nzType="link"
-              nzDanger
-              >{{ 'Common.Delete' | transloco }}</a
-            >
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">
-              {{ 'Finance.Documents' | transloco }}
-            </button>
-          </td>
-          <td>
-            <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Name }}</span>
-          </td>
-          <td>{{ data.ValidFromFormatString }}</td>
-          <td>{{ data.ValidToFormatString }}</td>
-          <td>{{ data.Comment }}</td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </nz-spin>
-</div>

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 
@@ -51,6 +51,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzInputModule,
     NzButtonModule,
     TranslocoModule,
+    RouterModule,
+    NzModalModule,
   ]
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
@@ -77,14 +79,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router,
-    private cd: ChangeDetectorRef
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly cd = inject(ChangeDetectorRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

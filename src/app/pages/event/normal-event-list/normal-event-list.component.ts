@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -26,6 +26,8 @@ import { EventStorageService, UIStatusService } from '@services/index';
     NzSpinModule,
     NzDividerModule,
     NzButtonModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class NormalEventListComponent implements OnInit, OnDestroy {
@@ -36,12 +38,12 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   pageIndex = 1;
   totalCount = 0;
 
-  constructor(
-    public odataService: EventStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly odataService = inject(EventStorageService);
+  private readonly uiStatusService = inject(UIStatusService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventListComponent constructor...',
       ConsoleLogTypeEnum.debug

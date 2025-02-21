@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
@@ -45,6 +45,8 @@ import { SafeAny } from '@common/any';
     NzSelectModule,
     NzResultModule,
     TranslocoModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
@@ -83,13 +85,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

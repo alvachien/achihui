@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { ConsoleLogTypeEnum, Location, ModelUtility } from '@model/index';
 import { LibraryStorageService, UIStatusService } from '@services/index';
@@ -23,6 +23,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
       NzSpinModule,
       NzTableModule,
       NzDividerModule,
+      NzModalModule,
+      RouterModule,
       TranslocoModule,
     ]
 })
@@ -31,12 +33,11 @@ export class LocationListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: Location[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug

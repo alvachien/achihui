@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -24,6 +24,8 @@ import { EventStorageService, UIStatusService } from '@services/index';
     TranslocoModule,
     NzTableModule,
     NzDividerModule,
+    NzModalModule,
+    RouterModule,
   ]
 })
 export class RecurEventListComponent implements OnInit, OnDestroy {
@@ -34,12 +36,11 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   pageIndex = 1;
   totalCount = 0;
 
-  constructor(
-    public odataService: EventStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly odataService = inject(EventStorageService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...',
       ConsoleLogTypeEnum.debug

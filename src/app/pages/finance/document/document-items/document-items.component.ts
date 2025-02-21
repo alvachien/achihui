@@ -31,6 +31,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-fin-document-items',
@@ -58,6 +59,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     ReactiveFormsModule,
     NzInputNumberModule,
     TranslocoModule,
+    RouterModule,
   ]
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {

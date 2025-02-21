@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -28,6 +28,8 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
       NzPopconfirmModule,
       NzDividerModule,
       TranslocoModule,
+      NzModalModule,
+      RouterModule,
     ]
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
@@ -40,12 +42,12 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public router: Router,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     this.isLoadingResults = false;
   }
 

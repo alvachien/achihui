@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzResultModule } from 'ng-zorro-antd/result';
 
 @Component({
@@ -7,7 +8,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     templateUrl: './lack-authority.component.html',
     styleUrls: ['./lack-authority.component.less'],
     imports: [
-        NzResultModule, 
+        NzResultModule,
+        NzButtonModule,
         TranslocoModule
     ]
 })

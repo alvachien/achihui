@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeModule, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -76,6 +76,7 @@ interface ISettleAccountDetail {
     DecimalPipe,
     DocumentItemViewComponent,
     TranslocoModule,
+    RouterModule,
   ]
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
@@ -108,15 +109,14 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private uiStatusService: UIStatusService,
-    private modalService: NzModalService,
-    private homeService: HomeDefOdataService,
-    public router: Router,
-    private nzContextMenuService: NzContextMenuService,
-    private viewContainerRef: ViewContainerRef
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject( NzModalService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly nzContextMenuService = inject(NzContextMenuService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug

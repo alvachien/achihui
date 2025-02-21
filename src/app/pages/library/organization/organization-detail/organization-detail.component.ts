@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -34,7 +34,9 @@ import { SafeAny } from '@common/any';
       TranslocoModule,
       NzTableModule,
       NzSelectModule,
+      NzModalModule,
       NzDividerModule,
+      RouterModule,
     ]
 })
 export class OrganizationDetailComponent implements OnInit, OnDestroy {
@@ -47,13 +49,13 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   listTypes: OrganizationType[] = [];
   allTypes: OrganizationType[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

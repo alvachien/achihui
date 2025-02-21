@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -26,7 +26,10 @@ import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
       NzTableModule,
       TranslocoModule,
       NzDividerModule,
+      NzModalModule,
       NzButtonModule,
+      RouterModule,
+      NzModalModule,
     ]
 })
 export class BookListComponent implements OnInit, OnDestroy {
@@ -37,14 +40,13 @@ export class BookListComponent implements OnInit, OnDestroy {
   totalCount = 0;
   listData: Book[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
       ConsoleLogTypeEnum.debug

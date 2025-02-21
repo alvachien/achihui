@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -27,7 +27,9 @@ export class WelcomeComponent {
     width: '33%',
     textAlign: 'center',
   };
-  constructor(private router: Router) { }
+  private readonly router = inject(Router);
+  
+  constructor() { }
 
   get accountImage(): string {
     return `${environment.AppHost}/assets/img/Accounts.png`;
