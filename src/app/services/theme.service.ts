@@ -45,7 +45,7 @@ export class ThemeService {
     return new Promise<Event>((resolve, reject) => {
       this.loadCss(`${theme}.css`, theme).then(        
         (e) => {
-          console.debug(`Got CSS file`);
+          console.debug(`Got CSS file for ${theme}`);
 
           if (!firstLoad) {
             document.documentElement.classList.add(theme);

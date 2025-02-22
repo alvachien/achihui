@@ -39,8 +39,9 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoader
     }),
     provideAppInitializer(() => {
+      console.log('Entering App Initializer...');
       const themeService = inject(ThemeService);
-      themeService.loadTheme();
+      themeService.loadTheme(true);
     }),
     provideAuth({
       config: {
