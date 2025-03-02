@@ -1,6 +1,15 @@
 [![build and test](https://github.com/alvachien/achihui/actions/workflows/build-test.yml/badge.svg)](https://github.com/alvachien/achihui/actions/workflows/build-test.yml)
 [![Build Status](https://travis-ci.com/alvachien/achihui.svg?branch=master)](https://travis-ci.com/alvachien/achihui)
 
+# Latest status
+
+**This project is discontinued.**
+
+The **successor** is located in [Github Repo](https://github.com/alvachien/achihapp).
+
+
+
+
 # Home Info. Hub (Website Version)
 
 **Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
