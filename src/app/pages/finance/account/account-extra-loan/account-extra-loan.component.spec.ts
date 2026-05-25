@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
 import { ViewChild, Component } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -10,9 +10,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
@@ -24,7 +23,19 @@ import {
   RepaymentMethodEnum,
   TemplateDocLoan,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 describe('AccountExtraLoanComponent', () => {
   let testcomponent: AccountExtraLoanTestFormComponent;
@@ -60,27 +71,36 @@ describe('AccountExtraLoanComponent', () => {
   beforeEach(waitForAsync(() => {
     calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [AccountExtraLoanComponent, AccountExtraLoanTestFormComponent],
-      providers: [
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzCheckboxModule,
+        NzButtonModule,
+        NzAlertModule,
+        NzTableModule,
+        NzModalModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {
@@ -369,7 +389,7 @@ describe('AccountExtraLoanComponent', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-loan
         formControlName="extraControl"
@@ -381,6 +401,11 @@ describe('AccountExtraLoanComponent', () => {
       </hih-finance-account-extra-loan>
     </form>
   `,
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraLoanComponent,
+    ]
 })
 export class AccountExtraLoanTestFormComponent {
   public formGroup: UntypedFormGroup;

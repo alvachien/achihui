@@ -10,8 +10,10 @@ import {
   AbstractControl,
   ValidationErrors,
   ValidatorFn,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { UIMode } from 'actslib';
 
 import {
@@ -23,7 +25,16 @@ import {
   ConsoleLogTypeEnum,
   DocumentType,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -41,6 +52,19 @@ import { SafeAny } from 'src/common';
       multi: true,
     },
   ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    NzInputNumberModule,
+    NzCheckboxModule,
+    NzDatePickerModule,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -57,8 +81,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @Input()
   set arDocTypes(doctypes: DocumentType[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arDocTypes setter: ${
-        doctypes ? 'NOT NULL and length is ' + doctypes.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arDocTypes setter: ${doctypes ? 'NOT NULL and length is ' + doctypes.length : 'NULL'
       }`,
       ConsoleLogTypeEnum.debug
     );
@@ -72,8 +95,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @Input()
   set arCurrencies(currs: Currency[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arCurrencies setter: ${
-        currs ? 'NOT NULL and length is ' + currs.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arCurrencies setter: ${currs ? 'NOT NULL and length is ' + currs.length : 'NULL'
       }`,
       ConsoleLogTypeEnum.debug
     );

@@ -1,13 +1,14 @@
 <ng-container>
-  <div *ngIf="controlError">
-    <nz-alert
-      nzType="error"
-      [nzMessage]="controlError.value | transloco"
-      [nzDescription]="controlError.value | transloco"
-      nzShowIcon
-    >
-    </nz-alert>
-  </div>
+  @if(controlError) {
+    <div>
+      <nz-alert
+        nzType="error"
+        [nzMessage]="controlError.value | transloco"
+        [nzDescription]="controlError.value | transloco"
+        nzShowIcon>
+      </nz-alert>
+    </div>  
+  }
 
   <div [formGroup]="loanInfoForm">
     <!-- Repay. method -->
@@ -15,16 +16,18 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.RepaymentMethod' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="repaymethodErrorTpl">
         <nz-select formControlName="repayMethodControl" (ngModelChange)="onRepaymentMethodChanged($event)">
-          <nz-option
-            *ngFor="let rt of arRepaymentMethods"
+          @for(rt of arRepaymentMethods; track rt.value) {
+            <nz-option            
             [nzValue]="rt.value"
-            [nzLabel]="rt.i18nterm | transloco"
-          ></nz-option>
+            [nzLabel]="rt.i18nterm | transloco"></nz-option>
+          }
         </nz-select>
         <ng-template #repaymethodErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -35,9 +38,11 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
         <nz-date-picker formControlName="startDateControl"></nz-date-picker>
         <ng-template #dateRangeErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -59,20 +64,24 @@
     </nz-form-item>
 
     <!-- Repay day -->
-    <nz-form-item *ngIf="isFieldChangable">
-      <nz-form-label [nzSpan]="7">{{ 'Finance.RepayDayInMonth' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12">
-        <input nz-input type="number" formControlName="repayDayControl" name="repayday" />
-      </nz-form-control>
-    </nz-form-item>
+    @if(isFieldChangable) {
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{ 'Finance.RepayDayInMonth' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input type="number" formControlName="repayDayControl" name="repayday" />
+        </nz-form-control>
+      </nz-form-item>  
+    }
 
     <!-- First repay date -->
-    <nz-form-item *ngIf="isFieldChangable">
-      <nz-form-label [nzSpan]="7">{{ 'Finance.FirstRepayDate' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12">
-        <nz-date-picker formControlName="firstRepayDateControl" (ngModelChange)="onChange()"></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
+    @if(isFieldChangable) {
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7">{{ 'Finance.FirstRepayDate' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-date-picker formControlName="firstRepayDateControl" (ngModelChange)="onChange()"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>  
+    }
 
     <!-- Interest free -->
     <nz-form-item>
@@ -96,7 +105,9 @@
       <nz-form-label [nzSpan]="7">{{ 'Finance.PayingAccount' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <nz-select formControlName="payingAccountControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let acnt of arUIAccount" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+          @for(acnt of arUIAccount; track acnt.Id) {
+            <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+          }          
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -119,12 +130,14 @@
   </div>
 
   <!-- Ref doc. ID -->
-  <div *ngIf="refDocId">
-    <label>{{ 'Finance.RefDoc' | transloco }}</label>
-    <button nz-button nzType="link" (click)="onRefDocClick(refDocId)">
-      {{ refDocId }}
-    </button>
-  </div>
+  @if(refDocId) {
+    <div>
+      <label>{{ 'Finance.RefDoc' | transloco }}</label>
+      <button nz-button nzType="link" (click)="onRefDocClick(refDocId!)">
+        {{ refDocId }}
+      </button>
+    </div>  
+  }
 
   <!-- Toolbar -->
   <div class="toolbar_buttons">
@@ -146,14 +159,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.DocId }}</td>
-        <td>{{ data.TranDateFormatString }}</td>
-        <td>{{ data.Desp }}</td>
-        <td>{{ data.TranAmount | number : '1.2-2' }}</td>
-        <td>{{ data.InterestAmount | number : '1.2-2' }}</td>
-        <td>{{ data.TranAmount + data.InterestAmount | number : '1.2-2' }}</td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>{{ data.DocId }}</td>
+          <td>{{ data.TranDateFormatString }}</td>
+          <td>{{ data.Desp }}</td>
+          <td>{{ data.TranAmount | number : '1.2-2' }}</td>
+          <td>{{ data.InterestAmount | number : '1.2-2' }}</td>
+          <td>{{ data.TranAmount + data.InterestAmount | number : '1.2-2' }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </ng-container>

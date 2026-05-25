@@ -3,6 +3,7 @@ import { UIAccountForSelection, IAccountCategoryFilterEx } from '../../../model'
 
 @Pipe({
   name: 'uiAccountCtgyFilterEx',
+  standalone: true
 })
 export class UIAccountCtgyFilterExPipe implements PipeTransform {
   transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilterEx): UIAccountForSelection[] {

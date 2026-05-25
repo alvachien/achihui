@@ -8,8 +8,9 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,7 +19,6 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -31,7 +31,10 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { AccountReportComponent } from './account-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 describe('AccountReportComponent', () => {
   let component: AccountReportComponent;
@@ -67,24 +70,25 @@ describe('AccountReportComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
+    // declarations moved to imports
+    imports: [AccountReportComponent,
         NgxEchartsModule.forRoot({ echarts }),
-        FinanceUIModule,
+        NzButtonModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, AccountReportComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-      ],
-    }).compileComponents();
+        NzDrawerService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

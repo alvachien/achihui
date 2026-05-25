@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
 
 import { Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
   TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
-  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from 'src/app/model';
-import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from '@model/index';
+import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
 interface InsightRecord {
   TransactionDate?: string;

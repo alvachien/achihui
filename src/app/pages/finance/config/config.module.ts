@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FinanceUIModule } from '../finance-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { ConfigRoutingModule } from './config-routing.module';
 import { ConfigComponent } from './config.component';

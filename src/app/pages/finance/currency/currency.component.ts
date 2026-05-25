@@ -1,24 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
-import { Currency, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
-import { FinanceOdataService } from '../../../services';
+import { Currency, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
+import { FinanceOdataService } from '@services/index';
 
 @Component({
-  selector: 'hih-finance-currency',
-  templateUrl: './currency.component.html',
-  styleUrls: ['./currency.component.less'],
+    selector: 'hih-finance-currency',
+    templateUrl: './currency.component.html',
+    styleUrls: ['./currency.component.less'],
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzTableModule,
+      NzModalModule,
+      TranslocoModule,
+    ]
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;
+  
+  private readonly currService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
 
-  constructor(public currService: FinanceOdataService, public modalService: NzModalService) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CurrencyComponent constructor...`,
       ConsoleLogTypeEnum.debug

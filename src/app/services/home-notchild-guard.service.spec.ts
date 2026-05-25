@@ -60,4 +60,31 @@ describe('HomeNotChildGuardService', () => {
     const isLogin = service.checkLogin();
     expect(isLogin).toBeFalsy();
   }));
+
+  it('canActivate should return false when fatalError is true', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+    uiServiceStub.fatalError = true;
+    const result = service.canActivate({} as any, { url: '/test' } as any);
+    expect(result).toBeFalse();
+    uiServiceStub.fatalError = false;
+  }));
+
+  it('canActivate should return false when ChosedHome is undefined', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+    const urInfo = new UserAuthInfo();
+    urInfo.isAuthorized = true;
+    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+    homeService.ChosedHome = undefined;
+
+    const result = service.canActivate({} as any, { url: '/test' } as any);
+    expect(result).toBeFalse();
+  }));
+
+  it('canActivate should return true when authorized and home chosen', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+    const urInfo = new UserAuthInfo();
+    urInfo.isAuthorized = true;
+    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+    homeService.ChosedHome = fakeData.chosedHome;
+
+    const result = service.canActivate({} as any, { url: '/test' } as any);
+    expect(result).toBeTrue();
+  }));
 });

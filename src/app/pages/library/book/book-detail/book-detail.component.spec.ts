@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,8 +8,9 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import { LibraryUIModule } from '../../library-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -20,11 +21,12 @@ import {
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, Book } from '../../../../model';
 import { BookDetailComponent } from './book-detail.component';
-import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
-import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
+import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
-import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
-import { SafeAny } from 'src/common';
+import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BookDetailComponent', () => {
   let component: BookDetailComponent;
@@ -62,24 +64,17 @@ describe('BookDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        LibraryUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
-        BookDetailComponent,
-        PersonSelectionDlgComponent,
-        OrganizationSelectionDlgComponent,
-        BookCategorySelectionDlgComponent,
-        LocationSelectionDlgComponent,
-      ],
-      providers: [
+        NzInputModule,
+        NzCheckboxModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -87,16 +82,17 @@ describe('BookDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-          provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) =>
-            modalSvc.create({
-              nzClosable: true,
-              nzContent: PersonSelectionDlgComponent,
+            provide: NzModalRef,
+            useFactory: (modalSvc: NzModalService) => modalSvc.create({
+                nzClosable: true,
+                nzContent: PersonSelectionDlgComponent,
             }),
-          deps: [NzModalService],
+            deps: [NzModalService],
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

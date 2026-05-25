@@ -29,8 +29,7 @@
         formControlName="headerControl"
         [arDocTypes]="arDocTypes"
         [arCurrencies]="arCurrencies"
-        [baseCurrency]="baseCurrency"
-      >
+        [baseCurrency]="baseCurrency">
       </hih-fin-document-header>
 
       <nz-divider></nz-divider>
@@ -44,12 +43,16 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Owner' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ownerTpl">
           <nz-select formControlName="ownerControl">
-            <nz-option *ngFor="let usr of arMembers" [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
+            @for(usr of arMembers; track usr.User) {
+              <nz-option [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
+            }
           </nz-select>
           <ng-template #ownerTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -72,9 +75,11 @@
           <nz-input-number formControlName="amountControl" [nzMin]="0.01" [nzStep]="0.01" [nzPlaceHolder]="'Amount'">
           </nz-input-number>
           <ng-template #amountErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -84,7 +89,9 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="ccControl" nzAllowClear>
-            <nz-option *ngFor="let cc of arControlCenters" [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+            @for(cc of arControlCenters; track cc.Id) {
+              <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
+            }
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -94,7 +101,9 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="orderControl" nzAllowClear>
-            <nz-option *ngFor="let ord of arUIOrder" [nzValue]="ord.Id" [nzLabel]="ord.Name"></nz-option>
+            @for(ord of arUIOrder; track ord.Id) {
+              <nz-option [nzValue]="ord.Id" [nzLabel]="ord.Name"></nz-option>
+            }
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -102,23 +111,26 @@
 
     <!-- Items -->
     <form nz-form [formGroup]="itemFormGroup" [hidden]="currentStep !== 1">
-      <div *ngIf="!IsLegacyAsset">
-        <hih-fin-document-items
-          formControlName="itemControl"
-          [currentUIMode]="curMode"
-          [docDate]="curDocDate"
-          [arCurrencies]="arCurrencies"
-          [arUIAccounts]="arUIAccount"
-          [arControlCenters]="arControlCenters"
-          [arTranType]="arTranTypes"
-          [arUIOrders]="arUIOrder"
-          [docType]="curDocType"
-        >
-        </hih-fin-document-items>
-      </div>
-      <div *ngIf="IsLegacyAsset">
-        <p>{{ 'Finance.LegacyAsset' | transloco }}</p>
-      </div>
+      @if(!IsLegacyAsset) {
+        <div>
+          <hih-fin-document-items
+            formControlName="itemControl"
+            [currentUIMode]="curMode"
+            [docDate]="curDocDate"
+            [arCurrencies]="arCurrencies"
+            [arUIAccounts]="arUIAccount"
+            [arControlCenters]="arControlCenters"
+            [arTranType]="arTranTypes"
+            [arUIOrders]="arUIOrder"
+            [docType]="curDocType">
+          </hih-fin-document-items>
+        </div>  
+      }
+      @if(IsLegacyAsset) {
+        <div>
+          <p>{{ 'Finance.LegacyAsset' | transloco }}</p>
+        </div>  
+      }
     </form>
 
     <!-- Review and Confirm -->
@@ -136,60 +148,65 @@
 
     <!-- Result -->
     <div [hidden]="currentStep !== 3">
-      <div *ngIf="docIdCreated">
-        <nz-result
-          nzStatus="success"
-          [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco"
-        >
-          <div nz-result-extra>
-            <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
-              {{ 'Common.Display' | transloco }}
-            </button>
-            <button nz-button>
-              {{ 'Common.CreateAnotherOne' | transloco }}
-            </button>
-          </div>
-        </nz-result>
-      </div>
-      <div *ngIf="!docIdCreated">
-        <nz-result
-          [nzTitle]="'Common.SubmissionFailed' | transloco"
-          nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco"
-        >
-          <div nz-result-content>
-            <div class="desc">
-              <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
-              <p nz-paragraph>
-                <i nz-icon nzType="close-circle"></i>
-                {{ docPostingFailed }}
-              </p>
+      @if(docIdCreated) {
+        <div>
+          <nz-result
+            nzStatus="success"
+            [nzTitle]="'Finance.DocumentPosted' | transloco"
+            [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+            <div nz-result-extra>
+              <button nz-button (click)="onDisplayCreatedDoc()" nzType="primary">
+                {{ 'Common.Display' | transloco }}
+              </button>
+              <button nz-button>
+                {{ 'Common.CreateAnotherOne' | transloco }}
+              </button>
             </div>
-          </div>
-          <div nz-result-extra>
-            <button nz-button nzType="primary" (click)="pre()">
-              <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-            </button>
-          </div>
-        </nz-result>
-      </div>
+          </nz-result>
+        </div>  
+      }
+      @if(!docIdCreated) {
+        <div>
+          <nz-result
+            [nzTitle]="'Common.SubmissionFailed' | transloco"
+            nzStatus="error"
+            [nzSubTitle]="'Common.ResubmissionHint' | transloco"
+          >
+            <div nz-result-content>
+              <div class="desc">
+                <h4 nz-title>{{ 'Common.TitleOfSubmitError' | transloco }}</h4>
+                <p nz-paragraph>
+                  <i nz-icon nzType="close-circle"></i>
+                  {{ docPostingFailed }}
+                </p>
+              </div>
+            </div>
+            <div nz-result-extra>
+              <button nz-button nzType="primary" (click)="pre()">
+                <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+              </button>
+            </div>
+          </nz-result>
+        </div>  
+      }
     </div>
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
-      <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-    </button>
-    <button
-      nz-button
-      nzType="primary"
-      id="button_next_step"
-      (click)="next()"
-      [disabled]="!nextButtonEnabled"
-      *ngIf="currentStep < 3"
-    >
-      {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
-    </button>
+    @if(currentStep > 0 && currentStep < 3) {
+      <button nz-button (click)="pre()">
+        <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+      </button>  
+    }
+    @if(currentStep < 3) {
+      <button
+        nz-button
+        nzType="primary"
+        id="button_next_step"
+        (click)="next()"
+        [disabled]="!nextButtonEnabled">
+        {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
+      </button>
+    }
   </div>
 </div>

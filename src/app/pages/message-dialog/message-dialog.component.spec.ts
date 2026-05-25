@@ -13,7 +13,7 @@ describe('MessageDialogComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NzModalModule, NzTableModule, getTranslocoModule()],
-      declarations: [MessageDialogComponent],
+      // declarations moved to imports
       providers: [{ provide: NzModalRef, useValue: {} }],
     }).compileComponents();
   }));

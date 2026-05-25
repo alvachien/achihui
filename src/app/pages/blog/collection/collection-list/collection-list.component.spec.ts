@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, BlogOdataService } from '../../../../serv
 import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('CollectionListComponent', () => {
   let component: CollectionListComponent;
@@ -45,8 +45,8 @@ describe('CollectionListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, getTranslocoModule(), NoopAnimationsModule, BlogUIModule, RouterTestingModule],
-      declarations: [CollectionListComponent],
+      imports: [HttpClientTestingModule, getTranslocoModule(), NoopAnimationsModule, BlogUIModule, RouterTestingModule,
+        CollectionListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

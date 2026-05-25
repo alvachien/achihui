@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject, forkJoin, takeUntil } from 'rxjs';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { forkJoin } from 'rxjs';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -20,13 +20,31 @@ import {
   financePeriodLast6Months,
   financePeriodLast3Months,
 } from '../../../../model';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzRadioGroupComponent } from 'ng-zorro-antd/radio';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { FormsModule } from '@angular/forms';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
   selector: 'hih-account-month-on-month-report',
   templateUrl: './account-month-on-month-report.component.html',
   styleUrls: ['./account-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSelectModule,
+    NzRadioGroupComponent,
+    NzGridModule,
+    FormsModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
-export class AccountMonthOnMonthReportComponent implements OnInit {
+export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   constructor(private oDataService: FinanceOdataService, private modalService: NzModalService) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent constructor...',
@@ -52,8 +70,11 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
+    this._destroyed$ = new ReplaySubject(1);
 
-    forkJoin([this.oDataService.fetchAllAccountCategories(), this.oDataService.fetchAllAccounts()]).subscribe({
+    forkJoin([this.oDataService.fetchAllAccountCategories(), this.oDataService.fetchAllAccounts()])
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
       next: (rsts) => {
         this.arUIAccounts = BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]);
       },
@@ -92,7 +113,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
       return;
     }
 
-    this.oDataService.fetchReportByAccountMoM(this.selectedAccountID, this.selectedPeriod).subscribe({
+    this.oDataService.fetchReportByAccountMoM(this.selectedAccountID, this.selectedPeriod).pipe(takeUntil(this._destroyed$!)).subscribe({
       next: (val: FinanceReportByAccountMOM[]) => {
         // Fetch out data
         const arAxis: string[] = [];
@@ -249,5 +270,12 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
         });
       },
     });
+  }
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+      this._destroyed$ = null;
+    }
   }
 }

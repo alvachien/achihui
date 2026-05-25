@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,8 +8,10 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import { LibraryUIModule } from '../../library-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -20,6 +22,7 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
 import { UserAuthInfo, Person } from '../../../../model';
 import { PersonDetailComponent } from './person-detail.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PersonDetailComponent', () => {
   let component: PersonDetailComponent;
@@ -67,26 +70,28 @@ describe('PersonDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        LibraryUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [PersonDetailComponent],
-      providers: [
+        NzInputModule,
+        NzCheckboxModule,
+        NzSelectModule,
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

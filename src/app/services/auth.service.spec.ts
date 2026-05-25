@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 import { AuthService } from './auth.service';
 

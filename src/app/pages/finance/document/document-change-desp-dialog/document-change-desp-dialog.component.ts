@@ -1,12 +1,27 @@
-import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd/modal';
-import { FinanceOdataService } from 'src/app/services';
+import { Component, inject, Input, NgZone, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { FinanceOdataService } from '@services/index';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-document-change-desp-dialog',
   templateUrl: './document-change-desp-dialog.component.html',
   styleUrls: ['./document-change-desp-dialog.component.less'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzButtonModule,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class DocumentChangeDespDialogComponent implements OnInit {
   // Header forum
@@ -15,7 +30,11 @@ export class DocumentChangeDespDialogComponent implements OnInit {
   @Input() documentdesp?: string;
   isSubmitting = false;
 
-  constructor(private modal: NzModalRef, private _zone: NgZone, private odataService: FinanceOdataService) {
+  private readonly modal = inject(NzModalRef);
+  private readonly _zone = inject(NgZone);
+  private readonly odataService = inject(FinanceOdataService);
+  
+  constructor() {
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
       despControl: new UntypedFormControl('', [Validators.required]),

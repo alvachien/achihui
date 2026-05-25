@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
@@ -8,15 +8,15 @@ import { BehaviorSubject, of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
-import * as moment from 'moment';
-import { SafeAny } from 'src/common';
+import moment from 'moment';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;
@@ -87,16 +87,13 @@ describe('DocumentDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentHeaderComponent, DocumentItemsComponent, DocumentDetailComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -105,8 +102,10 @@ describe('DocumentDetailComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

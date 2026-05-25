@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
@@ -9,11 +9,17 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { UIMode } from 'actslib';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from './document-header.component';
 import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -35,22 +41,27 @@ describe('DocumentHeaderComponent', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
-      ],
-      declarations: [DocumentHeaderComponent],
-      providers: [
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzCheckboxModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

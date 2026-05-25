@@ -5,7 +5,7 @@ import { OrganizationRoutingModule } from './organization-routing.module';
 import { OrganizationListComponent } from './organization-list';
 import { OrganizationDetailComponent } from './organization-detail';
 import { LibraryUIModule } from '../library-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { OrganizationSelectionDlgComponent } from './organization-selection-dlg/organization-selection-dlg.component';
 
 @NgModule({

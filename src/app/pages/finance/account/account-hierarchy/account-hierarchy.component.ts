@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeModule, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
-import { translate } from '@ngneat/transloco';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   Account,
   AccountStatusEnum,
@@ -24,10 +24,22 @@ import {
   getOverviewScopeRange,
   momentDateFormat,
   ControlCenter,
-} from '../../../../model';
-import * as moment from 'moment';
+} from '@model/index';
+import moment from 'moment';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { DecimalPipe } from '@angular/common';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -45,6 +57,27 @@ interface ISettleAccountDetail {
   selector: 'hih-fin-account-hierarchy',
   templateUrl: './account-hierarchy.component.html',
   styleUrls: ['./account-hierarchy.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSelectModule,
+    NzSpinModule,
+    NzTreeModule,
+    NzResizableModule,
+    NzDropDownModule,
+    NzModalModule,
+    NzDescriptionsModule,
+    NzFormModule,
+    FormsModule,
+    NzIconModule,
+    ReactiveFormsModule,
+    NzDividerModule,
+    NzButtonModule,
+    DecimalPipe,
+    DocumentItemViewComponent,
+    TranslocoModule,
+    RouterModule,
+  ]
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -76,15 +109,14 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private uiStatusService: UIStatusService,
-    private modalService: NzModalService,
-    private homeService: HomeDefOdataService,
-    public router: Router,
-    private nzContextMenuService: NzContextMenuService,
-    private viewContainerRef: ViewContainerRef
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject( NzModalService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly nzContextMenuService = inject(NzContextMenuService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug
@@ -217,7 +249,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (this.activatedNode) {
       if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
-        this.odataService.closeAccount(acntid).subscribe({
+        this.odataService.closeAccount(acntid).pipe(takeUntil(this._destroyed$!)).subscribe({
           next: (val) => {
             if (val) {
               this.modalService.success({
@@ -260,7 +292,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.odataService.fetchAllAccountCategories(),
           this.odataService.fetchAllAccounts(),
           this.odataService.fetchAllControlCenters(),
-        ]).subscribe({
+        ]).pipe(takeUntil(this._destroyed$!)).subscribe({
           next: (rst) => {
             // Accounts
             const arAcnts = rst[1] as Account[];
@@ -315,6 +347,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.selectedAccountForSettle.Amount,
           this.selectedAccountForSettle.ControlCenterID ?? 0
         )
+        .pipe(takeUntil(this._destroyed$!))
         .subscribe({
           next: (val) => {
             // Settled.
@@ -463,7 +496,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (this.activatedNode?.key.startsWith('a')) {
       this.isAccountView = true;
       const acntid = +this.activatedNode?.key.substring(1);
-      this.odataService.fetchAccountBalance(acntid).subscribe({
+      this.odataService.fetchAccountBalance(acntid).pipe(takeUntil(this._destroyed$!)).subscribe({
         next: (val) => {
           this.currentAccountBalance = val;
         },

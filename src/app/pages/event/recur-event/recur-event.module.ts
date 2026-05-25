@@ -5,7 +5,7 @@ import { RecurEventRoutingModule } from './recur-event-routing.module';
 import { RecurEventListComponent } from './recur-event-list/recur-event-list.component';
 import { RecurEventDetailComponent } from './recur-event-detail/recur-event-detail.component';
 import { EventUIModule } from '../event-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @NgModule({
   declarations: [RecurEventListComponent, RecurEventDetailComponent],

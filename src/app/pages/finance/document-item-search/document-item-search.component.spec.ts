@@ -16,7 +16,7 @@ import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
 import { DocumentItemSearchComponent } from './document-item-search.component';
 import { ReusableComponentsModule } from '../../reusable-components/reusable-components.module';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('DocumentItemSearchComponent', () => {
   let component: DocumentItemSearchComponent;
@@ -86,8 +86,8 @@ describe('DocumentItemSearchComponent', () => {
         BrowserDynamicTestingModule,
         ReusableComponentsModule,
         getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
+      ,
+        MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

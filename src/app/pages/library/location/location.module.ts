@@ -5,7 +5,7 @@ import { LocationRoutingModule } from './location-routing.module';
 import { LocationListComponent } from './location-list';
 import { LocationDetailComponent } from './location-detail';
 import { LibraryUIModule } from '../library-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { LocationSelectionDlgComponent } from './location-selection-dlg/location-selection-dlg.component';
 
 @NgModule({

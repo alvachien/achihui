@@ -9,8 +9,7 @@ describe('AccountComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AccountComponent],
+      imports: [RouterTestingModule, AccountComponent],
     }).compileComponents();
   }));
 

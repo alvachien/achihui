@@ -7,12 +7,12 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
+import { EventUIModule } from '../../event-ui.module';
 import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { NormalEventListComponent } from './normal-event-list.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('NormalEventListComponent', () => {
   let component: NormalEventListComponent;
@@ -52,8 +52,8 @@ describe('NormalEventListComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [NormalEventListComponent],
+      ,
+        NormalEventListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

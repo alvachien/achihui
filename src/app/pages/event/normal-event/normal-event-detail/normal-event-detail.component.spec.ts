@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService 
 import { UserAuthInfo, GeneralEvent } from '../../../../model';
 import { NormalEventDetailComponent } from './normal-event-detail.component';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('NormalEventDetailComponent', () => {
   let component: NormalEventDetailComponent;
@@ -66,8 +66,8 @@ describe('NormalEventDetailComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [NormalEventDetailComponent],
+      ,
+        NormalEventDetailComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

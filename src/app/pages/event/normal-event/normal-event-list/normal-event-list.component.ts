@@ -3,10 +3,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 
-import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from 'src/app/model';
-import { EventStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from '@model/index';
+import { EventStorageService, UIStatusService } from '@services/index';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({

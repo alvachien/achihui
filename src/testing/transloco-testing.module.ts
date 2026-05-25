@@ -1,4 +1,4 @@
-import { TranslocoTestingModule, TranslocoTestingOptions } from '@ngneat/transloco';
+import { TranslocoTestingModule, TranslocoTestingOptions } from '@jsverse/transloco';
 import * as en from '../assets/i18n/en.json';
 import * as zh from '../assets/i18n/zh.json';
 export function getTranslocoModule(options: TranslocoTestingOptions = {}) {

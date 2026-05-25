@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, BlogOdataService } from '../../../../serv
 import { UserAuthInfo } from '../../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('PostListComponent', () => {
   let component: PostListComponent;
@@ -45,8 +45,8 @@ describe('PostListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NoopAnimationsModule, BlogUIModule, getTranslocoModule(), RouterTestingModule],
-      declarations: [PostListComponent],
+      imports: [HttpClientTestingModule, NoopAnimationsModule, BlogUIModule, getTranslocoModule(), RouterTestingModule,
+        PostListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

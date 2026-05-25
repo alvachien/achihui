@@ -1,10 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { UIMode, isUIEditable } from 'actslib';
 
 import {
@@ -19,11 +27,27 @@ import {
   HomeMemberRelationEnum,
 } from '../../../model';
 import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../services';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-  selector: 'hih-home-def-detail',
-  templateUrl: './home-def-detail.component.html',
-  styleUrls: ['./home-def-detail.component.less'],
+    selector: 'hih-home-def-detail',
+    templateUrl: './home-def-detail.component.html',
+    styleUrls: ['./home-def-detail.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      TranslocoModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NzFormModule,
+      NzSelectModule,
+      NzDividerModule,
+      NzTableModule,
+      NzInputModule,
+      NzCheckboxModule,
+      NzModalModule,
+      NzButtonModule,
+    ]
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -37,6 +61,13 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   public detailFormGroup: UntypedFormGroup;
   public listMembers: HomeMember[] = [];
   public listMemRel: UIDisplayString[] = [];
+
+  private readonly authService = inject(AuthService);
+  private readonly finService = inject(FinanceOdataService);
+  private readonly storageService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly modalService = inject(NzModalService);
 
   get IsCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -88,12 +119,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    public authService: AuthService,
-    public finService: FinanceOdataService,
-    public storageService: HomeDefOdataService,
-    private router: Router,
-    private activateRoute: ActivatedRoute,
-    private modalService: NzModalService
+    
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',

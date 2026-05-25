@@ -6,10 +6,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { SafeAny } from 'src/common';
-import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { SafeAny } from '@common/index';
+import { FakeDataHelper, getTranslocoModule } from '@testing/index';
 import { LibraryUIModule } from '../../library-ui.module';
 import { PersonSelectionDlgComponent } from './person-selection-dlg.component';
 
@@ -47,8 +47,8 @@ describe('PersonSelectionDlgComponent', () => {
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
+        PersonSelectionDlgComponent,
       ],
-      declarations: [PersonSelectionDlgComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

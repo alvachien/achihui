@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';

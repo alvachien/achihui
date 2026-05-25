@@ -10,8 +10,8 @@ describe('DocumentComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [DocumentComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule,
+        DocumentComponent],
     }).compileComponents();
   }));
 

@@ -5,7 +5,7 @@
  */
 
 import { ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd/table';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

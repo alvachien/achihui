@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
@@ -26,13 +26,34 @@ import {
   DocumentItem,
   BuildupOrderForSelectionEx,
 } from '../../../../model';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { SafeAny } from 'src/common';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'hih-fin-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DocumentHeaderComponent,
+    DocumentItemsComponent,
+    NzInputModule,
+    NzButtonModule,
+    TranslocoModule,
+    RouterModule,
+    NzModalModule,
+  ]
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -58,14 +79,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router,
-    private cd: ChangeDetectorRef
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly cd = inject(ChangeDetectorRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

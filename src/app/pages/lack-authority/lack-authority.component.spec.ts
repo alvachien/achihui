@@ -12,7 +12,7 @@ describe('LackAuthorityComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NzResultModule, NzButtonModule, getTranslocoModule()],
-      declarations: [LackAuthorityComponent],
+      // declarations moved to imports
     }).compileComponents();
   }));
 

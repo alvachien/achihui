@@ -8,7 +8,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -17,9 +17,8 @@ import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -33,7 +32,22 @@ import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView, momentDateForma
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 describe('DocumentRecurredMassCreateComponent', () => {
   let component: DocumentRecurredMassCreateComponent;
@@ -95,29 +109,39 @@ describe('DocumentRecurredMassCreateComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
-      ],
-      declarations: [
-        DocumentNormalMassCreateItemComponent,
-        MessageDialogComponent,
-        DocumentRecurredMassCreateComponent,
-      ],
-      providers: [
+        NzFormModule,
+        NzInputModule,
+        NzSelectModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzCheckboxModule,
+        NzResultModule,
+        NzStepsModule,
+        NzPageHeaderModule,
+        NzBreadCrumbModule,
+        NzDescriptionsModule,
+        NzTableModule,
+        NzCollapseModule,
+        NzDividerModule,
+        DocumentNormalMassCreateItemComponent],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ModelUtility, ConsoleLogTypeEnum } from '../model';
@@ -6,13 +6,16 @@ import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { UIStatusService } from './uistatus.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class HomeChoseGuardService  {
+  private readonly authService = inject(AuthService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly uiService = inject(UIStatusService);
+  private readonly router = inject(Router);
+  
   constructor(
-    private authService: AuthService,
-    private homeService: HomeDefOdataService,
-    private uiService: UIStatusService,
-    private router: Router
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeChoseGuardService constructor',

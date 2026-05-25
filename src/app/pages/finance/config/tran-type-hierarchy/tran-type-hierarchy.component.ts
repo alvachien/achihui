@@ -2,16 +2,22 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
-import { ModelUtility, ConsoleLogTypeEnum, TranType } from '../../../../model';
-import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, TranType } from '@model/index';
+import { FinanceOdataService, UIStatusService } from '@services/index';
 
 @Component({
   selector: 'hih-fin-tran-type-hierarchy',
   templateUrl: './tran-type-hierarchy.component.html',
   styleUrls: ['./tran-type-hierarchy.component.less'],
+  imports: [
+    NzSpinModule,
+    NzTreeModule,
+    TranslocoModule,
+  ]
 })
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

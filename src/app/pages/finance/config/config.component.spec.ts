@@ -32,14 +32,7 @@ describe('ConfigComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
-      declarations: [
-        AccountCategoryListComponent,
-        AssetCategoryListComponent,
-        DocTypeListComponent,
-        TranTypeHierarchyComponent,
-        TranTypeListComponent,
-        ConfigComponent,
-      ],
+      // declarations moved to imports
       providers: [{ provide: HomeDefOdataService, useValue: homeService }],
     }).compileComponents();
   }));
@@ -52,5 +45,22 @@ describe('ConfigComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return false for isChildMode when member is not a child', () => {
+    expect(component.isChildMode).toBeFalse();
+  });
+
+  it('should return true for isChildMode when member is a child', () => {
+    homeService.CurrentMemberInChosedHome!['IsChild'] = true;
+    expect(component.isChildMode).toBeTrue();
+    homeService.CurrentMemberInChosedHome!['IsChild'] = false;
+  });
+
+  it('should return false for isChildMode when CurrentMemberInChosedHome is undefined', () => {
+    const saved = homeService.CurrentMemberInChosedHome;
+    homeService['CurrentMemberInChosedHome'] = undefined;
+    expect(component.isChildMode).toBeFalse();
+    homeService['CurrentMemberInChosedHome'] = saved;
   });
 });

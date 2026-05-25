@@ -1,11 +1,12 @@
+import { NgIf } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject, of } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   Account,
@@ -35,7 +36,23 @@ import {
   financeTranTypeInterestIn,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { DocumentHeaderComponent } from '../document-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzDividerComponent } from 'ng-zorro-antd/divider';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 
 enum BorrowFromRepayType {
   Principal = 0,
@@ -56,6 +73,28 @@ interface PayingAccountItem {
   selector: 'hih-document-loan-repay-create',
   templateUrl: './document-loan-repay-create.component.html',
   styleUrls: ['./document-loan-repay-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzButtonModule,
+    NzStepsModule,
+    NzSelectModule,
+    NzTableModule,
+    NzDescriptionsModule,
+    NzDividerComponent,
+    NzResultModule,
+    NzSpinModule,
+    NzInputNumberModule,
+    NzDatePickerModule,
+    TranslocoModule,
+    UIAccountStatusFilterPipe,
+    UIAccountCtgyFilterExPipe,
+    NgIf,
+  ]
 })
 export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

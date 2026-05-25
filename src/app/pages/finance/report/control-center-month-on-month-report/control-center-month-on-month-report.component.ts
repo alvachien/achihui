@@ -1,10 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ReplaySubject, takeUntil } from 'rxjs';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
-import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import moment from 'moment';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 import {
   ConsoleLogTypeEnum,
@@ -14,16 +22,28 @@ import {
   financePeriodLast6Months,
   FinanceReportByControlCenterMOM,
   ModelUtility,
-} from 'src/app/model';
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-control-center-month-on-month-report',
   templateUrl: './control-center-month-on-month-report.component.html',
   styleUrls: ['./control-center-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzCascaderModule,
+    NzRadioModule,
+    FormsModule,
+    NzGridModule,
+    NgxEchartsModule,
+    NzButtonModule,
+    TranslocoModule,
+  ]
 })
-export class ControlCenterMonthOnMonthReportComponent implements OnInit {
+export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   constructor(private odataService: FinanceOdataService, private modalService: NzModalService) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent constructor...',
@@ -53,8 +73,9 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters...',
       ConsoleLogTypeEnum.debug
     );
+    this._destroyed$ = new ReplaySubject(1);
 
-    this.odataService.fetchAllControlCenters().subscribe({
+    this.odataService.fetchAllControlCenters().pipe(takeUntil(this._destroyed$)).subscribe({
       next: (val: ControlCenter[]) => {
         this.arControlCenters = val.slice();
         this.availableControlCenters = [];
@@ -124,7 +145,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
     const selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
-    this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).subscribe({
+    this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).pipe(takeUntil(this._destroyed$!)).subscribe({
       next: (val: FinanceReportByControlCenterMOM[]) => {
         // Fetch out data
         const arAxis: string[] = [];
@@ -398,5 +419,12 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
         });
       },
     });
+  }
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+      this._destroyed$ = null;
+    }
   }
 }

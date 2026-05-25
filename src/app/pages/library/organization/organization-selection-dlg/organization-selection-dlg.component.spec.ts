@@ -6,9 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { FakeDataHelper, getTranslocoModule } from 'src/testing';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { FakeDataHelper, getTranslocoModule } from '@testing/index';
 import { LibraryUIModule } from '../../library-ui.module';
 import { OrganizationSelectionDlgComponent } from './organization-selection-dlg.component';
 
@@ -48,8 +48,8 @@ describe('OrganizationSelectionDlgComponent', () => {
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
+        OrganizationSelectionDlgComponent,
       ],
-      declarations: [OrganizationSelectionDlgComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

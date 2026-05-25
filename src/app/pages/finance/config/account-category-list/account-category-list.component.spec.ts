@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountCategoryListComponent } from './account-category-list.component';
 import {
   getTranslocoModule,
@@ -21,7 +20,8 @@ import {
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountCategoryListComponent', () => {
   let component: AccountCategoryListComponent;
@@ -46,24 +46,23 @@ describe('AccountCategoryListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, AccountCategoryListComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

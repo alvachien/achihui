@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
 

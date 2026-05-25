@@ -8,7 +8,7 @@ import {
   inject,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,11 +17,10 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import * as moment from 'moment';
+import moment from 'moment';
 import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
@@ -42,7 +41,8 @@ import {
   TemplateDocADP,
 } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentDownpaymentCreateComponent', () => {
   let component: DocumentDownpaymentCreateComponent;
@@ -107,23 +107,14 @@ describe('DocumentDownpaymentCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    // declarations moved to imports
+    imports: [RouterTestingModule,
         FormsModule,
-        FinanceUIModule,
+        
         ReactiveFormsModule,
-        HttpClientTestingModule,
         NoopAnimationsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [
-        AccountExtraDownpaymentComponent,
-        DocumentHeaderComponent,
-        DocumentItemsComponent,
-        DocumentDownpaymentCreateComponent,
-        MessageDialogComponent,
-      ],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -131,8 +122,10 @@ describe('DocumentDownpaymentCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

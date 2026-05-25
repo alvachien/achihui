@@ -1,19 +1,36 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
-import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
-import { BorrowRecordCreateDlgComponent } from '../../borrow-record/borrow-record-create-dlg';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 
 @Component({
-  selector: 'hih-book-list',
-  templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.less'],
+    selector: 'hih-book-list',
+    templateUrl: './book-list.component.html',
+    styleUrls: ['./book-list.component.less'],
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzTableModule,
+      TranslocoModule,
+      NzDividerModule,
+      NzModalModule,
+      NzButtonModule,
+      RouterModule,
+      NzModalModule,
+    ]
 })
 export class BookListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -23,14 +40,13 @@ export class BookListComponent implements OnInit, OnDestroy {
   totalCount = 0;
   listData: Book[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
       ConsoleLogTypeEnum.debug

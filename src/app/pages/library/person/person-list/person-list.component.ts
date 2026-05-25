@@ -1,17 +1,34 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { Router, RouterModule } from '@angular/router';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
-import { ConsoleLogTypeEnum, ModelUtility, Person } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, Person } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-  selector: 'hih-person-list',
-  templateUrl: './person-list.component.html',
-  styleUrls: ['./person-list.component.less'],
+    selector: 'hih-person-list',
+    templateUrl: './person-list.component.html',
+    styleUrls: ['./person-list.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzSpinModule,
+      NzTableModule,
+      NzBreadCrumbModule,
+      NzDividerModule,
+      NzModalModule,
+      RouterModule,
+      TranslocoModule,
+      NzButtonModule,
+    ]
 })
 export class PersonListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -7,9 +7,11 @@
         <nz-form-control [nzSpan]="16" nzHasFeedback [nzErrorTip]="despTpl">
           <input nz-input formControlName="despControl" />
           <ng-template #despTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -24,9 +26,11 @@
         <nz-form-control [nzSpan]="16" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left">
           <nz-date-picker formControlName="dateControl"></nz-date-picker>
           <ng-template #trandateErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -38,12 +42,16 @@
         <nz-form-label [nzSpan]="8" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="16" nzHasFeedback [nzErrorTip]="accountTpl">
           <nz-select formControlName="accountControl">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+            @for(acnt of arUIAccounts; track acnt.Id) {
+              <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+            }            
           </nz-select>
           <ng-template #accountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -55,12 +63,16 @@
         <nz-form-label [nzSpan]="8" nzRequired>{{ 'Finance.TransactionType' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="16" nzHasFeedback [nzErrorTip]="trantypeTpl">
           <nz-select formControlName="tranTypeControl">
-            <nz-option *ngFor="let tt of arTranType" [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+            @for(tt of arTranType; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+            }            
           </nz-select>
           <ng-template #trantypeTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -77,9 +89,11 @@
             <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"> </nz-input-number>
           </nz-input-group>
           <ng-template #amountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -91,7 +105,9 @@
         <nz-form-label [nzSpan]="8">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="16">
           <nz-select formControlName="ccControl" nzAllowClear>
-            <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            @for(tt of arControlCenters; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            }            
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -103,7 +119,9 @@
         <nz-form-label [nzSpan]="8">{{ 'Finance.Activity' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="16">
           <nz-select formControlName="orderControl" nzAllowClear>
-            <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            @for(tt of arUIOrders; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            }            
           </nz-select>
         </nz-form-control>
       </nz-form-item>

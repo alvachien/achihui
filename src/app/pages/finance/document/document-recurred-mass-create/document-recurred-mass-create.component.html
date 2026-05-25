@@ -1,10 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>
-      <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
-    </nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.MassCreateRecurredNormalDocs' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.MassCreateRecurredNormalDocs' | transloco }}</nz-page-header-title>
@@ -33,9 +30,11 @@
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeErrorTpl">
                 <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
                 <ng-template #dateRangeErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -47,13 +46,16 @@
               <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.RepeatFrequency' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
                 <nz-select formControlName="frqControl">
-                  <nz-option *ngFor="let rt of arFrequencies" [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco">
-                  </nz-option>
+                  @for(rt of arFrequencies; track rt.value) {
+                    <nz-option [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco"></nz-option>
+                  }                  
                 </nz-select>
                 <ng-template #frqTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -67,12 +69,16 @@
               <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
                 <nz-select formControlName="accountControl">
-                  <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+                  @for(acnt of arUIAccounts; track acnt.Id) {
+                    <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+                  }                  
                 </nz-select>
                 <ng-template #accountErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -86,12 +92,16 @@
               <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.TransactionType' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="tranTypeErrorTpl">
                 <nz-select formControlName="tranTypeControl">
-                  <nz-option *ngFor="let tt of arTranType" [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+                  @for(tt of arTranType; track tt.Id) {
+                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+                  }                  
                 </nz-select>
                 <ng-template #tranTypeErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    {{ 'Common.FieldIsMandatory' | transloco }}
-                  </ng-container>
+                  @if(control.hasError('required')) {
+                    <ng-container>
+                      {{ 'Common.FieldIsMandatory' | transloco }}
+                    </ng-container>  
+                  }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
@@ -113,7 +123,9 @@
               <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12">
                 <nz-select formControlName="ccControl">
-                  <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+                  @for(tt of arControlCenters; track tt.Id) {
+                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+                  }                  
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -125,7 +137,9 @@
               <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback>
                 <nz-select formControlName="orderControl">
-                  <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+                  @for(tt of arUIOrders; track tt.Id) {
+                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+                  }                  
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -171,29 +185,31 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let data of innerTable.data">
-                      <td>{{ data.DocumentID }}</td>
-                      <td>{{ data.ItemID }}</td>
-                      <td>{{ data.DocumentDesp }}</td>
-                      <td>{{ data.TransactionDate }}</td>
-                      <td>
-                        {{ getTranTypeName(data.TransactionType!) }}<small>{{ data.TransactionType }}</small>
-                      </td>
-                      <td>
-                        {{ data.Amount }} <small>{{ data.Currency }}</small>
-                      </td>
-                      <td>
-                        {{ getAccountName(data.AccountID!) }}
-                        <small>{{ data.AccountID }}</small>
-                      </td>
-                      <td>
-                        {{ getControlCenterName(data.ControlCenterID!) }}<small>{{ data.ControlCenterID }}</small>
-                      </td>
-                      <td>
-                        {{ getOrderName(data.OrderID!) }}
-                        <small>{{ data.OrderID }}</small>
-                      </td>
-                    </tr>
+                    @for(data of innerTable.data; track $index) {
+                      <tr>
+                        <td>{{ data.DocumentID }}</td>
+                        <td>{{ data.ItemID }}</td>
+                        <td>{{ data.DocumentDesp }}</td>
+                        <td>{{ data.TransactionDate }}</td>
+                        <td>
+                          {{ getTranTypeName(data.TransactionType!) }}<small>{{ data.TransactionType }}</small>
+                        </td>
+                        <td>
+                          {{ data.Amount }} <small>{{ data.Currency }}</small>
+                        </td>
+                        <td>
+                          {{ getAccountName(data.AccountID!) }}
+                          <small>{{ data.AccountID }}</small>
+                        </td>
+                        <td>
+                          {{ getControlCenterName(data.ControlCenterID!) }}<small>{{ data.ControlCenterID }}</small>
+                        </td>
+                        <td>
+                          {{ getOrderName(data.OrderID!) }}
+                          <small>{{ data.OrderID }}</small>
+                        </td>
+                      </tr>  
+                    }
                   </tbody>
                 </nz-table>
               </td>
@@ -211,9 +227,11 @@
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="despTpl">
           <input nz-input formControlName="despControl" />
           <ng-template #despTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -231,12 +249,16 @@
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
           <nz-select formControlName="accountControl">
-            <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+            @for(acnt of arUIAccounts; track acnt.Id) {
+              <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+            }            
           </nz-select>
           <ng-template #accountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -246,12 +268,16 @@
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.TransactionType' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trantypeTpl">
           <nz-select formControlName="tranTypeControl">
-            <nz-option *ngFor="let tt of arTranType" [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+            @for(tt of arTranType; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
+            }            
           </nz-select>
           <ng-template #trantypeTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -264,9 +290,11 @@
             <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"> </nz-input-number>
           </nz-input-group>
           <ng-template #amountTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>
+            @if(control.hasError('required')) {
+              <ng-container>
+                {{ 'Common.FieldIsMandatory' | transloco }}
+              </ng-container>  
+            }
           </ng-template>
         </nz-form-control>
       </nz-form-item>
@@ -276,7 +304,9 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="ccControl" nzAllowClear>
-            <nz-option *ngFor="let tt of arControlCenters" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            @for(tt of arControlCenters; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            }            
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -286,7 +316,9 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="orderControl" nzAllowClear>
-            <nz-option *ngFor="let tt of arUIOrders" [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            @for(tt of arUIOrders; track tt.Id) {
+              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
+            }            
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -297,32 +329,31 @@
       <form nz-form [formGroup]="itemsFormGroup" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
-            <nz-collapse-panel
-              *ngFor="let item of getItemControls; index as i; first as isFirst; last as isLast"
-              [nzHeader]="headerTpl"
-              [nzActive]="true"
-            >
-              <hih-document-normal-mass-create-item
-                [itemFormGroup]="getItemControls[i]"
-                [arUIAccounts]="arUIAccounts"
-                [arUIOrders]="arUIOrders"
-                [arControlCenters]="arControlCenters"
-                [baseCurrency]="baseCurrency"
-                [arTranType]="arTranType"
-              >
-              </hih-document-normal-mass-create-item>
-              <ng-template #headerTpl>
-                <button nz-button nzType="primary" (click)="onCopyItem($event, i)">
-                  <i nz-icon nzType="copy"></i>
-                </button>
-                <button nz-button nzType="default" (click)="onCreateNewItem($event)">
-                  <i nz-icon nzType="plus"></i>
-                </button>
-                <button nz-button nzDanger [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)">
-                  <i nz-icon nzType="minus"></i>
-                </button>
-              </ng-template>
-            </nz-collapse-panel>
+            @for(item of getItemControls; track $index; let i = $index, isFirst = $first, isLast = $last) {
+              <nz-collapse-panel
+                [nzHeader]="headerTpl"
+                [nzActive]="true">
+                <hih-document-normal-mass-create-item
+                  [itemFormGroup]="getItemControls[i]"
+                  [arUIAccounts]="arUIAccounts"
+                  [arUIOrders]="arUIOrders"
+                  [arControlCenters]="arControlCenters"
+                  [baseCurrency]="baseCurrency"
+                  [arTranType]="arTranType">
+                </hih-document-normal-mass-create-item>
+                <ng-template #headerTpl>
+                  <button nz-button nzType="primary" (click)="onCopyItem($event, i)">
+                    <i nz-icon nzType="copy"></i>
+                  </button>
+                  <button nz-button nzType="default" (click)="onCreateNewItem($event)">
+                    <i nz-icon nzType="plus"></i>
+                  </button>
+                  <button nz-button nzDanger [disabled]="isFirst && isLast" (click)="onRemoveItem($event, i)">
+                    <i nz-icon nzType="minus"></i>
+                  </button>
+                </ng-template>
+              </nz-collapse-panel>
+            }
           </nz-collapse>
         </div>
       </form>
@@ -330,114 +361,137 @@
 
     <!-- Step 4: Confirm -->
     <div nz-row [hidden]="currentStep !== 4" style="width: 100%">
-      <div *ngFor="let docinfo of confirmInfo; last as isConfirmLast; index as confirmIndex">
-        <nz-descriptions [nzTitle]="getConfirmDocumentTitle(confirmIndex)" nzBordered [nzColumn]="4">
-          <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
-            {{ docinfo.TranDateFormatString }}
-          </nz-descriptions-item>
-          <div *ngFor="let iteminfo of docinfo.Items">
-            <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-              {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
+      @for(docinfo of confirmInfo; track $index; let isConfirmLast = $last, confirmIndex = $index) {
+        <div>
+          <nz-descriptions [nzTitle]="getConfirmDocumentTitle(confirmIndex)" nzBordered [nzColumn]="4">
+            <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
+              {{ docinfo.TranDateFormatString }}
             </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-              {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
-              {{ iteminfo.TranAmount }}
-              <span style="margin-left: 3px">{{ baseCurrency }}</span>
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-              {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-              {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
-            </nz-descriptions-item>
-          </div>
-        </nz-descriptions>
-        <nz-divider *ngIf="!isConfirmLast"></nz-divider>
-      </div>
+            @for(iteminfo of docinfo.Items; track $index) {
+              <div>
+                <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+                  {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
+                </nz-descriptions-item>
+                <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+                  {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
+                </nz-descriptions-item>
+                <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+                  {{ iteminfo.TranAmount }}
+                  <span style="margin-left: 3px">{{ baseCurrency }}</span>
+                </nz-descriptions-item>
+                <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+                  {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
+                </nz-descriptions-item>
+                <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+                  {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
+                </nz-descriptions-item>
+              </div>
+            }
+          </nz-descriptions>
+          @if(!isConfirmLast) {
+            <nz-divider></nz-divider>
+          }
+        </div>
+      }
     </div>
 
     <!-- Step 5: Result -->
     <div nz-row [hidden]="currentStep !== 5" style="width: 100%">
-      <div *ngIf="docIdFailed.length <= 0">
-        <nz-result
-          nzStatus="success"
-          [nzTitle]="'Finance.DocumentPosted' | transloco"
-          [nzSubTitle]="'Finance.DocumentPosted' | transloco"
-        >
-          <div nz-result-content>
-            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
-                  {{ pdocinfo.TranDateFormatString }}
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">
-                    {{ pdocinfo.Id }}
-                  </button>
-                </nz-descriptions-item>
-              </nz-descriptions>
-              <nz-divider *ngIf="!isPostDocLast"></nz-divider>
+      @if(docIdFailed.length <= 0) {
+        <div>
+          <nz-result
+            nzStatus="success"
+            [nzTitle]="'Finance.DocumentPosted' | transloco"
+            [nzSubTitle]="'Finance.DocumentPosted' | transloco">
+            <div nz-result-content>
+              @for(pdocinfo of docIdCreated; track $index; let isPostDocLast = $last, postDocIndex = $index) {
+                <div>
+                  <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
+                    <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
+                      {{ pdocinfo.TranDateFormatString }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
+                      <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">
+                        {{ pdocinfo.Id }}
+                      </button>
+                    </nz-descriptions-item>
+                  </nz-descriptions>
+                  @if(!isPostDocLast) {
+                    <nz-divider></nz-divider>
+                  }                  
+                </div>  
+              }
             </div>
-          </div>
-          <div nz-result-extra>
-            <button nz-button (click)="onBackToListView()">Back to List View</button>
-          </div>
-        </nz-result>
-      </div>
-      <div *ngIf="docIdFailed.length > 0">
-        <nz-result
-          [nzTitle]="'Common.SubmissionFailed' | transloco"
-          nzStatus="error"
-          [nzSubTitle]="'Common.ResubmissionHint' | transloco"
-        >
-          <div nz-result-content>
-            <div *ngFor="let pdocinfo of docIdCreated; last as isPostDocLast; index as postDocIndex">
-              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
-                  {{ pdocinfo.TranDateFormatString }}
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
-                  <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">
-                    {{ pdocinfo.Id }}
-                  </button>
-                </nz-descriptions-item>
-              </nz-descriptions>
-              <nz-divider *ngIf="!isPostDocLast"></nz-divider>
+            <div nz-result-extra>
+              <button nz-button (click)="onBackToListView()">Back to List View</button>
             </div>
-            <nz-divider></nz-divider>
-            <div *ngFor="let fdocinfo of docIdFailed; last as isFailedDocLast; index as failDocIndex">
-              <nz-descriptions [nzTitle]="getConfirmDocumentTitle(failDocIndex)" nzBordered [nzColumn]="4">
-                <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
-                  {{ fdocinfo.TranDateFormatString }}
-                </nz-descriptions-item>
-              </nz-descriptions>
-              <nz-divider *ngIf="!isFailedDocLast"></nz-divider>
+          </nz-result>
+        </div>  
+      }
+
+      @if(docIdFailed.length > 0) {
+        <div>
+          <nz-result
+            [nzTitle]="'Common.SubmissionFailed' | transloco"
+            nzStatus="error"
+            [nzSubTitle]="'Common.ResubmissionHint' | transloco">
+            <div nz-result-content>
+              @for(pdocinfo of docIdCreated; track $index; let isPostDocLast = $last, postDocIndex = $index) {
+                <div>
+                  <nz-descriptions [nzTitle]="getConfirmDocumentTitle(pdocinfo.Id!)" nzBordered [nzColumn]="4">
+                    <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
+                      {{ pdocinfo.TranDateFormatString }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="ID" [nzSpan]="1">
+                      <button nz-button nzType="link" (click)="onDisplayCreatedDoc(pdocinfo.Id!)">
+                        {{ pdocinfo.Id }}
+                      </button>
+                    </nz-descriptions-item>
+                  </nz-descriptions>
+                  @if(!isPostDocLast) {
+                    <nz-divider></nz-divider>
+                  }
+                </div>  
+              }
+              <nz-divider></nz-divider>
+              @for(fdocinfo of docIdFailed; track $index; let isFailedDocLast = $last, failDocIndex = $index) {
+                <div>
+                  <nz-descriptions [nzTitle]="getConfirmDocumentTitle(failDocIndex)" nzBordered [nzColumn]="4">
+                    <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
+                      {{ fdocinfo.TranDateFormatString }}
+                    </nz-descriptions-item>
+                  </nz-descriptions>
+                  @if(!isFailedDocLast) {
+                    <nz-divider></nz-divider>
+                  }              
+                </div>  
+              }
             </div>
-          </div>
-          <div nz-result-extra>
-            <button nz-button nzType="primary" (click)="onResubmitFailedItems()">Resent Failed Items</button>
-            <button nz-button (click)="onBackToListView()">Back to List View</button>
-          </div>
-        </nz-result>
-      </div>
+            <div nz-result-extra>
+              <button nz-button nzType="primary" (click)="onResubmitFailedItems()">Resent Failed Items</button>
+              <button nz-button (click)="onBackToListView()">Back to List View</button>
+            </div>
+          </nz-result>
+        </div>  
+      }
     </div>
   </div>
 
   <div class="steps-action">
-    <button nz-button (click)="pre()" *ngIf="currentStep > 0 && currentStep < 5">
-      <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
-    </button>
-    <button
-      nz-button
-      nzType="primary"
-      id="button_next_step"
-      (click)="next()"
-      [disabled]="!nextButtonEnabled"
-      *ngIf="currentStep < 5"
-    >
-      {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
-    </button>
+    @if(currentStep > 0 && currentStep < 5) {
+      <button nz-button (click)="pre()">
+        <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
+      </button>  
+    }
+    @if(currentStep < 5) {
+      <button
+        nz-button
+        nzType="primary"
+        id="button_next_step"
+        (click)="next()"
+        [disabled]="!nextButtonEnabled">
+        {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
+      </button>
+    }
   </div>
 </div>

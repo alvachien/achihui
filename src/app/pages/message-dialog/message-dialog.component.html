@@ -9,11 +9,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.MsgType }}</td>
-        <td>{{ data.MsgTitle | transloco }}</td>
-        <td>{{ data.MsgContent | transloco }}</td>
-      </tr>
+      @for(item of basicTable.data; track $index) 
+      {
+        <tr>
+          <td>{{ item.MsgType }}</td>
+          <td>{{ item.MsgTitle | transloco }}</td>
+          <td>{{ item.MsgContent | transloco }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </div>

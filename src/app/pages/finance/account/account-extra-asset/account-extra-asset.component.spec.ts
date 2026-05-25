@@ -1,15 +1,22 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraAssetComponent } from './account-extra-asset.component';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AssetCategory, AccountExtraAsset } from '../../../../model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 describe('AccountExtraAssetComponent', () => {
   let testingComponent: FinanceAccountExtraAssetTestFormComponent;
@@ -27,18 +34,22 @@ describe('AccountExtraAssetComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [AccountExtraAssetComponent, FinanceAccountExtraAssetTestFormComponent],
-    }).compileComponents();
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzButtonModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {
@@ -163,12 +174,17 @@ describe('AccountExtraAssetComponent', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-asset formControlName="infoControl" [arAssetCategories]="arAssetCategories">
       </hih-finance-account-extra-asset>
     </form>
   `,
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraAssetComponent,
+    ]
 })
 export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: UntypedFormGroup;

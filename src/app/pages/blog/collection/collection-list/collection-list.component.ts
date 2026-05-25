@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '../../../../model';
 import { BlogOdataService } from '../../../../services';

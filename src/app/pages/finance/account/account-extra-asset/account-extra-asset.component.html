@@ -5,12 +5,16 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Category' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyErrorTpl">
         <nz-select formControlName="ctgyControl" (ngModelChange)="onChange()">
-          <nz-option *ngFor="let rt of arAssetCategories" [nzValue]="rt.ID" [nzLabel]="t(rt.Name!)"></nz-option>
+          @for(rt of arAssetCategories; track rt.ID) {
+            <nz-option [nzValue]="rt.ID" [nzLabel]="t(rt.Name!)"></nz-option>
+          }          
         </nz-select>
         <ng-template #ctgyErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -21,12 +25,16 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
         <input nz-input formControlName="nameControl" maxlength="30" />
         <ng-template #nameErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
-          <ng-container *ngIf="control.hasError('required')">
-            {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
+          @if(control.hasError('required')) {
+            <ng-container>
+              {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -37,9 +45,11 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="commentControl" maxlength="45" />
         <ng-template #cmtTpl let-control>
-          <ng-container *ngIf="control.hasError('maxlength')">
-            {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>
+          @if(control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>  
+          }
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -84,24 +94,28 @@
   </div>
 
   <!-- Ref doc. ID -->
-  <div nz-row class="achih-control-full-width" *ngIf="refBuyDocID">
-    <div nz-col nzSpan="2" nzOffset="5">
-      <label>{{ 'Finance.RefDoc' | transloco }}</label>
+  @if(refBuyDocID) {
+    <div nz-row class="achih-control-full-width">
+      <div nz-col nzSpan="2" nzOffset="5">
+        <label>{{ 'Finance.RefDoc' | transloco }}</label>
+      </div>
+      <div nz-col>
+        <button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID!)">
+          {{ refBuyDocID }}
+        </button>
+      </div>
     </div>
-    <div nz-col>
-      <button nz-button nzType="link" (click)="onRefDocClick(refBuyDocID)">
-        {{ refBuyDocID }}
-      </button>
-    </div>
-  </div>
-  <div nz-row class="achih-control-full-width" *ngIf="refSoldDocID">
-    <div nz-col nzSpan="2" nzOffset="5">
-      <label>{{ 'Finance.RefDoc' | transloco }}</label>
-    </div>
-    <div nz-col>
-      <button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID)">
-        {{ refSoldDocID }}
-      </button>
-    </div>
-  </div>
+  }
+  @if(refSoldDocID) {
+    <div nz-row class="achih-control-full-width">
+      <div nz-col nzSpan="2" nzOffset="5">
+        <label>{{ 'Finance.RefDoc' | transloco }}</label>
+      </div>
+      <div nz-col>
+        <button nz-button nzType="link" (click)="onRefDocClick(refSoldDocID!)">
+          {{ refSoldDocID }}
+        </button>
+      </div>
+    </div>  
+  }
 </ng-container>

@@ -26,7 +26,7 @@ import { PostDetailComponent } from './post-detail.component';
 import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;
@@ -68,8 +68,8 @@ describe('PostDetailComponent', () => {
         NzResizableModule,
         NzCodeEditorModule,
         MarkdownModule.forRoot(),
-      ],
-      declarations: [MarkdownEditorComponent, PostDetailComponent],
+      ,
+        MarkdownEditorComponent, PostDetailComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 
 import { LibraryStorageService } from './library-storage.service';
@@ -16,6 +16,7 @@ import {
   PersonRole,
 } from '../model';
 import { FakeDataHelper } from '../../testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LibraryStorageService', () => {
   /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -39,13 +40,15 @@ describe('LibraryStorageService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         LibraryStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     httpTestingController = TestBed.inject(HttpTestingController);
   });

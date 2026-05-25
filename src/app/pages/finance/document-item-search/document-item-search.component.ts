@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {
   GeneralFilterOperatorEnum,
@@ -19,9 +19,9 @@ import {
   momentDateFormat,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
-import { translate } from '@ngneat/transloco';
-import { HomeDefOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { translate } from '@jsverse/transloco';
+import { HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/index';
 
 @Component({
   selector: 'hih-document-item-search',

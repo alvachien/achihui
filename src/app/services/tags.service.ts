@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -10,7 +10,12 @@ import { HomeDefOdataService } from './home-def-odata.service';
 @Injectable()
 export class TagsService {
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  constructor(private _http: HttpClient, private _homeService: HomeDefOdataService, private _authService: AuthService) {
+
+  private readonly _http = inject(HttpClient);
+  private readonly _homeService = inject(HomeDefOdataService);
+  private readonly _authService = inject(AuthService);
+  
+  constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering TagsService constructor...');
     }

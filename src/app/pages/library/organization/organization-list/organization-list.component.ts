@@ -1,29 +1,45 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { Router, RouterModule } from '@angular/router';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
-import { ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-  selector: 'hih-organization-list',
-  templateUrl: './organization-list.component.html',
-  styleUrls: ['./organization-list.component.less'],
+    selector: 'hih-organization-list',
+    templateUrl: './organization-list.component.html',
+    styleUrls: ['./organization-list.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzSpinModule,
+      NzBreadCrumbModule,
+      NzTableModule,
+      NzDividerModule,
+      NzModalModule,
+      RouterModule,
+      TranslocoModule,
+      NzButtonModule,
+    ]
 })
 export class OrganizationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Organization[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...',
       ConsoleLogTypeEnum.debug

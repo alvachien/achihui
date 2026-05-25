@@ -3,10 +3,10 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from '../../../../model';
 import { HomeDefOdataService, EventStorageService } from '../../../../services';

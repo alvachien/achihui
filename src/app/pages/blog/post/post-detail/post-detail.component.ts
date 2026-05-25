@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -20,7 +20,7 @@ import {
   BlogPostTag,
 } from '../../../../model';
 import { BlogOdataService } from '../../../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 @Component({
   selector: 'hih-blog-post-detail',

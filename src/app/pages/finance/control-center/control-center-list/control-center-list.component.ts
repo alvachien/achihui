@@ -1,17 +1,36 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
-import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
 
 @Component({
-  selector: 'hih-control-center-list',
-  templateUrl: './control-center-list.component.html',
-  styleUrls: ['./control-center-list.component.less'],
+    selector: 'hih-control-center-list',
+    templateUrl: './control-center-list.component.html',
+    styleUrls: ['./control-center-list.component.less'],
+    imports: [
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzButtonModule,
+      NzTableModule,
+      NzPopconfirmModule,
+      NzDividerModule,
+      TranslocoModule,
+      NzModalModule,
+      RouterModule,
+    ]
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -23,12 +42,12 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public router: Router,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     this.isLoadingResults = false;
   }
 

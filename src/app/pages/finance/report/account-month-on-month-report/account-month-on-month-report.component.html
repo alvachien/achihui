@@ -1,11 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.AccountMonthOnMonth' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
@@ -16,7 +12,9 @@
 <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
     <nz-select style="width: 100%" [(ngModel)]="selectedAccountID" (ngModelChange)="onChanges($event)">
-      <nz-option *ngFor="let acnt of arUIAccounts" [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+      @for(acnt of arUIAccounts; track acnt.Id) {
+        <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
+      }
     </nz-select>
   </div>
   <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -20,7 +20,9 @@ export class LanguageOdataService {
     return this._listData;
   }
 
-  constructor(private _http: HttpClient) {
+  private readonly _http = inject(HttpClient);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LanguageOdataService constructor...',
       ConsoleLogTypeEnum.debug

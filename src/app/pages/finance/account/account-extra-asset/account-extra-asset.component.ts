@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -9,12 +9,21 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
-import * as moment from 'moment';
-import { SafeAny } from 'src/common';
+import { Router, RouterModule } from '@angular/router';
+import moment from 'moment';
+import { SafeAny } from '@common/any';
 
-import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '../../../../model';
+import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '@model/index';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'hih-finance-account-extra-asset',
@@ -32,6 +41,18 @@ import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } fr
       multi: true,
     },
   ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzDatePickerModule,
+    NzButtonModule,
+    TranslocoModule,
+    RouterModule,
+  ]
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -118,8 +139,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
   set arAssetCategories(ctgy: AssetCategory[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${
-        ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
       }`,
       ConsoleLogTypeEnum.debug
     );
@@ -129,7 +149,9 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
   }
 
-  constructor(public router: Router) {
+  public readonly router = inject(Router);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
       ConsoleLogTypeEnum.debug

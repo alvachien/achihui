@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -11,7 +11,10 @@ export class AuthService {
   public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
   public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
 
-  constructor(private authService: OidcSecurityService, private eventService: PublicEventsService) {
+  private readonly authService = inject(OidcSecurityService);
+  private readonly eventService = inject(PublicEventsService);
+
+  constructor() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor...', ConsoleLogTypeEnum.debug);
 
     this.eventService

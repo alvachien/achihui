@@ -6,8 +6,10 @@ import {
   Validator,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { UIMode } from 'actslib';
 
 import {
@@ -21,7 +23,15 @@ import {
   UIAccountForSelection,
   UIOrderForSelection,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-fin-document-items',
@@ -39,6 +49,18 @@ import { SafeAny } from 'src/common';
       multi: true,
     },
   ],
+  imports: [
+    NzAlertModule,
+    NzTableModule,
+    NzDividerModule,
+    NzFormModule,
+    NzSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputNumberModule,
+    TranslocoModule,
+    RouterModule,
+  ]
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

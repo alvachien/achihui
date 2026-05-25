@@ -8,7 +8,7 @@ import {
   inject,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,10 +17,9 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraAssetComponent } from '../../account/account-extra-asset';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
@@ -35,7 +34,18 @@ import {
   AccountExtraAsset,
 } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentAssetBuyCreateComponent', () => {
   let component: DocumentAssetBuyCreateComponent;
@@ -101,31 +111,37 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+
         ReactiveFormsModule,
         NoopAnimationsModule,
         getTranslocoModule(),
         RouterTestingModule,
-      ],
-      declarations: [
+        NzFormModule,
+        NzSelectModule,
+        NzInputNumberModule,
+        NzCheckboxModule,
+        NzSpinModule,
+        NzResultModule,
+        NzDividerModule,
+        NzStepsModule,
+        NzPageHeaderModule,
+        NzBreadCrumbModule,
         AccountExtraAssetComponent,
         DocumentHeaderComponent,
-        DocumentItemsComponent,
-        DocumentAssetBuyCreateComponent,
-        MessageDialogComponent,
-      ],
-      providers: [
+        DocumentItemsComponent],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

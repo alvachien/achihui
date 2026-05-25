@@ -59,8 +59,8 @@ describe('BorrowRecordListComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [BorrowRecordListComponent],
+      ,
+        BorrowRecordListComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

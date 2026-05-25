@@ -1,14 +1,25 @@
-import { Component, Input, NgZone, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { Component, inject, Input, NgZone, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-account-change-name-dialog',
   templateUrl: './account-change-name-dialog.component.html',
   styleUrls: ['./account-change-name-dialog.component.less'],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    TranslocoModule,
+    NzModalModule,
+  ]
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum
@@ -18,7 +29,11 @@ export class AccountChangeNameDialogComponent implements OnInit {
   @Input() comment?: string;
   isSubmitting = false;
 
-  constructor(private modal: NzModalRef, private _zone: NgZone, private odataService: FinanceOdataService) {
+  private readonly modal = inject(NzModalRef);
+  private readonly _zone = inject(NgZone);
+  private readonly odataService = inject(FinanceOdataService);
+  
+  constructor() {
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),
       nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),

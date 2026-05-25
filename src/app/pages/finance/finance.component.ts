@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 
 import {
   ModelUtility,
@@ -21,7 +21,30 @@ import {
   momentDateFormat,
 } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { DecimalPipe } from '@angular/common';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzCalendarModule } from 'ng-zorro-antd/calendar';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 class DateCellData {
   public CurrentDate: moment.Moment | null = null;
@@ -33,12 +56,33 @@ class DateCellData {
   selector: 'hih-finance',
   templateUrl: './finance.component.html',
   styleUrls: ['./finance.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSwitchModule,
+    NzResultModule,
+    NzCardModule,
+    NzStatisticModule,
+    NzDividerModule,
+    NzCalendarModule,
+    FormsModule,
+    NzPopconfirmModule,
+    NzTooltipModule,
+    NzIconModule,
+    NzTypographyModule,
+    DecimalPipe,
+    NzGridModule,
+    RouterModule,
+    NzDrawerModule,
+    TranslocoModule,
+    NzModalModule,
+  ]
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   private _selectedYear: number | null = null;
-  private _selectedMonth: number | null = null;  
+  private _selectedMonth: number | null = null;
 
   public selectedDate: Date | null = null;
   isLoadingResults: boolean;
@@ -56,16 +100,16 @@ export class FinanceComponent implements OnInit, OnDestroy {
     this.uiService.FinanceOverviewExcludeTransfer = extran;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private uiService: UIStatusService,
-    private homeService: HomeDefOdataService,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef,
-    private messageService: NzMessageService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly uiService = inject(UIStatusService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly messageService = inject(NzMessageService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
       ConsoleLogTypeEnum.debug
@@ -373,8 +417,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     const dtbgn: moment.Moment = moment(this.selectedDate);
     const dtend: moment.Moment = moment(this.selectedDate);
 
-    switch(ncell) {
-      case 1: 
+    switch (ncell) {
+      case 1:
         dtbgn.startOf('month');
         dtend.endOf('month');
         this.uiService.docInsightOption = {
@@ -383,7 +427,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: true,
         };
         break;
-      case 2: 
+      case 2:
         dtbgn.startOf('month');
         dtend.endOf('month');
         this.uiService.docInsightOption = {
@@ -392,7 +436,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: false,
         };
         break;
-      case 3: 
+      case 3:
         dtbgn.startOf('year');
         dtend.endOf('year');
         this.uiService.docInsightOption = {
@@ -401,7 +445,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           TransactionDirection: true,
         };
         break;
-      case 4: 
+      case 4:
         dtbgn.startOf('year');
         dtend.endOf('year');
         this.uiService.docInsightOption = {
@@ -413,7 +457,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       default:
         break;
     }
-    this.router.navigate(['/finance/insight']);    
+    this.router.navigate(['/finance/insight']);
   }
 
   private _updateSelectedDate() {
@@ -427,6 +471,25 @@ export class FinanceComponent implements OnInit, OnDestroy {
   selector: 'hih-finance-asset-deprec-dlg',
   templateUrl: './finance-asset-deprec.dlg.html',
   styleUrls: ['./finance-asset-deprec.dlg.less'],
+  imports: [
+    NzTableModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzSelectModule,
+    NzButtonModule,
+    NzIconModule,
+    NzGridModule,
+    NzCalendarModule,
+    NzSwitchModule,
+    NzTooltipModule,
+    NzLayoutModule,
+    NzIconModule,
+    NzModalModule,
+    TranslocoModule,
+  ]
 })
 export class FinanceAssetDepreciationDlgComponent {
   @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];
@@ -434,12 +497,13 @@ export class FinanceAssetDepreciationDlgComponent {
   @Input() arControlCenters: ControlCenter[] = [];
   @Input() accounts: Account[] = [];
 
+  private readonly modal = inject(NzModalRef);
+  private readonly odataSrv = inject(FinanceOdataService);
+  private readonly messageService = inject(NzMessageService);
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
+
   constructor(
-    private modal: NzModalRef,
-    private odataSrv: FinanceOdataService,
-    private messageService: NzMessageService,
-    private changeDetectRef: ChangeDetectorRef
-  ) {}
+  ) { }
 
   destroyModal(): void {
     this.modal.destroy({ data: '' });

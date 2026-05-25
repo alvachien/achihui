@@ -24,12 +24,12 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
-        <ng-container *ngIf="control.hasError('required')">
-          {{ 'Common.FieldIsMandatory' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength')) {
+          <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
+        }
+        @if (control.hasError('required')) {
+          <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -39,8 +39,10 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{ 'Library.LocationType' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
       <nz-select nzPlaceHolder="{{ 'Library.LocationType' | transloco }}" formControlName="locTypeControl">
-        <nz-option *ngFor="let lstr of arLocationStrings" [nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
-        </nz-option>
+        @for(lstr of arLocationStrings; track lstr.value) {
+          <nz-option nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
+          </nz-option>
+        }
       </nz-select>
     </nz-form-control>
   </nz-form-item>
@@ -51,9 +53,9 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="cmtControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        <ng-container *ngIf="control.hasError('maxlength')">
-          {{ 'Common.FieldMaxLength' | transloco }}
-        </ng-container>
+        @if(control.hasError('maxlength')) {
+          <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>

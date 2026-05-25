@@ -12,7 +12,7 @@ describe('NotFoundComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NzResultModule, NzButtonModule, getTranslocoModule()],
-      declarations: [NotFoundComponent],
+      // declarations moved to imports
     }).compileComponents();
   }));
 

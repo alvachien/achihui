@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { translate } from '@jsverse/transloco';
+import moment from 'moment';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
+import { LibraryStorageService } from '@services/index';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
 @Component({

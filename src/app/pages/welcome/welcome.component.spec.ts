@@ -27,7 +27,7 @@ describe('WelcomeComponent', () => {
         RouterTestingModule,
         getTranslocoModule(),
       ],
-      declarations: [WelcomeComponent],
+      // declarations moved to imports
     }).compileComponents();
   }));
 

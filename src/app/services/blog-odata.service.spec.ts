@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
-import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 
 import { BlogOdataService } from './blog-odata.service';
@@ -28,9 +28,9 @@ describe('BlogOdataService', () => {
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [BlogOdataService, { provide: AuthService, useValue: authServiceStub }],
-    });
+    imports: [],
+    providers: [BlogOdataService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);

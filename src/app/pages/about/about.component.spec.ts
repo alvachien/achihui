@@ -14,7 +14,7 @@ describe('AboutComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, NzDividerModule, getTranslocoModule()],
-      declarations: [AboutComponent],
+      // declarations moved to imports
       providers: [UIStatusService],
     }).compileComponents();
   }));

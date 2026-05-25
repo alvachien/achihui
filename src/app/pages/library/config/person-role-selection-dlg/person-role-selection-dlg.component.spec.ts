@@ -8,7 +8,7 @@ describe('PersonRoleSelectionDlgComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PersonRoleSelectionDlgComponent],
+      // declarations moved to imports
     }).compileComponents();
   });
 

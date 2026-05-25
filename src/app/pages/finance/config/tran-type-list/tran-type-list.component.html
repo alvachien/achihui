@@ -10,13 +10,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.Id }}</td>
-        <td>{{ data.Name }}</td>
-        <td><nz-switch [(ngModel)]="data.Expense" nzDisabled></nz-switch></td>
-        <td>{{ data.ParId }}</td>
-        <td>{{ data.Comment }}</td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>{{ data.Id }}</td>
+          <td>{{ data.Name }}</td>
+          <td><nz-switch [(ngModel)]="data.Expense" nzDisabled></nz-switch></td>
+          <td>{{ data.ParId }}</td>
+          <td>{{ data.Comment }}</td>
+        </tr>
+      }
     </tbody>
   </nz-table>
 </nz-spin>

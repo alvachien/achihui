@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { NzListModule } from 'ng-zorro-antd/list';
 
 import { CreditsRoutingModule } from './credits-routing.module';

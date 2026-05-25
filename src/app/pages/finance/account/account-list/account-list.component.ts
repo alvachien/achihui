@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { Router, RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   ITableFilterValues,
   Account,
@@ -15,15 +15,39 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   AccountCategory,
-} from '../../../../model';
-import { UITableColumnItem } from '../../../../uimodel';
+} from '@model/index';
+import { UITableColumnItem } from '@uimodel/index';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'hih-fin-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzDividerModule,
+    NzTableModule,
+    NzButtonModule,
+    NzPopconfirmModule,
+    NzDropDownModule,
+    NgClass,
+    NgIf,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -40,13 +64,14 @@ export class AccountListComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly uiStatusService = inject(UIStatusService);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
   constructor(
-    public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService,
-    private viewContainerRef: ViewContainerRef
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',

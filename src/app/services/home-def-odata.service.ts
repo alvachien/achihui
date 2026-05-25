@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -83,7 +83,10 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure | null = null;
 
-  constructor(private _http: HttpClient, private _authService: AuthService) {
+  private readonly _http = inject(HttpClient);
+  private readonly _authService = inject(AuthService);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`,
       ConsoleLogTypeEnum.debug
@@ -196,7 +199,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -238,7 +241,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -281,7 +284,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -302,7 +305,15 @@ export class HomeDefOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, { headers });
+    return this._http.get<any>(requestUrl, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Error]: Entering HomeDefOdataService, getHomeMessages failed: ${error}`,
+          ConsoleLogTypeEnum.error
+        );
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+      })
+    );
   }
 
   /**
@@ -329,6 +340,13 @@ export class HomeDefOdataService {
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response as any);
           return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService, createHomeMessage failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -365,6 +383,13 @@ export class HomeDefOdataService {
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response as any);
           return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService, markHomeMessageHasRead failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -401,6 +426,13 @@ export class HomeDefOdataService {
           const hd: HomeMsg = new HomeMsg();
           hd.onSetData(response);
           return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering HomeDefOdataService, deleteHomeMessage failed: ${error}`,
+            ConsoleLogTypeEnum.error
+          );
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }
@@ -436,7 +468,7 @@ export class HomeDefOdataService {
           ConsoleLogTypeEnum.error
         );
 
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
       })
     );
   }
@@ -471,7 +503,7 @@ export class HomeDefOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
         })
       );
   }

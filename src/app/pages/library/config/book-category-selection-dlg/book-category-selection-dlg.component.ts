@@ -1,14 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { TranslocoModule } from '@jsverse/transloco';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
-import { BookCategory } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { BookCategory } from '@model/index';
+import { LibraryStorageService } from '@services/index';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'hih-book-category-selection-dlg',
-  templateUrl: './book-category-selection-dlg.component.html',
-  styleUrls: ['./book-category-selection-dlg.component.less'],
+    selector: 'hih-book-category-selection-dlg',
+    templateUrl: './book-category-selection-dlg.component.html',
+    styleUrls: ['./book-category-selection-dlg.component.less'],
+    imports: [
+      NzTableModule,
+      NzCheckboxModule,
+      TranslocoModule,
+      NzModalModule,
+      RouterModule,
+    ]
 })
 export class BookCategorySelectionDlgComponent implements OnInit {
   checked = false;
@@ -47,12 +58,7 @@ export class BookCategorySelectionDlgComponent implements OnInit {
     this.listOfBookCategoryInCurrentPage.forEach((prn) => this.updateCheckedSet(prn.ID, checked));
     this.refreshCheckedStatus();
   }
-
-  constructor(
-    private modal: NzModalRef,
-    private storageSrv: LibraryStorageService,
-    private messageService: NzMessageService
-  ) {}
+  private readonly storageSrv = inject(LibraryStorageService);
 
   ngOnInit(): void {
     this.storageSrv.fetchAllBookCategories().subscribe({

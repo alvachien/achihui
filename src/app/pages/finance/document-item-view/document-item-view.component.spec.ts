@@ -15,7 +15,7 @@ import { AuthService, UIStatusService, FinanceOdataService } from '../../../serv
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { DocumentItemViewComponent } from './document-item-view.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('DocumentItemViewComponent', () => {
   let component: DocumentItemViewComponent;
@@ -77,8 +77,8 @@ describe('DocumentItemViewComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, DocumentItemViewComponent],
+      ,
+        MessageDialogComponent, DocumentItemViewComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

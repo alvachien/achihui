@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
-import { Organization } from 'src/app/model';
-import { LibraryStorageService } from 'src/app/services';
+import { Organization } from '@model/index';
+import { LibraryStorageService } from '@services/index';
 
 @Component({
   selector: 'hih-organization-selection-dlg',

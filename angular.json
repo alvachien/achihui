@@ -18,21 +18,24 @@
       "prefix": "hih",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/achihui",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
-            "allowedCommonJsDependencies": [
-              "moment",
-              "flat"
+            "polyfills": [
+              "zone.js"
             ],
-            "aot": true,
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "less",
+            "allowedCommonJsDependencies": [
+              "moment"
+            ],
             "assets": [
-              "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -64,10 +67,11 @@
               ]
             },
             "scripts": [
-              "node_modules/marked/marked.min.js",
+              "node_modules/marked/lib/marked.umd.js",
               "node_modules/katex/dist/katex.min.js",
               "node_modules/katex/dist/contrib/auto-render.min.js"
-            ]
+            ],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -91,9 +95,7 @@
               ]
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -104,36 +106,39 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "achihui:build",
             "port": 29521,
-            "host": "localhost"
+            "host": "localhost",
+            "buildTarget": "achihui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "achihui:build:production"
+              "buildTarget": "achihui:build:production"
             },
             "development": {
-              "browserTarget": "achihui:build:development"
+              "buildTarget": "achihui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "achihui:build"
-          }
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "less",
             "assets": [
-              "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -155,7 +160,7 @@
               ]
             },
             "scripts": [
-              "node_modules/marked/marked.min.js",
+              "node_modules/marked/lib/marked.umd.js",
               "node_modules/katex/dist/katex.min.js",
               "node_modules/katex/dist/contrib/auto-render.min.js"
             ]
@@ -171,20 +176,6 @@
           }
         }
       }
-    }
-  },
-  "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
-    "analytics": false
-  },
-  "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
     }
   }
 }

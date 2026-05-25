@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import {
   UntypedFormGroup,
   Validators,
@@ -7,12 +7,14 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import moment from 'moment';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -36,16 +38,50 @@ import {
   DocumentType,
   Currency,
   ConsoleLogTypeEnum,
-} from '../../../../model';
-import { costObjectValidator } from '../../../../uimodel';
-import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+} from '@model/index';
+import { costObjectValidator } from '@uimodel/index';
+import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '@services/index';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { DocumentItemViewComponent } from '../document-item-view';
+import { DocumentHeaderComponent } from '../document-header';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { AccountExtraAssetComponent } from '../../account/account-extra-asset';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { DocumentItemsComponent } from '../document-items';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 @Component({
   selector: 'hih-fin-document-asset-buy-create',
   templateUrl: './document-asset-buy-create.component.html',
   styleUrls: ['./document-asset-buy-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    DocumentHeaderComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzDividerModule,
+    AccountExtraAssetComponent,
+    NzSelectModule,
+    NzInputNumberModule,
+    NzCheckboxModule,
+    DocumentItemsComponent,
+    NzSpinModule,
+    NzResultModule,
+    TranslocoModule,
+    RouterModule,
+    NzModalModule,
+  ]
 })
 export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -93,13 +129,13 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     return this.firstFormGroup && (this.firstFormGroup.get('amountControl')?.value ?? 0);
   }
 
-  constructor(
-    private _router: Router,
-    private _uiStatusService: UIStatusService,
-    private homeService: HomeDefOdataService,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly _router = inject(Router);
+  private readonly _uiStatusService = inject(UIStatusService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent constructor',
       ConsoleLogTypeEnum.debug

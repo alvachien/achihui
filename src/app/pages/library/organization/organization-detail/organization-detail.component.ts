@@ -1,20 +1,45 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Organization, OrganizationType } from '../../../../model';
-import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Organization, OrganizationType } from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
-  selector: 'hih-organization-detail',
-  templateUrl: './organization-detail.component.html',
-  styleUrls: ['./organization-detail.component.less'],
+    selector: 'hih-organization-detail',
+    templateUrl: './organization-detail.component.html',
+    styleUrls: ['./organization-detail.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzFormModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NzInputModule,
+      NzButtonModule,
+      TranslocoModule,
+      NzTableModule,
+      NzSelectModule,
+      NzModalModule,
+      NzDividerModule,
+      NzCheckboxModule,
+      RouterModule,
+    ]
 })
 export class OrganizationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -26,13 +51,13 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   listTypes: OrganizationType[] = [];
   allTypes: OrganizationType[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

@@ -1,27 +1,36 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
-import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, ModelUtility, PersonRole } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'hih-person-role-list',
-  templateUrl: './person-role-list.component.html',
-  styleUrls: ['./person-role-list.component.less'],
+    selector: 'hih-person-role-list',
+    templateUrl: './person-role-list.component.html',
+    styleUrls: ['./person-role-list.component.less'],
+    imports: [
+      NzSpinModule,
+      NzTableModule,
+      TranslocoModule,
+      NzModalModule,
+      RouterModule,
+    ]
 })
 export class PersonRoleListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: PersonRole[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonRoleListComponent constructor...',
       ConsoleLogTypeEnum.debug

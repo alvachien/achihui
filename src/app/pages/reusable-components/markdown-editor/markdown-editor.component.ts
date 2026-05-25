@@ -17,10 +17,10 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { KatexOptions } from 'ngx-markdown';
+import { KatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
@@ -30,26 +30,40 @@ declare const monaco: any;
 import { ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services';
-import { translate } from '@ngneat/transloco';
-import { SafeAny } from 'src/common';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'ac-markdown-editor',
-  templateUrl: './markdown-editor.component.html',
-  styleUrls: ['./markdown-editor.component.less'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => MarkdownEditorComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => MarkdownEditorComponent),
-      multi: true,
-    },
-  ],
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'ac-markdown-editor',
+    templateUrl: './markdown-editor.component.html',
+    styleUrls: ['./markdown-editor.component.less'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MarkdownEditorComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => MarkdownEditorComponent),
+            multi: true,
+        },
+    ],
+    imports: [
+      NzButtonModule,
+      NzDividerModule,
+      NzCodeEditorModule,
+      MarkdownModule,
+      NzGridModule,
+      NzIconModule,
+      TranslocoModule
+    ]
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() editorID = '';

@@ -1,12 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
   ControlCenter,
   ModelUtility,
@@ -14,12 +20,26 @@ import {
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
-} from '../../../../model';
+} from '@model/index';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-fin-control-center-hierarchy',
   templateUrl: './control-center-hierarchy.component.html',
   styleUrls: ['./control-center-hierarchy.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzResizableModule,
+    NzSpinModule,
+    NzTreeModule,
+    NzGridModule,
+    NzButtonModule,
+    DocumentItemViewComponent,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -37,12 +57,12 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public _uiStatusService: UIStatusService,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly _uiStatusService = inject(UIStatusService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug

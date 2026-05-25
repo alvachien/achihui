@@ -8,7 +8,7 @@ describe('AccountSettleDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccountSettleDialogComponent],
+      imports: [AccountSettleDialogComponent],
     }).compileComponents();
   });
 

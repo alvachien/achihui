@@ -1,11 +1,21 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import {
   ModelUtility,
@@ -16,17 +26,34 @@ import {
   Organization,
   BookCategory,
   Location,
-} from '../../../../model';
-import { HomeDefOdataService, LibraryStorageService } from '../../../../services';
-import { PersonSelectionDlgComponent } from '../../person/person-selection-dlg';
-import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
+} from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
+import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
-import { LocationSelectionDlgComponent } from '../../location/location-selection-dlg';
+import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 
 @Component({
-  selector: 'hih-book-detail',
-  templateUrl: './book-detail.component.html',
-  styleUrls: ['./book-detail.component.less'],
+    selector: 'hih-book-detail',
+    templateUrl: './book-detail.component.html',
+    styleUrls: ['./book-detail.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzSpinModule,
+      NzBreadCrumbModule,
+      TranslocoModule,
+      NzFormModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NzButtonModule,
+      NzDividerModule,
+      NzTabsModule,
+      NzTableModule,
+      NzInputModule,
+      NzCheckboxModule,
+      RouterModule,
+      NzModalModule,
+    ]
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -41,14 +68,14 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   listCategories: BookCategory[] = [];
   listLocations: Location[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modal: NzModalService,
-    private viewContainerRef: ViewContainerRef,
-    private homeService: HomeDefOdataService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modal = inject(NzModalService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly homeService = inject(HomeDefOdataService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

@@ -7,7 +7,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { EventUIModule } from 'src/app/pages/event/event-ui.module';
+import { EventUIModule } from '../../../event/event-ui.module';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
@@ -53,8 +53,8 @@ describe('BorrowRecordCreateDlgComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [BorrowRecordCreateDlgComponent],
+      ,
+        BorrowRecordCreateDlgComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

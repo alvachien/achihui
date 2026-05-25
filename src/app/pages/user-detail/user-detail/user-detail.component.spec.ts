@@ -28,8 +28,8 @@ describe('UserDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UserDetailComponent],
       imports: [
+        UserDetailComponent,
         NoopAnimationsModule,
         HttpClientTestingModule,
         NzDescriptionsModule,

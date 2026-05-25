@@ -1,9 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { FakeDataHelper } from '../../testing';
 import { LanguageOdataService } from './language-odata.service';
 import { environment } from '../../environments/environment';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LanguageOdataService', () => {
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -17,9 +18,9 @@ describe('LanguageOdataService', () => {
     fakeData.buildAppLanguageFromAPI();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [LanguageOdataService],
-    });
+    imports: [],
+    providers: [LanguageOdataService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     httpTestingController = TestBed.inject(HttpTestingController);
   });

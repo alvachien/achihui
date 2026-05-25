@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +11,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import * as echarts from 'echarts';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -28,7 +28,8 @@ import {
   financePeriodLast12Months,
 } from '../../../../model';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TranTypeMonthOnMonthReportComponent', () => {
   let component: TranTypeMonthOnMonthReportComponent;
@@ -62,25 +63,25 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
+    // declarations moved to imports
+    imports: [TranTypeMonthOnMonthReportComponent,
         NgxEchartsModule.forRoot({ echarts }),
-        FinanceUIModule,
         NzCascaderModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [TranTypeMonthOnMonthReportComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
-      ],
-    }).compileComponents();
+        NzDrawerService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

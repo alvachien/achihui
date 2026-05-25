@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {
   Document,
@@ -31,7 +31,7 @@ import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 describe('FinanceOdataService', () => {
@@ -75,13 +75,15 @@ describe('FinanceOdataService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         FinanceOdataService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -2924,7 +2926,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  xdescribe('fetchReportByAccount', () => {
+  describe('fetchReportByAccount', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -2943,7 +2945,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByAccountURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByAccountURL;
       });
 
       // Respond with the mock data
@@ -2970,7 +2972,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByAccountURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByAccountURL;
       });
 
       // Respond with the mock data
@@ -2990,7 +2992,7 @@ describe('FinanceOdataService', () => {
       httpTestingController.verify();
       service.fetchReportByAccount().subscribe();
       const req2: any = httpTestingController.match((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByAccountURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByAccountURL;
       });
       expect(req2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
     });
@@ -3007,7 +3009,7 @@ describe('FinanceOdataService', () => {
       });
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByAccountURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByAccountURL;
       });
 
       // respond with a 500 and the error message in the body
@@ -3015,7 +3017,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  xdescribe('fetchReportByControlCenter', () => {
+  describe('fetchReportByControlCenter', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -3034,7 +3036,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByCCURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByCCURL;
       });
 
       // Respond with the mock data
@@ -3061,7 +3063,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByCCURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByCCURL;
       });
 
       // Respond with the mock data
@@ -3081,7 +3083,7 @@ describe('FinanceOdataService', () => {
       httpTestingController.verify();
       service.fetchReportByControlCenter().subscribe();
       const req2: any = httpTestingController.match((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByCCURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByCCURL;
       });
       expect(req2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
     });
@@ -3098,7 +3100,7 @@ describe('FinanceOdataService', () => {
       });
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByCCURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByCCURL;
       });
 
       // respond with a 500 and the error message in the body
@@ -3106,7 +3108,7 @@ describe('FinanceOdataService', () => {
     });
   });
 
-  xdescribe('fetchReportByOrder', () => {
+  describe('fetchReportByOrder', () => {
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
     });
@@ -3125,7 +3127,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByOrderURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByOrderURL;
       });
 
       // Respond with the mock data
@@ -3152,7 +3154,7 @@ describe('FinanceOdataService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByOrderURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByOrderURL;
       });
 
       // Respond with the mock data
@@ -3172,7 +3174,7 @@ describe('FinanceOdataService', () => {
       httpTestingController.verify();
       service.fetchReportByOrder().subscribe();
       const req2: any = httpTestingController.match((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByOrderURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByOrderURL;
       });
       expect(req2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
     });
@@ -3189,7 +3191,7 @@ describe('FinanceOdataService', () => {
       });
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
-        return requrl.method === 'GET' && requrl.url === reportByOrderURL && requrl.params.has('$filter');
+        return requrl.method === 'POST' && requrl.url === reportByOrderURL;
       });
 
       // respond with a 500 and the error message in the body

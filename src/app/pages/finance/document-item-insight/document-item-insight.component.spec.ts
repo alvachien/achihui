@@ -13,10 +13,10 @@ import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testi
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo, momentDateFormat } from '../../../model';
 import { DocumentItemInsightComponent } from './document-item-insight.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import * as moment from 'moment';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import moment from 'moment';
 
 describe('DocumentItemInsightComponent', () => {
   let component: DocumentItemInsightComponent;
@@ -67,14 +67,14 @@ describe('DocumentItemInsightComponent', () => {
         FormsModule,
         FinanceUIModule,
         NzTransferModule,
-        NzToolTipModule,
+        NzTooltipModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [ DocumentItemInsightComponent ],
+      ,
+         DocumentItemInsightComponent ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

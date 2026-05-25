@@ -1,29 +1,43 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { Router, RouterModule } from '@angular/router';
 
-import { ConsoleLogTypeEnum, Location, ModelUtility } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { ConsoleLogTypeEnum, Location, ModelUtility } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
-  selector: 'hih-location-list',
-  templateUrl: './location-list.component.html',
-  styleUrls: ['./location-list.component.less'],
+    selector: 'hih-location-list',
+    templateUrl: './location-list.component.html',
+    styleUrls: ['./location-list.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzSpinModule,
+      NzTableModule,
+      NzDividerModule,
+      NzModalModule,
+      RouterModule,
+      TranslocoModule,
+    ]
 })
 export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Location[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(LibraryStorageService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug

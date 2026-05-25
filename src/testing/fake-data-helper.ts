@@ -59,7 +59,7 @@ import {
   PersonRole,
   OrganizationType,
 } from '../app/model';
-import * as moment from 'moment';
+import moment from 'moment';
 
 export class FakeDataHelper {
   /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

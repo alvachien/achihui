@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -9,7 +9,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -23,7 +22,8 @@ import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentNormalMassCreateComponent', () => {
   let component: DocumentNormalMassCreateComponent;
@@ -74,25 +74,24 @@ describe('DocumentNormalMassCreateComponent', () => {
     massCreateNormalDocumentSpy = odataService.massCreateNormalDocument.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentNormalMassCreateItemComponent, MessageDialogComponent, DocumentNormalMassCreateComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 
 import {
@@ -15,13 +15,32 @@ import {
   Location,
   UIDisplayString,
   LocationTypeEnum,
-} from '../../../../model';
-import { HomeDefOdataService, LibraryStorageService } from 'src/app/services';
+} from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
-  selector: 'hih-location-detail',
-  templateUrl: './location-detail.component.html',
-  styleUrls: ['./location-detail.component.less'],
+    selector: 'hih-location-detail',
+    templateUrl: './location-detail.component.html',
+    styleUrls: ['./location-detail.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzSpinModule,
+      NzFormModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NzButtonModule,
+      NzSelectModule,
+      NzModalModule,
+      TranslocoModule,
+      RouterModule,
+    ]
 })
 export class LocationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -32,13 +51,13 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
   detailFormGroup: UntypedFormGroup;
   arLocationStrings: UIDisplayString[] = [];
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

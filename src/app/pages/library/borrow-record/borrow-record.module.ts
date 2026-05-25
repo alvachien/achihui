@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibraryUIModule } from '../library-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { BorrowRecordRoutingModule } from './borrow-record-routing.module';
 import { BorrowRecordListComponent } from './borrow-record-list';

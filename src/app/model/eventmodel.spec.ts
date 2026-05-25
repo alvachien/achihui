@@ -3,7 +3,7 @@
 //
 
 import { GeneralEvent, RecurEvent, EventHabit, EventHabitDetail } from './eventmodel';
-import * as moment from 'moment';
+import moment from 'moment';
 
 describe('GeneralEvent', () => {
   let instance: GeneralEvent;

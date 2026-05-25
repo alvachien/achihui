@@ -1,12 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import { Router } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { Router, RouterModule } from '@angular/router';
 import { EChartsOption } from 'echarts';
-import { NzStatisticValueType } from 'ng-zorro-antd/statistic/typings';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+//import { NzStatisticValueType } from 'ng-zorro-antd/statistic';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { DecimalPipe } from '@angular/common';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import {
   FinanceReportByAccount,
@@ -25,15 +34,30 @@ import {
   GeneralFilterValueType,
 } from '../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../services';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NumberUtility } from 'actslib';
-import { DocumentItemViewComponent } from '../document-item-view';
-import { SafeAny } from 'src/common';
+import { DocumentItemViewComponent } from '../document/document-item-view';
+import { SafeAny } from '@common/any';
 
 @Component({
-  selector: 'hih-finance-report',
-  templateUrl: './report.component.html',
-  styleUrls: ['./report.component.less'],
+    selector: 'hih-finance-report',
+    templateUrl: './report.component.html',
+    styleUrls: ['./report.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzDropDownModule,
+      NzSpinModule,
+      NzResultModule,
+      NzListModule,
+      NzProgressModule,
+      NzGridModule,
+      DecimalPipe,
+      NzModalModule,
+      RouterModule,
+      TranslocoModule,
+      NzDrawerModule,
+    ]
 })
 export class ReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -58,8 +82,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   reportByMostIncomeInLastMonth: FinanceReportMostExpenseEntry[] = [];
   totalIncomeInLastMonth = 0;
   // Card: Account
-  reportAccountAsset: NzStatisticValueType = 0;
-  reportAccountLibility: NzStatisticValueType = 0;
+  reportAccountAsset = 0;
+  reportAccountLibility = 0;
   chartAccountOption?: EChartsOption;
   // Card: Control center
   chartControlCenterOption?: EChartsOption;
@@ -70,19 +94,20 @@ export class ReportComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
+  private readonly router = inject(Router);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly drawerService = inject(NzDrawerService);
+
   constructor(
-    public router: Router,
-    public odataService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    public drawerService: NzDrawerService
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
       ConsoleLogTypeEnum.debug
     );
 
-    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.isLoadingResults = false;
   }
 

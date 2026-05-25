@@ -9,12 +9,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name | transloco }}</td>
-        <td><nz-switch [(ngModel)]="data.AssetFlag" nzDisabled></nz-switch></td>
-        <td>{{ data.Comment }}</td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>{{ data.ID }}</td>
+          <td>{{ data.Name | transloco }}</td>
+          <td><nz-switch [(ngModel)]="data.AssetFlag" nzDisabled></nz-switch></td>
+          <td>{{ data.Comment }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </nz-spin>

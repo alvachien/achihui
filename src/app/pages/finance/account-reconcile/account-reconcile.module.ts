@@ -13,11 +13,11 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzElementPatchModule } from 'ng-zorro-antd/core/element-patch';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { AccountReconcileRoutingModule } from './account-reconcile-routing.module';
 import { ReconcileByMonthComponent } from './reconcile-by-month';
@@ -37,7 +37,7 @@ import { ReconcileByMonthComponent } from './reconcile-by-month';
     NzInputNumberModule,
     NzTableModule,
     NzModalModule,
-    NzToolTipModule,
+    NzTooltipModule,
     NzIconModule,
     NzDividerModule,
     NzFormModule,

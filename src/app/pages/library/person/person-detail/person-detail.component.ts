@@ -1,19 +1,44 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '../../../../model';
-import { HomeDefOdataService, LibraryStorageService } from '../../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '@model/index';
+import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 
 @Component({
-  selector: 'hih-person-detail',
-  templateUrl: './person-detail.component.html',
-  styleUrls: ['./person-detail.component.less'],
+    selector: 'hih-person-detail',
+    templateUrl: './person-detail.component.html',
+    styleUrls: ['./person-detail.component.less'],
+    imports: [
+      NzPageHeaderModule,
+      NzBreadCrumbModule,
+      NzFormModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NzInputModule,
+      NzButtonModule,
+      NzTableModule,
+      NzSelectModule,
+      NzDividerModule,
+      NzCheckboxModule,
+      NzModalModule,
+      TranslocoModule,
+      RouterModule,
+    ]
 })
 export class PersonDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -29,13 +54,13 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
-  constructor(
-    private storageService: LibraryStorageService,
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(LibraryStorageService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -6,12 +6,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject } from 'rxjs';
 
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, HomeDefOdataService, UIStatusService } from 'src/app/services';
-import { FakeDataHelper, getTranslocoModule } from 'src/testing';
-import { LibraryUIModule } from '../../library-ui.module';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { FakeDataHelper, getTranslocoModule } from 'testing';
 
 import { OrganizationTypeSelectionDlgComponent } from './organization-type-selection-dlg.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OrganizationTypeSelectionDlgComponent', () => {
   let component: OrganizationTypeSelectionDlgComponent;
@@ -41,32 +41,30 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        LibraryUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [OrganizationTypeSelectionDlgComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-          provide: NzModalRef,
-          useFactory: (modalSvc: NzModalService) =>
-            modalSvc.create({
-              nzClosable: true,
-              nzContent: 'test',
+            provide: NzModalRef,
+            useFactory: (modalSvc: NzModalService) => modalSvc.create({
+                nzClosable: true,
+                nzContent: 'test',
             }),
-          deps: [NzModalService],
+            deps: [NzModalService],
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,12 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
-import * as moment from 'moment';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import moment from 'moment';
 import { UIMode, isUIEditable } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
@@ -19,12 +29,29 @@ import {
 } from '../../../../model';
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-fin-order-detail',
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzFormModule,
+    NzInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzTableModule,
+    NzSelectModule,
+    NzResultModule,
+    NzDatePickerModule,
+    NzButtonModule,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -62,13 +89,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

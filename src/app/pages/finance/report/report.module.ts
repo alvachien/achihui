@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FinanceUIModule } from '../finance-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';

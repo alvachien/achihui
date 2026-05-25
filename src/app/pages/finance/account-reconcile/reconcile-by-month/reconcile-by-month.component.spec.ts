@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,15 +19,16 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { UserAuthInfo } from 'src/app/model';
-import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from 'src/app/services';
+import { UserAuthInfo } from '@model/index';
+import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
-import { FakeDataHelper, asyncData, getTranslocoModule } from 'src/testing';
+import { FakeDataHelper, asyncData, getTranslocoModule } from 'testing';
 import { ReconcileByMonthComponent } from './reconcile-by-month.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReconcileByMonthComponent', () => {
   let component: ReconcileByMonthComponent;
@@ -69,9 +70,8 @@ describe('ReconcileByMonthComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
+    // declarations moved to imports
+    imports: [FormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
@@ -85,24 +85,24 @@ describe('ReconcileByMonthComponent', () => {
         NzInputNumberModule,
         NzTableModule,
         NzModalModule,
-        NzToolTipModule,
+        NzTooltipModule,
         NzIconModule,
         NzDividerModule,
         NzFormModule,
         NzElementPatchModule,
         NzDatePickerModule,
-        getTranslocoModule(),
-      ],
-      declarations: [ReconcileByMonthComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         UIStatusService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ReconcileByMonthComponent);
     component = fixture.componentInstance;

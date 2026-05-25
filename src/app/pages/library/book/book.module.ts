@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LibraryUIModule } from '../library-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { BookRoutingModule } from './book-routing.module';
 import { BookListComponent } from './book-list/book-list.component';

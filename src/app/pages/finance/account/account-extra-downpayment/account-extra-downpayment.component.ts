@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -9,13 +9,15 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import moment from 'moment';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   AccountExtraAdvancePayment,
@@ -28,9 +30,13 @@ import {
   TranType,
   RepeatFrequencyEnum,
   UIDisplayString,
-} from '../../../../model';
-import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'hih-finance-account-extra-downpayment',
@@ -48,6 +54,17 @@ import { SafeAny } from 'src/common';
       multi: true,
     },
   ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzTableModule,
+    TranslocoModule,
+    RouterModule,
+    NzModalModule,
+  ]
 })
 export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -114,12 +131,12 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     }
     return true;
   }
+  private readonly router = inject(Router);
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
 
   constructor(
-    public router: Router,
-    public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService,
-    public modalService: NzModalService
   ) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',

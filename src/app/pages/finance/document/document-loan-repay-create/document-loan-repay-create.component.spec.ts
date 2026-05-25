@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,10 +8,9 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -26,7 +25,21 @@ import { UserAuthInfo, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentLoanRepayCreateComponent } from './document-loan-repay-create.component';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentLoanRepayCreateComponent', () => {
   let component: DocumentLoanRepayCreateComponent;
@@ -96,22 +109,27 @@ describe('DocumentLoanRepayCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createloanrepay', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    // declarations moved to imports
+    imports: [RouterTestingModule,
         FormsModule,
-        FinanceUIModule,
+
         ReactiveFormsModule,
-        HttpClientTestingModule,
         NoopAnimationsModule,
         getTranslocoModule(),
-      ],
-      declarations: [
-        DocumentLoanRepayCreateComponent,
-        MessageDialogComponent,
-        UIAccountCtgyFilterExPipe,
-        UIAccountStatusFilterPipe,
-      ],
-      providers: [
+        NzFormModule,
+        NzInputModule,
+        NzSelectModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzButtonModule,
+        NzSpinModule,
+        NzResultModule,
+        NzStepsModule,
+        NzPageHeaderModule,
+        NzBreadCrumbModule,
+        NzDescriptionsModule,
+        NzTableModule],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
@@ -119,8 +137,10 @@ describe('DocumentLoanRepayCreateComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

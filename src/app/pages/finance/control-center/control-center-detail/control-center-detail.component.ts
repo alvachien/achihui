@@ -1,21 +1,40 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '../../../../model';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '@services/index';
+import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '@model/index';
 import { popupDialog } from '../../../message-dialog';
-import { translate } from '@ngneat/transloco';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-fin-control-center-detail',
   templateUrl: './control-center-detail.component.html',
   styleUrls: ['./control-center-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    TranslocoModule,
+    RouterModule,
+    NzModalModule,
+  ]
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -35,14 +54,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private activateRoute: ActivatedRoute,
-    private homeService: HomeDefOdataService,
-    private uiStatusService: UIStatusService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...',
       ConsoleLogTypeEnum.debug

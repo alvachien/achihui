@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {
   UntypedFormGroup,
@@ -6,12 +7,14 @@ import {
   ValidatorFn,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
 import {
@@ -42,14 +45,47 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
-import * as moment from 'moment';
+import moment from 'moment';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzDividerComponent } from 'ng-zorro-antd/divider';
+import { DocumentHeaderComponent } from '../document-header';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 @Component({
   selector: 'hih-document-loan-create',
   templateUrl: './document-loan-create.component.html',
   styleUrls: ['./document-loan-create.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzStepsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzDividerComponent,
+    DocumentHeaderComponent,
+    NzInputModule,
+    NzInputNumberModule,
+    NzCheckboxModule,
+    NzSelectModule,
+    NzAlertModule,
+    NzSpinModule,
+    NzResultModule,
+    AccountExtraLoanComponent,
+    TranslocoModule,
+    NgIf,
+  ]
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */

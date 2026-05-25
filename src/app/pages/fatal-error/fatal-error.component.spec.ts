@@ -15,7 +15,7 @@ describe('FatalErrorComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [NzResultModule, getTranslocoModule()],
-      declarations: [FatalErrorComponent],
+      // declarations moved to imports
       providers: [{ provide: UIStatusService, useValue: uiServiceStub }],
     }).compileComponents();
   }));
@@ -34,5 +34,20 @@ describe('FatalErrorComponent', () => {
     uiServiceStub.latestError = 'error';
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should set errorContext when latestError is set', () => {
+    uiServiceStub.latestError = 'Something went wrong';
+    fixture = TestBed.createComponent(FatalErrorComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.errorContext).toBe('Something went wrong');
+  });
+
+  it('should have empty errorContext when no latestError', () => {
+    fixture = TestBed.createComponent(FatalErrorComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.errorContext).toBe('');
   });
 });

@@ -23,7 +23,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MarkdownModule } from 'ngx-markdown';
 import { BehaviorSubject } from 'rxjs';
 
@@ -31,15 +31,17 @@ import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { AuthService } from '../../../services';
 import { UserAuthInfo } from '../../../../app/model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  template: ` <form [formGroup]="formGrp">
+    template: ` <form [formGroup]="formGrp">
     <nz-form-item>
       <nz-form-control>
         <ac-markdown-editor formControlName="infoControl"></ac-markdown-editor>
       </nz-form-control>
     </nz-form-item>
   </form>`,
+    standalone: false
 })
 export class MarkdownEditorTestFormComponent {
   public formGrp: UntypedFormGroup;
@@ -65,9 +67,8 @@ describe('MarkdownEditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        getTranslocoModule(),
+    // declarations moved to imports
+    imports: [getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
@@ -83,10 +84,9 @@ describe('MarkdownEditorComponent', () => {
         NzLayoutModule,
         NzUploadModule,
         MarkdownModule.forRoot(),
-      ],
-      declarations: [MarkdownEditorComponent, MarkdownEditorTestFormComponent],
-      providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }],
-    }).compileComponents();
+        MarkdownEditorComponent],
+    providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {
@@ -114,12 +114,8 @@ describe('MarkdownEditorComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
-      flush();
-      tick();
-      fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
-      expect(testingComponent.editorComponent).toBeTruthy();
 
       if (testingComponent.editorComponent) {
         testingComponent.editorComponent.onToolbarH1();

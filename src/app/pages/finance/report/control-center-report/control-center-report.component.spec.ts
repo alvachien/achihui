@@ -1,12 +1,11 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -20,7 +19,9 @@ import { UserAuthInfo, FinanceReportByControlCenter } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { ControlCenterReportComponent } from './control-center-report.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { SafeAny } from 'src/common';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ControlCenterReportComponent', () => {
   let component: ControlCenterReportComponent;
@@ -52,23 +53,23 @@ describe('ControlCenterReportComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [ControlCenterReportComponent,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, ControlCenterReportComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-      ],
-    }).compileComponents();
+        NzDrawerService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

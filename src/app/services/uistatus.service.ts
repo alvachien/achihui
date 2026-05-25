@@ -1,9 +1,9 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, inject } from '@angular/core';
 
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum } from '../model';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 
 export interface DocInsightOption {
   SelectedDataRange: moment.Moment[];
@@ -88,7 +88,9 @@ export class UIStatusService {
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
-  constructor(private _tranService: TranslocoService, private _router: Router) {
+  private readonly _router = inject(Router);
+  
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering UIStatusService constructor...`,
       ConsoleLogTypeEnum.debug

@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -8,13 +8,15 @@ import {
   Validator,
   Validators,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import moment from 'moment';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   AccountExtraLoan,
@@ -26,9 +28,19 @@ import {
   RepeatDatesWithAmountAndInterestAPIInput,
   RepaymentMethodEnum,
   UIDisplayStringUtil,
-} from '../../../../model';
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../../../services';
-import { SafeAny } from 'src/common';
+} from '@model/index';
+import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { DecimalPipe } from '@angular/common';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'hih-finance-account-extra-loan',
@@ -46,6 +58,23 @@ import { SafeAny } from 'src/common';
       multi: true,
     },
   ],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzAlertModule,
+    NzSelectModule,
+    NzTableModule,
+    NzInputNumberModule,
+    NzInputModule,
+    NzDatePickerModule,
+    NzCheckboxModule,
+    NzButtonModule,
+    DecimalPipe,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ]
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -192,13 +221,13 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     );
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly homeService = inject(HomeDefOdataService);
+  private readonly uiStatusService = inject(UIStatusService);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
       ConsoleLogTypeEnum.debug

@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,8 +9,18 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountDetailComponent } from './account-detail.component';
 import {
   getTranslocoModule,
@@ -25,7 +35,8 @@ import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
@@ -74,24 +85,28 @@ describe('AccountDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
         getTranslocoModule(),
-      ],
-      declarations: [
-        AccountDetailComponent,
+        NzFormModule,
+        NzInputModule,
+        NzSelectModule,
+        NzInputNumberModule,
+        NzDatePickerModule,
+        NzCheckboxModule,
+        NzPageHeaderModule,
+        NzSpinModule,
+        NzButtonModule,
+        NzDividerModule,
+        NzModalModule,
         AccountExtraAssetComponent,
         AccountExtraDownpaymentComponent,
-        AccountExtraLoanComponent,
-        MessageDialogComponent,
-      ],
-      providers: [
+        AccountExtraLoanComponent],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -99,8 +114,10 @@ describe('AccountDetailComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {

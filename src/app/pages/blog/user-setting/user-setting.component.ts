@@ -1,18 +1,34 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalService, NzModalRef, NzModalModule } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
 
-import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '../../../model';
-import { BlogOdataService } from '../../../services';
+import { ModelUtility, ConsoleLogTypeEnum, BlogUserSetting } from '@model/index';
+import { BlogOdataService } from '@services/index';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'hih-user-setting',
   templateUrl: './user-setting.component.html',
   styleUrls: ['./user-setting.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    TranslocoModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    NzModalModule,
+    ReactiveFormsModule,
+    NzInputModule,
+  ]
 })
 export class UserSettingComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -20,12 +36,14 @@ export class UserSettingComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   detailFormGroup: UntypedFormGroup;
   uiMode: UIMode = UIMode.Invalid;
+  private readonly odataService = inject(BlogOdataService);
+  private readonly modalService = inject(NzModalService);
 
   get isSaveButtonEnabled(): boolean {
     return this.uiMode === UIMode.Update && this.detailFormGroup.enabled && this.detailFormGroup.valid;
   }
 
-  constructor(private odataService: BlogOdataService, private modalService: NzModalService) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering UserSettingComponent constructor...',
       ConsoleLogTypeEnum.debug

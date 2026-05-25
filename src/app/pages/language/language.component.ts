@@ -1,18 +1,35 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { AppLanguage, ModelUtility, ConsoleLogTypeEnum } from '../../model';
 import { LanguageOdataService } from '../../services';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-  selector: 'hih-language',
-  templateUrl: './language.component.html',
-  styleUrls: ['./language.component.less'],
+    selector: 'hih-language',
+    templateUrl: './language.component.html',
+    styleUrls: ['./language.component.less'],
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      TranslocoModule,
+      NzSpinModule,
+      NzPageHeaderModule,
+      NzTableModule,
+      NzBreadCrumbModule,
+      NzSwitchModule,
+      NzModalModule,
+    ]
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -20,7 +37,9 @@ export class LanguageComponent implements OnInit, OnDestroy {
   public dataSource: AppLanguage[] = [];
   isLoadingResults: boolean;
 
-  constructor(public odataService: LanguageOdataService, public modalService: NzModalService) {
+  private readonly odataService = inject(LanguageOdataService);
+  private readonly modalService = inject(NzModalService);
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LanguageComponent constructor...`,
       ConsoleLogTypeEnum.debug

@@ -1,11 +1,7 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
-    >
-    <nz-breadcrumb-item
-      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
-    >
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>{{ 'Finance.Activity' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
@@ -32,31 +28,33 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{ data.OrderId }}
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplayMasterData(data.OrderId)">
-            {{ 'Common.Display' | transloco }}
-          </button>
-        </td>
-        <td>{{ data.OrderName }}</td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayDebitData(data.OrderId)">
-            {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayCreditData(data.OrderId)">
-            {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-        <td>
-          <button nz-button nzType="link" (click)="onDisplayBalanceData(data.OrderId)">
-            {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
-          </button>
-        </td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>
+            {{ data.OrderId }}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplayMasterData(data.OrderId)">
+              {{ 'Common.Display' | transloco }}
+            </button>
+          </td>
+          <td>{{ data.OrderName }}</td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayDebitData(data.OrderId)">
+              {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayCreditData(data.OrderId)">
+              {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+          <td>
+            <button nz-button nzType="link" (click)="onDisplayBalanceData(data.OrderId)">
+              {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+            </button>
+          </td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </nz-spin>

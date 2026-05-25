@@ -8,7 +8,7 @@ import {
   flush,
   discardPeriodicTasks,
 } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
@@ -20,7 +20,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 
-import { FinanceUIModule } from '../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -38,7 +37,8 @@ import {
 } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
 import { ReportComponent } from './report.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReportComponent', () => {
   let component: ReportComponent;
@@ -94,25 +94,24 @@ describe('ReportComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        NgxEchartsModule.forRoot({ echarts }),
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [NgxEchartsModule.forRoot({ echarts }),
+        
         NzProgressModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, ReportComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         NzModalService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -131,89 +130,66 @@ describe('ReportComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xdescribe('2. shall work with data', () => {
-    const arRptAccount: FinanceReportByAccount[] = [];
-    const arRptControlCenter: FinanceReportByControlCenter[] = [];
-    const arRptOrder: FinanceReportByOrder[] = [];
+  describe('2. shall work with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    const mockRptData: SafeAny = [
+      { TranType: 1, TransactionTypeName: 'Income', InAmount: 500, OutAmount: 0 },
+      { TranType: 2, TransactionTypeName: 'Expense', InAmount: 0, OutAmount: 300 },
+    ];
+
     beforeEach(() => {
-      // arRptAccount = [];
-      // arRptAccount.push({
-      //   HomeID: fakeData.chosedHome.ID,
-      //   AccountId: fakeData.finAccounts[0].Id,
-      //   DebitBalance: 30,
-      //   CreditBalance: 20,
-      //   Balance: 10
-      // } as FinanceReportByAccount);
-      // if (fakeData.finAccounts.length > 1) {
-      //   arRptAccount.push({
-      //     HomeID: fakeData.chosedHome.ID,
-      //     AccountId: fakeData.finAccounts[1].Id,
-      //     DebitBalance: 300,
-      //     CreditBalance: 10,
-      //     Balance: 290
-      //   } as FinanceReportByAccount);
-      // }
-      // fetchAllReportsByAccountSpy.and.returnValue(asyncData(arRptAccount));
-
-      // arRptControlCenter = [];
-      // arRptControlCenter.push({
-      //   HomeID: fakeData.chosedHome.ID,
-      //   ControlCenterId: fakeData.finControlCenters[0].Id,
-      //   DebitBalance: 30,
-      //   CreditBalance: 20,
-      //   Balance: 10
-      // } as FinanceReportByControlCenter);
-      // if (fakeData.finControlCenters.length > 1) {
-      //   arRptControlCenter.push({
-      //     HomeID: fakeData.chosedHome.ID,
-      //     ControlCenterId: fakeData.finControlCenters[1].Id,
-      //     DebitBalance: 300,
-      //     CreditBalance: 10,
-      //     Balance: 290
-      //   } as FinanceReportByControlCenter);
-      // }
-      // fetchAllReportsByControlCenterSpy.and.returnValue(asyncData(arRptControlCenter));
-
-      // arRptOrder = [];
-      // arRptOrder.push({
-      //   HomeID: fakeData.chosedHome.ID,
-      //   OrderId: fakeData.finOrders[0].Id,
-      //   DebitBalance: 30,
-      //   CreditBalance: 20,
-      //   Balance: 10
-      // } as FinanceReportByOrder);
-      // if (fakeData.finOrders.length > 1) {
-      //   arRptOrder.push({
-      //     HomeID: fakeData.chosedHome.ID,
-      //     OrderId: fakeData.finOrders[1].Id,
-      //     DebitBalance: 300,
-      //     CreditBalance: 10,
-      //     Balance: 290
-      //   } as FinanceReportByOrder);
-      // }
-      // fetchAllReportsByOrderSpy.and.returnValue(asyncData(arRptOrder));
-
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      fetchReportByTransactionTypeSpy.and.returnValue(asyncData(mockRptData));
+    });
+
+    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('should not show data before OnInit', () => {
       expect(component.dataReportByAccount.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should call fetchReportByTransactionType on init', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+
+      expect(fetchReportByTransactionTypeSpy).toHaveBeenCalled();
+      expect(component.totalIncomeInCurrentMonth).toBeGreaterThan(0);
+      expect(component.totalOutgoInCurrentMonth).toBeGreaterThan(0);
+
+      flush();
+    }));
+
+    it('should display error dialog when service fails', fakeAsync(() => {
+      fetchReportByTransactionTypeSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges(); // ngOnInit()
+      tick(); // Complete the observables
       fixture.detectChanges();
 
-      expect(component.dataReportByAccount.length).toBeGreaterThan(0);
-      expect(component.dataReportByAccount.length).toEqual(arRptAccount.length);
-      expect(component.dataReportByControlCenter.length).toEqual(arRptControlCenter.length);
-      expect(component.dataReportByOrder.length).toEqual(arRptOrder.length);
+      // Expect there is a dialog
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
+      flush();
+
+      // OK button
+      const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
+      expect(closeBtn).toBeTruthy();
+      closeBtn.click();
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
       flush();
     }));

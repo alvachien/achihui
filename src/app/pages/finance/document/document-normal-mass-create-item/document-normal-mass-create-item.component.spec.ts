@@ -1,12 +1,12 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { getTranslocoModule } from '../../../../../testing';
 import { DocumentNormalMassCreateItemComponent } from './document-normal-mass-create-item.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentNormalMassCreateItemComponent', () => {
   let component: DocumentNormalMassCreateItemComponent;
@@ -14,17 +14,15 @@ describe('DocumentNormalMassCreateItemComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule(),
-      ],
-      declarations: [DocumentNormalMassCreateItemComponent],
-    }).compileComponents();
+        getTranslocoModule()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   beforeEach(() => {

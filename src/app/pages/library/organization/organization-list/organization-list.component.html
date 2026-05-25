@@ -19,21 +19,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of basicTable.data">
-        <td>
-          {{ data.ID }}
-          <nz-divider nzType="vertical"></nz-divider>
-          <button nz-button nzType="link" (click)="onDisplay(data.ID)">
-            {{ 'Common.Display' | transloco }}
-          </button>
-          <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
-            {{ 'Common.Delete' | transloco }}
-          </button>
-        </td>
-        <td>{{ data.NativeName }}</td>
-        <td>{{ data.ChineseName }}</td>
-        <td>{{ data.Detail }}</td>
-      </tr>
+      @for(data of basicTable.data; track $index) {
+        <tr>
+          <td>
+            {{ data.ID }}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDisplay(data.ID)">
+              {{ 'Common.Display' | transloco }}
+            </button>
+            <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
+              {{ 'Common.Delete' | transloco }}
+            </button>
+          </td>
+          <td>{{ data.NativeName }}</td>
+          <td>{{ data.ChineseName }}</td>
+          <td>{{ data.Detail }}</td>
+        </tr>  
+      }
     </tbody>
   </nz-table>
 </nz-spin>

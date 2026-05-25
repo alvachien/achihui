@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 import { FinanceStorageService } from './finance-storage.service';
@@ -9,6 +9,7 @@ import { HomeDefOdataService } from './home-def-odata.service';
 import { DocumentWithPlanExgRateForUpdate } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
+import moment from 'moment';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
@@ -44,13 +45,15 @@ describe('FinanceStorageService', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         FinanceStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -61,7 +64,7 @@ describe('FinanceStorageService', () => {
     expect(service).toBeTruthy();
   });
 
-  xdescribe('updatePreviousDocWithPlanExgRate', () => {
+  describe('updatePreviousDocWithPlanExgRate', () => {
     const apiurl: string = environment.ApiUrl + '/FinanceDocWithPlanExgRate';
     beforeEach(() => {
       service = TestBed.inject(FinanceStorageService);
@@ -108,6 +111,66 @@ describe('FinanceStorageService', () => {
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportTranType', () => {
+    beforeEach(() => {
+      service = TestBed.inject(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should call API without date params', () => {
+      service.getReportTranType().subscribe((data: any) => {
+        expect(data).toBeTruthy();
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url.includes('FinanceReportTranType');
+      });
+      req.flush([]);
+    });
+
+    it('should call API with date params', () => {
+      const mDtbgn = moment('2024-01-01');
+      const mDtend = moment('2024-12-31');
+      service.getReportTranType(mDtbgn, mDtend).subscribe((data: any) => {
+        expect(data).toBeTruthy();
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.params.has('dtbgn') && requrl.params.has('dtend');
+      });
+      req.flush([]);
+    });
+
+    it('should call API with only start date', () => {
+      const mDtbgn = moment('2024-01-01');
+      service.getReportTranType(mDtbgn).subscribe((data: any) => {
+        expect(data).toBeTruthy();
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.params.has('dtbgn') && !requrl.params.has('dtend');
+      });
+      req.flush([]);
+    });
+
+    it('should handle error response', () => {
+      service.getReportTranType().subscribe(
+        () => fail('expected to fail'),
+        (error: any) => {
+          expect(error).toBeTruthy();
+        }
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url.includes('FinanceReportTranType');
+      });
+      req.flush('error', { status: 500, statusText: 'server error' });
     });
   });
 });

@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@ngneat/transloco';
+import { translate } from '@jsverse/transloco';
 
-import { BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from 'src/app/model';
-import { LibraryStorageService, UIStatusService } from 'src/app/services';
+import { BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
+import { LibraryStorageService, UIStatusService } from '@services/index';
 import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 

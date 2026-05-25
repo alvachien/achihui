@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import {
   getTranslocoModule,
   FakeDataHelper,
@@ -18,10 +17,11 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, Plan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { PlanListComponent } from './plan-list.component';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PlanListComponent', () => {
   let component: PlanListComponent;
@@ -39,8 +39,9 @@ describe('PlanListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildFinPlans();
+    fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts']);
+    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts', 'fetchAccountBalance']);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
     fetchAllAccountSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -53,25 +54,24 @@ describe('PlanListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [MessageDialogComponent, PlanListComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -88,6 +88,60 @@ describe('PlanListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return false for isChildMode when member is not a child', () => {
+    expect(component.isChildMode).toBeFalse();
+  });
+
+  it('should return true for isChildMode when member is a child', () => {
+    homeService.CurrentMemberInChosedHome!['IsChild'] = true;
+    expect(component.isChildMode).toBeTrue();
+    homeService.CurrentMemberInChosedHome!['IsChild'] = false;
+  });
+
+  it('should return account name for valid id', () => {
+    component.arAccounts = fakeData.finAccounts;
+    const name = component.getAccountName(fakeData.finAccounts[0].Id as number);
+    expect(name).toBe(fakeData.finAccounts[0].Name as string);
+  });
+
+  it('should return empty string for invalid id', () => {
+    component.arAccounts = fakeData.finAccounts;
+    expect(component.getAccountName(9999)).toBe('');
+  });
+
+  it('should set progress modal visible on check progress', () => {
+    storageService.fetchAccountBalance.and.returnValue(of(500));
+    const plan = new Plan();
+    plan.AccountID = 1;
+    component.onCheckProgress(plan);
+    expect(component.isProgressDlgVisible).toBeTrue();
+    expect(component.currentPlan).toBe(plan);
+  });
+
+  it('should not set progress modal when plan is null', () => {
+    component.onCheckProgress(null as any);
+    expect(component.isProgressDlgVisible).toBeFalse();
+  });
+
+  it('should return 0 for currentDifferenceWithTarget when no plan', () => {
+    component.currentPlan = undefined;
+    expect(component.currentDifferenceWithTarget).toBe(0);
+  });
+
+  it('should return difference for currentDifferenceWithTarget', () => {
+    const plan = new Plan();
+    plan.TargetBalance = 1000;
+    component.currentPlan = plan;
+    component.currentPlanActualBalance = 800;
+    expect(component.currentDifferenceWithTarget).toBe(-200);
+  });
+
+  it('should hide progress modal on handleProgressModalCancel', () => {
+    component.isProgressDlgVisible = true;
+    component.handleProgressModalCancel();
+    expect(component.isProgressDlgVisible).toBeFalse();
   });
 
   describe('2. shall work with data', () => {

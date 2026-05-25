@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { translate } from '@ngneat/transloco';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReplaySubject, takeUntil } from 'rxjs';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import * as moment from 'moment';
-import { NzCascaderOption } from 'ng-zorro-antd/cascader';
+import moment from 'moment';
+import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceOdataService } from 'src/app/services';
-import { SafeAny } from 'src/common';
+import { FinanceOdataService } from '@services/index';
+import { SafeAny } from '@common/any';
 import {
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -21,14 +22,31 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
 } from '../../../../model';
-import { DocumentItemViewComponent } from '../../document-item-view';
+import { DocumentItemViewComponent } from '../../document/document-item-view';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { FormsModule } from '@angular/forms';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
   templateUrl: './tran-type-month-on-month-report.component.html',
   styleUrls: ['./tran-type-month-on-month-report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzCascaderModule,
+    NzRadioModule,
+    FormsModule,
+    NzGridModule,
+    NgxEchartsModule,
+    TranslocoModule,
+  ]
 })
-export class TranTypeMonthOnMonthReportComponent implements OnInit {
+export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   constructor(
     private oDataService: FinanceOdataService,
     private modalService: NzModalService,
@@ -62,8 +80,9 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug
     );
+    this._destroyed$ = new ReplaySubject(1);
 
-    this.oDataService.fetchAllTranTypes().subscribe({
+    this.oDataService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe({
       next: (val: TranType[]) => {
         this.arTranType = val.slice();
         this.availableTranTypes = [];
@@ -142,7 +161,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
 
     const trantype = this.selectedTranTypes[this.selectedTranTypes.length - 1];
     const isexpense = this.arTranType.find((p) => p.Id === trantype)?.Expense;
-    this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod, true).subscribe({
+    this.oDataService.fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod, true).pipe(takeUntil(this._destroyed$!)).subscribe({
       next: (val: FinanceReportEntryByTransactionTypeMoM[]) => {
         // Fetch out data
         const arAxis: string[] = [];
@@ -315,6 +334,13 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+      this._destroyed$ = null;
+    }
+  }
   onChartClick(event: SafeAny) {
     console.log(event);
     // Month

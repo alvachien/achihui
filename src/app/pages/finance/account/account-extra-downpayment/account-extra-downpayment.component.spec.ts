@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
@@ -9,10 +9,9 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { ViewChild, Component } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { FinanceUIModule } from '../../finance-ui.module';
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
@@ -23,7 +22,8 @@ import {
   RepeatFrequencyEnum,
   RepeatedDatesWithAmountAPIOutput,
 } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/any';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AccountExtraDownpaymentComponent', () => {
   let testcomponent: FinanceAccountExtraDPTestFormComponent;
@@ -55,27 +55,26 @@ describe('AccountExtraDownpaymentComponent', () => {
   beforeEach(waitForAsync(() => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        FormsModule,
-        FinanceUIModule,
+    // declarations moved to imports
+    imports: [FormsModule,
+        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
-        getTranslocoModule(),
-      ],
-      declarations: [AccountExtraDownpaymentComponent, FinanceAccountExtraDPTestFormComponent],
-      providers: [
+        getTranslocoModule()],
+    providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {
@@ -386,7 +385,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-downpayment
         formControlName="extraControl"
@@ -397,6 +396,11 @@ describe('AccountExtraDownpaymentComponent', () => {
       </hih-finance-account-extra-downpayment>
     </form>
   `,
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      AccountExtraDownpaymentComponent,
+    ]
 })
 export class FinanceAccountExtraDPTestFormComponent {
   public formGroup: UntypedFormGroup;

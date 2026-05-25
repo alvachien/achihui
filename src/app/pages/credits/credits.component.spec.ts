@@ -11,7 +11,7 @@ describe('CreditsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [NzListModule, getTranslocoModule()],
-      declarations: [CreditsComponent],
+      // declarations moved to imports
     }).compileComponents();
   }));
 

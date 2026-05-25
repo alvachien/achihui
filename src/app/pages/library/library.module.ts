@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { LibraryRoutingModule } from './library-routing.module';
 import { LibraryUIModule } from './library-ui.module';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { LibraryComponent } from './library.component';
 import { SearchComponent } from './search/search.component';
 

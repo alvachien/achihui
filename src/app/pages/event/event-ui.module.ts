@@ -32,7 +32,6 @@ import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -77,7 +76,6 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
     NzResizableModule,
     NzCollapseModule,
     NzPopconfirmModule,
-    NzMessageModule,
     NzDrawerModule,
     NzEmptyModule,
     NzSpaceModule,
@@ -119,7 +117,6 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
     NzResizableModule,
     NzCollapseModule,
     NzPopconfirmModule,
-    NzMessageModule,
     NzDrawerModule,
     NzSpaceModule,
     NgxEchartsModule,

@@ -1,12 +1,22 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit, inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@ngneat/transloco';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
-import * as moment from 'moment';
+import moment from 'moment';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import {
   Account,
@@ -44,19 +54,39 @@ import {
   BuildupOrderForSelection,
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
-} from '../../../../model';
-import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
+} from '@model/index';
+import { HomeDefOdataService, FinanceOdataService } from '@services/index';
+import { costObjectValidator } from '@uimodel/index';
+import { SafeAny } from '@common/any';
 import { popupDialog } from '../../../message-dialog';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
-import { costObjectValidator } from 'src/app/uimodel';
-import { SafeAny } from 'src/common';
 
 @Component({
   selector: 'hih-fin-account-detail',
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzButtonModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDividerModule,
+    NzInputNumberModule,
+    NzDatePickerModule,
+    NzCheckboxModule,
+    TranslocoModule,
+    AccountExtraAssetComponent,
+    AccountExtraDownpaymentComponent,
+    AccountExtraLoanComponent,
+    RouterModule,
+    NzModalModule
+  ]
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -138,14 +168,14 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return this._arUIOrders;
   }
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private activateRoute: ActivatedRoute,
-    private homeSevice: HomeDefOdataService,
-    private modalService: NzModalService,
-    private router: Router,
-    private changeDetectRef: ChangeDetectorRef
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly activateRoute = inject(ActivatedRoute);
+  private readonly homeSevice = inject(HomeDefOdataService);
+  private readonly modalService = inject(NzModalService);
+  private readonly router = inject(Router);
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
       ConsoleLogTypeEnum.debug

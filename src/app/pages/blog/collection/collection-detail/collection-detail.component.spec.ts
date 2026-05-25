@@ -14,7 +14,7 @@ import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../..
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { SafeAny } from 'src/common';
+import { SafeAny } from '@common/index';
 
 describe('CollectionDetailComponent', () => {
   let component: CollectionDetailComponent;
@@ -51,8 +51,8 @@ describe('CollectionDetailComponent', () => {
         NoopAnimationsModule,
         RouterTestingModule,
         BrowserDynamicTestingModule,
-      ],
-      declarations: [CollectionDetailComponent],
+      ,
+        CollectionDetailComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
