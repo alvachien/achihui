@@ -50,6 +50,7 @@ describe('BorrowRecordListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -58,9 +59,8 @@ describe('BorrowRecordListComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ,
-        BorrowRecordListComponent],
+        getTranslocoModule(), BorrowRecordListComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

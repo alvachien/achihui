@@ -1,10 +1,13 @@
+import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
-import { NzCalendarMode } from 'ng-zorro-antd/calendar';
+import { NzCalendarModule, NzCalendarMode } from 'ng-zorro-antd/calendar';
 
 @Component({
   selector: 'hih-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.less'],
+  standalone: true,
+  imports: [NzCalendarModule, FormsModule],
 })
 export class OverviewComponent {
   selectedDate = new Date();

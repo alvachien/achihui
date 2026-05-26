@@ -1,11 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { translate } from '@jsverse/transloco';
+import { NzModalService, NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
 
 import {
   ModelUtility,
@@ -26,6 +36,25 @@ import { SafeAny } from '@common/index';
   selector: 'hih-blog-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.less'],
+  standalone: true,
+  imports: [
+    NzPageHeaderModule,
+    NzButtonModule,
+    NzSpinModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzRadioModule,
+    NzGridModule,
+    NzModalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    RouterModule,
+    NgIf,
+    NgFor,
+    MarkdownEditorComponent,
+  ],
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

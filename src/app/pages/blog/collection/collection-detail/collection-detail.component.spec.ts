@@ -42,17 +42,16 @@ describe('CollectionDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
-        getTranslocoModule(),
+        getTranslocoModule(), CollectionDetailComponent,
         FormsModule,
         BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        BrowserDynamicTestingModule,
-      ,
-        CollectionDetailComponent],
+        BrowserDynamicTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },

@@ -16,6 +16,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     selector: 'hih-user-detail',
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.less'],
+    standalone: true,
     imports: [
       FormsModule,
       ReactiveFormsModule,

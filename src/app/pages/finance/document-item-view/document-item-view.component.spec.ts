@@ -77,7 +77,6 @@ describe('DocumentItemViewComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ,
         MessageDialogComponent, DocumentItemViewComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },

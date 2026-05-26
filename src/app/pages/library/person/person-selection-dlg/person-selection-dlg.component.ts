@@ -1,14 +1,18 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { Person } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 
 @Component({
+  standalone: true,
   selector: 'hih-person-selection-dlg',
   templateUrl: './person-selection-dlg.component.html',
   styleUrls: ['./person-selection-dlg.component.less'],
+  imports: [NzTableModule, NgFor],
 })
 export class PersonSelectionDlgComponent implements OnInit {
   checked = false;

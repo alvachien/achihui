@@ -1,14 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NgFor } from '@angular/common';
 
 import { Location } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 
 @Component({
+  standalone: true,
   selector: 'hih-location-selection-dlg',
   templateUrl: './location-selection-dlg.component.html',
   styleUrls: ['./location-selection-dlg.component.less'],
+  imports: [NzTableModule, NgFor],
 })
 export class LocationSelectionDlgComponent implements OnInit {
   checked = false;

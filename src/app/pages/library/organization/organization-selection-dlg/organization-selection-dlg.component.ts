@@ -1,6 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 import { Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
@@ -9,6 +12,7 @@ import { LibraryStorageService } from '@services/index';
   selector: 'hih-organization-selection-dlg',
   templateUrl: './organization-selection-dlg.component.html',
   styleUrls: ['./organization-selection-dlg.component.less'],
+  imports: [CommonModule, NzTableModule, NzPaginationModule],
 })
 export class OrganizationSelectionDlgComponent implements OnInit {
   checked = false;

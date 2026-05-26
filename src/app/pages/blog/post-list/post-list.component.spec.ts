@@ -16,6 +16,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
 import { PostListComponent } from './post-list.component';
+import { BlogUIModule } from '../blog-ui.module';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { Router } from '@angular/router';
@@ -45,8 +46,8 @@ describe('PostListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [NoopAnimationsModule,  getTranslocoModule(), RouterTestingModule],
+    
+    imports: [NoopAnimationsModule,  getTranslocoModule(), PostListComponent, RouterTestingModule, BlogUIModule],
     providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

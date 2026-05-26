@@ -12,6 +12,7 @@ import { LibraryStorageService } from '@services/index';
     selector: 'hih-person-selection-dlg',
     templateUrl: './person-selection-dlg.component.html',
     styleUrls: ['./person-selection-dlg.component.less'],
+    standalone: true,
     imports: [
       NzTableModule,
       NzCheckboxModule,

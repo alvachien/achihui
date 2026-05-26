@@ -31,6 +31,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { MarkdownEditorComponent } from '../../reusable-components/markdown-editor';
 
 @Component({
+    standalone: true,
   selector: 'hih-blog-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.less'],

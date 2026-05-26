@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { NgFor, CommonModule } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { translate } from '@jsverse/transloco';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { FinanceOdataService } from '../../../services';
 import {
@@ -22,6 +25,16 @@ import {
   selector: 'hih-fin-document-item-view',
   templateUrl: './document-item-view.component.html',
   styleUrls: ['./document-item-view.component.less'],
+  standalone: true,
+  imports: [
+    NzTableModule,
+    NzButtonModule,
+    NzGridModule,
+    TranslocoModule,
+    NgFor,
+    CommonModule,
+    RouterModule,
+  ],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

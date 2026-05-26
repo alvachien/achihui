@@ -8,7 +8,6 @@ import { PostListComponent } from './post-list';
 import { PostDetailComponent } from './post-detail';
 
 @NgModule({
-  declarations: [PostListComponent, PostDetailComponent],
-  imports: [CommonModule, PostRoutingModule, BlogUIModule, TranslocoModule],
+  imports: [CommonModule, PostRoutingModule, BlogUIModule, TranslocoModule, PostListComponent, PostDetailComponent],
 })
 export class PostModule {}

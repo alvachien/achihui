@@ -43,6 +43,7 @@ describe('NormalEventListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -51,9 +52,8 @@ describe('NormalEventListComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ,
-        NormalEventListComponent],
+        getTranslocoModule(), NormalEventListComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

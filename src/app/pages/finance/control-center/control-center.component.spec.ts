@@ -8,8 +8,7 @@ describe('ControlCenterComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [,
-        ControlCenterComponent],
+      imports: [ControlCenterComponent],
     }).compileComponents();
   }));
 

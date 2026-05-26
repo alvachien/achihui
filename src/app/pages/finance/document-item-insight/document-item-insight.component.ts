@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { translate } from '@jsverse/transloco';
+import { NgFor, NgIf, CommonModule } from '@angular/common';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzTransferModule } from 'ng-zorro-antd/transfer';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
   TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
@@ -21,6 +29,20 @@ interface InsightRecord {
   selector: 'hih-document-item-insight',
   templateUrl: './document-item-insight.component.html',
   styleUrls: ['./document-item-insight.component.less'],
+  standalone: true,
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTransferModule,
+    NzTableModule,
+    NzDividerModule,
+    NzGridModule,
+    NzTooltipModule,
+    TranslocoModule,
+    NgFor,
+    NgIf,
+    CommonModule,
+  ],
 })
 export class DocumentItemInsightComponent implements OnInit {
   listGroupFields: TransferItem[] = [];

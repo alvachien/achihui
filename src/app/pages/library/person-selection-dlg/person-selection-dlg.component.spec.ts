@@ -12,6 +12,7 @@ import { AuthService, HomeDefOdataService, UIStatusService } from '@services/ind
 import { SafeAny } from '@common/any';
 import { FakeDataHelper, getTranslocoModule } from 'testing';
 import { PersonSelectionDlgComponent } from './person-selection-dlg.component';
+import { LibraryUIModule } from '../library-ui.module';
 import { LibraryStorageService } from '@services/index';
 import { Person } from '@model/index';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -51,11 +52,12 @@ describe('PersonSelectionDlgComponent', () => {
     await TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
-        
+        LibraryUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule()],
+        getTranslocoModule(),
+        PersonSelectionDlgComponent],
     providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

@@ -12,7 +12,6 @@ import { UserDetailRoutingModule } from './user-detail-routing.module';
 import { UserDetailComponent } from './user-detail';
 
 @NgModule({
-  declarations: [UserDetailComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +24,7 @@ import { UserDetailComponent } from './user-detail';
 
     UserDetailRoutingModule,
     TranslocoModule,
+    UserDetailComponent,
   ],
 })
 export class UserDetailModule {}

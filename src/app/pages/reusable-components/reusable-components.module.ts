@@ -15,7 +15,6 @@ import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.compo
 import { OperatorFilterPipe } from './pipes';
 
 @NgModule({
-  declarations: [MarkdownEditorComponent, OperatorFilterPipe],
   imports: [
     CommonModule,
     FormsModule,
@@ -27,6 +26,8 @@ import { OperatorFilterPipe } from './pipes';
     NzGridModule,
     NzUploadModule,
     MarkdownModule.forChild(),
+    MarkdownEditorComponent,
+    OperatorFilterPipe,
   ],
   exports: [MarkdownEditorComponent, OperatorFilterPipe, MarkdownModule],
 })

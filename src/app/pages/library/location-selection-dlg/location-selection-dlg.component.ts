@@ -12,6 +12,7 @@ import { LibraryStorageService } from '@services/index';
     selector: 'hih-location-selection-dlg',
     templateUrl: './location-selection-dlg.component.html',
     styleUrls: ['./location-selection-dlg.component.less'],
+    standalone: true,
     imports: [
       NzTableModule,
       NzCheckboxModule,

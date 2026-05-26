@@ -1,19 +1,38 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { NgFor } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@jsverse/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
 import { LibraryStorageService, UIStatusService } from '@services/index';
 import { BorrowRecordCreateDlgComponent } from '../borrow-record-create-dlg';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
+    standalone: true,
   selector: 'hih-borrow-record-list',
   templateUrl: './borrow-record-list.component.html',
   styleUrls: ['./borrow-record-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    TranslocoModule,
+    RouterModule,
+    NzButtonModule,
+    NzDividerModule,
+    NgFor,
+  ],
 })
 export class BorrowRecordListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

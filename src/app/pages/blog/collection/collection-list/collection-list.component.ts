@@ -1,17 +1,34 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { translate } from '@jsverse/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '../../../../model';
 import { BlogOdataService } from '../../../../services';
 
 @Component({
+    standalone: true,
   selector: 'hih-blog-collection-list',
   templateUrl: './collection-list.component.html',
   styleUrls: ['./collection-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    TranslocoModule,
+    NzButtonModule,
+    NzSpinModule,
+    NzTableModule,
+    NzDividerModule,
+    RouterModule,
+    NgFor,
+  ],
 })
 export class CollectionListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
 import { OverviewComponent } from './overview.component';
 
@@ -9,6 +10,7 @@ describe('OverviewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OverviewComponent],
+      providers: [{ provide: NZ_I18N, useValue: en_US }],
     }).compileComponents();
   });
 

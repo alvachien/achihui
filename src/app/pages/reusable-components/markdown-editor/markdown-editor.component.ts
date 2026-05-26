@@ -41,6 +41,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'ac-markdown-editor',
+    standalone: true,
     templateUrl: './markdown-editor.component.html',
     styleUrls: ['./markdown-editor.component.less'],
     providers: [
