@@ -39,7 +39,6 @@ import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilt
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
-  declarations: [UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe, OrderValidityFilterPipe],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -78,6 +77,9 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzDrawerModule,
     NzEmptyModule,
     NgxEchartsModule,
+    UIAccountCtgyFilterExPipe,
+    UIAccountStatusFilterPipe,
+    OrderValidityFilterPipe,
   ],
   exports: [
     FormsModule,

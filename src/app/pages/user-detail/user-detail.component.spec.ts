@@ -41,7 +41,8 @@ describe('UserDetailComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         NzPageHeaderModule,
-        getTranslocoModule()],
+        getTranslocoModule(),
+        UserDetailComponent],
     providers: [{ provide: AuthService, useValue: authServiceStub }, { provide: HomeDefOdataService, useValue: homeServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
   }));

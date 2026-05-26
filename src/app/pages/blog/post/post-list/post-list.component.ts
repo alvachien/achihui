@@ -1,4 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -15,9 +25,23 @@ import {
 import { BlogOdataService } from '../../../../services';
 
 @Component({
+  standalone: true,
   selector: 'hih-blog-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzTableModule,
+    NzButtonModule,
+    NzTagModule,
+    NzModalModule,
+    NzSpinModule,
+    NzDividerModule,
+    RouterModule,
+    TranslocoModule,
+    NgFor,
+    NgIf,
+  ],
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

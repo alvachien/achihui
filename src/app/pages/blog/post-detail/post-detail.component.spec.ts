@@ -22,7 +22,7 @@ import { UIMode } from 'actslib';
 
 import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
-import { MarkdownEditorComponent } from '../../reusable-components/markdown-editor';
+import { BlogUIModule } from '../blog-ui.module';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { SafeAny } from '@common/any';
@@ -56,10 +56,8 @@ describe('PostDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [PostDetailComponent, MarkdownEditorComponent, getTranslocoModule(),
+    imports: [PostDetailComponent, BlogUIModule, getTranslocoModule(),
         FormsModule,
-        
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,

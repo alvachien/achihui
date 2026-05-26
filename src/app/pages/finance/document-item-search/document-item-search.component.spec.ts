@@ -86,7 +86,6 @@ describe('DocumentItemSearchComponent', () => {
         BrowserDynamicTestingModule,
         ReusableComponentsModule,
         getTranslocoModule(),
-      ,
         MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },

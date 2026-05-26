@@ -57,6 +57,7 @@ describe('NormalEventDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -65,9 +66,8 @@ describe('NormalEventDetailComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ,
-        NormalEventDetailComponent],
+        getTranslocoModule(), NormalEventDetailComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

@@ -14,6 +14,7 @@ import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
 import { DocumentItemSearchComponent } from './document-item-search.component';
+import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -77,13 +78,12 @@ describe('DocumentItemSearchComponent', () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
-        
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        
-        getTranslocoModule()],
+        getTranslocoModule(),
+        FinanceUIModule],
     providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

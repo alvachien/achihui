@@ -1,7 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import moment from 'moment';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
   GeneralFilterOperatorEnum,
@@ -19,14 +33,36 @@ import {
   momentDateFormat,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
-import { translate } from '@jsverse/transloco';
 import { HomeDefOdataService } from '@services/index';
 import { SafeAny } from '@common/index';
+import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
+import { OperatorFilterPipe } from '../../reusable-components/pipes/operator-filter.pipe';
 
 @Component({
   selector: 'hih-document-item-search',
   templateUrl: './document-item-search.component.html',
   styleUrls: ['./document-item-search.component.less'],
+  standalone: true,
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzResultModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzSelectModule,
+    NzInputModule,
+    NzGridModule,
+    NzButtonModule,
+    NzIconModule,
+    NzDatePickerModule,
+    NzCheckboxModule,
+    TranslocoModule,
+    NgFor,
+    NgIf,
+    DocumentItemViewComponent,
+    OperatorFilterPipe,
+  ],
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   selector: 'hih-control-center',
   templateUrl: './control-center.component.html',
   styleUrls: ['./control-center.component.less'],
+  imports: [],
 })
 export class ControlCenterComponent {}

@@ -20,6 +20,7 @@ import {
 import { BlogOdataService } from '@services/index';
 
 @Component({
+    standalone: true,
   selector: 'hih-blog-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.less'],

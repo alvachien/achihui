@@ -1,18 +1,35 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { translate } from '@jsverse/transloco';
-
+import { Router, RouterModule } from '@angular/router';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from '@model/index';
 import { EventStorageService, UIStatusService } from '@services/index';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
+    standalone: true,
   selector: 'hih-recur-event-list',
   templateUrl: './recur-event-list.component.html',
   styleUrls: ['./recur-event-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    TranslocoModule,
+    RouterModule,
+    NzButtonModule,
+    NzTagModule,
+    NgFor,
+  ],
 })
 export class RecurEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

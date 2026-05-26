@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -7,12 +8,27 @@ import { translate } from '@jsverse/transloco';
 
 import { ConsoleLogTypeEnum, ModelUtility, GeneralEvent, BaseListModel } from '@model/index';
 import { EventStorageService, UIStatusService } from '@services/index';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
+    standalone: true,
   selector: 'hih-normal-event-list',
   templateUrl: './normal-event-list.component.html',
   styleUrls: ['./normal-event-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    TranslocoModule,
+    RouterModule,
+    NgFor,
+  ],
 })
 export class NormalEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

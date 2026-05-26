@@ -1,17 +1,31 @@
 import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { translate } from '@jsverse/transloco';
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import moment from 'moment';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
 @Component({
+    standalone: true,
   selector: 'hih-borrow-record-create-dlg',
   templateUrl: './borrow-record-create-dlg.component.html',
   styleUrls: ['./borrow-record-create-dlg.component.less'],
+  imports: [
+    ReactiveFormsModule,
+    TranslocoModule,
+    NzModalModule,
+    NzGridModule,
+    NzSpaceModule,
+    NzDividerModule,
+    NzTypographyModule,
+  ],
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {
   detailFormGroup: UntypedFormGroup;

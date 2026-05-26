@@ -9,7 +9,7 @@ import { SearchComponent } from './search/search.component';
 import { EventUIModule } from './event-ui.module';
 
 @NgModule({
-  declarations: [EventComponent, OverviewComponent, SearchComponent],
-  imports: [CommonModule, TranslocoModule, EventUIModule, EventRoutingModule],
+  declarations: [EventComponent, SearchComponent],
+  imports: [CommonModule, TranslocoModule, EventUIModule, EventRoutingModule, OverviewComponent],
 })
 export class EventModule {}

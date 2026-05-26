@@ -12,6 +12,7 @@ import { SafeAny } from '@common/any';
 import { FakeDataHelper, getTranslocoModule } from 'testing';
 
 import { LocationSelectionDlgComponent } from './location-selection-dlg.component';
+import { LibraryUIModule } from '../library-ui.module';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LocationSelectionDlgComponent', () => {
@@ -42,11 +43,12 @@ describe('LocationSelectionDlgComponent', () => {
     await TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
-        
+        LibraryUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        getTranslocoModule()],
+        getTranslocoModule(),
+        LocationSelectionDlgComponent],
     providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

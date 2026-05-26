@@ -68,7 +68,6 @@ describe('PostDetailComponent', () => {
         NzResizableModule,
         NzCodeEditorModule,
         MarkdownModule.forRoot(),
-      ,
         MarkdownEditorComponent, PostDetailComponent],
       providers: [
         { provide: AuthService, useValue: authServiceStub },

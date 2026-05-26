@@ -73,7 +73,6 @@ describe('DocumentItemInsightComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-      ,
          DocumentItemInsightComponent ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },

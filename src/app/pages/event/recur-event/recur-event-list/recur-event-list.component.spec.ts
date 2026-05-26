@@ -43,6 +43,7 @@ describe('RecurEventListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -51,9 +52,8 @@ describe('RecurEventListComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ,
-        RecurEventListComponent],
+        getTranslocoModule(), RecurEventListComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { NgIf, NgFor } from '@angular/common';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { UIDisplayStringUtil } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
+  standalone: true,
   selector: 'hih-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.less'],
+  imports: [NzPageHeaderModule, NzDescriptionsModule, NgIf, NgFor, TranslocoModule],
 })
 export class UserDetailComponent implements OnInit {
   userID: string | null = null;

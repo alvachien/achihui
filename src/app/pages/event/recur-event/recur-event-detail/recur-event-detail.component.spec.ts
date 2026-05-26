@@ -57,6 +57,7 @@ describe('RecurEventDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
+      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -65,9 +66,8 @@ describe('RecurEventDetailComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ,
-        RecurEventDetailComponent],
+        getTranslocoModule(), RecurEventDetailComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },

@@ -1,12 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
+import { UntypedFormGroup, UntypedFormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@jsverse/transloco';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { translate, TranslocoModule } from '@jsverse/transloco';
+import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 import moment from 'moment';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import {
   ModelUtility,
@@ -23,9 +33,27 @@ import { HomeDefOdataService, EventStorageService, FinanceOdataService } from '.
 import { SafeAny } from '@common/index';
 
 @Component({
+    standalone: true,
   selector: 'hih-recur-event-detail',
   templateUrl: './recur-event-detail.component.html',
   styleUrls: ['./recur-event-detail.component.less'],
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+    TranslocoModule,
+    NzModalModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    NzInputModule,
+    NzDatePickerModule,
+    NzButtonModule,
+    NzSwitchModule,
+    NzTableModule,
+    NzSelectModule,
+    NgIf,
+    NgFor,
+  ],
 })
 export class RecurEventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

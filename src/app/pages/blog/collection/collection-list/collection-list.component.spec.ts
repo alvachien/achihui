@@ -45,8 +45,8 @@ describe('CollectionListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, getTranslocoModule(), NoopAnimationsModule, BlogUIModule, RouterTestingModule,
-        CollectionListComponent],
+      
+      imports: [HttpClientTestingModule, getTranslocoModule(), CollectionListComponent, NoopAnimationsModule, BlogUIModule, RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,

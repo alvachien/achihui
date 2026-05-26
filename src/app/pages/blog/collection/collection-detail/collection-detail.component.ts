@@ -1,19 +1,38 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { translate } from '@jsverse/transloco';
+import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } from '../../../../model';
 import { BlogOdataService } from '../../../../services';
 
 @Component({
+    standalone: true,
   selector: 'hih-blog-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    TranslocoModule,
+    NzButtonModule,
+    NzSpinModule,
+    NzFormModule,
+    NzInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    NgIf,
+  ],
 })
 export class CollectionDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
