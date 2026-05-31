@@ -19,7 +19,7 @@ export function createSpyObj<T extends string>(
   name: string,
   methodNames: T[]
 ): Record<T, ReturnType<typeof vi.fn>> & { _name: string } {
-  const obj: any = {};
+  const obj: any = { _name: name };
   for (const methodName of methodNames) {
     const spy = vi.fn();
     // Add `.and` compatibility layer matching Jasmine's API
