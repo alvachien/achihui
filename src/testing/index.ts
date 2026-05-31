@@ -6,3 +6,4 @@ export * from './transloco-testing.module';
 export * from './fake-data-helper';
 export * from './form-group-helper';
 export * from './testing-constants';
+export * from './vitest-helpers';
