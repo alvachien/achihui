@@ -196,10 +196,10 @@ describe('CashMonthOnMonthReportComponent', () => {
   describe('3. shall popup dialog for exceptions', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+    beforeEach(() => {
+      overlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainerElement = overlayContainer.getContainerElement();
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();

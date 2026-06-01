@@ -151,10 +151,10 @@ describe('ControlCenterReportComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+    beforeEach(() => {
+      overlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainerElement = overlayContainer.getContainerElement();
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();

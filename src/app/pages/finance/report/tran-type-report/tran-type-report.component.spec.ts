@@ -141,10 +141,10 @@ describe('TranTypeReportComponent', () => {
       fetchReportByTransactionTypeSpy.and.returnValue(asyncData(arRptData));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+    beforeEach(() => {
+      overlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainerElement = overlayContainer.getContainerElement();
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
