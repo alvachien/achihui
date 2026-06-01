@@ -1,13 +1,12 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   inject,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,14 +19,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import moment from 'moment';
 
 import { DocumentListComponent } from './document-list.component';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogCloseButton,
-  ElementClass_DialogContent,
-} from '../../../../../testing';
+  ElementClass_DialogContent,} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -66,7 +63,7 @@ describe('DocumentListComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllDocTypes',
       'fetchAllCurrencies',
       'fetchAllAccountCategories',
@@ -215,7 +212,7 @@ describe('DocumentListComponent', () => {
 
     it('shall trigger navigation on menus for document creating', () => {
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       component.onCreateNormalDocument();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);

@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +11,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { ControlCenterDetailComponent } from './control-center-detail.component';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
-  asyncError,
-} from '../../../../../testing';
+  asyncError,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -45,7 +44,7 @@ describe('ControlCenterDetailComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllControlCenters',
       'readControlCenter',
       'createControlCenter',
@@ -133,13 +132,13 @@ describe('ControlCenterDetailComponent', () => {
       component.detailFormGroup.get('cmtControl')?.setValue('Test 1 Comment');
       component.detailFormGroup.markAsDirty();
 
-      expect(component.detailFormGroup.valid).toBeTrue();
+      expect(component.detailFormGroup.valid).toBe(true);
 
       // Submit
       component.onSubmit();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       tick();
       fixture.detectChanges();

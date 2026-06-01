@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import {
   TestBed,
   waitForAsync,
@@ -100,7 +101,7 @@ describe('AppComponent', () => {
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, 'doLogin' as never);
+    vi.spyOn(authServiceStub, 'doLogin');
 
     expect(authServiceStub.doLogin).toHaveBeenCalledTimes(0);
     component.onLogon();
@@ -118,7 +119,7 @@ describe('AppComponent', () => {
     tick();
     fixture.detectChanges();
 
-    spyOn(authServiceStub, 'doLogout' as never);
+    vi.spyOn(authServiceStub, 'doLogout');
 
     expect(authServiceStub.doLogout).toHaveBeenCalledTimes(0);
     component.onLogout();

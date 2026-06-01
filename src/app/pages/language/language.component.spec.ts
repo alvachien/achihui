@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,7 +13,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../testing';
 import { LanguageComponent } from './language.component';
 import { LanguageOdataService } from '../../services';
 import { MessageDialogComponent } from '../message-dialog';
@@ -31,7 +31,7 @@ describe('LanguageComponent', () => {
   beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildAppLanguage();
-    langService = jasmine.createSpyObj('LanguageOdataService', ['fetchAllLanguages']);
+    langService = createSpyObj('LanguageOdataService', ['fetchAllLanguages']);
     fetchAllLanguagesSpy = langService.fetchAllLanguages.and.returnValue(of([]));
   });
 

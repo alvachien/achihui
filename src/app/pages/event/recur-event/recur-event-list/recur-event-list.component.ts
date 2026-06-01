@@ -11,6 +11,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from '@model/index';
 import { EventStorageService, UIStatusService } from '@services/index';
 
@@ -28,6 +29,7 @@ import { EventStorageService, UIStatusService } from '@services/index';
     RouterModule,
     NzButtonModule,
     NzTagModule,
+    NzDividerModule,
     NgFor,
   ],
 })

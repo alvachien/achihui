@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 
@@ -35,7 +35,7 @@ describe('CashReportComponent', () => {
 
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
     fetchCashReportMoMSpy = storageService.fetchCashReportMoM.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });

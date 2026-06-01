@@ -1,4 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,7 +28,7 @@ describe('UserDetailComponent', () => {
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     authServiceStub.authContent = authServiceStub.authSubject.asObservable();
-    authServiceStub.doLogout = jasmine.createSpy('doLogout');
+    authServiceStub.doLogout = vi.fn();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
     homeServiceStub.CurrentMemberInChosedHome = fakeData.chosedHome.Members[0];
   });

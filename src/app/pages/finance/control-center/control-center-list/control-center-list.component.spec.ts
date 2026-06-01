@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -9,7 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { ControlCenterListComponent } from './control-center-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -34,7 +34,7 @@ describe('ControlCenterListComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinControlCenter();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllControlCenters']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllControlCenters']);
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 

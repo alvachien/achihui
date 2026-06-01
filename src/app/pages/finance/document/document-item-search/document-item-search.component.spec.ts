@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -45,7 +45,7 @@ describe('DocumentItemSearchComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllDocTypes',
       'fetchAllCurrencies',
       'fetchAllAccountCategories',

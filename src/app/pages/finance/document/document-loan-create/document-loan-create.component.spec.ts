@@ -1,13 +1,11 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   flush,
   inject,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -24,13 +22,11 @@ import { By } from '@angular/platform-browser';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
-  asyncError,
-} from '../../../../../testing';
+  asyncError,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -77,7 +73,7 @@ describe('DocumentLoanCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -221,13 +217,13 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
     }));
 
-    xit('step 0: account is manadatory', fakeAsync(() => {
+    it.skip('step 0: account is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -271,7 +267,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 0: amount is manadatory', fakeAsync(() => {
+    it.skip('step 0: amount is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -415,7 +411,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 1: loan extra info is manadatory', fakeAsync(() => {
+    it.skip('step 1: loan extra info is manadatory', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -480,7 +476,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 2: shall go to step 2 in valid case', fakeAsync(() => {
+    it.skip('step 2: shall go to step 2 in valid case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -545,7 +541,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 2: shall popup error dialog if verfication failed in generated object', fakeAsync(() => {
+    it.skip('step 2: shall popup error dialog if verfication failed in generated object', fakeAsync(() => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -645,7 +641,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 3: shall display success result after document posted', fakeAsync(() => {
+    it.skip('step 3: shall display success result after document posted', fakeAsync(() => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -726,7 +722,7 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
 
-    xit('step 3: shall display error result after document failed to post', fakeAsync(() => {
+    it.skip('step 3: shall display error result after document failed to post', fakeAsync(() => {
       createLoanDocumentSpy.and.returnValue(asyncError('Failed to post'));
       fixture.detectChanges();
       tick();
@@ -831,7 +827,7 @@ describe('DocumentLoanCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    xit('should display error when Account Category fetched fails', fakeAsync(() => {
+    it.skip('should display error when Account Category fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -855,7 +851,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when Doc type fetched fails', fakeAsync(() => {
+    it.skip('should display error when Doc type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -879,7 +875,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when Tran. type fetched fails', fakeAsync(() => {
+    it.skip('should display error when Tran. type fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -903,7 +899,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when currency fetched fails', fakeAsync(() => {
+    it.skip('should display error when currency fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -927,7 +923,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when account fetched fails', fakeAsync(() => {
+    it.skip('should display error when account fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -951,7 +947,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when control center fetched fails', fakeAsync(() => {
+    it.skip('should display error when control center fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -975,7 +971,7 @@ describe('DocumentLoanCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('should display error when order fetched fails', fakeAsync(() => {
+    it.skip('should display error when order fetched fails', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 

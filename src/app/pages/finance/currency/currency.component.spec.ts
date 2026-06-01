@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { CurrencyComponent } from './currency.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -32,7 +32,7 @@ describe('CurrencyComponent', () => {
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllCurrencies']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(of([]));
   });
 

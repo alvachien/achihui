@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
@@ -10,7 +10,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { OrderValidityFilterPipe } from '../../pipes';
 import { OrderListComponent } from './order-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -45,7 +45,7 @@ describe('OrderListComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllOrders',
       'fetchAllControlCenters',
       'fetchAllAccounts',

@@ -48,19 +48,19 @@ describe('ConfigComponent', () => {
   });
 
   it('should return false for isChildMode when member is not a child', () => {
-    expect(component.isChildMode).toBeFalse();
+    expect(component.isChildMode).toBe(false);
   });
 
   it('should return true for isChildMode when member is a child', () => {
     homeService.CurrentMemberInChosedHome!['IsChild'] = true;
-    expect(component.isChildMode).toBeTrue();
+    expect(component.isChildMode).toBe(true);
     homeService.CurrentMemberInChosedHome!['IsChild'] = false;
   });
 
   it('should return false for isChildMode when CurrentMemberInChosedHome is undefined', () => {
     const saved = homeService.CurrentMemberInChosedHome;
     homeService['CurrentMemberInChosedHome'] = undefined;
-    expect(component.isChildMode).toBeFalse();
+    expect(component.isChildMode).toBe(false);
     homeService['CurrentMemberInChosedHome'] = saved;
   });
 });

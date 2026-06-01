@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { ViewChild, Component } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import moment from 'moment';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -58,7 +59,7 @@ describe('AccountExtraLoanComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['calcLoanTmpDocs']);
+    storageService = createSpyObj('FinanceOdataService', ['calcLoanTmpDocs']);
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -121,13 +122,13 @@ describe('AccountExtraLoanComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.dirty).toBeFalse();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.dirty).toBe(false);
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     flush();
   }));
 
-  xit('shall work with data 2: input start date', fakeAsync(() => {
+  it.skip('shall work with data 2: input start date', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -141,7 +142,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
@@ -151,7 +152,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  xit('shall work with data 3: input start date, total months', fakeAsync(() => {
+  it.skip('shall work with data 3: input start date, total months', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -166,7 +167,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
@@ -176,7 +177,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  xit('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
+  it.skip('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -192,7 +193,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
@@ -202,7 +203,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  xit('shall work with data 5: interest free case', fakeAsync(() => {
+  it.skip('shall work with data 5: interest free case', fakeAsync(() => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -237,7 +238,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
@@ -252,7 +253,7 @@ describe('AccountExtraLoanComponent', () => {
     flush();
   }));
 
-  xit('shall work with data 6: interest case', fakeAsync(() => {
+  it.skip('shall work with data 6: interest case', fakeAsync(() => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -288,7 +289,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
@@ -320,7 +321,7 @@ describe('AccountExtraLoanComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    xit('shall display error dialog', fakeAsync(() => {
+    it.skip('shall display error dialog', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -340,7 +341,7 @@ describe('AccountExtraLoanComponent', () => {
       fixture.detectChanges();
 
       expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-      expect(testcomponent.formGroup.valid).toBeFalse();
+      expect(testcomponent.formGroup.valid).toBe(false);
 
       expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
@@ -380,7 +381,7 @@ describe('AccountExtraLoanComponent', () => {
 
   it('shall work with reference doc.', fakeAsync(() => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);

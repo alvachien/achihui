@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
@@ -8,14 +8,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, FinanceReportByOrder } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -43,7 +41,7 @@ describe('OrderReportComponent', () => {
     fakeData.buildFinOrders();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchReportByOrder', 'fetchAllOrders']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchReportByOrder', 'fetchAllOrders']);
     fetchReportByOrderSpy = storageService.fetchReportByOrder.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());

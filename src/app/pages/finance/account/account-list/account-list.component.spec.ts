@@ -1,13 +1,12 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   inject,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +18,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { AccountListComponent } from './account-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -45,7 +44,7 @@ describe('AccountListComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     homeService = {
@@ -131,7 +130,7 @@ describe('AccountListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onDisplay(fakeData.finAccounts[0].Id ?? 0);
@@ -151,7 +150,7 @@ describe('AccountListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onEdit(fakeData.finAccounts[0].Id ?? 0);

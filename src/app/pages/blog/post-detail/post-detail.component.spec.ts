@@ -1,12 +1,10 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -20,7 +18,7 @@ import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { MarkdownModule } from 'ngx-markdown';
 import { UIMode } from 'actslib';
 
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
 import { BlogUIModule } from '../blog-ui.module';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
@@ -45,7 +43,7 @@ describe('PostDetailComponent', () => {
     fakeData.buildBlogCollection();
     fakeData.buildBlogPost();
 
-    storageService = jasmine.createSpyObj('BlogOdataService', ['readPost', 'fetchAllCollections']);
+    storageService = createSpyObj('BlogOdataService', ['readPost', 'fetchAllCollections']);
     readPostSpy = storageService.readPost.and.returnValue(of({}));
     fetchAllCollectionsSpy = storageService.fetchAllCollections.and.returnValue(of([]));
 

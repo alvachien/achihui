@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
@@ -9,14 +9,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -54,7 +52,7 @@ describe('DocumentNormalMassCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',
@@ -349,9 +347,9 @@ describe('DocumentNormalMassCreateComponent', () => {
       newItem.get('despControl')?.setValue('test');
       newItem.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
-      expect(control.valid).toBeTrue();
+      expect(control.valid).toBe(true);
 
-      expect(component.nextButtonEnabled).toBeTrue();
+      expect(component.nextButtonEnabled).toBe(true);
       component.next();
       fixture.detectChanges();
 
@@ -378,16 +376,16 @@ describe('DocumentNormalMassCreateComponent', () => {
       newItem.get('despControl')?.setValue('test');
       newItem.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       newItem.updateValueAndValidity();
-      expect(control.valid).toBeTrue();
+      expect(control.valid).toBe(true);
 
-      expect(component.nextButtonEnabled).toBeTrue();
+      expect(component.nextButtonEnabled).toBe(true);
       component.next();
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
       expect(component.confirmInfo.length).toBeGreaterThan(0);
 
-      expect(component.nextButtonEnabled).toBeTrue();
+      expect(component.nextButtonEnabled).toBe(true);
       component.next();
       fixture.detectChanges();
 

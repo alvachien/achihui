@@ -1,5 +1,6 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { provideHttpClientTesting} from '@angular/common/http/testing';
+import { createSpyObj } from 'testing';
+import { ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -57,7 +58,7 @@ describe('ReconcileByMonthComponent', () => {
   });
 
   beforeEach(async () => {
-    const odataService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    const odataService = createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
 

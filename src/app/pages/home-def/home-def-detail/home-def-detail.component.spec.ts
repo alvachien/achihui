@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../testing';
 import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -45,9 +45,9 @@ describe('HomeDefDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    homeService = jasmine.createSpyObj('HomeDefOdataService', ['readHomeDef']);
+    homeService = createSpyObj('HomeDefOdataService', ['readHomeDef']);
     readHomeDefSpy = homeService.readHomeDef.and.returnValue(of([]));
-    finService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllCurrencies']);
+    finService = createSpyObj('FinanceOdataService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = finService.fetchAllCurrencies.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());

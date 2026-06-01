@@ -15,8 +15,8 @@
     "build": "ng build",
     "build-ali": "ng build --base-href=/hih/",
     "test": "ng test",
-    "devtest": "ng test --code-coverage",
-    "test-headless": "ng test --watch=false --code-coverage",
+    "devtest": "ng test",
+    "test-headless": "ng test --watch=false",
     "lint": "ng lint",
     "bundle-analyzer": "webpack-bundle-analyzer ./dist/achihui/stats.json"
   },
@@ -53,6 +53,7 @@
     "@angular/compiler-cli": "^21.2.13",
     "@types/node": "^22.13.1",
     "jsdom": "^26.0.0",
-    "typescript": "~5.9.0"
+    "typescript": "~5.9.0",
+    "vitest": "^4.1.7"
   }
 }

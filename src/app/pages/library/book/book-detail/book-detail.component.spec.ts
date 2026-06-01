@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,13 +12,11 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,
-} from '../../../../../testing';
+  ActivatedRouteUrlStub,} from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, Book } from '../../../../model';
 import { BookDetailComponent } from './book-detail.component';
@@ -47,7 +46,7 @@ describe('BookDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook']);
+    storageService = createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook']);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
     createBookSpy = storageService.createBook.and.returnValue(of({}));
     fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
@@ -141,13 +140,13 @@ describe('BookDetailComponent', () => {
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
       component.detailFormGroup.markAsDirty();
 
-      expect(component.detailFormGroup.valid).toBeTrue();
+      expect(component.detailFormGroup.valid).toBe(true);
 
       // Submit
       component.onSave();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       tick();
       fixture.detectChanges();
@@ -195,7 +194,7 @@ describe('BookDetailComponent', () => {
 
       expect(component).toBeTruthy();
 
-      expect(component.isEditable).toBeFalse();
+      expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nbook.NativeName);
 

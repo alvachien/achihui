@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -8,14 +8,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, Plan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -41,7 +39,7 @@ describe('PlanListComponent', () => {
     fakeData.buildFinPlans();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts', 'fetchAccountBalance']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts', 'fetchAccountBalance']);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
     fetchAllAccountSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -91,12 +89,12 @@ describe('PlanListComponent', () => {
   });
 
   it('should return false for isChildMode when member is not a child', () => {
-    expect(component.isChildMode).toBeFalse();
+    expect(component.isChildMode).toBe(false);
   });
 
   it('should return true for isChildMode when member is a child', () => {
     homeService.CurrentMemberInChosedHome!['IsChild'] = true;
-    expect(component.isChildMode).toBeTrue();
+    expect(component.isChildMode).toBe(true);
     homeService.CurrentMemberInChosedHome!['IsChild'] = false;
   });
 
@@ -116,13 +114,13 @@ describe('PlanListComponent', () => {
     const plan = new Plan();
     plan.AccountID = 1;
     component.onCheckProgress(plan);
-    expect(component.isProgressDlgVisible).toBeTrue();
+    expect(component.isProgressDlgVisible).toBe(true);
     expect(component.currentPlan).toBe(plan);
   });
 
   it('should not set progress modal when plan is null', () => {
     component.onCheckProgress(null as any);
-    expect(component.isProgressDlgVisible).toBeFalse();
+    expect(component.isProgressDlgVisible).toBe(false);
   });
 
   it('should return 0 for currentDifferenceWithTarget when no plan', () => {
@@ -141,7 +139,7 @@ describe('PlanListComponent', () => {
   it('should hide progress modal on handleProgressModalCancel', () => {
     component.isProgressDlgVisible = true;
     component.handleProgressModalCancel();
-    expect(component.isProgressDlgVisible).toBeFalse();
+    expect(component.isProgressDlgVisible).toBe(false);
   });
 
   describe('2. shall work with data', () => {

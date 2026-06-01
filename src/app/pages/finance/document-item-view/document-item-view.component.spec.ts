@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -10,7 +10,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../finance-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -43,7 +43,7 @@ describe('DocumentItemViewComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllDocTypes',
       'fetchAllCurrencies',
       // 'fetchAllAccountCategories',
@@ -137,7 +137,7 @@ describe('DocumentItemViewComponent', () => {
       expect(searchDocItemSpy).not.toHaveBeenCalled();
     }));
 
-    xit('should display error when Service fails on Account', fakeAsync(() => {
+    it.skip('should display error when Service fails on Account', fakeAsync(() => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 

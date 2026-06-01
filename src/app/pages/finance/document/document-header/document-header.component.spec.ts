@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +11,7 @@ import { By } from '@angular/platform-browser';
 import { UIMode } from 'actslib';
 
 import { DocumentHeaderComponent } from './document-header.component';
-import { getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, FormGroupHelper} from '../../../../../testing';
 import { AuthService, UIStatusService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -38,7 +39,7 @@ describe('DocumentHeaderComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const routerSpy = createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
     // declarations moved to imports
@@ -196,7 +197,7 @@ describe('DocumentHeaderComponent', () => {
         // TBD.
       };
       component.registerOnChange(changefn);
-      spyOn(component, 'onChange').and.callThrough();
+      vi.spyOn(component, 'onChange');
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
@@ -434,7 +435,7 @@ describe('DocumentHeaderComponent', () => {
         // TBD.
       };
       component.registerOnChange(changefn);
-      spyOn(component, 'onChange').and.callThrough();
+      vi.spyOn(component, 'onChange');
 
       // Date
       expect(component.onChange).toHaveBeenCalledTimes(0);

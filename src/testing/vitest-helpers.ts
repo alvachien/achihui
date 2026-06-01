@@ -15,18 +15,30 @@ import { vi } from 'vitest';
  * @returns Object with spy methods
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+type JasmineAnd = {
+  returnValue: (val: any) => void;
+  callFake: (fn: (...args: any[]) => any) => void;
+  callThrough: () => void;
+  throwError: (msg: string) => void;
+};
+
+type JasmineSpy<T> = ReturnType<typeof vi.fn<T extends (...args: any) => any ? T : never>> & {
+  and: JasmineAnd;
+};
+
 export function createSpyObj<T extends string>(
   name: string,
   methodNames: T[]
-): Record<T, ReturnType<typeof vi.fn>> & { _name: string } {
+): Record<T, JasmineSpy<any>> & { _name: string } {
   const obj: any = { _name: name };
   for (const methodName of methodNames) {
-    const spy = vi.fn();
+    const spy: JasmineSpy<any> = vi.fn() as any;
     // Add `.and` compatibility layer matching Jasmine's API
-    (spy as any).and = {
+    spy.and = {
       returnValue: (val: any) => spy.mockReturnValue(val),
       callFake: (fn: (...args: any[]) => any) => spy.mockImplementation(fn),
-      callThrough: () => spy,
+      callThrough: () => { /* no-op */ },
       throwError: (msg: string) =>
         spy.mockImplementation(() => {
           throw new Error(msg);
@@ -34,5 +46,5 @@ export function createSpyObj<T extends string>(
     };
     obj[methodName] = spy;
   }
-  return obj as Record<T, ReturnType<typeof vi.fn>> & { _name: string };
+  return obj as Record<T, JasmineSpy<any>> & { _name: string };
 }

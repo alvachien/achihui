@@ -1,13 +1,12 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   discardPeriodicTasks,
   flush,
-  inject,
-} from '@angular/core/testing';
+  inject,} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -15,7 +14,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BlogUIModule } from '../../blog-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { CollectionListComponent } from './collection-list.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
@@ -37,7 +36,7 @@ describe('CollectionListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildBlogCollection();
 
-    storageService = jasmine.createSpyObj('BlogOdataService', ['fetchAllCollections']);
+    storageService = createSpyObj('BlogOdataService', ['fetchAllCollections']);
     fetchAllCollectionsSpy = storageService.fetchAllCollections.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -98,7 +97,7 @@ describe('CollectionListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onDisplay(fakeData.blogCollection[0].id);
@@ -118,7 +117,7 @@ describe('CollectionListComponent', () => {
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onEdit(fakeData.blogCollection[0].id);

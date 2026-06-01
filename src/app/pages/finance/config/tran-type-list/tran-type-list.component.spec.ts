@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { TranTypeListComponent } from './tran-type-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { SafeAny } from '@common/any';
@@ -31,7 +31,7 @@ describe('TranTypeListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildFinConfigData();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllTranTypes']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllTranTypes']);
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());

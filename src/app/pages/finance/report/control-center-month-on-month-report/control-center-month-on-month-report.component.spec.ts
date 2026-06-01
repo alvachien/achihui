@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
@@ -9,14 +9,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -51,7 +49,7 @@ describe('ControlCenterMonthOnMonthReportComponent', () => {
     fakeData.buildFinOrders();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllControlCenters',
       'fetchReportByControlCenterMoM',
     ]);

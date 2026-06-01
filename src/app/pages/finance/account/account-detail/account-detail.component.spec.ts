@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -22,13 +22,11 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { AccountDetailComponent } from './account-detail.component';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
-  asyncError,
-} from '../../../../../testing';
+  asyncError,} from '../../../../../testing';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
@@ -62,7 +60,7 @@ describe('AccountDetailComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'readAccount',
       'fetchAllAssetCategories',

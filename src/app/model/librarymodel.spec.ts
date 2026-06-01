@@ -42,13 +42,13 @@ describe('PersonRole', () => {
   it('case for verify', () => {
     objtbt.ID = 1;
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     objtbt.Name = 'test2';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
     objtbt.Name = '1234567890123456789012345678901';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
   });
   it('case for onSetData', () => {
     objtbt.ID = 2;
@@ -97,13 +97,13 @@ describe('OrganizationType', () => {
   it('case for verify', () => {
     objtbt.ID = 1;
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     objtbt.Name = 'test2';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
     objtbt.Name = '1234567890123456789012345678901';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
   });
   it('case for onSetData', () => {
     objtbt.ID = 2;
@@ -142,12 +142,12 @@ describe('Location', () => {
 
   it('onVerify', () => {
     let vrst = objloc.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objloc.HID = 2;
     objloc.Name = 'test';
     vrst = objloc.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
 
   it('writeJSONobject and onSetdata', () => {
@@ -190,13 +190,13 @@ describe('BookCategory', () => {
   it('case for verify', () => {
     bkctgy.ID = 1;
     let vrst = bkctgy.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     bkctgy.Name = 'test2';
     vrst = bkctgy.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
     bkctgy.Name = '1234567890123456789012345678901';
     vrst = bkctgy.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
   });
 
   it('writeJSONobject and onSetdata', () => {
@@ -238,17 +238,17 @@ describe('Person', () => {
   it('case for verify', () => {
     objtbt.ID = 1;
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     objtbt.NativeName = 'test2';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
   it('case for verify with roles', () => {
     objtbt.ID = 1;
     objtbt.NativeName = 'test2';
     objtbt.Roles.push(new PersonRole());
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.Roles = [];
     let ot: PersonRole = new PersonRole();
@@ -261,7 +261,7 @@ describe('Person', () => {
     ot.ID = 2;
     objtbt.Roles.push(ot);
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.Roles = [];
     ot = new PersonRole();
@@ -274,7 +274,7 @@ describe('Person', () => {
     ot.ID = 3;
     objtbt.Roles.push(ot);
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
   it('case for onSetData without roles', () => {
     const genobj = {
@@ -341,7 +341,7 @@ describe('Person', () => {
     const genobj = objtbt.writeJSONObject();
     expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.NativeName).toEqual(objtbt.NativeName);
-    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.NativeIsChinese).toBe(true);
   });
   it('case for writeJSONObject with role', () => {
     objtbt.ID = 1;
@@ -356,7 +356,7 @@ describe('Person', () => {
     const genobj = objtbt.writeJSONObject();
     expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.NativeName).toEqual(objtbt.NativeName);
-    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.NativeIsChinese).toBe(true);
     expect(genobj.PersonRoles.length).toEqual(1);
     expect(genobj.PersonRoles[0].RoleId).toEqual(2);
   });
@@ -387,17 +387,17 @@ describe('Organization', () => {
   it('case for verify', () => {
     objtbt.ID = 1;
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     objtbt.NativeName = 'test2';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
   it('case for verify with types', () => {
     objtbt.ID = 1;
     objtbt.NativeName = 'test2';
     objtbt.Types.push(new OrganizationType());
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.Types = [];
     let ot: OrganizationType = new OrganizationType();
@@ -410,7 +410,7 @@ describe('Organization', () => {
     ot.ID = 2;
     objtbt.Types.push(ot);
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.Types = [];
     ot = new OrganizationType();
@@ -423,7 +423,7 @@ describe('Organization', () => {
     ot.ID = 3;
     objtbt.Types.push(ot);
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
   it('case for onSetData without types', () => {
     const genobj = {
@@ -492,7 +492,7 @@ describe('Organization', () => {
     const genobj = objtbt.writeJSONObject();
     expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.NativeName).toEqual(objtbt.NativeName);
-    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.NativeIsChinese).toBe(true);
   });
   it('case for writeJSONObject with role', () => {
     objtbt.ID = 1;
@@ -507,7 +507,7 @@ describe('Organization', () => {
     const genobj = objtbt.writeJSONObject();
     expect(genobj.Id).toEqual(objtbt.ID);
     expect(genobj.NativeName).toEqual(objtbt.NativeName);
-    expect(genobj.NativeIsChinese).toBeTrue();
+    expect(genobj.NativeIsChinese).toBe(true);
     expect(genobj.OrganizationTypes.length).toEqual(1);
     expect(genobj.OrganizationTypes[0].TypeId).toEqual(2);
   });
@@ -528,12 +528,12 @@ describe('Book', () => {
 
   it('onVerify', () => {
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.NativeName = 'test';
     objtbt.HID = 2;
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
 
   it('writeJSONObject', () => {
@@ -560,7 +560,7 @@ describe('Book', () => {
     const objdata = objtbt.writeJSONObject();
     expect(objdata.HomeID).toEqual(2);
     expect(objdata.NativeName).toEqual('Test Book 1');
-    expect(objdata.NativeIsChinese).toBeTrue();
+    expect(objdata.NativeIsChinese).toBe(true);
     expect(objdata.PageCount).toEqual(500);
     expect(objdata.BookCategories).toBeInstanceOf(Array);
     expect(objdata.BookCategories.length).toEqual(1);
@@ -701,33 +701,33 @@ describe('BookBorrowRecord', () => {
   it('onVerify', () => {
     objtbt.ID = 1;
     let vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
 
     objtbt.HID = 2;
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
 
     objtbt.BookID = 21;
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
 
     objtbt.User = 'Test';
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
     expect(objtbt.VerifiedMsgs.length).toEqual(0);
 
     objtbt.FromDate = moment();
     objtbt.ToDate = moment().add(-2, 'month');
     vrst = objtbt.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
     expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
 
     objtbt.ToDate = moment().add(1, 'days');
     vrst = objtbt.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
     expect(objtbt.VerifiedMsgs.length).toEqual(0);
   });
 
@@ -749,7 +749,7 @@ describe('BookBorrowRecord', () => {
     expect(objtbt2.BorrowFrom).toEqual(objtbt.BorrowFrom);
     expect(objtbt2.FromDateString).toEqual(objtbt.FromDateString);
     expect(objtbt2.ToDateString).toEqual(objtbt.ToDateString);
-    expect(objtbt2.HasReturned).toBeTrue();
+    expect(objtbt2.HasReturned).toBe(true);
     expect(objtbt2.Comment).toEqual(objtbt.Comment);
   });
 });

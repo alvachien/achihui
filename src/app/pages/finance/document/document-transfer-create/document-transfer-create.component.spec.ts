@@ -1,13 +1,12 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   inject,
   tick,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +21,7 @@ import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentTransferCreateComponent } from './document-transfer-create.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -55,7 +54,7 @@ describe('DocumentTransferCreateComponent', () => {
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeService: Partial<HomeDefOdataService> = {};  
-  const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
+  const odataService: SafeAny = createSpyObj('FinanceOdataService', [
     'fetchAllCurrencies',
     'fetchAllDocTypes',
     'fetchAllAccountCategories',
@@ -413,13 +412,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.valid)
-        .withContext('Expect header form is invalid because amount is missing')
+      expect(component.headerFormGroup.valid, 'Expect header form is invalid because amount is missing')
         .toBeFalsy();
       fixture.detectChanges();
 
       // Click the next button
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
@@ -444,7 +442,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -475,7 +473,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       fixture.detectChanges();
 
       // Click the next button
@@ -501,9 +499,9 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
-      expect(component.headerFormGroup.valid).withContext('Expect header from is valid').toBeTruthy();
-      expect(component.nextButtonEnabled).withContext('Expect next button is enabled').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.valid, 'Expect header from is valid').toBeTruthy();
+      expect(component.nextButtonEnabled, 'Expect next button is enabled').toBeTruthy();
       expect(component.currentStep).toBe(0);
       fixture.detectChanges();
 
@@ -541,7 +539,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -577,7 +575,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -616,7 +614,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -658,12 +656,11 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid)
-        .withContext('Expect a valid header form')
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header form')
         .toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.valid).toBeTruthy('Expect a valid header step');
+      expect(component.headerFormGroup.valid).toBeTruthy();
       fixture.detectChanges();
 
       // Click the next button
@@ -672,7 +669,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Now sit in step 2
-      expect(component.currentStep).toBe(1, 'Expect the stepper is now in From Step');
+      expect(component.currentStep).toBe(1);
       component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -686,7 +683,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.toFormGroup.updateValueAndValidity();
-      expect(component.toFormGroup.valid).toBeFalsy('Expect the from account and to account are not the same');
+      expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl.click();
@@ -709,7 +706,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -754,7 +751,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -800,7 +797,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -842,7 +839,7 @@ describe('DocumentTransferCreateComponent', () => {
       flush();
     }));
 
-    xit('step 3: shall popup dialog for invalid generated doc', fakeAsync(() => {
+    it.skip('step 3: shall popup dialog for invalid generated doc', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -854,7 +851,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -935,7 +932,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -991,7 +988,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Navigation shall work
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       component.onDisplayCreatedDoc();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/1']);
@@ -1014,7 +1011,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -1064,8 +1061,8 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(4);
-      expect(component.isDocPosting).withContext('expect variable isDocPosting is false').toBeFalsy();
-      expect(component.docIdCreated).withContext('expect variable docIdCreated is null').toBeFalsy();
+      expect(component.isDocPosting, 'expect variable isDocPosting is false').toBeFalsy();
+      expect(component.docIdCreated, 'expect variable docIdCreated is null').toBeFalsy();
       expect(component.docPostingFailed).toEqual('failed in creation');
 
       flush();

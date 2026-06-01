@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks} from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +10,11 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { EventUIModule } from '../../event-ui.module';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,
-} from '../../../../../testing';
+  ActivatedRouteUrlStub,} from '../../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, RecurEvent } from '../../../../model';
 import { RecurEventDetailComponent } from './recur-event-detail.component';
@@ -41,7 +39,7 @@ describe('RecurEventDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('EventStorageService', ['readRecurEvent', 'createGeneralEvent']);
+    storageService = createSpyObj('EventStorageService', ['readRecurEvent', 'createGeneralEvent']);
     readRecurEventSpy = storageService.readRecurEvent.and.returnValue(of({}));
     createGeneralEventSpy = storageService.createGeneralEvent.and.returnValue(of({}));
     homeService = {
@@ -141,7 +139,7 @@ describe('RecurEventDetailComponent', () => {
 
       expect(component).toBeTruthy();
 
-      expect(component.isEditable).toBeFalse();
+      expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nameControl')?.value;
       expect(nname).toEqual(nobj.Name);
 

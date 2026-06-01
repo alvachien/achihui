@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -11,15 +11,13 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -73,7 +71,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -451,7 +449,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       flush();
     }));
 
-    xit('step 0: shall popup error dialog if failed to read loan account', fakeAsync(() => {
+    it.skip('step 0: shall popup error dialog if failed to read loan account', fakeAsync(() => {
       readAccountSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
@@ -503,7 +501,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       flush();
     }));
 
-    xit('step 1: items', fakeAsync(() => {
+    it.skip('step 1: items', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -548,7 +546,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // flush();
     }));
 
-    xit('step 2: confirm', fakeAsync(() => {
+    it.skip('step 2: confirm', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -599,7 +597,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // flush();
     }));
 
-    xit('step 3: result with success', fakeAsync(() => {
+    it.skip('step 3: result with success', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

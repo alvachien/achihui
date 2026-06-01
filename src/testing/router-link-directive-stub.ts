@@ -1,4 +1,4 @@
-import { Input, Directive } from '@angular/core';
+import { input, Directive } from '@angular/core';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
@@ -10,10 +10,10 @@ import { Input, Directive } from '@angular/core';
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class RouterLinkDirectiveStub {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  @Input('routerLink') linkParams: any;
-  navigatedTo = null;
+  linkParams = input<any>();
+  navigatedTo: any = null;
 
   onClick(): void {
-    this.navigatedTo = this.linkParams;
+    this.navigatedTo = this.linkParams();
   }
 }

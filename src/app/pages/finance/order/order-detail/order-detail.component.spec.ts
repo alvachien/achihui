@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -11,15 +11,13 @@ import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { OrderDetailComponent } from './order-detail.component';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -63,7 +61,7 @@ describe('OrderDetailComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllControlCenters',
       'readOrder',
       'createOrder',
@@ -319,13 +317,13 @@ describe('OrderDetailComponent', () => {
 
       // Do the save
       component.onSubmit();
-      expect(component.isOrderSubmitting).toBeTrue();
+      expect(component.isOrderSubmitting).toBe(true);
       expect(createOrderSpy).toHaveBeenCalled();
 
       tick();
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.isOrderSubmitted).toBe(true);
       expect(component.orderIdCreated).toBeTruthy();
       expect(component.orderSavedFailed).toBeFalsy();
 
@@ -393,7 +391,7 @@ describe('OrderDetailComponent', () => {
 
       // Do the save
       component.onSubmit();
-      expect(component.isOrderSubmitting).toBeTrue();
+      expect(component.isOrderSubmitting).toBe(true);
       expect(createOrderSpy).toHaveBeenCalled();
 
       tick();
@@ -401,7 +399,7 @@ describe('OrderDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.isOrderSubmitted).toBe(true);
       expect(component.orderIdCreated).toBeFalsy();
       expect(component.orderSavedFailed).toBeTruthy();
 
@@ -566,17 +564,17 @@ describe('OrderDetailComponent', () => {
       component.detailFormGroup.get('nameControl')?.setValue('test2');
       component.detailFormGroup.get('nameControl')?.markAsDirty();
 
-      expect(component.saveButtonEnabled).toBeTrue();
+      expect(component.saveButtonEnabled).toBe(true);
 
       // Do the save
       component.onSubmit();
-      expect(component.isOrderSubmitting).toBeTrue();
+      expect(component.isOrderSubmitting).toBe(true);
       expect(changeOrderByPatchSpy).toHaveBeenCalled();
 
       tick();
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.isOrderSubmitted).toBe(true);
       //expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeFalsy();
 
@@ -600,11 +598,11 @@ describe('OrderDetailComponent', () => {
       component.detailFormGroup.get('nameControl')?.setValue('test2');
       component.detailFormGroup.get('nameControl')?.markAsDirty();
 
-      expect(component.saveButtonEnabled).toBeTrue();
+      expect(component.saveButtonEnabled).toBe(true);
 
       // Do the save
       component.onSubmit();
-      expect(component.isOrderSubmitting).toBeTrue();
+      expect(component.isOrderSubmitting).toBe(true);
       expect(changeOrderByPatchSpy).toHaveBeenCalled();
 
       tick();
@@ -612,7 +610,7 @@ describe('OrderDetailComponent', () => {
       tick(); // nz-spin
       fixture.detectChanges();
       expect(component.isOrderSubmitting).toBeFalsy();
-      expect(component.isOrderSubmitted).toBeTrue();
+      expect(component.isOrderSubmitted).toBe(true);
       expect(component.orderIdCreated).toBeUndefined();
       expect(component.orderSavedFailed).toBeTruthy();
 

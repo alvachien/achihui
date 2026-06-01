@@ -23,7 +23,7 @@ describe('isOverviewDateInScope', () => {
 
   it('shall work', () => {
     const inscope = isOverviewDateInScope(dt, OverviewScopeEnum.All);
-    expect(inscope).toBeTrue();
+    expect(inscope).toBe(true);
   });
 });
 
@@ -45,15 +45,15 @@ describe('MultipleNamesObject', () => {
   it('onVerify', () => {
     testobj.ChineseName = 'aaa';
     let vrst = testobj.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
 
     testobj.onInit();
     vrst = testobj.onVerify();
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     testobj.NativeName = 'aaa';
     vrst = testobj.onVerify();
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
   });
 
   it('writeObject shall work', () => {
@@ -63,7 +63,7 @@ describe('MultipleNamesObject', () => {
     expect(writeobj).toBeTruthy();
     expect(writeobj.ChineseName).toEqual(testobj.ChineseName);
     expect(writeobj.NativeName).toEqual(testobj.NativeName);
-    expect(writeobj.NativeIsChinese).toBeFalse();
+    expect(writeobj.NativeIsChinese).toBe(false);
 
     const testobj2: MultipleNamesObject = new MultipleNamesObject();
     testobj2.onSetData(writeobj);

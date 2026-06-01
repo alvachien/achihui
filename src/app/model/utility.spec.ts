@@ -52,13 +52,13 @@ describe('Unit test for ModelUtility in Model', () => {
   it('#7. CheckStringLength', () => {
     const str = 'adsaf';
 
-    expect(ModelUtility.CheckStringLength(str, 3, 15)).toBeTrue();
-    expect(ModelUtility.CheckStringLength(str, 1, 3)).toBeFalse();
+    expect(ModelUtility.CheckStringLength(str, 3, 15)).toBe(true);
+    expect(ModelUtility.CheckStringLength(str, 1, 3)).toBe(false);
   });
 
   it('#8. hasDuplicatesInStringArray', () => {
-    expect(ModelUtility.hasDuplicatesInStringArray('adsdae')).toBeTrue();
-    expect(ModelUtility.hasDuplicatesInStringArray('abcewf')).toBeFalse();
+    expect(ModelUtility.hasDuplicatesInStringArray('adsdae')).toBe(true);
+    expect(ModelUtility.hasDuplicatesInStringArray('abcewf')).toBe(false);
   });
 
   it('#9. prefixInteger', () => {

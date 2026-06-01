@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -13,7 +14,7 @@ import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -43,7 +44,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['calcADPTmpDocs']);
+    storageService = createSpyObj('FinanceOdataService', ['calcADPTmpDocs']);
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -100,8 +101,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.dirty).toBeFalse();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.dirty).toBe(false);
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     flush();
   }));
@@ -122,8 +123,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testcomponent.formGroup.valid).toBeFalse();
-    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
+    expect(testcomponent.extraComponent?.canCalcTmpDocs).toBe(false);
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
@@ -154,7 +155,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
@@ -186,7 +187,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
@@ -217,7 +218,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     flush();
   }));
@@ -242,10 +243,10 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     testcomponent.extraComponent?.onGenerateTmpDocs();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     flush();
   }));
@@ -282,7 +283,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-    expect(testcomponent.formGroup.valid).toBeFalse();
+    expect(testcomponent.formGroup.valid).toBe(false);
 
     testcomponent.extraComponent?.onGenerateTmpDocs();
     flush();
@@ -315,7 +316,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
@@ -359,7 +360,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
       expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
       expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
-      expect(testcomponent.formGroup.valid).toBeFalse();
+      expect(testcomponent.formGroup.valid).toBe(false);
 
       testcomponent.extraComponent?.onGenerateTmpDocs();
       flush();

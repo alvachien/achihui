@@ -1,13 +1,11 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   inject,
   tick,
   fakeAsync,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,7 +21,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -72,7 +70,7 @@ describe('DocumentNormalCreateComponent', () => {
     const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',
@@ -175,8 +173,8 @@ describe('DocumentNormalCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.headerForm.get('headerControl')).toBeTruthy('Expect header control has been initialized');
-      expect(component.itemsForm.get('itemControl')).toBeTruthy('Expect item control has been initialized');
+      expect(component.headerForm.get('headerControl')).toBeTruthy();
+      expect(component.itemsForm.get('itemControl')).toBeTruthy();
 
       flush();
       fixture.detectChanges();
@@ -185,25 +183,25 @@ describe('DocumentNormalCreateComponent', () => {
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
 
-    xit('step 0: should not go to next page if header is not valid', fakeAsync(() => {
+    it.skip('step 0: should not go to next page if header is not valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
       // Shall not allow go the next page
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
 
-    xit('step 0: should go to next page if header is valid for document with local currency', fakeAsync(() => {
+    it.skip('step 0: should go to next page if header is valid for document with local currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Shall not allow go the next page
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
@@ -221,13 +219,13 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
     }));
 
-    xit('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
+    it.skip('step 0: should go to next page if header is valid for document with foreign currency', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Shall not allow go the next page
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
@@ -250,13 +248,13 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
     }));
 
-    xit('step 1: should not go to next page if item is invalid', fakeAsync(() => {
+    it.skip('step 1: should not go to next page if item is invalid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Shall not allow go the next page
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
       docheader.TranDate = moment('2020-02-02', momentDateFormat);
@@ -271,7 +269,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.next();
       expect(component.currentStep).toEqual(1);
 
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -315,7 +313,7 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
     }));
 
-    xit('step 2: should popup an error dialog if verification failed on generated object', fakeAsync(() => {
+    it.skip('step 2: should popup an error dialog if verification failed on generated object', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -446,7 +444,7 @@ describe('DocumentNormalCreateComponent', () => {
       discardPeriodicTasks();
     }));
 
-    xit('step 3: should save document for base currency case', fakeAsync(() => {
+    it.skip('step 3: should save document for base currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -596,8 +594,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected dialog to show the error message: Currency service failed')
+      expect(messageElement.textContent, 'Expected dialog to show the error message: Currency service failed')
         .toContain('Currency service failed');
 
       // Close the dialog
@@ -621,8 +618,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Account category service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Account category service failed')
         .toContain('Account category service failed');
 
       // Close the dialog
@@ -646,8 +642,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Doc type service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Doc type service failed')
         .toContain('Doc type service failed');
 
       // Close the dialog
@@ -671,8 +666,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Tran type service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Tran type service failed')
         .toContain('Tran type service failed');
 
       // Close the dialog
@@ -696,8 +690,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Account service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Account service failed')
         .toContain('Account service failed');
 
       // Close the dialog
@@ -721,8 +714,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Control center service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Control center service failed')
         .toContain('Control center service failed');
 
       // Close the dialog
@@ -748,8 +740,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
-      expect(messageElement.textContent)
-        .withContext('Expected snack bar to show the error message: Order service failed')
+      expect(messageElement.textContent, 'Expected snack bar to show the error message: Order service failed')
         .toContain('Order service failed');
 
       // Close the dialog

@@ -1,4 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,21 +37,21 @@ describe('DocumentNormalMassCreateItemComponent', () => {
   });
 
   // it('event createItemClicked shall work', () => {
-  //   spyOn(component.createItemClicked, 'emit');
+  //   vi.spyOn(component.createItemClicked, 'emit');
 
   //   component.fireCreateItemEvent();
   //   expect(component.createItemClicked.emit).toHaveBeenCalledWith();
   // });
 
   // it('event copyItemClicked shall work', () => {
-  //   spyOn(component.copyItemClicked, 'emit');
+  //   vi.spyOn(component.copyItemClicked, 'emit');
 
   //   component.fireCopyItemEvent();
   //   expect(component.copyItemClicked.emit).toHaveBeenCalledWith();
   // });
 
   // it('event removeItemClicked shall work', () => {
-  //   spyOn(component.removeItemClicked, 'emit');
+  //   vi.spyOn(component.removeItemClicked, 'emit');
 
   //   component.fireRemoveItemEvent();
   //   expect(component.removeItemClicked.emit).toHaveBeenCalledWith();

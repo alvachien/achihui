@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
 import moment from 'moment';
@@ -49,7 +49,7 @@ describe('DocumentDetailComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -83,7 +83,7 @@ describe('DocumentDetailComponent', () => {
   });
 
   beforeEach(waitForAsync(() => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const routerSpy = createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({

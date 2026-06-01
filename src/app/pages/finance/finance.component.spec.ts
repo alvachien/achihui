@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +11,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import moment from 'moment';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
 import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
 import { FinanceComponent } from './finance.component';
@@ -47,7 +46,7 @@ describe('FinanceComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService: SafeAny = createSpyObj('FinanceOdataService', [
       'fetchAllDPTmpDocs',
       'fetchAllLoanTmpDocs',
       'createDocumentFromDPTemplate',
@@ -181,7 +180,7 @@ describe('FinanceComponent', () => {
 
       // Post the Loan doc
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
       component.doPostLoanDoc(loan1);
 
       expect(routerstub.navigate).toHaveBeenCalled();

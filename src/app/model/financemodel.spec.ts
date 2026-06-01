@@ -122,7 +122,7 @@ describe('AccountCategory', () => {
     instance.AssetFlag = true;
     instance.Comment = 'test';
     instance.onInit();
-    expect(instance.AssetFlag).toBeFalse();
+    expect(instance.AssetFlag).toBe(false);
     expect(instance.Comment).toBeNull();
   });
 
@@ -471,7 +471,7 @@ describe('AccountExtraLoan', () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  xit('#5. isAccountValid', () => {
+  it.skip('#5. isAccountValid', () => {
     expect(instance.isAccountValid).toBeFalsy();
     instance.InterestFree = true;
     instance.startDate = moment();
@@ -1515,35 +1515,35 @@ describe('FinanceNormalDocItemMassCreate', () => {
 
   it('isValid', () => {
     let vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.desp = 'test';
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.accountID = 2;
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.tranType = 21;
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.tranAmount = 213;
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.tranCurrency = 'USD';
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
 
     objtbt.controlCenterID = 123;
     vrst = objtbt.isValid;
-    expect(vrst).toBeTrue();
+    expect(vrst).toBe(true);
 
     objtbt.orderID = 123;
     vrst = objtbt.isValid;
-    expect(vrst).toBeFalse();
+    expect(vrst).toBe(false);
   });
 });
 
@@ -1615,7 +1615,7 @@ describe('FinanceReportEntryByAccountAndExpense', () => {
       IsExpense: false,
       Balance: 100,
     });
-    expect(objtbt.IsExpense).toBeFalse();
+    expect(objtbt.IsExpense).toBe(false);
     expect(objtbt.Balance).toEqual(100);
   });
 });
@@ -1839,7 +1839,7 @@ describe('TranTypeReport', () => {
       tranAmount: 330,
     });
     expect(objtbt.TranAmount).toEqual(330);
-    expect(objtbt.ExpenseFlag).toBeTrue();
+    expect(objtbt.ExpenseFlag).toBe(true);
     expect(objtbt.TranTypeName).toEqual('Test');
     expect(objtbt.TranType).toEqual(24);
   });

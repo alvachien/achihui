@@ -41,7 +41,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
       </nz-form-control>
     </nz-form-item>
   </form>`,
-    standalone: false
+    standalone: true,
+    imports: [ReactiveFormsModule, NzFormModule, MarkdownEditorComponent],
 })
 export class MarkdownEditorTestFormComponent {
   public formGrp: UntypedFormGroup;
@@ -159,7 +160,7 @@ describe('MarkdownEditorComponent', () => {
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized
     // .../components/code-editor/code-editor.spec.ts
-    xit('edit mode with value change', fakeAsync(() => {
+    it.skip('edit mode with value change', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();

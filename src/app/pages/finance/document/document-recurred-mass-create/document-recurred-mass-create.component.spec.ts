@@ -1,13 +1,11 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   inject,
   tick,
   fakeAsync,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,14 +17,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import moment from 'moment';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView, momentDateFormat } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -81,7 +77,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
     //const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const odataService = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService = createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllAccountCategories',
@@ -610,8 +606,8 @@ describe('DocumentRecurredMassCreateComponent', () => {
       tick();
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -651,9 +647,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.defaultValueFormGroup.get('despControl')?.setValue('test');
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -693,9 +689,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.defaultValueFormGroup.get('despControl')?.setValue('test');
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -735,9 +731,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.defaultValueFormGroup.get('despControl')?.setValue('test');
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -777,9 +773,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.defaultValueFormGroup.get('despControl')?.setValue(undefined);
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       flush();
     }));
@@ -820,12 +816,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
       component.defaultValueFormGroup.get('ccControl')?.setValue(undefined);
       component.defaultValueFormGroup.get('orderControl')?.setValue(undefined);
       component.defaultValueFormGroup.updateValueAndValidity();
-      expect(component.defaultValueFormGroup.valid).toBeFalse();
+      expect(component.defaultValueFormGroup.valid).toBe(false);
 
       component.defaultValueFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.defaultValueFormGroup.updateValueAndValidity();

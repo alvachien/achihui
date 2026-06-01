@@ -1,13 +1,11 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   flush,
   inject,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -25,13 +23,11 @@ import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 import { DocumentDownpaymentCreateComponent } from './document-downpayment-create.component';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
-  asyncError,
-} from '../../../../../testing';
+  asyncError,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -75,7 +71,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllAssetCategories',
       'fetchAllDocTypes',
@@ -212,7 +208,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       flush();
@@ -235,7 +231,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -283,7 +279,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       // Amount
@@ -331,7 +327,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -379,7 +375,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -435,7 +431,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -491,7 +487,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -558,7 +554,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -613,7 +609,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       flush();
     }));
 
-    xit('setp 2: popup dialog if verification failed in generated object', fakeAsync(() => {
+    it.skip('setp 2: popup dialog if verification failed in generated object', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -630,7 +626,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -738,7 +734,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
@@ -823,7 +819,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
       // Account
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);

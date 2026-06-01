@@ -1,13 +1,11 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   flush,
   inject,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -24,7 +22,7 @@ import { AccountExtraAssetComponent } from '../../account/account-extra-asset';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -81,7 +79,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       return val.CategoryId === financeAccountCategoryAsset;
     });
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllAssetCategories',
       'fetchAllDocTypes',
@@ -228,7 +226,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       flush();
@@ -254,7 +252,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account - missing
       // Amount
@@ -304,7 +302,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -354,7 +352,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -404,7 +402,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -458,7 +456,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -487,7 +485,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();
@@ -539,10 +537,10 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       // No items
-      expect(component.itemFormGroup.valid).toBeFalse();
+      expect(component.itemFormGroup.valid).toBe(false);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add items
@@ -563,7 +561,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       tick();
       fixture.detectChanges();
 
-      expect(component.itemFormGroup.valid).toBeTrue();
+      expect(component.itemFormGroup.valid).toBe(true);
       expect(component.nextButtonEnabled).toBeTruthy();
 
       flush();
@@ -612,7 +610,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 1.
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       const aritems: DocumentItem[] = [];
       const aritem: DocumentItem = new DocumentItem();
@@ -704,7 +702,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       flush();
     }));
 
-    xit('step 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
+    it.skip('step 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
 
       fixture.detectChanges();
@@ -985,7 +983,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       tick();
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -1014,7 +1012,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.disabled).toBeTrue();
+      expect(component.itemFormGroup.disabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();

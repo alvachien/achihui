@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { DebugElement } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +17,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
 
 import { DocumentItemsComponent } from './document-items.component';
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AuthService, UIStatusService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -55,7 +56,7 @@ describe('DocumentItemsComponent', () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const routerSpy = createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
     // declarations moved to imports
@@ -82,7 +83,7 @@ describe('DocumentItemsComponent', () => {
     // fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it.skip('should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -110,7 +111,7 @@ describe('DocumentItemsComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    xit('shall be invalid if no items', fakeAsync(() => {
+    it.skip('shall be invalid if no items', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -119,7 +120,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.noitems).toBeTruthy();
     }));
-    xit('shall be invalid if items without account', fakeAsync(() => {
+    it.skip('shall be invalid if items without account', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -135,9 +136,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithoutaccount).toBeTruthy('Expect itemwithoutaccount is true');
+      expect(err.itemwithoutaccount).toBeTruthy();
     }));
-    xit('shall be invalid if items without tran type', fakeAsync(() => {
+    it.skip('shall be invalid if items without tran type', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -154,9 +155,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithouttrantype).toBeTruthy('Expect itemwithouttrantype is true');
+      expect(err.itemwithouttrantype).toBeTruthy();
     }));
-    xit('shall be invalid if items without amount', fakeAsync(() => {
+    it.skip('shall be invalid if items without amount', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -173,9 +174,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithoutamount).toBeTruthy('Expect itemwithoutamount is true');
+      expect(err.itemwithoutamount).toBeTruthy();
     }));
-    xit('shall be invalid if items without cost object', fakeAsync(() => {
+    it.skip('shall be invalid if items without cost object', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -192,9 +193,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
+      expect(err.itemwithwrongcostobject).toBeTruthy();
     }));
-    xit('shall be invalid if items have cost center and order both', fakeAsync(() => {
+    it.skip('shall be invalid if items have cost center and order both', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -212,9 +213,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithwrongcostobject).toBeTruthy('Expect itemwithwrongcostobject is true');
+      expect(err.itemwithwrongcostobject).toBeTruthy();
     }));
-    xit('shall be invalid if items without desp', fakeAsync(() => {
+    it.skip('shall be invalid if items without desp', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -231,9 +232,9 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
-      expect(err.itemwithoutdesp).toBeTruthy('Expect itemwithoutdesp is true');
+      expect(err.itemwithoutdesp).toBeTruthy();
     }));
-    xit('shall remove item on deletion', fakeAsync(() => {
+    it.skip('shall remove item on deletion', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -254,7 +255,7 @@ describe('DocumentItemsComponent', () => {
 
       expect(component.listItems.length).toEqual(0);
     }));
-    xit('shall be valid in valid case', fakeAsync(() => {
+    it.skip('shall be valid in valid case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -272,7 +273,7 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeNull();
     }));
-    xit('createItem method', fakeAsync(() => {
+    it.skip('createItem method', fakeAsync(() => {
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -384,12 +385,12 @@ describe('DocumentItemsComponent', () => {
       expect(component.listItems[0].Desp).toEqual('Test');
       expect(component.listItems[0].TranAmount).toEqual(20);
     }));
-    xit('onChange method', fakeAsync(() => {
+    it.skip('onChange method', fakeAsync(() => {
       const changefn = () => {
         // TBD.
       };
       component.registerOnChange(changefn);
-      spyOn(component, 'onChange').and.callThrough();
+      vi.spyOn(component, 'onChange');
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit

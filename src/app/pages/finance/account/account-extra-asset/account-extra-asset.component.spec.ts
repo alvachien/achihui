@@ -1,4 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { Component, ViewChild } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
@@ -66,8 +67,8 @@ describe('AccountExtraAssetComponent', () => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
     fixture.detectChanges();
-    expect(testingComponent.formGroup.dirty).toBeFalse();
-    expect(testingComponent.formGroup.valid).toBeFalse();
+    expect(testingComponent.formGroup.dirty).toBe(false);
+    expect(testingComponent.formGroup.valid).toBe(false);
   }));
 
   it('shall work with data 2: input category', fakeAsync(() => {
@@ -84,7 +85,7 @@ describe('AccountExtraAssetComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(testingComponent.formGroup.valid).toBeFalse();
+    expect(testingComponent.formGroup.valid).toBe(false);
 
     const astval2 = testingComponent.formGroup.get('infoControl')?.value as AccountExtraAsset;
     expect(astval2.CategoryID).toBeTruthy();
@@ -165,7 +166,7 @@ describe('AccountExtraAssetComponent', () => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     testingComponent.assetComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);

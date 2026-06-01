@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +7,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { RecurEventListComponent } from './recur-event-list.component';
@@ -30,7 +30,7 @@ describe('RecurEventListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('EventStorageService', ['fetchRecurEvents']);
+    storageService = createSpyObj('EventStorageService', ['fetchRecurEvents']);
     fetchRecurEventsSpy = storageService.fetchRecurEvents.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,

@@ -1,5 +1,7 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClientTesting} from '@angular/common/http/testing';
+import { createSpyObj } from 'testing';
+import { vi } from 'vitest';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,7 +40,7 @@ describe('PersonSelectionDlgComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    libraryService = jasmine.createSpyObj('LibraryStorageService', ['fetchAllPersons']);
+    libraryService = createSpyObj('LibraryStorageService', ['fetchAllPersons']);
   });
 
   beforeEach(async () => {
@@ -97,24 +99,24 @@ describe('PersonSelectionDlgComponent', () => {
   it('should add id to set when checked is true', () => {
     component.setOfCheckedId = new Set();
     component.updateCheckedSet(1, true);
-    expect(component.setOfCheckedId.has(1)).toBeTrue();
+    expect(component.setOfCheckedId.has(1)).toBe(true);
   });
 
   it('should remove id from set when checked is false', () => {
     component.setOfCheckedId = new Set([1, 2]);
     component.updateCheckedSet(1, false);
-    expect(component.setOfCheckedId.has(1)).toBeFalse();
+    expect(component.setOfCheckedId.has(1)).toBe(false);
   });
 
   it('should refresh checked status on current page data change', () => {
     component.setOfCheckedId = new Set();
     component.listOfCurrentPagePerson = mockPersons;
     component.onCurrentPageDataChange(mockPersons);
-    expect(component.checked).toBeFalse();
+    expect(component.checked).toBe(false);
   });
 
   it('should call updateCheckedSet on item checked', () => {
-    spyOn(component, 'updateCheckedSet');
+    vi.spyOn(component, 'updateCheckedSet');
     component.onItemChecked(1, true);
     expect(component.updateCheckedSet).toHaveBeenCalledWith(1, true);
   });
@@ -124,7 +126,7 @@ describe('PersonSelectionDlgComponent', () => {
     component.listOfCurrentPagePerson = mockPersons;
     component.onAllChecked(true);
     expect(component.setOfCheckedId.size).toBe(2);
-    expect(component.checked).toBeTrue();
+    expect(component.checked).toBe(true);
   });
 
   it('should uncheck all items on all unchecked', () => {

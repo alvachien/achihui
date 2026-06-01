@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { DocTypeListComponent } from './doc-type-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -32,7 +32,7 @@ describe('DocTypeListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildFinConfigData();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllDocTypes']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllDocTypes']);
     fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());

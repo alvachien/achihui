@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { Router } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -22,7 +23,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefListComponent } from './home-def-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../testing';
 import { AuthService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -48,7 +49,7 @@ describe('HomeDefListComponent', () => {
     authServiceStub = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     //uiServiceStub = {};
-    homeService = jasmine.createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
+    homeService = createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
   });
@@ -107,7 +108,7 @@ describe('HomeDefListComponent', () => {
 
     beforeEach(() => {
       routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
     });

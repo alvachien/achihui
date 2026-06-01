@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,13 +13,11 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,
-} from '../../../../../testing';
+  ActivatedRouteUrlStub,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
 import { UserAuthInfo, Person } from '../../../../model';
 import { PersonDetailComponent } from './person-detail.component';
@@ -49,7 +48,7 @@ describe('PersonDetailComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildPersonRoles();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
+    storageService = createSpyObj('LibraryStorageService', [
       'fetchAllPersonRoles',
       'readPerson',
       'createPerson',
@@ -137,13 +136,13 @@ describe('PersonDetailComponent', () => {
       component.detailFormGroup.get('detailControl')?.setValue('Test 1 Comment');
       component.detailFormGroup.markAsDirty();
 
-      expect(component.detailFormGroup.valid).toBeTrue();
+      expect(component.detailFormGroup.valid).toBe(true);
 
       // Submit
       component.onSave();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       tick();
       fixture.detectChanges();
@@ -177,7 +176,7 @@ describe('PersonDetailComponent', () => {
 
       expect(component).toBeTruthy();
 
-      expect(component.isEditable).toBeFalse();
+      expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nperson.NativeName);
 
@@ -268,7 +267,7 @@ describe('PersonDetailComponent', () => {
       component.detailFormGroup.get('detailControl')?.setValue('Test 1 Comment');
       component.detailFormGroup.markAsDirty();
 
-      expect(component.detailFormGroup.valid).toBeTrue();
+      expect(component.detailFormGroup.valid).toBe(true);
 
       // Submit
       component.onSave();

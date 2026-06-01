@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +7,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { PersonListComponent } from './person-list.component';
@@ -31,7 +31,7 @@ describe('PersonListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', ['fetchAllPersons']);
+    storageService = createSpyObj('LibraryStorageService', ['fetchAllPersons']);
     fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,

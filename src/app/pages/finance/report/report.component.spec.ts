@@ -1,13 +1,12 @@
-import {
-  waitForAsync,
+import { waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick,
   inject,
   flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+  discardPeriodicTasks,} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -20,14 +19,12 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../services';
 import {
   UserAuthInfo,
@@ -66,7 +63,7 @@ describe('ReportComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       // 'fetchAllReportsByAccount',
       // 'fetchAllReportsByControlCenter',
       // 'fetchAllReportsByOrder',
@@ -240,7 +237,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to account', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToAccount();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -249,7 +246,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to accountmom', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToAccountMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -258,7 +255,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to tran type mom', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToTranTypeMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -267,7 +264,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to control center', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToControlCenter();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -276,7 +273,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to control center MOM', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToControlCenterMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -285,7 +282,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to order', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToOrder();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -294,7 +291,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to tran type', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToTranType();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -303,7 +300,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to cash', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToCash();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -312,7 +309,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to cash MOM', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToCashMoM();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -321,7 +318,7 @@ describe('ReportComponent', () => {
 
   it('drilldown to income statement', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onDrillDownToStatementOfIncomeExpenseMoM();
     expect(routerstub.navigate).toHaveBeenCalled();

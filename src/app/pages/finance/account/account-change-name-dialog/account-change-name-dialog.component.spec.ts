@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AccountChangeNameDialogComponent } from './account-change-name-dialog.component';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { UserAuthInfo } from '@model/index';
@@ -33,7 +34,7 @@ describe('AccountChangeNameDialogComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['changeAccountByPatch']);
+    storageService = createSpyObj('FinanceOdataService', ['changeAccountByPatch']);
     changeAccountByPatchSpy = storageService.changeAccountByPatch.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
@@ -91,13 +92,13 @@ describe('AccountChangeNameDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when form is invalid', () => {
     component.headerFormGroup.get('nameControl')?.setValue('');
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('nameControl')?.setValue('Valid Name');
     component.isSubmitting = true;
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeAccountByPatch on valid submit', () => {
@@ -109,7 +110,7 @@ describe('AccountChangeNameDialogComponent', () => {
   });
 
   it('should call modal.destroy on cancel', () => {
-    const destroySpy = spyOn(TestBed.inject(NzModalRef), 'destroy');
+    const destroySpy = vi.spyOn(TestBed.inject(NzModalRef), 'destroy');
     component.onCancel();
     expect(destroySpy).toHaveBeenCalled();
   });
@@ -122,6 +123,6 @@ describe('AccountChangeNameDialogComponent', () => {
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBeFalse();
+    expect(component.isSubmitting).toBe(false);
   });
 });
