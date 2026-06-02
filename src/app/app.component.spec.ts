@@ -1,13 +1,5 @@
 import { vi } from 'vitest';
-import {
-  TestBed,
-  waitForAsync,
-  ComponentFixture,
-  fakeAsync,
-  tick,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
@@ -49,7 +41,7 @@ describe('AppComponent', () => {
     };
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [RouterTestingModule,
@@ -70,7 +62,7 @@ describe('AppComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
@@ -84,21 +76,18 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('shall work with data', fakeAsync(() => {
+  it('shall work with data', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
-
-    discardPeriodicTasks();
-
     expect(component.isLoggedIn).toBeTruthy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('doLogon shall work', fakeAsync(() => {
+  it('doLogon shall work', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     vi.spyOn(authServiceStub, 'doLogin');
@@ -109,14 +98,12 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogin).toHaveBeenCalledTimes(1);
     // }
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-    discardPeriodicTasks();
-    flush();
-  }));
-
-  it('doLogout shall work', fakeAsync(() => {
+  it('doLogout shall work', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     vi.spyOn(authServiceStub, 'doLogout');
@@ -126,22 +113,18 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogout).toHaveBeenCalledTimes(1);
     // }
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-    discardPeriodicTasks();
-    flush();
-  }));
-
-  it('switch language shall work', fakeAsync(() => {
+  it('switch language shall work', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     component.switchLanguage('zh_CN');
     expect(component).toBeTruthy();
     component.switchLanguage('en_US');
     expect(component).toBeTruthy();
-
-    discardPeriodicTasks();
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 });

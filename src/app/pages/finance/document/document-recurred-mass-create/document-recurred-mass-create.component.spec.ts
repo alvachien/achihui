@@ -1,11 +1,4 @@
-import { waitForAsync,
-  ComponentFixture,
-  TestBed,
-  inject,
-  tick,
-  fakeAsync,
-  flush,
-  discardPeriodicTasks,} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -71,7 +64,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
     fakeData.buildFinOrders();
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     //const uiServiceStub: Partial<UIStatusService> = {};
@@ -144,7 +137,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentRecurredMassCreateComponent);
@@ -246,179 +239,178 @@ describe('DocumentRecurredMassCreateComponent', () => {
       );
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should popup error dialog if fetchAllAccountCategories fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllAccountCategories fails', async () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllTranTypes fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllTranTypes fails', async () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllAccounts fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllAccounts fails', async () => {
       fetchAllAccountsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllControlCenters fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllControlCenters fails', async () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllOrders fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllOrders fails', async () => {
       fetchAllOrdersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllCurrencies fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllCurrencies fails', async () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllDocTypes fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllDocTypes fails', async () => {
       fetchAllDocTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      //flush();
-      tick();
+      //await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('Step 0: search page without input', fakeAsync(() => {
+    it('Step 0: search page without input', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -426,12 +418,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 0: frequency is manadatory', fakeAsync(() => {
+    it('Step 0: frequency is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
@@ -447,12 +439,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 0: Account is manadatory', fakeAsync(() => {
+    it('Step 0: Account is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
@@ -469,14 +461,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 1: Error dialog if getRepeatedDates failed', fakeAsync(() => {
+    it('Step 1: Error dialog if getRepeatedDates failed', async () => {
       getRepeatedDatesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
@@ -491,30 +483,30 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 1: Error dialog if searchDocItem failed', fakeAsync(() => {
+    it('Step 1: Error dialog if searchDocItem failed', async () => {
       searchDocItemSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
@@ -529,28 +521,28 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 1: Existing document items', fakeAsync(() => {
+    it('Step 1: Existing document items', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
@@ -565,7 +557,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
@@ -573,14 +565,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.listExistingDocItems.length).toBeGreaterThan(0);
 
       expect(component.nextButtonEnabled).toBeTruthy();
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('Step 2: Default value', fakeAsync(() => {
+    it('Step 2: Default value', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -596,25 +586,25 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
       expect(component.defaultValueFormGroup.valid).toBe(false);
       expect(component.nextButtonEnabled).toBe(false);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 2: Default page account is manadatory', fakeAsync(() => {
+    it('Step 2: Default page account is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -630,14 +620,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -651,12 +641,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 2: Default page tran type is manadatory', fakeAsync(() => {
+    it('Step 2: Default page tran type is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -672,14 +662,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -693,12 +683,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 2: Default page amount is manadatory', fakeAsync(() => {
+    it('Step 2: Default page amount is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -714,14 +704,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -735,12 +725,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 2: Default page desp is manadatory', fakeAsync(() => {
+    it('Step 2: Default page desp is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -756,14 +746,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -777,12 +767,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 2: Default page cost object is manadatory', fakeAsync(() => {
+    it('Step 2: Default page cost object is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -798,14 +788,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -828,12 +818,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 3: Items', fakeAsync(() => {
+    it('Step 3: Items', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -849,14 +839,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -871,18 +861,18 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
       expect(component.currentStep).toEqual(3);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 4: Confirm', fakeAsync(() => {
+    it('Step 4: Confirm', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -898,14 +888,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -920,7 +910,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
@@ -939,18 +929,18 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 4. Confirm
       expect(component.currentStep).toEqual(4);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Step 5: Result page', fakeAsync(() => {
+    it('Step 5: Result page', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
@@ -966,14 +956,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -988,7 +978,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
@@ -996,7 +986,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 4. Confirm
@@ -1004,14 +994,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 5.
       expect(component.currentStep).toEqual(5);
       expect(component.docIdCreated.length).toBeGreaterThan(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

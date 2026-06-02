@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
@@ -53,7 +53,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
     // declarations moved to imports
@@ -76,7 +76,7 @@ describe('AccountExtraDownpaymentComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FinanceAccountExtraDPTestFormComponent);
@@ -93,34 +93,34 @@ describe('AccountExtraDownpaymentComponent', () => {
     }
   });
 
-  it('shall work with data 1: init status', fakeAsync(() => {
+  it('shall work with data 1: init status', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.dirty).toBe(false);
     expect(testcomponent.formGroup.valid).toBe(false);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 2: input start date', fakeAsync(() => {
+  it('shall work with data 2: input start date', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     const startdt = moment().add(1, 'M');
     dp1.StartDate = startdt;
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.valid).toBe(false);
@@ -133,15 +133,15 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 3: input start date, repeat type', fakeAsync(() => {
+  it('shall work with data 3: input start date, repeat type', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -149,8 +149,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
@@ -164,15 +164,15 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 4: input start date, repeat type, comment', fakeAsync(() => {
+  it('shall work with data 4: input start date, repeat type, comment', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -181,8 +181,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
@@ -196,15 +196,15 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(dpval2.Comment).toEqual(dp1.Comment);
     expect(dpval2.RefDocId).toBeFalsy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 4a: input start date, repeat type, comment but without tranamount', fakeAsync(() => {
+  it('shall work with data 4a: input start date, repeat type, comment but without tranamount', async () => {
     testcomponent.tranAmount = 0;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -213,22 +213,22 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeFalsy();
     expect(testcomponent.formGroup.valid).toBe(false);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 5: input start date, repeat type, comment, calcTmpDocs (no return)', fakeAsync(() => {
+  it('shall work with data 5: input start date, repeat type, comment, calcTmpDocs (no return)', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -237,8 +237,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
@@ -248,10 +248,10 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.extraComponent?.onGenerateTmpDocs();
     expect(testcomponent.formGroup.valid).toBe(false);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with data 6: input start date, repeat type, comment, calcTmpDocs (with return)', fakeAsync(() => {
+  it('shall work with data 6: input start date, repeat type, comment, calcTmpDocs (with return)', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
     const aroutput: RepeatedDatesWithAmountAPIOutput[] = [];
@@ -268,7 +268,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(asyncData(aroutput));
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -277,8 +277,8 @@ describe('AccountExtraDownpaymentComponent', () => {
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
@@ -286,17 +286,17 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(testcomponent.formGroup.valid).toBe(false);
 
     testcomponent.extraComponent?.onGenerateTmpDocs();
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it('shall work with disabled mode', fakeAsync(() => {
+  it('shall work with disabled mode', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
@@ -304,14 +304,14 @@ describe('AccountExtraDownpaymentComponent', () => {
     expect(testcomponent.extraComponent?.isFieldChangable).toBeTruthy();
 
     testcomponent.formGroup.disable();
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.isFieldChangable).toBeFalsy();
-  }));
+  });
 
-  it('shall work with reference doc.', fakeAsync(() => {
+  it('shall work with reference doc.', async () => {
     testcomponent.tranAmount = 100;
     testcomponent.arTranTypes = fakeData.finTranTypes;
 
@@ -321,7 +321,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
-  }));
+  });
 
   describe('calcTmpDocs return exception', () => {
     let overlayContainer: OverlayContainer;
@@ -331,21 +331,22 @@ describe('AccountExtraDownpaymentComponent', () => {
       calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(asyncError<string>('Service failed'));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall display error dialog', fakeAsync(() => {
+    it('shall display error dialog', async () => {
       testcomponent.tranAmount = 100;
       testcomponent.arTranTypes = fakeData.finTranTypes;
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -354,8 +355,8 @@ describe('AccountExtraDownpaymentComponent', () => {
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       testcomponent.formGroup.get('extraControl')?.setValue(dp1);
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testcomponent.extraComponent?.canCalcTmpDocs).toBeTruthy();
@@ -363,25 +364,25 @@ describe('AccountExtraDownpaymentComponent', () => {
       expect(testcomponent.formGroup.valid).toBe(false);
 
       testcomponent.extraComponent?.onGenerateTmpDocs();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });
 

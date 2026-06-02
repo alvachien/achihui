@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
@@ -111,25 +111,25 @@ describe('PersonDetailComponent', () => {
       createPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('create mode with valid data: name and comment', fakeAsync(() => {
+    it('create mode with valid data: name and comment', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -144,14 +144,14 @@ describe('PersonDetailComponent', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');
 
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(createPersonSpy).toHaveBeenCalled();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('display mode', () => {
@@ -167,11 +167,11 @@ describe('PersonDetailComponent', () => {
       readPersonSpy.and.returnValue(asyncData(nperson));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it('display mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -180,8 +180,8 @@ describe('PersonDetailComponent', () => {
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nperson.NativeName);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('edit mode', () => {
@@ -194,19 +194,19 @@ describe('PersonDetailComponent', () => {
       readPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it('display mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('4. shall display error dialog for exception', () => {
@@ -220,47 +220,48 @@ describe('PersonDetailComponent', () => {
       createPersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails on fetch all roles', fakeAsync(() => {
+    it('should display error when Service fails on fetch all roles', async () => {
       // tell spy to return an async error observable
       fetchAllPersonRolesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when create failed', fakeAsync(() => {
+    it('should display error when create failed', async () => {
       // tell spy to return an async error observable
       createPersonSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -275,18 +276,18 @@ describe('PersonDetailComponent', () => {
 
       // // Expect there is a dialog
       // expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      // flush();
+      // await new Promise<void>(r => setTimeout(r, 0));
 
       // // OK button
       // const closeBtn  = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       // expect(closeBtn).toBeTruthy();
       // closeBtn.click();
-      // flush();
-      // tick();
+      // await new Promise<void>(r => setTimeout(r, 0));
+      // await new Promise<void>(r => setTimeout(r, 0));
       // fixture.detectChanges();
       // expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
@@ -116,25 +116,23 @@ describe('BookDetailComponent', () => {
       createBookSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('create mode with valid data: name and comment', fakeAsync(() => {
+    it('create mode with valid data: name and comment', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -148,29 +146,25 @@ describe('BookDetailComponent', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');
 
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(createBookSpy).toHaveBeenCalled();
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('assign author', fakeAsync(() => {
+    it('assign author', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
       component.detailFormGroup.markAsDirty();
 
       component.onAssignAuthor();
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 
   describe('display mode', () => {
@@ -185,11 +179,11 @@ describe('BookDetailComponent', () => {
       readBookSpy.and.returnValue(asyncData(nbook));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it('display mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -197,45 +191,42 @@ describe('BookDetailComponent', () => {
       expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nbook.NativeName);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 
   describe('error cases', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
 
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
       readBookSpy.and.returnValue(asyncError('Failed'));
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall display error', fakeAsync(() => {
+    it('shall display error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 });

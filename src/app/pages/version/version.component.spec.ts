@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 import { getTranslocoModule } from '../../../testing';
@@ -8,12 +8,12 @@ describe('VersionComponent', () => {
   let component: VersionComponent;
   let fixture: ComponentFixture<VersionComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [NzTimelineModule,  getTranslocoModule()],
       // declarations moved to imports
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(VersionComponent);

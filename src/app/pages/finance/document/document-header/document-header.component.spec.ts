@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +35,7 @@ describe('DocumentHeaderComponent', () => {
     fakeData.buildFinConfigData();
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
@@ -63,7 +63,7 @@ describe('DocumentHeaderComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentHeaderComponent);
@@ -89,18 +89,19 @@ describe('DocumentHeaderComponent', () => {
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('Tran date is mandatory', fakeAsync(() => {
+    it('Tran date is mandatory', async () => {
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -114,11 +115,11 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('dateControl');
-    }));
+    });
 
-    it('Desp is mandatory', fakeAsync(() => {
+    it('Desp is mandatory', async () => {
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -131,11 +132,11 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('despControl');
-    }));
+    });
 
-    it('Currency is mandatory', fakeAsync(() => {
+    it('Currency is mandatory', async () => {
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -149,12 +150,12 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('currControl');
-    }));
+    });
 
-    it('shall show exchange rate for foreign currency', fakeAsync(() => {
+    it('shall show exchange rate for foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(fixture.debugElement.queryAll(By.css('#idexg')).length).toEqual(0);
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(0);
@@ -165,12 +166,12 @@ describe('DocumentHeaderComponent', () => {
 
       expect(fixture.debugElement.queryAll(By.css('#idexg')).length).toEqual(1);
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(1);
-    }));
+    });
 
-    it('Exchange rate is mandatory for foreign currency', fakeAsync(() => {
+    it('Exchange rate is mandatory for foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -190,9 +191,9 @@ describe('DocumentHeaderComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerForm.valid).toBeTruthy();
-    }));
+    });
 
-    it('OnChange method', fakeAsync(() => {
+    it('OnChange method', async () => {
       const changefn = () => {
         // TBD.
       };
@@ -200,7 +201,7 @@ describe('DocumentHeaderComponent', () => {
       vi.spyOn(component, 'onChange');
 
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.onChange).toHaveBeenCalledTimes(0);
@@ -225,12 +226,12 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exgpControl')?.setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(5);
-    }));
+    });
 
-    it('it shall return correct Document object', fakeAsync(() => {
+    it('it shall return correct Document object', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -248,12 +249,12 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.TranDate.year()).toEqual(2020);
       expect(curDocument.TranDate.month()).toEqual(2);
       expect(curDocument.TranDate.date()).toEqual(2);
-    }));
+    });
 
-    it('it shall return correct Document object with foreign currency', fakeAsync(() => {
+    it('it shall return correct Document object with foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -274,26 +275,26 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.TranDate.date()).toEqual(2);
       expect(curDocument.ExgRate).toEqual(624.22);
       expect(curDocument.ExgRate_Plan).toBeFalsy();
-    }));
+    });
   });
 
   describe('Disable mode for normal document', () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(async () => {
       component.arCurrencies = fakeData.currencies;
       component.arDocTypes = fakeData.finDocTypes;
 
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
 
       component.currentUIMode = UIMode.Display;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
       fixture.detectChanges();
       component.docType = financeDocTypeNormal;
-    }));
+    });
 
-    it('shall be readonly', fakeAsync(() => {
+    it('shall be readonly', async () => {
       expect(component.headerForm.disabled).toBeTruthy();
-    }));
+    });
   });
 
   describe('Enable Mode for currency exchange document', () => {
@@ -310,19 +311,20 @@ describe('DocumentHeaderComponent', () => {
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall show exchange rate for second foreign currency', fakeAsync(() => {
+    it('shall show exchange rate for second foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -337,12 +339,12 @@ describe('DocumentHeaderComponent', () => {
 
       expect(fixture.debugElement.queryAll(By.css('#idexg2')).length).toEqual(1);
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan2')).length).toEqual(1);
-    }));
+    });
 
-    it('Currency is mandatory', fakeAsync(() => {
+    it('Currency is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -361,12 +363,12 @@ describe('DocumentHeaderComponent', () => {
       const errors = FormGroupHelper.getFormGroupError(component.headerForm);
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('currControl');
-    }));
+    });
 
-    it('Currency2 is mandatory', fakeAsync(() => {
+    it('Currency2 is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
@@ -381,11 +383,11 @@ describe('DocumentHeaderComponent', () => {
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('curr2Control');
       expect(errors.GetElement(0)?.error).toEqual('required');
-    }));
-    it('Currency must be diff', fakeAsync(() => {
+    });
+    it('Currency must be diff', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
@@ -400,11 +402,11 @@ describe('DocumentHeaderComponent', () => {
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('curr2Control');
       expect(errors.GetElement(0)?.error).toEqual('currencyMustDiff');
-    }));
-    it('Exgrate2 is mandatory if currency 2 is foreign', fakeAsync(() => {
+    });
+    it('Exgrate2 is mandatory if currency 2 is foreign', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -423,12 +425,12 @@ describe('DocumentHeaderComponent', () => {
       expect(errors.Length()).toEqual(1);
       expect(errors.GetElement(0)?.key).toEqual('exg2Control');
       expect(errors.GetElement(0)?.error).toEqual('required');
-    }));
+    });
 
-    it('OnChange method', fakeAsync(() => {
+    it('OnChange method', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const changefn = () => {
@@ -470,12 +472,12 @@ describe('DocumentHeaderComponent', () => {
       component.headerForm.get('exgp2Control')?.setValue(true);
       fixture.detectChanges();
       expect(component.onChange).toHaveBeenCalledTimes(8);
-    }));
+    });
 
-    it('it shall return correct Document object', fakeAsync(() => {
+    it('it shall return correct Document object', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -497,12 +499,12 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.TranDate.date()).toEqual(2);
       expect(curDocument.TranCurr2).toEqual('USD');
       expect(curDocument.ExgRate2).toEqual(634.56);
-    }));
+    });
 
-    it('it shall return correct Document object with foreign currency', fakeAsync(() => {
+    it('it shall return correct Document object with foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -529,6 +531,6 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.TranCurr2).toEqual('EUR');
       expect(curDocument.ExgRate2).toEqual(666.56);
       expect(curDocument.ExgRate_Plan2).toBeTruthy();
-    }));
+    });
   });
 });

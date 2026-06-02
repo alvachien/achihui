@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { ViewChild, Component } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -69,7 +69,7 @@ describe('AccountExtraLoanComponent', () => {
     arUIAccounts = BuildupAccountForSelection(fakeData.finAccounts, fakeData.finAccountCategories);
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
     // declarations moved to imports
@@ -102,7 +102,7 @@ describe('AccountExtraLoanComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountExtraLoanTestFormComponent);
@@ -117,28 +117,28 @@ describe('AccountExtraLoanComponent', () => {
     expect(testcomponent).toBeTruthy();
   });
 
-  it('shall work with data 1: init status', fakeAsync(() => {
+  it('shall work with data 1: init status', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.dirty).toBe(false);
     expect(testcomponent.formGroup.valid).toBe(false);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it.skip('shall work with data 2: input start date', fakeAsync(() => {
+  it.skip('shall work with data 2: input start date', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
     const startdt = moment().add(1, 'M');
     loan1.startDate = startdt;
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -149,12 +149,12 @@ describe('AccountExtraLoanComponent', () => {
     expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it.skip('shall work with data 3: input start date, total months', fakeAsync(() => {
+  it.skip('shall work with data 3: input start date, total months', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
@@ -162,8 +162,8 @@ describe('AccountExtraLoanComponent', () => {
     loan1.startDate = startdt;
     loan1.TotalMonths = 24;
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -174,12 +174,12 @@ describe('AccountExtraLoanComponent', () => {
     expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it.skip('shall work with data 4: input start date, total months and repay method', fakeAsync(() => {
+  it.skip('shall work with data 4: input start date, total months and repay method', async () => {
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
@@ -188,8 +188,8 @@ describe('AccountExtraLoanComponent', () => {
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -200,10 +200,10 @@ describe('AccountExtraLoanComponent', () => {
     expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it.skip('shall work with data 5: interest free case', fakeAsync(() => {
+  it.skip('shall work with data 5: interest free case', async () => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -219,7 +219,7 @@ describe('AccountExtraLoanComponent', () => {
     calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
@@ -233,8 +233,8 @@ describe('AccountExtraLoanComponent', () => {
     expect(loan1.isAccountValid).toBeTruthy();
 
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -243,17 +243,17 @@ describe('AccountExtraLoanComponent', () => {
     expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
     testcomponent.extraComponent?.onGenerateTmpDocs();
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
-  it.skip('shall work with data 6: interest case', fakeAsync(() => {
+  it.skip('shall work with data 6: interest case', async () => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -270,7 +270,7 @@ describe('AccountExtraLoanComponent', () => {
     calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
 
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
@@ -284,8 +284,8 @@ describe('AccountExtraLoanComponent', () => {
     expect(loan1.isAccountValid).toBeTruthy();
 
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -294,15 +294,15 @@ describe('AccountExtraLoanComponent', () => {
     expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
     testcomponent.extraComponent?.onGenerateTmpDocs();
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.formGroup.get('extraControl')?.valid).toBeTruthy();
     expect(testcomponent.formGroup.valid).toBeTruthy();
 
-    flush();
-  }));
+    await new Promise<void>(r => setTimeout(r, 0));
+  });
 
   describe('calcLoanTmpDocs return exception', () => {
     let overlayContainer: OverlayContainer;
@@ -312,18 +312,19 @@ describe('AccountExtraLoanComponent', () => {
       calcLoanTmpDocsSpy = storageService.calcLoanTmpDocs.and.returnValue(asyncError<string>('Service failed'));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it.skip('shall display error dialog', fakeAsync(() => {
+    it.skip('shall display error dialog', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const loan1: AccountExtraLoan = new AccountExtraLoan();
@@ -336,8 +337,8 @@ describe('AccountExtraLoanComponent', () => {
       expect(loan1.isAccountValid).toBeTruthy();
 
       testcomponent.formGroup.get('extraControl')?.setValue(loan1);
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testcomponent.formGroup.get('extraControl')?.valid).toBeFalsy();
@@ -346,47 +347,47 @@ describe('AccountExtraLoanComponent', () => {
       expect(testcomponent.extraComponent?.canGenerateTmpDocs).toBeTruthy();
 
       testcomponent.extraComponent?.onGenerateTmpDocs();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
-  it('shall work with disabled mode', fakeAsync(() => {
+  it('shall work with disabled mode', async () => {
     fixture.detectChanges();
     expect(testcomponent.extraComponent?.isFieldChangable).toBeTruthy();
 
     testcomponent.formGroup.disable();
-    flush();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>(r => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testcomponent.extraComponent?.isFieldChangable).toBeFalsy();
-  }));
+  });
 
-  it('shall work with reference doc.', fakeAsync(() => {
+  it('shall work with reference doc.', async () => {
     const routerstub = TestBed.inject(Router);
     vi.spyOn(routerstub, 'navigate');
 
     testcomponent.extraComponent?.onRefDocClick(123);
     expect(routerstub.navigate).toHaveBeenCalledTimes(1);
     expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/123']);
-  }));
+  });
 });
 
 @Component({

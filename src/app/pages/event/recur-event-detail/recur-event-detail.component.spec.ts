@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, inject, flush, discardPeriodicTasks} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -105,19 +105,17 @@ describe('RecurEventDetailComponent', () => {
       readRecurEventSpy.and.returnValue(asyncData(nobj));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 
   // describe('02. Change mode', () => {
@@ -135,11 +133,11 @@ describe('RecurEventDetailComponent', () => {
       readRecurEventSpy.and.returnValue(asyncData(nobj));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it('display mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -147,45 +145,42 @@ describe('RecurEventDetailComponent', () => {
       expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nameControl')?.value;
       expect(nname).toEqual(nobj.Name);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 
   describe('99. error cases', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
 
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
       readRecurEventSpy.and.returnValue(asyncError('Failed'));
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('shall display error', fakeAsync(() => {
+    it('shall display error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 });

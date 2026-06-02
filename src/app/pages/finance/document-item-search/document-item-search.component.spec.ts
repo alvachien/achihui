@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -74,7 +74,7 @@ describe('DocumentItemSearchComponent', () => {
     };
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -96,7 +96,7 @@ describe('DocumentItemSearchComponent', () => {
         NzModalService,
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentItemSearchComponent);
@@ -124,9 +124,9 @@ describe('DocumentItemSearchComponent', () => {
       // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
     });
 
-    it('1. shall initialize the data', fakeAsync(() => {
+    it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(fetchAllDocTypesSpy).not.toHaveBeenCalled();
@@ -139,6 +139,6 @@ describe('DocumentItemSearchComponent', () => {
       expect(fetchAllDocumentsSpy).not.toHaveBeenCalled();
       expect(searchDocItemSpy).not.toHaveBeenCalled();
       expect(component.filters.length).toBe(1); // Default 1
-    }));
+    });
   });
 });

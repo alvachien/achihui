@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, tick, fakeAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -38,7 +38,7 @@ describe('CollectionDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -60,7 +60,7 @@ describe('CollectionDetailComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CollectionDetailComponent);
@@ -76,13 +76,13 @@ describe('CollectionDetailComponent', () => {
   });
 
   describe('create mode', () => {
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
       expect(component.uiMode).toEqual(UIMode.Create);
-    }));
+    });
   });
 });

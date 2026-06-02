@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { DebugElement } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -52,7 +52,7 @@ describe('DocumentItemsComponent', () => {
     arUIOrders = BuildupOrderForSelection(fakeData.finOrders);
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
@@ -75,7 +75,7 @@ describe('DocumentItemsComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentItemsComponent);
@@ -102,27 +102,28 @@ describe('DocumentItemsComponent', () => {
       component.tranCurr = fakeData.chosedHome.BaseCurrency;
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it.skip('shall be invalid if no items', fakeAsync(() => {
+    it.skip('shall be invalid if no items', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.noitems).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items without account', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items without account', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -137,10 +138,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutaccount).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items without tran type', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items without tran type', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -156,10 +157,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithouttrantype).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items without amount', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items without amount', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -175,10 +176,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutamount).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items without cost object', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items without cost object', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -194,10 +195,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items have cost center and order both', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items have cost center and order both', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -214,10 +215,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy();
-    }));
-    it.skip('shall be invalid if items without desp', fakeAsync(() => {
+    });
+    it.skip('shall be invalid if items without desp', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -233,10 +234,10 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutdesp).toBeTruthy();
-    }));
-    it.skip('shall remove item on deletion', fakeAsync(() => {
+    });
+    it.skip('shall remove item on deletion', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -250,14 +251,14 @@ describe('DocumentItemsComponent', () => {
 
       component.onDeleteDocItem(component.listItems[0]);
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.listItems.length).toEqual(0);
-    }));
-    it.skip('shall be valid in valid case', fakeAsync(() => {
+    });
+    it.skip('shall be valid in valid case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.onCreateDocItem();
@@ -272,15 +273,15 @@ describe('DocumentItemsComponent', () => {
 
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeNull();
-    }));
-    it.skip('createItem method', fakeAsync(() => {
+    });
+    it.skip('createItem method', async () => {
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       component.onCreateDocItem();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
@@ -297,14 +298,14 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('nz-option-item')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 2) {
           // Tran type
@@ -315,14 +316,14 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 3) {
           // Amount
@@ -335,7 +336,7 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
 
           expect(component.listItems[0].TranAmount).toEqual(20);
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 4) {
           // Currencies
@@ -349,7 +350,7 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
           expect(component.listItems[0].Desp).toEqual('Test');
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 6) {
           // Control center
@@ -360,14 +361,14 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 7) {
           // Order
@@ -376,16 +377,16 @@ describe('DocumentItemsComponent', () => {
       }
 
       // Now check the document items
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.listItems.length).toEqual(1);
       expect(component.listItems[0].Desp).toEqual('Test');
       expect(component.listItems[0].TranAmount).toEqual(20);
-    }));
-    it.skip('onChange method', fakeAsync(() => {
+    });
+    it.skip('onChange method', async () => {
       const changefn = () => {
         // TBD.
       };
@@ -393,14 +394,14 @@ describe('DocumentItemsComponent', () => {
       vi.spyOn(component, 'onChange');
 
       fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.onChange).toHaveBeenCalledTimes(0);
       component.onCreateDocItem();
       expect(component.onChange).toHaveBeenCalledTimes(1);
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const tablebody = fixture.debugElement.queryAll(By.css('.ant-table-tbody'));
@@ -417,14 +418,14 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = select.nativeElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(2);
         } else if (i === 2) {
@@ -436,14 +437,14 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(3);
         } else if (i === 3) {
@@ -457,7 +458,7 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
 
           expect(component.listItems[0].TranAmount).toEqual(20);
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(4);
         } else if (i === 4) {
@@ -472,7 +473,7 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
           expect(component.listItems[0].Desp).toEqual('Test');
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(5);
         } else if (i === 6) {
@@ -483,14 +484,14 @@ describe('DocumentItemsComponent', () => {
           const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(6);
         } else if (i === 7) {
@@ -502,23 +503,23 @@ describe('DocumentItemsComponent', () => {
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
           fixture.detectChanges();
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
           dispatchMouseEvent(listOfContainerItem[0], 'click');
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
-          flush();
+          await new Promise<void>(r => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(7);
         }
       }
 
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-    }));
+    });
   });
 });

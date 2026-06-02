@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 import moment from 'moment';
@@ -17,7 +17,7 @@ describe('EventStorageService', () => {
   let fakeData: FakeDataHelper;
   let service: EventStorageService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -41,7 +41,7 @@ describe('EventStorageService', () => {
 
     httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(EventStorageService);
-  }));
+  });
 
   it('1. should be created without data', () => {
     expect(service).toBeTruthy();

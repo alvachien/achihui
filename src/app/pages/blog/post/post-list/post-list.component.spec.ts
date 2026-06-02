@@ -1,11 +1,4 @@
-import { waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  discardPeriodicTasks,
-  tick,
-  flush,
-  inject,} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, BehaviorSubject } from 'rxjs';
@@ -42,7 +35,7 @@ describe('PostListComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, NoopAnimationsModule, BlogUIModule, getTranslocoModule(), RouterTestingModule,
         PostListComponent],
@@ -53,7 +46,7 @@ describe('PostListComponent', () => {
         { provide: BlogOdataService, useValue: storageService },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PostListComponent);
@@ -80,25 +73,23 @@ describe('PostListComponent', () => {
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.dataSet.length).toBeGreaterThan(0);
       expect(component.dataSet.length).toEqual(fakeData.blogPost.length);
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('shall navigate to display post', fakeAsync(() => {
+    it('shall navigate to display post', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
@@ -109,16 +100,14 @@ describe('PostListComponent', () => {
       expect(routerstub.navigate).toHaveBeenCalledWith([
         '/blog/post/display/' + (fakeData.blogPost[0].id ?? 0).toString(),
       ]);
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('shall navigate to edit post', fakeAsync(() => {
+    it('shall navigate to edit post', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
@@ -129,10 +118,8 @@ describe('PostListComponent', () => {
       expect(routerstub.navigate).toHaveBeenCalledWith([
         '/blog/post/edit/' + (fakeData.blogPost[0].id ?? 0).toString(),
       ]);
-
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('3. shall display error dialog for exception', () => {
@@ -143,37 +130,38 @@ describe('PostListComponent', () => {
       fetchAllPostsSpy.and.returnValue(asyncData(fakeData.blogPost));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it('should display error when Service fails', async () => {
       // tell spy to return an async error observable
       fetchAllPostsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

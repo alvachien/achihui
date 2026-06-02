@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzResultModule } from 'ng-zorro-antd/result';
 
 import { FatalErrorComponent } from './fatal-error.component';
@@ -10,7 +10,7 @@ describe('FatalErrorComponent', () => {
   let fixture: ComponentFixture<FatalErrorComponent>;
   const uiServiceStub: Partial<UIStatusService> = {};
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     uiServiceStub.latestError = '';
 
     TestBed.configureTestingModule({
@@ -18,7 +18,7 @@ describe('FatalErrorComponent', () => {
       // declarations moved to imports
       providers: [{ provide: UIStatusService, useValue: uiServiceStub }],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FatalErrorComponent);

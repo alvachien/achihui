@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -53,7 +53,7 @@ describe('HomeDefDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -92,7 +92,7 @@ describe('HomeDefDetailComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeDefDetailComponent);
@@ -109,11 +109,11 @@ describe('HomeDefDetailComponent', () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -121,8 +121,8 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.IsCreateMode).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('2. change mode', () => {
@@ -133,11 +133,11 @@ describe('HomeDefDetailComponent', () => {
       readHomeDefSpy.and.returnValue(asyncData(fakeData.chosedHome));
     });
 
-    it('change mode init without error', fakeAsync(() => {
+    it('change mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -145,8 +145,8 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.IsCreateMode).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('3. display mode', () => {
@@ -157,11 +157,11 @@ describe('HomeDefDetailComponent', () => {
       readHomeDefSpy.and.returnValue(asyncData(fakeData.chosedHome));
     });
 
-    it('display mode init without error', fakeAsync(() => {
+    it('display mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -169,7 +169,7 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeFalsy();
       expect(component.IsCreateMode).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });
