@@ -241,7 +241,7 @@ describe('getSingleFilterString', () => {
     flt.valueType = GeneralFilterValueType.string;
 
     const fltstr = getSingleFilterString(flt);
-    expect(fltstr).toEqual(`contains(fieldName)`);
+    expect(fltstr).toEqual(`contains(fieldName, 'a')`);
   });
   it('#62. Like with date', () => {
     const flt: GeneralFilterItem = new GeneralFilterItem();
