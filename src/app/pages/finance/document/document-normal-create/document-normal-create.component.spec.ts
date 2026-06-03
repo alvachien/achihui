@@ -125,6 +125,9 @@ describe('DocumentNormalCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentNormalCreateComponent);
     component = fixture.componentInstance;
+    // Defensive reset: test pollution from preceding test files can leave
+    // curDocType as undefined, causing onVerify to fail
+    component.curDocType = 1;
     // fixture.detectChanges();
   });
 

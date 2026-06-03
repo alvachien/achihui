@@ -120,6 +120,9 @@ describe('DocumentTransferCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentTransferCreateComponent);
     component = fixture.componentInstance;
+    // Defensive reset: test pollution from preceding test files can leave
+    // curDocType as undefined, causing onVerify to fail
+    component.curDocType = 2;
     // fixture.detectChanges();
   });
 

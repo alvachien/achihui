@@ -116,6 +116,9 @@ describe('DocumentAssetSoldCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentAssetSoldCreateComponent);
     component = fixture.componentInstance;
+    // Defensive reset: test pollution from preceding test files can leave
+    // curDocType as undefined, causing onVerify to fail
+    component.curDocType = 8;
     // fixture.detectChanges();
   });
 

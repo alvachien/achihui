@@ -8,6 +8,94 @@ if (typeof (globalThis as any).ResizeObserver === 'undefined') {
   };
 }
 
+// Mock canvas getContext for jsdom — ECharts requires a canvas context to initialize
+// This avoids the "Not implemented: HTMLCanvasElement.prototype.getContext" error
+// and the need to install the `canvas` npm package
+if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as any).__mockGetContext) {
+  const mockContextCache = new WeakMap<HTMLCanvasElement, any>();
+
+  function getMockContext(canvas: HTMLCanvasElement): any {
+    if (!mockContextCache.has(canvas)) {
+      const ctx: any = {
+        dpr: 1,
+        __fillStyle: '',
+        __strokeStyle: '',
+        get fillStyle() { return this.__fillStyle; },
+        set fillStyle(v: string) { this.__fillStyle = v; },
+        get strokeStyle() { return this.__strokeStyle; },
+        set strokeStyle(v: string) { this.__strokeStyle = v; },
+        lineWidth: 1,
+        font: '12px sans-serif',
+        textAlign: 'start',
+        textBaseline: 'alphabetic',
+        globalAlpha: 1,
+        globalCompositeOperation: 'source-over',
+        lineCap: 'butt',
+        lineJoin: 'miter',
+        miterLimit: 10,
+        shadowBlur: 0,
+        shadowColor: 'rgba(0,0,0,0)',
+        shadowOffsetX: 0,
+        shadowOffsetY: 0,
+        clearRect() {},
+        fillRect() {},
+        strokeRect() {},
+        save() {},
+        restore() {},
+        fillText() {},
+        strokeText() {},
+        measureText() { return { width: 0, actualBoundingBoxAscent: 0, actualBoundingBoxDescent: 0, actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 }; },
+        beginPath() {},
+        closePath() {},
+        moveTo() {},
+        lineTo() {},
+        quadraticCurveTo() {},
+        bezierCurveTo() {},
+        arcTo() {},
+        arc() {},
+        rect() {},
+        ellipse() {},
+        stroke() {},
+        fill() {},
+        clip() {},
+        rotate() {},
+        scale() {},
+        translate() {},
+        transform() {},
+        setTransform() {},
+        setLineDash() {},
+        getLineDash() { return []; },
+        createLinearGradient() { return { addColorStop() {} }; },
+        createRadialGradient() { return { addColorStop() {} }; },
+        createPattern() { return null; },
+        getImageData() { return { data: new Uint8ClampedArray(4), width: 1, height: 1 }; },
+        putImageData() {},
+        drawImage() {},
+        isPointInPath() { return false; },
+        isPointInStroke() { return false; },
+        createImageData() { return { data: new Uint8ClampedArray(4), width: 1, height: 1 }; },
+        drawFocusIfNeeded() {},
+        scrollPathIntoView() {},
+        getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; },
+        resetTransform() {},
+      };
+      mockContextCache.set(canvas, ctx);
+    }
+    return mockContextCache.get(canvas);
+  }
+
+  (HTMLCanvasElement.prototype as any).__mockGetContext = true;
+  (HTMLCanvasElement.prototype as any).getContext = function(contextId: string, ..._args: unknown[]) {
+    if (contextId === '2d') {
+      return getMockContext(this);
+    }
+    if (contextId === 'webgl' || contextId === 'webgl2') {
+      return null;
+    }
+    return null;
+  };
+}
+
 // MutationObserver polyfill for jsdom (used by some nz-* components)
 if (typeof (globalThis as any).MutationObserver === 'undefined') {
   (globalThis as any).MutationObserver = class MutationObserver {
