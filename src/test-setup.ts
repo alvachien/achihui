@@ -96,6 +96,15 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
   };
 }
 
+// Stub KaTeX global to prevent ngx-markdown from throwing errors in tests
+// ngx-markdown checks `typeof katex === 'undefined'` (bare global, not window)
+// and `typeof renderMathInElement === 'undefined'`
+(globalThis as any).katex = {
+  render() {},
+  renderToString() { return ''; },
+};
+(globalThis as any).renderMathInElement = function() {};
+
 // MutationObserver polyfill for jsdom (used by some nz-* components)
 if (typeof (globalThis as any).MutationObserver === 'undefined') {
   (globalThis as any).MutationObserver = class MutationObserver {
