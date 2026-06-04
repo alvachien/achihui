@@ -98,7 +98,7 @@ describe('FinanceStorageService', () => {
       const msg = 'server failed';
       service.updatePreviousDocWithPlanExgRate({} as DocumentWithPlanExgRateForUpdate).subscribe(
         (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         (error: any) => {
           expect(error).toContain(msg);
@@ -161,7 +161,7 @@ describe('FinanceStorageService', () => {
 
     it('should handle error response', () => {
       service.getReportTranType().subscribe(
-        () => fail('expected to fail'),
+        () => { throw new Error('expected to fail'); },
         (error: any) => {
           expect(error).toBeTruthy();
         }

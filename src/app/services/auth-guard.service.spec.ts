@@ -1,4 +1,5 @@
-import { TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { BehaviorSubject } from 'rxjs';
 
 import { AuthGuardService } from './auth-guard.service';
@@ -14,7 +15,7 @@ describe('AuthGuardService', () => {
   beforeAll(() => {
     uiServiceStub.fatalError = false;
     authServiceStub.authSubject = authSubject;
-    authServiceStub.doLogin = jasmine.createSpy('doLogin');
+    authServiceStub.doLogin = vi.fn();
   });
 
   beforeEach(() => {
@@ -27,43 +28,38 @@ describe('AuthGuardService', () => {
     });
   });
 
-  it('should be created', inject([AuthGuardService], (service: AuthGuardService) => {
+  it('should be created', () => {
+    const service = TestBed.inject(AuthGuardService);
     expect(service).toBeTruthy();
-  }));
+  });
 
   describe('canActivate', () => {
-    it('should return false when fatalError is true', inject(
-      [AuthGuardService],
-      (service: AuthGuardService) => {
-        uiServiceStub['fatalError'] = true;
-        const result = service.canActivate({} as any, { url: '/test' } as any);
-        expect(result).toBeFalse();
-        uiServiceStub['fatalError'] = false;
-      }
-    ));
+    it('should return false when fatalError is true', () => {
+      const service = TestBed.inject(AuthGuardService);
+      uiServiceStub['fatalError'] = true;
+      const result = service.canActivate({} as any, { url: '/test' } as any);
+      expect(result).toBe(false);
+      uiServiceStub['fatalError'] = false;
+    });
 
-    it('should return true when user is authorized', inject(
-      [AuthGuardService],
-      (service: AuthGuardService) => {
-        const authorizedUser = new UserAuthInfo();
-        authorizedUser.isAuthorized = true;
-        authSubject.next(authorizedUser);
-        const result = service.canActivate({} as any, { url: '/test' } as any);
-        expect(result).toBeTrue();
-      }
-    ));
+    it('should return true when user is authorized', () => {
+      const service = TestBed.inject(AuthGuardService);
+      const authorizedUser = new UserAuthInfo();
+      authorizedUser.isAuthorized = true;
+      authSubject.next(authorizedUser);
+      const result = service.canActivate({} as any, { url: '/test' } as any);
+      expect(result).toBe(true);
+    });
 
-    it('should trigger login when user is not authorized', inject(
-      [AuthGuardService],
-      (service: AuthGuardService) => {
-        const unauthorizedUser = new UserAuthInfo();
-        unauthorizedUser.isAuthorized = false;
-        authSubject.next(unauthorizedUser);
-        const result = service.checkLogin('/test');
-        expect(result).toBeFalse();
-        expect(authServiceStub.doLogin).toHaveBeenCalled();
-      }
-    ));
+    it('should trigger login when user is not authorized', () => {
+      const service = TestBed.inject(AuthGuardService);
+      const unauthorizedUser = new UserAuthInfo();
+      unauthorizedUser.isAuthorized = false;
+      authSubject.next(unauthorizedUser);
+      const result = service.checkLogin('/test');
+      expect(result).toBe(false);
+      expect(authServiceStub.doLogin).toHaveBeenCalled();
+    });
   });
 });
 

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { LibraryUIModule } from '../../library-ui.module';
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { BorrowRecordCreateDlgComponent } from './borrow-record-create-dlg.component';
@@ -31,7 +31,7 @@ describe('BorrowRecordCreateDlgComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', ['createBookBorrowRecord']);
+    storageService = createSpyObj('LibraryStorageService', ['createBookBorrowRecord']);
     createBookBorrowRecordSpy = storageService.createBookBorrowRecord.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,

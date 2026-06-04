@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -15,7 +16,7 @@ describe('WelcomeComponent', () => {
   let component: WelcomeComponent;
   let fixture: ComponentFixture<WelcomeComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         NzCarouselModule,
@@ -29,7 +30,7 @@ describe('WelcomeComponent', () => {
       ],
       // declarations moved to imports
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WelcomeComponent);
@@ -61,7 +62,7 @@ describe('WelcomeComponent', () => {
 
   it('navigation to overview', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onNavigateToOverview();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -70,7 +71,7 @@ describe('WelcomeComponent', () => {
 
   it('navigation to account', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onNavigateToAccount();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -79,7 +80,7 @@ describe('WelcomeComponent', () => {
 
   it('navigation to document', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onNavigateToDocument();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -88,7 +89,7 @@ describe('WelcomeComponent', () => {
 
   it('navigation to report', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onNavigateToReport();
     expect(routerstub.navigate).toHaveBeenCalled();
@@ -97,7 +98,7 @@ describe('WelcomeComponent', () => {
 
   it('navigation to plan', () => {
     const routerstub = TestBed.inject(Router);
-    spyOn(routerstub, 'navigate');
+    vi.spyOn(routerstub, 'navigate');
 
     component.onNavigateToPlan();
     expect(routerstub.navigate).toHaveBeenCalled();

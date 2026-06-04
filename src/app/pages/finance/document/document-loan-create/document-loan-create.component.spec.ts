@@ -1,13 +1,4 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  flush,
-  inject,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -24,13 +15,11 @@ import { By } from '@angular/platform-browser';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
-  asyncError,
-} from '../../../../../testing';
+  asyncError,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -77,7 +66,7 @@ describe('DocumentLoanCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -103,7 +92,7 @@ describe('DocumentLoanCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createbrwfrm', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -145,7 +134,7 @@ describe('DocumentLoanCreateComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentLoanCreateComponent);
@@ -175,29 +164,30 @@ describe('DocumentLoanCreateComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 0: initial status', fakeAsync(() => {
+    it('step 0: initial status', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: document header is manadatory', fakeAsync(() => {
+    it('step 0: document header is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -210,7 +200,7 @@ describe('DocumentLoanCreateComponent', () => {
       // dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -219,17 +209,17 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 0: account is manadatory', fakeAsync(() => {
+    it.skip('step 0: account is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -242,7 +232,7 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -255,7 +245,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -263,17 +253,17 @@ describe('DocumentLoanCreateComponent', () => {
       // Add an account
       component.firstFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.firstFormGroup.get('accountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 0: amount is manadatory', fakeAsync(() => {
+    it.skip('step 0: amount is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -286,7 +276,7 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -299,7 +289,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -307,17 +297,17 @@ describe('DocumentLoanCreateComponent', () => {
       // Add amount back
       component.firstFormGroup.get('amountControl')?.setValue(100.2);
       component.firstFormGroup.get('amountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: costing object is manadatory', fakeAsync(() => {
+    it('step 0: costing object is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -330,7 +320,7 @@ describe('DocumentLoanCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -343,7 +333,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('amountControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -353,7 +343,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       component.firstFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.firstFormGroup.get('orderControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -361,19 +351,19 @@ describe('DocumentLoanCreateComponent', () => {
       // Now correct it - remove order
       component.firstFormGroup.get('orderControl')?.setValue(undefined);
       component.firstFormGroup.get('orderControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 1: back to step 0 shall work', fakeAsync(() => {
+    it('step 1: back to step 0 shall work', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -393,7 +383,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -408,18 +398,18 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Go back to step 0
       component.pre();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 1: loan extra info is manadatory', fakeAsync(() => {
+    it.skip('step 1: loan extra info is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -439,7 +429,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -472,19 +462,19 @@ describe('DocumentLoanCreateComponent', () => {
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
       component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 2: shall go to step 2 in valid case', fakeAsync(() => {
+    it.skip('step 2: shall go to step 2 in valid case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -504,7 +494,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -533,7 +523,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
       component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -542,19 +532,19 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component.currentStep).toBe(2);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 2: shall popup error dialog if verfication failed in generated object', fakeAsync(() => {
+    it.skip('step 2: shall popup error dialog if verfication failed in generated object', async () => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
         } as Document)
       );
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -574,7 +564,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -603,7 +593,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
       component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -617,20 +607,20 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
       fixture.detectChanges();
@@ -638,23 +628,23 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
       expect(component.currentStep).toBe(2);
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 3: shall display success result after document posted', fakeAsync(() => {
+    it.skip('step 3: shall display success result after document posted', async () => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
         } as Document)
       );
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -674,7 +664,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -703,7 +693,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
       component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -715,23 +705,23 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeTruthy();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createLoanDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBe(1);
       expect(component.currentStep).toBe(3);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 3: shall display error result after document failed to post', fakeAsync(() => {
+    it.skip('step 3: shall display error result after document failed to post', async () => {
       createLoanDocumentSpy.and.returnValue(asyncError('Failed to post'));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -751,7 +741,7 @@ describe('DocumentLoanCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -780,7 +770,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
       component.extraFormGroup.get('loanAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Go to next page
@@ -792,16 +782,16 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeTruthy();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createLoanDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
       expect(component.currentStep).toBe(3);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('shall display error dialog when service failed', () => {
@@ -822,181 +812,168 @@ describe('DocumentLoanCreateComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    xit('should display error when Account Category fetched fails', fakeAsync(() => {
+    it.skip('should display error when Account Category fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when Doc type fetched fails', fakeAsync(() => {
+    it.skip('should display error when Doc type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when Tran. type fetched fails', fakeAsync(() => {
+    it.skip('should display error when Tran. type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when currency fetched fails', fakeAsync(() => {
+    it.skip('should display error when currency fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when account fetched fails', fakeAsync(() => {
+    it.skip('should display error when account fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when control center fetched fails', fakeAsync(() => {
+    it.skip('should display error when control center fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    xit('should display error when order fetched fails', fakeAsync(() => {
+    it.skip('should display error when order fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 });

@@ -12,6 +12,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
@@ -25,6 +26,7 @@ import { TranslocoModule } from '@jsverse/transloco';
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzTableModule,
+    NzDividerModule,
     TranslocoModule,
     RouterModule,
     NgFor,

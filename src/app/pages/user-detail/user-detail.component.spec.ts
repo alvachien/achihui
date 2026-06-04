@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,12 +28,12 @@ describe('UserDetailComponent', () => {
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     authServiceStub.authContent = authServiceStub.authSubject.asObservable();
-    authServiceStub.doLogout = jasmine.createSpy('doLogout');
+    authServiceStub.doLogout = vi.fn();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
     homeServiceStub.CurrentMemberInChosedHome = fakeData.chosedHome.Members[0];
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [NoopAnimationsModule,
@@ -45,7 +46,7 @@ describe('UserDetailComponent', () => {
         UserDetailComponent],
     providers: [{ provide: AuthService, useValue: authServiceStub }, { provide: HomeDefOdataService, useValue: homeServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserDetailComponent);
@@ -57,7 +58,7 @@ describe('UserDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should populate user info from auth service on init', fakeAsync(() => {
+  it('should populate user info from auth service on init', async () => {
     // Set up authorized user before init
     const authorizedUser = new UserAuthInfo();
     authorizedUser.setContent({
@@ -67,10 +68,10 @@ describe('UserDetailComponent', () => {
     });
     (authServiceStub.authSubject as BehaviorSubject<UserAuthInfo>).next(authorizedUser);
     fixture.detectChanges();
-    tick();
+    await new Promise<void>(r => setTimeout(r, 0));
     expect(component.userID).toBe('test-user-id');
     expect(component.userName).toBe('Test User');
-  }));
+  });
 
   it('should populate home info when ChosedHome is set', () => {
     homeServiceStub.ChosedHome = fakeData.chosedHome;

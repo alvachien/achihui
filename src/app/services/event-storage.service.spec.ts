@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 import moment from 'moment';
@@ -7,7 +7,7 @@ import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { EventHabit, EventHabitDetail, BaseListModel, GeneralEvent } from '../model';
-import { FakeDataHelper } from '../../testing';
+import {createSpyObj, FakeDataHelper} from '../../testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -17,14 +17,14 @@ describe('EventStorageService', () => {
   let fakeData: FakeDataHelper;
   let service: EventStorageService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefOdataService', ['fetchHomeMembers']);
+    const homeService: any = createSpyObj('HomeDefOdataService', ['fetchHomeMembers']);
     homeService.ChosedHome = fakeData.chosedHome;
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
@@ -41,7 +41,7 @@ describe('EventStorageService', () => {
 
     httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(EventStorageService);
-  }));
+  });
 
   it('1. should be created without data', () => {
     expect(service).toBeTruthy();
@@ -93,7 +93,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.fetchGeneralEvents(100, 0).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -124,10 +124,10 @@ describe('EventStorageService', () => {
       objtbc.ID = 11;
       service.createGeneralEvent(objtbc).subscribe({
         next: (val) => {
-          expect(service.GeneralEventsInBuffer.has(objtbc.ID ?? 0)).toBeTrue();
+          expect(service.GeneralEventsInBuffer.has(objtbc.ID ?? 0)).toBe(true);
         },
         error: (err) => {
-          fail('Shall not reach here');
+          throw new Error('Shall not reach here');
         },
       });
 
@@ -151,7 +151,7 @@ describe('EventStorageService', () => {
       objtbc.ID = 11;
       service.createGeneralEvent(objtbc).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -183,7 +183,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.readGeneralEvent(2).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -215,7 +215,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.deleteGeneralEvent(2).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -264,7 +264,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.fetchRecurEvents(100, 0).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -296,7 +296,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.deleteRecurEvent(2).subscribe({
         next: (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err: any) => {
           expect(err.toString()).toContain(msg);
@@ -342,7 +342,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.fetchAllHabitEvents(100, 0).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -388,7 +388,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.readHabitEvent(1).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -453,7 +453,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.generateHabitEvent(hevnt).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -510,7 +510,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.createHabitEvent(hevnt).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -564,7 +564,7 @@ describe('EventStorageService', () => {
       const msg = 'server failed';
       service.updateHabitEvent(hevnt).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);

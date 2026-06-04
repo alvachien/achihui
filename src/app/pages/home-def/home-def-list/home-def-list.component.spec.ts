@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, inject, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { Router } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -22,7 +23,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefListComponent } from './home-def-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../testing';
 import { AuthService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -48,12 +49,12 @@ describe('HomeDefListComponent', () => {
     authServiceStub = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     //uiServiceStub = {};
-    homeService = jasmine.createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
+    homeService = createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [NoopAnimationsModule,
@@ -89,7 +90,7 @@ describe('HomeDefListComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeDefListComponent);
@@ -107,7 +108,7 @@ describe('HomeDefListComponent', () => {
 
     beforeEach(() => {
       routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
     });
@@ -116,56 +117,56 @@ describe('HomeDefListComponent', () => {
       expect(component.dataSource.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.dataSource.length).toBeGreaterThan(0);
       expect(component.dataSource.length).toEqual(fakeData.HomeDefs.length);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
     // TBD: navigation not done by method now
-    // it('should navigate to create page if create home button clicks', fakeAsync(() => {
+    // it('should navigate to create page if create home button clicks', async () => {
     //   fixture.detectChanges(); // ngOnInit()
-    //   tick(); // Complete the observables in ngOnInit
+    //   await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
     //   fixture.detectChanges();
 
     //   component.onCreateHome();
-    //   tick();
+    //   await new Promise<void>(r => setTimeout(r, 0));
 
     //   expect(routerstub.navigate).toHaveBeenCalled();
     //   expect(routerstub.navigate).toHaveBeenCalledWith(['/homedef/create']);
 
-    //   flush();
+    //   await new Promise<void>(r => setTimeout(r, 0));
     // }));
 
-    it('should choose the home successfully', fakeAsync(() => {
+    it('should choose the home successfully', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       // Simulate the row click
       component.onChooseHome(component.dataSource[0]);
-      tick(); // Complete the observables.
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables.
       expect(component.IsCurrentHomeChosed).toBeTruthy();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/']);
-    }));
+    });
 
     // TBD: navigation not done by method
-    // it('shall navigate to home display successfully', fakeAsync(() => {
+    // it('shall navigate to home display successfully', async () => {
     //   fixture.detectChanges(); // ngOnInit()
-    //   tick(); // Complete the observables in ngOnInit
+    //   await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
     //   fixture.detectChanges();
 
     //   component.onDisplayHome(component.dataSource[0]);
-    //   tick(); // Complete the observables.
+    //   await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables.
     //   fixture.detectChanges();
 
     //   expect(routerstub.navigate).toHaveBeenCalled();
@@ -181,37 +182,38 @@ describe('HomeDefListComponent', () => {
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+      const oc = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails', fakeAsync(() => {
+    it('should display error when Service fails', async () => {
       // tell spy to return an async error observable
       fetchAllHomeDefSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

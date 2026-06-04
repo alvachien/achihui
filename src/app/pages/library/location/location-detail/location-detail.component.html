@@ -40,7 +40,7 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback>
       <nz-select nzPlaceHolder="{{ 'Library.LocationType' | transloco }}" formControlName="locTypeControl">
         @for(lstr of arLocationStrings; track lstr.value) {
-          <nz-option nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
+          <nz-option [nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
           </nz-option>
         }
       </nz-select>

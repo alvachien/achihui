@@ -1,13 +1,5 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  inject,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +11,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { AccountListComponent } from './account-list.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -45,7 +37,7 @@ describe('AccountListComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     homeService = {
@@ -57,7 +49,7 @@ describe('AccountListComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
@@ -83,7 +75,7 @@ describe('AccountListComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountListComponent);
@@ -106,11 +98,11 @@ describe('AccountListComponent', () => {
       expect(component.dataSet.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arCategories.length).toBeGreaterThan(0);
@@ -118,40 +110,36 @@ describe('AccountListComponent', () => {
 
       expect(component.dataSet.length).toBeGreaterThan(0);
       expect(component.dataSet.length).toEqual(fakeData.finAccounts.length);
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('shall navigate to display account', fakeAsync(() => {
+    it('shall navigate to display account', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onDisplay(fakeData.finAccounts[0].Id ?? 0);
       expect(routerstub.navigate).toHaveBeenCalledWith([
         '/finance/account/display/' + (fakeData.finAccounts[0].Id ?? 0).toString(),
       ]);
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-      discardPeriodicTasks();
-      flush();
-    }));
-
-    it('shall navigate to edit account', fakeAsync(() => {
+    it('shall navigate to edit account', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       // Display
       component.onEdit(fakeData.finAccounts[0].Id ?? 0);
@@ -159,10 +147,8 @@ describe('AccountListComponent', () => {
       expect(routerstub.navigate).toHaveBeenCalledWith([
         '/finance/account/edit/' + (fakeData.finAccounts[0].Id ?? 0).toString(),
       ]);
-
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('3. shall display error dialog for exception', () => {
@@ -174,61 +160,62 @@ describe('AccountListComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Service fails on Account Category', fakeAsync(() => {
+    it('should display error when Service fails on Account Category', async () => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when Service fails on Account', fakeAsync(() => {
+    it('should display error when Service fails on Account', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

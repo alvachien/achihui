@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, fakeAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
 import moment from 'moment';
@@ -49,7 +49,7 @@ describe('DocumentDetailComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllCurrencies',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -82,8 +82,8 @@ describe('DocumentDetailComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+  beforeEach(async () => {
+    const routerSpy = createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -106,7 +106,7 @@ describe('DocumentDetailComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentDetailComponent);
@@ -172,25 +172,26 @@ describe('DocumentDetailComponent', () => {
       isDocumentChangableSpy = storageService.isDocumentChangable.and.returnValue(of({}));
       changeDocumentSpy = storageService.changeDocument.and.returnValue(of({}));
     });
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('change mode init without error', fakeAsync(() => {
+    it('change mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

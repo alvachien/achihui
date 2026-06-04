@@ -1,4 +1,5 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { createSpyObj } from '../../testing';
+import { TestBed } from '@angular/core/testing';
 import { OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
 import { SafeAny } from '@common/any';
@@ -12,10 +13,10 @@ describe('AuthService', () => {
   let registerForEventsSpy: SafeAny;
 
   beforeAll(() => {
-    securService = jasmine.createSpyObj('OidcSecurityService', ['checkAuth']);
+    securService = createSpyObj('OidcSecurityService', ['checkAuth']);
     checkAuthSpy = securService.checkAuth.and.returnValue(of({}));
 
-    eventService = jasmine.createSpyObj('PublicEventsService', ['registerForEvents']);
+    eventService = createSpyObj('PublicEventsService', ['registerForEvents']);
     registerForEventsSpy = eventService.registerForEvents.and.returnValue(of({}));
   });
 
@@ -29,7 +30,8 @@ describe('AuthService', () => {
     });
   });
 
-  it('should be created', inject([AuthService], (service: AuthService) => {
+  it('should be created', () => {
+    const service = TestBed.inject(AuthService);
     expect(service).toBeTruthy();
 
     const btest = false;
@@ -37,5 +39,5 @@ describe('AuthService', () => {
       expect(checkAuthSpy).not.toHaveBeenCalled();
       expect(registerForEventsSpy).not.toHaveBeenCalled();
     }
-  }));
+  });
 });

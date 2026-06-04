@@ -1,12 +1,4 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
@@ -41,7 +33,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
       </nz-form-control>
     </nz-form-item>
   </form>`,
-    standalone: false
+    standalone: true,
+    imports: [ReactiveFormsModule, NzFormModule, MarkdownEditorComponent],
 })
 export class MarkdownEditorTestFormComponent {
   public formGrp: UntypedFormGroup;
@@ -65,7 +58,7 @@ describe('MarkdownEditorComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [getTranslocoModule(),
@@ -87,7 +80,7 @@ describe('MarkdownEditorComponent', () => {
         MarkdownEditorComponent],
     providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MarkdownEditorTestFormComponent);
@@ -100,19 +93,18 @@ describe('MarkdownEditorComponent', () => {
   });
 
   describe('edit mode', () => {
-    it('edit mode init without error', fakeAsync(() => {
+    it('edit mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('edit mode for code coverage', fakeAsync(() => {
+    it('edit mode for code coverage', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
@@ -152,19 +144,17 @@ describe('MarkdownEditorComponent', () => {
         // Value setter
         testingComponent.editorComponent.value = ctent;
       }
-
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized
     // .../components/code-editor/code-editor.spec.ts
-    xit('edit mode with value change', fakeAsync(() => {
+    it.skip('edit mode with value change', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
@@ -177,20 +167,20 @@ describe('MarkdownEditorComponent', () => {
       // });
 
       let curval = testingComponent.editorComponent?.value;
-      tick();
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       testingComponent.editorComponent?.onToolbarH1();
       testingComponent.formGrp.get('infoControl')?.markAsDirty();
       testingComponent.formGrp.get('infoControl')?.updateValueAndValidity();
 
-      tick();
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       curval = testingComponent.formGrp.get('infoControl')?.value;
       expect(curval).toBeTruthy();
-    }));
+    });
   });
 });

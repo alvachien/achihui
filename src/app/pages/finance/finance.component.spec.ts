@@ -1,4 +1,5 @@
-import { waitForAsync, ComponentFixture, TestBed, inject, tick, fakeAsync, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +11,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import moment from 'moment';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
 import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
 import { FinanceComponent } from './finance.component';
@@ -38,7 +37,7 @@ describe('FinanceComponent', () => {
     fakeData.buildCurrentUser();
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const homeService: Partial<HomeDefOdataService> = {
@@ -47,7 +46,7 @@ describe('FinanceComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
+    const odataService: SafeAny = createSpyObj('FinanceOdataService', [
       'fetchAllDPTmpDocs',
       'fetchAllLoanTmpDocs',
       'createDocumentFromDPTemplate',
@@ -77,7 +76,7 @@ describe('FinanceComponent', () => {
         provideHttpClientTesting(),
     ]
 }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FinanceComponent);
@@ -102,31 +101,32 @@ describe('FinanceComponent', () => {
       fetchOverviewKeyfigureSpy.and.returnValue(of({}));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('Should work if there is no data', fakeAsync(() => {
+    it('Should work if there is no data', async () => {
       arLoanTmpDoc = [];
       arDPTmpDoc = [];
       fetchAllDPTmpDocsSpy.and.returnValue(of(arDPTmpDoc));
       fetchAllLoanTmpDocsSpy.and.returnValue(of(arLoanTmpDoc));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.listDate.length).toEqual(0); // Empty list
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('Should work for DP and Loan docs', fakeAsync(() => {
+    it('Should work for DP and Loan docs', async () => {
       const dat1 = moment().startOf('month');
       const dat2 = moment().endOf('month');
       arLoanTmpDoc = [];
@@ -163,7 +163,7 @@ describe('FinanceComponent', () => {
         })
       );
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.listDate.length).toEqual(2); // Shall be two dates
@@ -181,59 +181,59 @@ describe('FinanceComponent', () => {
 
       // Post the Loan doc
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
       component.doPostLoanDoc(loan1);
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/createloanrepay/3']);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllDPTmpDocs fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllDPTmpDocs fails', async () => {
       fetchAllDPTmpDocsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllLoanTmpDocs fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllLoanTmpDocs fails', async () => {
       fetchAllLoanTmpDocsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

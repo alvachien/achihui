@@ -1,4 +1,4 @@
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
@@ -10,14 +10,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -48,7 +46,7 @@ describe('CashMonthOnMonthReportComponent', () => {
 
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
+    storageService = createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
     fetchCashReportMoMSpy = storageService.fetchCashReportMoM.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
@@ -156,81 +154,79 @@ describe('CashMonthOnMonthReportComponent', () => {
       expect(component.reportData.length).toEqual(0);
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.reportData.length).toBeGreaterThan(0);
 
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should show data after period changed', fakeAsync(() => {
+    it('should show data after period changed', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.reportData.length).toBeGreaterThan(0);
 
       component.selectedPeriod = financePeriodLast6Months;
       component.onChanges(null);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.reportData.length).toBeGreaterThan(0);
 
       component.selectedPeriod = financePeriodLast12Months;
       component.onChanges(null);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.reportData.length).toBeGreaterThan(0);
 
-      discardPeriodicTasks();
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('3. shall popup dialog for exceptions', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+    beforeEach(() => {
+      overlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainerElement = overlayContainer.getContainerElement();
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Report by account Service fails', fakeAsync(() => {
+    it('should display error when Report by account Service fails', async () => {
       // tell spy to return an async error observable
       fetchCashReportMoMSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

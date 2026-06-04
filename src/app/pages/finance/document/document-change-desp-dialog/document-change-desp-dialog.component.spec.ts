@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 
 import { DocumentChangeDespDialogComponent } from './document-change-desp-dialog.component';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
@@ -34,7 +35,7 @@ describe('DocumentChangeDespDialogComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['changeDocumentDespViaPatch']);
+    storageService = createSpyObj('FinanceOdataService', ['changeDocumentDespViaPatch']);
     changeDocumentDespViaPatchSpy = storageService.changeDocumentDespViaPatch.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
@@ -90,13 +91,13 @@ describe('DocumentChangeDespDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when form is invalid', () => {
     component.headerFormGroup.get('despControl')?.setValue('');
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('despControl')?.setValue('Some description');
     component.isSubmitting = true;
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeDocumentDespViaPatch on valid submit', () => {
@@ -107,7 +108,7 @@ describe('DocumentChangeDespDialogComponent', () => {
   });
 
   it('should call modal.destroy on cancel', () => {
-    const destroySpy = spyOn(TestBed.inject(NzModalRef), 'destroy');
+    const destroySpy = vi.spyOn(TestBed.inject(NzModalRef), 'destroy');
     component.onCancel();
     expect(destroySpy).toHaveBeenCalled();
   });
@@ -119,6 +120,6 @@ describe('DocumentChangeDespDialogComponent', () => {
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBeFalse();
+    expect(component.isSubmitting).toBe(false);
   });
 });

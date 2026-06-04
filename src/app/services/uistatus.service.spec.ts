@@ -1,4 +1,4 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,11 +15,13 @@ describe('UIStatusService', () => {
 });
   });
 
-  it('should be created', inject([UIStatusService], (service: UIStatusService) => {
+  it('should be created', () => {
+    const service = TestBed.inject(UIStatusService);
     expect(service).toBeTruthy();
-  }));
+  });
 
-  it('properties', inject([UIStatusService], (service: UIStatusService) => {
+  it('properties', () => {
+    const service = TestBed.inject(UIStatusService);
     expect(service).toBeTruthy();
 
     service.latestError = 'error';
@@ -30,5 +32,5 @@ describe('UIStatusService', () => {
 
     service.CurrentLanguage = 'zh';
     expect(service.CurrentLanguage).toBeTruthy();
-  }));
+  });
 });

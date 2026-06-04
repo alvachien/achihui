@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +7,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { NormalEventListComponent } from './normal-event-list.component';
@@ -30,7 +30,7 @@ describe('NormalEventListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('EventStorageService', ['fetchGeneralEvents']);
+    storageService = createSpyObj('EventStorageService', ['fetchGeneralEvents']);
     fetchGeneralEventsSpy = storageService.fetchGeneralEvents.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -78,14 +78,14 @@ describe('NormalEventListComponent', () => {
       fetchGeneralEventsSpy.and.returnValue(asyncData({ totalCount: 0, contentList: [] }));
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.dataSet.length).toEqual(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

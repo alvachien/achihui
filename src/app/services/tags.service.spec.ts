@@ -66,7 +66,7 @@ describe('TagsService', () => {
     it('should return expected tags (called once)', () => {
       service.fetchAllTags(true).subscribe({
         next: (curries) => {
-          expect(curries.length).withContext('should return expected tags').toEqual(fakeData.tagsFromAPI.length);
+          expect(curries.length, 'should return expected tags').toEqual(fakeData.tagsFromAPI.length);
         },
       });
 
@@ -83,7 +83,7 @@ describe('TagsService', () => {
     it('should be OK returning no tags', () => {
       service.fetchAllTags(true).subscribe({
         next: (curries) => {
-          expect(curries.length).withContext('should have empty tags array').toEqual(0);
+          expect(curries.length, 'should have empty tags array').toEqual(0);
         },
       });
 
@@ -99,7 +99,7 @@ describe('TagsService', () => {
       const msg = 'Deliberate 404';
       service.fetchAllTags(true).subscribe({
         next: () => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);

@@ -1,5 +1,4 @@
 [![build and test](https://github.com/alvachien/achihui/actions/workflows/build-test.yml/badge.svg)](https://github.com/alvachien/achihui/actions/workflows/build-test.yml)
-[![Build Status](https://travis-ci.com/alvachien/achihui.svg?branch=master)](https://travis-ci.com/alvachien/achihui)
 
 # Home Info. Hub (Website Version)
 
@@ -52,8 +51,8 @@ Display a posted document
 
 The live demo used the following API/App:
 
-- AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](https://acidserver.azurewebsites.net);
-- AC HIH API [Github Project Link](https://github.com/alvachien/achihapi) : an Web API hosted in [Azure Link (will be obseleted soon)](https://achihapi.azurewebsites.net).
+- AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service;
+- AC HIH API [Github Project Link](https://github.com/alvachien/achihapi) : a Web API backend.
 
 
 ## What's HIH
@@ -66,7 +65,7 @@ Since version 0.1, it supports the Finance Traces and Learning Traces. The detai
 
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
-This project used tons of new UI technologies, including: Angular 10+, TypeScript 3+, Ant Design 9+, ECharts, etc;   
+This project used tons of new UI technologies, including: Angular 21+, TypeScript, Ant Design, ECharts, etc;   
 
 ## Credits
 
@@ -74,12 +73,10 @@ As an open source project, **HIH** relies on the following open source projects/
 
 * [Typescript](http://www.typescriptlang.org)
 * [Angular](https://github.com/angular/angular)
-* [Ant Design](https://ng.ant.design)
-* [Transloco](https://github.com/ngneat/transloco)
-* [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
-* [Moment.js](https://momentjs.com/)
+* [NG-ZORRO (Ant Design for Angular)](https://ng.ant.design)
 * [ECharts](http://echarts.baidu.com/)
 * [ngx-echarts](https://github.com/xieziyu/ngx-echarts/)
+* [Moment.js](https://momentjs.com/)
 
 
 ## Contact me

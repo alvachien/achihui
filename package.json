@@ -15,8 +15,8 @@
     "build": "ng build",
     "build-ali": "ng build --base-href=/hih/",
     "test": "ng test",
-    "devtest": "ng test --code-coverage",
-    "test-headless": "ng test --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
+    "devtest": "ng test",
+    "test-headless": "ng test --watch=false",
     "lint": "ng lint",
     "bundle-analyzer": "webpack-bundle-analyzer ./dist/achihui/stats.json"
   },
@@ -51,14 +51,9 @@
     "@angular-devkit/build-angular": "^21.2.11",
     "@angular/cli": "^21.2.11",
     "@angular/compiler-cli": "^21.2.13",
-    "@types/jasmine": "^5.1.5",
     "@types/node": "^22.13.1",
-    "jasmine-core": "^5.6.0",
-    "karma": "^6.4.4",
-    "karma-chrome-launcher": "^3.2.0",
-    "karma-coverage": "^2.2.1",
-    "karma-jasmine": "^5.1.0",
-    "karma-jasmine-html-reporter": "^2.1.0",
-    "typescript": "~5.9.0"
+    "jsdom": "^26.0.0",
+    "typescript": "~5.9.0",
+    "vitest": "^4.1.7"
   }
 }

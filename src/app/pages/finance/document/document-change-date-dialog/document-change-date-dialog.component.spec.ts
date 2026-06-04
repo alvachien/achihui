@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
@@ -33,7 +34,7 @@ describe('DocumentChangeDateDialogComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', ['changeDocumentDateViaPatch']);
+    storageService = createSpyObj('FinanceOdataService', ['changeDocumentDateViaPatch']);
     changeDocumentDateViaPatchSpy = storageService.changeDocumentDateViaPatch.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
@@ -90,13 +91,13 @@ describe('DocumentChangeDateDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when form is invalid', () => {
     component.headerFormGroup.get('dateControl')?.setValue(null);
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('dateControl')?.setValue(new Date());
     component.isSubmitting = true;
-    expect(component.isSubmittedDisabled).toBeTrue();
+    expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeDocumentDateViaPatch on valid submit', () => {
@@ -107,7 +108,7 @@ describe('DocumentChangeDateDialogComponent', () => {
   });
 
   it('should call modal.destroy on cancel', () => {
-    const destroySpy = spyOn(TestBed.inject(NzModalRef), 'destroy');
+    const destroySpy = vi.spyOn(TestBed.inject(NzModalRef), 'destroy');
     component.onCancel();
     expect(destroySpy).toHaveBeenCalled();
   });
@@ -119,6 +120,6 @@ describe('DocumentChangeDateDialogComponent', () => {
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBeFalse();
+    expect(component.isSubmitting).toBe(false);
   });
 });

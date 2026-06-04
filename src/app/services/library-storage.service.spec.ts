@@ -88,12 +88,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected fetchAllPersonRoles (called once)', () => {
-      expect(service.PersonRoles.length).withContext('by default is empty').toEqual(0);
+      expect(service.PersonRoles.length, 'by default is empty').toEqual(0);
 
       service.fetchAllPersonRoles().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected person roles').toEqual(arRoles.length);
-          expect(service.PersonRoles.length).withContext('should have buffered').toEqual(arRoles.length);
+          expect(data.length, 'should return expected person roles').toEqual(arRoles.length);
+          expect(service.PersonRoles.length, 'should have buffered').toEqual(arRoles.length);
         },
         error: (err) => {
           // Empty
@@ -110,11 +110,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no peron roles', () => {
-      expect(service.PersonRoles.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.PersonRoles.length, 'should not buffered yet').toEqual(0);
       service.fetchAllPersonRoles().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty peron roles array').toEqual(0);
-          expect(service.PersonRoles.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty peron roles array').toEqual(0);
+          expect(service.PersonRoles.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -132,7 +132,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllPersonRoles().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -148,11 +148,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected peron roles (called multiple times)', () => {
-      expect(service.PersonRoles.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.PersonRoles.length, 'should not buffered yet').toEqual(0);
       service.fetchAllPersonRoles().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected person roles').toEqual(arRoles.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.PersonRoles.length);
+          expect(data.length, 'should return expected person roles').toEqual(arRoles.length);
+          expect(data.length, 'should have buffered').toEqual(service.PersonRoles.length);
         },
         error: (err) => {
           // Do nothing
@@ -170,12 +170,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllPersonRoles().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected person roles').toEqual(arRoles.length);
+          expect(data.length, 'should return expected person roles').toEqual(arRoles.length);
         },
         error: (err) => {
           // Do nothing
@@ -185,7 +185,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.personRoleAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -212,12 +212,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected fetchAllOrganizationTypes (called once)', () => {
-      expect(service.OrganizationTypes.length).withContext('by default is empty').toEqual(0);
+      expect(service.OrganizationTypes.length, 'by default is empty').toEqual(0);
 
       service.fetchAllOrganizationTypes().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected organization type').toEqual(arData.length);
-          expect(service.OrganizationTypes.length).withContext('should have buffered').toEqual(arData.length);
+          expect(data.length, 'should return expected organization type').toEqual(arData.length);
+          expect(service.OrganizationTypes.length, 'should have buffered').toEqual(arData.length);
         },
         error: (err) => {
           // Empty
@@ -234,11 +234,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no organization types', () => {
-      expect(service.OrganizationTypes.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.OrganizationTypes.length, 'should not buffered yet').toEqual(0);
       service.fetchAllOrganizationTypes().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty organization type array').toEqual(0);
-          expect(service.OrganizationTypes.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty organization type array').toEqual(0);
+          expect(service.OrganizationTypes.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -256,7 +256,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllOrganizationTypes().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -272,11 +272,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected organization types (called multiple times)', () => {
-      expect(service.OrganizationTypes.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.OrganizationTypes.length, 'should not buffered yet').toEqual(0);
       service.fetchAllOrganizationTypes().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected organization types').toEqual(arData.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.OrganizationTypes.length);
+          expect(data.length, 'should return expected organization types').toEqual(arData.length);
+          expect(data.length, 'should have buffered').toEqual(service.OrganizationTypes.length);
         },
         error: (err) => {
           // Do nothing
@@ -294,12 +294,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllOrganizationTypes().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected organization types').toEqual(arData.length);
+          expect(data.length, 'should return expected organization types').toEqual(arData.length);
         },
         error: (err) => {
           // Do nothing
@@ -309,7 +309,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.orgTypeAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -336,12 +336,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected bookCategories (called once)', () => {
-      expect(service.BookCategories.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.BookCategories.length, 'should not buffered yet').toEqual(0);
 
       service.fetchAllBookCategories().subscribe({
         next: (ctgies) => {
-          expect(ctgies.length).withContext('should return expected book categories').toEqual(arBookCtgy.length);
-          expect(service.BookCategories.length).withContext('should have buffered').toEqual(arBookCtgy.length);
+          expect(ctgies.length, 'should return expected book categories').toEqual(arBookCtgy.length);
+          expect(service.BookCategories.length, 'should have buffered').toEqual(arBookCtgy.length);
         },
         error: (err) => {
           // Empty
@@ -358,11 +358,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no bookCategories', () => {
-      expect(service.BookCategories.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.BookCategories.length, 'should not buffered yet').toEqual(0);
       service.fetchAllBookCategories().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty bookCategories array').toEqual(0);
-          expect(service.BookCategories.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty bookCategories array').toEqual(0);
+          expect(service.BookCategories.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -380,7 +380,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllBookCategories().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -396,11 +396,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected bookCategories (called multiple times)', () => {
-      expect(service.BookCategories.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.BookCategories.length, 'should not buffered yet').toEqual(0);
       service.fetchAllBookCategories().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected book categories').toEqual(arBookCtgy.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.BookCategories.length);
+          expect(data.length, 'should return expected book categories').toEqual(arBookCtgy.length);
+          expect(data.length, 'should have buffered').toEqual(service.BookCategories.length);
         },
         error: (err) => {
           // Do nothing
@@ -409,7 +409,7 @@ describe('LibraryStorageService', () => {
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
       });
-      expect(reqs.length).withContext('shall be only 1 calls to real API!').toEqual(1);
+      expect(reqs.length, 'shall be only 1 calls to real API!').toEqual(1);
       reqs[0].flush({ '@odata.count': arBookCtgy.length, value: arBookCtgy });
       httpTestingController.verify();
 
@@ -418,12 +418,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllBookCategories().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected book categories').toEqual(arBookCtgy.length);
+          expect(data.length, 'should return expected book categories').toEqual(arBookCtgy.length);
         },
         error: (err) => {
           // Do nothing
@@ -432,7 +432,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.bookCategoryAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -461,12 +461,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected fetchAllPersons (called once)', () => {
-      expect(service.Persons.length).withContext('by default is empty').toEqual(0);
+      expect(service.Persons.length, 'by default is empty').toEqual(0);
 
       service.fetchAllPersons().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(service.Persons.length).withContext('should have buffered').toEqual(arData.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(service.Persons.length, 'should have buffered').toEqual(arData.length);
         },
         error: (err) => {
           // Empty
@@ -483,11 +483,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no peron roles', () => {
-      expect(service.Persons.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Persons.length, 'should not buffered yet').toEqual(0);
       service.fetchAllPersons().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty data array').toEqual(0);
-          expect(service.Persons.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty data array').toEqual(0);
+          expect(service.Persons.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -505,7 +505,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllPersons().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -521,11 +521,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected perons (called multiple times)', () => {
-      expect(service.Persons.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Persons.length, 'should not buffered yet').toEqual(0);
       service.fetchAllPersons().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.Persons.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(data.length, 'should have buffered').toEqual(service.Persons.length);
         },
         error: (err) => {
           // Do nothing
@@ -543,12 +543,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.personAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllPersons().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected persons').toEqual(arData.length);
+          expect(data.length, 'should return expected persons').toEqual(arData.length);
         },
         error: (err) => {
           // Do nothing
@@ -558,7 +558,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.personAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -605,7 +605,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.readPerson(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -661,7 +661,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.createPerson(objdata).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -710,7 +710,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.deletePerson(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -751,12 +751,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected fetchAllOrganizations (called once)', () => {
-      expect(service.Organizations.length).withContext('by default is empty').toEqual(0);
+      expect(service.Organizations.length, 'by default is empty').toEqual(0);
 
       service.fetchAllOrganizations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(service.Organizations.length).withContext('should have buffered').toEqual(arData.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(service.Organizations.length, 'should have buffered').toEqual(arData.length);
         },
         error: (err) => {
           // Empty
@@ -773,11 +773,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no peron roles', () => {
-      expect(service.Organizations.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Organizations.length, 'should not buffered yet').toEqual(0);
       service.fetchAllOrganizations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty data array').toEqual(0);
-          expect(service.Organizations.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty data array').toEqual(0);
+          expect(service.Organizations.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -795,7 +795,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllOrganizations().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -811,11 +811,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected perons (called multiple times)', () => {
-      expect(service.Organizations.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Organizations.length, 'should not buffered yet').toEqual(0);
       service.fetchAllOrganizations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.Organizations.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(data.length, 'should have buffered').toEqual(service.Organizations.length);
         },
         error: (err) => {
           // Do nothing
@@ -833,12 +833,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllOrganizations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
         },
         error: (err) => {
           // Do nothing
@@ -848,7 +848,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -895,7 +895,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.readOrganization(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -951,7 +951,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.createOrganization(objdata).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1000,7 +1000,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.deleteOrganization(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1041,12 +1041,12 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected location (called once)', () => {
-      expect(service.Locations.length).withContext('by default is empty').toEqual(0);
+      expect(service.Locations.length, 'by default is empty').toEqual(0);
 
       service.fetchAllLocations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(service.Locations.length).withContext('should have buffered').toEqual(arData.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(service.Locations.length, 'should have buffered').toEqual(arData.length);
         },
         error: (err) => {
           // Empty
@@ -1063,11 +1063,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should be OK returning no locations', () => {
-      expect(service.Locations.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Locations.length, 'should not buffered yet').toEqual(0);
       service.fetchAllLocations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should have empty data array').toEqual(0);
-          expect(service.Locations.length).withContext('should buffered nothing').toEqual(0);
+          expect(data.length, 'should have empty data array').toEqual(0);
+          expect(service.Locations.length, 'should buffered nothing').toEqual(0);
         },
         error: (err) => {
           // Empty
@@ -1085,7 +1085,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchAllLocations().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1101,11 +1101,11 @@ describe('LibraryStorageService', () => {
     });
 
     it('should return expected locations (called multiple times)', () => {
-      expect(service.Locations.length).withContext('should not buffered yet').toEqual(0);
+      expect(service.Locations.length, 'should not buffered yet').toEqual(0);
       service.fetchAllLocations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
-          expect(data.length).withContext('should have buffered').toEqual(service.Locations.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
+          expect(data.length, 'should have buffered').toEqual(service.Locations.length);
         },
         error: (err) => {
           // Do nothing
@@ -1123,12 +1123,12 @@ describe('LibraryStorageService', () => {
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
       });
-      expect(reqs2.length).withContext('shall be 0 calls to real API due to buffer!').toEqual(0);
+      expect(reqs2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
       service.fetchAllLocations().subscribe({
         next: (data) => {
-          expect(data.length).withContext('should return expected data').toEqual(arData.length);
+          expect(data.length, 'should return expected data').toEqual(arData.length);
         },
         error: (err) => {
           // Do nothing
@@ -1138,7 +1138,7 @@ describe('LibraryStorageService', () => {
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
       });
-      expect(reqs3.length).withContext('shall be 0 calls to real API in third call!').toEqual(0);
+      expect(reqs3.length, 'shall be 0 calls to real API in third call!').toEqual(0);
     });
   });
 
@@ -1185,7 +1185,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.readLocation(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1226,7 +1226,7 @@ describe('LibraryStorageService', () => {
     it('should return expected data', () => {
       service.fetchBooks(100, 0).subscribe({
         next: (data) => {
-          expect(data.contentList.length).withContext('should return expected data').toEqual(arData.length);
+          expect(data.contentList.length, 'should return expected data').toEqual(arData.length);
         },
         error: (err) => {
           // Empty
@@ -1246,7 +1246,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.fetchBooks().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1303,7 +1303,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.readBook(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1358,7 +1358,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.createBook(objdata).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);
@@ -1399,7 +1399,7 @@ describe('LibraryStorageService', () => {
       const msg = 'Error 404';
       service.deleteBook(2).subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.toString()).toContain(msg);

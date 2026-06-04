@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { of } from 'rxjs';
-import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { ConfigComponent } from './config.component';
@@ -31,7 +31,7 @@ describe('ConfigComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', [
+    storageService = createSpyObj('LibraryStorageService', [
       'fetchAllPersonRoles',
       'fetchAllOrganizationTypes',
       'fetchAllBookCategories',

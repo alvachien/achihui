@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -11,13 +11,13 @@ describe('AboutComponent', () => {
   let component: AboutComponent;
   let fixture: ComponentFixture<AboutComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, NzDividerModule, getTranslocoModule()],
       // declarations moved to imports
       providers: [UIStatusService],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     const uisrv = TestBed.inject(UIStatusService);

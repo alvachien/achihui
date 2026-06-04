@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { EventUIModule } from '../../event-ui.module';
-import { getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { RecurEventListComponent } from './recur-event-list.component';
@@ -30,7 +30,7 @@ describe('RecurEventListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('LibraryStorageService', ['fetchRecurEvents']);
+    storageService = createSpyObj('LibraryStorageService', ['fetchRecurEvents']);
     fetchRecurEventsSpy = storageService.fetchRecurEvents.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -79,14 +79,14 @@ describe('RecurEventListComponent', () => {
       fetchRecurEventsSpy.and.returnValue(asyncData({ totalCount: 0, contentList: [] }));
     });
 
-    it('should show data after OnInit', fakeAsync(() => {
+    it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      tick(); // Complete the observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.dataSet.length).toEqual(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

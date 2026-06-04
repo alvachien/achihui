@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -11,15 +11,13 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {
-  getTranslocoModule,
+import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
   ActivatedRouteUrlStub,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,
-} from '../../../../../testing';
+  ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, TemplateDocLoan } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -73,7 +71,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -105,7 +103,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createloanrepay', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -147,7 +145,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentLoanRepayCreateComponent);
@@ -200,179 +198,180 @@ describe('DocumentLoanRepayCreateComponent', () => {
       );
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should popup error dialog if fetchAllAccountCategories fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllAccountCategories fails', async () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllTranTypes fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllTranTypes fails', async () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllAccounts fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllAccounts fails', async () => {
       fetchAllAccountsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllControlCenters fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllControlCenters fails', async () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllOrders fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllOrders fails', async () => {
       fetchAllOrdersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllCurrencies fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllCurrencies fails', async () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should popup error dialog if fetchAllDocTypes fails', fakeAsync(() => {
+    it('should popup error dialog if fetchAllDocTypes fails', async () => {
       fetchAllDocTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: search for template loan document', fakeAsync(() => {
+    it('step 0: search for template loan document', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -391,7 +390,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.listOfLoanTmpDoc.length).toBeGreaterThan(0);
       // Add to select
@@ -406,14 +405,14 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.selectedLoanTmpDoc.length).toEqual(0);
       expect(component.nextButtonEnabled).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: shall popup error dialog if failed to search for template loan', fakeAsync(() => {
+    it('step 0: shall popup error dialog if failed to search for template loan', async () => {
       fetchAllLoanTmpDocsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -432,30 +431,30 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 0: shall popup error dialog if failed to read loan account', fakeAsync(() => {
+    it.skip('step 0: shall popup error dialog if failed to read loan account', async () => {
       readAccountSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -474,7 +473,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.listOfLoanTmpDoc.length).toBeGreaterThan(0);
       // Add to select
@@ -484,28 +483,28 @@ describe('DocumentLoanRepayCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
 
       component.next();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 1: items', fakeAsync(() => {
+    it.skip('step 1: items', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -518,7 +517,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.listOfLoanTmpDoc.length).toBeGreaterThan(0);
       // Add to select
@@ -529,7 +528,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 1. Items
@@ -545,12 +544,12 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // component.onItemAmountChange();
       // expect(component.nextButtonEnabled).toBeTruthy();
 
-      // flush();
-    }));
+      // await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 2: confirm', fakeAsync(() => {
+    it.skip('step 2: confirm', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -563,7 +562,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.listOfLoanTmpDoc.length).toBeGreaterThan(0);
       // Add to select
@@ -574,7 +573,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 1. Items
@@ -596,12 +595,12 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // // Step 2.
       // expect(component.currentStep).toEqual(2);
 
-      // flush();
-    }));
+      // await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 3: result with success', fakeAsync(() => {
+    it.skip('step 3: result with success', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -614,7 +613,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
       component.onSearchLoanTmp();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.listOfLoanTmpDoc.length).toBeGreaterThan(0);
       // Add to select
@@ -625,7 +624,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 1. Items
@@ -647,11 +646,11 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // expect(component.nextButtonEnabled).toBeTruthy();
       // component.next();
       // fixture.detectChanges();
-      // tick();
+      // await new Promise<void>(r => setTimeout(r, 0));
       // fixture.detectChanges();
 
-      // flush();
-    }));
+      // await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('Working with data about navigation', () => {
@@ -692,12 +691,14 @@ describe('DocumentLoanRepayCreateComponent', () => {
       );
     });
 
-    beforeEach(inject([OverlayContainer, UIStatusService], (oc: OverlayContainer, uisvc: UIStatusService) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+    const uisvc: UIStatusService = TestBed.inject(UIStatusService);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
 
       uisvc.SelectedLoanTmp = loanTmpDoc;
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();

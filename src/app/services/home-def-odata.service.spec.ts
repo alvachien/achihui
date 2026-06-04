@@ -48,11 +48,11 @@ describe('HomeDefOdataService', () => {
     });
 
     it('should return data for success case (call once)', () => {
-      expect(service.HomeDefs.length).toEqual(0, 'should not buffer it yet');
+      expect(service.HomeDefs.length).toEqual(0);
       service.fetchAllHomeDef().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
-          expect(service.HomeDefs.length).toBeGreaterThan(0, 'should have been buffered');
+          expect(service.HomeDefs.length).toBeGreaterThan(0);
         },
         (fail: any) => {
           // Empty
@@ -82,11 +82,11 @@ describe('HomeDefOdataService', () => {
       });
     });
 
-    xit('should return error in case error appear', () => {
+    it.skip('should return error in case error appear', () => {
       const msg = 'server failed';
       service.fetchAllHomeDef().subscribe({
         next: (data) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         error: (err) => {
           expect(err.message).toContain(msg);
@@ -102,11 +102,11 @@ describe('HomeDefOdataService', () => {
     });
 
     it('should return data for success case (call multiply times)', () => {
-      expect(service.HomeDefs.length).toEqual(0, 'should not buffer it yet');
+      expect(service.HomeDefs.length).toEqual(0);
       service.fetchAllHomeDef().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
-          expect(service.HomeDefs.length).toBeGreaterThan(0, 'should have been buffered');
+          expect(service.HomeDefs.length).toBeGreaterThan(0);
         },
         (fail: any) => {
           // Empty
@@ -139,7 +139,7 @@ describe('HomeDefOdataService', () => {
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.apiUrl;
       });
-      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      expect(req2.length).toEqual(0);
     });
   });
 
@@ -154,11 +154,11 @@ describe('HomeDefOdataService', () => {
     });
 
     it('should return data for success case (call once)', () => {
-      expect(service.HomeDefs.length).toEqual(0, 'should not buffer it yet');
+      expect(service.HomeDefs.length).toEqual(0);
       service.readHomeDef(1).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
-          expect(service.HomeDefs.length).toBeGreaterThan(0, 'should have been buffered');
+          expect(service.HomeDefs.length).toBeGreaterThan(0);
         },
         (fail: any) => {
           // Empty
@@ -177,7 +177,7 @@ describe('HomeDefOdataService', () => {
       const msg = 'server failed';
       service.readHomeDef(1).subscribe(
         (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         (error: any) => {
           expect(error.message).toContain(msg);
@@ -204,11 +204,11 @@ describe('HomeDefOdataService', () => {
     });
 
     it('should return data for success case', () => {
-      expect(service.HomeDefs.length).toEqual(0, 'should not buffer it yet');
+      expect(service.HomeDefs.length).toEqual(0);
       service.createHomeDef(fakeData.chosedHome).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
-          expect(service.HomeDefs.length).toBeGreaterThan(0, 'should have been buffered');
+          expect(service.HomeDefs.length).toBeGreaterThan(0);
         },
         (fail: any) => {
           // Empty
@@ -227,7 +227,7 @@ describe('HomeDefOdataService', () => {
       const msg = 'server failed';
       service.createHomeDef(fakeData.chosedHome).subscribe(
         (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         (error: any) => {
           expect(error.message).toContain(msg);
@@ -285,7 +285,7 @@ describe('HomeDefOdataService', () => {
       const msg = 'server failed';
       service.getHomeKeyFigure().subscribe(
         (data: any) => {
-          fail('expected to fail');
+          throw new Error('expected to fail');
         },
         (error: any) => {
           expect(error.message).toContain(msg);

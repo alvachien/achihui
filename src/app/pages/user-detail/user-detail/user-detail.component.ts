@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -12,7 +13,7 @@ import { AuthService, HomeDefOdataService } from '../../../services';
   selector: 'hih-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.less'],
-  imports: [NzPageHeaderModule, NzDescriptionsModule, NgIf, NgFor, TranslocoModule],
+  imports: [NzPageHeaderModule, NzDescriptionsModule, FormsModule, NgIf, NgFor, TranslocoModule],
 })
 export class UserDetailComponent implements OnInit {
   userID: string | null = null;

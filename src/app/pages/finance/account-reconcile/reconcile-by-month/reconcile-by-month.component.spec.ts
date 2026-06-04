@@ -1,5 +1,6 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { provideHttpClientTesting} from '@angular/common/http/testing';
+import { createSpyObj } from 'testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -57,7 +58,7 @@ describe('ReconcileByMonthComponent', () => {
   });
 
   beforeEach(async () => {
-    const odataService = jasmine.createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    const odataService = createSpyObj('FinanceOdataService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     fetchAllAccountCategoriesSpy = odataService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = odataService.fetchAllAccounts.and.returnValue(of([]));
 
@@ -119,12 +120,12 @@ describe('ReconcileByMonthComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
 
-    it('1. shall initialize the data', fakeAsync(() => {
+    it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arAccounts.length).toEqual(fakeData.finAccounts.length);
-    }));
+    });
   });
 });

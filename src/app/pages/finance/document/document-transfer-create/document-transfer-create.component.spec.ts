@@ -1,13 +1,5 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  inject,
-  tick,
-  flush,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +14,7 @@ import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentTransferCreateComponent } from './document-transfer-create.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
@@ -55,7 +47,7 @@ describe('DocumentTransferCreateComponent', () => {
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   const homeService: Partial<HomeDefOdataService> = {};  
-  const odataService: SafeAny = jasmine.createSpyObj('FinanceOdataService', [
+  const odataService: SafeAny = createSpyObj('FinanceOdataService', [
     'fetchAllCurrencies',
     'fetchAllDocTypes',
     'fetchAllAccountCategories',
@@ -88,7 +80,7 @@ describe('DocumentTransferCreateComponent', () => {
     createDocumentSpy = odataService.createDocument.and.returnValue(of({}));
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
@@ -123,11 +115,14 @@ describe('DocumentTransferCreateComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentTransferCreateComponent);
     component = fixture.componentInstance;
+    // Defensive reset: test pollution from preceding test files can leave
+    // curDocType as undefined, causing onVerify to fail
+    component.curDocType = 2;
     // fixture.detectChanges();
   });
 
@@ -154,21 +149,22 @@ describe('DocumentTransferCreateComponent', () => {
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('1. should display error when currency service fails', fakeAsync(() => {
+    it('1. should display error when currency service fails', async () => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Currency service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -181,20 +177,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('2. should display error when accont category service fails', fakeAsync(() => {
+    it('2. should display error when accont category service fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const messageElement = overlayContainerElement.querySelector(modalClassName)!;
@@ -206,20 +200,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('3. should display error when doc type service fails', fakeAsync(() => {
+    it('3. should display error when doc type service fails', async () => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Doc type service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -232,20 +224,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('4. should display error when tran type service fails', fakeAsync(() => {
+    it('4. should display error when tran type service fails', async () => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Tran type service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -258,20 +248,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('5. should display error when accont service fails', fakeAsync(() => {
+    it('5. should display error when accont service fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Account service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -284,20 +272,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('6. should display error when control center service fails', fakeAsync(() => {
+    it('6. should display error when control center service fails', async () => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Control center service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -310,20 +296,18 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('7. should display error when order service fails', fakeAsync(() => {
+    it('7. should display error when order service fails', async () => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Order service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -336,13 +320,11 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
-
-      discardPeriodicTasks();
-    }));
+    });
   });
 
   describe('3. should prevent errors by the checking logic', () => {
@@ -363,48 +345,49 @@ describe('DocumentTransferCreateComponent', () => {
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 0: should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('step 0: should set the default values: base currency, date, and so on', async () => {
       expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0); // First step
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       const docobj: Document = component.headerFormGroup.get('headerControl')?.value as Document;
       expect(docobj.TranCurr).toEqual('');
-    }));
+    });
 
-    it('step 0: should have accounts and orders loaded', fakeAsync(() => {
+    it('step 0: should have accounts and orders loaded', async () => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccounts.length).toEqual(0);
       expect(component.arUIOrders.length).toEqual(0);
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.arUIAccounts.length).toBeGreaterThan(0);
       expect(component.arUIOrders.length).toBeGreaterThan(0);
-    }));
+    });
 
-    it('step 0: amount is mandatory', fakeAsync(() => {
+    it('step 0: amount is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccounts.length).toEqual(0);
       expect(component.arUIOrders.length).toEqual(0);
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -413,13 +396,12 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.valid)
-        .withContext('Expect header form is invalid because amount is missing')
+      expect(component.headerFormGroup.valid, 'Expect header form is invalid because amount is missing')
         .toBeFalsy();
       fixture.detectChanges();
 
       // Click the next button
-      expect(component.nextButtonEnabled).toBeFalse();
+      expect(component.nextButtonEnabled).toBe(false);
 
       const nextButtonNativeEl = fixture.debugElement.queryAll(By.css(nextButtonId))[0].nativeElement;
       expect(component.currentStep).toBe(0);
@@ -428,12 +410,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(0);
-    }));
+    });
 
-    it('step 0: shall go to step 1 for base currency case', fakeAsync(() => {
+    it('step 0: shall go to step 1 for base currency case', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0); // At first page
@@ -444,7 +426,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -456,13 +438,13 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(1);
-    }));
+    });
 
-    it('step 0: shall go to step 1 for foreign currency case', fakeAsync(() => {
+    it('step 0: shall go to step 1 for foreign currency case', async () => {
       expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0); // At first page
@@ -475,7 +457,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       fixture.detectChanges();
 
       // Click the next button
@@ -486,12 +468,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(1);
-    }));
+    });
 
-    it('step 1: account is mandatory', fakeAsync(() => {
+    it('step 1: account is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -501,9 +483,9 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
-      expect(component.headerFormGroup.valid).withContext('Expect header from is valid').toBeTruthy();
-      expect(component.nextButtonEnabled).withContext('Expect next button is enabled').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.valid, 'Expect header from is valid').toBeTruthy();
+      expect(component.nextButtonEnabled, 'Expect next button is enabled').toBeTruthy();
       expect(component.currentStep).toBe(0);
       fixture.detectChanges();
 
@@ -523,15 +505,15 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(1);
-    }));
+    });
 
     // Step 1: Asset account should not allowed
     // Step 1: ADP account should not allowed
 
-    it('step 1: neither control center nor order', fakeAsync(() => {
+    it('step 1: neither control center nor order', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -541,7 +523,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -563,12 +545,12 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(1);
-    }));
+    });
 
-    it('step 1: control center and order both', fakeAsync(() => {
+    it('step 1: control center and order both', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -577,7 +559,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -602,12 +584,12 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(1);
-    }));
+    });
 
-    it('step 2: account is mandatory', fakeAsync(() => {
+    it('step 2: account is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -616,7 +598,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -644,12 +626,12 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
-    }));
+    });
 
-    it('step 2: to account shall not identical as from account', fakeAsync(() => {
+    it('step 2: to account shall not identical as from account', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -658,12 +640,11 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid)
-        .withContext('Expect a valid header form')
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header form')
         .toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.valid).toBeTruthy('Expect a valid header step');
+      expect(component.headerFormGroup.valid).toBeTruthy();
       fixture.detectChanges();
 
       // Click the next button
@@ -672,7 +653,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Now sit in step 2
-      expect(component.currentStep).toBe(1, 'Expect the stepper is now in From Step');
+      expect(component.currentStep).toBe(1);
       component.fromFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.fromFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -686,21 +667,21 @@ describe('DocumentTransferCreateComponent', () => {
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.toFormGroup.updateValueAndValidity();
-      expect(component.toFormGroup.valid).toBeFalsy('Expect the from account and to account are not the same');
+      expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
-    }));
+    });
 
     // Step 2: Asset account should not allowed
     // Step 2: ADP account should not allowed
 
-    it('step 2: neither control center nor order', fakeAsync(() => {
+    it('step 2: neither control center nor order', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -709,7 +690,7 @@ describe('DocumentTransferCreateComponent', () => {
       // curdoc.TranDate = moment();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.get('amountControl')?.setValue(100);
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
@@ -739,12 +720,12 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
-    }));
+    });
 
-    it('step 2: control center and order both', fakeAsync(() => {
+    it('step 2: control center and order both', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -754,7 +735,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -786,11 +767,11 @@ describe('DocumentTransferCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
-    }));
+    });
 
-    it('step 3: review and confirm', fakeAsync(() => {
+    it('step 3: review and confirm', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const curdoc: Document = new Document();
@@ -800,7 +781,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -824,7 +805,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
 
@@ -839,12 +820,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 3: shall popup dialog for invalid generated doc', fakeAsync(() => {
+    it.skip('step 3: shall popup dialog for invalid generated doc', async () => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0
@@ -854,7 +835,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -878,7 +859,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
 
@@ -895,7 +876,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Click the next button
       nextButtonNativeEl.click();
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges(); // Trigers the generate document object, and it failed
 
       // Expect an error dialog
@@ -907,15 +888,15 @@ describe('DocumentTransferCreateComponent', () => {
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 4: will create the doc and show the result', fakeAsync(() => {
+    it('step 4: will create the doc and show the result', async () => {
       createDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -924,7 +905,7 @@ describe('DocumentTransferCreateComponent', () => {
         })
       );
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0
@@ -935,7 +916,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -959,7 +940,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
 
@@ -978,32 +959,32 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
 
       // Now the call is finished
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createDocumentSpy).toHaveBeenCalled();
       expect(component.currentStep).toBe(4);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeTruthy();
 
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // Navigation shall work
       const routerstub = TestBed.inject(Router);
-      spyOn(routerstub, 'navigate');
+      vi.spyOn(routerstub, 'navigate');
 
       component.onDisplayCreatedDoc();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/finance/document/display/1']);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 4: will show the failed result', fakeAsync(() => {
+    it('step 4: will show the failed result', async () => {
       createDocumentSpy.and.returnValue(asyncError('failed in creation'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0
@@ -1014,7 +995,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
-      expect(component.headerFormGroup.get('headerControl')?.valid).withContext('Expect a valid header').toBeTruthy();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
       component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
@@ -1038,7 +1019,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       component.toFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[1].Id);
       component.toFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.toFormGroup.valid).toBeTruthy();
 
@@ -1057,18 +1038,18 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
 
       // Now the call is finished
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createDocumentSpy).toHaveBeenCalled();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toBe(4);
-      expect(component.isDocPosting).withContext('expect variable isDocPosting is false').toBeFalsy();
-      expect(component.docIdCreated).withContext('expect variable docIdCreated is null').toBeFalsy();
+      expect(component.isDocPosting, 'expect variable isDocPosting is false').toBeFalsy();
+      expect(component.docIdCreated, 'expect variable docIdCreated is null').toBeFalsy();
       expect(component.docPostingFailed).toEqual('failed in creation');
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });

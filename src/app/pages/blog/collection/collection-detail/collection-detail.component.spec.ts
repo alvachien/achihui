@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
-import { getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub} from '../../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
@@ -31,14 +31,14 @@ describe('CollectionDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = jasmine.createSpyObj('BlogOdataService', ['readCollection', 'createCollection']);
+    storageService = createSpyObj('BlogOdataService', ['readCollection', 'createCollection']);
     readCollectionSpy = storageService.readCollection.and.returnValue(of([]));
     createCollectionSpy = storageService.createCollection.and.returnValue(of({}));
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
@@ -60,7 +60,7 @@ describe('CollectionDetailComponent', () => {
         NzModalService,
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CollectionDetailComponent);
@@ -76,13 +76,13 @@ describe('CollectionDetailComponent', () => {
   });
 
   describe('create mode', () => {
-    it('create mode init without error', fakeAsync(() => {
+    it('create mode init without error', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
       expect(component.uiMode).toEqual(UIMode.Create);
-    }));
+    });
   });
 });

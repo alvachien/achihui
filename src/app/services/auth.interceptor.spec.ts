@@ -38,7 +38,7 @@ describe('authInterceptor', () => {
     httpClient.get(apiUrl).subscribe();
 
     const req = httpTestingController.expectOne(apiUrl);
-    expect(req.request.headers.has('Authorization')).toBeFalse();
+    expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush({});
   });
 

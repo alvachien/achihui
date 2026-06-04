@@ -1,4 +1,4 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -39,11 +39,13 @@ describe('HomeNotChildGuardService', () => {
     });
   });
 
-  it('should be created', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('should be created', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     expect(service).toBeTruthy();
-  }));
+  });
 
-  it('checkLogin without login', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('checkLogin without login', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     expect(service).toBeTruthy();
 
     const urInfo = new UserAuthInfo();
@@ -52,39 +54,43 @@ describe('HomeNotChildGuardService', () => {
 
     const isLogin = service.checkLogin();
     expect(isLogin).toBeTruthy();
-  }));
+  });
 
-  it('checkLogin with login', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('checkLogin with login', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     expect(service).toBeTruthy();
 
     const isLogin = service.checkLogin();
     expect(isLogin).toBeFalsy();
-  }));
+  });
 
-  it('canActivate should return false when fatalError is true', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('canActivate should return false when fatalError is true', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     uiServiceStub.fatalError = true;
     const result = service.canActivate({} as any, { url: '/test' } as any);
-    expect(result).toBeFalse();
+    expect(result).toBe(false);
     uiServiceStub.fatalError = false;
-  }));
+  });
 
-  it('canActivate should return false when ChosedHome is undefined', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('canActivate should return false when ChosedHome is undefined', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     const urInfo = new UserAuthInfo();
     urInfo.isAuthorized = true;
     authServiceStub.authSubject = new BehaviorSubject(urInfo);
     homeService.ChosedHome = undefined;
 
     const result = service.canActivate({} as any, { url: '/test' } as any);
-    expect(result).toBeFalse();
-  }));
+    expect(result).toBe(false);
+  });
 
-  it('canActivate should return true when authorized and home chosen', inject([HomeNotChildGuardService], (service: HomeNotChildGuardService) => {
+  it('canActivate should return true when authorized and home chosen', () => {
+    const service = TestBed.inject(HomeNotChildGuardService);
     const urInfo = new UserAuthInfo();
     urInfo.isAuthorized = true;
     authServiceStub.authSubject = new BehaviorSubject(urInfo);
     homeService.ChosedHome = fakeData.chosedHome;
 
     const result = service.canActivate({} as any, { url: '/test' } as any);
-    expect(result).toBeTrue();
-  }));
+    expect(result).toBe(true);
+  });
 });

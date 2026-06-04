@@ -1,13 +1,4 @@
-import {
-  waitForAsync,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-  flush,
-  inject,
-  discardPeriodicTasks,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -24,7 +15,7 @@ import { AccountExtraAssetComponent } from '../../account/account-extra-asset';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { DocumentAssetBuyCreateComponent } from './document-asset-buy-create.component';
-import { getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
+import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -81,7 +72,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       return val.CategoryId === financeAccountCategoryAsset;
     });
 
-    storageService = jasmine.createSpyObj('FinanceOdataService', [
+    storageService = createSpyObj('FinanceOdataService', [
       'fetchAllAccountCategories',
       'fetchAllAssetCategories',
       'fetchAllDocTypes',
@@ -109,7 +100,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
   });
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     // declarations moved to imports
     imports: [FormsModule,
@@ -148,7 +139,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
     //     entryComponents: [MessageDialogComponent],
     //   },
     // }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentAssetBuyCreateComponent);
@@ -182,29 +173,30 @@ describe('DocumentAssetBuyCreateComponent', () => {
       createAssetBuyinDocumentSpy = storageService.createAssetBuyinDocument.and.returnValue(of({}));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('setp 0: initial status', fakeAsync(() => {
+    it('setp 0: initial status', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: document header is manadatory', fakeAsync(() => {
+    it('step 0: document header is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -217,7 +209,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -226,20 +218,20 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: asset account is manadatory', fakeAsync(() => {
+    it('step 0: asset account is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -252,9 +244,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account - missing
       // Amount
@@ -267,7 +259,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Owner
       component.firstFormGroup.get('ownerControl')?.setValue(fakeData.chosedHome.Members[0].User);
       component.firstFormGroup.get('ownerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -275,21 +267,21 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Add the asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
       component.firstFormGroup.get('assetAccountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.get('assetAccountControl')?.valid).toBeTruthy();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: amount is manadatory', fakeAsync(() => {
+    it('step 0: amount is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -302,9 +294,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -317,7 +309,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Owner
       component.firstFormGroup.get('ownerControl')?.setValue(fakeData.chosedHome.Members[0].User);
       component.firstFormGroup.get('ownerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.get('assetAccountControl')?.valid).toBeTruthy();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -326,20 +318,20 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Add the missing part
       component.firstFormGroup.get('amountControl')?.setValue(100.2);
       component.firstFormGroup.get('amountControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: owner is manadatory', fakeAsync(() => {
+    it('step 0: owner is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -352,9 +344,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -367,7 +359,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.firstFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
       // Owner - missing
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.get('assetAccountControl')?.valid).toBeTruthy();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -376,20 +368,20 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Add the missing part
       component.firstFormGroup.get('ownerControl')?.setValue(fakeData.chosedHome.Members[0].User);
       component.firstFormGroup.get('ownerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: legacy flag is manadatory', fakeAsync(() => {
+    it('step 0: legacy flag is manadatory', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -402,9 +394,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -422,7 +414,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy - missing
       component.firstFormGroup.get('legacyControl')?.setValue(undefined);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.get('assetAccountControl')?.valid).toBeTruthy();
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -431,20 +423,20 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Add the missing part
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 0: shall go to step 1 with valid non-legacy case', fakeAsync(() => {
+    it('step 0: shall go to step 1 with valid non-legacy case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -456,9 +448,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -476,7 +468,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -487,22 +479,22 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();
       fixture.detectChanges();
       expect(component.currentStep).toEqual(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 1: item is manadatory with non-legacy case', fakeAsync(() => {
+    it('step 1: item is manadatory with non-legacy case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Update a valid document header
@@ -512,7 +504,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -530,7 +522,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -539,10 +531,10 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       // No items
-      expect(component.itemFormGroup.valid).toBeFalse();
+      expect(component.itemFormGroup.valid).toBe(false);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Now add items
@@ -560,21 +552,21 @@ describe('DocumentAssetBuyCreateComponent', () => {
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
       component.itemFormGroup.updateValueAndValidity();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.itemFormGroup.valid).toBeTrue();
+      expect(component.itemFormGroup.valid).toBe(true);
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 1: item amount shall equal to amount in step 0 with non-legacy case', fakeAsync(() => {
+    it('step 1: item amount shall equal to amount in step 0 with non-legacy case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Update a valid document header
@@ -584,7 +576,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -602,7 +594,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -612,7 +604,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 1.
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.enabled).toBeTrue();
+      expect(component.itemFormGroup.enabled).toBe(true);
 
       const aritems: DocumentItem[] = [];
       const aritem: DocumentItem = new DocumentItem();
@@ -627,21 +619,21 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.itemFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 2: go to review page with valid non-legacy case', fakeAsync(() => {
+    it('step 2: go to review page with valid non-legacy case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -651,7 +643,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -669,7 +661,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -691,7 +683,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
@@ -701,17 +693,17 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.currentStep).toBe(2);
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    xit('step 3: popup dialog if generated document object failed in verification', fakeAsync(() => {
+    it.skip('step 3: popup dialog if generated document object failed in verification', async () => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -721,7 +713,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -739,7 +731,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -761,7 +753,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
@@ -777,31 +769,31 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 3.
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toBe(2);
       expect(component.isDocPosting).toBeFalsy();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 3: display success result page with valid non-legacy case', fakeAsync(() => {
+    it('step 3: display success result page with valid non-legacy case', async () => {
       createAssetBuyinDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -809,10 +801,10 @@ describe('DocumentAssetBuyCreateComponent', () => {
       );
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -822,7 +814,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -840,7 +832,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -862,7 +854,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
@@ -874,25 +866,25 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 3.
       expect(component.isDocPosting).toBeTruthy();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toEqual(1);
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('step 3: display failed  result page with valid non-legacy case', fakeAsync(() => {
+    it('step 3: display failed  result page with valid non-legacy case', async () => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncError('doc failed to create'));
 
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 0
@@ -902,7 +894,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -920,7 +912,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(false);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Click the next button
@@ -942,7 +934,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       aritems.push(aritem);
       component.itemFormGroup.get('itemControl')?.setValue(aritems);
       component.itemFormGroup.get('itemControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
@@ -954,24 +946,24 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 3.
       expect(component.isDocPosting).toBeTruthy();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeUndefined();
       expect(component.docPostingFailed).toBeTruthy();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('setp 0: shall go to step 1 with valid legacy case', fakeAsync(() => {
+    it('setp 0: shall go to step 1 with valid legacy case', async () => {
       fixture.detectChanges();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -983,9 +975,9 @@ describe('DocumentAssetBuyCreateComponent', () => {
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
       component.firstFormGroup.get('headerControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.firstFormGroup.get('headerControl')?.valid).toBeTrue();
+      expect(component.firstFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.firstFormGroup.valid).toBeFalsy();
       // Asset account
       component.firstFormGroup.get('assetAccountControl')?.setValue(assetAccount.ExtraInfo as AccountExtraAsset);
@@ -1003,7 +995,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Legacy
       component.firstFormGroup.get('legacyControl')?.setValue(true);
       component.firstFormGroup.get('legacyControl')?.markAsDirty();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -1014,15 +1006,15 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
-      expect(component.itemFormGroup.disabled).toBeTrue();
+      expect(component.itemFormGroup.disabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();
       fixture.detectChanges();
       expect(component.currentStep).toEqual(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 
   describe('shall display error dialog when service failed', () => {
@@ -1046,205 +1038,204 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
-    beforeEach(inject([OverlayContainer], (oc: OverlayContainer) => {
+    beforeEach(() => {
+    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }));
+  });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should display error when Account Category fetched fails', fakeAsync(() => {
+    it('should display error when Account Category fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
 
-      discardPeriodicTasks();
-    }));
-
-    it('should display error when Asset Category fetched fails', fakeAsync(() => {
+    it('should display error when Asset Category fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAssetCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when Doc type fetched fails', fakeAsync(() => {
+    it('should display error when Doc type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when Tran. type fetched fails', fakeAsync(() => {
+    it('should display error when Tran. type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when currency fetched fails', fakeAsync(() => {
+    it('should display error when currency fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when account fetched fails', fakeAsync(() => {
+    it('should display error when account fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when control center fetched fails', fakeAsync(() => {
+    it('should display error when control center fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
 
-    it('should display error when order fetched fails', fakeAsync(() => {
+    it('should display error when order fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      tick(); // complete the Observable in ngOnInit
+      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      flush();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      flush();
-      tick();
+      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      flush();
-    }));
+      await new Promise<void>(r => setTimeout(r, 0));
+    });
   });
 });
