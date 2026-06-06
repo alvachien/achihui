@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
-import { addMonths, addYears } from 'date-fns';
+import { addMonths, addYears, format } from 'date-fns';
 
 import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-import { EventHabit, EventHabitDetail, BaseListModel, GeneralEvent } from '../model';
+import { EventHabit, EventHabitDetail, BaseListModel, GeneralEvent, dateFormat } from '../model';
 import {createSpyObj, FakeDataHelper} from '../../testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -437,14 +437,14 @@ describe('EventStorageService', () => {
         );
       });
 
-      // Respond with the mock data
-      const arDetail: EventHabitDetail[] = [];
+      // Respond with the mock data — API returns objects with startTimePoint/endTimePoint as strings
+      const arDetail: any[] = [];
       for (let idx = 0; idx < 3; idx++) {
-        const detail: EventHabitDetail = new EventHabitDetail();
-        detail.StartDate = addMonths(new Date(), idx + 1);
-        detail.EndDate = addMonths(new Date(), idx + 2);
-        detail.Name = 'test';
-        arDetail.push(detail);
+        arDetail.push({
+          startTimePoint: format(addMonths(new Date(), idx + 1), dateFormat),
+          endTimePoint: format(addMonths(new Date(), idx + 2), dateFormat),
+          name: 'test',
+        });
       }
       req.flush(arDetail);
     });

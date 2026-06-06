@@ -3177,7 +3177,7 @@ describe('FinanceOdataService', () => {
   describe('calcADPTmpDocs', () => {
     const calcADPTmpAPIURL: any = environment.ApiUrl + '/GetRepeatedDatesWithAmount';
     let inputData: RepeatedDatesWithAmountAPIInput;
-    let outputData: RepeatedDatesWithAmountAPIOutput[];
+    let outputData: SafeAny[];
 
     beforeEach(() => {
       service = TestBed.inject(FinanceOdataService);
@@ -3190,12 +3190,12 @@ describe('FinanceOdataService', () => {
       };
       outputData = [];
       for (let i = 0; i < 10; i++) {
-        const rst: RepeatedDatesWithAmountAPIOutput = {
-          TranDate: addMonths(new Date(), i),
+        // API returns TranDate as a string, not Date
+        outputData.push({
+          TranDate: format(addMonths(new Date(), i), dateFormat),
           TranAmount: 20,
           Desp: `test${i}`,
-        };
-        outputData.push(rst);
+        });
       }
     });
 
@@ -3262,9 +3262,9 @@ describe('FinanceOdataService', () => {
       outputData = [];
       for (let i = 0; i < 10; i++) {
         const od: any = {
-          tranDate: addMonths(new Date(), i),
-          tranAmount: 100,
-          interestAmount: 0,
+          TranDate: format(addMonths(new Date(), i), dateFormat),
+          TranAmount: 100,
+          InterestAmount: 0,
         };
         outputData.push(od);
       }
@@ -3771,8 +3771,8 @@ describe('FinanceOdataService', () => {
       outputData = [];
       for (let i = 0; i < 10; i++) {
         const od: any = {
-          StartDate: addMonths(new Date(), i),
-          EndDate: addMonths(new Date(), i + 1),
+          StartDate: format(addMonths(new Date(), i), dateFormat),
+          EndDate: format(addMonths(new Date(), i + 1), dateFormat),
         };
         outputData.push(od);
       }
