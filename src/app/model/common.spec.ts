@@ -13,12 +13,12 @@ import {
   TagTypeEnum,
   TagCount,
 } from './common';
-import moment from 'moment';
+import { getDate, getMonth } from 'date-fns';
 
 describe('isOverviewDateInScope', () => {
-  let dt: moment.Moment;
+  let dt: Date;
   beforeEach(() => {
-    dt = moment(); // Now
+    dt = new Date(); // Now
   });
 
   it('shall work', () => {
@@ -150,20 +150,20 @@ describe('getOverviewScopeRange', () => {
 
   it('CurrentMonth', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentMonth);
-    expect(rst.BeginDate.date()).toEqual(1);
-    expect(rst.BeginDate.month()).toEqual(rst.EndDate.month());
+    expect(getDate(rst.BeginDate)).toEqual(1);
+    expect(getMonth(rst.BeginDate)).toEqual(getMonth(rst.EndDate));
   });
   it('CurrentYear', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentYear);
-    expect(rst.BeginDate.date()).toEqual(1);
+    expect(getDate(rst.BeginDate)).toEqual(1);
   });
   it('PreviousMonth', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousMonth);
-    expect(rst.BeginDate.date()).toEqual(1);
+    expect(getDate(rst.BeginDate)).toEqual(1);
   });
   it('PreviousYear', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.PreviousYear);
-    expect(rst.BeginDate.date()).toEqual(1);
+    expect(getDate(rst.BeginDate)).toEqual(1);
   });
   it('CurrentWeek', () => {
     const rst = getOverviewScopeRange(OverviewScopeEnum.CurrentWeek);

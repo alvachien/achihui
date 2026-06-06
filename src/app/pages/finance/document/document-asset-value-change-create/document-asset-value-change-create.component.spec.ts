@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { format, parse, subYears, addMonths } from 'date-fns';
 import { By } from '@angular/platform-browser';
 
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
@@ -16,7 +16,7 @@ import { DocumentHeaderComponent } from '../document-header';
 import { DocumentAssetValueChangeCreateComponent } from './document-asset-value-change-create.component';
 import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { HomeDefOdataService, AuthService, UIStatusService, FinanceOdataService } from '@services/index';
-import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, momentDateFormat } from '@model/index';
+import { UserAuthInfo, Document, DocumentItemView, Account, financeAccountCategoryAsset, dateFormat } from '@model/index';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -194,7 +194,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -226,7 +226,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -269,7 +269,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -314,7 +314,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -364,7 +364,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -414,7 +414,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+        TransactionDate: format(subYears(new Date(), 1), dateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -439,7 +439,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -485,7 +485,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+        TransactionDate: format(subYears(new Date(), 1), dateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -510,7 +510,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -558,7 +558,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+        TransactionDate: format(subYears(new Date(), 1), dateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -583,7 +583,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -656,7 +656,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+        TransactionDate: format(subYears(new Date(), 1), dateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -681,7 +681,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -737,7 +737,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+        TransactionDate: format(subYears(new Date(), 1), dateFormat),
         DocumentDesp: 'buy',
         AccountID: assetAccount.Id,
         TransactionType: 1,
@@ -763,7 +763,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);

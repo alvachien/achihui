@@ -7,7 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import moment from 'moment';
+import { addYears, subYears } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { OrderDetailComponent } from './order-detail.component';
@@ -178,9 +178,9 @@ describe('OrderDetailComponent', () => {
       // Name
       // component.detailFormGroup.get('nameControl').setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
@@ -205,15 +205,15 @@ describe('OrderDetailComponent', () => {
       // Name
       component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().subtract(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(subYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeFalsy();
 
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       fixture.detectChanges();
       expect(component.detailFormGroup.valid).toBeTruthy();
 
@@ -232,9 +232,9 @@ describe('OrderDetailComponent', () => {
       // Name
       component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
@@ -274,9 +274,9 @@ describe('OrderDetailComponent', () => {
       // Name
       component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
@@ -348,9 +348,9 @@ describe('OrderDetailComponent', () => {
       // Name
       component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();
@@ -419,9 +419,9 @@ describe('OrderDetailComponent', () => {
       // Name
       component.detailFormGroup.get('nameControl')?.setValue('test');
       // Valid from
-      component.detailFormGroup.get('startDateControl')?.setValue(moment().toDate());
+      component.detailFormGroup.get('startDateControl')?.setValue(new Date());
       // Valid to
-      component.detailFormGroup.get('endDateControl')?.setValue(moment().add(1, 'y').toDate());
+      component.detailFormGroup.get('endDateControl')?.setValue(addYears(new Date(), 1));
       // Comment
       component.detailFormGroup.get('cmtControl')?.setValue('test');
       fixture.detectChanges();

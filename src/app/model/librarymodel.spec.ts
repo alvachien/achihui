@@ -2,7 +2,7 @@
 // Unit test for librarymodel.ts
 //
 
-import moment from 'moment';
+import { addMonths } from 'date-fns';
 import {
   Location,
   BookCategory,
@@ -688,8 +688,8 @@ describe('BookBorrowRecord', () => {
     objtbt.HID = 2;
     objtbt.User = 'test';
     objtbt.BorrowFrom = 1;
-    objtbt.FromDate = moment();
-    objtbt.ToDate = moment().add(1, 'month');
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), 1);
     objtbt.onInit();
     expect(objtbt.ID).toEqual(0);
     expect(objtbt.HID).toBeFalsy();
@@ -719,13 +719,13 @@ describe('BookBorrowRecord', () => {
     expect(vrst).toBe(true);
     expect(objtbt.VerifiedMsgs.length).toEqual(0);
 
-    objtbt.FromDate = moment();
-    objtbt.ToDate = moment().add(-2, 'month');
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), -2);
     vrst = objtbt.onVerify();
     expect(vrst).toBe(false);
     expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
 
-    objtbt.ToDate = moment().add(1, 'days');
+    objtbt.ToDate = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); // add 1 day
     vrst = objtbt.onVerify();
     expect(vrst).toBe(true);
     expect(objtbt.VerifiedMsgs.length).toEqual(0);
@@ -736,8 +736,8 @@ describe('BookBorrowRecord', () => {
     objtbt.HID = 2;
     objtbt.User = 'test';
     objtbt.BorrowFrom = 1;
-    objtbt.FromDate = moment();
-    objtbt.ToDate = moment().add(1, 'month');
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), 1);
     objtbt.Comment = 'test';
     objtbt.HasReturned = true;
     const jsonobj = objtbt.writeJSONObject();

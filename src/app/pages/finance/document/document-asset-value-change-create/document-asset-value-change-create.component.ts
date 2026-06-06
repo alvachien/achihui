@@ -12,7 +12,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import moment from 'moment';
+import { format, parse, isBefore, isAfter } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -41,6 +41,7 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   DocumentItemView,
+  dateFormat,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
@@ -412,12 +413,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      let amoment = moment(a.TransactionDate);
-      let bmoment = moment(b.TransactionDate);
-      if (amoment.isBefore(bmoment)) {
+      let adate = parse(a.TransactionDate || '', dateFormat, new Date());
+      let bdate = parse(b.TransactionDate || '', dateFormat, new Date());
+      if (isBefore(adate, bdate)) {
         return -1;
       }
-      if (moment(amoment).isAfter(bmoment)) {
+      if (isAfter(adate, bdate)) {
         return 1;
       }
       return 0;

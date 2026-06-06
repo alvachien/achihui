@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
-import moment from 'moment';
+import { addMonths, addYears } from 'date-fns';
 
 import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
@@ -410,8 +410,8 @@ describe('EventStorageService', () => {
     beforeEach(() => {
       hevnt = new EventHabit();
       hevnt.Name = 'test';
-      hevnt.StartDate = moment();
-      hevnt.EndDate = moment().add(1, 'y');
+      hevnt.StartDate = new Date();
+      hevnt.EndDate = addYears(new Date(), 1);
       hevnt.content = 'test';
       service = TestBed.inject(EventStorageService);
     });
@@ -441,8 +441,8 @@ describe('EventStorageService', () => {
       const arDetail: EventHabitDetail[] = [];
       for (let idx = 0; idx < 3; idx++) {
         const detail: EventHabitDetail = new EventHabitDetail();
-        detail.StartDate = moment().add(idx + 1, 'M');
-        detail.EndDate = moment().add(idx + 2, 'M');
+        detail.StartDate = addMonths(new Date(), idx + 1);
+        detail.EndDate = addMonths(new Date(), idx + 2);
         detail.Name = 'test';
         arDetail.push(detail);
       }
@@ -479,8 +479,8 @@ describe('EventStorageService', () => {
     beforeEach(() => {
       hevnt = new EventHabit();
       hevnt.Name = 'test';
-      hevnt.StartDate = moment();
-      hevnt.EndDate = moment().add(1, 'y');
+      hevnt.StartDate = new Date();
+      hevnt.EndDate = addYears(new Date(), 1);
       hevnt.content = 'test';
       service = TestBed.inject(EventStorageService);
     });
@@ -532,8 +532,8 @@ describe('EventStorageService', () => {
     beforeEach(() => {
       hevnt = new EventHabit();
       hevnt.Name = 'test';
-      hevnt.StartDate = moment();
-      hevnt.EndDate = moment().add(1, 'y');
+      hevnt.StartDate = new Date();
+      hevnt.EndDate = addYears(new Date(), 1);
       hevnt.content = 'test';
       hevnt.ID = 11;
       service = TestBed.inject(EventStorageService);

@@ -12,7 +12,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -27,7 +27,7 @@ import {
   BuildupOrderForSelection,
   UIOrderForSelection,
   IAccountCategoryFilterEx,
-  momentDateFormat,
+  dateFormat,
   ModelUtility,
   financeDocTypeAssetSoldOut,
   FinanceAssetSoldoutDocumentAPI,
@@ -83,7 +83,7 @@ import { UIAccountCtgyFilterExPipe } from '../../pipes';
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  private _docDate: moment.Moment;
+  private _docDate: Date;
   public baseCurrency: string;
 
   public detailObject: FinanceAssetSoldoutDocumentAPI | null = null;
@@ -115,7 +115,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[] = [];
   arDocTypes: DocumentType[] = [];
   arCurrencies: Currency[] = [];
-  get curDocDate(): moment.Moment {
+  get curDocDate(): Date {
     return this._docDate;
   }
 
@@ -132,7 +132,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     );
 
     this.arMembersInChosedHome = this.homeService.ChosedHome?.Members.slice() ?? [];
-    this._docDate = moment();
+    this._docDate = new Date();
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.firstFormGroup = new UntypedFormGroup(
@@ -310,7 +310,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     // Do the real submit.
     this.detailObject = new FinanceAssetSoldoutDocumentAPI();
     this.detailObject.HID = this.homeService.ChosedHome?.ID ?? 0;
-    this.detailObject.TranDate = docobj.TranDate.format(momentDateFormat);
+    this.detailObject.TranDate = format(docobj.TranDate, dateFormat);
     this.detailObject.TranCurr = docobj.TranCurr;
     this.detailObject.TranAmount = this.firstFormGroup.get('amountControl')?.value;
     this.detailObject.Desp = docobj.Desp;

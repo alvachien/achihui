@@ -9,7 +9,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { UIMode } from 'actslib';
 
 import {
@@ -22,6 +22,7 @@ import {
   financeDocTypeNormal,
   UIAccountForSelection,
   UIOrderForSelection,
+  dateFormat,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -71,7 +72,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: SafeAny) => void = undefined;
   private _uiMode: UIMode = UIMode.Invalid;
-  private _docDate: moment.Moment = moment();
+  private _docDate: Date = new Date();
 
   public uiAccountStatusFilter: string | undefined;
   // public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -182,10 +183,10 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._docType;
   }
   @Input()
-  set docDate(docdate: moment.Moment) {
+  set docDate(docdate: Date) {
     this._docDate = docdate;
   }
-  get docDate(): moment.Moment {
+  get docDate(): Date {
     return this._docDate;
   }
   get documentItems(): DocumentItem[] {

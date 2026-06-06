@@ -15,7 +15,7 @@ import {
   financeAccountCategoryLendTo,
 } from './financemodel';
 import { HomeMemberRelationEnum } from './homedef';
-import moment from 'moment';
+import { isBefore } from 'date-fns';
 import { LocationTypeEnum } from './librarymodel';
 import { SafeAny } from '@common/any';
 
@@ -988,8 +988,8 @@ export function BuildupAccountForSelection(
 export class UIOrderForSelection {
   public Id = 0;
   public Name = '';
-  public _validFrom: moment.Moment = moment();
-  public _validTo: moment.Moment = moment();
+  public _validFrom: Date = new Date();
+  public _validTo: Date = new Date();
 }
 
 /**
@@ -999,6 +999,7 @@ export class UIOrderForSelection {
  */
 export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UIOrderForSelection[] {
   const arrst: UIOrderForSelection[] = [];
+  const now = new Date();
 
   if (orders && orders.length > 0) {
     for (const ord of orders) {
@@ -1007,12 +1008,12 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
         rst.Id = ord.Id;
       }
       rst.Name = ord.Name;
-      rst._validFrom = ord.ValidFrom?.clone() ?? moment();
-      rst._validTo = ord.ValidTo?.clone() ?? moment();
+      rst._validFrom = ord.ValidFrom ?? new Date();
+      rst._validTo = ord.ValidTo ?? new Date();
 
       // Skip some categories
       if (skipinv) {
-        if (rst._validFrom > moment() || rst._validTo < moment()) {
+        if (rst._validFrom > now || rst._validTo < now) {
           continue;
         }
       }
@@ -1027,9 +1028,9 @@ export function BuildupOrderForSelection(orders: Order[], skipinv?: boolean): UI
 /**
  * Buildup orders for select
  * @param orders Orders
- * @param momentCreation moment of creation
+ * @param dateCreation date of creation
  */
-export function BuildupOrderForSelectionEx(orders: Order[], momentCreation: moment.Moment): UIOrderForSelection[] {
+export function BuildupOrderForSelectionEx(orders: Order[], dateCreation: Date): UIOrderForSelection[] {
   const arrst: UIOrderForSelection[] = [];
 
   if (orders && orders.length > 0) {
@@ -1039,11 +1040,11 @@ export function BuildupOrderForSelectionEx(orders: Order[], momentCreation: mome
         rst.Id = ord.Id;
       }
       rst.Name = ord.Name;
-      rst._validFrom = ord.ValidFrom?.clone() ?? moment();
-      rst._validTo = ord.ValidTo?.clone() ?? moment();
+      rst._validFrom = ord.ValidFrom ?? new Date();
+      rst._validTo = ord.ValidTo ?? new Date();
 
       // Skip some orders
-      if (rst._validFrom.isSameOrAfter(momentCreation) || rst._validTo.isBefore(momentCreation)) {
+      if (!isBefore(rst._validFrom, dateCreation) || isBefore(rst._validTo, dateCreation)) {
         continue;
       }
 

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, UntypedFormArray, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import moment from 'moment';
+import { format, parse, isWithinInterval, addDays } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -27,7 +27,7 @@ import {
   UIDisplayStringUtil,
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
-  momentDateFormat,
+  dateFormat,
   GeneralFilterValueType,
   DocumentItemView,
   RepeatedDatesAPIInput,
@@ -56,13 +56,13 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 class DocumentCountByDateRange {
-  StartDate: moment.Moment | null = null;
+  StartDate: Date | null = null;
   get StartDateString(): string {
-    return this.StartDate ? this.StartDate.format(momentDateFormat) : '';
+    return this.StartDate ? format(this.StartDate, dateFormat) : '';
   }
-  EndDate: moment.Moment | null = null;
+  EndDate: Date | null = null;
   get EndDateString(): string {
-    return this.EndDate ? this.EndDate.format(momentDateFormat) : '';
+    return this.EndDate ? format(this.EndDate, dateFormat) : '';
   }
   expand = false;
   Items: DocumentItemView[] = [];
@@ -332,9 +332,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     filters.push({
       fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Between,
-      lowValue: moment(dtrange[0] as Date).format(momentDateFormat),
+      lowValue: format(new Date(dtrange[0] as Date), dateFormat),
       valueType: GeneralFilterValueType.date,
-      highValue: moment(dtrange[1] as Date).format(momentDateFormat),
+      highValue: format(new Date(dtrange[1] as Date), dateFormat),
     });
     // Tran. type
     let idval = this.searchFormGroup.get('tranTypeControl')?.value;
@@ -382,8 +382,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     }
 
     const datinput: RepeatedDatesAPIInput = {
-      StartDate: moment(dtrange[0] as Date),
-      EndDate: moment(dtrange[1] as Date),
+      StartDate: new Date(dtrange[0] as Date),
+      EndDate: new Date(dtrange[1] as Date),
       RepeatType: this.searchFormGroup.get('frqControl')?.value as RepeatFrequencyEnum,
     };
 
@@ -403,14 +403,14 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
           this.listDates.forEach((datrange) => {
             const aritems: DocumentItemView[] = [];
             arallitems.forEach((div: DocumentItemView) => {
-              if (moment(div.TransactionDate).isBetween(datrange.StartDate, datrange.EndDate)) {
+              if (div.TransactionDate && isWithinInterval(new Date(div.TransactionDate), { start: datrange.StartDate, end: datrange.EndDate })) {
                 aritems.push(div);
               }
             });
 
             const itm = new DocumentCountByDateRange();
-            itm.StartDate = datrange.StartDate.clone();
-            itm.EndDate = datrange.EndDate.clone();
+            itm.StartDate = new Date(datrange.StartDate.getTime());
+            itm.EndDate = new Date(datrange.EndDate.getTime());
             itm.expand = false;
             itm.Items = aritems ? aritems : [];
             this.listExistingDocItems.push(itm);
@@ -459,11 +459,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       if (docitems.ItemsCount === 0) {
         const newItem: SafeAny = this.initItem();
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        let stdat = docitems.StartDate!.clone();
+        let stdat = new Date(docitems.StartDate!.getTime());
         if (defval.dayOffsetControl) {
-          stdat = stdat.add(defval.dayOffsetControl, 'days');
+          stdat = addDays(stdat, defval.dayOffsetControl);
         }
-        newItem.get('dateControl').setValue(stdat.toDate());
+        newItem.get('dateControl').setValue(stdat);
         // Desp
         newItem.get('despControl').setValue(defval.despControl + ' ' + docitems.StartDateString);
 
@@ -558,7 +558,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
       const docitem = new FinanceNormalDocItemMassCreate();
       if (control.dateControl) {
-        docitem.tranDate = moment(control.dateControl);
+        docitem.tranDate = new Date(control.dateControl);
       }
       if (control.accountControl) {
         docitem.accountID = control.accountControl;
@@ -587,7 +587,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
       let docObj = this.confirmInfo.find((val) => {
-        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
+        return val.TranDateFormatString === format(item.tranDate, dateFormat);
       });
 
       if (docObj !== undefined) {
@@ -609,11 +609,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
         docObj.Items.push(docitem);
       } else {
         docObj = new Document();
-        docObj.Desp = item.tranDate.format(momentDateFormat);
+        docObj.Desp = format(item.tranDate, dateFormat);
         docObj.DocType = financeDocTypeNormal;
         docObj.HID = this.homeService.ChosedHome?.ID ?? 0;
         docObj.TranCurr = this.baseCurrency;
-        docObj.TranDate = moment(item.tranDate);
+        docObj.TranDate = new Date(item.tranDate);
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;

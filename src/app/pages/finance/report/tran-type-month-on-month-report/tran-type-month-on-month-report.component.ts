@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import moment from 'moment';
+import { format, subMonths, parse } from 'date-fns';
 import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -17,7 +17,7 @@ import {
   financePeriodLast12Months,
   financePeriodLast6Months,
   financePeriodLast3Months,
-  momentDateFormat,
+  dateFormat,
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
@@ -176,17 +176,17 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arTranTypeNames.forEach((ttname) => {
             const ardata: number[] = [];
 
             for (let imonth = 11; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
               const validx = val.findIndex(
-                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.month() + 1
+                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.getMonth() + 1
               );
               if (validx !== -1) {
                 ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
@@ -208,17 +208,17 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
         } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arTranTypeNames.forEach((ttname) => {
             const ardata: number[] = [];
 
             for (let imonth = 5; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
               const validx = val.findIndex(
-                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.month() + 1
+                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.getMonth() + 1
               );
               if (validx !== -1) {
                 ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
@@ -240,17 +240,17 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
         } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arTranTypeNames.forEach((ttname) => {
             const ardata: number[] = [];
 
             for (let imonth = 2; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
               const validx = val.findIndex(
-                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.month() + 1
+                (p) => p.TransactionTypeName === ttname && p.Month === monthinuse.getMonth() + 1
               );
               if (validx !== -1) {
                 ardata.push(isexpense ? Math.abs(val[validx].OutAmount) : val[validx].InAmount);
@@ -344,10 +344,10 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
   onChartClick(event: SafeAny) {
     console.log(event);
     // Month
-    const dtmonth = moment(event.name + '.01');
+    const dtmonth = parse(event.name + '.01', 'yyyy.MM.dd', new Date());
     this.onDisplayDocItem(
-      dtmonth.format(momentDateFormat),
-      dtmonth.add(1, 'M').format(momentDateFormat),
+      format(dtmonth, dateFormat),
+      format(subMonths(dtmonth, -1), dateFormat),
       this.selectedTranTypes
     );
   }

@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { addMonths } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import {createSpyObj, getTranslocoModule,
@@ -184,7 +184,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       loanTmpDoc = new TemplateDocLoan();
       loanTmpDoc.HID = fakeData.chosedHome.ID;
       loanTmpDoc.Desp = 'Loan 1';
-      loanTmpDoc.TranDate = moment();
+      loanTmpDoc.TranDate = new Date();
       loanTmpDoc.DocId = 3;
       loanTmpDoc.AccountId = 1;
       loanTmpDoc.TranAmount = 300;
@@ -380,7 +380,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
@@ -421,7 +421,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
@@ -463,7 +463,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
 
@@ -512,7 +512,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Step 0. Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
@@ -557,7 +557,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Step 0. Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
@@ -608,7 +608,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // Step 0. Search filter
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().toDate(), moment().add(1, 'month').toDate()]);
+        ?.setValue([new Date(), addMonths(new Date(), 1)]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.updateValueAndValidity();
       // Now search for loan tmplate doc.
@@ -677,7 +677,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       loanTmpDoc = new TemplateDocLoan();
       loanTmpDoc.HID = fakeData.chosedHome.ID;
       loanTmpDoc.Desp = 'Loan 1';
-      loanTmpDoc.TranDate = moment();
+      loanTmpDoc.TranDate = new Date();
       loanTmpDoc.DocId = 3;
       loanTmpDoc.AccountId = 1;
       loanTmpDoc.TranAmount = 300;

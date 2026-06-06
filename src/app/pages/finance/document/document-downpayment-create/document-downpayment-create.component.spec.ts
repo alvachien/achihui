@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { addMonths, addDays } from 'date-fns';
 import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -186,7 +186,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -218,7 +218,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -266,7 +266,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -314,7 +314,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -362,7 +362,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -418,7 +418,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -474,7 +474,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -513,13 +513,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Add extra info.
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-        TranDate: moment(),
+      TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -541,7 +541,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -580,13 +580,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Add extra info.
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-        TranDate: moment(),
+      TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -613,7 +613,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -652,13 +652,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Add extra info.
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-        TranDate: moment(),
+      TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -721,7 +721,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -760,13 +760,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Add extra info.
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-        TranDate: moment(),
+      TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -806,7 +806,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -845,13 +845,13 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Add extra info.
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-        TranDate: moment(),
+      TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);

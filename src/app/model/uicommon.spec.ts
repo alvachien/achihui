@@ -2,8 +2,8 @@
 // Unit test for utility.ts
 //
 
-import moment from 'moment';
-import { Order } from './financemodel';
+import { parse } from 'date-fns';
+import { Order, dateFormat } from './financemodel';
 import {
   UIDisplayStringUtil,
   UIDisplayString,
@@ -403,26 +403,26 @@ describe('BuildupOrderForSelectionEx', () => {
     let ord = new Order();
     ord.Name = 'Test1';
     ord.Id = 1;
-    ord.ValidFrom = moment('20210101');
-    ord.ValidTo = moment('20211231');
+    ord.ValidFrom = parse('2021-01-01', dateFormat, new Date());
+    ord.ValidTo = parse('2021-12-31', dateFormat, new Date());
     arorders.push(ord);
 
     ord = new Order();
     ord.Name = 'Test2';
     ord.Id = 2;
-    ord.ValidFrom = moment('20220101');
-    ord.ValidTo = moment('20221231');
+    ord.ValidFrom = parse('2022-01-01', dateFormat, new Date());
+    ord.ValidTo = parse('2022-12-31', dateFormat, new Date());
     arorders.push(ord);
   });
 
   it('Order in 2021', () => {
-    let uiords = BuildupOrderForSelectionEx(arorders, moment('20210601'));
+    let uiords = BuildupOrderForSelectionEx(arorders, parse('2021-06-01', dateFormat, new Date()));
     expect(uiords.length).toEqual(1);
     expect(uiords[0].Id).toEqual(1);
   });
 
   it('Order in 2022', () => {
-    let uiords = BuildupOrderForSelectionEx(arorders, moment('20220601'));
+    let uiords = BuildupOrderForSelectionEx(arorders, parse('2022-06-01', dateFormat, new Date()));
     expect(uiords.length).toEqual(1);
     expect(uiords[0].Id).toEqual(2);
   });

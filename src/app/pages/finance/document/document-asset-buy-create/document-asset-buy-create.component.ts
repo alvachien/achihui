@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import moment from 'moment';
+import { format, startOfDay, isBefore } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -86,7 +86,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  private _docDate: moment.Moment;
+  private _docDate: Date;
 
   // Step: Generic info
   public firstFormGroup: UntypedFormGroup;
@@ -118,7 +118,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[] = [];
   arDocTypes: DocumentType[] = [];
   arCurrencies: Currency[] = [];
-  get curDocDate(): moment.Moment {
+  get curDocDate(): Date {
     return this._docDate;
   }
 
@@ -141,7 +141,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug
     );
 
-    this._docDate = moment();
+    this._docDate = new Date();
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     // this.assetAccount = new AccountExtraAsset();
     this.arMembers = this.homeService.ChosedHome?.Members.slice() ?? [];
@@ -409,7 +409,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
       if (!datBuy) {
         return { dateisinvalid: true };
       }
-      if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
+      if (!isBefore(startOfDay(datBuy), startOfDay(new Date()))) {
         return { dateisinvalid: true };
       }
     }

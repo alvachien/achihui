@@ -1,4 +1,30 @@
-import moment from 'moment';
+import {
+  format,
+  parse,
+  startOfDay,
+  startOfMonth,
+  startOfYear,
+  startOfQuarter,
+  startOfWeek,
+  endOfDay,
+  endOfMonth,
+  endOfYear,
+  endOfQuarter,
+  endOfWeek,
+  addMonths,
+  addYears,
+  addWeeks,
+  addDays,
+  subMonths,
+  subYears,
+  subQuarters,
+  subWeeks,
+  isBefore,
+  isAfter,
+  isWithinInterval,
+  isValid as isValidDate,
+  getDate,
+} from 'date-fns';
 import { UIMode } from 'actslib';
 import { SafeAny } from '@common/any';
 
@@ -14,7 +40,7 @@ export const languageEn: string = 'en';
 export const languageZh: string = 'zh';
 export const languageZhCN: string = 'zh-cn';
 
-export const momentDateFormat: string = 'YYYY-MM-DD';
+export const dateFormat: string = 'yyyy-MM-dd';
 
 export enum AuthorizeScope {
   All = 1,
@@ -140,11 +166,11 @@ export enum LogLevel {
  */
 export class InfoMessage {
   private _msgType: MessageType = MessageType.Info;
-  private _msgTime: moment.Moment = moment();
+  private _msgTime: Date = new Date();
   private _msgTitle: string | null = null;
   private _msgContent: string | null = null;
   constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
-    this.MsgTime = moment();
+    this.MsgTime = new Date();
     if (msgtype) {
       this.MsgType = msgtype;
     }
@@ -162,10 +188,10 @@ export class InfoMessage {
   set MsgType(mt: MessageType) {
     this._msgType = mt;
   }
-  get MsgTime(): moment.Moment {
+  get MsgTime(): Date {
     return this._msgTime;
   }
-  set MsgTime(mt: moment.Moment) {
+  set MsgTime(mt: Date) {
     this._msgTime = mt;
   }
   get MsgTitle(): string | null {
@@ -206,8 +232,8 @@ export interface BaseModelJson {
  * Base model
  */
 export class BaseModel {
-  protected _createdAt: moment.Moment;
-  protected _updatedAt: moment.Moment;
+  protected _createdAt: Date;
+  protected _updatedAt: Date;
   protected _createdBy: string | null = null;
   protected _updatedBy: string | null = null;
   protected _verifiedMsgs: InfoMessage[];
@@ -231,22 +257,22 @@ export class BaseModel {
     this._verifiedMsgs = msgs;
   }
 
-  get Createdat(): moment.Moment {
+  get Createdat(): Date {
     return this._createdAt;
   }
-  set Createdat(ca: moment.Moment) {
+  set Createdat(ca: Date) {
     this._createdAt = ca;
   }
-  get Updatedat(): moment.Moment {
+  get Updatedat(): Date {
     return this._updatedAt;
   }
-  set Updatedat(ua: moment.Moment) {
+  set Updatedat(ua: Date) {
     this._updatedAt = ua;
   }
 
   constructor() {
-    this._createdAt = moment();
-    this._updatedAt = moment();
+    this._createdAt = new Date();
+    this._updatedAt = new Date();
     this._verifiedMsgs = [];
   }
 
@@ -272,13 +298,13 @@ export class BaseModel {
     const rstobj: SafeAny = {};
 
     if (this._createdAt) {
-      rstobj.CreatedAt = this._createdAt.format(momentDateFormat);
+      rstobj.CreatedAt = format(this._createdAt, dateFormat);
     }
     if (this.Createdby && this.Createdby.length > 0) {
       rstobj.CreatedBy = this.Createdby;
     }
     if (this._updatedAt) {
-      rstobj.UpdatedAt = this._updatedAt.format(momentDateFormat);
+      rstobj.UpdatedAt = format(this._updatedAt, dateFormat);
     }
     if (this.Updatedby && this.Updatedby.length > 0) {
       rstobj.UpdatedBy = this.Updatedby;
@@ -300,13 +326,13 @@ export class BaseModel {
       this.Createdby = data.Createdby;
     }
     if (data && data.createdAt) {
-      this.Createdat = moment(data.Createdat, momentDateFormat);
+      this.Createdat = parse(data.Createdat, dateFormat, new Date());
     }
     if (data && data.updatedBy) {
       this.Updatedby = data.Updatedby;
     }
     if (data && data.updatedAt) {
-      this.Updatedat = moment(data.Updatedat, momentDateFormat);
+      this.Updatedat = parse(data.Updatedat, dateFormat, new Date());
     }
   }
 
@@ -315,7 +341,7 @@ export class BaseModel {
     msg.MsgType = msgtype;
     msg.MsgTitle = msgtitle;
     msg.MsgContent = msgcontent;
-    msg.MsgTime = moment();
+    msg.MsgTime = new Date();
     this._verifiedMsgs.push(msg);
   }
 }
@@ -583,62 +609,50 @@ export class MultipleNamesObject extends BaseModel {
  * Scope range
  */
 export interface IOverviewScopeRange {
-  BeginDate: moment.Moment;
-  EndDate: moment.Moment;
+  BeginDate: Date;
+  EndDate: Date;
 }
 
 export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeRange {
-  let bgn: moment.Moment = moment();
-  let end: moment.Moment = moment();
+  let bgn: Date = new Date();
+  let end: Date = new Date();
 
   if (scope === OverviewScopeEnum.CurrentMonth) {
-    bgn.startOf('month');
-    end.endOf('month');
+    bgn = startOfMonth(bgn);
+    end = endOfMonth(end);
   } else if (scope === OverviewScopeEnum.CurrentYear) {
-    bgn.startOf('year');
-    end.endOf('year');
+    bgn = startOfYear(bgn);
+    end = endOfYear(end);
   } else if (scope === OverviewScopeEnum.PreviousMonth) {
-    bgn.subtract(1, 'M');
-    bgn.startOf('month');
-
-    end = bgn.clone();
-    end.endOf('month');
+    bgn = startOfMonth(subMonths(bgn, 1));
+    end = endOfMonth(subMonths(end, 1));
   } else if (scope === OverviewScopeEnum.PreviousYear) {
-    bgn.subtract(1, 'y');
-    bgn.startOf('year');
-
-    end = bgn.clone();
-    end.endOf('year');
+    bgn = startOfYear(subYears(bgn, 1));
+    end = endOfYear(subYears(end, 1));
   } else if (scope === OverviewScopeEnum.CurrentQuarter) {
-    bgn.startOf('quarter');
-    end.endOf('quarter');
+    bgn = startOfQuarter(bgn);
+    end = endOfQuarter(end);
   } else if (scope === OverviewScopeEnum.PreviousQuarter) {
-    bgn.startOf('quarter');
-    bgn.subtract(1, 'Q');
-
-    end = bgn.clone();
-    end.endOf('quarter');
+    bgn = startOfQuarter(subQuarters(bgn, 1));
+    end = endOfQuarter(subQuarters(end, 1));
   } else if (scope === OverviewScopeEnum.CurrentWeek) {
-    bgn.startOf('week');
-    end.endOf('week');
+    bgn = startOfWeek(bgn);
+    end = endOfWeek(end);
   } else if (scope === OverviewScopeEnum.PreviousWeek) {
-    bgn.startOf('week');
-    bgn.subtract(1, 'w');
-
-    end = bgn.clone();
-    end.endOf('week');
+    bgn = startOfWeek(subWeeks(bgn, 1));
+    end = endOfWeek(subWeeks(end, 1));
   } else if (scope === OverviewScopeEnum.All) {
-    bgn = moment('19710101');
-    end = moment('99991231');
+    bgn = new Date(1971, 0, 1);
+    end = new Date(9999, 11, 31);
   }
 
   return { BeginDate: bgn, EndDate: end };
 }
 
-export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnum): boolean {
+export function isOverviewDateInScope(dt: Date, scope: OverviewScopeEnum): boolean {
   const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
 
-  if (dt.isBefore(end) && dt.isAfter(bgn)) {
+  if (isBefore(dt, end) && isAfter(dt, bgn)) {
     return true;
   }
 
@@ -649,8 +663,8 @@ export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnu
  * Repeat dates - input
  */
 export interface RepeatedDatesAPIInput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
+  StartDate: Date;
+  EndDate: Date;
   RepeatType: RepeatFrequencyEnum;
 }
 
@@ -658,8 +672,8 @@ export interface RepeatedDatesAPIInput {
  * Repeat dates
  */
 export interface RepeatedDatesAPIOutput {
-  StartDate: moment.Moment;
-  EndDate: moment.Moment;
+  StartDate: Date;
+  EndDate: Date;
 }
 
 /**
@@ -674,7 +688,7 @@ export interface RepeatedDatesWithAmountAPIInput extends RepeatedDatesAPIInput {
  * Repeated dates with Amount
  */
 export interface RepeatedDatesWithAmountAPIOutput {
-  TranDate: moment.Moment;
+  TranDate: Date;
   TranAmount: number;
   Desp: string;
 }
@@ -686,11 +700,11 @@ export interface RepeatDatesWithAmountAndInterestAPIInput {
   TotalAmount: number;
   TotalMonths: number;
   InterestRate: number;
-  StartDate: moment.Moment;
-  EndDate?: moment.Moment;
+  StartDate: Date;
+  EndDate?: Date;
   InterestFreeLoan: boolean;
   RepaymentMethod: number;
-  FirstRepayDate?: moment.Moment;
+  FirstRepayDate?: Date;
   RepayDayInMonth?: number;
 }
 
@@ -698,7 +712,7 @@ export interface RepeatDatesWithAmountAndInterestAPIInput {
  * Finance loan calculator - API output
  */
 export interface RepeatDatesWithAmountAndInterestAPIOutput {
-  TranDate: moment.Moment;
+  TranDate: Date;
   TranAmount: number;
   InterestAmount: number;
 }

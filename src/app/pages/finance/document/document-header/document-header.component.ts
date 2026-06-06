@@ -13,7 +13,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { UIMode } from 'actslib';
 
 import {
@@ -24,6 +24,7 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   DocumentType,
+  dateFormat,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -183,9 +184,8 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       insobj.DocType = this.docType;
     }
     insobj.TranCurr = this.headerForm.get('currControl')?.value;
-    // let dateobj: Date = this.headerForm.get('dateControl').value as Date;
-    // insobj.TranDate = moment(`${dateobj.getFullYear()}-${dateobj.getMonth()}-${dateobj.getDay()}`, momentDateFormat);
-    insobj.TranDate = moment(this.headerForm.get('dateControl')?.value as Date);
+    // insobj.TranDate = parse(format(dateobj, dateFormat), dateFormat, new Date());
+    insobj.TranDate = parse(format(this.headerForm.get('dateControl')?.value as Date, dateFormat), dateFormat, new Date());
     insobj.Desp = this.headerForm.get('despControl')?.value;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     insobj.DocType = this.docType!;
@@ -308,7 +308,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
 
     if (val) {
       this.headerForm.get('docTypeControl')?.setValue(val.DocType ? val.DocType : this.docType);
-      this.headerForm.get('dateControl')?.setValue(val.TranDate ? val.TranDate.toDate() : '');
+      this.headerForm.get('dateControl')?.setValue(val.TranDate ? val.TranDate : '');
       this.headerForm.get('despControl')?.setValue(val.Desp);
       this.headerForm.get('currControl')?.setValue(val.TranCurr);
       this.headerForm.get('exgControl')?.setValue(val.ExgRate);

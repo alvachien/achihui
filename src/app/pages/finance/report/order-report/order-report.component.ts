@@ -5,7 +5,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import moment from 'moment';
+import { isBefore, isAfter } from 'date-fns';
 
 import {
   FinanceReportByOrder,
@@ -263,10 +263,10 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   }
   private buildReportList(): void {
     this.dataSet = [];
-    const dt = moment();
+    const dt = new Date();
     const ords = this.arOrder.filter((value) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return this.validOrderOnly ? value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt) : true;
+      return this.validOrderOnly ? isBefore(value.ValidFrom!, dt) && isAfter(value.ValidTo!, dt) : true;
     });
     this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {
       const ordobj = ords.find((cc: Order) => {

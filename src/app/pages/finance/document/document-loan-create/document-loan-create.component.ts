@@ -45,7 +45,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
-import moment from 'moment';
+import { format, startOfDay, isBefore } from 'date-fns';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -314,7 +314,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       if (!datBuy) {
         return { dateisinvalid: true };
       }
-      if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
+      if (!isBefore(startOfDay(datBuy), startOfDay(new Date()))) {
         return { dateisinvalid: true };
       }
     }

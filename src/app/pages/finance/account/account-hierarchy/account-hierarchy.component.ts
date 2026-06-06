@@ -22,10 +22,10 @@ import {
   GeneralFilterValueType,
   OverviewScopeEnum,
   getOverviewScopeRange,
-  momentDateFormat,
   ControlCenter,
 } from '@model/index';
-import moment from 'moment';
+import { parse, format } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -343,7 +343,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       this.odataService
         .settleAccount(
           this.selectedAccountForSettle.AccountID,
-          moment(this.selectedAccountForSettle.SettleDate),
+          new Date(this.selectedAccountForSettle.SettleDate),
           this.selectedAccountForSettle.Amount,
           this.selectedAccountForSettle.ControlCenterID ?? 0
         )
@@ -541,8 +541,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       arFilters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: dats.BeginDate.format(momentDateFormat),
-        highValue: dats.EndDate.format(momentDateFormat),
+        lowValue: format(dats.BeginDate, dateFormat),
+        highValue: format(dats.EndDate, dateFormat),
         valueType: GeneralFilterValueType.date,
       });
       this.filterDocItem = arFilters;

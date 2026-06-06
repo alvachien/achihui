@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -27,7 +27,7 @@ import {
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
-  momentDateFormat,
+  dateFormat,
   DocumentItemView,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
@@ -124,8 +124,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  get curDocDate(): moment.Moment {
-    return moment();
+  get curDocDate(): Date {
+    return new Date();
   }
 
   ngOnInit() {
@@ -318,7 +318,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     filters.push({
       fieldName: 'TransactionDate',
       operator: GeneralFilterOperatorEnum.Equal,
-      lowValue: doc.TranDate.format(momentDateFormat),
+      lowValue: format(doc.TranDate, dateFormat),
       valueType: GeneralFilterValueType.date,
     } as GeneralFilterItem);
 

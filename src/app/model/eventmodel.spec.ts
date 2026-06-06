@@ -3,7 +3,6 @@
 //
 
 import { GeneralEvent, RecurEvent, EventHabit, EventHabitDetail } from './eventmodel';
-import moment from 'moment';
 
 describe('GeneralEvent', () => {
   let instance: GeneralEvent;
@@ -39,7 +38,7 @@ describe('GeneralEvent', () => {
     instance.IsPublic = false;
     instance.ID = 1;
     instance.HID = 1;
-    instance.StartDate = moment();
+    instance.StartDate = new Date();
     instance.Assignee = 'test';
     instance.Content = 'test_content';
 

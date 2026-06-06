@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import moment from 'moment';
+import { parse, format, addMonths, addYears, addWeeks } from 'date-fns';
 
 import {
   Document,
   DocumentItem,
   financeDocTypeNormal,
   RepeatFrequencyEnum,
-  momentDateFormat,
+  dateFormat,
   RepeatedDatesAPIInput,
   RepeatedDatesAPIOutput,
   RepeatedDatesWithAmountAPIInput,
@@ -1988,7 +1988,7 @@ describe('FinanceOdataService', () => {
 
       // Respond with the mock data
       const planData: Plan = new Plan();
-      planData.StartDate = moment();
+      planData.StartDate = new Date();
       planData.AccountCategoryID = 1;
       planData.AccountID = 21;
       planData.Description = 'test';
@@ -2025,7 +2025,7 @@ describe('FinanceOdataService', () => {
     let planData: Plan;
     beforeEach(() => {
       planData = new Plan();
-      planData.StartDate = moment();
+      planData.StartDate = new Date();
       planData.AccountCategoryID = 1;
       planData.AccountID = 21;
       planData.Description = 'test';
@@ -2086,7 +2086,7 @@ describe('FinanceOdataService', () => {
       doc.DocType = financeDocTypeNormal;
       doc.Desp = 'Test';
       doc.TranCurr = fakeData.chosedHome.BaseCurrency;
-      doc.TranDate = moment();
+      doc.TranDate = new Date();
       const ditem: DocumentItem = new DocumentItem();
       ditem.ItemId = 1;
       ditem.AccountId = 11;
@@ -2151,7 +2151,7 @@ describe('FinanceOdataService', () => {
       doc.DocType = financeDocTypeNormal;
       doc.Desp = 'Test';
       doc.TranCurr = fakeData.chosedHome.BaseCurrency;
-      doc.TranDate = moment();
+      doc.TranDate = new Date();
       const ditem: DocumentItem = new DocumentItem();
       ditem.ItemId = 1;
       ditem.AccountId = 11;
@@ -2310,8 +2310,8 @@ describe('FinanceOdataService', () => {
       filterDocItem.push({
         fieldName: 'TranDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().format(momentDateFormat),
-        highValue: moment().add(1, 'M').format(momentDateFormat),
+        lowValue: format(new Date(), dateFormat),
+        highValue: format(addMonths(new Date(), 1), dateFormat),
         valueType: GeneralFilterValueType.number,
       });
 
@@ -2372,8 +2372,8 @@ describe('FinanceOdataService', () => {
       filterDocItem.push({
         fieldName: 'TranDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().format(momentDateFormat),
-        highValue: moment().add(1, 'M').format(momentDateFormat),
+        lowValue: format(new Date(), dateFormat),
+        highValue: format(addMonths(new Date(), 1), dateFormat),
         valueType: GeneralFilterValueType.number,
       });
       service.fetchAllDocuments(filterDocItem, 10, 0).subscribe(
@@ -2419,8 +2419,8 @@ describe('FinanceOdataService', () => {
     it('should return doc for success case', () => {
       service
         .fetchAllDPTmpDocs({
-          TransactionDateBegin: moment(),
-          TransactionDateEnd: moment().add(1, 'w'),
+          TransactionDateBegin: new Date(),
+          TransactionDateEnd: addWeeks(new Date(), 1),
         })
         .subscribe({
           next: (data) => {
@@ -2522,8 +2522,8 @@ describe('FinanceOdataService', () => {
       const msg = 'server failed';
       service
         .fetchAllDPTmpDocs({
-          TransactionDateBegin: moment(),
-          TransactionDateEnd: moment().add(1, 'w'),
+          TransactionDateBegin: new Date(),
+          TransactionDateEnd: addWeeks(new Date(), 1),
         })
         .subscribe({
           next: () => {
@@ -2558,8 +2558,8 @@ describe('FinanceOdataService', () => {
     it('should return doc for success case', () => {
       service
         .fetchAllLoanTmpDocs({
-          TransactionDateBegin: moment(),
-          TransactionDateEnd: moment().add(1, 'w'),
+          TransactionDateBegin: new Date(),
+          TransactionDateEnd: addWeeks(new Date(), 1),
         })
         .subscribe({
           next: (data) => {
@@ -2582,8 +2582,8 @@ describe('FinanceOdataService', () => {
       const msg = 'server failed';
       service
         .fetchAllLoanTmpDocs({
-          TransactionDateBegin: moment(),
-          TransactionDateEnd: moment().add(1, 'w'),
+          TransactionDateBegin: new Date(),
+          TransactionDateEnd: addWeeks(new Date(), 1),
         })
         .subscribe({
           next: () => {
@@ -3183,15 +3183,15 @@ describe('FinanceOdataService', () => {
       service = TestBed.inject(FinanceOdataService);
       inputData = {
         TotalAmount: 200,
-        StartDate: moment(),
-        EndDate: moment().add(1, 'y'),
+        StartDate: new Date(),
+        EndDate: addYears(new Date(), 1),
         RepeatType: RepeatFrequencyEnum.Month,
         Desp: 'test',
       };
       outputData = [];
       for (let i = 0; i < 10; i++) {
         const rst: RepeatedDatesWithAmountAPIOutput = {
-          TranDate: moment().add(i, 'M'),
+          TranDate: addMonths(new Date(), i),
           TranAmount: 20,
           Desp: `test${i}`,
         };
@@ -3252,17 +3252,17 @@ describe('FinanceOdataService', () => {
         TotalAmount: 10000,
         TotalMonths: 12,
         InterestRate: 0,
-        StartDate: moment(),
-        EndDate: moment().add(1, 'y'),
+        StartDate: new Date(),
+        EndDate: addYears(new Date(), 1),
         InterestFreeLoan: true,
         RepaymentMethod: 1,
-        FirstRepayDate: moment(),
+        FirstRepayDate: new Date(),
         RepayDayInMonth: 1,
       };
       outputData = [];
       for (let i = 0; i < 10; i++) {
         const od: any = {
-          tranDate: moment().add(i, 'M'),
+          tranDate: addMonths(new Date(), i),
           tranAmount: 100,
           interestAmount: 0,
         };
@@ -3322,7 +3322,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data in success case', () => {
-      service.getDocumentItemByAccount(21, 100, 100, moment(), moment().add(1, 'y')).subscribe({
+      service.getDocumentItemByAccount(21, 100, 100, new Date(), addYears(new Date(), 1)).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
         },
@@ -3380,7 +3380,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data in success case', () => {
-      service.getDocumentItemByControlCenter(21, 100, 100, moment(), moment().add(1, 'y')).subscribe({
+      service.getDocumentItemByControlCenter(21, 100, 100, new Date(), addYears(new Date(), 1)).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
         },
@@ -3438,7 +3438,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('should return data in success case', () => {
-      service.getDocumentItemByOrder(21, 100, 0, moment(), moment().add(1, 'y')).subscribe({
+      service.getDocumentItemByOrder(21, 100, 0, new Date(), addYears(new Date(), 1)).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
         },
@@ -3764,15 +3764,15 @@ describe('FinanceOdataService', () => {
       service = TestBed.inject(FinanceOdataService);
 
       inputData = {
-        StartDate: moment(),
-        EndDate: moment().add(1, 'y'),
+        StartDate: new Date(),
+        EndDate: addYears(new Date(), 1),
         RepeatType: RepeatFrequencyEnum.Month,
       };
       outputData = [];
       for (let i = 0; i < 10; i++) {
         const od: any = {
-          StartDate: moment().add(i, 'M'),
-          EndDate: moment().add(i + 1, 'M'),
+          StartDate: addMonths(new Date(), i),
+          EndDate: addMonths(new Date(), i + 1),
         };
         outputData.push(od);
       }
@@ -3883,7 +3883,7 @@ describe('FinanceOdataService', () => {
     });
 
     it('shall work properly', () => {
-      service.changeDocumentDateViaPatch(22, moment()).subscribe({
+      service.changeDocumentDateViaPatch(22, new Date()).subscribe({
         next: () => {
           // TBD.
         },
@@ -3906,7 +3906,7 @@ describe('FinanceOdataService', () => {
 
     it('should return error in case error appear', () => {
       const msg = 'Error occurred';
-      service.changeDocumentDateViaPatch(22, moment()).subscribe({
+      service.changeDocumentDateViaPatch(22, new Date()).subscribe({
         next: () => {
           throw new Error('Shall not occur');
         },

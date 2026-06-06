@@ -1,5 +1,5 @@
 import { Dictionary } from 'actslib';
-import moment from 'moment';
+import { format, parse, isAfter } from 'date-fns';
 import { SafeAny } from '@common/any';
 import * as hih from './common';
 
@@ -907,8 +907,8 @@ export class BookBorrowRecord extends hih.BaseModel {
   private _bookid?: number;
   private _user = '';
   private _from_org: number | null = null;
-  private _from_date: moment.Moment | null = null;
-  private _to_date: moment.Moment | null = null;
+  private _from_date: Date | null = null;
+  private _to_date: Date | null = null;
   private _has_return = false;
   private _cmt = '';
 
@@ -942,16 +942,16 @@ export class BookBorrowRecord extends hih.BaseModel {
   set BorrowFrom(bwf: number | null) {
     this._from_org = bwf;
   }
-  get FromDate(): moment.Moment | null {
+  get FromDate(): Date | null {
     return this._from_date;
   }
-  set FromDate(fdt: moment.Moment | null) {
+  set FromDate(fdt: Date | null) {
     this._from_date = fdt;
   }
-  get ToDate(): moment.Moment | null {
+  get ToDate(): Date | null {
     return this._to_date;
   }
-  set ToDate(fdt: moment.Moment | null) {
+  set ToDate(fdt: Date | null) {
     this._to_date = fdt;
   }
   get HasReturned(): boolean {
@@ -975,13 +975,13 @@ export class BookBorrowRecord extends hih.BaseModel {
 
   get FromDateString(): string {
     if (this._from_date) {
-      return this._from_date.format(hih.momentDateFormat);
+      return format(this._from_date, hih.dateFormat);
     }
     return '';
   }
   get ToDateString(): string {
     if (this._to_date) {
-      return this._to_date.format(hih.momentDateFormat);
+      return format(this._to_date, hih.dateFormat);
     }
     return '';
   }
@@ -1022,7 +1022,7 @@ export class BookBorrowRecord extends hih.BaseModel {
       }
 
       if (this._from_date !== null && this._to_date !== null) {
-        if (this._from_date.isAfter(this._to_date)) {
+        if (isAfter(this._from_date, this._to_date)) {
           vrst = false;
           const msg = new hih.InfoMessage(hih.MessageType.Error, 'ToDate is must', 'ToDate is must');
           this.VerifiedMsgs.push(msg);
@@ -1050,10 +1050,10 @@ export class BookBorrowRecord extends hih.BaseModel {
       rstobj.FromOrganization = this._from_org;
     }
     if (this._from_date) {
-      rstobj.FromDate = this._from_date.format(hih.momentDateFormat);
+      rstobj.FromDate = format(this._from_date, hih.dateFormat);
     }
     if (this._to_date) {
-      rstobj.ToDate = this._to_date.format(hih.momentDateFormat);
+      rstobj.ToDate = format(this._to_date, hih.dateFormat);
     }
     rstobj.IsReturned = this._has_return;
     if (this._cmt) {
@@ -1080,10 +1080,10 @@ export class BookBorrowRecord extends hih.BaseModel {
       this.BorrowFrom = data.FromOrganization;
     }
     if (data && data.FromDate) {
-      this.FromDate = moment(data.FromDate);
+      this.FromDate = parse(data.FromDate, hih.dateFormat, new Date());
     }
     if (data && data.ToDate) {
-      this.ToDate = moment(data.ToDate);
+      this.ToDate = parse(data.ToDate, hih.dateFormat, new Date());
     }
     if (data && data.IsReturned) {
       this.HasReturned = true;

@@ -5,7 +5,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, Reactive
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { addYears } from 'date-fns';
 import { UIMode, isUIEditable } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -141,8 +141,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       {
         idControl: new UntypedFormControl({ value: undefined, disabled: true }),
         typeControl: new UntypedFormControl(undefined, [Validators.required]),
-        startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
-        endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate(), [Validators.required]),
+        startDateControl: new UntypedFormControl(new Date(), [Validators.required]),
+        endDateControl: new UntypedFormControl(addYears(new Date(), 1), [Validators.required]),
         despControl: new UntypedFormControl('', [Validators.required]),
         accountControl: new UntypedFormControl({
           value: undefined,
@@ -225,9 +225,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
                 const planObj = rsts[5] as Plan;
                 this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!.toDate());
+                this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!.toDate());
+                this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!);
                 this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
                 this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
                 this.detailFormGroup.get('acntCtgyControl')?.setValue(planObj.AccountCategoryID);
@@ -498,8 +498,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Update) {
       dataInstance.ID = this.detailFormGroup.get('idControl')?.value;
     }
-    dataInstance.StartDate = moment(this.detailFormGroup.get('startDateControl')?.value as Date);
-    dataInstance.TargetDate = moment(this.detailFormGroup.get('endDateControl')?.value as Date);
+    dataInstance.StartDate = this.detailFormGroup.get('startDateControl')?.value as Date;
+    dataInstance.TargetDate = this.detailFormGroup.get('endDateControl')?.value as Date;
     dataInstance.Description = this.detailFormGroup.get('despControl')?.value;
     dataInstance.PlanType = this.detailFormGroup.get('typeControl')?.value as PlanTypeEnum;
     switch (dataInstance.PlanType) {

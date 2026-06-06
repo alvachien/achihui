@@ -1,6 +1,6 @@
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { SafeAny } from '@common/any';
-import { momentDateFormat } from './common';
+import { dateFormat } from './common';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 export const BlogPostStatus_Draft = 1;
@@ -142,8 +142,8 @@ export class BlogPost {
   public brief?: string;
   public content?: string;
   public status?: number;
-  public createdAt?: moment.Moment;
-  public updatedAt?: moment.Moment;
+  public createdAt?: Date;
+  public updatedAt?: Date;
   public BlogPostCollections: BlogPostCollection[];
   public BlogPostTags: BlogPostTag[];
 
@@ -154,7 +154,7 @@ export class BlogPost {
 
   get createdAtString(): string {
     if (this.createdAt) {
-      return this.createdAt.format(momentDateFormat);
+      return format(this.createdAt, dateFormat);
     }
     return '';
   }
@@ -172,10 +172,10 @@ export class BlogPost {
       this.BlogPostTags = data.BlogPostTags;
 
       if (data.CreatedAt) {
-        this.createdAt = moment(data.CreatedAt);
+        this.createdAt = parse(data.CreatedAt as string, dateFormat, new Date());
       }
       if (data.UpdatedAt) {
-        this.updatedAt = moment(data.UpdatedAt);
+        this.updatedAt = parse(data.UpdatedAt as string, dateFormat, new Date());
       }
     }
   }
@@ -192,10 +192,10 @@ export class BlogPost {
       BlogPostTags: this.BlogPostTags,
     };
     if (this.createdAt) {
-      rtnjson.CreatedAt = this.createdAt ? this.createdAt.format(momentDateFormat) : '';
+      rtnjson.CreatedAt = this.createdAt ? format(this.createdAt, dateFormat) : '';
     }
     if (this.updatedAt) {
-      rtnjson.UpdatedAt = this.updatedAt ? this.updatedAt.format(momentDateFormat) : '';
+      rtnjson.UpdatedAt = this.updatedAt ? format(this.updatedAt, dateFormat) : '';
     }
 
     return rtnjson;

@@ -5,7 +5,7 @@
  */
 
 import { ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import moment from 'moment';
+import { startOfDay, isBefore } from 'date-fns';
 import { NzTableSortOrder, NzTableSortFn, NzTableFilterList, NzTableFilterFn } from 'ng-zorro-antd/table';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -23,9 +23,9 @@ export const dateRangeValidator: ValidatorFn = (group: AbstractControl): Validat
   if (!enddt) {
     return { invalidEndDate: true };
   }
-  const startDate: moment.Moment = moment(strdt).startOf('day');
-  const endDate: moment.Moment = moment(enddt).startOf('day');
-  if (!endDate.isSameOrAfter(startDate)) {
+  const startDate: Date = startOfDay(strdt);
+  const endDate: Date = startOfDay(enddt);
+  if (isBefore(endDate, startDate)) {
     return { invalidDateRange: true };
   }
 

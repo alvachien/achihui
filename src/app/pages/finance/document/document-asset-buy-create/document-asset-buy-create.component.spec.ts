@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { addMonths, subYears } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { AccountExtraAssetComponent } from '../../account/account-extra-asset';
@@ -204,7 +204,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -239,7 +239,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -289,7 +289,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -339,7 +339,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -389,7 +389,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -443,7 +443,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -499,7 +499,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -571,7 +571,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -638,7 +638,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -708,7 +708,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -809,7 +809,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -889,7 +889,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -970,7 +970,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
 
       // Update a valid document header
       const dochead: Document = new Document();
-      dochead.TranDate = moment().subtract(1, 'y');
+      dochead.TranDate = subYears(new Date(), 1);
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);

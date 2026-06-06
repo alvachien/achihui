@@ -6,7 +6,8 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-import moment from 'moment';
+import { format } from 'date-fns';
+import { dateFormat } from '../../../../model';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -116,7 +117,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
 
                 this.detailFormGroup.get('idControl')?.setValue(e.ID);
                 this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                this.detailFormGroup.get('dateControl')?.setValue([e.StartDate?.toDate(), e.EndDate?.toDate()]);
+                this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
                 this.detailFormGroup.get('contentControl')?.setValue(e.Content);
 
                 if (this.uiMode === UIMode.Display) {
@@ -176,10 +177,10 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateControl')?.value;
     if (startdt) {
-      objtbo.StartDate = moment(startdt);
+      objtbo.StartDate = new Date(startdt);
     }
     if (enddt) {
-      objtbo.EndDate = moment(enddt);
+      objtbo.EndDate = new Date(enddt);
     }
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Content = this.detailFormGroup.get('contentControl')?.value;

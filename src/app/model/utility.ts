@@ -1,4 +1,5 @@
-import { dateSplitChar, LogLevel, momentDateFormat } from './common';
+import { dateSplitChar, LogLevel, dateFormat } from './common';
+import { format } from 'date-fns';
 import { DocumentItem } from './financemodel';
 import { environment } from '../../environments/environment';
 
@@ -157,8 +158,8 @@ export class ModelUtility {
    * Get a display string for a date
    * @param dateInput: Inputted date
    */
-  public static getDateDisplayString(dateInput?: moment.Moment): string {
-    return dateInput ? dateInput.format(momentDateFormat) : '';
+  public static getDateDisplayString(dateInput?: Date): string {
+    return dateInput ? format(dateInput, dateFormat) : '';
   }
 
   /**

@@ -9,11 +9,13 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
+import { format } from 'date-fns';
+import { dateFormat } from '@model/index';
 
 import {
   Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
   TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
-  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat
+  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut
 } from '@model/index';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { RouterModule } from '@angular/router';
@@ -115,7 +117,7 @@ export class DocumentItemInsightComponent implements OnInit {
   }
   get insideDateRangeString(): string {
     if (this.insightOption !== null) {
-      return this.insightOption.SelectedDataRange[0].format(momentDateFormat) + ' - ' + this.insightOption.SelectedDataRange[1].format(momentDateFormat);
+      return format(this.insightOption.SelectedDataRange[0], dateFormat) + ' - ' + format(this.insightOption.SelectedDataRange[1], dateFormat);
     }
     return '';
   }
@@ -179,8 +181,8 @@ export class DocumentItemInsightComponent implements OnInit {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: this.insightOption.SelectedDataRange[0].format(momentDateFormat),
-        highValue: this.insightOption.SelectedDataRange[1].format(momentDateFormat),
+        lowValue: format(this.insightOption.SelectedDataRange[0], dateFormat),
+        highValue: format(this.insightOption.SelectedDataRange[1], dateFormat),
         valueType: GeneralFilterValueType.date,
       });
 

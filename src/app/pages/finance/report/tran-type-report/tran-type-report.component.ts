@@ -4,7 +4,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { format, subMonths, startOfYear, startOfMonth, parse, addYears, addMonths } from 'date-fns';
 
 import {
   ModelUtility,
@@ -13,7 +13,7 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
   GeneralFilterItem,
-  momentDateFormat,
+  dateFormat,
   TranType,
   FinanceReportEntryByTransactionType,
 } from '../../../../model';
@@ -108,8 +108,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     );
 
     this.isLoadingResults = true;
-    let tnow = moment();
-    let year = tnow.year();
+    let tnow = new Date();
+    let year = tnow.getFullYear();
     let month: number | undefined = undefined;
     if (this.selectedScope === '1') {
       // Previous year
@@ -120,13 +120,13 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       month = undefined;
     } else if (this.selectedScope === '3') {
       // Previous month
-      tnow = moment().subtract(1, 'month');
-      year = tnow.year();
-      month = tnow.month() + 1;
+      tnow = subMonths(new Date(), 1);
+      year = tnow.getFullYear();
+      month = tnow.getMonth() + 1;
     } else if (this.selectedScope === '4') {
       // Current month
-      year = tnow.year();
-      month = tnow.startOf('month').month() + 1;
+      year = tnow.getFullYear();
+      month = startOfMonth(tnow).getMonth() + 1;
     }
 
     forkJoin([this.odataService.fetchReportByTransactionType(year, month), this.odataService.fetchAllTranTypes()])
@@ -344,8 +344,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().startOf('year').subtract(1, 'year').format(momentDateFormat),
-        highValue: moment().startOf('year').format(momentDateFormat),
+        lowValue: format(subMonths(startOfYear(new Date()), 12), dateFormat),
+        highValue: format(startOfYear(new Date()), dateFormat),
         valueType: GeneralFilterValueType.date,
       });
     } else if (this.selectedScope === '2') {
@@ -353,8 +353,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().startOf('year').format(momentDateFormat),
-        highValue: moment().startOf('year').add(1, 'year').format(momentDateFormat),
+        lowValue: format(startOfYear(new Date()), dateFormat),
+        highValue: format(startOfYear(addYears(new Date(), 1)), dateFormat),
         valueType: GeneralFilterValueType.date,
       });
     } else if (this.selectedScope === '3') {
@@ -362,8 +362,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().startOf('month').subtract(1, 'month').format(momentDateFormat),
-        highValue: moment().startOf('month').format(momentDateFormat),
+        lowValue: format(subMonths(startOfMonth(new Date()), 1), dateFormat),
+        highValue: format(startOfMonth(new Date()), dateFormat),
         valueType: GeneralFilterValueType.date,
       });
     } else if (this.selectedScope === '4') {
@@ -371,8 +371,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: moment().startOf('month').format(momentDateFormat),
-        highValue: moment().startOf('month').add(1, 'month').format(momentDateFormat),
+        lowValue: format(startOfMonth(new Date()), dateFormat),
+        highValue: format(addMonths(startOfMonth(new Date()), 1), dateFormat),
         valueType: GeneralFilterValueType.date,
       });
     }

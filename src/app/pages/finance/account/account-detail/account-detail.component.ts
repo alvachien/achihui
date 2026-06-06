@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -54,6 +54,7 @@ import {
   BuildupOrderForSelection,
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
+  dateFormat,
 } from '@model/index';
 import { HomeDefOdataService, FinanceOdataService } from '@services/index';
 import { costObjectValidator } from '@uimodel/index';
@@ -489,7 +490,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             doc.DocType = financeDocTypeNormal;
             doc.HID = this.homeSevice.ChosedHome?.ID;
             doc.TranCurr = this.homeSevice.ChosedHome?.BaseCurrency ?? '';
-            doc.TranDate = moment(this.amountFormGroup.get('dateControl')?.value as Date);
+            doc.TranDate = new Date(this.amountFormGroup.get('dateControl')?.value as Date);
             const docitem: DocumentItem = new DocumentItem();
             docitem.AccountId = nacntid;
             docitem.Desp = doc.Desp;

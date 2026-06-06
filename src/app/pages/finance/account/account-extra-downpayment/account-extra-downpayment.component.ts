@@ -15,7 +15,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import moment from 'moment';
+import { addYears, startOfDay } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -93,11 +93,11 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     let controlVal = this.adpInfoFormGroup.get('startDateControl')?.value;
     if (controlVal !== undefined) {
-      inst.StartDate = moment(controlVal as Date);
+      inst.StartDate = new Date(controlVal as Date);
     }
     controlVal = this.adpInfoFormGroup.get('endDateControl')?.value;
     if (controlVal !== undefined) {
-      inst.EndDate = moment(controlVal as Date);
+      inst.EndDate = new Date(controlVal as Date);
     }
     controlVal = this.adpInfoFormGroup.get('frqControl')?.value;
     if (controlVal !== undefined) {
@@ -144,8 +144,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     );
 
     this.adpInfoFormGroup = new UntypedFormGroup({
-      startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
-      endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate()),
+      startDateControl: new UntypedFormControl(new Date(), [Validators.required]),
+      endDateControl: new UntypedFormControl(addYears(new Date(), 1)),
       frqControl: new UntypedFormControl(undefined, Validators.required),
       cmtControl: new UntypedFormControl('', Validators.maxLength(30)),
     });
@@ -197,8 +197,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     const objval: AccountExtraAdvancePayment = this.value;
     const datInput: RepeatedDatesWithAmountAPIInput = {
-      StartDate: objval.StartDate.clone(),
-      EndDate: objval.EndDate.clone(),
+      StartDate: new Date(objval.StartDate),
+      EndDate: new Date(objval.EndDate),
       RepeatType: objval.RepeatType ?? RepeatFrequencyEnum.Day,
       Desp: objval.Comment,
       TotalAmount: this.tranAmount,
@@ -268,8 +268,8 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     );
 
     if (val) {
-      this.adpInfoFormGroup.get('startDateControl')?.setValue(val.StartDate.toDate());
-      this.adpInfoFormGroup.get('endDateControl')?.setValue(val.EndDate.toDate());
+      this.adpInfoFormGroup.get('startDateControl')?.setValue(val.StartDate);
+      this.adpInfoFormGroup.get('endDateControl')?.setValue(val.EndDate);
       if (val.RepeatType !== null && val.RepeatType !== undefined) {
         this.adpInfoFormGroup.get('frqControl')?.setValue(val.RepeatType);
       }

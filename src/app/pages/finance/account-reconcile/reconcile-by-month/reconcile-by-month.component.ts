@@ -3,7 +3,8 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { endOfMonth, parse } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -180,9 +181,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
     if (results) {
       const results2: AccountReconcileExpect[] = results.map((origin) => {
         const rst = new AccountReconcileExpect();
-        rst.currentMonth = moment(origin.Month + '-01')
-          .endOf('M')
-          .toDate();
+        rst.currentMonth = endOfMonth(parse(origin.Month + '-01', dateFormat, new Date()));
         rst.expectedAmount = origin.Amount;
         return rst;
       });
@@ -232,7 +231,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
 
             this.listExpectResult.forEach((rst) => {
               const cmprst = new AccountReconcileCompare();
-              cmprst.currentMonth = moment(rst.currentMonthStr).toDate();
+              cmprst.currentMonth = parse(rst.currentMonthStr, dateFormat, new Date());
               cmprst.expectedAmount = rst.expectedAmount;
               cmprst.actualAmount = 0;
 
@@ -241,7 +240,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
               this.compareResult.push(cmprst);
 
               const newexprst = new AccountReconcileExpect();
-              newexprst.currentMonth = moment(rst.currentMonthStr).toDate();
+              newexprst.currentMonth = parse(rst.currentMonthStr, dateFormat, new Date());
               newexprst.expectedAmount = rst.expectedAmount;
               this.prvSentInfo?.inputtedExpectResult.push(newexprst);
             });

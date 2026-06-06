@@ -5,7 +5,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, Reactive
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { addYears } from 'date-fns';
 import { UIMode, isUIEditable } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -106,8 +106,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       {
         idControl: new UntypedFormControl(),
         nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
-        startDateControl: new UntypedFormControl(moment().toDate(), [Validators.required]),
-        endDateControl: new UntypedFormControl(moment().add(1, 'y').toDate(), [Validators.required]),
+        startDateControl: new UntypedFormControl(new Date(), [Validators.required]),
+        endDateControl: new UntypedFormControl(addYears(new Date(), 1), [Validators.required]),
         cmtControl: new UntypedFormControl(),
       },
       [dateRangeValidator]
@@ -164,9 +164,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
                 this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom!.toDate());
+                this.detailFormGroup.get('startDateControl')?.setValue(rsts[1].ValidFrom!);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo!.toDate());
+                this.detailFormGroup.get('endDateControl')?.setValue(rsts[1].ValidTo!);
                 if (rsts[1].Comment) {
                   this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
                 }
@@ -474,8 +474,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       ordInstance.Id = this.routerID;
     }
     ordInstance.Name = this.detailFormGroup.get('nameControl')?.value;
-    ordInstance.ValidFrom = moment(this.detailFormGroup.get('startDateControl')?.value);
-    ordInstance.ValidTo = moment(this.detailFormGroup.get('endDateControl')?.value);
+    ordInstance.ValidFrom = this.detailFormGroup.get('startDateControl')?.value as Date;
+    ordInstance.ValidTo = this.detailFormGroup.get('endDateControl')?.value as Date;
     ordInstance.Comment = this.detailFormGroup.get('cmtControl')?.value;
     ordInstance.SRules = [];
     ordInstance.SRules = this.listRules.slice();

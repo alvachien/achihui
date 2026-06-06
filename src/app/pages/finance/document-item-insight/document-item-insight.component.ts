@@ -4,6 +4,7 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { finalize, forkJoin } from 'rxjs';
+import { format } from 'date-fns';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
@@ -14,7 +15,7 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 
 import { Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
   TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
-  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, momentDateFormat } from '@model/index';
+  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut, dateFormat } from '@model/index';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
 interface InsightRecord {
@@ -113,7 +114,7 @@ export class DocumentItemInsightComponent implements OnInit {
   }
   get insideDateRangeString(): string {
     if (this.insightOption !== null) {
-      return this.insightOption.SelectedDataRange[0].format(momentDateFormat) + ' - ' + this.insightOption.SelectedDataRange[1].format(momentDateFormat);
+      return format(this.insightOption.SelectedDataRange[0], dateFormat) + ' - ' + format(this.insightOption.SelectedDataRange[1], dateFormat);
     }
     return '';
   }
@@ -177,8 +178,8 @@ export class DocumentItemInsightComponent implements OnInit {
       fltrs.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: this.insightOption.SelectedDataRange[0].format(momentDateFormat),
-        highValue: this.insightOption.SelectedDataRange[1].format(momentDateFormat),
+        lowValue: format(this.insightOption.SelectedDataRange[0], dateFormat),
+        highValue: format(this.insightOption.SelectedDataRange[1], dateFormat),
         valueType: GeneralFilterValueType.date,
       });
 

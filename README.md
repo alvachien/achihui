@@ -109,7 +109,7 @@ This project is the UI layer of HIH, built with modern web technologies:
 - [Ant Design for Angular (NG-ZORRO)](https://ng.ant.design/) — UI component library
 - [ECharts](https://echarts.apache.org/) — Data visualization
 - [ngx-echarts](https://github.com/xieziyu/ngx-echarts/) — ECharts integration for Angular
-- [Moment.js](https://momentjs.com/) — Date handling
+- [date-fns](https://date-fns.org/) — Date handling
 
 ## Development
 

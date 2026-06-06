@@ -6,7 +6,7 @@ import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { format, parse, startOfMonth, endOfMonth } from 'date-fns';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
 import {
@@ -29,7 +29,7 @@ import {
   GeneralFilterItem,
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
-  momentDateFormat,
+  dateFormat,
 } from '../../../../model';
 import { DocumentChangeDateDialogComponent } from '../document-change-date-dialog';
 import { DocumentChangeDespDialogComponent } from '../document-change-desp-dialog';
@@ -125,7 +125,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
     this._isInitialized = true;
 
-    this.selectedRange = [moment().startOf('month').toDate(), moment().endOf('month').toDate()];
+    this.selectedRange = [startOfMonth(new Date()), endOfMonth(new Date())];
 
     this.isLoadingResults = true;
     const arseqs = [
@@ -309,15 +309,15 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     );
 
     this.isLoadingResults = true;
-    const bgn = this.selectedRange.length > 0 ? moment(this.selectedRange[0] as Date) : moment();
-    const end = this.selectedRange.length > 1 ? moment(this.selectedRange[1] as Date) : moment();
+    const bgn = this.selectedRange.length > 0 ? startOfMonth(this.selectedRange[0] as Date) : startOfMonth(new Date());
+    const end = this.selectedRange.length > 1 ? endOfMonth(this.selectedRange[1] as Date) : endOfMonth(new Date());
 
     this._filterDocItem = [];
     this._filterDocItem.push({
       fieldName: 'TranDate',
       operator: GeneralFilterOperatorEnum.Between,
-      lowValue: bgn.format(momentDateFormat),
-      highValue: end.format(momentDateFormat),
+      lowValue: format(bgn, dateFormat),
+      highValue: format(end, dateFormat),
       valueType: GeneralFilterValueType.number,
     });
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -457,7 +457,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       },
     });
   }
-  public onChangeDate(docid: number, docdate: moment.Moment): void {
+  public onChangeDate(docid: number, docdate: Date): void {
     // Change the account name
     const modal = this.modalService.create({
       nzTitle: translate('Finance.ChangeDate'),
@@ -465,7 +465,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       nzViewContainerRef: this.viewContainerRef,
       nzData: {
         documentid: docid,
-        documentdate: docdate.toDate(),
+        documentdate: docdate,
       },
       // nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
     });

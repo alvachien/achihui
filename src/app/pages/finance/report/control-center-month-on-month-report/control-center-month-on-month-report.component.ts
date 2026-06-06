@@ -4,7 +4,7 @@ import { ReplaySubject, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import moment from 'moment';
+import { format, subMonths } from 'date-fns';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
@@ -160,8 +160,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arControlCenterIDs.forEach((ccid) => {
@@ -170,9 +170,9 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
             const arBal: number[] = [];
 
             for (let imonth = 11; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
 
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.month() + 1);
+              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
                 arOut.push(val[validx].CreditBalance);
@@ -231,8 +231,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
         } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arControlCenterIDs.forEach((ccid) => {
@@ -241,9 +241,9 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
             const arBal: number[] = [];
 
             for (let imonth = 5; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
 
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.month() + 1);
+              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
                 arOut.push(val[validx].CreditBalance);
@@ -302,8 +302,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
         } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           arControlCenterIDs.forEach((ccid) => {
@@ -312,9 +312,9 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
             const arBal: number[] = [];
 
             for (let imonth = 2; imonth >= 0; imonth--) {
-              const monthinuse = moment().subtract(imonth, 'month');
+              const monthinuse = subMonths(new Date(), imonth);
 
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.month() + 1);
+              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
               if (validx !== -1) {
                 arIn.push(val[validx].DebitBalance);
                 arOut.push(val[validx].CreditBalance);

@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { subYears } from 'date-fns';
 
 import { DocumentListComponent } from './document-list.component';
 import {createSpyObj, getTranslocoModule,
@@ -139,7 +139,7 @@ describe('DocumentListComponent', () => {
         DocType: financeDocTypeNormal,
         TranCurr: fakeData.chosedHome.BaseCurrency,
         Desp: 'test',
-        TranDate: moment(),
+        TranDate: new Date(),
         Items: [
           {
             DocId: 1,
@@ -163,7 +163,7 @@ describe('DocumentListComponent', () => {
         DocType: financeDocTypeNormal,
         TranCurr: fakeData.chosedHome.BaseCurrency,
         Desp: 'test',
-        TranDate: moment(),
+        TranDate: new Date(),
         Items: [
           {
             DocId: 2,
