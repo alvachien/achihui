@@ -3,7 +3,8 @@
 //
 
 import { parse } from 'date-fns';
-import { Order, dateFormat } from './financemodel';
+import { Order } from './financemodel';
+import { dateFormat } from './common';
 import {
   UIDisplayStringUtil,
   UIDisplayString,

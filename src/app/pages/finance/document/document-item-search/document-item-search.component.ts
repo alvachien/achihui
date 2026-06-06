@@ -166,11 +166,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          a
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .TransactionDate!
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .localeCompare(b.TransactionDate!),
+          (a.TransactionDate || '').localeCompare(b.TransactionDate || ''),
       },
       {
         name: 'Finance.TransactionType',

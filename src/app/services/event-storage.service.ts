@@ -158,7 +158,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -200,7 +200,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -235,7 +235,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -397,7 +397,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -438,7 +438,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -477,7 +477,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -575,7 +575,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService readHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -619,7 +619,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -654,7 +654,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -690,7 +690,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }

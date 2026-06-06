@@ -1887,23 +1887,23 @@ describe('FinanceOdataService', () => {
       req.flush({
         value: [
           {
-            id: 1,
-            hid: 1,
-            planType: 0,
-            accountID: 4,
-            startDate: '2019-03-23',
-            targetDate: '2019-04-23',
-            targetBalance: 10.0,
-            tranCurr: 'CNY',
-            description: 'Test plan 1',
-            createdBy: 'aaa',
-            createdAt: '2019-03-23',
+            ID: 1,
+            HomeID: 1,
+            PlanType: 0,
+            AccountID: 4,
+            StartDate: '2019-03-23',
+            TargetDate: '2019-04-23',
+            TargetBalance: 10.0,
+            TranCurr: 'CNY',
+            Description: 'Test plan 1',
+            CreatedBy: 'aaa',
+            CreatedAt: '2019-03-23',
           },
         ],
       });
     });
 
-    it('should fetch data only once (call multiple times)', () => {
+    it('should fetch data only once (call multiple times)', async () => {
       service.fetchAllPlans().subscribe({
         next: (data: Plan[]) => {
           expect(data.length).toEqual(1);
@@ -1919,22 +1919,22 @@ describe('FinanceOdataService', () => {
       req.flush({
         value: [
           {
-            id: 1,
-            hid: 1,
-            planType: 0,
-            accountID: 4,
-            startDate: '2019-03-23',
-            targetDate: '2019-04-23',
-            targetBalance: 10.0,
-            tranCurr: 'CNY',
-            description: 'Test plan 1',
-            createdBy: 'aaa',
-            createdAt: '2019-03-23',
+            ID: 1,
+            HomeID: 1,
+            PlanType: 0,
+            AccountID: 4,
+            StartDate: '2019-03-23',
+            TargetDate: '2019-04-23',
+            TargetBalance: 10.0,
+            TranCurr: 'CNY',
+            Description: 'Test plan 1',
+            CreatedBy: 'aaa',
+            CreatedAt: '2019-03-23',
           },
         ],
       });
 
-      httpTestingController.verify();
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // Second call
       service.fetchAllPlans().subscribe();

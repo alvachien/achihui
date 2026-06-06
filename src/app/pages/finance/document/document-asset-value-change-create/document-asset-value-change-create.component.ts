@@ -413,8 +413,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      let adate = parse(a.TransactionDate || '', dateFormat, new Date());
-      let bdate = parse(b.TransactionDate || '', dateFormat, new Date());
+      let adate = parse(typeof a.TransactionDate === 'string' ? a.TransactionDate : '', dateFormat, new Date());
+      let bdate = parse(typeof b.TransactionDate === 'string' ? b.TransactionDate : '', dateFormat, new Date());
       if (isBefore(adate, bdate)) {
         return -1;
       }
@@ -447,7 +447,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     // Sorting
     this.existingDocItems = this.existingDocItems.sort((a: SafeAny, b: SafeAny) => {
-      return a.tranDate.localeCompare(b.tranDate);
+      const dateA = typeof a.tranDate === 'string' ? a.tranDate : (a.tranDate instanceof Date ? format(a.tranDate, dateFormat) : '');
+      const dateB = typeof b.tranDate === 'string' ? b.tranDate : (b.tranDate instanceof Date ? format(b.tranDate, dateFormat) : '');
+      return dateA.localeCompare(dateB);
     });
 
     let curbal = 0;

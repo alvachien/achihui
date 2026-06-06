@@ -1577,7 +1577,7 @@ export class FinanceOdataService {
 
           this.isPlanListLoaded = false;
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
         })
       );
     } else {
@@ -1617,7 +1617,7 @@ export class FinanceOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -3142,7 +3142,7 @@ export class FinanceOdataService {
               ConsoleLogTypeEnum.error
             );
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+            return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
           })
         );
     } else {

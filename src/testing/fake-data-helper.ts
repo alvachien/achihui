@@ -63,6 +63,7 @@ import {
   addMonths,
   addYears,
   subMonths,
+  subYears,
   startOfDay,
   format,
   parse,
@@ -1284,7 +1285,8 @@ export class FakeDataHelper {
       ctgy = new Order();
       ctgy.Id = i + 1;
       ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
-      // ctgy.ValidFrom =
+      ctgy.ValidFrom = subYears(new Date(), 1);
+      ctgy.ValidTo = addYears(new Date(), 1);
       ctgy.Name = `Order ${i + 1}`;
       // S. rules
       if (i === 0) {

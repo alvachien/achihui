@@ -143,14 +143,14 @@ describe('FinanceComponent', () => {
       dp2.HID = fakeData.chosedHome.ID;
       dp2.DocId = 2;
       dp2.TranAmount = 200;
-      dp2.TranDate = dat2.clone();
+      dp2.TranDate = new Date(dat2);
       dp2.AccountId = 1;
       dp2.Desp = 'test2';
       arDPTmpDoc.push(dp2);
       const loan1: TemplateDocLoan = new TemplateDocLoan();
       loan1.HID = fakeData.chosedHome.ID;
       loan1.Desp = 'Loan 1';
-      loan1.TranDate = dat2.clone();
+      loan1.TranDate = new Date(dat2);
       loan1.DocId = 3;
       loan1.AccountId = 1;
       loan1.TranAmount = 300;
@@ -159,7 +159,7 @@ describe('FinanceComponent', () => {
       fetchAllLoanTmpDocsSpy.and.returnValue(of(arLoanTmpDoc));
       createDocumentFromDPTemplateSpy.and.returnValue(
         of({
-          TranDate: dat1.clone(),
+          TranDate: new Date(dat1),
         })
       );
       fixture.detectChanges();

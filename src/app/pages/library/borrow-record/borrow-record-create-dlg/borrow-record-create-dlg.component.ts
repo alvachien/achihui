@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@
 import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { format } from 'date-fns';
-import { dateFormat } from '../../../model/index';
+import { dateFormat } from '@model/index';
 import { NzModalRef, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSpaceModule } from 'ng-zorro-antd/space';

@@ -17,6 +17,7 @@ import { SafeAny } from '@common/any';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { format, addMonths, subYears } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemInsightComponent', () => {
@@ -145,7 +146,7 @@ describe('DocumentItemInsightComponent', () => {
           DocumentID: 1,
           ItemID: 1,
           HomeID: fakeData.chosedHome.ID,
-          TransactionDate: subYears(new Date(), 1),
+          TransactionDate: format(subYears(new Date(), 1), dateFormat),
           DocumentDesp: 'test',
           AccountID: fakeData.finAccounts[0].Id,
           TransactionType: fakeData.finTranTypes[0].Id,
@@ -159,7 +160,7 @@ describe('DocumentItemInsightComponent', () => {
           DocumentID: 2,
           ItemID: 1,
           HomeID: fakeData.chosedHome.ID,
-          TransactionDate: subYears(new Date(), 1),
+          TransactionDate: format(subYears(new Date(), 1), dateFormat),
           DocumentDesp: 'test',
           AccountID: fakeData.finAccounts[0].Id,
           TransactionType: fakeData.finTranTypes[0].Id,

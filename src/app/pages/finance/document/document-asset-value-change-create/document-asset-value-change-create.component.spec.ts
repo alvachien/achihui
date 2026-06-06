@@ -711,12 +711,14 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       // Setp 1
       expect(component.currentStep).toBe(1);
       await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 2
+      await new Promise<void>(r => setTimeout(r, 0));
       await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createAssetValChgDocumentSpy).toHaveBeenCalled();
@@ -793,12 +795,14 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       // Setp 1
       expect(component.currentStep).toBe(1);
       await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
 
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Step 2
+      await new Promise<void>(r => setTimeout(r, 0));
       await new Promise<void>(r => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createAssetValChgDocumentSpy).toHaveBeenCalled();

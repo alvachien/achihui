@@ -319,7 +319,11 @@ export class DocumentItemInsightComponent implements OnInit {
     this.listDisplayData.sort((item1, item2) => {
       let ndatecmp = 0;
       if (needdate) {
-        ndatecmp = item1.TransactionDate!.localeCompare(item2.TransactionDate ?? '');
+        const t1 = item1.TransactionDate as unknown;
+        const t2 = item2.TransactionDate as unknown;
+        const d1 = t1 instanceof Date ? format(t1, dateFormat) : (item1.TransactionDate ?? '');
+        const d2 = t2 instanceof Date ? format(t2, dateFormat) : (item2.TransactionDate ?? '');
+        ndatecmp = d1.localeCompare(d2);
       }
 
       if (ndatecmp === 0) {
